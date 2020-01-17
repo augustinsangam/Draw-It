@@ -1,0 +1,59 @@
+DESCRIPTION
+Before commiting changes, format and check the code with ‘npm run lint’, and run
+the tests with ‘npm t’. NO WARNINGS PERMITTED!
+
+SERVER
+When developing on the backend, first start by running ‘npm run watch’ to watch
+changes on TypeScript. To run the server, use ‘npm start’ and open your browser
+at the address displayed on the console.
+
+NAMING {{{
+	- observables end with $
+	  (angular.io/guide/rx-library#naming-conventions-for-observables)
+}}}
+
+SERVER {{{
+	- ‘npm run watch’ watches for code changes on the server
+	- ‘npm start’ run the server
+}}}
+
+IMPORTS {{{
+	PREFERED:
+	- import { X } from 'X'
+	LAST RESORT:
+	- `import X from 'X'
+	PROHIBITED:
+	- import * as X from 'X'
+	- const X = import('X')
+	RESOURCES:
+	- https://github.com/sourcegraph/javascript-typescript-langserver/pull/480#discussion_r197905711
+	- https://github.com/Microsoft/TypeScript/issues/13340#issuecomment-348824479
+	- https://github.com/DefinitelyTyped/DefinitelyTyped/issues/19337#issuecomment-364811834
+	- https://github.com/microsoft/TypeScript/issues/16093
+	- https://github.com/ng-packagr/ng-packagr/issues/1239
+}}}
+
+ABBREVIATIONS {{{
+	- cap = capacity
+	- ctx = context
+	- el = element
+	- ev = event
+	- idx = index
+	- len = length
+	- msg = message
+	- pos = position
+	- sz = size
+}}}
+
+KEYWORDS {{{
+	- FIXME
+	- NOTE
+	- TODO
+}}}
+
+PONCTUATIONS {{{
+	- ’ as apostrophe
+	- “” for quotes
+}}}
+
+vim:fdm=marker:cc=80:tw=80:fo+=t:fo-=l

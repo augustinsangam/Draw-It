@@ -1,0 +1,20 @@
+{
+    "extends": "../common/tslint.json",
+    "rulesDirectory": ["codelyzer"],
+    "rules": {
+        "deprecation": {
+            "severity": "warn"
+        },
+        "import-blacklist": [true, "rxjs/Rx"],
+        "no-output-on-prefix": true,
+        "no-inputs-metadata-property": true,
+        "no-outputs-metadata-property": true,
+        "no-host-metadata-property": true,
+        "no-input-rename": true,
+        "no-output-rename": true,
+        "use-lifecycle-interface": true,
+        "use-pipe-transform-interface": true,
+        "component-class-suffix": true,
+        "directive-class-suffix": true
+    }
+}

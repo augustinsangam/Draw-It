@@ -1,0 +1,81 @@
+{
+    "extends": "tslint:recommended",
+    "rules": {
+        "array-type": [true, "array"],
+        "arrow-parens": true,
+        "deprecation": true,
+        "max-classes-per-file": [true, 1],
+        "max-line-length": [true, 140],
+        "member-access": [true, "no-public"],
+        "interface-name": false,
+        "member-ordering": [
+            true,
+            {
+                "order": ["static-field", "instance-field", "static-method", "instance-method"]
+            }
+        ],
+        "no-consecutive-blank-lines": true,
+        "no-console": [true, "debug", "info", "time", "timeEnd", "trace"],
+        "no-empty": true,
+        "no-inferrable-types": [true, "ignore-params"],
+        "no-duplicate-imports": true,
+        "no-non-null-assertion": true,
+        "no-redundant-jsdoc": true,
+        "no-switch-case-fall-through": false,
+        "no-var-requires": true,
+        "no-var-keyword": true,
+        "no-require-imports": true,
+        "object-literal-key-quotes": [true, "consistent-as-needed"],
+        "object-literal-sort-keys": false,
+        "ordered-imports": true,
+        "only-arrow-functions": true,
+        "one-variable-per-declaration": true,
+        "prefer-const": true,
+        "quotemark": [true, "single", "avoid-escape", "avoid-template"],
+        "semicolon": [false, "always"],
+        "trailing-comma": [
+            false,
+            {
+                "multiline": {
+                    "objects": "always",
+                    "arrays": "always",
+                    "functions": "always",
+                    "typeLiterals": "ignore"
+                }
+            }
+        ]
+    },
+
+    "cyclomatic-complexity": [true, 15],
+    "no-magic-numbers": [true, 0, 1, 2],
+    "class-name": true,
+    "typedef": [true, "call-signature", "parameter", "member-variable-declaration"],
+    "no-any": true,
+    "brace-style": [
+        true,
+        "1tbs",
+        {
+            "allowSingleLine": true
+        }
+    ],
+    "prefer-switch": true,
+    "no-invalid-this": true,
+    "triple-equals": { "options": ["allow-null-check", "allow-undefined-check"] },
+    "no-string-throw": true,
+    "promise-function-async": true,
+    "variable-name": {
+        "options": ["ban-keywords", "check-format"]
+    },
+    "ban-types": {
+        "options": [
+            ["Object", "Avoid using the `Object` type. Did you mean `object`?"],
+            ["Function", "Avoid using the `Function` type. Prefer a specific function type, like `() => void`."],
+            ["Boolean", "Avoid using the `Boolean` type. Did you mean `boolean`?"],
+            ["Number", "Avoid using the `Number` type. Did you mean `number`?"],
+            ["String", "Avoid using the `String` type. Did you mean `string`?"],
+            ["Symbol", "Avoid using the `Symbol` type. Did you mean `symbol`?"]
+        ]
+    },
+    "file-name-casing": [true, "kebab-case"],
+    "max-file-line-count": [true, 350]
+}
