@@ -9,7 +9,12 @@ import { DrawComponent } from './pages/draw/draw.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 
 
-// *************************** Pour le rooting ********************************
+// *************************** Angular Material ***************************************
+import { MaterialModule } from './material.module';
+
+
+
+// *************************** Rooting ********************************
 const routes: Routes = [
 	{ path: '', component: HomeComponent },
 	{ path: 'draw', component: DrawComponent },
@@ -23,7 +28,9 @@ const routes: Routes = [
     imports: [
         RouterModule.forRoot(routes),
         BrowserModule, 
-        HttpClientModule],
+        HttpClientModule, 
+        MaterialModule
+    ],
     providers: [],
     bootstrap: [AppComponent],
 })
