@@ -11,8 +11,8 @@ export class ResizeObserverService implements OnDestroy {
   constructor() {
     if (!ResizeObserver) {
       alert('Fureteur obsolète! Continuez à votre discrétion.');
-      // throw new Error('ResizeObserver not supported');
-      // TODO: handle this situation
+      // FIXME: Debate on how to handle this situation
+      throw new Error('ResizeObserver not supported, upgrade your browser');
     }
     this.map = new WeakMap();
     this.resizeObserver = new ResizeObserver((entries, _resizeObserver) => {

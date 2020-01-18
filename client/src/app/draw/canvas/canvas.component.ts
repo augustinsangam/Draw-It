@@ -33,10 +33,14 @@ export class CanvasComponent implements OnInit {
 
     // width attribute is NOT the same as CSS’s width proprety
     // so on resize, update the attribute with to proprety width
-    this.resizeObserverService.observe(this.hostEl.nativeElement)
-      .subscribe(resizeObserverEntry => {
+    this.resizeObserverService.observe(this.hostEl.nativeElement);
+      /*.subscribe(resizeObserverEntry => {
                  console.log(resizeObserverEntry)
-                 this.resizeCanvasEl(resizeObserverEntry.contentBoxSize)});
+                 this.resizeCanvasEl(resizeObserverEntry.contentBoxSize)});*/
+    this.resizeCanvasEl({
+      inlineSize: 1000,
+      blockSize: 1000,
+    });
   }
 
   resizeCanvasEl({inlineSize, blockSize}: ResizeObserverSize) {
