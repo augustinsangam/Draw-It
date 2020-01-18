@@ -34,16 +34,34 @@
                     margin-top: 20px;
                     margin-bottom: 30px;
         
-                    p{
-                        font-size: 22px;
+                }
+
+                #formulaire{
+
+                    #largeur{
+                        margin-right: 10px;
+                    }
+    
+                    #hauteur{
+                        margin-left: 10px;
+                    }
+
+                    ::ng-deep .mat-form-field {
+
+                        .mat-form-field-suffix {
+                            color: gray;
+                            align-self: flex-start;
+                            margin-top: 22px;
+                        }
+
                     }
 
                 }
-        
-                
+
             }
 
         }
         
     }
+    
 }
