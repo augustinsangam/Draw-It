@@ -6,8 +6,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit {
+  settings: string[];
 
-  constructor() { }
+  constructor() {
+    this.settings = [
+      "First",
+      "Second",
+      "Third",
+    ];
+  }
 
   ngOnInit() {
   }

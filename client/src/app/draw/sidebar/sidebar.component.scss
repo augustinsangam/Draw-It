@@ -1,3 +1,5 @@
+@import '@angular/material/prebuilt-themes/purple-green.css';
+
 :host {
   display: flex;
 }
@@ -5,17 +7,28 @@
 nav {
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #777;
+  background-color: #20262E;
 }
 
 a {
-  padding: 8px 10px;
+  display:block;
+  color: #FFF;
+  padding: 10px 10px 6px;
+  transition: .3s ease background-color;
+}
+
+a:last-child {
+  background-color: #FF0;
 }
 
 a:hover {
-  background-color: #333;
+  background-color: #FF1847;
 }
 
 span {
   flex-grow: 1;
+}
+
+div {
+  background-color: #2F3136;
 }

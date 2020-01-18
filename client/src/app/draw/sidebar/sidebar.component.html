@@ -2,8 +2,12 @@
   <a><mat-icon>book</mat-icon></a>
   <a><mat-icon>lock</mat-icon></a>
   <span></span>
-  <a><mat-icon>help</mat-icon></a>
+  <a routerLink="/documentation"><mat-icon>help</mat-icon></a>
 </nav>
 <div>
-  List of settings
+  <mat-selection-list #shoes>
+    <mat-list-option *ngFor="let setting of settings">
+      {{ setting }}
+    </mat-list-option>
+  </mat-selection-list>
 </div>

@@ -10,6 +10,7 @@ at the address displayed on the console.
 NAMING {{{
 	- observables end with $
 	  (angular.io/guide/rx-library#naming-conventions-for-observables)
+	- All hex values in caps
 }}}
 
 SERVER {{{
