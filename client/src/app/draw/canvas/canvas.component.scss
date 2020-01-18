@@ -1,3 +1,5 @@
 canvas {
+  /* By default, canvas is inline, so minor vertical overflow */
+  display: block;
   cursor: crosshair;
 }

@@ -9,10 +9,13 @@ nav {
 }
 
 a {
-  display: block;
   padding: 8px 10px;
 }
 
 a:hover {
   background-color: #333;
+}
+
+span {
+  flex-grow: 1;
 }

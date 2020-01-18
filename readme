@@ -34,6 +34,7 @@ IMPORTS {{{
 }}}
 
 ABBREVIATIONS {{{
+	- arg = argument
 	- cap = capacity
 	- ctx = context
 	- el = element
@@ -41,6 +42,7 @@ ABBREVIATIONS {{{
 	- idx = index
 	- len = length
 	- msg = message
+	- opt = optinal
 	- pos = position
 	- sz = size
 }}}
