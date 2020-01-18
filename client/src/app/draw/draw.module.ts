@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 
 import { CanvasComponent } from './canvas/canvas.component';
-import { DrawComponent } from './draw.component';
 import { DrawRoutingModule } from './draw-routing.module';
+import { DrawComponent } from './draw.component';
 
 @NgModule({
   declarations: [

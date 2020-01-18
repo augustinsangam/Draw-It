@@ -1,10 +1,26 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { DocumentationComponent } from './pages/documentation/documentation.component';
+import { HomeComponent } from './pages/home/home.component';
+import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
+
 const routes: Routes = [
   {
     path: 'draw',
     loadChildren: () => import('./draw/draw.module').then(m => m.DrawModule),
+  },
+  {
+    path: '',
+    component: HomeComponent,
+  },
+  {
+    path: 'documentation',
+    component: DocumentationComponent,
+  },
+  {
+    path: '**',
+    component: NotFoundPageComponent,
   },
 ];
 
