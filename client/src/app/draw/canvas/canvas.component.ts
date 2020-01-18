@@ -14,14 +14,13 @@ export class CanvasComponent implements OnInit {
   canvasEl: ElementRef<HTMLCanvasElement>;
   private canvasCtx: CanvasRenderingContext2D;
   private paths: Path2D[];
+  private heart: Path2D;
 
   constructor(private hostEl: ElementRef,
               private resizeObserverService: ResizeObserverService) {
     this.paths = new Array<Path2D>();
 
-    // TODO: Remove
-    const p = new Path2D('M10 10 h 80 v 80 h -80 Z');
-    this.paths.push(p);
+    this.heart = new Path2D('M0 200 v-200 h200 a100,100 90 0,1 0,200 a100,100 90 0,1 -200,0 z');
   }
 
   ngOnInit() {
@@ -31,8 +30,6 @@ export class CanvasComponent implements OnInit {
     } else {
       alert('Context of canvas is null');
     }
-    const p = new Path2D('M10 10 h 80 v 80 h -80 Z');
-    this.canvasCtx.fill(p);
 
     // width attribute is NOT the same as CSS’s width proprety
     // so on resize, update the attribute with to proprety width
@@ -51,6 +48,14 @@ export class CanvasComponent implements OnInit {
   }
 
   drawOnCanvas() {
+    this.canvasCtx.save();
+    this.canvasCtx.translate(this.canvasCtx.canvas.width / 2,
+                            this.canvasCtx.canvas.height / 2 + 50);
+    this.canvasCtx.rotate(-.75 * Math.PI);
+    this.canvasCtx.scale(.5, .5);
+    this.canvasCtx.fillStyle = '#'+Math.floor(Math.random()*16777215).toString(16);
+    this.canvasCtx.fill(this.heart);
+    this.canvasCtx.restore();
     for (const path of this.paths) {
       if (!!path) {
         this.canvasCtx.fill(path);
