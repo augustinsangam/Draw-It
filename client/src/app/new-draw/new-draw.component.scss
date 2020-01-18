@@ -31,19 +31,50 @@
                 #informations{
         
                     text-align: center;
-                    margin-top: 20px;
+                    // margin-top: 20px;
                     margin-bottom: 30px;
         
-                    p{
-                        font-size: 22px;
+                }
+
+                #form{
+                    
+                    ::ng-deep .mat-form-field {
+
+                        width : 400px;
+                        height: 55px;
+
+                        .mat-form-field-suffix {
+                            color: gray;
+                            align-self: flex-start;
+                            margin-top: 22px;
+                        }
+
+                    }
+                    
+                    button{
+                        width: 400px;
+                        height : 55px;
+                    }
+
+                    #largeur{
+                        margin-top: 10px;
+                        margin-bottom: 20px;
+                    }
+
+                    #hauteur{
+                        margin-bottom: 40px;
+                    }
+
+                    #couleur{
+                        margin-bottom: 60px;
                     }
 
                 }
-        
-                
+
             }
 
         }
         
     }
+    
 }
