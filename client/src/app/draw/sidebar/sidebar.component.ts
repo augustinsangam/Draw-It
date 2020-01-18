@@ -10,9 +10,9 @@ export class SidebarComponent implements OnInit {
 
   constructor() {
     this.settings = [
-      "First",
-      "Second",
-      "Third",
+      'First',
+      'Second',
+      'Third',
     ];
   }
 

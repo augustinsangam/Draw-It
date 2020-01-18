@@ -53,7 +53,8 @@ export class CanvasComponent implements OnInit {
                             this.canvasCtx.canvas.height / 2 + 50);
     this.canvasCtx.rotate(-.75 * Math.PI);
     this.canvasCtx.scale(.5, .5);
-    this.canvasCtx.fillStyle = '#'+Math.floor(Math.random()*16777215).toString(16);
+    this.canvasCtx.fillStyle = '#' + Math.floor(
+      Math.random() * 0xFFFFFF).toString(16);
     this.canvasCtx.fill(this.heart);
     this.canvasCtx.restore();
     for (const path of this.paths) {
