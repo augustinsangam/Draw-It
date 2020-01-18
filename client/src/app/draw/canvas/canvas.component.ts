@@ -38,8 +38,8 @@ export class CanvasComponent implements OnInit {
                  console.log(resizeObserverEntry)
                  this.resizeCanvasEl(resizeObserverEntry.contentBoxSize)});*/
     this.resizeCanvasEl({
-      inlineSize: 1000,
-      blockSize: 1000,
+      inlineSize: 750,
+      blockSize: 500,
     });
   }
 
@@ -53,6 +53,9 @@ export class CanvasComponent implements OnInit {
 
   drawOnCanvas() {
     this.canvasCtx.save();
+    this.canvasCtx.fillStyle = '#FFF';
+    this.canvasCtx.fillRect(
+      0, 0, this.canvasCtx.canvas.width, this.canvasCtx.canvas.height);
     this.canvasCtx.translate(this.canvasCtx.canvas.width / 2,
                             this.canvasCtx.canvas.height / 2 + 50);
     this.canvasCtx.rotate(-.75 * Math.PI);

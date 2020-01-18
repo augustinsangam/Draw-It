@@ -1,5 +1,14 @@
 :host {
+  display: grid;
+  place-items: center;
   overflow: auto;
+  // https://start.duckduckgo.com/assets/transparency-bg.jpg
+  // chrome://global/skin/media/imagedoc-lightnoise.png
+  // chrome://global/skin/media/imagedoc-lightnoise.png
+  background-image: linear-gradient(45deg,#2c2c2d 25%,rgba(44,44,45,0) 25%,rgba(44,44,45,0) 75%,#2c2c2d 75%,#2c2c2d),linear-gradient(45deg,#2c2c2d 25%,rgba(44,44,45,0) 25%,rgba(44,44,45,0) 75%,#2c2c2d 75%,#2c2c2d);
+  background-color: #232425;
+  background-position: 0 0, 10px 10px;
+  background-size: 21px 21px;
 }
 
 canvas {
