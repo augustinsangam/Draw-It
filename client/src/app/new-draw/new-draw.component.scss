@@ -27,7 +27,7 @@
                     width: 20vw;
 
                 }
-                
+
                 #informations{
         
                     text-align: center;
@@ -40,28 +40,7 @@
 
                 }
         
-                #options{
-        
-                    .option{
-
-                        display: block;
-                        margin-left: auto;
-                        margin-right: auto;
-                        width: 450px;
-                        margin-top: 20px;
-        
-                        .mat-icon {
-                            vertical-align: middle;
-                        }
-        
-                    }
-        
-                    mat-icon, span{
-                        font-size: 20px;
-                    }
-
-                }
-            
+                
             }
 
         }

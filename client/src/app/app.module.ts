@@ -7,7 +7,8 @@ import { DocumentationComponent } from './pages/documentation/documentation.comp
 import { Routes, RouterModule } from '@angular/router';
 import { DrawComponent } from './pages/draw/draw.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
-
+import { ReactiveFormsModule } from '@angular/forms';
+import { NewDrawComponent } from './new-draw/new-draw.component';
 
 // *************************** Angular Material ***************************************
 import { MaterialModule } from './material.module';
@@ -19,17 +20,26 @@ const routes: Routes = [
 	{ path: '', component: HomeComponent },
 	{ path: 'draw', component: DrawComponent },
 	{ path: 'documentation', component: DocumentationComponent },
+	{ path: 'new', component: NewDrawComponent },
 	{ path: '**', component: NotFoundPageComponent }
 ];
 
 
 @NgModule({
-    declarations: [AppComponent, HomeComponent, DocumentationComponent, DrawComponent, NotFoundPageComponent],
+    declarations: [
+        AppComponent, 
+        HomeComponent, 
+        DocumentationComponent, 
+        DrawComponent, 
+        NotFoundPageComponent,
+        NewDrawComponent
+    ],
     imports: [
         RouterModule.forRoot(routes),
         BrowserModule, 
         HttpClientModule, 
-        MaterialModule
+        MaterialModule,
+        ReactiveFormsModule
     ],
     providers: [],
     bootstrap: [AppComponent],
