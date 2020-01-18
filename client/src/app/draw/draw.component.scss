@@ -1,0 +1,12 @@
+:host {
+  display: flex;
+  height: 100vh;
+}
+
+draw-sidebar {
+  background-color: lightgray;
+}
+
+draw-canvas {
+  flex-grow: 1;
+}

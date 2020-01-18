@@ -1,0 +1,18 @@
+:host {
+  display: flex;
+}
+
+nav {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #777;
+}
+
+a {
+  display: block;
+  padding: 10px;
+}
+
+a:hover {
+  background-color: #333;
+}
