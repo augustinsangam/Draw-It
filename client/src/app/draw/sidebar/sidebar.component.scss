@@ -22,11 +22,10 @@ abbr {
 
 abbr:last-child {
   cursor: help;
-  filter: none;
   background-color: #FF0;
 }
 
-abbr:hover {
+abbr:hover, span ~ abbr {
   filter: none;
 }
 
