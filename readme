@@ -59,4 +59,10 @@ PONCTUATIONS {{{
 	- “” for quotes
 }}}
 
+HTML {{{
+	- Do not quote if number
+	- Single quote if string or spaced numbers
+	- All ‘div’ tags must be referenced by class (for CSS) or by id (for JS)
+}}}
+
 vim:fdm=marker:cc=80:tw=80:fo+=t:fo-=l
