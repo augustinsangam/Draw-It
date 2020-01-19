@@ -10,20 +10,24 @@ nav {
   background-color: #20262E;
 }
 
-a {
-  display:block;
+abbr {
+  display: block;
   color: #FFF;
-  padding: 10px 10px 6px;
-  transition: .3s ease background-color;
+  padding: 22px;
+  transition: .3s ease;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: grayscale(100%);
 }
 
-a:last-child {
+abbr:last-child {
   cursor: help;
+  filter: none;
   background-color: #FF0;
 }
 
-a:hover {
-  background-color: #FF1847;
+abbr:hover {
+  filter: none;
 }
 
 span {

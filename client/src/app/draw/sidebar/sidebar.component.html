@@ -1,12 +1,13 @@
 <nav>
-  <a><mat-icon>book</mat-icon></a>
-  <a><mat-icon>lock</mat-icon></a>
+  <abbr title='Crayon' style='background-image:url(/assets/gimp-tool-pencil.png)'></abbr>
+  <abbr title='Pinceau' style='background-image:url(/assets/gimp-tool-paintbrush.png)'></abbr>
+  <abbr title='Efface' style='background-image:url(/assets/gimp-tool-eraser.png)'></abbr>
   <span></span>
-  <a routerLink="/documentation"><mat-icon>help</mat-icon></a>
+  <abbr title='help' style='background-image:url(/assets/gimp-prefs-help-system.svg)' routerLink='/documentation'></abbr>
 </nav>
 <div>
   <mat-selection-list #shoes>
-    <mat-list-option *ngFor="let setting of settings">
+    <mat-list-option *ngFor='let setting of settings'>
       {{ setting }}
     </mat-list-option>
   </mat-selection-list>
