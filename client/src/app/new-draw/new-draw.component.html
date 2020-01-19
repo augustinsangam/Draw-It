@@ -4,27 +4,58 @@
             <div id="centered">
                 <img src="../../../assets/logo.png" alt="POLY DESSIN" />
                 <div id="informations">
-                    <h1>Créer un nouveau dessin</h1>
+                    <h1>Nouveau dessin</h1>
                 </div>
-                <div id="formulaire">
+                <form id="form" [formGroup]="form" (keyup.enter)="onSubmit()">
                     <div id="dimensions">
                         <p>Dimensions</p>
-                        <mat-form-field appearance="outline" id="largeur">
-                            <mat-label>Largeur</mat-label>
-                            <input matInput placeholder="">
-                            <span matSuffix>px</span>
-                        </mat-form-field>
-                        <mat-form-field appearance="outline" id="hauteur">
-                            <mat-label>Hauteur</mat-label>
-                            <input matInput placeholder="">
-                            <span matSuffix>px</span>
-                        </mat-form-field>
+                        <div id="largeur">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Largeur</mat-label>
+                                <input matInput formControlName="width" 
+                                                formControlGroupName="form">
+                                <span matSuffix>px</span>
+                            </mat-form-field>
+                        </div>
+                        <div id="hauteur">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Hauteur</mat-label>
+                                <input matInput formControlName="height" 
+                                                formControlGroupName="form">
+                                <span matSuffix>px</span>
+                            </mat-form-field>
+                        </div>
                     </div>
                     <div id="couleur">
                         <p>Couleur d'arrière plan</p>
-                        
+                        <mat-form-field appearance="outline">
+                            <mat-label>Couleur</mat-label>
+                            <input  matInput mccColorPickerOrigin 
+                                    formControlName="color" 
+                                    #trigger="mccColorPickerOrigin" 
+                                    formControlGroupName="form">
+                            <span matSuffix>
+                                <mcc-color-picker hideUsedColors hideButtons>
+                                    <mcc-color-picker-collection 
+                                        [label]="'Couleurs de base'" 
+                                        hideEmpty="true" 
+                                        [colors]="baseColors"
+                                        mccConnectedColorPicker 
+                                        [mccConnectedColorPickerOrigin]="trigger">
+                                    </mcc-color-picker-collection>
+                                </mcc-color-picker>
+                            </span>
+                        </mat-form-field>
                     </div>
-                </div>
+                    <div id="button">
+                        <button mat-raised-button 
+                            color="primary" 
+                            type="submit"
+                            (click)="onSubmit()">
+                            Créer
+                        </button>                        
+                    </div>
+                </form>
             </div>
         </div>
     </div>

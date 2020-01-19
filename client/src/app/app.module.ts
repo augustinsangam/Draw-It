@@ -9,6 +9,10 @@ import { DrawComponent } from './pages/draw/draw.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NewDrawComponent } from './new-draw/new-draw.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MccColorPickerModule } from 'material-community-components';
+import { FormsModule } from '@angular/forms';
+
 
 // *************************** Angular Material ***************************************
 import { MaterialModule } from './material.module';
@@ -39,7 +43,14 @@ const routes: Routes = [
         BrowserModule, 
         HttpClientModule, 
         MaterialModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
+        MccColorPickerModule.forRoot({
+            empty_color: '0000FF',
+            used_colors: ['#000000', '#FFF555']
+        }),
+        FormsModule
+
     ],
     providers: [],
     bootstrap: [AppComponent],
