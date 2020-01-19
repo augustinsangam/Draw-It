@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ScreenSize, ScreenService } from '../services/sreen/screen.service';
 
 @Component({
   selector: 'app-new-draw',
@@ -25,7 +26,9 @@ export class NewDrawComponent implements OnInit, AfterViewInit {
 
   form: FormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder   : FormBuilder,
+              private screenService : ScreenService) {
+    
     this.form = this.formBuilder.group({
       width: ['', [Validators.required]],
       height: ['', [Validators.required]],
@@ -35,6 +38,13 @@ export class NewDrawComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
 
+    const screenSize : ScreenSize= this.screenService.getCurrentSize();
+    console.log('Taille de base');
+    console.log(screenSize);
+    this.screenService.getSize().asObservable().subscribe((screenSize)=>{
+      console.log('Taille modifiée');
+      console.log(screenSize);
+    })
   }
 
   ngAfterViewInit(){
