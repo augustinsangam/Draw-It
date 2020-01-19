@@ -1,3 +1,5 @@
+// github.com/Sphinxxxx/vanilla-picker/issues/30
+
 declare module 'vanilla-picker' {
   interface Color {
     rgba: number[];
@@ -27,7 +29,17 @@ declare module 'vanilla-picker' {
     onClose?: ColorCallback;
   }
 
-  export default class Picker {
+  class Picker {
     constructor(options: Options);
+    destroy(): void;
+    // openHandler
+    // closeHandler
+    // movePopup
+    show(): boolean;
+    hide(): boolean;
+    setColor(color: string, silent: boolean): void;
+    static StyleElement(): HTMLStyleElement;
   }
+
+  export default Picker;
 }

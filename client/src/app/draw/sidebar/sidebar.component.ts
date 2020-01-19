@@ -1,4 +1,4 @@
-import { Component, ElementRef, AfterViewInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 
 import Picker from 'vanilla-picker';
 
@@ -7,12 +7,13 @@ import Picker from 'vanilla-picker';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent implements AfterViewInit {
-  @ViewChild('colorpicker', {
+export class SidebarComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('colorPicker', {
     static: false,
   })
   figureEl: ElementRef<HTMLElement>;
   settings: string[];
+  private picker: Picker;
 
   constructor() {
     this.settings = [
@@ -23,11 +24,15 @@ export class SidebarComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    new Picker({
+    this.picker = new Picker({
       parent: this.figureEl.nativeElement,
       popup: false,
       onChange: () => console.log('change'),
       onDone: () => console.log('done'),
     });
+  }
+
+  ngOnDestroy() {
+    this.picker.destroy();
   }
 }
