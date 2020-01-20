@@ -8,7 +8,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { DrawComponent } from './pages/draw/draw.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { NewDrawComponent } from './new-draw/new-draw.component';
+import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MccColorPickerModule } from 'material-community-components';
 import { FormsModule } from '@angular/forms';

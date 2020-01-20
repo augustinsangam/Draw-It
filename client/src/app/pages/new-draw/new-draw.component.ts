@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ScreenSize, ScreenService } from '../services/sreen/screen.service';
+import { ScreenSize, ScreenService } from '../../services/sreen/screen.service';
 
 @Component({
   selector: 'app-new-draw',
