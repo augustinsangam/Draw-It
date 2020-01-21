@@ -11,7 +11,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NewDrawComponent, ConfirmationDialog } from './pages/new-draw/new-draw.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MccColorPickerModule } from 'material-community-components';
-import { FormsModule } from '@angular/forms';
 
 
 // *************************** Angular Material ***************************************
