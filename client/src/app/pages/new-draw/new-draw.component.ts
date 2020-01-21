@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { ScreenSize, ScreenService } from '../../services/sreen/screen.service';
 import { Subscription } from 'rxjs';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-new-draw',
@@ -34,7 +35,9 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   userChangeSizeMannually : boolean = false;
   
   constructor(private formBuilder   : FormBuilder,
-    private screenService : ScreenService) {
+              private screenService : ScreenService,
+              private dialog : MatDialog) 
+  {
       const screenSize : ScreenSize = this.screenService.getCurrentSize();
       this.maxWidth   = screenSize.width;
       this.maxHeight  = screenSize.height;
@@ -90,14 +93,30 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onSubmit() {
-    
+    let drawInProgress = true; // On doit changer la logique plus tard
+    if (drawInProgress){
+      const dialogRef = this.dialog.open(ConfirmationDialog);
+      dialogRef.disableClose = true;
+      dialogRef.afterClosed().subscribe(result => {
+        if(result)
+          console.log('Nouveau dessin');
+        else
+          console.log('Création annulée');
+      });
+    }
   }
 
   static validatorInteger(formControl : AbstractControl){
     if( Number.isInteger(formControl.value) )
-      return null
+      return null;
     return {
       valid : true
     }
   }
 }
+
+
+@Component({
+  templateUrl : 'dialog.html'
+})
+export class ConfirmationDialog {}

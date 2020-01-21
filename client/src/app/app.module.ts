@@ -8,7 +8,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { DrawComponent } from './pages/draw/draw.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { NewDrawComponent } from './pages/new-draw/new-draw.component';
+import { NewDrawComponent, ConfirmationDialog } from './pages/new-draw/new-draw.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MccColorPickerModule } from 'material-community-components';
 import { FormsModule } from '@angular/forms';
@@ -36,7 +36,8 @@ const routes: Routes = [
         DocumentationComponent, 
         DrawComponent, 
         NotFoundPageComponent,
-        NewDrawComponent
+        NewDrawComponent,
+        ConfirmationDialog
     ],
     imports: [
         RouterModule.forRoot(routes),
@@ -49,10 +50,10 @@ const routes: Routes = [
             empty_color: '0000FF',
             used_colors: ['#000000', '#FFF555']
         }),
-        FormsModule
 
     ],
     providers: [],
+    entryComponents: [ConfirmationDialog],
     bootstrap: [AppComponent],
 })
 export class AppModule {}
