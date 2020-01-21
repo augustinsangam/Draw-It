@@ -1,16 +1,17 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { ScreenSize, ScreenService } from '../../services/sreen/screen.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-new-draw',
   templateUrl: './new-draw.component.html',
   styleUrls: ['./new-draw.component.scss']
 })
-export class NewDrawComponent implements OnInit, AfterViewInit {
+export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
 
   startColor = '#FFFFFF';
-
+  
   baseColors: string[] = [
     '#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6',
     '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D',
@@ -23,40 +24,80 @@ export class NewDrawComponent implements OnInit, AfterViewInit {
     '#FF3380', '#CCCC00', '#66E64D', '#4D80CC', '#9900B3',
     '#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF',
   ];
-
-  form: FormGroup;
-
+  
+  form        : FormGroup;
+  
+  maxWidth    : Number;
+  maxHeight   : Number;
+  
+  screenSize : Subscription;
+  userChangeSizeMannually : boolean = false;
+  
   constructor(private formBuilder   : FormBuilder,
-              private screenService : ScreenService) {
-    
+    private screenService : ScreenService) {
+      const screenSize : ScreenSize = this.screenService.getCurrentSize();
+      this.maxWidth   = screenSize.width;
+      this.maxHeight  = screenSize.height;
+
     this.form = this.formBuilder.group({
-      width: ['', [Validators.required]],
-      height: ['', [Validators.required]],
-      color: ['', [Validators.required]]
+      width: ['', [
+        Validators.required, 
+        Validators.min(1), 
+        NewDrawComponent.validatorInteger]],
+      height: ['', [
+        Validators.required, 
+        Validators.min(1), 
+        NewDrawComponent.validatorInteger]],
+      color: ['', []]
     });
+
   }
 
   ngOnInit() {
 
-    const screenSize : ScreenSize= this.screenService.getCurrentSize();
-    console.log('Taille de base');
-    console.log(screenSize);
-    this.screenService.getSize().asObservable().subscribe((screenSize)=>{
-      console.log('Taille modifiée');
-      console.log(screenSize);
-    })
-  }
+    const screenSize : ScreenSize = this.screenService.getCurrentSize();
+    this.updateFormSize(screenSize);
 
+    this.screenSize = this.screenService.getSize().subscribe((screenSize)=>{
+      this.updateFormSize(screenSize);
+    });
+  }
+  
+  ngOnDestroy(){
+    this.screenSize.unsubscribe();
+  }
+  
   ngAfterViewInit(){
     // Pour eviter une erreur spécifique.
     // On laisse le temps à la vue de s'initialiser
     setTimeout(()=>{
       this.form.patchValue({color : this.startColor});
-    }, 0)
+    }, 0);
+  }
+  
+  updateFormSize(screenSize : ScreenSize){
+    this.maxWidth   = screenSize.width;
+    this.maxHeight  = screenSize.height;
+    if(!this.userChangeSizeMannually )
+      this.form.patchValue({
+        width   : this.maxWidth,
+        height  : this.maxHeight
+      });
+  }
+
+  onDimensionsChangedByUser($event : Event){
+    this.userChangeSizeMannually = true;
   }
 
   onSubmit() {
-    console.log('submitted')
+    
   }
 
+  static validatorInteger(formControl : AbstractControl){
+    if( Number.isInteger(formControl.value) )
+      return null
+    return {
+      valid : true
+    }
+  }
 }
