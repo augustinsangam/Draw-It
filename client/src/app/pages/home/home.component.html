@@ -5,17 +5,17 @@
         <img  src="../../../assets/logo.png" 
               alt="POLY DESSIN" />
         <div id="informations">
-          <h1>Bienvenue !</h1>
-          <h3>Veuillez sélectionner un choix parmi : </h3>
+          <span class="mat-headline">Bienvenue sur DrawIt !</span>
         </div>
         <div id="options">
+          <span class="mat-h3">Veuillez sélectionner un choix parmi : </span>
           <ng-container *ngFor="let option of options">
-            <button mat-raised-button 
+            <button mat-stroked-button 
                     *ngIf="option.canDisplay" 
-                    class="option mat-elevation-z10" 
+                    class="option mat-elevation-z5" 
                     color="primary"
                     [routerLink]="option.routerLink">
-              <mat-grid-list cols="5" rowHeight="70px">
+              <mat-grid-list cols="5" rowHeight="55px">
                 <mat-grid-tile colspan="1" rowspan="1">
                   <mat-icon>{{option.icon}}</mat-icon>
                 </mat-grid-tile>

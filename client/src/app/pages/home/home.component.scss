@@ -10,7 +10,7 @@
 
         #container-central {
 
-            min-height: 100vh;
+            min-height: calc(100vh - 50px);
             display: table;
             margin: auto;
             
@@ -24,7 +24,7 @@
                     display: block;
                     margin-left: auto;
                     margin-right: auto;
-                    width: 20vw;
+                    width: 10vw;
 
                 }
                 
@@ -32,7 +32,7 @@
         
                     text-align: center;
                     margin-top: 20px;
-                    margin-bottom: 30px;
+                    margin-bottom: 50px;
         
                     p{
                         font-size: 22px;
@@ -41,6 +41,8 @@
                 }
         
                 #options{
+
+                    text-align: center;
         
                     .option{
 
@@ -57,7 +59,11 @@
                     }
         
                     mat-icon, span{
-                        font-size: 20px;
+                        font-size: 18px;
+                    }
+
+                    button {
+                        border-radius: 40px;
                     }
 
                 }
