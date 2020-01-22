@@ -1,35 +1,29 @@
-<div id="wrapper">
-  <div id="container" class="mat-elevation-z24">
-    <div id="container-central">
-      <div id="centered">
-        <img  src="../../../assets/logo.png" 
-              alt="POLY DESSIN" />
-        <div id="informations">
-          <span class="mat-headline">Bienvenue sur DrawIt !</span>
-        </div>
-        <div id="options">
-          <span class="mat-h3">Veuillez sélectionner un choix parmi : </span>
-          <ng-container *ngFor="let option of options">
-            <button mat-stroked-button 
-                    *ngIf="option.canDisplay" 
-                    class="option mat-elevation-z5" 
-                    color="primary"
-                    [routerLink]="option.routerLink">
-              <mat-grid-list cols="5" rowHeight="55px">
-                <mat-grid-tile colspan="1" rowspan="1">
-                  <mat-icon>{{option.icon}}</mat-icon>
-                </mat-grid-tile>
-                <mat-grid-tile colspan="3" rowspan="1">
-                  <span>{{option.message}}</span>
-                </mat-grid-tile>
-                <mat-grid-tile colspan="1" rowspan="1">
-                  <mat-icon>chevron_right</mat-icon>
-                </mat-grid-tile>
-              </mat-grid-list>
-            </button>
-          </ng-container>
-        </div>
-      </div>
-    </div>
+<main>
+  <img  src='../../../assets/logo.png'
+        alt='POLY DESSIN' />
+  <div id='informations'>
+    <span class='mat-headline'>Bienvenue sur DrawIt !</span>
   </div>
-</div>
+  <div id='options'>
+    <span class='mat-h3'>Veuillez sélectionner un choix parmi:</span>
+    <ng-container *ngFor='let option of options'>
+      <button mat-stroked-button
+              *ngIf='option.canDisplay'
+              class='option mat-elevation-z5'
+              color='primary'
+              [routerLink]='option.routerLink'>
+        <mat-grid-list cols='5' rowHeight='55px'>
+          <mat-grid-tile colspan='1' rowspan='1'>
+            <mat-icon>{{ option.icon }}</mat-icon>
+          </mat-grid-tile>
+          <mat-grid-tile colspan='3' rowspan='1'>
+            <span>{{ option.message }}</span>
+          </mat-grid-tile>
+          <mat-grid-tile colspan='1' rowspan='1'>
+            <mat-icon>chevron_right</mat-icon>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </button>
+    </ng-container>
+  </div>
+</main>
