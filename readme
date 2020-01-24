@@ -2,10 +2,15 @@ DESCRIPTION
 Before commiting changes, format and check the code with ‘npm run lint’, and run
 the tests with ‘npm t’. NO WARNINGS PERMITTED!
 
-SERVER
-When developing on the backend, first start by running ‘npm run watch’ to watch
-changes on TypeScript. To run the server, use ‘npm start’ and open your browser
-at the address displayed on the console.
+SERVER {{{
+	When developing on the backend, start the server with ‘npm start’ and watch
+	for code changes with ‘npm run watch’. Then open your browser at the address
+	displayed on the console.
+	- npm i nodemon
+	- npm i -D typescript eslint @typescript-eslint/parser
+	  @typescript-eslint/eslint-plugin prettier eslint-config-prettier
+	  eslint-plugin-prettier
+}}}
 
 NAMING {{{
 	- observables end with $

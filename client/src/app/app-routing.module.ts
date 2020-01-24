@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { DocumentationComponent } from './pages/documentation/documentation.component';
 import { HomeComponent } from './pages/home/home.component';
+import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 
 const routes: Routes = [
@@ -13,6 +14,10 @@ const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
+  },
+  {
+    path: 'new',
+    component: NewDrawComponent,
   },
   {
     path: 'documentation',
