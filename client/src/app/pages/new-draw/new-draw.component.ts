@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material';
 import { Subscription } from 'rxjs';
 
 import { ScreenService, ScreenSize } from '../../services/sreen/screen.service';
+import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 
 @Component({
   selector: 'app-new-draw',
@@ -31,6 +32,15 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   screenSize: Subscription;
   userChangeSizeMannually = false;
 
+  static validatorInteger(formControl: AbstractControl) {
+    if (Number.isInteger(formControl.value)) {
+      return null;
+    }
+    return {
+      valid: true,
+    }
+  }
+
   constructor(private formBuilder: FormBuilder,
               private screenService: ScreenService,
               private dialog: MatDialog) {
@@ -54,9 +64,8 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
     const screenSize = this.screenService.getCurrentSize();
     this.updateFormSize(screenSize);
 
-    this.screenSize = this.screenService.getSize().subscribe(screenSize => {
-      this.updateFormSize(screenSize);
-    });
+    this.screenSize = this.screenService.getSize().subscribe(
+        screenSizeParam => this.updateFormSize(screenSizeParam));
   }
 
   ngOnDestroy() {
@@ -91,7 +100,7 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
     // TODO: On doit changer la logique plus tard
     const drawInProgress = true;
     if (drawInProgress) {
-      const dialogRef = this.dialog.open(ConfirmationDialog);
+      const dialogRef = this.dialog.open(ConfirmationDialogComponent);
       dialogRef.disableClose = true;
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
@@ -102,18 +111,4 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }
   }
-
-  static validatorInteger(formControl: AbstractControl) {
-    if (Number.isInteger(formControl.value)) {
-      return null;
-    }
-    return {
-      valid: true,
-    }
-  }
 }
-
-@Component({
-  templateUrl: 'dialog.html'
-})
-export class ConfirmationDialog {}

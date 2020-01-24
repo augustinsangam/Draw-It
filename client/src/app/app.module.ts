@@ -10,13 +10,14 @@ import { AppComponent } from './components/app/app.component';
 import { MaterialModule } from './material.module';
 import { DocumentationComponent } from './pages/documentation/documentation.component';
 import { HomeComponent } from './pages/home/home.component';
-import { ConfirmationDialog, NewDrawComponent } from './pages/new-draw/new-draw.component';
+import { ConfirmationDialogComponent } from './pages/new-draw/confirmation-dialog.component';
+import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ConfirmationDialog,
+    ConfirmationDialogComponent,
     DocumentationComponent,
     HomeComponent,
     NewDrawComponent,
@@ -33,7 +34,7 @@ import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.com
   ],
   providers: [],
   entryComponents: [
-    ConfirmationDialog,
+    ConfirmationDialogComponent,
   ],
   bootstrap: [
     AppComponent,
