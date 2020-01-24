@@ -1,81 +1,65 @@
-<div id="wrapper">
-    <div id="container" class="mat-elevation-z24">
-        <div id="container-central">
-            <div id="centered">
-                <img src="../../../assets/logo.png" alt="POLY DESSIN" />
-                <div id="informations">
-                    <h1>Nouveau dessin</h1>
-                </div>
-                <form id="form" [formGroup]="form" (keyup.enter)="onSubmit()">
-                    <div id="dimensions">
-                        <p>Dimensions</p>
-                        <div id="largeur">
-                            <mat-form-field appearance="outline">
-                                <mat-label>Largeur</mat-label>
-                                <input matInput formControlName="width" 
-                                                formControlGroupName="form" 
-                                                type="number"
-                                                
-                                                (input)="onDimensionsChangedByUser($event)">
-                                <span matSuffix>px</span>
-                                <mat-hint>
-                                    Largeur de l'écran : {{maxWidth}} pixels.
-                                </mat-hint>
-                            </mat-form-field>
-                        </div>
-                        <div id="hauteur">
-                            <mat-form-field appearance="outline">
-                                <mat-label>Hauteur</mat-label>
-                                <input matInput formControlName="height" 
-                                                formControlGroupName="form" 
-                                                type="number"
-                                               
-                                                (input)="onDimensionsChangedByUser($event)">
-                                <span matSuffix>px</span>
-                                <mat-hint>
-                                    Hauteur de l'écran : {{maxHeight}} pixels.
-                                </mat-hint>
-                            </mat-form-field>
-                        </div>
-                    </div>
-                    <div id="couleur">
-                        <p>Couleur d'arrière plan</p>
-                        <mat-form-field appearance="outline">
-                            <mat-label>Couleur</mat-label>
-                            <input  matInput mccColorPickerOrigin 
-                                    formControlName="color" 
-                                    #trigger="mccColorPickerOrigin" 
-                                    formControlGroupName="form"
-                                    readonly
-                                    >
-                                    <span matSuffix>
-                                        <mcc-color-picker hideUsedColors hideButtons>
-                                            <mcc-color-picker-collection 
-                                            [label]="'Couleurs de base'" 
-                                            hideEmpty="true" 
-                                            [colors]="baseColors"
-                                            mccConnectedColorPicker 
-                                            [mccConnectedColorPickerOrigin]="trigger">
-                                        </mcc-color-picker-collection>
-                                        </mcc-color-picker>
-                                    </span>
-                                    <mat-hint id="colorValid">
-                                        Utiliser la palette pour changer de couleur
-                                    </mat-hint>
-                        </mat-form-field>
-                    </div>
-                    <div id="button">
-                        <button mat-raised-button 
-                            color="primary" 
-                            type="submit"
-                            (click)="onSubmit()"
-                            [disabled]="form.invalid"
-                            >
-                            Créer
-                        </button>                        
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+<main>
+  <img src="/assets/logo.png" alt="POLY DESSIN" />
+  <div id="informations">
+    <h1>Nouveau dessin</h1>
+  </div>
+  <form id="form" [formGroup]="form" (keyup.enter)="onSubmit()">
+    <h4>Dimensions</h4>
+    <mat-form-field appearance="outline">
+      <mat-label>Largeur</mat-label>
+      <input matInput formControlName="width"
+                      formControlGroupName="form"
+                      type="number"
+
+                      (input)="onDimensionsChangedByUser($event)">
+      <span matSuffix>px</span>
+      <mat-hint>
+        Largeur de l’écran: {{ maxWidth }} pixels.
+      </mat-hint>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Hauteur</mat-label>
+      <input matInput formControlName="height"
+                      formControlGroupName="form"
+                      type="number"
+
+                      (input)="onDimensionsChangedByUser($event)">
+      <span matSuffix>px</span>
+      <mat-hint>
+        Hauteur de l’écran: {{ maxHeight }} pixels.
+      </mat-hint>
+    </mat-form-field>
+    <h4>Couleur d'arrière plan</h4>
+    <mat-form-field appearance="outline">
+      <mat-label>Couleur</mat-label>
+      <input  matInput mccColorPickerOrigin
+              formControlName="color"
+              #trigger="mccColorPickerOrigin"
+              formControlGroupName="form"
+              readonly
+              >
+              <span matSuffix>
+                <mcc-color-picker hideUsedColors hideButtons>
+                  <mcc-color-picker-collection
+                    [label]="'Couleurs de base'"
+                    hideEmpty="true"
+                    [colors]="baseColors"
+                    mccConnectedColorPicker
+                    [mccConnectedColorPickerOrigin]="trigger">
+                  </mcc-color-picker-collection>
+                </mcc-color-picker>
+              </span>
+              <mat-hint id="colorValid">
+                Utiliser la palette pour changer de couleur
+              </mat-hint>
+    </mat-form-field>
+    <button mat-raised-button
+            color="primary"
+            type="submit"
+            (click)="onSubmit()"
+            [disabled]="form.invalid"
+            >
+            Créer
+    </button>
+  </form>
+</main>
