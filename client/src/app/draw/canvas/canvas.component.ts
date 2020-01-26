@@ -1,73 +1,46 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { fromEvent, merge, Observable } from 'rxjs';
+import { distinctUntilChanged, filter, groupBy, map, mergeAll } from 'rxjs/operators';
 
-import { ResizeObserverService, ResizeObserverSize } from '../../resize-observer.service';
+import { KeyboardEv, MouseEv, SharedEvents } from '../utils';
 
 @Component({
   selector: 'draw-canvas',
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss']
 })
-export class CanvasComponent implements OnInit {
-  @ViewChild('canvas', {
-    static: true,
+export class CanvasComponent implements AfterViewInit {
+  @ViewChild('sandbox', {
+    static: false,
   })
-  canvasEl: ElementRef<HTMLCanvasElement>;
-  private canvasCtx: CanvasRenderingContext2D;
-  private paths: Path2D[];
-  private heart: Path2D;
+  sandbox: ElementRef<HTMLCanvasElement>;
+  sharedEvents: SharedEvents;
 
-  constructor(private hostEl: ElementRef,
-              private resizeObserverService: ResizeObserverService) {
-    this.paths = new Array<Path2D>();
-
-    this.heart = new Path2D('M0 200 v-200 h200 a100,100 90 0,1 0,200 a100,100 90 0,1 -200,0 z');
+  constructor() {
+    this.sharedEvents = {
+      keyboardEv$$: new Array<Observable<KeyboardEvent>>(KeyboardEv._Len),
+      mouseEv$$: new Array<Observable<MouseEvent>>(MouseEv._Len),
+    };
   }
 
-  ngOnInit() {
-    const canvasCtx = this.canvasEl.nativeElement.getContext('2d');
-    if (!!canvasCtx) {
-      this.canvasCtx = canvasCtx;
-    } else {
-      alert('Context of canvas is null');
-    }
+  ngAfterViewInit() {
+    this.sharedEvents.keyboardEv$$[KeyboardEv.Down] =
+      fromEvent<KeyboardEvent>(this.sandbox.nativeElement, 'keydown')
+    this.sharedEvents.keyboardEv$$[KeyboardEv.Up] =
+      fromEvent<KeyboardEvent>(this.sandbox.nativeElement, 'keyup');
+    this.sharedEvents.mouseEv$$[MouseEv.Down] =
+      fromEvent<MouseEvent>(this.sandbox.nativeElement, 'mousedown');
+    this.sharedEvents.mouseEv$$[MouseEv.Move] =
+      fromEvent<MouseEvent>(this.sandbox.nativeElement, 'mousemove');
+    this.sharedEvents.mouseEv$$[MouseEv.Up] =
+      fromEvent<MouseEvent>(this.sandbox.nativeElement, 'mouseup');
 
-    // width attribute is NOT the same as CSS’s width proprety
-    // so on resize, update the attribute with to proprety width
-    this.resizeObserverService.observe(this.hostEl.nativeElement);
-      /*.subscribe(resizeObserverEntry => {
-                 console.log(resizeObserverEntry)
-                 this.resizeCanvasEl(resizeObserverEntry.contentBoxSize)});*/
-    this.resizeCanvasEl({
-      inlineSize: 750,
-      blockSize: 500,
-    });
-  }
+    merge(this.sharedEvents.keyboardEv$$[KeyboardEv.Up],
+         this.sharedEvents.keyboardEv$$[KeyboardEv.Down]).pipe(
+      filter(ev => !this.keys.has(ev.key)),
+      groupBy(ev => ev.key),
+      map(group => group.pipe(distinctUntilChanged(null, ev => ev.type))),
+      mergeAll());
 
-  resizeCanvasEl({inlineSize, blockSize}: ResizeObserverSize) {
-    console.log(`${inlineSize} ${blockSize}`);
-    this.canvasCtx.canvas.width = inlineSize;
-    this.canvasCtx.canvas.height = blockSize;
-    // Resizing canvas clear its content, so re-draw it
-    this.drawOnCanvas();
-  }
-
-  drawOnCanvas() {
-    this.canvasCtx.save();
-    this.canvasCtx.fillStyle = '#FFF';
-    this.canvasCtx.fillRect(
-      0, 0, this.canvasCtx.canvas.width, this.canvasCtx.canvas.height);
-    this.canvasCtx.translate(this.canvasCtx.canvas.width / 2,
-                            this.canvasCtx.canvas.height / 2 + 50);
-    this.canvasCtx.rotate(-.75 * Math.PI);
-    this.canvasCtx.scale(.5, .5);
-    this.canvasCtx.fillStyle = '#' + Math.floor(
-      Math.random() * 0xFFFFFF).toString(16);
-    this.canvasCtx.fill(this.heart);
-    this.canvasCtx.restore();
-    for (const path of this.paths) {
-      if (!!path) {
-        this.canvasCtx.fill(path);
-      }
-    }
   }
 }

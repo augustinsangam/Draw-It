@@ -6,6 +6,17 @@
 draw-sidebar {
 }
 
+draw-panel {
+  overflow-x: hidden;
+  max-width: 999px; /* Valeur extrême */
+  transition: 1s linear max-width;
+  background-color: #2F3136;
+}
+
+.hide {
+  max-width: 0;
+}
+
 draw-canvas {
   flex-grow: 1;
 }

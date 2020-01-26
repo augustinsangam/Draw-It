@@ -2,15 +2,11 @@
 
 :host {
   display: flex;
-}
-
-nav {
-  display: flex;
   flex-direction: column;
   background-color: #20262E;
 }
 
-abbr {
+.btn {
   display: block;
   color: #FFF;
   padding: 22px;
@@ -20,19 +16,15 @@ abbr {
   filter: grayscale(100%);
 }
 
-abbr:last-child {
+.btn:last-child {
   cursor: help;
   background-color: #FF0;
 }
 
-abbr:hover, span ~ abbr {
+.btn:hover, span ~ .btn {
   filter: none;
 }
 
 span {
   flex-grow: 1;
-}
-
-div {
-  background-color: #2F3136;
 }

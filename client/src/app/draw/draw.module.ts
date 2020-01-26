@@ -6,12 +6,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { CanvasComponent } from './canvas/canvas.component';
 import { DrawRoutingModule } from './draw-routing.module';
 import { DrawComponent } from './draw.component';
+import { PanelComponent } from './panel/panel.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
     CanvasComponent,
     DrawComponent,
+    PanelComponent,
     SidebarComponent,
   ],
   imports: [

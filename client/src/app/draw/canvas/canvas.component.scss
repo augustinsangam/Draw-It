@@ -1,6 +1,6 @@
 :host {
   display: grid;
-  place-items: center;
+  // place-items: center;
   overflow: auto;
   // https://start.duckduckgo.com/assets/transparency-bg.jpg
   // chrome://global/skin/media/imagedoc-lightnoise.png
@@ -12,8 +12,9 @@
   background-size: 21px 21px;
 }
 
-canvas {
+svg {
   /* By default, canvas is inline, so minor vertical overflow */
   display: block;
   cursor: crosshair; // or cell
+  background-color: white; // TODO: Replace by dynamic background color
 }
