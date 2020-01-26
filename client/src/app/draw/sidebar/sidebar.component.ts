@@ -6,13 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent {
-  tools: Tool[];
+  @Output() sharedEvents = new EventEmitter<>();
 
   constructor() {
   }
-}
-
-interface Tool {
-  name: string;
-  image: string;
 }

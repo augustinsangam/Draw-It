@@ -8,6 +8,8 @@ import { DrawRoutingModule } from './draw-routing.module';
 import { DrawComponent } from './draw.component';
 import { PanelComponent } from './panel/panel.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { ToolComponent } from './tool/tool.component';
+import { PencilComponent } from './tool/pencil/pencil.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +17,8 @@ import { SidebarComponent } from './sidebar/sidebar.component';
     DrawComponent,
     PanelComponent,
     SidebarComponent,
+    ToolComponent,
+    PencilComponent,
   ],
   imports: [
     CommonModule,

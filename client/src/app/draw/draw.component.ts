@@ -1,5 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 
+import SharedEvents from './shared-events';
+
 @Component({
   selector: 'app-draw',
   templateUrl: './draw.component.html',
@@ -10,6 +12,7 @@ export class DrawComponent implements AfterViewInit {
     static: false,
   })
   panel: ElementRef<HTMLElement>;
+  sharedEvents: SharedEvents;
   toggle: boolean;
 
   constructor() {
@@ -17,6 +20,6 @@ export class DrawComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-
+    console.log(this.sharedEvents);
   }
 }

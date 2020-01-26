@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { fromEvent, merge, Observable } from 'rxjs';
-import { distinctUntilChanged, filter, groupBy, map, mergeAll } from 'rxjs/operators';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Output, ViewChild }
+  from '@angular/core';
+import { fromEvent, Observable } from 'rxjs';
 
-import { KeyboardEv, MouseEv, SharedEvents } from '../utils';
+import SharedEvents, { KeyboardEv, MouseEv } from '../shared-events';
 
 @Component({
   selector: 'draw-canvas',
@@ -14,33 +14,40 @@ export class CanvasComponent implements AfterViewInit {
     static: false,
   })
   sandbox: ElementRef<HTMLCanvasElement>;
-  sharedEvents: SharedEvents;
+  @Output() sharedEvents = new EventEmitter<SharedEvents>();
 
-  constructor() {
-    this.sharedEvents = {
-      keyboardEv$$: new Array<Observable<KeyboardEvent>>(KeyboardEv._Len),
-      mouseEv$$: new Array<Observable<MouseEvent>>(MouseEv._Len),
-    };
-  }
+  constructor() {}
 
   ngAfterViewInit() {
-    this.sharedEvents.keyboardEv$$[KeyboardEv.Down] =
+    const keyboardEv$$ = new Array<Observable<KeyboardEvent>>(KeyboardEv._Len);
+    const mouseEv$$ = new Array<Observable<MouseEvent>>(MouseEv._Len);
+
+    keyboardEv$$[KeyboardEv.Down] =
       fromEvent<KeyboardEvent>(this.sandbox.nativeElement, 'keydown')
-    this.sharedEvents.keyboardEv$$[KeyboardEv.Up] =
+    keyboardEv$$[KeyboardEv.Up] =
       fromEvent<KeyboardEvent>(this.sandbox.nativeElement, 'keyup');
-    this.sharedEvents.mouseEv$$[MouseEv.Down] =
+    mouseEv$$[MouseEv.Down] =
       fromEvent<MouseEvent>(this.sandbox.nativeElement, 'mousedown');
-    this.sharedEvents.mouseEv$$[MouseEv.Move] =
+    mouseEv$$[MouseEv.Move] =
       fromEvent<MouseEvent>(this.sandbox.nativeElement, 'mousemove');
-    this.sharedEvents.mouseEv$$[MouseEv.Up] =
+    mouseEv$$[MouseEv.Up] =
       fromEvent<MouseEvent>(this.sandbox.nativeElement, 'mouseup');
 
-    merge(this.sharedEvents.keyboardEv$$[KeyboardEv.Up],
-         this.sharedEvents.keyboardEv$$[KeyboardEv.Down]).pipe(
-      filter(ev => !this.keys.has(ev.key)),
-      groupBy(ev => ev.key),
-      map(group => group.pipe(distinctUntilChanged(null, ev => ev.type))),
-      mergeAll());
+    this.sharedEvents.emit({
+      keyboardEv$$: keyboardEv$$,
+      mouseEv$$: mouseEv$$,
+    });
 
+    // stackoverflow.com/a/41177163
+    // stackoverflow.com/a/55474483
+    // stackoverflow.com/a/44186764
+    /*
+import { distinctUntilChanged, filter, groupBy, map, mergeAll } from 'rxjs/operators';
+      merge(this.sharedEvents.keyboardEv$$[KeyboardEv.Up],
+         this.sharedEvents.keyboardEv$$[KeyboardEv.Down]).pipe(
+      filter(() => true), // !this.keys.has(ev.key)),
+      groupBy(ev => ev.key),
+      map(group => group.pipe(distinctUntilChanged((x, y) => x.type == y.type))),
+      mergeAll()).subscribe(a => console.log(a));*/
   }
 }

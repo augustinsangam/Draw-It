@@ -13,7 +13,7 @@ export enum MouseEv {
   _Len,
 }
 
-export interface SharedEvents {
+export default interface SharedEvents {
   keyboardEv$$: Observable<KeyboardEvent>[],
   mouseEv$$: Observable<MouseEvent>[],
 }
