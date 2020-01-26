@@ -1,6 +1,9 @@
-<div class="btn" title="Crayon"  style="background-image:url(/assets/gimp-tool-pencil.png)"></div>
-<div class="btn" title="Pinceau" style="background-image:url(/assets/gimp-tool-paintbrush.png)"></div>
-<div class="btn" title="Efface"  style="background-image:url(/assets/gimp-tool-eraser.png)"></div>
+<a title="Crayon"  (click)="selectPencil($event)"
+   style="background-image:url(/assets/gimp-tool-pencil.png)"></a>
+<a title="Pinceau" (click)="selectBrush($event)"
+   style="background-image:url(/assets/gimp-tool-paintbrush.png)"></a>
+<a title="Efface"  (click)="selectEraser($event)"
+   style="background-image:url(/assets/gimp-tool-eraser.png)"></a>
 <span></span>
-<div class="btn" title="Exporter" style="background-image:url(/assets/gimp-prefs-import-export.png)"></div>
-<div class="btn" title="Aide"     style="background-image:url(/assets/gimp-prefs-help-system.svg)" routerLink="/documentation"></div>
+<a title="Exporter" style="background-image:url(/assets/gimp-prefs-import-export.png)"></a>
+<a title="Aide"     style="background-image:url(/assets/gimp-prefs-help-system.svg)" routerLink="/documentation"></a>

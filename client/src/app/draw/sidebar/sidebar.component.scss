@@ -6,7 +6,7 @@
   background-color: #20262E;
 }
 
-.btn {
+a {
   display: block;
   color: #FFF;
   padding: 22px;
@@ -16,12 +16,12 @@
   filter: grayscale(100%);
 }
 
-.btn:last-child {
+a:last-child {
   cursor: help;
   background-color: #FF0;
 }
 
-.btn:hover, span ~ .btn {
+a:hover, .selected, span ~ a {
   filter: none;
 }
 
