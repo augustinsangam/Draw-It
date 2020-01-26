@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Output, ViewChild }
-  from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Output,
+  ViewChild } from '@angular/core';
 import { fromEvent, Observable } from 'rxjs';
 
 import SharedEvents, { KeyboardEv, MouseEv } from '../shared-events';
@@ -12,11 +12,12 @@ import SharedEvents, { KeyboardEv, MouseEv } from '../shared-events';
 export class CanvasComponent implements AfterViewInit {
   @ViewChild('sandbox', {
     static: false,
-  })
-  sandbox: ElementRef<HTMLCanvasElement>;
-  @Output() sharedEvents = new EventEmitter<SharedEvents>();
+  }) sandbox: ElementRef<HTMLCanvasElement>;
+  @Output() sharedEvents: EventEmitter<SharedEvents>;
 
-  constructor() {}
+  constructor() {
+    this.sharedEvents = new EventEmitter<SharedEvents>();
+  }
 
   ngAfterViewInit() {
     const keyboardEv$$ = new Array<Observable<KeyboardEvent>>(KeyboardEv._Len);
@@ -34,8 +35,8 @@ export class CanvasComponent implements AfterViewInit {
       fromEvent<MouseEvent>(this.sandbox.nativeElement, 'mouseup');
 
     this.sharedEvents.emit({
-      keyboardEv$$: keyboardEv$$,
-      mouseEv$$: mouseEv$$,
+      keyboardEv$$,
+      mouseEv$$,
     });
 
     // stackoverflow.com/a/41177163

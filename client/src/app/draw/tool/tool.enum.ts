@@ -3,4 +3,5 @@ export enum Tool {
   Pencil,
   //
   Eraser,
+  _Len,
 }

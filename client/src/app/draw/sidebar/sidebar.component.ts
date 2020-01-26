@@ -8,22 +8,24 @@ import { Tool } from '../tool/tool.enum';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent {
-  @Output() sharedEvents = new EventEmitter<Tool>();
-  private selectedTool: Tool;
+  @Output() selectedTool: EventEmitter<Tool>;
+  private selectedToolLocal: Tool;
   private selectedElDOMTokenList: DOMTokenList;
 
   constructor() {
+    this.selectedTool = new EventEmitter<Tool>();
   }
 
   selectTool(tool: Tool, {classList}: HTMLElement) {
-    if (this.selectedTool != tool) {
-      this.selectedTool = tool;
+    if (this.selectedToolLocal !== tool) {
+      this.selectedToolLocal = tool;
       // TODO: TypeScript 3.7: this.selectedElDOMTokenList?.remove(…)
       if (!!this.selectedElDOMTokenList) {
         this.selectedElDOMTokenList.remove('selected');
       }
       classList.add('selected');
       this.selectedElDOMTokenList = classList;
+      this.selectedTool.emit(tool);
     }
   }
 

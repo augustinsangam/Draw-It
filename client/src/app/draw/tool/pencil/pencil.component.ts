@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+
+import { ToolComponent } from '../tool.component';
 
 @Component({
   selector: 'app-pencil',
   templateUrl: './pencil.component.html',
   styleUrls: ['./pencil.component.scss']
 })
-export class PencilComponent implements OnInit {
+export class PencilComponent extends ToolComponent {
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor() {
+    super();
   }
-
 }

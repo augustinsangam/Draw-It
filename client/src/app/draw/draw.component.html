@@ -1,3 +1,3 @@
-<draw-sidebar></draw-sidebar>
+<draw-sidebar (selectedTool)="selectTool($event)"></draw-sidebar>
 <draw-panel #panel [ngClass]="{'hide': toggle}"></draw-panel>
 <draw-canvas (sharedEvents)="sharedEvents = $event"></draw-canvas>

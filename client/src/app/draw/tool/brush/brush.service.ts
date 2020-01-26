@@ -8,7 +8,7 @@ import { ToolService } from '../tool.service';
 @Injectable({
   providedIn: 'root'
 })
-export class PencilService extends ToolService {
+export class BrushService extends ToolService {
 
   constructor() {
     super();
@@ -18,7 +18,7 @@ export class PencilService extends ToolService {
     this.ngUnsubscribe = new Subject();
     sharedEvents.mouseEv$$[MouseEv.Down].pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(mouseEv => {
-        console.log('Pencil: ' + mouseEv.button);
+        console.log('Brush: ' + mouseEv.button);
       });
   }
 }
