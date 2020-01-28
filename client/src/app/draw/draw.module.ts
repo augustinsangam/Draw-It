@@ -8,8 +8,12 @@ import { DrawRoutingModule } from './draw-routing.module';
 import { DrawComponent } from './draw.component';
 import { PanelComponent } from './panel/panel.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { PencilComponent } from './tool/pencil/pencil.component';
-import { ToolComponent } from './tool/tool.component';
+import { ToolPanelComponent } from './tool/tool-panel/tool-panel.component';
+import { ToolLogicComponent } from './tool/tool-logic/tool-logic.component';
+import { BrushPanelComponent } from './tool/brush/brush-panel/brush-panel.component';
+import { BrushLogicComponent } from './tool/brush/brush-logic/brush-logic.component';
+import { PencilLogicComponent } from './tool/pencil/pencil-logic/pencil-logic.component';
+import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.component';
 
 @NgModule({
   declarations: [
@@ -17,8 +21,12 @@ import { ToolComponent } from './tool/tool.component';
     DrawComponent,
     PanelComponent,
     SidebarComponent,
-    ToolComponent,
-    PencilComponent,
+    ToolPanelComponent,
+    ToolLogicComponent,
+    BrushPanelComponent,
+    BrushLogicComponent,
+    PencilLogicComponent,
+    PencilPanelComponent,
   ],
   imports: [
     CommonModule,

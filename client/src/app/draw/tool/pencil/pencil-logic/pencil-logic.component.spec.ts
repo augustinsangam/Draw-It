@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PencilComponent } from './pencil.component';
+import { PencilLogicComponent } from './pencil-logic.component';
 
-describe('PencilComponent', () => {
-  let component: PencilComponent;
-  let fixture: ComponentFixture<PencilComponent>;
+describe('PencilLogicComponent', () => {
+  let component: PencilLogicComponent;
+  let fixture: ComponentFixture<PencilLogicComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PencilComponent ]
+      declarations: [ PencilLogicComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PencilComponent);
+    fixture = TestBed.createComponent(PencilLogicComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

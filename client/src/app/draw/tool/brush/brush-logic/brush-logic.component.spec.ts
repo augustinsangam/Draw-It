@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ToolComponent } from './tool.component';
+import { BrushLogicComponent } from './brush-logic.component';
 
-describe('ToolComponent', () => {
-  let component: ToolComponent;
-  let fixture: ComponentFixture<ToolComponent>;
+describe('BrushLogicComponent', () => {
+  let component: BrushLogicComponent;
+  let fixture: ComponentFixture<BrushLogicComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ToolComponent ]
+      declarations: [ BrushLogicComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ToolComponent);
+    fixture = TestBed.createComponent(BrushLogicComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
