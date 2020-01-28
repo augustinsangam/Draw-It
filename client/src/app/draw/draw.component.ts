@@ -11,7 +11,7 @@ export class DrawComponent implements AfterViewInit {
   @ViewChild('panel', {
     static: false,
   }) panel: ElementRef<HTMLElement>;
-  selectedTool: Tool;
+  tool: Tool;
   toggle: boolean;
 
   constructor() {
@@ -21,6 +21,7 @@ export class DrawComponent implements AfterViewInit {
   }
 
   selectTool(tool: Tool) {
-    this.selectedTool = tool;
+    this.tool = tool;
+    console.log('Tool selected is ' + tool);
   }
 }

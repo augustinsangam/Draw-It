@@ -12,5 +12,6 @@ export class BrushPanelComponent extends ToolPanelComponent {
 
   constructor(private readonly service: BrushService) {
     super();
+    console.log(this.service);
   }
 }

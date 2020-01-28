@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   templateUrl: './tool-logic.component.html',
   styleUrls: ['./tool-logic.component.scss']
 })
-export class ToolLogicComponent {
+export abstract class ToolLogicComponent {
 
   constructor() { }
 }

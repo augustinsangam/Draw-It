@@ -12,5 +12,6 @@ export class PencilPanelComponent extends ToolPanelComponent {
 
   constructor(private readonly service: PencilService) {
     super();
+    console.log(this.service);
   }
 }

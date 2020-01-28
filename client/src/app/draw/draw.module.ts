@@ -12,8 +12,6 @@ import { BrushLogicComponent } from './tool/brush/brush-logic/brush-logic.compon
 import { BrushPanelComponent } from './tool/brush/brush-panel/brush-panel.component';
 import { PencilLogicComponent } from './tool/pencil/pencil-logic/pencil-logic.component';
 import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.component';
-import { ToolLogicComponent } from './tool/tool-logic/tool-logic.component';
-import { ToolPanelComponent } from './tool/tool-panel/tool-panel.component';
 
 @NgModule({
   declarations: [
@@ -21,8 +19,12 @@ import { ToolPanelComponent } from './tool/tool-panel/tool-panel.component';
     DrawComponent,
     PanelComponent,
     SidebarComponent,
-    ToolPanelComponent,
-    ToolLogicComponent,
+    BrushPanelComponent,
+    BrushLogicComponent,
+    PencilLogicComponent,
+    PencilPanelComponent,
+  ],
+  entryComponents: [
     BrushPanelComponent,
     BrushLogicComponent,
     PencilLogicComponent,

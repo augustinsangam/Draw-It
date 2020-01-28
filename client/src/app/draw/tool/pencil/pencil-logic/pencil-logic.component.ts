@@ -12,5 +12,6 @@ export class PencilLogicComponent extends ToolLogicComponent {
 
   constructor(private readonly service: PencilService) {
     super();
+    console.log(this.service);
   }
 }
