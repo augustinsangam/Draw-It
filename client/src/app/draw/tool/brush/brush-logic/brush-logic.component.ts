@@ -1,15 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+
+import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
+import { BrushService } from '../brush.service';
 
 @Component({
   selector: 'app-brush-logic',
   templateUrl: './brush-logic.component.html',
   styleUrls: ['./brush-logic.component.scss']
 })
-export class BrushLogicComponent implements OnInit {
+export class BrushLogicComponent extends ToolLogicComponent {
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor(private readonly service: BrushService) {
+    super();
   }
-
 }
