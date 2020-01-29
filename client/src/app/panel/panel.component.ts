@@ -1,13 +1,13 @@
 import { Component, ComponentFactoryResolver, Input, Type, ViewChild,
   ViewContainerRef } from '@angular/core';
 
-import { Tool } from '../tool/tool.enum';
-import { ToolPanelComponent } from '../tool/tool-panel/tool-panel.component';
 import { BrushPanelComponent } from '../tool/brush/brush-panel/brush-panel.component';
 import { PencilPanelComponent } from '../tool/pencil/pencil-panel/pencil-panel.component';
+import { ToolPanelComponent } from '../tool/tool-panel/tool-panel.component';
+import { Tool } from '../tool/tool.enum';
 
 @Component({
-  selector: 'draw-panel',
+  selector: 'app-panel',
   templateUrl: './panel.component.html',
   styleUrls: ['./panel.component.scss']
 })

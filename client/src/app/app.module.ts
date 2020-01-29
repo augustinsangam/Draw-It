@@ -8,10 +8,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MccColorPickerModule } from 'material-community-components';
 
-import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
 import { CanvasComponent } from './canvas/canvas.component';
-import { AppComponent } from './components/app/app.component';
-import { DrawComponent } from './draw.component';
 import { MaterialModule } from './material.module';
 import { DocumentationComponent } from './pages/documentation/documentation.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -33,7 +31,6 @@ import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.co
     CanvasComponent,
     ConfirmationDialogComponent,
     DocumentationComponent,
-    DrawComponent,
     HomeComponent,
     NewDrawComponent,
     NotFoundPageComponent,
@@ -43,7 +40,6 @@ import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.co
     SidebarComponent,
   ],
   imports: [
-    AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
     CommonModule,

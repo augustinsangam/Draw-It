@@ -3,7 +3,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 
 @Component({
-  selector: 'draw-canvas',
+  selector: 'app-canvas',
   templateUrl: './canvas.component.html',
   styleUrls: ['./canvas.component.scss']
 })

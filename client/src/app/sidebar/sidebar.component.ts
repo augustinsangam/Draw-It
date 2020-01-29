@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 
-import { Tool } from '../tool/tool.enum';
 import { ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
+import { Tool } from '../tool/tool.enum';
 
 @Component({
-  selector: 'draw-sidebar',
+  selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })

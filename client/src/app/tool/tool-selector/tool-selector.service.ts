@@ -1,4 +1,4 @@
-/**
+/*
   https://stackoverflow.com/a/41177163
  */
 
