@@ -4,5 +4,5 @@ export enum Tool {
   //
   Eraser,
   _Len,
-  // _None,
+  _None,
 }

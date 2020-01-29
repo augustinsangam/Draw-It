@@ -1,5 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 
+import { ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
+
 @Component({
   selector: 'draw-canvas',
   templateUrl: './canvas.component.html',
@@ -10,7 +12,10 @@ export class CanvasComponent implements AfterViewInit {
     static: false,
   }) sandbox: ElementRef<HTMLCanvasElement>;
 
-  constructor() {
+  constructor(toolSecetorService: ToolSelectorService) {
+    toolSecetorService.listen(tool => {
+      console.log('YEE ' + tool);
+    });
   }
 
   ngAfterViewInit() {

@@ -19,9 +19,4 @@ export class DrawComponent implements AfterViewInit {
 
   ngAfterViewInit() {
   }
-
-  selectTool(tool: Tool) {
-    this.tool = tool;
-    console.log('Tool selected is ' + tool);
-  }
 }
