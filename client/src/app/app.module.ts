@@ -20,6 +20,8 @@ import { PanelComponent } from './panel/panel.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { BrushLogicComponent } from './tool/brush/brush-logic/brush-logic.component';
 import { BrushPanelComponent } from './tool/brush/brush-panel/brush-panel.component';
+import { ColorLogicComponent } from './tool/color/color-logic/color-logic.component';
+import { ColorPanelComponent } from './tool/color/color-panel/color-panel.component';
 import { PencilLogicComponent } from './tool/pencil/pencil-logic/pencil-logic.component';
 import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.component';
 
@@ -38,6 +40,8 @@ import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.co
     PencilLogicComponent,
     PencilPanelComponent,
     SidebarComponent,
+    ColorLogicComponent,
+    ColorPanelComponent,
   ],
   imports: [
     BrowserAnimationsModule,
