@@ -1,0 +1,30 @@
+@import '@angular/material/prebuilt-themes/purple-green.css';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  background-color: #20262E;
+}
+
+a {
+  display: block;
+  color: #FFF;
+  padding: 22px;
+  transition: .3s ease;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: grayscale(100%);
+}
+
+a:last-child {
+  cursor: help;
+  background-color: #FF0;
+}
+
+a:hover, .selected, span ~ a {
+  filter: none;
+}
+
+span {
+  flex-grow: 1;
+}
