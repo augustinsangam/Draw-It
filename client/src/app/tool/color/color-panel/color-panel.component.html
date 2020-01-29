@@ -1,0 +1,30 @@
+<mat-radio-group class="example-radio-group" [(ngModel)]="colorOption">
+    <mat-radio-button class="example-radio-button" value="PRIMARY" checked>
+        PRIMAIRE
+    </mat-radio-button>
+    <div class="color-preview">
+        APERCU :
+        <app-color-pickler-item class="color-preview-circle" #colorPreviewPrimary></app-color-pickler-item>
+    </div>
+    <mat-radio-button class="example-radio-button" value="SECONDARY">
+        SECONDAIRE
+    </mat-radio-button>
+    <div class="color-preview">
+        APERCU :
+        <app-color-pickler-item class="color-preview-circle" #colorPreviewSecondary></app-color-pickler-item>
+    </div>
+</mat-radio-group>
+<button mat-button color="primary" (click)="swapColors()">INTER-CHANGER LES COULEURS</button>
+<div #recentElements>
+    <app-color-pickler-item></app-color-pickler-item>
+    <app-color-pickler-item></app-color-pickler-item>
+    <app-color-pickler-item></app-color-pickler-item>
+    <app-color-pickler-item></app-color-pickler-item>
+    <app-color-pickler-item></app-color-pickler-item>
+    <app-color-pickler-item></app-color-pickler-item>
+    <app-color-pickler-item></app-color-pickler-item>
+    <app-color-pickler-item></app-color-pickler-item>
+    <app-color-pickler-item></app-color-pickler-item>
+    <app-color-pickler-item></app-color-pickler-item>
+</div>
+<app-color-pickler-content startColor="#FFFFFF" (colorChange)="onColorPicked($event)"></app-color-pickler-content>

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatListModule } from '@angular/material';
 import { MatIconModule } from '@angular/material/icon';
 import { BrowserModule } from '@angular/platform-browser';
@@ -20,6 +20,10 @@ import { PanelComponent } from './panel/panel.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { BrushLogicComponent } from './tool/brush/brush-logic/brush-logic.component';
 import { BrushPanelComponent } from './tool/brush/brush-panel/brush-panel.component';
+import { ColorLogicComponent } from './tool/color/color-logic/color-logic.component';
+import { ColorPanelComponent } from './tool/color/color-panel/color-panel.component';
+import { ColorPicklerContentComponent } from './tool/color/color-panel/color-pickler-content/color-pickler-content.component';
+import { ColorPicklerItemComponent } from './tool/color/color-panel/color-pickler-item/color-pickler-item.component';
 import { PencilLogicComponent } from './tool/pencil/pencil-logic/pencil-logic.component';
 import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.component';
 
@@ -29,6 +33,10 @@ import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.co
     BrushLogicComponent,
     BrushPanelComponent,
     CanvasComponent,
+    ColorLogicComponent,
+    ColorPanelComponent,
+    ColorPicklerContentComponent,
+    ColorPicklerItemComponent,
     ConfirmationDialogComponent,
     DocumentationComponent,
     HomeComponent,
@@ -49,11 +57,14 @@ import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.co
     MatListModule,
     MccColorPickerModule,
     ReactiveFormsModule,
+    FormsModule,
   ],
   providers: [],
   entryComponents: [
     BrushLogicComponent,
     BrushPanelComponent,
+    ColorLogicComponent,
+    ColorPanelComponent,
     ConfirmationDialogComponent,
     HomeComponent,
     NewDrawComponent,

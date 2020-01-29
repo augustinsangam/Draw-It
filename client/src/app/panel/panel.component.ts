@@ -2,6 +2,7 @@ import { Component, ComponentFactoryResolver, Type, ViewChild,
   ViewContainerRef } from '@angular/core';
 
 import { BrushPanelComponent } from '../tool/brush/brush-panel/brush-panel.component';
+import { ColorPanelComponent } from '../tool/color/color-panel/color-panel.component';
 import { PencilPanelComponent } from '../tool/pencil/pencil-panel/pencil-panel.component';
 import { ToolPanelComponent } from '../tool/tool-panel/tool-panel.component';
 import { ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
@@ -26,6 +27,7 @@ export class PanelComponent {
     this.components = new Array(Tool._Len);
     this.components[Tool.Brush] = BrushPanelComponent;
     this.components[Tool.Pencil] = PencilPanelComponent;
+    this.components[Tool.Palette] = ColorPanelComponent;
     toolSelectorService.listen(tool => this.setTool(tool));
   }
 
