@@ -21,7 +21,7 @@ export class PanelComponent {
   protected collapsePanel: boolean;
 
   constructor(private readonly componentFactoryResolver: ComponentFactoryResolver,
-             toolSelectorService: ToolSelectorService) {
+              toolSelectorService: ToolSelectorService) {
     this.collapsePanel = false;
     this.components = new Array(Tool._Len);
     this.components[Tool.Brush] = BrushPanelComponent;
