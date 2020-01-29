@@ -55,6 +55,8 @@ import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.co
     BrushLogicComponent,
     BrushPanelComponent,
     ConfirmationDialogComponent,
+    HomeComponent,
+    NewDrawComponent,
     PencilLogicComponent,
     PencilPanelComponent,
   ],

@@ -5,13 +5,12 @@
     <span class='mat-headline'>Bienvenue sur DrawIt !</span>
   </div>
   <div id='options'>
-    <span class='mat-h3'>Veuillez sélectionner un choix parmi:</span>
     <ng-container *ngFor='let option of options'>
       <button mat-stroked-button
               *ngIf='option.canDisplay'
               class='option mat-elevation-z5'
-              color='primary'
-              >
+              tabindex="-1"
+              [mat-dialog-close]='option.dialogCloseResult'>
         <mat-grid-list cols='5' rowHeight='55px'>
           <mat-grid-tile colspan='1' rowspan='1'>
             <mat-icon>{{ option.icon }}</mat-icon>

@@ -1,10 +1,14 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
 
 import { ScreenService, ScreenSize } from '../../services/sreen/screen.service';
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
+
+export interface DialogData {
+  drawInProgress: boolean;
+}
 
 @Component({
   selector: 'app-new-draw',
@@ -43,7 +47,9 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(private formBuilder: FormBuilder,
               private screenService: ScreenService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              public dialogRef: MatDialogRef<NewDrawComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     const screenSize: ScreenSize = this.screenService.getCurrentSize();
     this.maxWidth = screenSize.width;
     this.maxHeight = screenSize.height;
@@ -97,18 +103,22 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onSubmit() {
-    // TODO: On doit changer la logique plus tard
-    const drawInProgress = true;
-    if (drawInProgress) {
+    if (this.data.drawInProgress) {
       const dialogRef = this.dialog.open(ConfirmationDialogComponent);
       dialogRef.disableClose = true;
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().subscribe((result: boolean) => {
         if (result) {
-          console.log('Nouveau dessin');
+          this.dialogRef.close(this.form.value);
         } else {
-          console.log('Création annulée');
+          this.dialogRef.close('home');
         }
       });
+    } else {
+      this.dialogRef.close(this.form.value);
     }
+  }
+
+  onReturn() {
+    this.dialogRef.close('home');
   }
 }

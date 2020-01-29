@@ -1,15 +1,14 @@
 :host {
   display: grid;
   place-items: center;
-  height: 100vh;
-  background-color: #E5E2E2;
+  height: 100%;
+  background-color: transparent;
 }
 
 main {
   padding: 15px 15px 0;
   text-align: center;
-  background-color: whitesmoke;
-  box-shadow: 0 0 8px 2px rgba(0, 0, 0, .2);
+  background-color: transparent;
 }
 
 img {
@@ -22,4 +21,12 @@ button {
   margin: 15px 0;
   width: 400px;
   border-radius: 40px;
+}
+
+#options{
+  margin-top: 30px;
+}
+
+#informations{
+  margin-top: 30px;
 }

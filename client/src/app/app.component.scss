@@ -18,3 +18,7 @@ app-panel {
 app-canvas {
     flex-grow: 1;
 }
+
+::ng-deep .cdk-overlay-container {
+    background-color: rgba(0, 0, 0, 0.7);
+}
