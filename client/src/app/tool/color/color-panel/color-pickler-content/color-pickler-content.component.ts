@@ -5,7 +5,6 @@ import { EventManager } from '@angular/platform-browser';
 import { ColorService, RGBColor } from '../../color.service';
 import { ColorPicklerItemComponent } from '../color-pickler-item/color-pickler-item.component';
 
-
 @Component({
   selector: 'app-color-pickler-content',
   templateUrl: './color-pickler-content.component.html',

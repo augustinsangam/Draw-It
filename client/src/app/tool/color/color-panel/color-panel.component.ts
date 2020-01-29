@@ -18,6 +18,7 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
 
   colorOption = 'PRIMARY';
   recentColors: string[];
+  showPolatte = false;
 
   @ViewChild('colorPreviewPrimary', {
     read : ColorPicklerItemComponent,
@@ -90,11 +91,16 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
     }
     // Reafficher
     this.updateRecentColors();
+    this.showPolatte = false;
   }
 
   updatePreviewColors() {
     this.colorPreviewPrimary.updateColor(this.colorService.primaryColor);
     this.colorPreviewSecondary.updateColor(this.colorService.secondaryColor);
+  }
+
+  onShowPalette() {
+    this.showPolatte = !this.showPolatte ;
   }
 
 }
