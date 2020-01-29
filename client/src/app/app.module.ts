@@ -27,7 +27,6 @@ import { ColorPicklerItemComponent } from './tool/color/color-panel/color-pickle
 import { PencilLogicComponent } from './tool/pencil/pencil-logic/pencil-logic.component';
 import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -64,6 +63,8 @@ import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.co
   entryComponents: [
     BrushLogicComponent,
     BrushPanelComponent,
+    ColorLogicComponent,
+    ColorPanelComponent,
     ConfirmationDialogComponent,
     HomeComponent,
     NewDrawComponent,

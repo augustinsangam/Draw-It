@@ -81,7 +81,6 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
   }
 
   onColorPicked(data: string) {
-    console.log(data);
     if (this.colorOption === 'PRIMARY') {
       this.colorPreviewPrimary.updateColor(data);
       this.colorService.selectPrimaryColor(data);
