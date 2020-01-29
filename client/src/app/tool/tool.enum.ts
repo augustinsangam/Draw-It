@@ -3,6 +3,7 @@ export enum Tool {
   Pencil,
   //
   Eraser,
+  Palette,
   _Len,
   _None,
 }

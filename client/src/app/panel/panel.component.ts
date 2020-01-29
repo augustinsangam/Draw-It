@@ -1,9 +1,10 @@
-import { Component, ComponentFactoryResolver, Input, Type, ViewChild,
+import { Component, ComponentFactoryResolver, Type, ViewChild,
   ViewContainerRef } from '@angular/core';
 
 import { BrushPanelComponent } from '../tool/brush/brush-panel/brush-panel.component';
 import { PencilPanelComponent } from '../tool/pencil/pencil-panel/pencil-panel.component';
 import { ToolPanelComponent } from '../tool/tool-panel/tool-panel.component';
+import { ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
 
 @Component({
@@ -14,28 +15,25 @@ import { Tool } from '../tool/tool.enum';
 export class PanelComponent {
   @ViewChild('container', {
     read: ViewContainerRef,
-    static: true, // FIXME: Is it true or false?
+    static: false, // FIXME: Is it true or false?
   }) private viewContainerRef: ViewContainerRef;
   private readonly components: Type<ToolPanelComponent>[];
-  collapsePanel: boolean;
+  protected collapsePanel: boolean;
 
-  constructor(private readonly componentFactoryResolver: ComponentFactoryResolver) {
+  constructor(private readonly componentFactoryResolver: ComponentFactoryResolver,
+              toolSelectorService: ToolSelectorService) {
     this.collapsePanel = false;
     this.components = new Array(Tool._Len);
     this.components[Tool.Brush] = BrushPanelComponent;
     this.components[Tool.Pencil] = PencilPanelComponent;
+    toolSelectorService.listen(tool => this.setTool(tool));
   }
 
-  @Input()
-  set tool(tool: Tool) {
-    // FIXME: ERROR Error: "No component factory found for undefined. Did you add it to @NgModule.entryComponents?"
-    if (tool != null) {
-      console.log('PANEL: Tool is ' + tool);
-      this.viewContainerRef.clear();
-      const component = this.components[tool];
-      const factory = this.componentFactoryResolver.resolveComponentFactory(component);
-      const ref = this.viewContainerRef.createComponent(factory);
-      ref.changeDetectorRef.detectChanges();
-    }
+  private setTool(tool: Tool) {
+    this.viewContainerRef.clear();
+    const component = this.components[tool];
+    const factory = this.componentFactoryResolver.resolveComponentFactory(component);
+    const ref = this.viewContainerRef.createComponent(factory);
+    ref.changeDetectorRef.detectChanges();
   }
 }

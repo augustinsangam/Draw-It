@@ -37,4 +37,8 @@ export class SidebarComponent {
   selectEraser({target}: MouseEvent) {
     this.selectTool(Tool.Eraser, target as HTMLElement);
   }
+
+  selectPalette({target}: MouseEvent) {
+    this.selectTool(Tool.Palette, target as HTMLElement);
+  }
 }
