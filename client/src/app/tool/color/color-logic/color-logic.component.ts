@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
+
 import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
+import { ColorService } from '../color.service';
 
 @Component({
   selector: 'app-color-logic',
@@ -8,8 +10,15 @@ import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
 })
 export class ColorLogicComponent extends ToolLogicComponent {
 
-  constructor() {
+  constructor(private readonly service: ColorService) {
     super();
   }
 
+  ngOnInit() {
+    console.log('From ColorLogicComponent');
+    console.log(' - elementRef is');
+    console.log(this.svgElRef);
+    console.log(' - service is');
+    console.log(this.service);
+  }
 }

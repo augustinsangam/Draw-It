@@ -10,8 +10,7 @@ import { BrushService } from '../brush.service';
 })
 export class BrushPanelComponent extends ToolPanelComponent {
 
-  constructor(private readonly service: BrushService) {
+  constructor(/*private readonly*/ service: BrushService) {
     super();
-    console.log(this.service);
   }
 }

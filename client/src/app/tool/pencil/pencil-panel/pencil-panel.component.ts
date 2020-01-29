@@ -10,8 +10,7 @@ import { PencilService } from '../pencil.service';
 })
 export class PencilPanelComponent extends ToolPanelComponent {
 
-  constructor(private readonly service: PencilService) {
+  constructor(/*private readonly*/ service: PencilService) {
     super();
-    console.log(this.service);
   }
 }
