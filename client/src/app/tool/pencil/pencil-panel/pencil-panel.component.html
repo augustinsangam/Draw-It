@@ -1,1 +1,16 @@
-<p>pencil-panel works!</p>
+<main>
+    <p>ÉPAISSEUR</p>
+    <div class="thickness">
+        <mat-slider></mat-slider>
+    </div>
+    <p>POINTS DE JONCTION</p>
+    <div class="junction-options">
+        <mat-radio-group [(ngModel)]="jonctionOption">
+            <mat-radio-button *ngFor="let option of jonctionOptions" [value]="option">{{option}}</mat-radio-button>
+        </mat-radio-group>
+        <div class="juction-preferences" *ngIf="jonctionOption == jonctionOptions[0]">
+            <p>DIAMÈTRE DES POINTS</p>
+            <mat-slider></mat-slider>
+        </div>
+    </div>
+</main>
