@@ -17,6 +17,7 @@ export class PencilLogicComponent extends ToolLogicComponent {
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
+    // tslint:disable-next-line no-unused-expression
     this.service; // TODO: Remove
     const circle = this.renderer.createElement('svg:circle', this.svgNS);
     this.renderer.appendChild(this.svgElRef.nativeElement, circle);

@@ -16,6 +16,7 @@ export class BrushLogicComponent extends ToolLogicComponent {
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
+    // tslint:disable-next-line no-unused-expression
     this.service; // TODO: remove
   }
 }

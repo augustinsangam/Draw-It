@@ -57,7 +57,7 @@ export class PanelComponent implements OnInit {
 
   private toggle() {
     if (this.width) {
-      this.width= 0;
+      this.width = 0;
     } else {
       this.width = this.widthOfChild;
     }
