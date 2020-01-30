@@ -3,6 +3,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material';
 
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
+import { DocumentationComponent } from './pages/documentation/documentation.component';
 
 export interface NewDrawOptions {
   width: number;
@@ -42,7 +43,7 @@ export class AppComponent implements AfterViewInit {
           console.log('On ouvre la librairie');
           break;
         case 'documentation':
-          console.log('On ouvre la documentation');
+          this.openDocumentationDialog(dialogOptions);
           break;
         default:
           break;
@@ -60,6 +61,19 @@ export class AppComponent implements AfterViewInit {
         this.createNewDraw(resultNewDialog);
       }
     });
+  }
+
+  openDocumentationDialog(dialogOptions: MatDialogConfig) {
+    dialogOptions.width = '90%';
+    const newDialog = this.dialog.open(DocumentationComponent, dialogOptions);
+    newDialog.disableClose = true;
+    // newDialog.afterClosed().subscribe((resultNewDialog) => {
+    //   if (resultNewDialog === 'home') {
+    //     this.openHomeDialog(dialogOptions);
+    //   } else if (resultNewDialog !== null) {
+    //     this.createNewDraw(resultNewDialog);
+    //   }
+    // });
   }
 
   createNewDraw(option: NewDrawOptions) {
