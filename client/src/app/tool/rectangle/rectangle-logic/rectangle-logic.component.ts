@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, Renderer2, ElementRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Renderer2, } from '@angular/core';
 
-import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
-import { RectangleService, FillOption } from '../rectangle.service';
 import { ColorService } from '../../color/color.service';
+import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
+import { FillOption, RectangleService } from '../rectangle.service';
 
 enum ClickType {
   CLICKGAUCHE = 1,
@@ -14,12 +14,12 @@ enum ClickType {
   templateUrl: './rectangle-logic.component.html',
   styleUrls: ['./rectangle-logic.component.scss']
 })
-export class RectangleLogicComponent extends ToolLogicComponent implements AfterViewInit {
+export class RectangleLogicComponent extends ToolLogicComponent {
 
   private rectangles: Rectangle[] = [];
   private currentRectangleIndex = -1;
   private onDrag = false;
-  private lastTempPoint: Point;
+  private currentPoint: Point;
 
   constructor(private readonly service: RectangleService,
               private readonly renderer: Renderer2,
@@ -29,74 +29,63 @@ export class RectangleLogicComponent extends ToolLogicComponent implements After
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
-    console.log('From PencilLogicComponent');
-    console.log(' - elementRef is');
-    console.log(this.svgElRef);
-    console.log(' - service is');
-    console.log(this.service);
-    const circle = this.renderer.createElement('svg:circle', this.svgNS);
-    this.renderer.appendChild(this.svgElRef.nativeElement, circle);
-  }
-
-  ngAfterViewInit() {
     this.renderer.listen(this.svgElRef.nativeElement, 'mousedown', (mouseEv: MouseEvent) => {
-      if (mouseEv.which ===  ClickType.CLICKGAUCHE ) {
-        this.lastTempPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
-        const rectangle = this.renderer.createElement('rect', this.svgNS);
-        this.renderer.appendChild(this.svgElRef.nativeElement, rectangle);
-        this.rectangles[++this.currentRectangleIndex] = new Rectangle(this.lastTempPoint, this.renderer, rectangle);
-        this.getRectangle().setParameters({
-          borderWidth: this.service.thickness.toString(),
-          borderColor: this.colorService.secondaryColor,
-          fillColor: this.colorService.primaryColor,
-          filled: (this.service.fillOption === FillOption.With),
-          bordered: (this.service.thickness === 0)
-        });
-        this.onDrag = true;
-      }
+      this.addRectangle(mouseEv);
     }
     );
 
     this.renderer.listen(this.svgElRef.nativeElement, 'mousemove', (mouseEv: MouseEvent) => {
       if (this.onDrag) {
-        this.lastTempPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
-        if (mouseEv.shiftKey) {
-          this.getRectangle().drawTemporarySquare(this.lastTempPoint)
-        } else {
-          this.getRectangle().drawTemporaryRectangle(this.lastTempPoint);
-        }
+        this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+        this.viewTemporaryForm(mouseEv)
       }
     });
 
-    this.renderer.listen(this.svgElRef.nativeElement, 'mouseout', (mouseEv: MouseEvent) => {
-      console.log(mouseEv.offsetX, mouseEv.offsetY)
-    });
-
-    this.renderer.listen(document, 'mouseup', (mouseEv: MouseEvent) => {
+    this.renderer.listen(this.svgElRef.nativeElement, 'mouseup', (mouseEv: MouseEvent) => {
       if (mouseEv.which === ClickType.CLICKGAUCHE) {
         this.onDrag = false;
-        if (mouseEv.shiftKey) {
-          this.getRectangle().drawTemporarySquare(this.lastTempPoint)
-        } else {
-          this.getRectangle().drawTemporaryRectangle(this.lastTempPoint);
-        }
+        this.viewTemporaryForm(mouseEv)
+        this.getRectangle().setOpacity('1.0')
       }
-      this.getRectangle().setOpacity('1.0')
     }
     );
     this.renderer.listen('document', 'keydown', (keyEv: KeyboardEvent) => {
       if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
-        this.getRectangle().drawTemporarySquare(this.lastTempPoint)
+        this.getRectangle().drawTemporarySquare(this.currentPoint)
       }
     });
     this.renderer.listen('document', 'keyup', (keyEv: KeyboardEvent) => {
       if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
-        this.getRectangle().drawTemporaryRectangle(this.lastTempPoint)
+        this.getRectangle().drawTemporaryRectangle(this.currentPoint)
       }
     });
+
   }
+
   getRectangle(): Rectangle {
     return this.rectangles[this.currentRectangleIndex];
+  }
+  addRectangle(mouseEv: MouseEvent) {
+    if (mouseEv.which === ClickType.CLICKGAUCHE) {
+      this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+      const rectangle = this.renderer.createElement('rect', this.svgNS);
+      this.renderer.appendChild(this.svgElRef.nativeElement, rectangle);
+      this.rectangles[++this.currentRectangleIndex] = new Rectangle(this.currentPoint, this.renderer, rectangle);
+      this.getRectangle().setParameters({
+        borderWidth: this.service.thickness.toString(),
+        borderColor: this.colorService.secondaryColor,
+        fillColor: this.colorService.primaryColor,
+        filled: (this.service.fillOption === FillOption.With),
+      });
+      this.onDrag = true;
+    }
+  }
+  viewTemporaryForm(mouseEv: MouseEvent) {
+    if (mouseEv.shiftKey) {
+      this.getRectangle().drawTemporarySquare(this.currentPoint)
+    } else {
+      this.getRectangle().drawTemporaryRectangle(this.currentPoint);
+    }
   }
 
 }
@@ -105,6 +94,7 @@ class Rectangle {
   svgNS = ' http://www.w3.org/2000/svg ';
   initialPoint: Point;
   styleAtr = ''
+  filled = true
   constructor(initialPoint: Point, private renderer: Renderer2, private element: ElementRef) {
     this.initialPoint = initialPoint;
   }
@@ -139,7 +129,7 @@ class Rectangle {
     const dimensions = this.getDimension(oppositePoint);
     const transformedPoint = this.getUpLeftCornerPoint(oppositePoint)
     this.drawRectangle(transformedPoint, dimensions);
-    this.setOpacity('0.55')
+    this.setOpacity('0.55');
   }
   drawTemporarySquare(oppositePoint: Point) {
     let deltaX = oppositePoint.x - this.initialPoint.x;
@@ -158,16 +148,15 @@ class Rectangle {
   setParameters(style: Style) {
     this.styleAtr = `fill:${style.fillColor}; stroke:${style.borderColor}; stroke-width:${style.borderWidth}`
     this.renderer.setAttribute(this.element, 'style', this.styleAtr);
-    if (!style.filled) {
-      this.renderer.setAttribute(this.element, 'fill-opacity', '0.0');
-    }
-    if (!style.bordered) {
-      this.renderer.setAttribute(this.element, 'stroke-opacity', '0.0');
-    }
+    this.filled = style.filled;
   }
   setOpacity(opacityPourcent: string) {
+    if (this.filled) {
+      this.renderer.setAttribute(this.element, 'fill-opacity', opacityPourcent);
+    } else {
+      this.renderer.setAttribute(this.element, 'fill-opacity', '0.0');
+    }
     this.renderer.setAttribute(this.element, 'stroke-opacity', opacityPourcent);
-    this.renderer.setAttribute(this.element, 'fill-opacity', opacityPourcent);
   }
 }
 
@@ -180,8 +169,7 @@ interface Style {
   borderWidth: string,
   borderColor: string,
   fillColor: string,
-  filled: boolean,
-  bordered: boolean
+  filled: boolean
 }
 
 class Point {
