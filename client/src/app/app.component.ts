@@ -3,8 +3,8 @@ import { MatDialog, MatDialogConfig } from '@angular/material';
 
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
-import { Tool } from './tool/tool.enum';
 import { ToolSelectorService } from './tool/tool-selector/tool-selector.service';
+import { Tool } from './tool/tool.enum';
 
 export interface NewDrawOptions {
   width: number;

@@ -41,4 +41,12 @@ export class SidebarComponent {
   selectColor({target}: MouseEvent) {
     this.selectTool(Tool.Color, target as HTMLElement);
   }
+
+  selectLine({target}: MouseEvent) {
+    this.selectTool(Tool.Line, target as HTMLElement);
+  }
+
+  selectRectangle({target}: MouseEvent) {
+    this.selectTool(Tool.Rectangle, target as HTMLElement);
+  }
 }

@@ -20,7 +20,7 @@ export class ToolSelectorService {
 
   set(tool: Tool) {
     console.assert(tool != null);
-    if (this.tool != tool) {
+    if (this.tool !== tool) {
       this.tool = tool;
       this.onChangeCallbacks.forEach(cb => cb(tool));
     } else {
