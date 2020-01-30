@@ -28,7 +28,7 @@ export class PanelComponent {
     this.components[Tool.Brush] = BrushPanelComponent;
     this.components[Tool.Color] = ColorPanelComponent;
     this.components[Tool.Pencil] = PencilPanelComponent;
-    toolSelectorService.listen(tool => this.setTool(tool));
+    toolSelectorService.onChange(tool => this.setTool(tool));
   }
 
   private setTool(tool: Tool) {

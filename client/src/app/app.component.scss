@@ -6,8 +6,8 @@
 app-panel {
   flex-shrink: 0;
   overflow-x: hidden;
-  max-width: 999px; /* Valeur extrême */
-  transition: 1s linear max-width;
+  max-width: 500px; /* Valeur extrême */
+  transition: .5s linear max-width;
   background-color: #2F3136;
 }
 
