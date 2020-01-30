@@ -24,6 +24,8 @@ import { ColorLogicComponent } from './tool/color/color-logic/color-logic.compon
 import { ColorPanelComponent } from './tool/color/color-panel/color-panel.component';
 import { ColorPicklerContentComponent } from './tool/color/color-panel/color-pickler-content/color-pickler-content.component';
 import { ColorPicklerItemComponent } from './tool/color/color-panel/color-pickler-item/color-pickler-item.component';
+import { LineLogicComponent } from './tool/line/line-logic/line-logic.component';
+import { LinePanelComponent } from './tool/line/line-panel/line-panel.component';
 import { PencilLogicComponent } from './tool/pencil/pencil-logic/pencil-logic.component';
 import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.component';
 
@@ -46,6 +48,8 @@ import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.co
     PencilLogicComponent,
     PencilPanelComponent,
     SidebarComponent,
+    LineLogicComponent,
+    LinePanelComponent,
   ],
   imports: [
     BrowserAnimationsModule,
