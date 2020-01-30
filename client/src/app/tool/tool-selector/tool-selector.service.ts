@@ -1,42 +1,38 @@
-/*
-  https://stackoverflow.com/a/41177163
- */
-
-import { Injectable, OnDestroy } from '@angular/core';
-// import { Observable, Subject } from 'rxjs';
-import { Subject } from 'rxjs';
-// import { takeUntil } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
 
 import { Tool } from '../tool.enum';
+
+type callback = (tool: Tool) => void;
 
 @Injectable({
   providedIn: 'root'
 })
-export class ToolSelectorService implements OnDestroy {
-  // private _tool: Tool;
-  // private tool$: Observable<Tool>;
-  private subject: Subject<Tool>;
+export class ToolSelectorService {
+  private tool: Tool;
+  private onSameCallbacks: callback[];
+  private onChangeCallbacks: callback[];
 
   constructor() {
-    this.subject = new Subject(); // BehaviorSubject(Tool._None)
-    this.subject.subscribe(tool => console.log(`Tool #${tool} selected`));
-    // this.tool = Tool._None;
-  }
-
-  ngOnDestroy() {
-    this.subject.complete();
+    this.tool = Tool._None;
+    this.onSameCallbacks = new Array();
+    this.onChangeCallbacks = new Array();
   }
 
   set(tool: Tool) {
-    // NOTE: if (!!tool) DOES NOT WORK (first tool is zero, aka false)
     console.assert(tool != null);
-    // this._tool = tool;
-    // dispatch
-    this.subject.next(tool);
+    if (this.tool != tool) {
+      this.tool = tool;
+      this.onChangeCallbacks.forEach(cb => cb(tool));
+    } else {
+      this.onSameCallbacks.forEach(cb => cb(tool));
+    }
   }
 
-  listen(callback: (tool: Tool) => void) {
-    // this.tool$.subscribe(callback);
-    this.subject.subscribe(callback);
+  onChange(cb: callback) {
+    this.onChangeCallbacks.push(cb);
+  }
+
+  onSame(cb: callback) {
+    this.onSameCallbacks.push(cb);
   }
 }

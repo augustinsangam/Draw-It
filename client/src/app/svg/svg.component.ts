@@ -28,7 +28,7 @@ export class SvgComponent {
     this.components[Tool.Color] = ColorLogicComponent;
     // this.components[Tool.Eraser] = EraserLogicCompnent;
     this.components[Tool.Pencil] = PencilLogicComponent;
-    toolSelectorService.listen(tool => this.setTool(tool));
+    toolSelectorService.onChange(tool => this.setTool(tool));
   }
 
   private setTool(tool: Tool) {

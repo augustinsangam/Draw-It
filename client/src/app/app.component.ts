@@ -4,6 +4,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material';
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { Tool } from './tool/tool.enum';
+import { ToolSelectorService } from './tool/tool-selector/tool-selector.service';
 
 export interface NewDrawOptions {
   width: number;
@@ -24,12 +25,15 @@ export class AppComponent implements AfterViewInit {
 
   tool: Tool;
 
-  toggle: boolean;
+  collapsePanel: boolean;
 
   drawInProgress = true;
 
-  constructor(public dialog: MatDialog) {
-
+  constructor(public dialog: MatDialog,
+              toolSelectorService: ToolSelectorService) {
+    this.collapsePanel = true;
+    toolSelectorService.onChange(() => this.collapsePanel = false);
+    toolSelectorService.onSame(() => this.collapsePanel = !this.collapsePanel);
   }
 
   ngAfterViewInit() {
