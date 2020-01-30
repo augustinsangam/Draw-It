@@ -5,14 +5,7 @@
 
 app-panel {
   flex-shrink: 0;
-  overflow-x: hidden;
-  max-width: 500px; /* Valeur extrême */
-  transition: .5s linear max-width;
   background-color: #2F3136;
-}
-
-.collapse {
-  max-width: 0;
 }
 
 main {

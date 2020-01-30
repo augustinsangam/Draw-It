@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatRadioChange } from '@angular/material';
 
@@ -17,10 +17,10 @@ export class RectanglePanelComponent extends ToolPanelComponent {
 
   rectangleForm: FormGroup;
 
-  constructor(private readonly service: RectangleService,
-              private formBuilder: FormBuilder) {
-    super();
-    console.log(this.service);
+  constructor(elementRef: ElementRef<HTMLElement>,
+              private readonly service: RectangleService,
+              private readonly formBuilder: FormBuilder) {
+    super(elementRef);
     this.rectangleForm = this.formBuilder.group({
       thicknessFormField: [this.service.thickness, [Validators.required]],
       thicknessSlider: [this.service.thickness, []],
@@ -49,5 +49,4 @@ export class RectanglePanelComponent extends ToolPanelComponent {
     this.rectangleForm.patchValue({ thicknessFormField: this.rectangleForm.value.thicknessSlider });
     this.service.thickness = this.rectangleForm.value.thicknessSlider;
   }
-
 }
