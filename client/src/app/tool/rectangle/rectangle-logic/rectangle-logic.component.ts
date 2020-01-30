@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Renderer2, } from '@angular/core';
+import { Component, ElementRef, Renderer2, } from '@angular/core';
 
 import { ColorService } from '../../color/color.service';
 import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
@@ -20,6 +20,7 @@ export class RectangleLogicComponent extends ToolLogicComponent {
   private currentRectangleIndex = -1;
   private onDrag = false;
   private currentPoint: Point;
+  private allListeners: (() => void)[] = [];
 
   constructor(private readonly service: RectangleService,
               private readonly renderer: Renderer2,
@@ -29,43 +30,52 @@ export class RectangleLogicComponent extends ToolLogicComponent {
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
-    this.renderer.listen(this.svgElRef.nativeElement, 'mousedown', (mouseEv: MouseEvent) => {
-      this.addRectangle(mouseEv);
-    }
-    );
+    this.allListeners.push(
+      this.renderer.listen(this.svgElRef.nativeElement, 'mousedown', (mouseEv: MouseEvent) => {
+        this.initRectangle(mouseEv);
+      }
+      ));
 
-    this.renderer.listen(this.svgElRef.nativeElement, 'mousemove', (mouseEv: MouseEvent) => {
-      if (this.onDrag) {
-        this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
-        this.viewTemporaryForm(mouseEv)
+    this.allListeners.push(
+      this.renderer.listen(this.svgElRef.nativeElement, 'mousemove', (mouseEv: MouseEvent) => {
+        if (this.onDrag) {
+          this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+          this.viewTemporaryForm(mouseEv)
+        }
       }
-    });
+    ));
 
-    this.renderer.listen(this.svgElRef.nativeElement, 'mouseup', (mouseEv: MouseEvent) => {
-      if (mouseEv.which === ClickType.CLICKGAUCHE) {
-        this.onDrag = false;
-        this.viewTemporaryForm(mouseEv)
-        this.getRectangle().setOpacity('1.0')
+    this.allListeners.push(
+      this.renderer.listen(this.svgElRef.nativeElement, 'mouseup', (mouseEv: MouseEvent) => {
+        if (mouseEv.which === ClickType.CLICKGAUCHE) {
+          this.onDrag = false;
+          this.viewTemporaryForm(mouseEv)
+          this.getRectangle().setOpacity('1.0')
+        }
       }
-    }
-    );
-    this.renderer.listen('document', 'keydown', (keyEv: KeyboardEvent) => {
-      if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
-        this.getRectangle().drawTemporarySquare(this.currentPoint)
-      }
-    });
-    this.renderer.listen('document', 'keyup', (keyEv: KeyboardEvent) => {
-      if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
-        this.getRectangle().drawTemporaryRectangle(this.currentPoint)
-      }
-    });
+    ));
 
+    this.allListeners.push(
+      this.renderer.listen(this.svgElRef.nativeElement, 'keydown', (keyEv: KeyboardEvent) => {
+        if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
+          this.getRectangle().drawTemporarySquare(this.currentPoint)
+        }
+      }
+    ));
+
+    this.allListeners.push(
+      this.renderer.listen('document', 'keyup', (keyEv: KeyboardEvent) => {
+        if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
+          this.getRectangle().drawTemporaryRectangle(this.currentPoint)
+        }
+      }
+    ));
   }
 
   getRectangle(): Rectangle {
     return this.rectangles[this.currentRectangleIndex];
   }
-  addRectangle(mouseEv: MouseEvent) {
+  initRectangle(mouseEv: MouseEvent) {
     if (mouseEv.which === ClickType.CLICKGAUCHE) {
       this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
       const rectangle = this.renderer.createElement('rect', this.svgNS);
@@ -86,6 +96,12 @@ export class RectangleLogicComponent extends ToolLogicComponent {
     } else {
       this.getRectangle().drawTemporaryRectangle(this.currentPoint);
     }
+  }
+  // tslint:disable-next-line:use-lifecycle-interface
+  ngOnDestroy() {
+    this.allListeners.forEach(listenner => {
+      listenner();
+    });
   }
 
 }

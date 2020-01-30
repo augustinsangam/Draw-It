@@ -1,7 +1,8 @@
-import { Component, Renderer2 } from '@angular/core';
+import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 
-import { PencilService } from '../../pencil/pencil.service';
+import { ColorService } from '../../color/color.service';
 import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
+import { JonctionOptions, LineService } from '../line.service';
 
 @Component({
   selector: 'app-line-logic',
@@ -9,21 +10,200 @@ import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
   styleUrls: ['./line-logic.component.scss']
 })
 export class LineLogicComponent extends ToolLogicComponent {
-
-  constructor(private readonly service: PencilService,
-              private readonly renderer: Renderer2) {
+  private paths: Path[] = [];
+  private currentPathIndex = 0;
+  private newPath = true;
+  private shiftIsPressed = false;
+  private lastPoint: Point;
+  constructor(private readonly service: LineService,
+              private readonly renderer: Renderer2,
+              private readonly serviceColor: ColorService) {
     super();
   }
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
-    console.log('From PencilLogicComponent');
-    console.log(' - elementRef is');
-    console.log(this.svgElRef);
-    console.log(' - service is');
-    console.log(this.service);
-    const circle = this.renderer.createElement('svg:circle', this.svgNS);
-    this.renderer.appendChild(this.svgElRef.nativeElement, circle);
-  }
+    this.renderer.listen(this.svgElRef.nativeElement, 'click', (mouseEv: MouseEvent) => {
+      let point = new Point( mouseEv.offsetX , mouseEv.offsetY );
+      const path = this.renderer.createElement('path', this.svgNS);
+      if (this.newPath) {
+        this.renderer.appendChild( this.svgElRef.nativeElement , path);
+        this.paths[this.currentPathIndex] = new Path ( point, this.renderer, path)
+        this.getPath().setParameters(this.service.thickness.toString(), this.serviceColor.primaryColor);
+        this.newPath = false;
+      } else {
+        if ( this.shiftIsPressed ) {
+         point =  this.getPath().getAlignPoint(point)
+        }
+        this.getPath().addLine (point);
+      }
+      if (this.service.jonctionOption === JonctionOptions.EnableJonction) {
+        const circle = this.renderer.createElement('circle', this.svgNS);
+        this.renderer.appendChild( this.svgElRef.nativeElement , circle);
+        this.renderer.setAttribute(circle, 'fill', this.serviceColor.primaryColor);
+        this.getPath().addJonction (circle, point, this.service.radius.toString());
+      }});
 
+    this.renderer.listen(this.svgElRef.nativeElement, 'mousemove', (mouseEv: MouseEvent) => {
+        if (!this.newPath)  {
+          this.lastPoint = new Point( mouseEv.offsetX , mouseEv.offsetY);
+          let point = new Point( mouseEv.offsetX , mouseEv.offsetY);
+          if ( this.shiftIsPressed ) {
+            point = this.getPath().getAlignPoint(point)
+          }
+          this.getPath().addTemporaryLine (point);
+          }
+      });
+
+    this.renderer.listen(this.svgElRef.nativeElement, 'dblclick', (mouseEv: MouseEvent) => {
+        if (!this.newPath)  {
+          let point = new Point( mouseEv.offsetX , mouseEv.offsetY);
+          this.getPath().removeLastLine()
+          this.getPath().removeLastLine()
+          if (this.distanceIsLessThan3Pixel( point , this.getPath().points[0]) ) {
+            this.getPath().closePath();
+          } else {
+            if ( this.shiftIsPressed ) {
+              point =  this.getPath().getAlignPoint(point)
+             }
+            this.getPath().addLine(point);
+          }
+          this.newPath = true;
+          this.currentPathIndex += 1;
+          }
+      });
+    this.renderer.listen('document', 'keydown', (keyEv: KeyboardEvent) => {
+          if (keyEv.code === 'Escape' && !this.newPath) {
+            this.getPath().removePath();
+            this.newPath = true;
+            this.currentPathIndex += 1;
+          }
+          if (keyEv.code === 'Backspace' && this.getPath().points.length >= 2) {
+            this.getPath().removeLastLine();
+            this.getPath().addTemporaryLine(this.getPath().lastPoint);
+          }
+          if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight' ) {
+              this.shiftIsPressed = true;
+            }
+      });
+    this.renderer.listen('document', 'keyup', (keyEv: KeyboardEvent) => {
+       if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight' ) {
+              this.shiftIsPressed = false;
+              this.getPath().addTemporaryLine(this.lastPoint);
+        }
+      });
+    }
+    distanceIsLessThan3Pixel( point1: Point , point2: Point ): boolean {
+      return ((Math.abs(point1.x - point2.x) <= 3) && (Math.abs(point1.y - point2.y) <= 3));
+    }
+    getPath(): Path {
+      return this.paths[this.currentPathIndex];
+    }
+    // tslint:disable-next-line:use-lifecycle-interface
+    ngOnDestroy() {
+      this.renderer.destroy();
+    }
+
+}
+export class Path {
+  svgNS = ' http://www.w3.org/2000/svg ';
+  points: Point[] = [];
+  jonctions: Circle[] = [];
+  instructions: string[] = [];
+  private pathString = '';
+  lastPoint: Point;
+  constructor( initialPoint: Point, private renderer: Renderer2, private element: ElementRef ) {
+    this.points.push(initialPoint);
+    const instruction = 'M ' + initialPoint.x.toString() + ' ' + initialPoint.y.toString() + ' ';
+    this.instructions.push(instruction);
+    this.pathString += instruction;
+    this.renderer.setAttribute(this.element, 'd', this.pathString );
+    this.renderer.setAttribute(this.element, 'fill', 'none')
+  }
+  addLine(point: Point) {
+    this.points.push(point);
+    const instruction = 'L ' + point.x.toString() + ' ' + point.y.toString() + ' ';
+    this.instructions.push(instruction);
+    this.pathString += instruction;
+    this.renderer.setAttribute(this.element, 'd', this.pathString );
+  }
+  addJonction(element: ElementRef, point: Point, jonctionRadius: string) {
+  this.jonctions.push(new Circle ( point, this.renderer, element, jonctionRadius));
+  }
+  addTemporaryLine(point: Point) {
+    const temp = this.pathString + 'L ' + point.x.toString() + ' ' + point.y.toString() + ' ';
+    this.lastPoint = point;
+    this.renderer.setAttribute(this.element, 'd', temp );
+  }
+  removeLastLine() {
+    this.points.pop();
+    this.pathString = this.pathString.substr(0, this.pathString.length - String(this.instructions.pop()).length );
+    this.renderer.setAttribute(this.element, 'd', this.pathString );
+    if (this.jonctions.length) {
+      this.removeLastJonction();
+    }
+  }
+  removePath() {
+    this.pathString = '';
+    this.points = [];
+    this.instructions = [];
+    this.renderer.setAttribute(this.element, 'd', this.pathString );
+    while (this.jonctions.length) {
+      this.removeLastJonction();
+    }
+  }
+  removeLastJonction() {
+    const lastCircle = this.jonctions.pop();
+    if (lastCircle !== undefined) {
+    const lastJonction = lastCircle.element;
+    this.renderer.removeChild(this.renderer.parentNode(lastJonction), lastJonction);
+    }
+  }
+  closePath() {
+    this.points.push(this.points[0]);
+    const instruction = 'Z';
+    this.instructions.push(instruction)
+    this.pathString += instruction;
+    this.renderer.setAttribute(this.element, 'd', this.pathString );
+  }
+  getAlignPoint(point: Point): Point {
+    const deltaX = point.x - this.points[this.points.length - 1].x
+    const deltaY = point.y - this.points[this.points.length - 1].y
+    const angle = Math.atan(deltaY / deltaX)
+    if ( Math.abs(angle) < Math.PI / 8 ) {
+        return new Point (point.x, this.points[this.points.length - 1].y )
+      }
+    if ( Math.abs(angle) > Math.PI * 3 / 8 ) {
+        return new Point (this.points[this.points.length - 1].x, point.y )
+      } else {
+        if ( deltaY * deltaX > 0 ) {
+          return new Point (point.x , this.points[this.points.length - 1].y + deltaX  )
+        } else {
+          return new Point (point.x , this.points[this.points.length - 1].y - deltaX )
+        }
+    }
+    }
+  setParameters(strokewidth: string, strokeColor: string ) {
+    this.renderer.setAttribute(this.element, 'stroke-width', strokewidth);
+    this.renderer.setAttribute(this.element, 'stroke', strokeColor);
+  }
+}
+export class Circle {
+  svgNS = ' http://www.w3.org/2000/svg ';
+  strokeColor = 'black';
+  circleRadius = '0' ;
+  constructor( center: Point, private renderer: Renderer2, public element: ElementRef, circleRadius: string) {
+    this.renderer.setAttribute(this.element, 'cx', center.x.toString() );
+    this.renderer.setAttribute(this.element, 'cy', center.y.toString());
+    this.renderer.setAttribute(this.element, 'r', circleRadius);
+  }
+}
+
+export class Point {
+  x = 0;
+  y = 0;
+  constructor( x: number, y: number ) {
+    this.x = x;
+    this.y = y;
+  }
 }
