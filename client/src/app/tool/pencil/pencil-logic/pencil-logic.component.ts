@@ -15,6 +15,7 @@ export class PencilLogicComponent extends ToolLogicComponent {
     super();
   }
 
+  // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
     console.log('From PencilLogicComponent');
     console.log(' - elementRef is');

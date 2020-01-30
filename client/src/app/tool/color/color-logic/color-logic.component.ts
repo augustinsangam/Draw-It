@@ -14,6 +14,7 @@ export class ColorLogicComponent extends ToolLogicComponent {
     super();
   }
 
+  // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
     console.log('From ColorLogicComponent');
     console.log(' - elementRef is');
