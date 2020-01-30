@@ -2,21 +2,12 @@ import { Injectable } from '@angular/core';
 
 import { ToolService } from '../tool.service';
 
-export enum JonctionOptions {
-  EnableJonction = 'Avec',
-  DisableJonction = 'Sans',
-};
-
 @Injectable({
   providedIn: 'root'
 })
 export class PencilService extends ToolService {
 
-  thickness = 2;
-  jonctionOption = JonctionOptions.DisableJonction;
-  diameter = 2;
-
-  jonctionOptions = [JonctionOptions.EnableJonction, JonctionOptions.DisableJonction];
+  thickness = 10;
 
   constructor() {
     super();
