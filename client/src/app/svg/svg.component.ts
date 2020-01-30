@@ -3,7 +3,9 @@ import { Component, ComponentFactoryResolver, ElementRef, OnInit, Type,
 
 import { BrushLogicComponent } from '../tool/brush/brush-logic/brush-logic.component';
 import { ColorLogicComponent } from '../tool/color/color-logic/color-logic.component';
+import { LineLogicComponent } from '../tool/line/line-logic/line-logic.component';
 import { PencilLogicComponent } from '../tool/pencil/pencil-logic/pencil-logic.component';
+import { RectangleLogicComponent } from '../tool/rectangle/rectangle-logic/rectangle-logic.component';
 import { ToolLogicComponent } from '../tool/tool-logic/tool-logic.component';
 import { ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
@@ -27,7 +29,9 @@ export class SvgComponent implements OnInit {
     this.components[Tool.Brush] = BrushLogicComponent;
     this.components[Tool.Color] = ColorLogicComponent;
     // this.components[Tool.Eraser] = EraserLogicCompnent;
+    this.components[Tool.Line] = LineLogicComponent;
     this.components[Tool.Pencil] = PencilLogicComponent;
+    this.components[Tool.Rectangle] = RectangleLogicComponent;
   }
 
   ngOnInit() {

@@ -1,16 +1,16 @@
 import { Component, Renderer2 } from '@angular/core';
 
-import { PencilService } from '../../pencil/pencil.service';
 import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
+import { RectangleService } from '../rectangle.service';
 
 @Component({
-  selector: 'app-line-logic',
-  templateUrl: './line-logic.component.html',
-  styleUrls: ['./line-logic.component.scss']
+  selector: 'app-rectangle-logic',
+  templateUrl: './rectangle-logic.component.html',
+  styleUrls: ['./rectangle-logic.component.scss']
 })
-export class LineLogicComponent extends ToolLogicComponent {
+export class RectangleLogicComponent extends ToolLogicComponent {
 
-  constructor(private readonly service: PencilService,
+  constructor(private readonly service: RectangleService,
               private readonly renderer: Renderer2) {
     super();
   }
