@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, ElementRef, OnInit, Type,
+import { Component, ComponentFactoryResolver, HostBinding, OnInit, Type,
   ViewChild, ViewContainerRef } from '@angular/core';
 
 import { BrushPanelComponent } from '../tool/brush/brush-panel/brush-panel.component';
@@ -14,28 +14,29 @@ import { Tool } from '../tool/tool.enum';
   styleUrls: ['./panel.component.scss']
 })
 export class PanelComponent implements OnInit {
+  private readonly components: Type<ToolPanelComponent>[];
   @ViewChild('container', {
     read: ViewContainerRef,
     static: true,
   }) private viewContainerRef: ViewContainerRef;
-  private readonly components: Type<ToolPanelComponent>[];
-  private collapse: boolean;
+  @HostBinding('style.width.px') width: number;
+  private widthOfChild: number;
 
-  constructor(private readonly elementRef: ElementRef<HTMLElement>,
-              private readonly componentFactoryResolver: ComponentFactoryResolver,
+  constructor(private readonly componentFactoryResolver: ComponentFactoryResolver,
               private readonly toolSelectorService: ToolSelectorService) {
     this.components = new Array(Tool._Len);
     this.components[Tool.Brush] = BrushPanelComponent;
     this.components[Tool.Color] = ColorPanelComponent;
     // this.components[Tool.Eraser] = EraserPanelCompnent;
     this.components[Tool.Pencil] = PencilPanelComponent;
-    this.collapse = true;
+    this.widthOfChild = 0;
+    // Panel is collapsed by default
+    this.width = 0;
   }
 
   ngOnInit() {
-    // TODO: use elementRef to toggle width from 0 to viewContainerRef’s width
-    // this.toolSelectorService.onSame(tool => this);
     this.toolSelectorService.onChange(tool => this.setTool(tool));
+    this.toolSelectorService.onSame(() => this.toggle());
   }
 
   private setTool(tool: Tool) {
@@ -43,7 +44,22 @@ export class PanelComponent implements OnInit {
     const component = this.components[tool];
     const factory = this.componentFactoryResolver.resolveComponentFactory(component);
     const ref = this.viewContainerRef.createComponent(factory);
+    // TODO: param w/o explicit cast to number
+    ref.instance.width.subscribe((w: number) => this.setWidthOfChild(w));
     ref.changeDetectorRef.detectChanges();
-    // TODO: child.ngAfterViewInit => send width and set to elementRef
+  }
+
+  private setWidthOfChild(width: number) {
+    console.log('WIDTH SET TO ' + width);
+    console.log('OLD WIDTHOFCHILD is ' + this.widthOfChild);
+    this.widthOfChild = this.width = width;
+  }
+
+  private toggle() {
+    if (this.width) {
+      this.width= 0;
+    } else {
+      this.width = this.widthOfChild;
+    }
   }
 }

@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild,
+  ViewChildren } from '@angular/core';
 import { EventManager } from '@angular/platform-browser';
 
 import { ToolPanelComponent } from '../../tool-panel/tool-panel.component';
@@ -12,8 +13,10 @@ import { ColorPicklerItemComponent } from './color-pickler-item/color-pickler-it
 })
 export class ColorPanelComponent extends ToolPanelComponent implements OnInit, AfterViewInit {
 
-  constructor(private colorService: ColorService, private eventManager: EventManager) {
-    super();
+  constructor(elementRef: ElementRef<HTMLElement>,
+              private colorService: ColorService,
+              private eventManager: EventManager) {
+    super(elementRef);
   }
 
   colorOption = 'PRIMARY';
@@ -40,6 +43,7 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
   }
 
   ngAfterViewInit() {
+    super.ngAfterViewInit();
     this.updatePreviewColors();
     this.colorsItemsArray = this.colorsItems.toArray().slice(2);
 

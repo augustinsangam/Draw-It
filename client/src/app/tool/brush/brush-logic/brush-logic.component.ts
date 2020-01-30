@@ -16,10 +16,6 @@ export class BrushLogicComponent extends ToolLogicComponent {
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
-    console.log('From BrushLogicComponent');
-    console.log(' - elementRef is');
-    console.log(this.svgElRef);
-    console.log(' - service is');
-    console.log(this.service);
+    this.service; // TODO: remove
   }
 }

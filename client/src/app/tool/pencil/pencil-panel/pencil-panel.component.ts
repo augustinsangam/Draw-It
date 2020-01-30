@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { ToolPanelComponent } from '../../tool-panel/tool-panel.component';
@@ -12,9 +12,10 @@ import { PencilService } from '../pencil.service';
 export class PencilPanelComponent extends ToolPanelComponent {
   pencilForm: FormGroup;
 
-  constructor(private readonly service: PencilService,
+  constructor(elementRef: ElementRef<HTMLElement>,
+              private readonly service: PencilService,
               private formBuilder: FormBuilder) {
-    super();
+    super(elementRef);
     this.pencilForm = this.formBuilder.group({
       thicknessFormField: [this.service.thickness, [Validators.required]],
       thicknessSlider: [this.service.thickness, []],
