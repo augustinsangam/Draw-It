@@ -1,26 +1,21 @@
-<main>
-    <form [formGroup]="brushForm">
-        <p>Épaisseur</p>
-        <div class="thickness">
-            <mat-slider min="1" 
-                        max="100" step="1" 
-                        (input)="onThicknessChange($event)" 
-                        (change)="onThicknessChange($event)" 
-                        formControlName="thicknessSlider">
-            </mat-slider>
-            <mat-form-field>
-                <input  matInput 
-                        formControlName="thicknessFormField"
-                        readonly>
-                <span matSuffix>px</span>
-            </mat-form-field>
-        </div>
-        <p class="texture">Textures</p>
-        <mat-radio-group formControlName="textureOption" (change)="onOptionChange($event)">
-            <mat-radio-button *ngFor="let texture of textures" [value]="texture.value">
-                {{texture.value}}
-                <img [src]="texture.src" [alt]="texture.value" height="25px">
-            </mat-radio-button>
-        </mat-radio-group>
-    </form>
-</main>
+<form [formGroup]="brushForm">
+  <p>Épaisseur</p>
+  <div class="thickness">
+    <mat-slider min=1 max=100 step=1
+      (input)="onThicknessChange($event)"
+      (change)="onThicknessChange($event)"
+      formControlName="thicknessSlider">
+    </mat-slider>
+    <mat-form-field>
+      <input matInput formControlName="thicknessFormField" readonly />
+      <span matSuffix>px</span>
+    </mat-form-field>
+  </div>
+  <p class="texture">Textures</p>
+  <mat-radio-group formControlName="textureOption" (change)="onOptionChange($event)">
+    <mat-radio-button *ngFor="let texture of textures" [value]="texture.value">
+      {{texture.value}}
+      <img [src]="texture.src" [alt]="texture.value" height="25px">
+    </mat-radio-button>
+  </mat-radio-group>
+</form>

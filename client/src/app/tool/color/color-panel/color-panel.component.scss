@@ -1,28 +1,29 @@
-main{
-    padding: 10px;
-    color : white;
-    min-width: 300px;
+:host {
+  display: block;
+  padding: 10px;
+  width: min-content;
+  color : white;
 }
 
 .example-radio-group {
-    display: flex;
-    flex-direction: column;
-    margin: 15px 0;
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
 }
 
 .example-radio-button {
-    margin: 5px;
+  margin: 5px;
 }
 
 .color-preview{
-    margin-left: 50px;
+  margin-left: 50px;
 }
 
 .palette{
-    margin-top: 30px;
-    margin-bottom: 10px;
+  margin-top: 30px;
+  margin-bottom: 10px;
 }
 
 .recent-colors{
-    margin-top: 30px;
+  margin-top: 30px;
 }

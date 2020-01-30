@@ -14,7 +14,7 @@ export class PencilPanelComponent extends ToolPanelComponent {
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: PencilService,
-              private formBuilder: FormBuilder) {
+              private readonly formBuilder: FormBuilder) {
     super(elementRef);
     this.pencilForm = this.formBuilder.group({
       thicknessFormField: [this.service.thickness, [Validators.required]],
