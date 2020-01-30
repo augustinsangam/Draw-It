@@ -19,5 +19,7 @@ export class RectangleLogicComponent extends ToolLogicComponent {
   ngOnInit() {
     // tslint:disable-next-line no-unused-expression
     this.service; // TODO: Remove
+    // tslint:disable-next-line no-unused-expression
+    this.renderer; // TODO: Remove
   }
 }
