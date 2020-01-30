@@ -1,0 +1,26 @@
+<main>
+    <form [formGroup]="rectangleForm">
+        <p>Épaisseur du contour</p>
+        <div class="thickness">
+            <mat-slider min="0" 
+                        max="100" step="1" 
+                        (input)="onThicknessChange($event)" 
+                        (change)="onThicknessChange($event)" 
+                        formControlName="thicknessSlider">
+            </mat-slider>
+            <mat-form-field>
+                <input  matInput 
+                        formControlName="thicknessFormField"
+                        readonly>
+                <span matSuffix>px</span>
+            </mat-form-field>
+        </div>
+        <p>Remplissage</p>
+        <div class="fill-options">
+            <mat-radio-group formControlName="fillOption" (change)="onChangeFillOption($event)">
+                <mat-radio-button [value]="fillOptions[0]">{{fillOptions[0]}}</mat-radio-button>
+                <mat-radio-button [value]="fillOptions[1]" [disabled]="disableWithoutFill">{{fillOptions[1]}}</mat-radio-button>
+            </mat-radio-group>
+        </div>
+    </form>
+</main>
