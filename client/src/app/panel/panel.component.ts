@@ -3,7 +3,9 @@ import { Component, ComponentFactoryResolver, Type, ViewChild,
 
 import { BrushPanelComponent } from '../tool/brush/brush-panel/brush-panel.component';
 import { ColorPanelComponent } from '../tool/color/color-panel/color-panel.component';
+import { LinePanelComponent } from '../tool/line/line-panel/line-panel.component';
 import { PencilPanelComponent } from '../tool/pencil/pencil-panel/pencil-panel.component';
+import { RectanglePanelComponent } from '../tool/rectangle/rectangle-panel/rectangle-panel.component';
 import { ToolPanelComponent } from '../tool/tool-panel/tool-panel.component';
 import { ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
@@ -25,9 +27,11 @@ export class PanelComponent {
               toolSelectorService: ToolSelectorService) {
     this.collapsePanel = false;
     this.components = new Array(Tool._Len);
-    this.components[Tool.Brush] = BrushPanelComponent;
-    this.components[Tool.Color] = ColorPanelComponent;
-    this.components[Tool.Pencil] = PencilPanelComponent;
+    this.components[Tool.Brush]     = BrushPanelComponent;
+    this.components[Tool.Color]     = ColorPanelComponent;
+    this.components[Tool.Pencil]    = PencilPanelComponent;
+    this.components[Tool.Line]      = LinePanelComponent;
+    this.components[Tool.Rectangle] = RectanglePanelComponent;
     toolSelectorService.onChange(tool => this.setTool(tool));
   }
 

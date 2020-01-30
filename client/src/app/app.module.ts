@@ -28,6 +28,8 @@ import { LineLogicComponent } from './tool/line/line-logic/line-logic.component'
 import { LinePanelComponent } from './tool/line/line-panel/line-panel.component';
 import { PencilLogicComponent } from './tool/pencil/pencil-logic/pencil-logic.component';
 import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.component';
+import { RectangleLogicComponent } from './tool/rectangle/rectangle-logic/rectangle-logic.component';
+import { RectanglePanelComponent } from './tool/rectangle/rectangle-panel/rectangle-panel.component';
 
 @NgModule({
   declarations: [
@@ -50,6 +52,8 @@ import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.co
     PencilPanelComponent,
     SidebarComponent,
     SvgComponent,
+    RectangleLogicComponent,
+    RectanglePanelComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -70,10 +74,14 @@ import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.co
     ColorLogicComponent,
     ColorPanelComponent,
     ConfirmationDialogComponent,
+    LinePanelComponent,
+    LineLogicComponent,
     HomeComponent,
     NewDrawComponent,
     PencilLogicComponent,
     PencilPanelComponent,
+    RectangleLogicComponent,
+    RectanglePanelComponent,
   ],
   bootstrap: [
     AppComponent,
