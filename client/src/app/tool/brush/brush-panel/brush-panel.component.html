@@ -15,7 +15,7 @@
   <mat-radio-group formControlName="textureOption" (change)="onOptionChange($event)">
     <mat-radio-button *ngFor="let texture of textures" [value]="texture.value">
       {{texture.value}}
-      <img [src]="texture.src" [alt]="texture.value" height="25px">
+      <img [src]="texture.src" [alt]="texture.value" width=25 height=25 />
     </mat-radio-button>
   </mat-radio-group>
 </form>
