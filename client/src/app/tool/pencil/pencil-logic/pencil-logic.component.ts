@@ -97,5 +97,13 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
       this.mouseOnHold = false;
       this.stringPath = '';
     });
+
+    this.renderer.listen(this.svgElRef.nativeElement, 'mouseleave', (mouseEv: MouseEvent) => {
+      if (mouseEv.button === 0 && this.mouseOnHold) {
+        this.mouseOnHold = false;
+        this.stringPath = '';
+      }
+      console.log('mouse est out');
+    });
   }
 }
