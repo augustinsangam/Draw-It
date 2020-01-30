@@ -1,9 +1,8 @@
 export enum Tool {
   Brush,
-  Pencil,
-  //
+  Color,
   Eraser,
-  Palette,
+  Pencil,
   _Len,
   _None,
 }

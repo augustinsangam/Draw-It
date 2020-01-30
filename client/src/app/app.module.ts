@@ -9,7 +9,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MccColorPickerModule } from 'material-community-components';
 
 import { AppComponent } from './app.component';
-import { CanvasComponent } from './canvas/canvas.component';
 import { MaterialModule } from './material.module';
 import { DocumentationComponent } from './pages/documentation/documentation.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -18,6 +17,7 @@ import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 import { PanelComponent } from './panel/panel.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { SvgComponent } from './svg/svg.component';
 import { BrushLogicComponent } from './tool/brush/brush-logic/brush-logic.component';
 import { BrushPanelComponent } from './tool/brush/brush-panel/brush-panel.component';
 import { ColorLogicComponent } from './tool/color/color-logic/color-logic.component';
@@ -34,7 +34,6 @@ import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.co
     AppComponent,
     BrushLogicComponent,
     BrushPanelComponent,
-    CanvasComponent,
     ColorLogicComponent,
     ColorPanelComponent,
     ColorPicklerContentComponent,
@@ -42,14 +41,15 @@ import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.co
     ConfirmationDialogComponent,
     DocumentationComponent,
     HomeComponent,
+    LineLogicComponent,
+    LinePanelComponent,
     NewDrawComponent,
     NotFoundPageComponent,
     PanelComponent,
     PencilLogicComponent,
     PencilPanelComponent,
     SidebarComponent,
-    LineLogicComponent,
-    LinePanelComponent,
+    SvgComponent,
   ],
   imports: [
     BrowserAnimationsModule,

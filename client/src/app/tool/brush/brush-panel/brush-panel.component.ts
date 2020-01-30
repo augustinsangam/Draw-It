@@ -11,7 +11,6 @@ import { BrushService, Texture } from '../brush.service';
   styleUrls: ['./brush-panel.component.scss']
 })
 export class BrushPanelComponent extends ToolPanelComponent {
-
   brushForm: FormGroup;
 
   textures = [
@@ -44,7 +43,7 @@ export class BrushPanelComponent extends ToolPanelComponent {
     this.brushForm = this.formBuilder.group({
       thicknessFormField: [this.service.thickness, [Validators.required]],
       thicknessSlider: [this.service.thickness, []],
-      textureOption: [this.service.texture, []]
+      textureOption: [this.service.texture, []],
     });
   }
 

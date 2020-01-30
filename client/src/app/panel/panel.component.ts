@@ -26,8 +26,8 @@ export class PanelComponent {
     this.collapsePanel = false;
     this.components = new Array(Tool._Len);
     this.components[Tool.Brush] = BrushPanelComponent;
+    this.components[Tool.Color] = ColorPanelComponent;
     this.components[Tool.Pencil] = PencilPanelComponent;
-    this.components[Tool.Palette] = ColorPanelComponent;
     toolSelectorService.listen(tool => this.setTool(tool));
   }
 

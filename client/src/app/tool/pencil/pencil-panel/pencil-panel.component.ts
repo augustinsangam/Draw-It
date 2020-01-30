@@ -10,7 +10,6 @@ import { PencilService } from '../pencil.service';
   styleUrls: ['./pencil-panel.component.scss']
 })
 export class PencilPanelComponent extends ToolPanelComponent {
-
   pencilForm: FormGroup;
 
   constructor(private readonly service: PencilService,
@@ -24,8 +23,9 @@ export class PencilPanelComponent extends ToolPanelComponent {
   }
 
   onThicknessChange($event: Event) {
-    this.pencilForm.patchValue({ thicknessFormField: this.pencilForm.value.thicknessSlider });
+    this.pencilForm.patchValue({
+      thicknessFormField: this.pencilForm.value.thicknessSlider,
+    });
     this.service.thickness = this.pencilForm.value.thicknessSlider;
   }
-
 }
