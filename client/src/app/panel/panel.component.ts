@@ -19,8 +19,8 @@ export class PanelComponent implements OnInit {
     read: ViewContainerRef,
     static: true,
   }) private viewContainerRef: ViewContainerRef;
-  @HostBinding('style.width.px') width: number;
-  private widthOfChild: number;
+  @HostBinding('style.width.px') hostWidth: number;
+  private childWidth: number;
 
   constructor(private readonly componentFactoryResolver: ComponentFactoryResolver,
               private readonly toolSelectorService: ToolSelectorService) {
@@ -29,9 +29,9 @@ export class PanelComponent implements OnInit {
     this.components[Tool.Color] = ColorPanelComponent;
     // this.components[Tool.Eraser] = EraserPanelCompnent;
     this.components[Tool.Pencil] = PencilPanelComponent;
-    this.widthOfChild = 0;
+    this.childWidth = 0;
     // Panel is collapsed by default
-    this.width = 0;
+    this.hostWidth = 0;
   }
 
   ngOnInit() {
@@ -50,16 +50,14 @@ export class PanelComponent implements OnInit {
   }
 
   private setWidthOfChild(width: number) {
-    console.log('WIDTH SET TO ' + width);
-    console.log('OLD WIDTHOFCHILD is ' + this.widthOfChild);
-    this.widthOfChild = this.width = width;
+    this.hostWidth = this.childWidth = width;
   }
 
   private toggle() {
-    if (this.width) {
-      this.width = 0;
+    if (this.hostWidth) {
+      this.hostWidth = 0;
     } else {
-      this.width = this.widthOfChild;
+      this.hostWidth = this.childWidth;
     }
   }
 }
