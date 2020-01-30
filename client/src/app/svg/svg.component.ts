@@ -1,5 +1,5 @@
-import { Component, ComponentFactoryResolver, ElementRef, Type, ViewChild,
-  ViewContainerRef } from '@angular/core';
+import { Component, ComponentFactoryResolver, ElementRef, OnInit, Type,
+  ViewChild, ViewContainerRef } from '@angular/core';
 
 import { BrushLogicComponent } from '../tool/brush/brush-logic/brush-logic.component';
 import { ColorLogicComponent } from '../tool/color/color-logic/color-logic.component';
@@ -13,7 +13,7 @@ import { Tool } from '../tool/tool.enum';
   templateUrl: './svg.component.html',
   styleUrls: ['./svg.component.scss']
 })
-export class SvgComponent {
+export class SvgComponent implements OnInit {
   @ViewChild('container', {
     read: ViewContainerRef,
     static: true,
@@ -22,13 +22,16 @@ export class SvgComponent {
 
   constructor(private readonly elementRef: ElementRef<SVGElement>,
               private readonly componentFactoryResolver: ComponentFactoryResolver,
-              toolSelectorService: ToolSelectorService) {
+              private readonly toolSelectorService: ToolSelectorService) {
     this.components = new Array(Tool._Len);
     this.components[Tool.Brush] = BrushLogicComponent;
     this.components[Tool.Color] = ColorLogicComponent;
     // this.components[Tool.Eraser] = EraserLogicCompnent;
     this.components[Tool.Pencil] = PencilLogicComponent;
-    toolSelectorService.onChange(tool => this.setTool(tool));
+  }
+
+  ngOnInit() {
+    this.toolSelectorService.onChange(tool => this.setTool(tool));
   }
 
   private setTool(tool: Tool) {

@@ -15,7 +15,6 @@ export class PencilPanelComponent extends ToolPanelComponent {
   constructor(private readonly service: PencilService,
               private formBuilder: FormBuilder) {
     super();
-    console.log(this.service);
     this.pencilForm = this.formBuilder.group({
       thicknessFormField: [this.service.thickness, [Validators.required]],
       thicknessSlider: [this.service.thickness, []],
