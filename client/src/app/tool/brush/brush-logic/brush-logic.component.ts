@@ -233,32 +233,5 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
     this.renderer.appendChild(this.svgElRef.nativeElement, svgDefsEl);
   }
 
-  generateFilterFoor(){
-    const svgDefsEl: SVGDefsElement = this.renderer.createElement('defs', this.svgNS);
-    const svgFilterEl: SVGFilterElement = this.renderer.createElement('filter', this.svgNS);
-    svgFilterEl.setAttribute('id', 'filter4');
-    svgFilterEl.setAttribute('x', '0%');
-    svgFilterEl.setAttribute('y', '0%');
-    svgFilterEl.setAttribute('width', '100%');
-    svgFilterEl.setAttribute('height', '100%');
-
-    const svgFeTurbulence: SVGFETurbulenceElement = this.renderer.createElement('feTurbulence', this.svgNS);
-    svgFeTurbulence.setAttribute('baseFrequency', '0.01 0.4');
-    svgFeTurbulence.setAttribute('numOctaves', '2');
-    svgFeTurbulence.setAttribute('result', 'NOISE');
-    this.renderer.appendChild(svgFilterEl, svgFeTurbulence);
-
-    const svgDisplacementMap: SVGFEDisplacementMapElement = this.renderer.createElement('feDisplacementMap', this.svgNS);
-    svgDisplacementMap.setAttribute('in', 'SourceGraphic');
-    svgDisplacementMap.setAttribute('in2', 'NOISE');
-    svgDisplacementMap.setAttribute('scale', '20');
-    svgDisplacementMap.setAttribute('xChannelSelector', 'R');
-    svgDisplacementMap.setAttribute('yChannelSelector', 'R');
-    this.renderer.appendChild(svgFilterEl, svgDisplacementMap);
-
-    this.renderer.appendChild(svgDefsEl, svgFilterEl);
-    this.renderer.appendChild(this.svgElRef.nativeElement, svgDefsEl);
-
-  }
 
 }
