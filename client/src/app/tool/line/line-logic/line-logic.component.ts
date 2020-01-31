@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
+import { Component, ElementRef, Renderer2 } from '@angular/core';
 
 import { ColorService } from '../../color/color.service';
 import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
@@ -11,87 +11,88 @@ import { JonctionOptions, LineService } from '../line.service';
 })
 export class LineLogicComponent extends ToolLogicComponent {
   private paths: Path[] = [];
-  private currentPathIndex = 0;
+  private currentPathIndex = -1;
   private newPath = true;
-  private shiftIsPressed = false;
   private lastPoint: Point;
   constructor(private readonly service: LineService,
               private readonly renderer: Renderer2,
               private readonly serviceColor: ColorService) {
     super();
   }
+  private listeners: (() => void)[] = [];
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
-    this.renderer.listen(this.svgElRef.nativeElement, 'click', (mouseEv: MouseEvent) => {
-      let point = new Point( mouseEv.offsetX , mouseEv.offsetY );
+    const onMouseDown = this.renderer.listen(this.svgElRef.nativeElement, 'mousedown', (mouseEv: MouseEvent) => {
+      let currentPoint = new Point( mouseEv.offsetX , mouseEv.offsetY );
       const path = this.renderer.createElement('path', this.svgNS);
       if (this.newPath) {
-        this.renderer.appendChild( this.svgElRef.nativeElement , path);
-        this.paths[this.currentPathIndex] = new Path ( point, this.renderer, path)
-        this.getPath().setParameters(this.service.thickness.toString(), this.serviceColor.primaryColor);
+        this.createNewPath( currentPoint, path)
         this.newPath = false;
-      } else {
-        if ( this.shiftIsPressed ) {
-         point =  this.getPath().getAlignPoint(point)
-        }
-        this.getPath().addLine (point);
+      } else if ( mouseEv.shiftKey ) {
+         currentPoint =  this.getPath().getAlignedPoint(currentPoint);
       }
       if (this.service.jonctionOption === JonctionOptions.EnableJonction) {
-        const circle = this.renderer.createElement('circle', this.svgNS);
-        this.renderer.appendChild( this.svgElRef.nativeElement , circle);
-        this.renderer.setAttribute(circle, 'fill', this.serviceColor.primaryColor);
-        this.getPath().addJonction (circle, point, this.service.radius.toString());
-      }});
+        this.createJonction(currentPoint);
+      }
+      this.getPath().addLine (currentPoint);
+    });
 
-    this.renderer.listen(this.svgElRef.nativeElement, 'mousemove', (mouseEv: MouseEvent) => {
+    const onMouseMove = this.renderer.listen(this.svgElRef.nativeElement, 'mousemove', (mouseEv: MouseEvent) => {
         if (!this.newPath)  {
           this.lastPoint = new Point( mouseEv.offsetX , mouseEv.offsetY);
           let point = new Point( mouseEv.offsetX , mouseEv.offsetY);
-          if ( this.shiftIsPressed ) {
-            point = this.getPath().getAlignPoint(point)
+          if ( mouseEv.shiftKey )  {
+            point = this.getPath().getAlignedPoint(point)
           }
           this.getPath().addTemporaryLine (point);
           }
       });
 
-    this.renderer.listen(this.svgElRef.nativeElement, 'dblclick', (mouseEv: MouseEvent) => {
+    const onMouseUp = this.renderer.listen(this.svgElRef.nativeElement, 'dblclick', (mouseEv: MouseEvent) => {
         if (!this.newPath)  {
-          let point = new Point( mouseEv.offsetX , mouseEv.offsetY);
+          let currentPoint = new Point( mouseEv.offsetX , mouseEv.offsetY);
           this.getPath().removeLastLine()
           this.getPath().removeLastLine()
-          if (this.distanceIsLessThan3Pixel( point , this.getPath().points[0]) ) {
+          if (this.distanceIsLessThan3Pixel( currentPoint , this.getPath().points[0]) ) {
             this.getPath().closePath();
-          } else {
-            if ( this.shiftIsPressed ) {
-              point =  this.getPath().getAlignPoint(point)
-             }
-            this.getPath().addLine(point);
+          } else if ( mouseEv.shiftKey ) {
+            currentPoint =  this.getPath().getAlignedPoint(currentPoint)
+          }
+          this.getPath().addLine(currentPoint);
+          if (this.service.jonctionOption === JonctionOptions.EnableJonction) {
+            this.createJonction(currentPoint);
           }
           this.newPath = true;
-          this.currentPathIndex += 1;
           }
       });
-    this.renderer.listen('document', 'keydown', (keyEv: KeyboardEvent) => {
+    const onKeyDown = this.renderer.listen('document', 'keydown', (keyEv: KeyboardEvent) => {
           if (keyEv.code === 'Escape' && !this.newPath) {
             this.getPath().removePath();
             this.newPath = true;
-            this.currentPathIndex += 1;
           }
           if (keyEv.code === 'Backspace' && this.getPath().points.length >= 2) {
             this.getPath().removeLastLine();
             this.getPath().addTemporaryLine(this.getPath().lastPoint);
           }
-          if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight' ) {
-              this.shiftIsPressed = true;
-            }
       });
-    this.renderer.listen('document', 'keyup', (keyEv: KeyboardEvent) => {
+    const onKeyUp = this.renderer.listen('document', 'keyup', (keyEv: KeyboardEvent) => {
        if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight' ) {
-              this.shiftIsPressed = false;
               this.getPath().addTemporaryLine(this.lastPoint);
         }
       });
+    this.listeners = [onMouseDown, onMouseMove, onMouseUp, onKeyUp, onKeyDown];
+    }
+    createNewPath(point: Point, path: ElementRef) {
+      this.renderer.appendChild( this.svgElRef.nativeElement , path);
+      this.paths[++this.currentPathIndex] = new Path ( point, this.renderer, path)
+      this.getPath().setParameters(this.service.thickness.toString(), this.serviceColor.primaryColor);
+    }
+    createJonction(center: Point) {
+      const circle = this.renderer.createElement('circle', this.svgNS);
+      this.renderer.appendChild( this.svgElRef.nativeElement , circle);
+      this.renderer.setAttribute(circle, 'fill', this.serviceColor.primaryColor);
+      this.getPath().addJonction (circle, center, this.service.radius.toString());
     }
     distanceIsLessThan3Pixel( point1: Point , point2: Point ): boolean {
       return ((Math.abs(point1.x - point2.x) <= 3) && (Math.abs(point1.y - point2.y) <= 3));
@@ -101,9 +102,9 @@ export class LineLogicComponent extends ToolLogicComponent {
     }
     // tslint:disable-next-line:use-lifecycle-interface
     ngOnDestroy() {
-      this.renderer.destroy();
-    }
-
+      this.listeners.forEach(listenner => {
+        listenner();
+      })}
 }
 export class Path {
   svgNS = ' http://www.w3.org/2000/svg ';
@@ -166,7 +167,7 @@ export class Path {
     this.pathString += instruction;
     this.renderer.setAttribute(this.element, 'd', this.pathString );
   }
-  getAlignPoint(point: Point): Point {
+  getAlignedPoint(point: Point): Point {
     const deltaX = point.x - this.points[this.points.length - 1].x
     const deltaY = point.y - this.points[this.points.length - 1].y
     const angle = Math.atan(deltaY / deltaX)
