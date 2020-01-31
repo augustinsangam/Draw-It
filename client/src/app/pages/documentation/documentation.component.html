@@ -3,7 +3,8 @@
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
         <button mat-button class="leaf-button" (click)="displayNodeContent(node)">
-          <mat-icon *ngIf="node.label === this.contentToDisplay.title">send</mat-icon>
+          <mat-icon *ngIf="node.label === this.contentToDisplay.title"
+                    >send</mat-icon>
           <span class="{{node.label === this.contentToDisplay.title ? 'leaf-active-button' : 'leaf-button'}}">
             {{ node.label }}
           </span>
@@ -41,12 +42,12 @@
 
     <div class="button-nav-wrapper">
         <div class="div-button-nav" *ngIf="contentToDisplay.title != 'Bienvenue'">
-            <button mat-raised-button class="button-nav-left" label="Section précédente"
+            <button mat-raised-button class="button-nav" label="Section précédente"
                 (click)="previous()"
                 [disabled]="isFirstNode()">
                 <mat-icon>arrow_back</mat-icon>  Précédent
             </button>
-            <button mat-raised-button class="button-nav-right" label="Section suivante"
+            <button mat-raised-button class="button-nav" label="Section suivante"
                 (click)="next()"
                 [disabled]="isLastNode()">
                 Suivant  <mat-icon>arrow_forward</mat-icon>
