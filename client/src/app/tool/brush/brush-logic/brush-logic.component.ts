@@ -20,8 +20,8 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
   private listeners: (() => void)[] = [];
 
   constructor(protected renderer: Renderer2,
-              private colorService: ColorService,
-              private brushService: BrushService) {
+    private colorService: ColorService,
+    private brushService: BrushService) {
     super();
   }
 
@@ -123,6 +123,29 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
         }
       });
     this.listeners = [mouseDownListen, mouseMoveListen, mouseUpListen, mouseLeaveListen]
+  }
+
+  generateFilterOne() {
+    const svgDefsEl: SVGDefsElement = this.renderer.createElement('defs', this.svgNS);
+    const svgFilterEl: SVGFilterElement = this.renderer.createElement('filter', this.svgNS);
+    svgFilterEl.setAttribute('id', 'filter1');
+
+    const svgFeTurbulence: SVGFETurbulenceElement = this.renderer.createElement('feturbulence');
+    svgFeTurbulence.setAttribute('type', 'turbulence');
+    svgFeTurbulence.setAttribute('baseFrequency', '0.05');
+    svgFeTurbulence.setAttribute('numOctaves', '2');
+    svgFeTurbulence.setAttribute('result', 'turbulence');
+    this.renderer.appendChild(svgFilterEl, svgFeTurbulence);
+
+    const svgDisplacementMap: SVGFEDisplacementMapElement = this.renderer.createElement('feDisplacementMap');
+    svgDisplacementMap.setAttribute('in2', 'turbulence');
+    svgDisplacementMap.setAttribute('in', 'SourceGraphic');
+    svgDisplacementMap.setAttribute('scale', '50');
+    svgDisplacementMap.setAttribute('xChannelSelector', 'R');
+    svgDisplacementMap.setAttribute('yChannelSelector', 'G');
+    this.renderer.appendChild(svgFilterEl, svgDisplacementMap);
+
+    this.renderer.appendChild(svgDefsEl, svgFilterEl);
   }
 
 }
