@@ -7,7 +7,7 @@ aside {
   flex-shrink: 0;
   width: 300px;
   overflow-y: auto;
-  background-color: #2F3136;
+  background-color: #2a2a3a;
   color: #FFFFFF;
 }
 
@@ -19,7 +19,7 @@ aside {
   margin-top: 0;
   margin-bottom: 0;
   list-style-type: none;
-  background-color: #2F3136;
+  background-color: #53535d;
   color: #FFFFFF;
 }
 
@@ -28,6 +28,7 @@ aside {
   height: 48px;
   text-align: left;
   font-size: larger;
+  background: #53535d;
 }
 
 .leaf-button {
@@ -61,20 +62,20 @@ aside {
   display: block;
   height : 50px;
   width: 100%;
-  background-color: #20262E;
+  background-color: #2a2a3a;
 }
 
 .button-nav {
   text-align: center;
   width: 50%;
   height: 50px;
-  background-color: #20262E;
+  background-color: #2a2a3a;
   color: #FFFFFF;
 }
 
 .description {
-  padding-left: 20vh;
-  padding-right: 20vh;
+  padding-left: 9vh;
+  padding-right: 9vh;
   flex-grow: 1;
   overflow-y: auto;
 }
@@ -86,7 +87,8 @@ aside {
   padding-bottom: 5vh;
   font-size: larger;
   min-height: calc(100% - 10vh);
-  background-color: #2F3136;
+  background-color: #696e84;
   color: #FFFFFF;
   box-shadow: 0px 0px 154px 150px rgba(0,0,0,1);
+  overflow: auto;
 }

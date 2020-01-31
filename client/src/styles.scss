@@ -26,3 +26,14 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   margin-right: auto;
   box-shadow: 10px 10px 5px rgb(39, 39, 39);
 }
+
+.doc-img_floatLeft {
+  display: block;
+  border: 1px solid
+  #acacac;
+  margin-left: auto;
+  margin-right: 20px;
+  box-shadow: 10px 10px 5px
+  #272727;
+  float: left;
+}
