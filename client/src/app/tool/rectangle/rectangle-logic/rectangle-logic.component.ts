@@ -5,7 +5,7 @@ import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
 import { FillOption, RectangleService } from '../rectangle.service';
 
 enum ClickType {
-  CLICKGAUCHE = 1,
+  CLICKGAUCHE = 0,
   CLICKDROIT = 2
 };
 
@@ -47,7 +47,7 @@ export class RectangleLogicComponent extends ToolLogicComponent {
 
     this.allListeners.push(
       this.renderer.listen(this.svgElRef.nativeElement, 'mouseup', (mouseEv: MouseEvent) => {
-        if (mouseEv.which === ClickType.CLICKGAUCHE) {
+        if (mouseEv.button === ClickType.CLICKGAUCHE) {
           this.onDrag = false;
           this.viewTemporaryForm(mouseEv)
           this.getRectangle().setOpacity('1.0')
@@ -80,8 +80,7 @@ export class RectangleLogicComponent extends ToolLogicComponent {
     return this.rectangles[this.currentRectangleIndex];
   }
   initRectangle(mouseEv: MouseEvent) {
-    // FIXME: MOUSEEV.BUTTON
-    if (mouseEv.which === ClickType.CLICKGAUCHE) {
+    if (mouseEv.button === ClickType.CLICKGAUCHE) {
       this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
       const rectangle = this.renderer.createElement('rect', this.svgNS);
       this.renderer.appendChild(this.svgElRef.nativeElement, rectangle);
