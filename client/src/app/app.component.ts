@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Renderer2, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 
 import { HomeComponent } from './pages/home/home.component';
@@ -16,9 +16,17 @@ export interface NewDrawOptions {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements AfterViewInit {
-  drawInProgress = true;
 
-  constructor(public dialog: MatDialog) {
+  drawInProgress = false;
+
+  @ViewChild('main', {
+    static : false
+  }) main: ElementRef<HTMLElement>;
+
+  private svgRef: ElementRef<SVGElement>;
+
+  constructor(public dialog: MatDialog,
+              private renderer: Renderer2) {
   }
 
   ngAfterViewInit() {
@@ -63,6 +71,20 @@ export class AppComponent implements AfterViewInit {
   }
 
   createNewDraw(option: NewDrawOptions) {
-    console.log('On crée le dessin: ' + option);
+    if (!this.drawInProgress) {
+      this.svgRef = this.renderer.createElement('svg');
+      this.renderer.setStyle(this.svgRef, 'height', `${option.height}px`);
+      this.renderer.setStyle(this.svgRef, 'width', `${option.width}px`);
+      this.renderer.setStyle(this.svgRef, 'background-color', option.color);
+      this.renderer.appendChild(this.main.nativeElement, this.svgRef);
+      this.drawInProgress = true;
+    } else {
+      this.renderer.removeChild(this.main, this.svgRef);
+      this.svgRef = this.renderer.createElement('svg');
+      this.renderer.setStyle(this.svgRef, 'height', `${option.height}px`);
+      this.renderer.setStyle(this.svgRef, 'width', `${option.width}px`);
+      this.renderer.setStyle(this.svgRef, 'background-color', option.color);
+      this.renderer.appendChild(this.main.nativeElement, this.svgRef);
+    }
   }
 }
