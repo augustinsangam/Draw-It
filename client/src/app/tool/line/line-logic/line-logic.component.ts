@@ -48,7 +48,6 @@ export class LineLogicComponent extends ToolLogicComponent {
           this.getPath().addTemporaryLine (point);
           }
       });
-
     const onMouseUp = this.renderer.listen(this.svgElRef.nativeElement, 'dblclick', (mouseEv: MouseEvent) => {
         if (!this.newPath)  {
           let currentPoint = new Point( mouseEv.offsetX , mouseEv.offsetY);
