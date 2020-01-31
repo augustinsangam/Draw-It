@@ -79,14 +79,11 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
     this.svgPath = this.renderer.createElement(this.svgTag, this.svgNS);
     this.configureSvgElement(this.svgPath);
     this.renderer.appendChild(this.svgElRef.nativeElement, this.svgPath);
-    console.log(this.stringPath); // tslint:disable-next-line:use-lifecycle-interface
-
   }
 
   onMouseMove(mouseEv: MouseEvent) {
     this.drawing(mouseEv);
     this.svgPath.setAttribute('d', this.stringPath);
-    console.log(this.stringPath);
   }
 
   // tslint:disable-next-line:use-lifecycle-interface
@@ -124,7 +121,6 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
           this.mouseOnHold = false;
           this.stringPath = '';
         }
-        console.log('mouse est out');
       });
     this.listeners = [mouseDownListen, mouseMoveListen, mouseUpListen, mouseLeaveListen]
   }

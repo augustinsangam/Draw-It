@@ -57,7 +57,6 @@ export class LineLogicComponent extends ToolLogicComponent {
             this.getPath().closePath();
           } else if ( mouseEv.shiftKey ) {
             this.lastPoint  =  this.getPath().getAlignedPoint(this.lastPoint )
-            console.log ('je suis la')
           }
           this.getPath().addLine(this.lastPoint );
           if (this.service.jonctionOption === JonctionOptions.EnableJonction) {

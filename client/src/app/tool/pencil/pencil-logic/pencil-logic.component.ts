@@ -77,13 +77,11 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
     this.svgPath = this.renderer.createElement('path', this.svgNS);
     this.configureSvgElement(this.svgPath);
     this.renderer.appendChild(this.svgElRef.nativeElement, this.svgPath);
-    console.log(this.stringPath);
   }
 
   onMouseMove(mouseEv: MouseEvent) {
     this.drawing(mouseEv);
     this.svgPath.setAttribute('d', this.stringPath);
-    console.log(this.stringPath);
   }
 
   ngAfterViewInit() {
@@ -114,8 +112,7 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
           this.mouseOnHold = false;
           this.stringPath = '';
         }
-        console.log('mouse est out');
-      });
+    });
     this.listeners = [mouseDownListen, mouseMoveListen, mouseUpListen, mouseLeaveListen]
   }
 }

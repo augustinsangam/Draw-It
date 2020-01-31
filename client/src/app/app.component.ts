@@ -17,7 +17,9 @@ export interface NewDrawOptions {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements AfterViewInit {
-  drawInProgress = true;
+
+  drawInProgress = false;
+  drawOption: NewDrawOptions = { height : 0, width : 0, color: ''};
 
   commonDialogOptions = {
     width: '650px',
@@ -25,8 +27,7 @@ export class AppComponent implements AfterViewInit {
     data: { drawInProgress: this.drawInProgress }
   };
 
-  constructor(public dialog: MatDialog) {
-  }
+  constructor(public dialog: MatDialog) { };
 
   ngAfterViewInit() {
     this.openHomeDialog();
@@ -81,6 +82,10 @@ export class AppComponent implements AfterViewInit {
   }
 
   createNewDraw(option: NewDrawOptions) {
-    console.log('On crée le dessin: ' + option);
+    if (!this.drawInProgress) {
+      this.drawOption = option;
+    } else {
+      // TODO
+    }
   }
 }

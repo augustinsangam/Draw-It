@@ -6,6 +6,7 @@ import { Subject } from 'rxjs';
 })
 export class ScreenService {
   size: Subject<ScreenSize>;
+  sideBarWidth = 44;
 
   constructor() {
     this.size = new Subject<ScreenSize>();
@@ -15,7 +16,7 @@ export class ScreenService {
   getCurrentSize(): ScreenSize {
     return {
       height: innerHeight,
-      width: innerWidth,
+      width: innerWidth - this.sideBarWidth,
     }
   }
 
