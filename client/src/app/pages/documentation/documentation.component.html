@@ -36,15 +36,15 @@
 
     <div class="button-nav-wrapper">
         <div class="div-button-nav" *ngIf="contentToDisplay.title != 'Bienvenue'">
-            <button mat-raised-button class="button-nav" label="Section précédente"
+            <button mat-raised-button class="button-nav-left" label="Section précédente"
                 (click)="previous()"
                 [disabled]="isFirstNode()">
-                <mat-icon>navigate_before</mat-icon>Section précédente
+                <mat-icon>arrow_back</mat-icon>  Précédent
             </button>
-            <button mat-raised-button class="button-nav" label="Section suivante"
+            <button mat-raised-button class="button-nav-right" label="Section suivante"
                 (click)="next()"
                 [disabled]="isLastNode()">
-                Section suivante<mat-icon>navigate_next</mat-icon>
+                Suivant  <mat-icon>arrow_forward</mat-icon>
             </button>
         </div>
     </div>

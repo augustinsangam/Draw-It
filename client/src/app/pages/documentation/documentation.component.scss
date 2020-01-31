@@ -65,9 +65,18 @@ aside {
   background-color: #2a2a3a;
 }
 
-.button-nav {
+.button-nav-left {
   text-align: center;
-  width: 50%;
+  width: 20%;
+  height: 50px;
+  background-color: #2a2a3a;
+  color: #FFFFFF;
+}
+
+.button-nav-right {
+  text-align: center;
+  float: right;
+  width: 20%;
   height: 50px;
   background-color: #2a2a3a;
   color: #FFFFFF;
@@ -87,7 +96,7 @@ aside {
   padding-bottom: 5vh;
   font-size: larger;
   min-height: calc(100% - 10vh);
-  background-color: #696e84;
+  background-color: #53525d;
   color: #FFFFFF;
   box-shadow: 0px 0px 154px 150px rgba(0,0,0,1);
   overflow: auto;
