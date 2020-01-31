@@ -63,8 +63,10 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
       this.eventManager.addEventListener(this.colorsItemsArray[i].button.nativeElement, 'click', ($event: MouseEvent) => {
         this.colorPreviewPrimary.updateColor(this.colorsItemsArray[i].color);
         this.colorService.primaryColor = this.colorsItemsArray[i].color;
-        this.colorPalette.startColor = this.colorService.rgbToHex(this.colorService.rgbFormRgba(this.colorsItemsArray[i].color));
-        this.colorPalette.initialiseStartingColor();
+        if (this.colorPalette) {
+          this.colorPalette.startColor = this.colorService.rgbToHex(this.colorService.rgbFormRgba(this.colorsItemsArray[i].color));
+          this.colorPalette.initialiseStartingColor();
+        }
         this.colorService.promote(i);
         // Ajouter les couleurs au cercle
         this.updateRecentColors();
@@ -73,8 +75,10 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
         $event.preventDefault();
         this.colorPreviewSecondary.updateColor(this.colorsItemsArray[i].color);
         this.colorService.secondaryColor = this.colorsItemsArray[i].color;
-        this.colorPalette.startColor = this.colorService.rgbToHex(this.colorService.rgbFormRgba(this.colorsItemsArray[i].color));
-        this.colorPalette.initialiseStartingColor();
+        if (this.colorPalette) {
+          this.colorPalette.startColor = this.colorService.rgbToHex(this.colorService.rgbFormRgba(this.colorsItemsArray[i].color));
+          this.colorPalette.initialiseStartingColor();
+        }
         this.colorService.promote(i);
         // Ajouter les couleurs au cercle
         this.updateRecentColors();
