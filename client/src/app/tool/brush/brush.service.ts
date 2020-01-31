@@ -3,11 +3,11 @@ import { Injectable } from '@angular/core';
 import { ToolService } from '../tool.service';
 
 export enum Texture {
-  Texture1 = 'Texture 1',
-  Texture2 = 'Texture 2',
-  Texture3 = 'Texture 3',
-  Texture4 = 'Texture 4',
-  Texture5 = 'Texture 5'
+  Texture1 = 'filter1',
+  Texture2 = 'filter2',
+  Texture3 = 'filter3',
+  Texture4 = 'filter4',
+  Texture5 = 'filter5'
 };
 
 @Injectable({

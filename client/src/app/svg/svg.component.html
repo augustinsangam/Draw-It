@@ -1,1 +1,30 @@
 <ng-template #container></ng-template>
+<svg:defs> -->
+    <svg:filter id="filter1">
+        <feTurbulence type="turbulence" baseFrequency="0.05"
+            numOctaves="2" result="turbulence"/>
+        <feDisplacementMap in2="turbulence" in="SourceGraphic"
+            scale="50" xChannelSelector="R" yChannelSelector="G"/>
+    </svg:filter>
+
+    <filter id="filter2" filterUnits="userSpaceOnUse">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+        <feOffset in="blur" result="offsetBlur" />
+    </filter>
+    
+    <svg:filter id="filter3">
+        <feOffset result="offOut" in="SourceGraphic" dx="20" dy="20" />
+        <feColorMatrix result="matrixOut" in="offOut" type="matrix" />
+        <feGaussianBlur result="blurOut" in="matrixOut" stdDeviation="10" />
+        <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+    </svg:filter>
+
+    <svg:filter id="filter4" x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence baseFrequency="0.01 0.4" result="NOISE" numOctaves="2" />
+        <feDisplacementMap in="SourceGraphic" in2="NOISE" scale="20" xChannelSelector="R" yChannelSelector="R"></feDisplacementMap>
+    </svg:filter>
+
+    <filter id="filter5" x="0" y="0">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="15" />
+    </filter>
+</svg:defs>
