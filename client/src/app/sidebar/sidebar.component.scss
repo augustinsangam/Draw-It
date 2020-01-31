@@ -10,10 +10,9 @@ a {
   display: block;
   color: #FFF;
   padding: 22px;
-  transition: .3s ease;
   background-position: center;
   background-repeat: no-repeat;
-  filter: grayscale(100%);
+  transition: .3s filter;
 }
 
 a:last-child {
@@ -21,8 +20,12 @@ a:last-child {
   background-color: #FF0;
 }
 
-a:hover, .selected, span ~ a {
-  filter: none;
+a:not(.colored) {
+  filter: grayscale(100%);
+}
+
+a:not(.colored):hover, a.selected {
+  filter: grayscale(0) drop-shadow(0 0 5px #FFF);
 }
 
 span {

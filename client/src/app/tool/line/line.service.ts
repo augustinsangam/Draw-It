@@ -13,7 +13,7 @@ export class LineService extends ToolService {
 
   thickness = 2;
   jonctionOption = JonctionOptions.DisableJonction;
-  diameter = 2;
+  radius = 2;
 
   jonctionOptions = [JonctionOptions.EnableJonction, JonctionOptions.DisableJonction];
 

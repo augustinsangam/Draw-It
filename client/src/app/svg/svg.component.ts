@@ -16,6 +16,7 @@ import { Tool } from '../tool/tool.enum';
   styleUrls: ['./svg.component.scss']
 })
 export class SvgComponent implements OnInit {
+
   @ViewChild('container', {
     read: ViewContainerRef,
     static: true,

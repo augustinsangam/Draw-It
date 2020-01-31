@@ -25,9 +25,14 @@ main {
 
 svg {
   cursor: crosshair; // or cell
-  background-color: white; // TODO: Replace by dynamic background color
 }
 
 ::ng-deep .cdk-overlay-container {
   background-color: rgba(0, 0, 0, 0.7);
+}
+
+::ng-deep .documentation {
+  ::ng-deep .mat-dialog-container {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
 }

@@ -1,0 +1,1 @@
+doc déselection ("Inversion de sélection rectangulaire")

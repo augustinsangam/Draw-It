@@ -10,10 +10,12 @@ import { Tool } from '../tool/tool.enum';
 })
 export class SidebarComponent {
   @Output() selectedTool: EventEmitter<Tool>;
+  @Output() documentationClick: EventEmitter<null>;
   private selectedElDOMTokenList: DOMTokenList;
 
   constructor(private readonly toolSelectorService: ToolSelectorService) {
     this.selectedTool = new EventEmitter<Tool>();
+    this.documentationClick = new EventEmitter<null>();
   }
 
   selectTool(tool: Tool, {classList}: HTMLElement) {
@@ -49,4 +51,8 @@ export class SidebarComponent {
   selectRectangle({target}: MouseEvent) {
     this.selectTool(Tool.Rectangle, target as HTMLElement);
   }
+
+  onClick($event: Event) {
+    this.documentationClick.emit(null);
+  };
 }

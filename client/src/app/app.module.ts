@@ -74,6 +74,7 @@ import { RectanglePanelComponent } from './tool/rectangle/rectangle-panel/rectan
     ColorLogicComponent,
     ColorPanelComponent,
     ConfirmationDialogComponent,
+    DocumentationComponent,
     LineLogicComponent,
     LinePanelComponent,
     HomeComponent,

@@ -1,0 +1,131 @@
+[
+  {
+    "label": "Commencer",
+    "children": [
+      {
+        "label": "Créer un nouveau dessin"
+      },
+      {
+        "label": "Reprendre un dessin"
+      },
+      {
+        "label": "Consulter le guide d’utilisation"
+      }
+    ]
+  },
+  {
+    "label": "Les outils",
+    "children": [
+      {
+        "label": "Outils de traçage",
+        "children": [
+          {
+            "label": "Crayon"
+          },
+          {
+            "label": "Pinceau"
+          },
+          {
+            "label": "Plume"
+          },
+          {
+            "label": "Aérosol"
+          }
+        ]
+      },
+      {
+        "label": "Outils de forme",
+        "children": [
+          {
+            "label": "Rectangle"
+          },
+          {
+            "label": "Ellipse"
+          },
+          {
+            "label": "Polygone"
+          },
+          {
+            "label": "Ligne"
+          }
+        ]
+      },
+      {
+        "label": "Couleur",
+        "children": [
+          {
+            "label": "Choisir une couleur"
+          },
+          {
+            "label": "Applicateur de couleur"
+          }
+        ]
+      },
+      {
+        "label": "Texte"
+      },
+      {
+        "label": "Sceau de peinture"
+      },
+      {
+        "label": "Efface - Gomme"
+      },
+      {
+        "label": "Étampe"
+      },
+      {
+        "label": "Pipette"
+      }
+    ]
+  },
+  {
+    "label": "Les sélections",
+    "children": [
+      {
+        "label": "Sélection rectangulaire"
+      },
+      {
+        "label": "Désélection"
+      },
+      {
+        "label": "Déplacement d’une sélection"
+      },
+      {
+        "label": "Redimensionnement d’une sélection"
+      },
+      {
+        "label": "Rotation d’une sélection"
+      }
+    ]
+  },
+  {
+    "label": "Options de surface de dessin",
+    "children": [
+      {
+        "label": "Affichage de la grille"
+      },
+      {
+        "label": "Magnétisme"
+      }
+    ]
+  },
+  {
+    "label": "Exportation - Sauvegarde",
+    "children": [
+      {
+        "label": "Sauvegarder votre dessin"
+      },
+      {
+        "label": "Exporter votre dessin"
+      }
+    ]
+  },
+  {
+    "label": "Informations",
+    "children": [
+      {
+        "label": "À propos de nous"
+      }
+    ]
+  }
+]

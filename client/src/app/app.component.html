@@ -1,4 +1,8 @@
-<app-sidebar></app-sidebar>
+<app-sidebar (documentationClick)="openDocumentationDialog(false)"></app-sidebar>
 <app-panel></app-panel>
-<main #main>
+<main>
+  <svg app-svg [attr.height.px]="drawOption.height" 
+  [attr.width.px]="drawOption.width"
+  [ngStyle]="{ backgroundColor : drawOption.color }">
+</svg>
 </main>
