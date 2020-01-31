@@ -4,6 +4,7 @@ import { EventManager } from '@angular/platform-browser';
 
 import { ToolPanelComponent } from '../../tool-panel/tool-panel.component';
 import { ColorService } from '../color.service';
+import { ColorPicklerContentComponent } from './color-pickler-content/color-pickler-content.component';
 import { ColorPicklerItemComponent } from './color-pickler-item/color-pickler-item.component';
 
 @Component({
@@ -36,6 +37,11 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
   @ViewChildren(ColorPicklerItemComponent)
   colorsItems: QueryList<ColorPicklerItemComponent>;
 
+  @ViewChild('colorPalette', {
+    static: false,
+    read: ColorPicklerContentComponent
+  }) colorPalette: ColorPicklerContentComponent;
+
   colorsItemsArray: ColorPicklerItemComponent[];
 
   ngOnInit() {
@@ -57,6 +63,10 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
       this.eventManager.addEventListener(this.colorsItemsArray[i].button.nativeElement, 'click', ($event: MouseEvent) => {
         this.colorPreviewPrimary.updateColor(this.colorsItemsArray[i].color);
         this.colorService.primaryColor = this.colorsItemsArray[i].color;
+        if (this.colorPalette) {
+          this.colorPalette.startColor = this.colorService.rgbToHex(this.colorService.rgbFormRgba(this.colorsItemsArray[i].color));
+          this.colorPalette.initialiseStartingColor();
+        }
         this.colorService.promote(i);
         // Ajouter les couleurs au cercle
         this.updateRecentColors();
@@ -65,6 +75,10 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
         $event.preventDefault();
         this.colorPreviewSecondary.updateColor(this.colorsItemsArray[i].color);
         this.colorService.secondaryColor = this.colorsItemsArray[i].color;
+        if (this.colorPalette) {
+          this.colorPalette.startColor = this.colorService.rgbToHex(this.colorService.rgbFormRgba(this.colorsItemsArray[i].color));
+          this.colorPalette.initialiseStartingColor();
+        }
         this.colorService.promote(i);
         // Ajouter les couleurs au cercle
         this.updateRecentColors();
@@ -105,6 +119,12 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
 
   onShowPalette() {
     this.showPolatte = !this.showPolatte ;
+  }
+
+  getStartColor() {
+    const color = (this.colorOption === 'PRIMARY') ?
+    this.colorService.primaryColor : this.colorService.secondaryColor;
+    return this.colorService.rgbToHex(this.colorService.rgbFormRgba(color))
   }
 
 }

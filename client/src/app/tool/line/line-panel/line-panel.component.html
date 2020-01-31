@@ -12,12 +12,12 @@
       <span matSuffix>px</span>
     </mat-form-field>
   </div>
-  <p>Points de jonction</p>
+  <p>
+    Points de jonction 
+    <mat-slide-toggle formControlName="jonctionOption" (change)="onChangeJonctionOption($event)"></mat-slide-toggle>
+  </p>
   <div class="junction-options">
-    <mat-radio-group formControlName="jonctionOption" (change)="onChangeJonctionOption($event)">
-      <mat-radio-button *ngFor="let option of jonctionOptions" [value]="option">{{option}}</mat-radio-button>
-    </mat-radio-group>
-    <div class="juction-preferences" *ngIf="jonctionOption == jonctionOptions[0]">
+    <div class="juction-preferences" *ngIf="this.service.jonctionOption">
       <p>Diamètre des points</p>
         <mat-slider min="1" 
                 max="100" step="1" 
@@ -34,3 +34,5 @@
     </div>
   </div>
 </form>
+<hr>
+<app-color-panel></app-color-panel>

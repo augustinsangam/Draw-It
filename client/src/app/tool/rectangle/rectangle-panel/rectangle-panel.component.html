@@ -1,22 +1,24 @@
 <h1>Rectangle</h1>
 <form [formGroup]="rectangleForm">
-  <p>Épaisseur du contour</p>
-  <div class="thickness">
-    <mat-slider min=0 max=100 step=1
-      (input)="onThicknessChange($event)"
-      (change)="onThicknessChange($event)"
+  <p>
+    <mat-slide-toggle formControlName="fillOption" #fillOptionRef>
+    </mat-slide-toggle>
+    Remplissage
+  </p>
+  <p>
+    <mat-slide-toggle formControlName="borderOption" #borderOptionRef>
+    </mat-slide-toggle>
+    Contour
+  </p>
+  <div class="thickness" *ngIf="this.service.borderOption">
+    <mat-slider min=1 max=100 step=1 (input)="onThicknessChange($event)" (change)="onThicknessChange($event)"
       formControlName="thicknessSlider">
     </mat-slider>
     <mat-form-field>
-      <input readonly matInput formControlName="thicknessFormField" />
+      <input matInput formControlName="thicknessFormField" readonly />
       <span matSuffix>px</span>
     </mat-form-field>
   </div>
-  <p>Remplissage</p>
-  <div class="fill-options">
-    <mat-radio-group formControlName="fillOption" (change)="onChangeFillOption($event)">
-      <mat-radio-button [value]="fillOptions[0]">{{fillOptions[0]}}</mat-radio-button>
-      <mat-radio-button [value]="fillOptions[1]" [disabled]="disableWithoutFill">{{fillOptions[1]}}</mat-radio-button>
-    </mat-radio-group>
-  </div>
 </form>
+<hr>
+<app-color-panel></app-color-panel>
