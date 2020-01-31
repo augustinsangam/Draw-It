@@ -23,10 +23,10 @@ export class LinePanelComponent extends ToolPanelComponent {
     console.log(this.service);
     this.lineForm = this.formBuilder.group({
       thicknessFormField: [this.service.thickness, [Validators.required]],
-      diameterFormField: [this.service.diameter, [Validators.required]],
+      radiusFormField: [this.service.radius, [Validators.required]],
       jonctionOption: [this.service.jonctionOption, []],
       thicknessSlider: [this.service.thickness, []],
-      diameterSlider: [this.service.diameter, []],
+      radiusSlider: [this.service.radius, []],
     });
   }
 
@@ -40,9 +40,9 @@ export class LinePanelComponent extends ToolPanelComponent {
     this.service.thickness = this.lineForm.value.thicknessSlider;
   }
 
-  onDiameterChange($event: Event) {
-    this.lineForm.patchValue({ diameterFormField: this.lineForm.value.diameterSlider });
-    this.service.diameter = this.lineForm.value.diameterSlider;
+  onRadiusChange($event: Event) {
+    this.lineForm.patchValue({ radiusFormField: this.lineForm.value.radiusSlider });
+    this.service.radius = this.lineForm.value.radiusSlider;
   }
 
 }
