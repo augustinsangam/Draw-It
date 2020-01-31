@@ -18,7 +18,7 @@ export class ColorPicklerItemComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.updateColor(this.color);
-    this.renderer.setStyle(this.button.nativeElement, 'border', '1px solid grey');
+    this.renderer.setStyle(this.button.nativeElement, 'border', '2px solid grey');
   }
 
   updateColor(color: string) {
