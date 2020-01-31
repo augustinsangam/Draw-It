@@ -23,7 +23,7 @@ export class LineLogicComponent extends ToolLogicComponent {
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
-    const onMouseDown = this.renderer.listen(this.svgElRef.nativeElement, 'mousedown', (mouseEv: MouseEvent) => {
+    const onMouseDown = this.renderer.listen(this.svgElRef.nativeElement, 'click', (mouseEv: MouseEvent) => {
       let currentPoint = new Point( mouseEv.offsetX , mouseEv.offsetY );
       const path = this.renderer.createElement('path', this.svgNS);
       if (this.newPath) {
@@ -32,7 +32,7 @@ export class LineLogicComponent extends ToolLogicComponent {
       } else if ( mouseEv.shiftKey ) {
          currentPoint =  this.getPath().getAlignedPoint(currentPoint);
       }
-      if (this.service.jonctionOption === JonctionOptions.EnableJonction) {
+      if (this.getPath().withJonctions) {
         this.createJonction(currentPoint);
       }
       this.getPath().addLine (currentPoint);
@@ -50,17 +50,19 @@ export class LineLogicComponent extends ToolLogicComponent {
       });
     const onMouseUp = this.renderer.listen(this.svgElRef.nativeElement, 'dblclick', (mouseEv: MouseEvent) => {
         if (!this.newPath)  {
-          this.lastPoint  = new Point( mouseEv.offsetX , mouseEv.offsetY);
-          this.getPath().removeLastLine()
-          this.getPath().removeLastLine()
-          if (this.distanceIsLessThan3Pixel( this.lastPoint  , this.getPath().points[0]) ) {
+          let currentPoint  = new Point( mouseEv.offsetX , mouseEv.offsetY);
+          this.getPath().removeLastLine();
+          this.getPath().removeLastLine();
+          if (this.distanceIsLessThan3Pixel( currentPoint  , this.getPath().points[0]) ) {
             this.getPath().closePath();
-          } else if ( mouseEv.shiftKey ) {
-            this.lastPoint  =  this.getPath().getAlignedPoint(this.lastPoint )
-          }
-          this.getPath().addLine(this.lastPoint );
-          if (this.service.jonctionOption === JonctionOptions.EnableJonction) {
-            this.createJonction(this.lastPoint );
+          } else {
+            if ( mouseEv.shiftKey ) {
+              currentPoint  =  this.getPath().getAlignedPoint(currentPoint )
+            }
+            this.getPath().addLine(currentPoint );
+            if (this.getPath().withJonctions) {
+              this.createJonction(currentPoint );
+            }
           }
           this.newPath = true;
           }
@@ -74,9 +76,13 @@ export class LineLogicComponent extends ToolLogicComponent {
             this.getPath().removeLastLine();
             this.getPath().addTemporaryLine(this.getPath().lastPoint);
           }
+          if ((keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') && !this.newPath) {
+            const currentPoint  =  this.getPath().getAlignedPoint(this.getPath().lastPoint )
+            this.getPath().addTemporaryLine(currentPoint);
+          }
       });
     const onKeyUp = this.renderer.listen('document', 'keyup', (keyEv: KeyboardEvent) => {
-       if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight' ) {
+       if ((keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') && !this.newPath) {
               this.getPath().addTemporaryLine(this.lastPoint);
         }
       });
@@ -84,7 +90,8 @@ export class LineLogicComponent extends ToolLogicComponent {
     }
     createNewPath(point: Point, path: ElementRef) {
       this.renderer.appendChild( this.svgElRef.nativeElement , path);
-      this.paths[++this.currentPathIndex] = new Path ( point, this.renderer, path)
+      const withJonctions = this.service.jonctionOption === JonctionOptions.EnableJonction
+      this.paths[++this.currentPathIndex] = new Path ( point, this.renderer, path, withJonctions)
       this.getPath().setParameters(this.service.thickness.toString(), this.serviceColor.primaryColor);
     }
     createJonction(center: Point) {
@@ -112,13 +119,15 @@ export class Path {
   instructions: string[] = [];
   private pathString = '';
   lastPoint: Point;
-  constructor( initialPoint: Point, private renderer: Renderer2, private element: ElementRef ) {
+  withJonctions: boolean;
+  constructor( initialPoint: Point, private renderer: Renderer2, private element: ElementRef, withJonction: boolean ) {
     this.points.push(initialPoint);
     const instruction = 'M ' + initialPoint.x.toString() + ' ' + initialPoint.y.toString() + ' ';
     this.instructions.push(instruction);
     this.pathString += instruction;
     this.renderer.setAttribute(this.element, 'd', this.pathString );
     this.renderer.setAttribute(this.element, 'fill', 'none')
+    this.withJonctions = withJonction;
   }
   addLine(point: Point) {
     this.points.push(point);
@@ -139,7 +148,7 @@ export class Path {
     this.points.pop();
     this.pathString = this.pathString.substr(0, this.pathString.length - String(this.instructions.pop()).length );
     this.renderer.setAttribute(this.element, 'd', this.pathString );
-    if (this.jonctions.length) {
+    if (this.withJonctions && this.jonctions.length > 1) {
       this.removeLastJonction();
     }
   }
@@ -155,8 +164,8 @@ export class Path {
   removeLastJonction() {
     const lastCircle = this.jonctions.pop();
     if (lastCircle !== undefined) {
-    const lastJonction = lastCircle.element;
-    this.renderer.removeChild(this.renderer.parentNode(lastJonction), lastJonction);
+      const lastJonction = lastCircle.element;
+      this.renderer.removeChild(this.renderer.parentNode(lastJonction), lastJonction);
     }
   }
   closePath() {

@@ -56,9 +56,10 @@ export class RectangleLogicComponent extends ToolLogicComponent {
     ));
 
     this.allListeners.push(
-      this.renderer.listen(this.svgElRef.nativeElement, 'keydown', (keyEv: KeyboardEvent) => {
+      this.renderer.listen('document', 'keydown', (keyEv: KeyboardEvent) => {
         if (this.onDrag) {
           if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
+            console.log('jjjjjeeeee sssssuuuuuiiiiisssss lllllaaaaa')
             this.getRectangle().drawTemporarySquare(this.currentPoint)
           }
       }
@@ -69,6 +70,7 @@ export class RectangleLogicComponent extends ToolLogicComponent {
       this.renderer.listen('document', 'keyup', (keyEv: KeyboardEvent) => {
         if (this.onDrag) {
           if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
+            console.log('wtf')
             this.getRectangle().drawTemporaryRectangle(this.currentPoint)
           }
         }
