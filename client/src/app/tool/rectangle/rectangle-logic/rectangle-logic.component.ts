@@ -6,7 +6,7 @@ import { RectangleService } from '../rectangle.service';
 
 enum ClickType {
   CLICKGAUCHE = 0,
-  CLICKDROIT = 2
+  CLICKDROIT = 1
 };
 
 @Component({
@@ -46,8 +46,8 @@ export class RectangleLogicComponent extends ToolLogicComponent {
     ));
 
     this.allListeners.push(
-      this.renderer.listen(this.svgElRef.nativeElement, 'mouseup', (mouseEv: MouseEvent) => {
-        if (mouseEv.button === ClickType.CLICKGAUCHE) {
+      this.renderer.listen('document', 'mouseup', (mouseEv: MouseEvent) => {
+        if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
           this.onDrag = false;
           this.viewTemporaryForm(mouseEv)
           this.getRectangle().setOpacity('1.0')
