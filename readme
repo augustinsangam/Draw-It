@@ -68,6 +68,8 @@ HTML {{{
 	- Do not quote if number
 	- Single quote if string or spaced numbers
 	- All ‘div’ tags must be referenced by class (for CSS) or by id (for JS)
+	- Self tags should end with / (e.g. <img />)
+	- Images must have alt, height and width attributes
 }}}
 
 vim:fdm=marker:cc=80:tw=80:fo+=t:fo-=l

@@ -1,9 +1,4 @@
-/*:host {
+:host {
+  transition: .3s width;
   overflow-x: hidden;
-  transition: flex 1s;
-  background-color: #2F3136;
 }
-
-:host:hover {
-  flex: 0;
-}*/

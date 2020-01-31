@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatRadioChange } from '@angular/material';
 
@@ -36,10 +36,10 @@ export class BrushPanelComponent extends ToolPanelComponent {
     },
   ];
 
-  constructor(private readonly service: BrushService,
+  constructor(elementRef: ElementRef<HTMLElement>,
+              private readonly service: BrushService,
               private formBuilder: FormBuilder) {
-    super();
-    console.log(this.service);
+    super(elementRef);
     this.brushForm = this.formBuilder.group({
       thicknessFormField: [this.service.thickness, [Validators.required]],
       thicknessSlider: [this.service.thickness, []],

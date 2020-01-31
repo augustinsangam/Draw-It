@@ -1,10 +1,8 @@
-import { AfterViewInit, Component, ElementRef, ViewChild,  } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
-import { ToolSelectorService } from './tool/tool-selector/tool-selector.service';
-import { Tool } from './tool/tool.enum';
 
 export interface NewDrawOptions {
   width: number;
@@ -18,22 +16,9 @@ export interface NewDrawOptions {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements AfterViewInit {
-
-  @ViewChild('panel', {
-    static: false,
-  }) panel: ElementRef<HTMLElement>;
-
-  tool: Tool;
-
-  collapsePanel: boolean;
-
   drawInProgress = true;
 
-  constructor(public dialog: MatDialog,
-              toolSelectorService: ToolSelectorService) {
-    this.collapsePanel = true;
-    toolSelectorService.onChange(() => this.collapsePanel = false);
-    toolSelectorService.onSame(() => this.collapsePanel = !this.collapsePanel);
+  constructor(public dialog: MatDialog) {
   }
 
   ngAfterViewInit() {
@@ -78,6 +63,6 @@ export class AppComponent implements AfterViewInit {
   }
 
   createNewDraw(option: NewDrawOptions) {
-    console.log('On crée le dessin');
+    console.log('On crée le dessin: ' + option);
   }
 }

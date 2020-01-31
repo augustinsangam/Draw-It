@@ -1,40 +1,35 @@
-<main>
-    <form [formGroup]="lineForm">
-        <p>Épaisseur</p>
-        <div class="thickness">
-            <mat-slider min="1" 
-                        max="100" step="1" 
-                        (input)="onThicknessChange($event)" 
-                        (change)="onThicknessChange($event)" 
-                        formControlName="thicknessSlider">
-            </mat-slider>
-            <mat-form-field>
-                <input  matInput 
-                        formControlName="thicknessFormField"
-                        readonly>
-                <span matSuffix>px</span>
-            </mat-form-field>
-        </div>
-        <p>Points de jonction</p>
-        <div class="junction-options">
-            <mat-radio-group formControlName="jonctionOption" (change)="onChangeJonctionOption($event)">
-                <mat-radio-button *ngFor="let option of jonctionOptions" [value]="option">{{option}}</mat-radio-button>
-            </mat-radio-group>
-            <div class="juction-preferences" *ngIf="jonctionOption == jonctionOptions[0]">
-                <p>Diamètre des points</p>
-                <mat-slider min="1" 
-                        max="100" step="1" 
-                        (input)="onRadiusChange($event)" 
-                        (change)="onRadiusChange($event)" 
-                        formControlName="radiusSlider">
-                </mat-slider>
-                <mat-form-field>
-                    <input  matInput 
-                            formControlName="radiusFormField"
-                            readonly>
-                    <span matSuffix>px</span>
-                </mat-form-field>
-            </div>
-        </div>
-    </form>
-</main>
+<form [formGroup]="lineForm">
+  <p>Épaisseur</p>
+  <div class="thickness">
+    <mat-slider min=1 max=100 step=1
+      (input)="onThicknessChange($event)"
+      (change)="onThicknessChange($event)"
+      formControlName="thicknessSlider">
+    </mat-slider>
+    <mat-form-field>
+      <input readonly matInput formControlName="thicknessFormField" />
+      <span matSuffix>px</span>
+    </mat-form-field>
+  </div>
+  <p>Points de jonction</p>
+  <div class="junction-options">
+    <mat-radio-group formControlName="jonctionOption" (change)="onChangeJonctionOption($event)">
+      <mat-radio-button *ngFor="let option of jonctionOptions" [value]="option">{{option}}</mat-radio-button>
+    </mat-radio-group>
+    <div class="juction-preferences" *ngIf="jonctionOption == jonctionOptions[0]">
+      <p>Diamètre des points</p>
+        <mat-slider min="1" 
+                max="100" step="1" 
+                (input)="onRadiusChange($event)" 
+                (change)="onRadiusChange($event)" 
+                formControlName="radiusSlider">
+        </mat-slider>
+        <mat-form-field>
+            <input  matInput 
+                    formControlName="radiusFormField"
+                    readonly>
+            <span matSuffix>px</span>
+        </mat-form-field>
+    </div>
+  </div>
+</form>

@@ -80,6 +80,7 @@ export class RectangleLogicComponent extends ToolLogicComponent {
     return this.rectangles[this.currentRectangleIndex];
   }
   initRectangle(mouseEv: MouseEvent) {
+    // FIXME: MOUSEEV.BUTTON
     if (mouseEv.which === ClickType.CLICKGAUCHE) {
       this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
       const rectangle = this.renderer.createElement('rect', this.svgNS);

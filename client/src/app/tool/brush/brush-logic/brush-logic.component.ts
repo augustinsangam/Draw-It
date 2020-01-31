@@ -19,7 +19,6 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
   private svgPath: SVGPathElement;
   private listeners: (() => void)[] = [];
 
-
   constructor(protected renderer: Renderer2,
               private colorService: ColorService,
               private brushService: BrushService) {

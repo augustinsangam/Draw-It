@@ -16,10 +16,7 @@ export class ColorLogicComponent extends ToolLogicComponent {
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
-    console.log('From ColorLogicComponent');
-    console.log(' - elementRef is');
-    console.log(this.svgElRef);
-    console.log(' - service is');
-    console.log(this.service);
+    // tslint:disable-next-line no-unused-expression
+    this.service; // TODO: Remove
   }
 }
