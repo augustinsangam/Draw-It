@@ -17,8 +17,9 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
   stringPath: string;
   private svgPath: SVGPathElement;
   private mouseOnHold: boolean;
+  private listeners: (() => void)[] = [];
 
-  constructor(private readonly renderer: Renderer2,
+  constructor(protected renderer: Renderer2,
               private colorService: ColorService,
               private pencilService: PencilService) {
     super();
@@ -33,6 +34,12 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
     this.strokeLineCap = 'round';
     this.mouseOnHold = false;
   }
+
+  // tslint:disable-next-line:use-lifecycle-interface
+  ngOnDestroy() {
+    this.listeners.forEach(listenner => {
+      listenner();
+    })}
 
   makeFirstPoint(mouseEv: MouseEvent) {
     if (mouseEv.button === 0) {
@@ -80,30 +87,35 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
   }
 
   ngAfterViewInit() {
-    this.renderer.listen(this.svgElRef.nativeElement, 'mousedown', (mouseEv: MouseEvent) => {
-      if (mouseEv.button === 0) {
-        this.mouseOnHold = true;
-        this.onMouseDown(mouseEv);
-      }
-    });
+    const mouseDownListen = this.renderer.listen(this.svgElRef.nativeElement,
+      'mousedown', (mouseEv: MouseEvent) => {
+        if (mouseEv.button === 0) {
+          this.mouseOnHold = true;
+          this.onMouseDown(mouseEv);
+        }
+      });
 
-    this.renderer.listen(this.svgElRef.nativeElement, 'mousemove', (mouseEv: MouseEvent) => {
-      if (mouseEv.button === 0 && this.mouseOnHold) {
-        this.onMouseMove(mouseEv);
-      }
-    });
+    const mouseMoveListen = this.renderer.listen(this.svgElRef.nativeElement,
+      'mousemove', (mouseEv: MouseEvent) => {
+        if (mouseEv.button === 0 && this.mouseOnHold) {
+          this.onMouseMove(mouseEv);
+        }
+      });
 
-    this.renderer.listen(this.svgElRef.nativeElement, 'mouseup', (mouseEv: MouseEvent) => {
-      this.mouseOnHold = false;
-      this.stringPath = '';
-    });
-
-    this.renderer.listen(this.svgElRef.nativeElement, 'mouseleave', (mouseEv: MouseEvent) => {
-      if (mouseEv.button === 0 && this.mouseOnHold) {
+    const mouseUpListen = this.renderer.listen(this.svgElRef.nativeElement,
+      'mouseup', (mouseEv: MouseEvent) => {
         this.mouseOnHold = false;
         this.stringPath = '';
-      }
-      console.log('mouse est out');
-    });
+      });
+
+    const mouseLeaveListen = this.renderer.listen(this.svgElRef.nativeElement,
+      'mouseleave', (mouseEv: MouseEvent) => {
+        if (mouseEv.button === 0 && this.mouseOnHold) {
+          this.mouseOnHold = false;
+          this.stringPath = '';
+        }
+        console.log('mouse est out');
+      });
+    this.listeners = [mouseDownListen, mouseMoveListen, mouseUpListen, mouseLeaveListen]
   }
 }

@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, Renderer2 } from '@angular/core';
-
 import { ColorService } from '../../color/color.service';
 import { PencilBrushCommon } from '../../pencil-brush/pencil-brush-common';
 import { BrushService } from '../brush.service';
@@ -16,10 +15,12 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
   strokeLineCap: string;
   stringPath: string;
   filter: string;
-  private svgPath: SVGPathElement;
   private mouseOnHold: boolean;
+  private svgPath: SVGPathElement;
+  private listeners: (() => void)[] = [];
 
-  constructor(private readonly renderer: Renderer2,
+
+  constructor(protected renderer: Renderer2,
               private colorService: ColorService,
               private brushService: BrushService) {
     super();
@@ -79,7 +80,8 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
     this.svgPath = this.renderer.createElement(this.svgTag, this.svgNS);
     this.configureSvgElement(this.svgPath);
     this.renderer.appendChild(this.svgElRef.nativeElement, this.svgPath);
-    console.log(this.stringPath);
+    console.log(this.stringPath); // tslint:disable-next-line:use-lifecycle-interface
+
   }
 
   onMouseMove(mouseEv: MouseEvent) {
@@ -88,32 +90,44 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
     console.log(this.stringPath);
   }
 
+  // tslint:disable-next-line:use-lifecycle-interface
+  ngOnDestroy() {
+    this.listeners.forEach(listenner => {
+      listenner();
+    })
+  }
+
   ngAfterViewInit() {
-    this.renderer.listen(this.svgElRef.nativeElement, 'mousedown', (mouseEv: MouseEvent) => {
-      if (mouseEv.button === 0) {
-        this.mouseOnHold = true;
-        this.onMouseDown(mouseEv);
-      }
-    });
+    const mouseDownListen = this.renderer.listen(this.svgElRef.nativeElement,
+      'mousedown', (mouseEv: MouseEvent) => {
+        if (mouseEv.button === 0) {
+          this.mouseOnHold = true;
+          this.onMouseDown(mouseEv);
+        }
+      });
 
-    this.renderer.listen(this.svgElRef.nativeElement, 'mousemove', (mouseEv: MouseEvent) => {
-      if (mouseEv.button === 0 && this.mouseOnHold) {
-        this.onMouseMove(mouseEv);
-      }
-    });
+    const mouseMoveListen = this.renderer.listen(this.svgElRef.nativeElement,
+      'mousemove', (mouseEv: MouseEvent) => {
+        if (mouseEv.button === 0 && this.mouseOnHold) {
+          this.onMouseMove(mouseEv);
+        }
+      });
 
-    this.renderer.listen(this.svgElRef.nativeElement, 'mouseup', (mouseEv: MouseEvent) => {
-      this.mouseOnHold = false;
-      this.stringPath = '';
-    });
-
-    this.renderer.listen(this.svgElRef.nativeElement, 'mouseleave', (mouseEv: MouseEvent) => {
-      if (mouseEv.button === 0 && this.mouseOnHold) {
+    const mouseUpListen = this.renderer.listen(this.svgElRef.nativeElement,
+      'mouseup', (mouseEv: MouseEvent) => {
         this.mouseOnHold = false;
         this.stringPath = '';
-      }
-      console.log('mouse est out');
-    });
+      });
+
+    const mouseLeaveListen = this.renderer.listen(this.svgElRef.nativeElement,
+      'mouseleave', (mouseEv: MouseEvent) => {
+        if (mouseEv.button === 0 && this.mouseOnHold) {
+          this.mouseOnHold = false;
+          this.stringPath = '';
+        }
+        console.log('mouse est out');
+      });
+    this.listeners = [mouseDownListen, mouseMoveListen, mouseUpListen, mouseLeaveListen]
   }
 
 }

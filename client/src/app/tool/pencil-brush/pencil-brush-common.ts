@@ -1,4 +1,3 @@
-
 import { ToolLogicComponent } from '../tool-logic/tool-logic.component';
 
 export abstract class PencilBrushCommon extends ToolLogicComponent {
