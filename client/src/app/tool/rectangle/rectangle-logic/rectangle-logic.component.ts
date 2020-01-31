@@ -2,7 +2,7 @@ import { Component, ElementRef, Renderer2, } from '@angular/core';
 
 import { ColorService } from '../../color/color.service';
 import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
-import { FillOption, RectangleService } from '../rectangle.service';
+import { RectangleService } from '../rectangle.service';
 
 enum ClickType {
   CLICKGAUCHE = 0,
@@ -88,10 +88,10 @@ export class RectangleLogicComponent extends ToolLogicComponent {
       this.renderer.appendChild(this.svgElRef.nativeElement, rectangle);
       this.rectangles[++this.currentRectangleIndex] = new Rectangle(this.currentPoint, this.renderer, rectangle);
       this.getRectangle().setParameters({
-        borderWidth: this.service.thickness.toString(),
+        borderWidth: (this.service.borderOption) ? this.service.thickness.toString() : '0',
         borderColor: this.colorService.secondaryColor,
         fillColor: this.colorService.primaryColor,
-        filled: (this.service.fillOption === FillOption.With),
+        filled: this.service.fillOption,
       });
       this.onDrag = true;
     }
