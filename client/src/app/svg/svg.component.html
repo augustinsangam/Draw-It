@@ -1,5 +1,5 @@
 <ng-template #container></ng-template>
-<svg:defs> -->
+<svg:defs> 
     <svg:filter id="filter1">
         <feTurbulence type="turbulence" baseFrequency="0.05"
             numOctaves="2" result="turbulence"/>
@@ -24,7 +24,19 @@
         <feDisplacementMap in="SourceGraphic" in2="NOISE" scale="20" xChannelSelector="R" yChannelSelector="R"></feDisplacementMap>
     </svg:filter>
 
-    <filter id="filter5" x="0" y="0">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="15" />
+    <filter id="filter4" filterUnits="objectBoundingBox" height="100%" id="AI_Turbulence_5" width="100%" x="0%" y="0%">
+        <feTurbulence  baseFrequency="0.4" numOctaves="1" result="turb" stitchTiles="noStitch" type="fractalNoise"></feTurbulence>
+        <feComposite  in="turb" in2="SourceAlpha" operator="in"></feComposite>
     </filter>
+
+    <filter id="filter5">
+        <feTurbulence result="outlineNoise" baseFrequency="0.9" numOctaves="1" seed="1" type="fractalNoise" />
+        <feDisplacementMap in="SourceGraphic" in2="outlineNoise" result="outline" scale="20" />
+        <feTurbulence type="fractalNoise" baseFrequency='0.7' result='textureNoise' numOctaves="5" />
+        <feColorMatrix type="matrix" values="0 0 0 0 0,
+          0 0 0 0 0,
+          0 0 0 0 0,
+          0 0 0 0 1" in="textureNoise" result="texture" />
+        <feComposite in="outline" in2="texture" operator="in" />
+      </filter>
 </svg:defs>
