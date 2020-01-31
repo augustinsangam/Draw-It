@@ -99,7 +99,7 @@ export class ColorPicklerContentComponent implements AfterViewInit {
         b: startColor.b,
         g: startColor.g,
         a: 100,
-        hex: this.startColor.substring(1, 7)
+        hex: this.startColor.substring(0, 7)
       });
       this.drawTracker(startColor.b, startColor.g);
     }, 0);
@@ -107,8 +107,10 @@ export class ColorPicklerContentComponent implements AfterViewInit {
     this.eventManager.addEventListener(this.canvas.nativeElement, 'click', ($event: MouseEvent) => {
       this.buildCanvas(this.colorForm.controls.r.value);
 
-      const blue = $event.x - this.canvas.nativeElement.offsetLeft;
-      const green = $event.y - this.canvas.nativeElement.offsetTop;
+      const boundingClient = this.canvas.nativeElement.getBoundingClientRect();
+      const blue = Math.round($event.clientX - boundingClient.left);
+      const green = Math.round($event.clientY - boundingClient.top);
+
       this.colorForm.patchValue({
         b: blue,
         g: green

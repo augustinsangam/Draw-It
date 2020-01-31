@@ -32,5 +32,8 @@
   PALETTE
   <mat-icon>palette</mat-icon>
 </button>
-<app-color-pickler-content [startColor]="getStartColor()" (colorChange)="onColorPicked($event)" *ngIf="showPolatte">
+<app-color-pickler-content [startColor]="getStartColor()" 
+                            (colorChange)="onColorPicked($event)" 
+                            *ngIf="showPolatte"
+                            #colorPalette>
 </app-color-pickler-content>

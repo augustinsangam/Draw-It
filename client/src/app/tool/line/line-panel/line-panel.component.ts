@@ -1,6 +1,6 @@
 import { Component, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatRadioChange } from '@angular/material';
+import { MatSlideToggleChange } from '@angular/material';
 
 import { ToolPanelComponent } from '../../tool-panel/tool-panel.component';
 import { LineService } from '../line.service';
@@ -11,9 +11,6 @@ import { LineService } from '../line.service';
   styleUrls: ['./line-panel.component.scss']
 })
 export class LinePanelComponent extends ToolPanelComponent {
-
-  jonctionOption = this.service.jonctionOption;
-  jonctionOptions = this.service.jonctionOptions;
 
   lineForm: FormGroup;
 
@@ -30,9 +27,8 @@ export class LinePanelComponent extends ToolPanelComponent {
     });
   }
 
-  onChangeJonctionOption($event: MatRadioChange) {
-    this.jonctionOption = $event.value;
-    this.service.jonctionOption = ($event.value);
+  onChangeJonctionOption($event: MatSlideToggleChange) {
+    this.service.jonctionOption = ($event.checked);
   }
 
   onThicknessChange($event: Event) {
