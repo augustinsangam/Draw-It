@@ -50,17 +50,18 @@ export class LineLogicComponent extends ToolLogicComponent {
       });
     const onMouseUp = this.renderer.listen(this.svgElRef.nativeElement, 'dblclick', (mouseEv: MouseEvent) => {
         if (!this.newPath)  {
-          let currentPoint = new Point( mouseEv.offsetX , mouseEv.offsetY);
+          this.lastPoint  = new Point( mouseEv.offsetX , mouseEv.offsetY);
           this.getPath().removeLastLine()
           this.getPath().removeLastLine()
-          if (this.distanceIsLessThan3Pixel( currentPoint , this.getPath().points[0]) ) {
+          if (this.distanceIsLessThan3Pixel( this.lastPoint  , this.getPath().points[0]) ) {
             this.getPath().closePath();
           } else if ( mouseEv.shiftKey ) {
-            currentPoint =  this.getPath().getAlignedPoint(currentPoint)
+            this.lastPoint  =  this.getPath().getAlignedPoint(this.lastPoint )
+            console.log ('je suis la')
           }
-          this.getPath().addLine(currentPoint);
+          this.getPath().addLine(this.lastPoint );
           if (this.service.jonctionOption === JonctionOptions.EnableJonction) {
-            this.createJonction(currentPoint);
+            this.createJonction(this.lastPoint );
           }
           this.newPath = true;
           }
@@ -149,7 +150,7 @@ export class Path {
     this.instructions = [];
     this.renderer.setAttribute(this.element, 'd', this.pathString );
     while (this.jonctions.length) {
-      this.removeLastJonction();
+      this.removeLastJonction()
     }
   }
   removeLastJonction() {
