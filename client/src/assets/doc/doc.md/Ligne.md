@@ -17,5 +17,7 @@ Le panneau d'options de cet outil présente les options suivantes :
 * **Type de jonction**
     * _Normal_ : jonction simple.
     * _Avec points_ : les jonctions entre les lignes sont formées par un point.
-* **Épaisseur de la ligne**: épaisseur de la ligne en pixels.
+    
+* **Épaisseur de la ligne** : épaisseur de la ligne en pixels.
+
 * **Diamètre des points de jonction** : disponible uniquement si _Avec points_ est sélectionné dans l'option **Type de jonction**. 

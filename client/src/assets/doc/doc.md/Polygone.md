@@ -1,4 +1,4 @@
-L’outil Polygone est très similaire aux outils Rectangle et Ellipse. Il permet le traçage de polygone dont le nombre de côtés peut être défini par l’utilisateur. 
+L’outil **Polygone** est très similaire aux outils Rectangle et Ellipse. Il permet le traçage de polygone dont le nombre de côtés peut être défini par l’utilisateur. 
 
  Pour commencer à tracer un polygone, cliquez sur l’icône ![icône outil ellipse](../../assets/PLACEHOLDER.png). Vous pouvez définir le nombre de côtés de votre polygone depuis le panneau de configuration de l’outil, qui présente les options suivantes : 
  *  Type de tracé
