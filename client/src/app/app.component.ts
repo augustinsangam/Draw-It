@@ -19,7 +19,7 @@ export interface NewDrawOptions {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements AfterViewInit {
-  private readonly toolSelector = new Map();
+  private readonly toolSelector: Map<string, Tool> ;
   private onMainPage = false;
   drawInProgress = false;
   drawOption: NewDrawOptions = { height : 0, width : 0, color: ''};
@@ -31,17 +31,20 @@ export class AppComponent implements AfterViewInit {
   };
 
   constructor(public dialog: MatDialog, private readonly toolSelectorService: ToolSelectorService) {
-
+    this.toolSelector = new Map()
     this.toolSelector.set('KeyC', Tool.Pencil);
     this.toolSelector.set('Key1', Tool.Rectangle);
     this.toolSelector.set('KeyL', Tool.Line);
-    this.toolSelector.set('Digit1', Tool.Brush);
+    this.toolSelector.set('KeyW', Tool.Brush);
    };
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
-    if (this.toolSelector.has( event.code) && this.onMainPage) {
-      this.toolSelectorService.set(this.toolSelector.get(event.code))
+    if (this.onMainPage) {
+      if (this.toolSelector.has( event.code)) {
+        const tool = this.toolSelector.get(event.code);
+        this.toolSelectorService.set(tool as Tool);
+      }
     }
   }
 
@@ -96,11 +99,10 @@ export class AppComponent implements AfterViewInit {
     newDialog.afterClosed().subscribe((resultNewDialog) => {
       if (fromHome) {
         this.openHomeDialog();
+      } else {
+        this.onMainPage = true;
       }
     });
-    if (!fromHome) {
-      this.onMainPage = true;
-    }
   }
 
   createNewDraw(option: NewDrawOptions) {
