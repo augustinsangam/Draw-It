@@ -119,5 +119,13 @@
         "label": "Exporter votre dessin"
       }
     ]
+  },
+  {
+    "label": "Informations",
+    "children": [
+      {
+        "label": "À propos de nous"
+      }
+    ]
   }
 ]

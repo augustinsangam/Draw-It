@@ -7,4 +7,8 @@ Le panneau d'options de l'outil pinceau permet la configuration de deux paramèt
 * **Épaisseur du trait** : valeur en pixels correspondant à l'épaisseur du pinceau souhaitée
 * **Texture** : permet de choisir différentes textures de pinceau prédéfinies 
 
+Les 5 textures sont présentées ici :
+
+<img class="doc-img" src="../../assets/doc/doc.imgs/doc-outilPinceau.png" title="Les textures de l'outil pinceau" alt="image outil pinceau">
+
 
