@@ -1,42 +1,25 @@
 <ng-template #container></ng-template>
 <svg:defs> 
-    <svg:filter id="filter1">
-        <feTurbulence type="turbulence" baseFrequency="0.05"
-            numOctaves="2" result="turbulence"/>
-        <feDisplacementMap in2="turbulence" in="SourceGraphic"
-            scale="50" xChannelSelector="R" yChannelSelector="G"/>
-    </svg:filter>
 
-    <filter id="filter2" filterUnits="userSpaceOnUse">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
-        <feOffset in="blur" result="offsetBlur" />
-    </filter>
-    
-    <svg:filter id="filter3">
-        <feOffset result="offOut" in="SourceGraphic" dx="20" dy="20" />
-        <feColorMatrix result="matrixOut" in="offOut" type="matrix" />
-        <feGaussianBlur result="blurOut" in="matrixOut" stdDeviation="10" />
-        <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
-    </svg:filter>
+    <filter id="filter3" filterUnits="userSpaceOnUse">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur" />
+        <feOffset in="blur" dx="4" dy="4" result="offsetBlur" />
+        <feSpecularLighting in="blur" surfaceScale="5" specularConstant=".75" specularExponent="20" result="specOut">
+        </feSpecularLighting>
+        <feComposite in="specOut" in2="SourceAlpha" operator="in" result="specOut" />
+        <feComposite in="SourceGraphic" in2="specOut" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"
+          result="litPaint" />
+        <feMerge>
+          <feMergeNode in="offsetBlur" />
+          <feMergeNode in="litPaint" />
+        </feMerge>
+    </filter> 
+
 
     <svg:filter id="filter4" x="0%" y="0%" width="100%" height="100%">
         <feTurbulence baseFrequency="0.01 0.4" result="NOISE" numOctaves="2" />
         <feDisplacementMap in="SourceGraphic" in2="NOISE" scale="20" xChannelSelector="R" yChannelSelector="R"></feDisplacementMap>
     </svg:filter>
 
-    <filter id="filter4" filterUnits="objectBoundingBox" height="100%" id="AI_Turbulence_5" width="100%" x="0%" y="0%">
-        <feTurbulence  baseFrequency="0.4" numOctaves="1" result="turb" stitchTiles="noStitch" type="fractalNoise"></feTurbulence>
-        <feComposite  in="turb" in2="SourceAlpha" operator="in"></feComposite>
-    </filter>
-
-    <filter id="filter5">
-        <feTurbulence result="outlineNoise" baseFrequency="0.9" numOctaves="1" seed="1" type="fractalNoise" />
-        <feDisplacementMap in="SourceGraphic" in2="outlineNoise" result="outline" scale="20" />
-        <feTurbulence type="fractalNoise" baseFrequency='0.7' result='textureNoise' numOctaves="5" />
-        <feColorMatrix type="matrix" values="0 0 0 0 0,
-          0 0 0 0 0,
-          0 0 0 0 0,
-          0 0 0 0 1" in="textureNoise" result="texture" />
-        <feComposite in="outline" in2="texture" operator="in" />
-      </filter>
+ 
 </svg:defs>
