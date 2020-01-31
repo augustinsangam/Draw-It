@@ -6,7 +6,7 @@ L'équipe **Françafrique**, de gauche à droite :
 * Mathurin Chritin
 * Hubert Grootenboer
 * Issam Maghni
-* Nicolas Verbaer
+* Nicolas Verbaere
 * Augustin Sangam
 
 Cette application a été développée dans le cadre du cours de LOG2990 « Projet logiciel d'application Web », donné en deuxième année dans le département de génie informatique et logiciel à l'École Polytechnique de Montréal.

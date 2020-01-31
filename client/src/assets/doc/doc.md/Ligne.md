@@ -1,4 +1,4 @@
-L’outil **Ligne** permet de tracer un ou plusieurs segments connectés entre eux. Pour cela, cliquez sur l’icône ligne ![l’icône de la ligne](../../assets/PLACEHOLDER.png) ou pressez la touche **`L`** de votre clavier.
+L’outil **Ligne** permet de tracer un ou plusieurs segments connectés entre eux. Pour cela, cliquez sur l’icône ligne ![l’icône de la ligne](../../assets/line.png) ou pressez la touche **`L`** de votre clavier.
  
  Pour tracer une ligne, cliquez une fois sur la zone de dessin pour définir le point de départ de votre ligne. Déplacez votre curseur sur la zone de dessin pour avoir un aperçu de votre ligne. Pour terminer la ligne, double-cliquez n'importe où sur la zone de dessin. 
  

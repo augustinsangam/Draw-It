@@ -2,7 +2,12 @@
     <h1 class="tree-nav-titre"><mat-icon>menu_book</mat-icon>   Guide d'utilisation</h1>
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-        <button mat-button class="leaf-button" (click)="displayNodeContent(node)">{{ node.label }}</button>
+        <button mat-button class="leaf-button" (click)="displayNodeContent(node)">
+          <mat-icon *ngIf="node.label === this.contentToDisplay.title">send</mat-icon>
+          <span class="{{node.label === this.contentToDisplay.title ? 'leaf-active-button' : 'leaf-button'}}">
+            {{ node.label }}
+          </span>
+        </button>
       </mat-tree-node>
       <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
         <li>
@@ -24,7 +29,7 @@
 
     <ng-container class="mat-button-toggle-group">
       <button mat-button label="Reduce all"
-              class="tree-button"
+              class="leaf-button"
               (click)="treeControl.collapseAll()">
         <mat-icon>expand_less</mat-icon>Tout réduire
       </button>

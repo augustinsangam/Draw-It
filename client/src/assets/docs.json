@@ -9,7 +9,7 @@
         "label": "Reprendre un dessin"
       },
       {
-        "label": "Consulter le guide d’utilisation"
+        "label": "Consulter le guide"
       }
     ]
   },
@@ -91,7 +91,7 @@
         "label": "Déplacement d’une sélection"
       },
       {
-        "label": "Redimensionnement d’une sélection"
+        "label": "Redimensionner une sélection"
       },
       {
         "label": "Rotation d’une sélection"
