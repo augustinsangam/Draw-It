@@ -107,4 +107,10 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
     this.showPolatte = !this.showPolatte ;
   }
 
+  getStartColor() {
+    const color = (this.colorOption === 'PRIMARY') ?
+    this.colorService.primaryColor : this.colorService.secondaryColor;
+    return this.colorService.rgbToHex(this.colorService.rgbFormRgba(color))
+  }
+
 }

@@ -2,7 +2,6 @@ import { Component, ComponentFactoryResolver, HostBinding, OnInit, Type,
   ViewChild, ViewContainerRef } from '@angular/core';
 
 import { BrushPanelComponent } from '../tool/brush/brush-panel/brush-panel.component';
-import { ColorPanelComponent } from '../tool/color/color-panel/color-panel.component';
 import { LinePanelComponent } from '../tool/line/line-panel/line-panel.component';
 import { PencilPanelComponent } from '../tool/pencil/pencil-panel/pencil-panel.component';
 import { RectanglePanelComponent } from '../tool/rectangle/rectangle-panel/rectangle-panel.component';
@@ -28,7 +27,6 @@ export class PanelComponent implements OnInit {
               private readonly toolSelectorService: ToolSelectorService) {
     this.components = new Array(Tool._Len);
     this.components[Tool.Brush] = BrushPanelComponent;
-    this.components[Tool.Color] = ColorPanelComponent;
     // this.components[Tool.Eraser] = EraserPanelCompnent;
     this.components[Tool.Line] = LinePanelComponent;
     this.components[Tool.Pencil] = PencilPanelComponent;
