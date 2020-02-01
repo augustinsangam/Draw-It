@@ -17,7 +17,7 @@
     <mat-slide-toggle formControlName="jonctionOption" (change)="onChangeJonctionOption($event)"></mat-slide-toggle>
   </p>
   <div class="junction-options">
-    <div class="juction-preferences" *ngIf="this.service.jonctionOption">
+    <div class="juction-preferences" *ngIf="this.service.withJonction">
       <p>Diamètre des points</p>
         <mat-slider min="1" 
                 max="100" step="1" 

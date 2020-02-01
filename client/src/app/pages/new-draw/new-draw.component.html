@@ -46,7 +46,10 @@
             type="submit"
             (click)="onSubmit()"
             cdkFocusInitial
-            [disabled]="form.invalid">
+            cdkFocusRegionStart
+            cdkFocusRegionEnd
+            [disabled]="form.invalid"
+            #button>
             Créer
     </button>
   </form>

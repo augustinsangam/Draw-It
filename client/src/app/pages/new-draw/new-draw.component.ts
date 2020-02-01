@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
@@ -32,6 +32,11 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
     static: false,
     read: ColorPicklerItemComponent
   }) palette: ColorPicklerItemComponent;
+
+  @ViewChild('button', {
+    static: false,
+    read: ElementRef
+  }) button: ElementRef;
 
   static validatorInteger(formControl: AbstractControl) {
     if (Number.isInteger(formControl.value)) {
@@ -76,9 +81,7 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    // Pour eviter une erreur spécifique.
-    // On laisse le temps à la vue de s'initialiser
-    // FIXME: Erreur de chargement
+    // FIX : AFTERCONTENTCHECKEDERROR
     setTimeout(() => {
       this.form.patchValue({color: this.startColor});
     }, 0);
@@ -90,6 +93,7 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
           this.palette.updateColor(colorPicked);
           this.form.patchValue({color: colorPicked});
         }
+        this.button.nativeElement.focus();
       });
     });
   }
