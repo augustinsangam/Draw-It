@@ -22,7 +22,7 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
 
   colorOption = 'PRIMARY';
   recentColors: string[];
-  showPolatte = false;
+  showPalette = false;
 
   @ViewChild('colorPreviewPrimary', {
     read : ColorPicklerItemComponent,
@@ -64,7 +64,7 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
         this.colorPreviewPrimary.updateColor(this.colorsItemsArray[i].color);
         this.colorService.primaryColor = this.colorsItemsArray[i].color;
         if (this.colorPalette) {
-          this.colorPalette.startColor = this.colorService.rgbToHex(this.colorService.rgbFormRgba(this.colorsItemsArray[i].color));
+          this.colorPalette.startColor = `#${this.colorService.rgbToHex(this.colorService.rgbFormRgba(this.colorsItemsArray[i].color))}`;
           this.colorPalette.initialiseStartingColor();
         }
         this.colorService.promote(i);
@@ -76,7 +76,7 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
         this.colorPreviewSecondary.updateColor(this.colorsItemsArray[i].color);
         this.colorService.secondaryColor = this.colorsItemsArray[i].color;
         if (this.colorPalette) {
-          this.colorPalette.startColor = this.colorService.rgbToHex(this.colorService.rgbFormRgba(this.colorsItemsArray[i].color));
+          this.colorPalette.startColor = `#${this.colorService.rgbToHex(this.colorService.rgbFormRgba(this.colorsItemsArray[i].color))}`;
           this.colorPalette.initialiseStartingColor();
         }
         this.colorService.promote(i);
@@ -109,7 +109,7 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
     }
     // Reafficher
     this.updateRecentColors();
-    this.showPolatte = false;
+    this.showPalette = false;
   }
 
   updatePreviewColors() {
@@ -118,13 +118,13 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
   }
 
   onShowPalette() {
-    this.showPolatte = !this.showPolatte ;
+    this.showPalette = !this.showPalette ;
   }
 
   getStartColor() {
     const color = (this.colorOption === 'PRIMARY') ?
     this.colorService.primaryColor : this.colorService.secondaryColor;
-    return this.colorService.rgbToHex(this.colorService.rgbFormRgba(color))
+    return `#${this.colorService.rgbToHex(this.colorService.rgbFormRgba(color))}`;
   }
 
 }

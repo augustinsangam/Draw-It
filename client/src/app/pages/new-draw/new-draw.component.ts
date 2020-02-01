@@ -1,10 +1,12 @@
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
 
+import { ColorPicklerItemComponent } from 'src/app/tool/color/color-panel/color-pickler-item/color-pickler-item.component';
 import { ScreenService, ScreenSize } from '../../services/sreen/screen.service';
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
+import { PaletteDialogComponent } from './palette-dialog.component';
 
 export interface DialogData {
   drawInProgress: boolean;
@@ -26,6 +28,11 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   screenSize: Subscription;
   userChangeSizeMannually = false;
 
+  @ViewChild('palette', {
+    static: false,
+    read: ColorPicklerItemComponent
+  }) palette: ColorPicklerItemComponent;
+
   static validatorInteger(formControl: AbstractControl) {
     if (Number.isInteger(formControl.value)) {
       return null;
@@ -37,6 +44,7 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(private formBuilder: FormBuilder,
               private screenService: ScreenService,
+              private renderer: Renderer2,
               private dialog: MatDialog,
               public dialogRef: MatDialogRef<NewDrawComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) {
@@ -59,7 +67,6 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     const screenSize = this.screenService.getCurrentSize();
     this.updateFormSize(screenSize);
-
     this.screenSize = this.screenService.getSize().subscribe(
         screenSizeParam => this.updateFormSize(screenSizeParam));
   }
@@ -75,6 +82,16 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
     setTimeout(() => {
       this.form.patchValue({color: this.startColor});
     }, 0);
+
+    this.renderer.listen(this.palette.button.nativeElement, 'click', () => {
+      const dialogRef = this.dialog.open(PaletteDialogComponent);
+      dialogRef.afterClosed().subscribe((colorPicked: string|undefined) => {
+        if (colorPicked !== undefined) {
+          this.palette.updateColor(colorPicked);
+          this.form.patchValue({color: colorPicked});
+        }
+      });
+    });
   }
 
   updateFormSize(screenSize: ScreenSize) {
@@ -111,4 +128,5 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   onReturn() {
     this.dialogRef.close('home');
   }
+
 }

@@ -72,7 +72,7 @@ export class ColorPicklerContentComponent implements AfterViewInit {
     this.baseColorsCircles.toArray().slice(0, this.baseColors.length)
     .forEach((circle: ColorPicklerItemComponent) => {
       this.eventManager.addEventListener(circle.button.nativeElement, 'click', () => {
-        this.startColor = circle.color;
+        this.startColor = circle.color.slice(1);
         this.initialiseStartingColor();
       })
     });
@@ -99,7 +99,7 @@ export class ColorPicklerContentComponent implements AfterViewInit {
         b: startColor.b,
         g: startColor.g,
         a: 100,
-        hex: this.startColor.substring(0, 7)
+        hex: this.startColor.substring(1, 7)
       });
       this.drawTracker(startColor.b, startColor.g);
     }, 0);

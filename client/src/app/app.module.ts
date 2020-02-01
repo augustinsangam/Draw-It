@@ -14,6 +14,7 @@ import { DocumentationComponent } from './pages/documentation/documentation.comp
 import { HomeComponent } from './pages/home/home.component';
 import { ConfirmationDialogComponent } from './pages/new-draw/confirmation-dialog.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
+import { PaletteDialogComponent } from './pages/new-draw/palette-dialog.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 import { PanelComponent } from './panel/panel.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
@@ -48,6 +49,7 @@ import { RectanglePanelComponent } from './tool/rectangle/rectangle-panel/rectan
     NewDrawComponent,
     NotFoundPageComponent,
     PanelComponent,
+    PaletteDialogComponent,
     PencilLogicComponent,
     PencilPanelComponent,
     RectangleLogicComponent,
@@ -73,6 +75,7 @@ import { RectanglePanelComponent } from './tool/rectangle/rectangle-panel/rectan
     BrushPanelComponent,
     ColorLogicComponent,
     ColorPanelComponent,
+    PaletteDialogComponent,
     ConfirmationDialogComponent,
     DocumentationComponent,
     LineLogicComponent,

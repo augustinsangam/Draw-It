@@ -10,7 +10,6 @@
       <input matInput formControlName="width"
                       formControlGroupName="form"
                       type="number"
-
                       (input)="onDimensionsChangedByUser($event)">
       <span matSuffix>px</span>
       <mat-hint>
@@ -22,7 +21,6 @@
       <input matInput formControlName="height"
                       formControlGroupName="form"
                       type="number"
-
                       (input)="onDimensionsChangedByUser($event)">
       <span matSuffix>px</span>
       <mat-hint>
@@ -32,22 +30,12 @@
     <h4>Couleur d'arrière plan</h4>
     <mat-form-field appearance="outline">
       <mat-label>Couleur</mat-label>
-      <input  matInput mccColorPickerOrigin
+      <input  matInput
               formControlName="color"
-              #trigger="mccColorPickerOrigin"
               formControlGroupName="form"
-              readonly
-              >
+              readonly>
               <span matSuffix>
-                <mcc-color-picker hideUsedColors hideButtons>
-                  <mcc-color-picker-collection
-                    [label]="'Couleurs de base'"
-                    hideEmpty="true"
-                    [colors]="baseColors"
-                    mccConnectedColorPicker
-                    [mccConnectedColorPickerOrigin]="trigger">
-                  </mcc-color-picker-collection>
-                </mcc-color-picker>
+                <app-color-pickler-item #palette></app-color-pickler-item>
               </span>
               <mat-hint id="colorValid">
                 Utiliser la palette pour changer de couleur
@@ -57,6 +45,7 @@
             color="primary"
             type="submit"
             (click)="onSubmit()"
+            cdkFocusInitial
             [disabled]="form.invalid">
             Créer
     </button>
