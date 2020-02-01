@@ -7,7 +7,7 @@ import { ToolService } from '../tool.service';
 export class LineService extends ToolService {
 
   thickness = 2;
-  jonctionOption = true;
+  withJonction = true;
   radius = 2;
 
   constructor() {
