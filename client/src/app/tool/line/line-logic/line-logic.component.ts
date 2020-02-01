@@ -2,7 +2,7 @@ import { Component, ElementRef, Renderer2 } from '@angular/core';
 
 import { ColorService } from '../../color/color.service';
 import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
-import { JonctionOptions, LineService } from '../line.service';
+import { LineService } from '../line.service';
 
 @Component({
   selector: 'app-line-logic',
@@ -27,27 +27,27 @@ export class LineLogicComponent extends ToolLogicComponent {
       let currentPoint = new Point( mouseEv.offsetX , mouseEv.offsetY );
       const path = this.renderer.createElement('path', this.svgNS);
       if (this.newPath) {
-        this.createNewPath( currentPoint, path)
+        this.createNewPath(currentPoint, path)
         this.newPath = false;
-      } else if ( mouseEv.shiftKey ) {
-         currentPoint =  this.getPath().getAlignedPoint(currentPoint);
+      } else if (mouseEv.shiftKey) {
+        currentPoint = this.getPath().getAlignedPoint(currentPoint);
       }
       if (this.getPath().withJonctions) {
         this.createJonction(currentPoint);
       }
-      this.getPath().addLine (currentPoint);
+      this.getPath().addLine(currentPoint);
     });
 
     const onMouseMove = this.renderer.listen(this.svgElRef.nativeElement, 'mousemove', (mouseEv: MouseEvent) => {
-        if (!this.newPath)  {
-          this.lastPoint = new Point( mouseEv.offsetX , mouseEv.offsetY);
-          let point = new Point( mouseEv.offsetX , mouseEv.offsetY);
-          if ( mouseEv.shiftKey )  {
-            point = this.getPath().getAlignedPoint(point)
-          }
-          this.getPath().addTemporaryLine (point);
-          }
-      });
+      if (!this.newPath) {
+        this.lastPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+        let point = new Point(mouseEv.offsetX, mouseEv.offsetY);
+        if (mouseEv.shiftKey) {
+          point = this.getPath().getAlignedPoint(point)
+        }
+        this.getPath().addTemporaryLine(point);
+      }
+    });
     const onMouseUp = this.renderer.listen(this.svgElRef.nativeElement, 'dblclick', (mouseEv: MouseEvent) => {
         if (!this.newPath)  {
           let currentPoint  = new Point( mouseEv.offsetX , mouseEv.offsetY);
@@ -90,8 +90,7 @@ export class LineLogicComponent extends ToolLogicComponent {
     }
     createNewPath(point: Point, path: ElementRef) {
       this.renderer.appendChild( this.svgElRef.nativeElement , path);
-      const withJonctions = this.service.jonctionOption === JonctionOptions.EnableJonction
-      this.paths[++this.currentPathIndex] = new Path ( point, this.renderer, path, withJonctions)
+      this.paths[++this.currentPathIndex] = new Path ( point, this.renderer, path, this.service.withJonction)
       this.getPath().setParameters(this.service.thickness.toString(), this.serviceColor.primaryColor);
     }
     createJonction(center: Point) {
@@ -125,7 +124,7 @@ export class Path {
     const instruction = 'M ' + initialPoint.x.toString() + ' ' + initialPoint.y.toString() + ' ';
     this.instructions.push(instruction);
     this.pathString += instruction;
-    this.renderer.setAttribute(this.element, 'd', this.pathString );
+    this.renderer.setAttribute(this.element, 'd', this.pathString);
     this.renderer.setAttribute(this.element, 'fill', 'none')
     this.withJonctions = withJonction;
   }
@@ -134,15 +133,15 @@ export class Path {
     const instruction = 'L ' + point.x.toString() + ' ' + point.y.toString() + ' ';
     this.instructions.push(instruction);
     this.pathString += instruction;
-    this.renderer.setAttribute(this.element, 'd', this.pathString );
+    this.renderer.setAttribute(this.element, 'd', this.pathString);
   }
   addJonction(element: ElementRef, point: Point, jonctionRadius: string) {
-  this.jonctions.push(new Circle ( point, this.renderer, element, jonctionRadius));
+    this.jonctions.push(new Circle(point, this.renderer, element, jonctionRadius));
   }
   addTemporaryLine(point: Point) {
     const temp = this.pathString + 'L ' + point.x.toString() + ' ' + point.y.toString() + ' ';
     this.lastPoint = point;
-    this.renderer.setAttribute(this.element, 'd', temp );
+    this.renderer.setAttribute(this.element, 'd', temp);
   }
   removeLastLine() {
     this.points.pop();
@@ -156,7 +155,7 @@ export class Path {
     this.pathString = '';
     this.points = [];
     this.instructions = [];
-    this.renderer.setAttribute(this.element, 'd', this.pathString );
+    this.renderer.setAttribute(this.element, 'd', this.pathString);
     while (this.jonctions.length) {
       this.removeLastJonction()
     }
@@ -173,26 +172,26 @@ export class Path {
     const instruction = 'Z';
     this.instructions.push(instruction)
     this.pathString += instruction;
-    this.renderer.setAttribute(this.element, 'd', this.pathString );
+    this.renderer.setAttribute(this.element, 'd', this.pathString);
   }
   getAlignedPoint(point: Point): Point {
     const deltaX = point.x - this.points[this.points.length - 1].x
     const deltaY = point.y - this.points[this.points.length - 1].y
     const angle = Math.atan(deltaY / deltaX)
-    if ( Math.abs(angle) < Math.PI / 8 ) {
-        return new Point (point.x, this.points[this.points.length - 1].y )
-      }
-    if ( Math.abs(angle) > Math.PI * 3 / 8 ) {
-        return new Point (this.points[this.points.length - 1].x, point.y )
+    if (Math.abs(angle) < Math.PI / 8) {
+      return new Point(point.x, this.points[this.points.length - 1].y)
+    }
+    if (Math.abs(angle) > Math.PI * 3 / 8) {
+      return new Point(this.points[this.points.length - 1].x, point.y)
+    } else {
+      if (deltaY * deltaX > 0) {
+        return new Point(point.x, this.points[this.points.length - 1].y + deltaX)
       } else {
-        if ( deltaY * deltaX > 0 ) {
-          return new Point (point.x , this.points[this.points.length - 1].y + deltaX  )
-        } else {
-          return new Point (point.x , this.points[this.points.length - 1].y - deltaX )
-        }
+        return new Point(point.x, this.points[this.points.length - 1].y - deltaX)
+      }
     }
-    }
-  setParameters(strokewidth: string, strokeColor: string ) {
+  }
+  setParameters(strokewidth: string, strokeColor: string) {
     this.renderer.setAttribute(this.element, 'stroke-width', strokewidth);
     this.renderer.setAttribute(this.element, 'stroke', strokeColor);
   }
@@ -200,9 +199,9 @@ export class Path {
 export class Circle {
   svgNS = ' http://www.w3.org/2000/svg ';
   strokeColor = 'black';
-  circleRadius = '0' ;
-  constructor( center: Point, private renderer: Renderer2, public element: ElementRef, circleRadius: string) {
-    this.renderer.setAttribute(this.element, 'cx', center.x.toString() );
+  circleRadius = '0';
+  constructor(center: Point, private renderer: Renderer2, public element: ElementRef, circleRadius: string) {
+    this.renderer.setAttribute(this.element, 'cx', center.x.toString());
     this.renderer.setAttribute(this.element, 'cy', center.y.toString());
     this.renderer.setAttribute(this.element, 'r', circleRadius);
   }
@@ -211,7 +210,7 @@ export class Circle {
 export class Point {
   x = 0;
   y = 0;
-  constructor( x: number, y: number ) {
+  constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
   }

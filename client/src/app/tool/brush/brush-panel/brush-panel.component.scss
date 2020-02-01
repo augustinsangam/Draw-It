@@ -1,7 +1,7 @@
 :host {
   display: block;
   padding: 0px 10px 0px 10px;
-  width: 230px;
+  width: 320px;
   color : white;
 }
 
@@ -24,10 +24,15 @@ mat-radio-button{
 }
 
 .texture{
-  margin-top: 50px;
+  margin-top: 20px;
 }
 
 img{
   margin-left: 40px;
   vertical-align: middle;
 }
+
+hr {
+  border-color: grey;
+}
+
