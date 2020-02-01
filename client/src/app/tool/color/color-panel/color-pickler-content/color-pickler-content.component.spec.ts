@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MaterialModule } from 'src/app/material.module';
+import { ColorPicklerItemComponent } from '../color-pickler-item/color-pickler-item.component';
 import { ColorPicklerContentComponent } from './color-pickler-content.component';
 
 describe('ColorPicklerContentComponent', () => {
@@ -8,7 +9,8 @@ describe('ColorPicklerContentComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ColorPicklerContentComponent ]
+      declarations: [ ColorPicklerContentComponent, ColorPicklerItemComponent ],
+      imports: [MaterialModule]
     })
     .compileComponents();
   }));

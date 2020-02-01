@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+//import { /*FormBuilder, */Form/*, Validators */} from '@angular/forms';
+import { MaterialModule } from 'src/app/material.module';
 import { BrushPanelComponent } from './brush-panel.component';
 
 describe('BrushPanelComponent', () => {
@@ -8,7 +9,8 @@ describe('BrushPanelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BrushPanelComponent ]
+      declarations: [ BrushPanelComponent ],
+      imports: [MaterialModule]
     })
     .compileComponents();
   }));

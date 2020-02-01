@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MaterialModule } from 'src/app/material.module';
 import { LinePanelComponent } from './line-panel.component';
 
 describe('LinePanelComponent', () => {
@@ -8,7 +8,8 @@ describe('LinePanelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LinePanelComponent ]
+      declarations: [ LinePanelComponent ],
+      imports: [MaterialModule]
     })
     .compileComponents();
   }));

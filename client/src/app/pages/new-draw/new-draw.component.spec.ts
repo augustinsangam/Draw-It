@@ -1,5 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material';
+import { MccColorPickerModule } from 'material-community-components';
+import { MaterialModule } from 'src/app/material.module';
 import { NewDrawComponent } from './new-draw.component';
 
 describe('NewDrawComponent', () => {
@@ -8,7 +11,8 @@ describe('NewDrawComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NewDrawComponent ]
+      imports: [ MaterialModule, FormsModule, ReactiveFormsModule, MccColorPickerModule, MatDialogRef, MatDialog ],
+      declarations: [ NewDrawComponent ],
     })
     .compileComponents();
   }));

@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MaterialModule } from 'src/app/material.module';
 import { ColorPanelComponent } from './color-panel.component';
+import { MatRadioGroup } from '@angular/material';
 
 describe('ColorPanelComponent', () => {
   let component: ColorPanelComponent;
@@ -8,7 +9,8 @@ describe('ColorPanelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ColorPanelComponent ]
+      declarations: [ ColorPanelComponent ],
+      imports: [MaterialModule, MatRadioGroup]
     })
     .compileComponents();
   }));

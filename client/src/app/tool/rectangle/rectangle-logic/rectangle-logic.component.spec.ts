@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
 import { RectangleLogicComponent } from './rectangle-logic.component';
 
 describe('RectangleLogicComponent', () => {
@@ -8,7 +8,8 @@ describe('RectangleLogicComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RectangleLogicComponent ]
+      declarations: [ RectangleLogicComponent, ToolLogicComponent ],
+      imports: [],
     })
     .compileComponents();
   }));
