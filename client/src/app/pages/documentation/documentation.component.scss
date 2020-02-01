@@ -7,7 +7,7 @@ aside {
   flex-shrink: 0;
   width: 300px;
   overflow-y: auto;
-  background-color: #2F3136;
+  background-color: #2a2a3a;
   color: #FFFFFF;
 }
 
@@ -19,7 +19,7 @@ aside {
   margin-top: 0;
   margin-bottom: 0;
   list-style-type: none;
-  background-color: #2F3136;
+  background-color: #2a2a3a;
   color: #FFFFFF;
 }
 
@@ -28,19 +28,29 @@ aside {
   height: 48px;
   text-align: left;
   font-size: larger;
+  background: #2a2a3a;
 }
 
 .leaf-button {
   width: 100%;
   height: 48px;
   text-align: left;
-  font-size: larger;
+  font-size: medium;
   color: #FFFFFF;
+}
+
+.leaf-active-button {
+  width: 100%;
+  height: 48px;
+  text-align: left;
+  text-shadow: 2px 2px 2px #000000;
+  font-size: medium;
+  color: #e91e63;
 }
 
 .tree-nav-titre {
   text-align: center;
-  color: #FFFFFF;
+  text-shadow: 2px 2px 2px #000000;
 }
 
 .description-wrapper {
@@ -61,20 +71,21 @@ aside {
   display: block;
   height : 50px;
   width: 100%;
-  background-color: #20262E;
+  background-color: #2a2a3a;
 }
 
 .button-nav {
   text-align: center;
   width: 50%;
   height: 50px;
-  background-color: #20262E;
-  color: #FFFFFF;
+  text-shadow: 2px 2px 2px #000000;
+  background-color: #2a2a3a;
+  color: #e91e63;
 }
 
 .description {
-  padding-left: 20vh;
-  padding-right: 20vh;
+  padding-left: 9vh;
+  padding-right: 9vh;
   flex-grow: 1;
   overflow-y: auto;
 }
@@ -86,7 +97,8 @@ aside {
   padding-bottom: 5vh;
   font-size: larger;
   min-height: calc(100% - 10vh);
-  background-color: #2F3136;
+  background: linear-gradient(180deg, #2A2A3A 0%, #36364a 40%, #1f1f1f 100%);
   color: #FFFFFF;
-  box-shadow: 0px 0px 154px 150px rgba(0,0,0,1);
+  box-shadow: 0px 0px 80px 80px rgba(0,0,0,1);
+  overflow: auto;
 }
