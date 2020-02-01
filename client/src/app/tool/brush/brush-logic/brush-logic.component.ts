@@ -20,8 +20,8 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
   private listeners: (() => void)[] = [];
 
   constructor(protected renderer: Renderer2,
-    private colorService: ColorService,
-    private brushService: BrushService) {
+              private colorService: ColorService,
+              private brushService: BrushService) {
     super();
   }
 
@@ -36,7 +36,10 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
     this.mouseOnHold = false;
 
     this.generateFilterOne();
-    this.generateFilterTwo()
+    this.generateFilterTwo();
+    this.generateFilterThree();
+    this.generateFilterFoor();
+    this.generateFilterFive();
 
   }
 
@@ -158,12 +161,12 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
     const filterSvgEl: SVGFilterElement = this.renderer.createElement('filter', this.svgNS);
     filterSvgEl.setAttribute('id', 'filter2');
     const feGaussianBlurSvgEl: SVGFEGaussianBlurElement = this.renderer.createElement(
-      'feGaussianBlur', this.svgNS); 
+      'feGaussianBlur', this.svgNS);
     feGaussianBlurSvgEl.setAttribute('in', 'SourceGraphic');
     feGaussianBlurSvgEl.setAttribute('stdDeviation', '4');
     feGaussianBlurSvgEl.setAttribute('result', 'blur');
     this.renderer.appendChild(filterSvgEl, feGaussianBlurSvgEl);
-    const feOffset: SVGFEOffsetElement = this.renderer.createElement('feOffset', this.svgNS); 
+    const feOffset: SVGFEOffsetElement = this.renderer.createElement('feOffset', this.svgNS);
     feOffset.setAttribute('in', 'blur');
     feOffset.setAttribute('result', 'offsetBlur');
     this.renderer.appendChild(filterSvgEl, feOffset);
@@ -177,20 +180,20 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
     svgFilterEl.setAttribute('id', 'filter3');
     svgFilterEl.setAttribute('filterUnits', 'userSpaceOnUse');
 
-    const feGaussianBlurSvgEl: SVGFEGaussianBlurElement = this.renderer.createElement('feGaussianBlur', this.svgNS); 
+    const feGaussianBlurSvgEl: SVGFEGaussianBlurElement = this.renderer.createElement('feGaussianBlur', this.svgNS);
     feGaussianBlurSvgEl.setAttribute('in', 'SourceAlpha');
     feGaussianBlurSvgEl.setAttribute('stdDeviation', '4');
     feGaussianBlurSvgEl.setAttribute('result', 'blur');
-    this.renderer.appendChild(svgFilterEl,feGaussianBlurSvgEl );
+    this.renderer.appendChild(svgFilterEl, feGaussianBlurSvgEl);
 
-    const feOffset: SVGFEOffsetElement = this.renderer.createElement('feOffset', this.svgNS); 
-    feOffset.setAttribute('in', 'SourceAlpha');
+    const feOffset: SVGFEOffsetElement = this.renderer.createElement('feOffset', this.svgNS);
+    feOffset.setAttribute('in', 'blur');
     feOffset.setAttribute('dx', '4');
-    feOffset.setAttribute('dy', 'blur');
+    feOffset.setAttribute('dy', '4');
     feOffset.setAttribute('result', 'offsetBlur');
-    this.renderer.appendChild(svgFilterEl,feOffset );
+    this.renderer.appendChild(svgFilterEl, feOffset);
 
-    const feSpecularLighting: SVGFETurbulenceElement = this.renderer.createElement('feSpecularLighting', this.svgNS);
+    const feSpecularLighting: SVGFESpecularLightingElement = this.renderer.createElement('feSpecularLighting', this.svgNS);
     feSpecularLighting.setAttribute('in', 'blur');
     feSpecularLighting.setAttribute('surfaceScale', '5');
     feSpecularLighting.setAttribute('specularConstant', '.75');
@@ -198,24 +201,17 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
     feSpecularLighting.setAttribute('result', 'specOut');
     this.renderer.appendChild(svgFilterEl, feSpecularLighting);
 
-    const feComposite: SVGFETurbulenceElement = this.renderer.createElement('feSpecularLighting', this.svgNS);
-    feComposite.setAttribute('in', 'specOut');
-    feComposite.setAttribute('in2', 'SourceAlpha');
-    feComposite.setAttribute('operator', 'in');
+    const feComposite: SVGFECompositeElement = this.renderer.createElement('feComposite', this.svgNS);
+    feComposite.setAttribute('in', 'SourceGraphic');
+    feComposite.setAttribute('in2', 'specOut');
+    feComposite.setAttribute('operator', 'arithmetic');
     feComposite.setAttribute('result', 'specOut');
+    feComposite.setAttribute('k1', '0');
+    feComposite.setAttribute('k2', '1');
+    feComposite.setAttribute('k3', '1');
+    feComposite.setAttribute('k4', '0');
+    feComposite.setAttribute('result', 'litPaint');
     this.renderer.appendChild(svgFilterEl, feComposite);
-
-    const feComposite2: SVGFETurbulenceElement = this.renderer.createElement('feSpecularLighting', this.svgNS);
-    feComposite2.setAttribute('in', 'SourceGraphic');
-    feComposite2.setAttribute('in2', 'specOut');
-    feComposite2.setAttribute('operator', 'arithmetic');
-    feComposite2.setAttribute('result', 'specOut');
-    feComposite2.setAttribute('k1', '0');
-    feComposite2.setAttribute('k2', '1');
-    feComposite2.setAttribute('k3', '1');
-    feComposite2.setAttribute('k4', '0');
-    feComposite2.setAttribute('result', 'litPaint');
-    this.renderer.appendChild(svgFilterEl, feComposite2);
 
     const feMerge: SVGFEMergeElement = this.renderer.createElement('feMerge', this.svgNS);
 
@@ -233,8 +229,7 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
     this.renderer.appendChild(this.svgElRef.nativeElement, svgDefsEl);
   }
 
-
-  generateFilterFoor(){
+  generateFilterFoor() {
     const svgDefsEl: SVGDefsElement = this.renderer.createElement('defs', this.svgNS);
     const svgFilterEl: SVGFilterElement = this.renderer.createElement('filter', this.svgNS);
     svgFilterEl.setAttribute('id', 'filter4');
@@ -260,5 +255,27 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
     this.renderer.appendChild(svgDefsEl, svgFilterEl);
     this.renderer.appendChild(this.svgElRef.nativeElement, svgDefsEl);
 
+  }
+
+  generateFilterFive() {
+    const filterSvgEl: SVGFilterElement = this.renderer.createElement(
+      'filter', this.svgNS);
+    filterSvgEl.setAttribute('id', 'filter5');
+
+    const feTurbulenceSvgEl: SVGFETurbulenceElement = this.renderer.createElement(
+      'feTurbulence', this.svgNS);
+    feTurbulenceSvgEl.setAttribute('baseFrequency', '.9');
+    this.renderer.appendChild(filterSvgEl, feTurbulenceSvgEl);
+
+    const feDisplacementMapSvgEl: SVGFEDisplacementMapElement = this.renderer.createElement(
+      'feDisplacementMap', this.svgNS);
+    feDisplacementMapSvgEl.setAttribute('in', 'SourceGraphic');
+    feDisplacementMapSvgEl.setAttribute('scale', '20');
+    this.renderer.appendChild(filterSvgEl, feDisplacementMapSvgEl);
+
+    const defsSvgEl: SVGDefsElement = this.renderer.createElement(
+      'defs', this.svgNS);
+    this.renderer.appendChild(defsSvgEl, filterSvgEl);
+    this.renderer.appendChild(this.svgElRef.nativeElement, defsSvgEl);
   }
 }
