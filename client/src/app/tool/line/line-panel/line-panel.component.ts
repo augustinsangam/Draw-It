@@ -21,14 +21,14 @@ export class LinePanelComponent extends ToolPanelComponent {
     this.lineForm = this.formBuilder.group({
       thicknessFormField: [this.service.thickness, [Validators.required]],
       radiusFormField: [this.service.radius, [Validators.required]],
-      jonctionOption: [this.service.jonctionOption, []],
+      jonctionOption: [this.service.withJonction, []],
       thicknessSlider: [this.service.thickness, []],
       radiusSlider: [this.service.radius, []],
     });
   }
 
   onChangeJonctionOption($event: MatSlideToggleChange) {
-    this.service.jonctionOption = ($event.checked);
+    this.service.withJonction = ($event.checked);
   }
 
   onThicknessChange($event: Event) {
