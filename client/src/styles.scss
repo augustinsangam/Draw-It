@@ -13,6 +13,7 @@ body {
     sans-serif;
 }
 
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
@@ -36,4 +37,22 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   box-shadow: 10px 10px 5px
   #272727;
   float: left;
+}
+
+.doc-img {
+  display: block;
+  border: 1px solid
+  #acacac;
+  box-shadow: 10px 10px 5px
+  #272727;
+}
+
+.floatLeft {
+  float: left;
+  margin-right: 20px;
+}
+
+.floatRight {
+  float: right;
+  margin-left: 20px;
 }

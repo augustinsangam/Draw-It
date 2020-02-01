@@ -12,12 +12,12 @@ Vous pouvez annuler le traçage du dernier point en appuyant sur la touche `BACK
 
 Enfin, il est possible de fermer les lignes que vous avez tracé sur elles-mêmes, en effectuant votre double-clic sur le point de départ de votre ligne. Cela facilite la création de polygones irréguliers au nombre quelconque de faces.
 
+<img src="../../assets/doc/doc.imgs/panneauLigne.png" class="doc-img, floatRight" title="Panneau de l'outil ligne" alt="image outil ligne" width="30%">
+
 Le panneau d'options de cet outil présente les options suivantes :
 
-* **Type de jonction**
-    * _Normal_ : jonction simple.
-    * _Avec points_ : les jonctions entre les lignes sont formées par un point.
-    
-* **Épaisseur de la ligne** : épaisseur de la ligne en pixels.
+* **Épaisseur** : épaisseur de la ligne en pixels.
 
-* **Diamètre des points de jonction** : disponible uniquement si _Avec points_ est sélectionné dans l'option **Type de jonction**. 
+* **Points de jonction**
+    * Si cette option est activée, vous pouvez régler le rayon des points de jonction avec le _slider_.
+
