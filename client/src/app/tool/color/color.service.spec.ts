@@ -13,7 +13,7 @@ fdescribe('ColorService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.get(ColorService);;
+    service = TestBed.get(ColorService);
   });
 
   it('should be created', () => {
