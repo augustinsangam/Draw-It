@@ -19,9 +19,9 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
   private mouseOnHold: boolean;
   private listeners: (() => void)[] = [];
 
-  constructor(protected renderer: Renderer2,
-              private colorService: ColorService,
-              private pencilService: PencilService) {
+  constructor(public renderer: Renderer2,
+              public colorService: ColorService,
+              public pencilService: PencilService) {
     super();
   }
 
@@ -113,6 +113,6 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
           this.stringPath = '';
         }
     });
-    this.listeners = [mouseDownListen, mouseMoveListen, mouseUpListen, mouseLeaveListen]
+    this.listeners = [mouseDownListen, mouseMoveListen, mouseUpListen, mouseLeaveListen];
   }
 }
