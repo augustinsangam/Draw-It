@@ -15,7 +15,7 @@ import { ColorPicklerItemComponent } from './color-pickler-item/color-pickler-it
 export class ColorPanelComponent extends ToolPanelComponent implements OnInit, AfterViewInit {
 
   constructor(elementRef: ElementRef<HTMLElement>,
-              private colorService: ColorService,
+              public colorService: ColorService,
               private eventManager: EventManager) {
     super(elementRef);
   }

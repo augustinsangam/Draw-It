@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { ColorService } from './color.service';
 
-fdescribe('ColorService', () => {
+describe('ColorService', () => {
 
   let service: ColorService;
 
