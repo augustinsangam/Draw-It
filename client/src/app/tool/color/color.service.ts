@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class ColorService {
 
-  recentColors = ['rgba(230, 25, 75, 1)', 'rgba(255, 225, 25, 1)', 'rgba(245, 130, 49, 1)', 'rgba(70, 240, 240, 1)',
+  recentColors: string[] = ['rgba(230, 25, 75, 1)', 'rgba(255, 225, 25, 1)', 'rgba(245, 130, 49, 1)', 'rgba(70, 240, 240, 1)',
     'rgba(240, 50, 230, 1)', 'rgba(250, 190, 190, 1)', 'rgba(0, 128, 128, 1)', 'rgba(154, 99, 36, 1)',
     'rgba(255, 250, 200, 1)', 'rgba(128, 0, 0, 1)'];
 
@@ -50,11 +50,8 @@ export class ColorService {
   }
 
   rgbToHex(rgb: RGBColor): string {
-    const valueToHex = (value: number | null) => {
-      let hex = '00';
-      if (value != null) {
-        hex = value.toString(16);
-      }
+    const valueToHex = (value: number) => {
+      const hex = value.toString(16);
       return hex.length === 1 ? '0' + hex : hex;
     }
     return (valueToHex(rgb.r) + valueToHex(rgb.g) + valueToHex(rgb.b)).toUpperCase();
@@ -73,7 +70,7 @@ export class ColorService {
     return `#${this.rgbToHex(this.rgbFormRgba(rgba))}`;
   }
 
-  rgbEqual(rgb1: RGBColor, rgb2: RGBColor) {
+  private rgbEqual(rgb1: RGBColor, rgb2: RGBColor) {
     return rgb1.r === rgb2.r && rgb1.g === rgb2.g && rgb1.b === rgb2.b;
   }
 

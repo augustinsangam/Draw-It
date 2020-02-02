@@ -4,9 +4,9 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
 
 import { ColorPicklerItemComponent } from 'src/app/tool/color/color-panel/color-pickler-item/color-pickler-item.component';
-import { ScreenService, ScreenSize } from '../../services/sreen/screen.service';
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 import { PaletteDialogComponent } from './palette-dialog.component';
+import { ScreenService, ScreenSize } from './sreen-service/screen.service';
 
 export interface DialogData {
   drawInProgress: boolean;
@@ -72,7 +72,7 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     const screenSize = this.screenService.getCurrentSize();
     this.updateFormSize(screenSize);
-    this.screenSize = this.screenService.getSize().subscribe(
+    this.screenSize = this.screenService.size.subscribe(
         screenSizeParam => this.updateFormSize(screenSizeParam));
   }
 
