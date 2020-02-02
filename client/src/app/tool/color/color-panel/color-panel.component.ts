@@ -64,7 +64,7 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
         this.colorPreviewPrimary.updateColor(this.colorsItemsArray[i].color);
         this.colorService.primaryColor = this.colorsItemsArray[i].color;
         if (this.colorPalette) {
-          this.colorPalette.startColor = `#${this.colorService.rgbToHex(this.colorService.rgbFormRgba(this.colorsItemsArray[i].color))}`;
+          this.colorPalette.startColor = this.colorService.hexFormRgba(this.colorsItemsArray[i].color);
           this.colorPalette.initialiseStartingColor();
         }
         this.colorService.promote(i);
@@ -76,7 +76,7 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
         this.colorPreviewSecondary.updateColor(this.colorsItemsArray[i].color);
         this.colorService.secondaryColor = this.colorsItemsArray[i].color;
         if (this.colorPalette) {
-          this.colorPalette.startColor = `#${this.colorService.rgbToHex(this.colorService.rgbFormRgba(this.colorsItemsArray[i].color))}`;
+          this.colorPalette.startColor = this.colorService.hexFormRgba(this.colorsItemsArray[i].color);
           this.colorPalette.initialiseStartingColor();
         }
         this.colorService.promote(i);
@@ -107,7 +107,6 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
       this.colorPreviewSecondary.updateColor(data);
       this.colorService.selectSecondaryColor(data);
     }
-    // Reafficher
     this.updateRecentColors();
     this.showPalette = false;
   }
@@ -124,7 +123,7 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
   getStartColor() {
     const color = (this.colorOption === 'PRIMARY') ?
     this.colorService.primaryColor : this.colorService.secondaryColor;
-    return `#${this.colorService.rgbToHex(this.colorService.rgbFormRgba(color))}`;
+    return this.colorService.hexFormRgba(color);
   }
 
 }

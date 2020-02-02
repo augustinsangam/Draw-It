@@ -10,8 +10,9 @@ export class PaletteDialogComponent {
   constructor(public dialogRef: MatDialogRef<PaletteDialogComponent>,
               private colorService: ColorService) { }
 
-  onPickColor($event: string) {
-    this.dialogRef.close(`#${this.colorService.rgbToHex(this.colorService.rgbFormRgba($event))}`);
+  onPickColor($color: string) {
+    this.dialogRef.close(this.colorService.hexFormRgba($color));
+    this.colorService.pushColor($color)
   }
 
 }

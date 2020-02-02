@@ -72,7 +72,7 @@ export class ColorPicklerContentComponent implements AfterViewInit {
     this.baseColorsCircles.toArray().slice(0, this.baseColors.length)
     .forEach((circle: ColorPicklerItemComponent) => {
       this.eventManager.addEventListener(circle.button.nativeElement, 'click', () => {
-        this.startColor = circle.color.slice(1);
+        this.startColor = circle.color;
         this.initialiseStartingColor();
       })
     });
@@ -232,8 +232,10 @@ export class ColorPicklerContentComponent implements AfterViewInit {
   }
 
   getActualRgba() {
-    return `rgba(${this.colorForm.controls.r.value}, ${this.colorForm.controls.g.value},
-      ${this.colorForm.controls.b.value}, ${this.colorForm.controls.a.value / 100})`
+    return `rgba(${this.colorForm.controls.r.value}, ` +
+    `${this.colorForm.controls.g.value}, ` +
+    `${this.colorForm.controls.b.value}, ` +
+    `${this.colorForm.controls.a.value / 100})`;
   }
 
   onConfirm() {

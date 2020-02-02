@@ -61,12 +61,16 @@ export class ColorService {
   }
 
   rgbFormRgba(rgba: string): RGBColor {
-    const result = rgba.match(/^rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i);
+    const result = rgba.match(/^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d*(?:\.\d+)?)\)$/i);
     return result ? {
       r: Number(result[1]),
       g: Number(result[2]),
       b: Number(result[3])
     } : { r: -1, g: -1, b: -1 };
+  }
+
+  hexFormRgba(rgba: string) {
+    return `#${this.rgbToHex(this.rgbFormRgba(rgba))}`;
   }
 
   rgbEqual(rgb1: RGBColor, rgb2: RGBColor) {
