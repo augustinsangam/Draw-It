@@ -59,7 +59,6 @@ export class RectangleLogicComponent extends ToolLogicComponent {
       this.renderer.listen('document', 'keydown', (keyEv: KeyboardEvent) => {
         if (this.onDrag) {
           if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
-            console.log('jjjjjeeeee sssssuuuuuiiiiisssss lllllaaaaa')
             this.getRectangle().drawTemporarySquare(this.currentPoint)
           }
       }
