@@ -1,16 +1,16 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 
-import { PencilLogicComponent } from './pencil-logic.component';
-import { Renderer2, ElementRef } from '@angular/core';
+import { ElementRef, Renderer2 } from '@angular/core';
 import { ColorService } from '../../color/color.service';
 import { PencilService } from '../pencil.service';
+import { PencilLogicComponent } from './pencil-logic.component';
 
 fdescribe('PencilLogicComponent', () => {
   let component: PencilLogicComponent;
   let fixture: ComponentFixture<PencilLogicComponent>;
-  let renderer: Renderer2;
-  let colorService: ColorService;
-  let pencilService: PencilService;
+  // let renderer: Renderer2;
+  // let colorService: ColorService;
+  // let pencilService: PencilService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -26,9 +26,9 @@ fdescribe('PencilLogicComponent', () => {
     component.svgElRef = new ElementRef<SVGElement>(
       document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     );
-    renderer = fixture.componentInstance.renderer;
-    colorService = fixture.componentInstance.colorService;
-    pencilService = fixture.componentInstance.pencilService;
+    // renderer = fixture.componentInstance.renderer;
+    // colorService = fixture.componentInstance.colorService;
+    // pencilService = fixture.componentInstance.pencilService;
 
     fixture.detectChanges();
   });
@@ -36,4 +36,22 @@ fdescribe('PencilLogicComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('#should trigger onMouseDown method when mouse is down', fakeAsync(()=>{
+    const spy = spyOn(component, 'onMouseDown');
+    component.svgElRef.nativeElement.dispatchEvent(
+      new MouseEvent('mousedown', {
+        offsetX: 10,
+        offsetY: 30,
+        button: 0
+      } as MouseEventInit)
+    );
+    setTimeout(() => {
+      expect(spy).toHaveBeenCalledTimes(1);
+    }, 500);
+    tick(500);
+
+  }));
+  
+
 });

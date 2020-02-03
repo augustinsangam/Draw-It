@@ -30,15 +30,15 @@ module.exports = function(config) {
         singleRun: false,
         // browsers: ['Chrome', 'ChromeHeadlessNoSandbox', 'Firefox', 'FirefoxHeadless'],
         browsers: ['Chrome'],
-        customLaunchers: {
-        //     FirefoxHeadless: {
-        //         base: 'Firefox',
-        //         flags: ['-headless'],
-        //     },
-            ChromeHeadlessNoSandbox: {
-                base: 'ChromeHeadless',
-                flags: ['--no-sandbox'],
-            },
-        },
+        // customLaunchers: {
+        // //     FirefoxHeadless: {
+        // //         base: 'Firefox',
+        // //         flags: ['-headless'],
+        // //     },
+        //     // ChromeHeadlessNoSandbox: {
+        //     //     base: 'ChromeHeadless',
+        //     //     flags: ['--no-sandbox'],
+        //     // },
+        // },
     });
 };
