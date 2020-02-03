@@ -8,9 +8,6 @@ import { PencilLogicComponent } from './pencil-logic.component';
 fdescribe('PencilLogicComponent', () => {
   let component: PencilLogicComponent;
   let fixture: ComponentFixture<PencilLogicComponent>;
-  // let renderer: Renderer2;
-  // let colorService: ColorService;
-  // let pencilService: PencilService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -26,16 +23,34 @@ fdescribe('PencilLogicComponent', () => {
     component.svgElRef = new ElementRef<SVGElement>(
       document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     );
-    // renderer = fixture.componentInstance.renderer;
-    // colorService = fixture.componentInstance.colorService;
-    // pencilService = fixture.componentInstance.pencilService;
-
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('#should trigger onMouseMove method when mouse is moving', fakeAsync(()=>{
+    const spy = spyOn(component, 'onMouseMove');
+    component.svgElRef.nativeElement.dispatchEvent(
+      new MouseEvent('mousedown', {
+        offsetX: 10,
+        offsetY: 30,
+        button: 0
+      } as MouseEventInit)
+    );
+    component.svgElRef.nativeElement.dispatchEvent(
+      new MouseEvent('mousemove', {
+        offsetX: 10,
+        offsetY: 30,
+        button: 0
+      } as MouseEventInit)
+    );
+    setTimeout(() => {
+      expect(spy).toHaveBeenCalledTimes(1);
+    }, 1000);
+    tick(1000);
+  }));
 
   it('#should trigger onMouseDown method when mouse is down', fakeAsync(()=>{
     const spy = spyOn(component, 'onMouseDown');
@@ -52,6 +67,7 @@ fdescribe('PencilLogicComponent', () => {
     tick(500);
 
   }));
+
   
 
 });
