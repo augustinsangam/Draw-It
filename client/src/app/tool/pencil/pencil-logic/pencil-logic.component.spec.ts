@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { ElementRef, Renderer2 } from '@angular/core';
 import { ColorService } from '../../color/color.service';
@@ -11,10 +11,10 @@ fdescribe('PencilLogicComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PencilLogicComponent ],
+      declarations: [PencilLogicComponent],
       providers: [Renderer2, ColorService, PencilService]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -30,7 +30,7 @@ fdescribe('PencilLogicComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('#should trigger onMouseMove method when mouse is moving', fakeAsync(()=>{
+  it('#should trigger onMouseMove method when mouse is moving', fakeAsync(() => {
     const spy = spyOn(component, 'onMouseMove');
     component.svgElRef.nativeElement.dispatchEvent(
       new MouseEvent('mousedown', {
@@ -52,7 +52,7 @@ fdescribe('PencilLogicComponent', () => {
     tick(1000);
   }));
 
-  it('#should trigger onMouseDown method when mouse is down', fakeAsync(()=>{
+  it('#should trigger onMouseDown method when mouse is down', fakeAsync(() => {
     const spy = spyOn(component, 'onMouseDown');
     component.svgElRef.nativeElement.dispatchEvent(
       new MouseEvent('mousedown', {
@@ -67,7 +67,5 @@ fdescribe('PencilLogicComponent', () => {
     tick(500);
 
   }));
-
-  
 
 });
