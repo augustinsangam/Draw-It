@@ -31,6 +31,8 @@ import { PencilLogicComponent } from './tool/pencil/pencil-logic/pencil-logic.co
 import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.component';
 import { RectangleLogicComponent } from './tool/rectangle/rectangle-logic/rectangle-logic.component';
 import { RectanglePanelComponent } from './tool/rectangle/rectangle-panel/rectangle-panel.component';
+import { EllipseLogicComponent } from './tool/ellipse/ellipse-logic/ellipse-logic.component';
+import { EllipsePanelComponent } from "./tool/ellipse/ellipse-panel/ellipse-panel.component";
 
 @NgModule({
   declarations: [
@@ -56,6 +58,8 @@ import { RectanglePanelComponent } from './tool/rectangle/rectangle-panel/rectan
     RectanglePanelComponent,
     SidebarComponent,
     SvgComponent,
+    EllipseLogicComponent,
+    EllipsePanelComponent,
   ],
   imports: [
     BrowserAnimationsModule,
