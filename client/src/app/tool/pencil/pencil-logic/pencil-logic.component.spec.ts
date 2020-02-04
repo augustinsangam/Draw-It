@@ -5,7 +5,7 @@ import { ColorService } from '../../color/color.service';
 import { PencilService } from '../pencil.service';
 import { PencilLogicComponent } from './pencil-logic.component';
 
-fdescribe('PencilLogicComponent', () => {
+describe('PencilLogicComponent', () => {
   let component: PencilLogicComponent;
   let fixture: ComponentFixture<PencilLogicComponent>;
 
@@ -31,21 +31,21 @@ fdescribe('PencilLogicComponent', () => {
   });
 
   it('#MakeFirstPoint should set the good value to path', fakeAsync(() => {
-    const mouseEv: MouseEvent = new MouseEvent('mousedown', {offsetX: 10, offsetY: 30, button: 0} as MouseEventInit);
+    const mouseEv: MouseEvent = new MouseEvent('mousedown', { offsetX: 10, offsetY: 30, button: 0 } as MouseEventInit);
     const pathExpected: string = 'M' + mouseEv.offsetX + ',' + mouseEv.offsetY + ' h0';
     component.makeFirstPoint(mouseEv);
     expect(component.stringPath).toEqual(pathExpected);
   }));
 
   it('#MakeFirstPoint shouldnt set the value if the left button isnt hold', fakeAsync(() => {
-    const mouseEv: MouseEvent = new MouseEvent('mousedown', {offsetX: 10, offsetY: 30, button: 1} as MouseEventInit);
-    const pathExpected: string = '';
+    const mouseEv: MouseEvent = new MouseEvent('mousedown', { offsetX: 10, offsetY: 30, button: 1 } as MouseEventInit);
+    const pathExpected = '';
     component.makeFirstPoint(mouseEv);
     expect(component.stringPath).toEqual(pathExpected);
   }));
 
   it('#drawing should set the good value to path', fakeAsync(() => {
-    const mouseEv: MouseEvent = new MouseEvent('mousedown', {offsetX: 10, offsetY: 30, button: 0} as MouseEventInit);
+    const mouseEv: MouseEvent = new MouseEvent('mousedown', { offsetX: 10, offsetY: 30, button: 0 } as MouseEventInit);
     let pathExpected: string = ' L' + mouseEv.offsetX + ',' + mouseEv.offsetY;
     pathExpected += ' M' + mouseEv.offsetX + ',' + mouseEv.offsetY;
     component.drawing(mouseEv);
@@ -53,9 +53,9 @@ fdescribe('PencilLogicComponent', () => {
   }));
 
   it('#drawing shouldnt set value to path if the left button is unhold', fakeAsync(() => {
-    const mouseEv: MouseEvent = new MouseEvent('mouseup', {offsetX: 10, offsetY: 30, button: 2} as MouseEventInit);
+    const mouseEv: MouseEvent = new MouseEvent('mouseup', { offsetX: 10, offsetY: 30, button: 2 } as MouseEventInit);
     component.svgElRef.nativeElement.dispatchEvent(mouseEv);
-    const pathExpected: string = '';
+    const pathExpected = '';
     component.drawing(mouseEv);
     expect(component.stringPath).toEqual(pathExpected);
   }));
@@ -63,7 +63,7 @@ fdescribe('PencilLogicComponent', () => {
   it('#configureSvgElement is making good configurations', fakeAsync(() => {
 
     const anElement: SVGPathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    component.onMouseDown(new MouseEvent('mousedown', {offsetX: 10, offsetY: 30, button: 0} as MouseEventInit));
+    component.onMouseDown(new MouseEvent('mousedown', { offsetX: 10, offsetY: 30, button: 0 } as MouseEventInit));
     component.configureSvgElement(anElement);
     expect(anElement.getAttribute('stroke-width')).toEqual(component.strokeWidth.toString());
     expect(anElement.getAttribute('stroke-linecap')).toEqual(component.strokeLineCap.toString());
@@ -77,7 +77,7 @@ fdescribe('PencilLogicComponent', () => {
   }));
 
   it('#mouseMove should set the good value to the svgPath', fakeAsync(() => {
-    const mouseEv: MouseEvent = new MouseEvent('mousemove', {offsetX: 10, offsetY: 30, button: 0} as MouseEventInit);
+    const mouseEv: MouseEvent = new MouseEvent('mousemove', { offsetX: 10, offsetY: 30, button: 0 } as MouseEventInit);
     component.svgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path'); // define the svgPath
     component.onMouseMove(mouseEv);
     let pathExpected: string = ' L' + mouseEv.offsetX + ',' + mouseEv.offsetY;
@@ -102,7 +102,7 @@ fdescribe('PencilLogicComponent', () => {
 
   it('#shouldnt trigger onMouseDown method when left button is unhold', fakeAsync(() => {
     const spy = spyOn(component, 'onMouseDown');
-    const mouseEv: MouseEvent = new MouseEvent('mousedown', {offsetX: 10,offsetY: 30,button: 2} as MouseEventInit);
+    const mouseEv: MouseEvent = new MouseEvent('mousedown', { offsetX: 10, offsetY: 30, button: 2 } as MouseEventInit);
     component.svgElRef.nativeElement.dispatchEvent(mouseEv);
     setTimeout(() => {
       expect(spy).toHaveBeenCalledTimes(0)
@@ -153,7 +153,7 @@ fdescribe('PencilLogicComponent', () => {
     );
 
     component.svgElRef.nativeElement.dispatchEvent(
-      new MouseEvent('mouseleave', {button: 0} as MouseEventInit));
+      new MouseEvent('mouseleave', { button: 0 } as MouseEventInit));
     setTimeout(() => {
       expect(component.stringPath).toEqual('');
     }, 1000);
@@ -161,11 +161,11 @@ fdescribe('PencilLogicComponent', () => {
   }));
 
   it('#mouseleave event shouldnt updates stringPath values when left button is unhold', fakeAsync(() => {
-    const mouseEv = new MouseEvent('mousedown', {offsetX: 10, offsetY: 30, button: 0} as MouseEventInit);
+    const mouseEv = new MouseEvent('mousedown', { offsetX: 10, offsetY: 30, button: 0 } as MouseEventInit);
     component.onMouseDown(mouseEv);
     const pathExpected: string = 'M' + mouseEv.offsetX + ',' + mouseEv.offsetY + ' h0'
     component.svgElRef.nativeElement.dispatchEvent(
-      new MouseEvent('mouseleave', {button: 2} as MouseEventInit));
+      new MouseEvent('mouseleave', { button: 2 } as MouseEventInit));
     setTimeout(() => {
       expect(component.stringPath).toEqual(pathExpected);
     }, 1000);
@@ -173,7 +173,7 @@ fdescribe('PencilLogicComponent', () => {
   }));
 
   it('#onMouseMove shouldnt updates stringPath values when mouse isnt hold', fakeAsync(() => {
-    const mouseEv: MouseEvent = new MouseEvent('mousemove', {offsetX: 10, offsetY: 30, button: 0} as MouseEventInit);
+    const mouseEv: MouseEvent = new MouseEvent('mousemove', { offsetX: 10, offsetY: 30, button: 0 } as MouseEventInit);
     component.onMouseDown(mouseEv);
     component.svgElRef.nativeElement.dispatchEvent(mouseEv);
     const pathExpected: string = 'M' + mouseEv.offsetX + ',' + mouseEv.offsetY + ' h0';
