@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatListModule, MatFormFieldControl, MatFormFieldModule } from '@angular/material';
 import { MatIconModule } from '@angular/material/icon';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MccColorPickerModule } from 'material-community-components';
 
 import { AppComponent } from './app.component';
@@ -68,6 +68,7 @@ import { RectanglePanelComponent } from './tool/rectangle/rectangle-panel/rectan
     MatIconModule,
     MatListModule,
     MccColorPickerModule,
+    NoopAnimationsModule,
     ReactiveFormsModule,
   ],
   providers: [],
