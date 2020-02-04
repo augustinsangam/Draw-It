@@ -34,12 +34,6 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
       listenner();
     })}
 
-  makeFirstPoint(mouseEv: MouseEvent) {
-    if (mouseEv.button === 0) {
-      this.stringPath = 'M' + mouseEv.offsetX + ',' + mouseEv.offsetY + ' h0';
-    }
-  }
-
   configureSvgElement(element: SVGElement): void {
     element.setAttribute('d', this.stringPath);
     element.setAttribute('stroke-width', this.strokeWidth.toString());

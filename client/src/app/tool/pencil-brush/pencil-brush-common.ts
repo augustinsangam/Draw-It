@@ -15,7 +15,6 @@ export abstract class PencilBrushCommon extends ToolLogicComponent {
     }
 
     abstract defineParameter(): void;
-    abstract makeFirstPoint(mouseEv: MouseEvent): void;
     abstract onMouseDown(mouseEv: MouseEvent): void;
     abstract configureSvgElement(element: SVGElement): void;
     drawing(mouseEv: MouseEvent): void {
@@ -28,6 +27,12 @@ export abstract class PencilBrushCommon extends ToolLogicComponent {
     onMouseMove(mouseEv: MouseEvent) {
         this.drawing(mouseEv);
         this.svgPath.setAttribute('d', this.stringPath);
-      }
+    }
+
+    makeFirstPoint(mouseEv: MouseEvent) {
+        if (mouseEv.button === 0) {
+          this.stringPath = 'M' + mouseEv.offsetX + ',' + mouseEv.offsetY + ' h0';
+        }
+    }
 
 }
