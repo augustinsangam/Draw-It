@@ -1,10 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {FormBuilder} from '@angular/forms';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
+import {FormBuilder, FormsModule} from '@angular/forms';
 import {PencilService} from '../pencil.service';
 import { PencilPanelComponent } from './pencil-panel.component';
 
-describe('PencilPanelComponent', () => {
+fdescribe('PencilPanelComponent', () => {
   let component: PencilPanelComponent;
   let fixture: ComponentFixture<PencilPanelComponent>;
 
@@ -12,9 +13,11 @@ describe('PencilPanelComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ PencilPanelComponent ],
       providers: [
+        FormsModule,
         PencilService,
         FormBuilder
-      ]
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   }));

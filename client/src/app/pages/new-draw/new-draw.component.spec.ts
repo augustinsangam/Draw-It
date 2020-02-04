@@ -5,12 +5,12 @@ import { NewDrawComponent } from './new-draw.component';
 
 import { CdkObserveContent } from '@angular/cdk/observers';
 import { Overlay } from '@angular/cdk/overlay';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialog, MatDialogRef,
-   MatFormField, MatHint, MatLabel, MatInput } from '@angular/material';
+   MatFormField, MatHint, MatInput, MatLabel } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ColorPicklerItemComponent } from 'src/app/tool/color/color-panel/color-pickler-item/color-pickler-item.component';
 import { ScreenService } from './sreen-service/screen.service';
-import { NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('NewDrawComponent', () => {
   let component: NewDrawComponent;
