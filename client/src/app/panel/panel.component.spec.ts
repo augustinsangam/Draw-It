@@ -1,8 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PanelComponent } from './panel.component';
+// import { Tool } from '../tool/tool.enum';
 
-describe('PanelComponent', () => {
+fdescribe('PanelComponent', () => {
   let component: PanelComponent;
   let fixture: ComponentFixture<PanelComponent>;
 
@@ -22,4 +23,10 @@ describe('PanelComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  // it('#setTool should change component to tool', () => {
+  //   const tool: Tool = Tool.Brush;
+
+  //   const spy = spyOn(component, 'setTool')
+  // })
 });
