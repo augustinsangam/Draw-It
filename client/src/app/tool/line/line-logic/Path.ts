@@ -20,7 +20,7 @@ export class Path {
       const instruction = 'L ' + point.x.toString() + ' ' + point.y.toString() + ' ';
       this.addInstruction(instruction);
     }
-    addInstruction(instruction: string){
+    addInstruction(instruction: string) {
       this.datas.instructions.push(instruction);
       this.pathAtribute += instruction;
       this.renderer.setAttribute(this.element, 'd', this.pathAtribute);

@@ -7,7 +7,6 @@ import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { ToolSelectorService } from './tool/tool-selector/tool-selector.service';
 import { Tool } from './tool/tool.enum';
 
-
 export interface NewDrawOptions {
   width: number;
   height: number;
