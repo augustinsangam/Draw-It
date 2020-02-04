@@ -52,6 +52,13 @@ fdescribe('PencilLogicComponent', () => {
     expect(component.stringPath).toEqual(pathExpected);
   }));
 
+  it('#drawing shouldnt set value to path if the left button is unhold', fakeAsync(() => {
+    const mouseEv: MouseEvent = new MouseEvent('mouseup', {offsetX: 10, offsetY: 30, button: 2} as MouseEventInit);
+    component.svgElRef.nativeElement.dispatchEvent(mouseEv);
+    const pathExpected: string = '';
+    component.drawing(mouseEv);
+    expect(component.stringPath).toEqual(pathExpected);
+  }));
   it('#configureSvgElement is making good configurations', fakeAsync(() => {
 
     const anElement: SVGPathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
