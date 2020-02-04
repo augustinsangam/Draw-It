@@ -31,12 +31,12 @@ lint:client:
         - pushd client
         - yarn lint
         - popd
-lint:server:
-    stage: lint
-    script:
-        - pushd server
-        - yarn lint
-        - popd
+# lint:server:
+#     stage: lint
+#     script:
+#         - pushd server
+#         - yarn lint
+#         - popd
 build:client:
     stage: build
     script:
@@ -46,15 +46,15 @@ build:client:
     artifacts:
         paths:
             - client/dist/
-build:server:
-    stage: build
-    script:
-        - pushd server
-        - yarn tsc
-        - popd
-    artifacts:
-        paths:
-            - server/out/
+# build:server:
+#     stage: build
+#     script:
+#         - pushd server
+#         - yarn tsc
+#         - popd
+#     artifacts:
+#         paths:
+#             - server/out/
 test:client:
     stage: test
     script:
@@ -67,14 +67,14 @@ test:client:
     artifacts:
         paths:
             - client/coverage/
-test:server:
-    stage: test
-    script:
-        - pushd server
-        - yarn coverage
-        - popd
-    dependencies:
-        - build:server
-    artifacts:
-        paths:
-            - server/coverage/
+# test:server:
+#     stage: test
+#     script:
+#         - pushd server
+#         - yarn coverage
+#         - popd
+#     dependencies:
+#         - build:server
+#     artifacts:
+#         paths:
+#             - server/coverage/
