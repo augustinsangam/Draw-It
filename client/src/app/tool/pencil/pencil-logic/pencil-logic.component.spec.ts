@@ -49,7 +49,7 @@ fdescribe('PencilLogicComponent', () => {
   it('#defineParameter is making good configurations', fakeAsync(() => {
     component.defineParameter();
     expect(component.stroke).toEqual(component.colorService.primaryColor);
-    //expect(component.strokeWidth).toEqual(component.pencilService.thickness);
+    expect(component.strokeWidth).toEqual(component.pencilService.thickness);
 
   }));
 
@@ -103,21 +103,21 @@ fdescribe('PencilLogicComponent', () => {
 
 
 
-  // it('#should upadates stringPath values when mouse is leaving', fakeAsync(() => {
-  //   component.svgElRef.nativeElement.dispatchEvent(
-  //     new MouseEvent('mousedown', {
-  //       offsetX: 10,
-  //       offsetY: 30,
-  //       button: 0
-  //     } as MouseEventInit)
-  //   );
-  //   component.svgElRef.nativeElement.dispatchEvent(
-  //     new MouseEvent('mouseleave', {button: 0} as MouseEventInit));
-  //   setTimeout(() => {
-  //     expect(component.stringPath).toEqual('');
-  //   }, 1000);
-  //   tick(1000);
-  // }));
+  it('#should upadates stringPath values when mouse is leaving', fakeAsync(() => {
+    component.svgElRef.nativeElement.dispatchEvent(
+      new MouseEvent('mousedown', {
+        offsetX: 10,
+        offsetY: 30,
+        button: 0
+      } as MouseEventInit)
+    );
+    component.svgElRef.nativeElement.dispatchEvent(
+      new MouseEvent('mouseleave', {button: 0} as MouseEventInit));
+    setTimeout(() => {
+      expect(component.stringPath).toEqual('');
+    }, 1000);
+    tick(1000);
+  }));
 
 
   // it ('#Should trigger Drawing method', async() => {
@@ -137,5 +137,4 @@ fdescribe('PencilLogicComponent', () => {
 
   //   expect(spy).toHaveBeenCalled();
   // })
-
 });
