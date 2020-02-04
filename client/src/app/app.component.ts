@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
 
 import { DocumentationComponent } from './pages/documentation/documentation.component';
@@ -6,6 +6,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { ToolSelectorService } from './tool/tool-selector/tool-selector.service';
 import { Tool } from './tool/tool.enum';
+
 
 export interface NewDrawOptions {
   width: number;
@@ -24,11 +25,18 @@ export class AppComponent implements AfterViewInit {
   drawInProgress = false;
   drawOption: NewDrawOptions = { height : 0, width : 0, color: ''};
 
-  commonDialogOptions = {
-    width: '650px',
-    height: '90%',
-    data: { drawInProgress: this.drawInProgress }
-  };
+  @ViewChild('svg', {
+    static: false,
+    read: ElementRef
+  }) svg: ElementRef<SVGElement>;
+
+  getCommomDialogOptions = () => {
+    return {
+      width: '650px',
+      height: '90%',
+      data: { drawInProgress: this.drawInProgress }
+    };
+  }
 
   constructor(public dialog: MatDialog, private readonly toolSelectorService: ToolSelectorService) {
     this.toolSelector = new Map()
@@ -38,12 +46,16 @@ export class AppComponent implements AfterViewInit {
     this.toolSelector.set('KeyW', Tool.Brush);
    };
 
-  @HostListener('window:keyup', ['$event'])
+  @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
     if (this.onMainPage) {
       if (this.toolSelector.has( event.code)) {
         const tool = this.toolSelector.get(event.code);
         this.toolSelectorService.set(tool as Tool);
+      }
+      if (event.code === 'KeyO' && event.ctrlKey) {
+        event.preventDefault();
+        this.openNewDrawDialog();
       }
     }
   }
@@ -53,7 +65,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   openHomeDialog() {
-    const dialogRef = this.dialog.open(HomeComponent, this.commonDialogOptions);
+    const dialogRef = this.dialog.open(HomeComponent, this.getCommomDialogOptions());
     dialogRef.disableClose = true;
     dialogRef.afterClosed().subscribe((result: string) => {
       switch (result) {
@@ -73,7 +85,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   openNewDrawDialog() {
-    const newDialog = this.dialog.open(NewDrawComponent, this.commonDialogOptions);
+    const newDialog = this.dialog.open(NewDrawComponent, this.getCommomDialogOptions());
     newDialog.disableClose = true;
 
     newDialog.afterClosed().subscribe((resultNewDialog) => {
@@ -95,7 +107,6 @@ export class AppComponent implements AfterViewInit {
     const newDialog = this.dialog.open(DocumentationComponent, dialogOptions);
     newDialog.disableClose = false;
     this.onMainPage = false;
-
     newDialog.afterClosed().subscribe((resultNewDialog) => {
       if (fromHome) {
         this.openHomeDialog();
@@ -106,10 +117,11 @@ export class AppComponent implements AfterViewInit {
   }
 
   createNewDraw(option: NewDrawOptions) {
-    if (!this.drawInProgress) {
-      this.drawOption = option;
-    } else {
-      // TODO
-    }
+    this.drawOption = option;
+    this.drawInProgress = true;
+    const childrens = Array.from(this.svg.nativeElement.children)
+    childrens.forEach(element => {
+      element.remove();
+    });
   }
 }
