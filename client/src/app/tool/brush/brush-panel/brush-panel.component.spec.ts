@@ -13,7 +13,7 @@ import { ColorPicklerContentComponent } from '../../color/color-panel/color-pick
 import { ColorPicklerItemComponent } from '../../color/color-panel/color-pickler-item/color-pickler-item.component';
 import { BrushPanelComponent } from './brush-panel.component';
 
-fdescribe('BrushPanelComponent', () => {
+describe('BrushPanelComponent', () => {
   let component: BrushPanelComponent;
   let fixture: ComponentFixture<BrushPanelComponent>;
 
