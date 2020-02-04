@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, Optional, Renderer2, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
@@ -51,7 +51,7 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
               private screenService: ScreenService,
               private renderer: Renderer2,
               private dialog: MatDialog,
-              public dialogRef: MatDialogRef<NewDrawComponent>,
+              @Optional() public dialogRef: MatDialogRef<NewDrawComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     const screenSize: ScreenSize = this.screenService.getCurrentSize();
     this.maxWidth = screenSize.width;

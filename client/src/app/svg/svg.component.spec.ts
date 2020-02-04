@@ -23,4 +23,5 @@ describe('CanvasComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
 });

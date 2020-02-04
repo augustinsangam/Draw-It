@@ -3,8 +3,8 @@
   <p>Épaisseur</p>
   <div class="thickness">
     <mat-slider min=1 max=100 step=1
-      (input)="onThicknessChange($event)"
-      (change)="onThicknessChange($event)"
+      (input)="onThicknessChange()"
+      (change)="onThicknessChange()"
       formControlName="thicknessSlider">
     </mat-slider>
     <mat-form-field>
@@ -13,20 +13,20 @@
     </mat-form-field>
   </div>
   <p>
-    Points de jonction 
-    <mat-slide-toggle formControlName="jonctionOption" (change)="onChangeJonctionOption($event)"></mat-slide-toggle>
+    Points de jonction
+    <mat-slide-toggle formControlName="jonctionOption" (change)="onChangeJonctionOption($event)" #slideToggle></mat-slide-toggle>
   </p>
   <div class="junction-options">
     <div class="juction-preferences" *ngIf="this.service.withJonction">
       <p>Diamètre des points</p>
-        <mat-slider min="1" 
-                max="100" step="1" 
-                (input)="onRadiusChange($event)" 
-                (change)="onRadiusChange($event)" 
+        <mat-slider min="1"
+                max="100" step="1"
+                (input)="onRadiusChange()"
+                (change)="onRadiusChange()"
                 formControlName="radiusSlider">
         </mat-slider>
         <mat-form-field>
-            <input  matInput 
+            <input  matInput
                     formControlName="radiusFormField"
                     readonly>
             <span matSuffix>px</span>

@@ -9,7 +9,11 @@
       <td class="color-preview-circle">
         <app-color-pickler-item #colorPreviewPrimary></app-color-pickler-item>
       </td>
-      <td rowspan="2"><button mat-raised-button color="primary" (click)="swapColors()">
+      <td rowspan="2">
+        <button mat-raised-button 
+                color="primary" 
+                (click)="swapColors()"
+                id="swapButton">
           <mat-icon>swap_vert</mat-icon>
         </button></td>
     </tr>
