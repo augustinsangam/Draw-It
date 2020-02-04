@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PanelComponent } from '../panel/panel.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { SidebarComponent } from './sidebar.component';
 
 describe('SidebarComponent', () => {
@@ -9,8 +9,12 @@ describe('SidebarComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SidebarComponent ],
-      imports: [ PanelComponent ]
+      declarations: [
+        SidebarComponent,
+      ],
+      imports: [
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
   }));

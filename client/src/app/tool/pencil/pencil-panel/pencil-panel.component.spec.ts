@@ -1,5 +1,8 @@
+import { CdkObserveContent } from '@angular/cdk/observers';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MaterialModule } from 'src/app/material.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormField, MatInput, MatSlider } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PencilPanelComponent } from './pencil-panel.component';
 
 describe('PencilPanelComponent', () => {
@@ -8,8 +11,19 @@ describe('PencilPanelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PencilPanelComponent ],
-      imports: [MaterialModule]
+      declarations: [
+        PencilPanelComponent,
+        MatSlider,
+        MatInput,
+        MatFormField,
+        CdkObserveContent,
+
+      ],
+      imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
+      ]
     })
     .compileComponents();
   }));
