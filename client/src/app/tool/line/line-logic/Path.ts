@@ -1,9 +1,7 @@
 import { ElementRef, Renderer2 } from '@angular/core';
 import {Point} from '../../tool-common classes/Point'
-import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
 import {Circle} from './Circle'
-
-export class Path extends ToolLogicComponent  {
+export class Path {
     svgNS = ' http://www.w3.org/2000/svg ';
     points: Point[] = [];
     jonctions: Circle[] = [];
@@ -11,8 +9,7 @@ export class Path extends ToolLogicComponent  {
     private pathString = '';
     lastPoint: Point;
     withJonctions: boolean;
-    constructor( initialPoint: Point, private renderer: Renderer2, private element: ElementRef, withJonction: boolean) {
-      super();
+    constructor( initialPoint: Point, private renderer: Renderer2, private element: ElementRef, withJonction: boolean ) {
       this.points.push(initialPoint);
       const instruction = 'M ' + initialPoint.x.toString() + ' ' + initialPoint.y.toString() + ' ';
       this.instructions.push(instruction);
@@ -29,11 +26,7 @@ export class Path extends ToolLogicComponent  {
       this.renderer.setAttribute(this.element, 'd', this.pathString);
     }
     addJonction(element: ElementRef, point: Point, jonctionRadius: string) {
-      const circle = this.renderer.createElement('circle', this.svgNS);
-      console.log(this.svgElRef)
-      this.renderer.appendChild( this.svgElRef, circle);
-      this.renderer.setAttribute(circle, 'fill', '');
-      this.jonctions.push(new Circle(point, this.renderer, circle, jonctionRadius));
+      this.jonctions.push(new Circle(point, this.renderer, element, jonctionRadius));
     }
     addTemporaryLine(point: Point) {
       const temp = this.pathString + 'L ' + point.x.toString() + ' ' + point.y.toString() + ' ';
