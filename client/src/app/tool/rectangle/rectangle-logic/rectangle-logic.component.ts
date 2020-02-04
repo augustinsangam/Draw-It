@@ -2,11 +2,11 @@ import { Component, ElementRef, Renderer2, } from '@angular/core';
 
 import { ColorService } from '../../color/color.service';
 import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
-import { FillOption, RectangleService } from '../rectangle.service';
+import { RectangleService } from '../rectangle.service';
 
 enum ClickType {
   CLICKGAUCHE = 0,
-  CLICKDROIT = 2
+  CLICKDROIT = 1
 };
 
 @Component({
@@ -46,8 +46,8 @@ export class RectangleLogicComponent extends ToolLogicComponent {
     ));
 
     this.allListeners.push(
-      this.renderer.listen(this.svgElRef.nativeElement, 'mouseup', (mouseEv: MouseEvent) => {
-        if (mouseEv.button === ClickType.CLICKGAUCHE) {
+      this.renderer.listen('document', 'mouseup', (mouseEv: MouseEvent) => {
+        if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
           this.onDrag = false;
           this.viewTemporaryForm(mouseEv)
           this.getRectangle().setOpacity('1.0')
@@ -56,7 +56,7 @@ export class RectangleLogicComponent extends ToolLogicComponent {
     ));
 
     this.allListeners.push(
-      this.renderer.listen(this.svgElRef.nativeElement, 'keydown', (keyEv: KeyboardEvent) => {
+      this.renderer.listen('document', 'keydown', (keyEv: KeyboardEvent) => {
         if (this.onDrag) {
           if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
             this.getRectangle().drawTemporarySquare(this.currentPoint)
@@ -86,10 +86,10 @@ export class RectangleLogicComponent extends ToolLogicComponent {
       this.renderer.appendChild(this.svgElRef.nativeElement, rectangle);
       this.rectangles[++this.currentRectangleIndex] = new Rectangle(this.currentPoint, this.renderer, rectangle);
       this.getRectangle().setParameters({
-        borderWidth: this.service.thickness.toString(),
+        borderWidth: (this.service.borderOption) ? this.service.thickness.toString() : '0',
         borderColor: this.colorService.secondaryColor,
         fillColor: this.colorService.primaryColor,
-        filled: (this.service.fillOption === FillOption.With),
+        filled: this.service.fillOption,
       });
       this.onDrag = true;
     }

@@ -1,6 +1,6 @@
 import { Component, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatRadioChange } from '@angular/material';
+import { MatSlideToggleChange } from '@angular/material';
 
 import { ToolPanelComponent } from '../../tool-panel/tool-panel.component';
 import { LineService } from '../line.service';
@@ -12,9 +12,6 @@ import { LineService } from '../line.service';
 })
 export class LinePanelComponent extends ToolPanelComponent {
 
-  jonctionOption = this.service.jonctionOption;
-  jonctionOptions = this.service.jonctionOptions;
-
   lineForm: FormGroup;
 
   constructor(elementRef: ElementRef<HTMLElement>,
@@ -24,15 +21,14 @@ export class LinePanelComponent extends ToolPanelComponent {
     this.lineForm = this.formBuilder.group({
       thicknessFormField: [this.service.thickness, [Validators.required]],
       radiusFormField: [this.service.radius, [Validators.required]],
-      jonctionOption: [this.service.jonctionOption, []],
+      jonctionOption: [this.service.withJonction, []],
       thicknessSlider: [this.service.thickness, []],
       radiusSlider: [this.service.radius, []],
     });
   }
 
-  onChangeJonctionOption($event: MatRadioChange) {
-    this.jonctionOption = $event.value;
-    this.service.jonctionOption = ($event.value);
+  onChangeJonctionOption($event: MatSlideToggleChange) {
+    this.service.withJonction = ($event.checked);
   }
 
   onThicknessChange($event: Event) {

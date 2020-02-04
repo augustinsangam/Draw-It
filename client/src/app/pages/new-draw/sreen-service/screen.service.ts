@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { EventManager } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 
 @Injectable({
@@ -6,11 +7,13 @@ import { Subject } from 'rxjs';
 })
 export class ScreenService {
   size: Subject<ScreenSize>;
-  sideBarWidth = 44;
+  readonly sideBarWidth = 44;
 
-  constructor() {
+  constructor(private eventManager: EventManager) {
     this.size = new Subject<ScreenSize>();
-    addEventListener('resize', this.onResize.bind(this));
+    this.eventManager.addGlobalEventListener('window', 'resize', ($event: Event) => {
+      this.onResize($event);
+    });
   }
 
   getCurrentSize(): ScreenSize {
@@ -18,10 +21,6 @@ export class ScreenService {
       height: innerHeight,
       width: innerWidth - this.sideBarWidth,
     }
-  }
-
-  getSize(): Subject<ScreenSize> {
-    return this.size;
   }
 
   onResize($event: Event) {
