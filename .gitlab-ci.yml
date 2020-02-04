@@ -19,16 +19,16 @@ client-pre:
   <<: *client
 client-lint:
   stage: build
-  script:
-    - npm install -g @angular/cli
-    - ng build -prod
-    - npm --prefix client/ run lint
+  script: npm --prefix client/ run lint
   cache:
     <<: *client_cache
     policy: pull
   <<: *client
 client-test:
-  script: npm --prefix client/ t
+  script:
+   - npm install -g @angular/cli
+   - ng build -prod
+   - npm --prefix client/ t
   <<: *client
 
 .cache: &server_cache
