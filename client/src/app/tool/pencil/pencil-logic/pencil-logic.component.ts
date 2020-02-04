@@ -12,7 +12,6 @@ import { PencilService } from '../pencil.service';
 export class PencilLogicComponent extends PencilBrushCommon implements AfterViewInit {
 
   strokeLineCap: string;
-  svgPath: SVGPathElement;
   private listeners: (() => void)[] = [];
 
   constructor(public renderer: Renderer2,
@@ -62,11 +61,6 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
     this.svgPath = this.renderer.createElement(this.svgTag, this.svgNS);
     this.configureSvgElement(this.svgPath);
     this.renderer.appendChild(this.svgElRef.nativeElement, this.svgPath);
-  }
-
-  onMouseMove(mouseEv: MouseEvent) {
-    this.drawing(mouseEv);
-    this.svgPath.setAttribute('d', this.stringPath);
   }
 
   ngAfterViewInit() {

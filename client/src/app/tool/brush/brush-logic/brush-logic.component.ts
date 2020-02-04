@@ -68,11 +68,6 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
     this.renderer.appendChild(this.svgElRef.nativeElement, this.svgPath);
   }
 
-  onMouseMove(mouseEv: MouseEvent) {
-    this.drawing(mouseEv);
-    this.svgPath.setAttribute('d', this.stringPath);
-  }
-
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnDestroy() {
     this.listeners.forEach(listenner => {
