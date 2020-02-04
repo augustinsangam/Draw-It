@@ -34,10 +34,7 @@ export class LineLogicComponent extends ToolLogicComponent {
       if (mouseEv.shiftKey && !this.isNewPath) {
         currentPoint = this.getPath().getAlignedPoint(currentPoint);
       }
-      if (this.getPath().withJonctions) {
-        this.createJonction(currentPoint);
-      }
-      this.getPath().addLine(currentPoint);
+      this.addNewLine(currentPoint)
     });
 
     const onMouseMove = this.renderer.listen(this.svgElRef.nativeElement, 'mousemove', (mouseEv: MouseEvent) => {
@@ -52,18 +49,16 @@ export class LineLogicComponent extends ToolLogicComponent {
     const onMouseUp = this.renderer.listen(this.svgElRef.nativeElement, 'dblclick', (mouseEv: MouseEvent) => {
       if (!this.isNewPath) {
         let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+        this.getPath().removeLastLine(); //cancel the click event
         this.getPath().removeLastLine();
-        this.getPath().removeLastLine();
-        if (this.distanceIsLessThan3Pixel(currentPoint, this.getPath().points[0])) {
+        const isLessThan3pixels = this.distanceIsLessThan3Pixel(currentPoint, this.getPath().points[0])
+        if (isLessThan3pixels) {
           this.getPath().closePath();
         } else {
           if (mouseEv.shiftKey) {
             currentPoint = this.getPath().getAlignedPoint(currentPoint)
           }
-          this.getPath().addLine(currentPoint);
-          if (this.getPath().withJonctions) {
-            this.createJonction(currentPoint);
-          }
+          this.addNewLine(currentPoint)
         }
         this.isNewPath = true;
       }
@@ -102,6 +97,13 @@ export class LineLogicComponent extends ToolLogicComponent {
     this.renderer.appendChild(this.svgElRef.nativeElement, circle);
     this.renderer.setAttribute(circle, 'fill', this.serviceColor.primaryColor);
     this.getPath().addJonction(circle, center, this.service.radius.toString());
+  }
+  addNewLine(currentPoint: Point) {
+    this.getPath().addLine(currentPoint);
+    if (this.getPath().withJonctions) {
+      this.createJonction(currentPoint);
+    }
+
   }
   distanceIsLessThan3Pixel(point1: Point, point2: Point): boolean {
     return ((Math.abs(point1.x - point2.x) <= 3) && (Math.abs(point1.y - point2.y) <= 3));

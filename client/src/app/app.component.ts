@@ -61,7 +61,6 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.svgService.istance = this.svg;
     this.openHomeDialog();
   }
 
