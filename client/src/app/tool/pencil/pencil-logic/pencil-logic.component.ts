@@ -59,7 +59,7 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
   onMouseDown(mouseEv: MouseEvent) {
     this.defineParameter();
     this.makeFirstPoint(mouseEv);
-    this.svgPath = this.renderer.createElement('path', this.svgNS);
+    this.svgPath = this.renderer.createElement(this.svgTag, this.svgNS);
     this.configureSvgElement(this.svgPath);
     this.renderer.appendChild(this.svgElRef.nativeElement, this.svgPath);
   }

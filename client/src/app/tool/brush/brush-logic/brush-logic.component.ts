@@ -60,13 +60,8 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
     this.filter = this.brushService.texture;
   }
 
-  defineFilter(filter: string) {
-    this.filter = filter;
-  }
-
   onMouseDown(mouseEv: MouseEvent) {
     this.defineParameter();
-    this.defineFilter(this.brushService.texture);
     this.makeFirstPoint(mouseEv);
     this.svgPath = this.renderer.createElement(this.svgTag, this.svgNS);
     this.configureSvgElement(this.svgPath);
