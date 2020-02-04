@@ -14,7 +14,6 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
   currentX: number;
   currentY: number;
   strokeLineCap: string;
-  stringPath: string;
   svgPath: SVGPathElement;
   private mouseOnHold: boolean;
   private listeners: (() => void)[] = [];
@@ -46,13 +45,6 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
       this.currentX = mouseEv.offsetX;
       this.currentY = mouseEv.offsetY;
       this.stringPath = 'M' + this.currentX + ',' + this.currentY + ' h0';
-    }
-  }
-
-  drawing(mouseEv: MouseEvent) {
-    if (mouseEv.button === 0) {
-      this.stringPath += ' L' + mouseEv.offsetX + ',' + mouseEv.offsetY;
-      this.stringPath += ' M' + mouseEv.offsetX + ',' + mouseEv.offsetY;
     }
   }
 

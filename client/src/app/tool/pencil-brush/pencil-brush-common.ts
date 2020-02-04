@@ -6,6 +6,7 @@ export abstract class PencilBrushCommon extends ToolLogicComponent {
     stroke: string;
     strokeWidth: number;
     fill: string;
+    stringPath: string;
 
     constructor() {
         super();
@@ -13,7 +14,12 @@ export abstract class PencilBrushCommon extends ToolLogicComponent {
 
     abstract defineParameter(): void;
     abstract makeFirstPoint(mouseEv: MouseEvent): void;
-    abstract drawing(mouseEv: MouseEvent): void;
+    drawing(mouseEv: MouseEvent): void {
+        if (mouseEv.button === 0) {
+          this.stringPath += ' L' + mouseEv.offsetX + ',' + mouseEv.offsetY;
+          this.stringPath += ' M' + mouseEv.offsetX + ',' + mouseEv.offsetY;
+        }
+      }
     abstract onMouseMove(mouseEv: MouseEvent): void;
     abstract onMouseDown(mouseEv: MouseEvent): void;
     abstract configureSvgElement(element: SVGElement): void;
