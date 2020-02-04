@@ -1,4 +1,4 @@
-import { Component, ElementRef, Renderer2 } from '@angular/core';
+import { Component, Renderer2 } from '@angular/core';
 import { ColorService } from '../../color/color.service';
 import { Point } from '../../tool-common classes/Point'
 import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
@@ -52,7 +52,7 @@ export class LineLogicComponent extends ToolLogicComponent {
         this.getPath().removeLastLine(); // cancel the click event
         this.getPath().removeLastLine();
         const math =  new LineLogicMathService()
-        const isLessThan3pixels = math.distanceIsLessThan3Pixel(currentPoint, this.getPath().points[0])
+        const isLessThan3pixels = math.distanceIsLessThan3Pixel(currentPoint, this.getPath().datas.points[0])
         if (isLessThan3pixels) {
           this.getPath().closePath();
         } else {
@@ -70,7 +70,7 @@ export class LineLogicComponent extends ToolLogicComponent {
         this.getPath().removePath();
         this.isNewPath = true;
       }
-      if (keyEv.code === 'Backspace' && this.getPath().points.length >= 2) {
+      if (keyEv.code === 'Backspace' && this.getPath().datas.points.length >= 2) {
         this.getPath().removeLastLine();
         this.getPath().simulateNewLine(this.getPath().lastPoint);
       }
