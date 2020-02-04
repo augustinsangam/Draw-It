@@ -117,4 +117,29 @@ fdescribe('PencilLogicComponent', () => {
     }, 1000);
     tick(1000);
   }));
+
+  it('#shouldnt updates stringPath values when mouse isnt hold', fakeAsync(() => {
+    const mouseEv: MouseEvent = new MouseEvent('mousedown', {offsetX: 10, offsetY: 30, button: 0} as MouseEventInit);
+    component.onMouseDown(mouseEv);
+    const pathExpected: string = 'M' + mouseEv.offsetX + ',' + mouseEv.offsetY + ' h0';
+    setTimeout(() => {
+      expect(component.stringPath).toEqual(pathExpected);
+    }, 1000);
+    tick(1000);
+  }));
+
+  it('#shouldnt call onMouseMove when mouse isnt hold', fakeAsync(() => {
+    const spy = spyOn(component, 'onMouseMove');
+    component.svgElRef.nativeElement.dispatchEvent(
+      new MouseEvent('mousemove', {
+        offsetX: 10,
+        offsetY: 30,
+        button: 0
+      } as MouseEventInit)
+    );
+    setTimeout(() => {
+      expect(spy).toHaveBeenCalledTimes(0);
+    }, 1000);
+    tick(1000);
+  }));
 });
