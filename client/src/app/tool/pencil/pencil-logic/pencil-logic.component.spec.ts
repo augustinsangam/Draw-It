@@ -98,6 +98,16 @@ fdescribe('PencilLogicComponent', () => {
     tick(500);
   }));
 
+  it('#shouldnt trigger onMouseDown method when left button is unhold', fakeAsync(() => {
+    const spy = spyOn(component, 'onMouseDown');
+    const mouseEv: MouseEvent = new MouseEvent('mousedown', {offsetX: 10,offsetY: 30,button: 2} as MouseEventInit);
+    component.svgElRef.nativeElement.dispatchEvent(mouseEv);
+    setTimeout(() => {
+      expect(spy).toHaveBeenCalledTimes(0);
+    }, 500);
+    tick(500);
+  }));
+
   it('#should trigger onMouseMove method when mouse is moving', fakeAsync(() => {
     const spy = spyOn(component, 'onMouseMove');
     component.svgElRef.nativeElement.dispatchEvent(
