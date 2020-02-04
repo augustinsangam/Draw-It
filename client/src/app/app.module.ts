@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatListModule } from '@angular/material';
+import { MatListModule, MatFormFieldControl, MatFormFieldModule } from '@angular/material';
 import { MatIconModule } from '@angular/material/icon';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -64,6 +64,7 @@ import { RectanglePanelComponent } from './tool/rectangle/rectangle-panel/rectan
     FormsModule,
     HttpClientModule,
     MaterialModule,
+    MatFormFieldModule,
     MatIconModule,
     MatListModule,
     MccColorPickerModule,

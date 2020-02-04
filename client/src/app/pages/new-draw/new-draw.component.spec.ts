@@ -9,7 +9,7 @@ import { MatDialog, MatFormField, MatHint, MatLabel, MAT_DIALOG_SCROLL_STRATEGY_
 import { ColorPicklerItemComponent } from 'src/app/tool/color/color-panel/color-pickler-item/color-pickler-item.component';
 import { ScreenService } from './sreen-service/screen.service';
 
-fdescribe('NewDrawComponent', () => {
+describe('NewDrawComponent', () => {
   let component: NewDrawComponent;
   let fixture: ComponentFixture<NewDrawComponent>;
 
