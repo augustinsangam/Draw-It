@@ -15,7 +15,7 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
   currentY: number;
   strokeLineCap: string;
   stringPath: string;
-  private svgPath: SVGPathElement;
+  svgPath: SVGPathElement;
   private mouseOnHold: boolean;
   private listeners: (() => void)[] = [];
 
