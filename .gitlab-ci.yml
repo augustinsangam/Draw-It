@@ -27,7 +27,6 @@ client-lint:
 client-test:
   script:
    - npm install -g @angular/cli
-   - ng build -prod
    - npm --prefix client/ t
   <<: *client
 
