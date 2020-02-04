@@ -1,6 +1,7 @@
-import { Component, ElementRef } from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatRadioChange } from '@angular/material';
+import {MatRadioButton} from '@angular/material/radio';
 
 import { ToolPanelComponent } from '../../tool-panel/tool-panel.component';
 import { BrushService, Texture } from '../brush.service';
@@ -12,6 +13,10 @@ import { BrushService, Texture } from '../brush.service';
 })
 export class BrushPanelComponent extends ToolPanelComponent {
   brushForm: FormGroup;
+
+  @ViewChild('radioChoice', {
+    static: false
+  }) radioChoice: MatRadioButton;
 
   textures = [
     {
@@ -37,7 +42,7 @@ export class BrushPanelComponent extends ToolPanelComponent {
   ];
 
   constructor(elementRef: ElementRef<HTMLElement>,
-              private readonly service: BrushService,
+              readonly service: BrushService,
               private formBuilder: FormBuilder) {
     super(elementRef);
     this.brushForm = this.formBuilder.group({
@@ -47,7 +52,7 @@ export class BrushPanelComponent extends ToolPanelComponent {
     });
   }
 
-  onThicknessChange($event: Event) {
+  onThicknessChange() {
     this.brushForm.patchValue({ thicknessFormField: this.brushForm.value.thicknessSlider });
     this.service.thickness = this.brushForm.value.thicknessSlider;
   }

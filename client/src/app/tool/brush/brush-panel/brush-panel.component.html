@@ -3,8 +3,8 @@
   <p>Épaisseur</p>
   <div class="thickness">
     <mat-slider min=1 max=100 step=1
-      (input)="onThicknessChange($event)"
-      (change)="onThicknessChange($event)"
+      (input)="onThicknessChange()"
+      (change)="onThicknessChange()"
       formControlName="thicknessSlider">
     </mat-slider>
     <mat-form-field>
@@ -14,7 +14,7 @@
   </div>
   <p class="texture">Textures</p>
   <mat-radio-group formControlName="textureOption" (change)="onOptionChange($event)">
-    <mat-radio-button *ngFor="let texture of textures" [value]="texture.value">
+    <mat-radio-button *ngFor="let texture of textures" [value]="texture.value" #radioChoice>
       {{texture.value}}
       <img [src]="texture.src" [alt]="texture.value" width=100 height=50 />
     </mat-radio-button>
