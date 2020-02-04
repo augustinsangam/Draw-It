@@ -7,7 +7,7 @@ import {
   MatCard, MatCardContent, MatCardTitle, MatFormField, MatIcon,
   MatRadioButton, MatRadioGroup, MatRipple, MatSlider
 } from '@angular/material';
-import { ColorPanelComponent } from './color-panel.component';
+import { ColorOption, ColorPanelComponent } from './color-panel.component';
 import { ColorPicklerContentComponent } from './color-pickler-content/color-pickler-content.component';
 import { MockColorPicklerContentComponent } from './color-pickler-content/mock-color-pickler-content.component';
 import { ColorPicklerItemComponent } from './color-pickler-item/color-pickler-item.component';
@@ -85,7 +85,7 @@ describe('ColorPanelComponent', () => {
   it('#onColorPicked() can change Primary color', () => {
     const spyUpdateColor = spyOn(component.colorPreviewPrimary, 'updateColor');
     const spySelectPrimaryColor = spyOn(component.colorService, 'selectPrimaryColor');
-    component.colorOption = 'PRIMARY';
+    component.colorOption = ColorOption.Primary;
     component.onColorPicked('rgba(255, 255, 255, 1)');
     expect(spyUpdateColor).toHaveBeenCalled();
     expect(spySelectPrimaryColor).toHaveBeenCalled();
@@ -94,7 +94,7 @@ describe('ColorPanelComponent', () => {
   it('#onColorPicked() can change Secondary color', () => {
     const spyUpdateColor = spyOn(component.colorPreviewSecondary, 'updateColor');
     const spySelectSecondaryColor = spyOn(component.colorService, 'selectSecondaryColor');
-    component.colorOption = 'SECONDARY';
+    component.colorOption = ColorOption.Secondary;
     component.onColorPicked('rgba(255, 255, 255, 1)');
     expect(spyUpdateColor).toHaveBeenCalled();
     expect(spySelectSecondaryColor).toHaveBeenCalled();
@@ -148,11 +148,11 @@ describe('ColorPanelComponent', () => {
   }));
 
   it('#getStartColor() works !', () => {
-    component.colorOption = 'PRIMARY';
+    component.colorOption = ColorOption.Primary;
     component.colorService.primaryColor = 'rgba(255, 255, 255, 1)';
     expect(component.getStartColor()).toEqual('#FFFFFF');
 
-    component.colorOption = 'SECONDARY';
+    component.colorOption = ColorOption.Secondary;
     component.colorService.secondaryColor = 'rgba(255, 255, 255, 1)';
     expect(component.getStartColor()).toEqual('#FFFFFF');
   });

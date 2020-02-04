@@ -4,11 +4,10 @@ import { MatDialog } from '@angular/material';
 import { DocumentationComponent } from './pages/documentation/documentation.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
+import { SvgService } from './svg/svg.service';
+import { ColorService } from './tool/color/color.service';
 import { ToolSelectorService } from './tool/tool-selector/tool-selector.service';
 import { Tool } from './tool/tool.enum';
-import { ColorService } from './tool/color/color.service';
-import { SvgService } from './svg/svg.service';
-import { ThrowStmt } from '@angular/compiler';
 
 export interface NewDrawOptions {
   width: number;

@@ -2,11 +2,11 @@ import { AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild,
   ViewChildren } from '@angular/core';
 import { EventManager } from '@angular/platform-browser';
 
+import { SvgService } from 'src/app/svg/svg.service';
 import { ToolPanelComponent } from '../../tool-panel/tool-panel.component';
 import { ColorService } from '../color.service';
 import { ColorPicklerContentComponent } from './color-pickler-content/color-pickler-content.component';
 import { ColorPicklerItemComponent } from './color-pickler-item/color-pickler-item.component';
-import { SvgService } from 'src/app/svg/svg.service';
 
 export enum ColorOption {
   Primary = 'PRIMARY',
