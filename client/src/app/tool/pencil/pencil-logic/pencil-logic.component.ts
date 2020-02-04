@@ -11,11 +11,8 @@ import { PencilService } from '../pencil.service';
 })
 export class PencilLogicComponent extends PencilBrushCommon implements AfterViewInit {
 
-  currentX: number;
-  currentY: number;
   strokeLineCap: string;
   svgPath: SVGPathElement;
-  private mouseOnHold: boolean;
   private listeners: (() => void)[] = [];
 
   constructor(public renderer: Renderer2,
@@ -26,8 +23,6 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
-    this.currentX = 0;
-    this.currentY = 0;
     this.stringPath = '';
     this.svgTag = 'path';
     this.strokeLineCap = 'round';
@@ -42,9 +37,7 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
 
   makeFirstPoint(mouseEv: MouseEvent) {
     if (mouseEv.button === 0) {
-      this.currentX = mouseEv.offsetX;
-      this.currentY = mouseEv.offsetY;
-      this.stringPath = 'M' + this.currentX + ',' + this.currentY + ' h0';
+      this.stringPath = 'M' + mouseEv.offsetX + ',' + mouseEv.offsetY + ' h0';
     }
   }
 

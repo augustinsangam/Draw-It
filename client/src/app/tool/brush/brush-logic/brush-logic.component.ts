@@ -10,11 +10,8 @@ import { BrushService } from '../brush.service';
 })
 export class BrushLogicComponent extends PencilBrushCommon implements AfterViewInit {
 
-  currentX: number;
-  currentY: number;
   strokeLineCap: string;
   filter: string;
-  private mouseOnHold: boolean;
   private svgPath: SVGPathElement;
   private listeners: (() => void)[] = [];
 
@@ -26,8 +23,6 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
-    this.currentX = 0;
-    this.currentY = 0;
     this.stringPath = '';
     this.svgTag = 'path';
     this.strokeLineCap = 'round';
@@ -44,9 +39,7 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
 
   makeFirstPoint(mouseEv: MouseEvent) {
     if (mouseEv.button === 0) {
-      this.currentX = mouseEv.offsetX;
-      this.currentY = mouseEv.offsetY;
-      this.stringPath = 'M' + this.currentX + ',' + this.currentY + ' h0';
+      this.stringPath = 'M' + mouseEv.offsetX + ',' + mouseEv.offsetY + ' h0';
     }
   }
 
