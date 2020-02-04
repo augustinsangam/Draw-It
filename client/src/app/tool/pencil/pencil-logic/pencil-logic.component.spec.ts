@@ -75,6 +75,14 @@ fdescribe('PencilLogicComponent', () => {
 
   }));
 
+  it('#mouseMove should set the good value to th svgPath', fakeAsync(() => {
+    const mouseEv: MouseEvent = new MouseEvent('mouseup', {offsetX: 10, offsetY: 30, button: 2} as MouseEventInit);
+    component.onMouseMove(mouseEv);
+    let pathExpected: string = ' L' + mouseEv.offsetX + ',' + mouseEv.offsetY;
+    pathExpected += ' M' + mouseEv.offsetX + ',' + mouseEv.offsetY;
+    expect(component.stringPath).toEqual(pathExpected);
+  }));
+
   it('#should trigger onMouseDown method when mouse is down', fakeAsync(() => {
     const spy = spyOn(component, 'onMouseDown');
     component.svgElRef.nativeElement.dispatchEvent(
