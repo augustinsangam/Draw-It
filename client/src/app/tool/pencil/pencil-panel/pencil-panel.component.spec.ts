@@ -1,8 +1,7 @@
-import { CdkObserveContent } from '@angular/cdk/observers';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormField, MatInput, MatSlider } from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import {FormBuilder} from '@angular/forms';
+import {PencilService} from '../pencil.service';
 import { PencilPanelComponent } from './pencil-panel.component';
 
 describe('PencilPanelComponent', () => {
@@ -11,18 +10,10 @@ describe('PencilPanelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        PencilPanelComponent,
-        MatSlider,
-        MatInput,
-        MatFormField,
-        CdkObserveContent,
-
-      ],
-      imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
+      declarations: [ PencilPanelComponent ],
+      providers: [
+        PencilService,
+        FormBuilder
       ]
     })
     .compileComponents();
@@ -37,4 +28,15 @@ describe('PencilPanelComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it ('pencilForm devrait avoir été créé correctement', () => {
+    expect(component.pencilForm).toBeTruthy();
+  });
+
+  it ('onThicknessCahange devrait appeler patchValue', () => {
+    const spy = spyOn(component.pencilForm, 'patchValue');
+    component.onThicknessChange();
+    expect(spy).toHaveBeenCalled();
+  })
+
 });
