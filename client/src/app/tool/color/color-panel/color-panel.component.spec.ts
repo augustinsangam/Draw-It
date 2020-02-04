@@ -12,7 +12,7 @@ import { ColorPicklerContentComponent } from './color-pickler-content/color-pick
 import { MockColorPicklerContentComponent } from './color-pickler-content/mock-color-pickler-content.component';
 import { ColorPicklerItemComponent } from './color-pickler-item/color-pickler-item.component';
 
-fdescribe('ColorPanelComponent', () => {
+describe('ColorPanelComponent', () => {
   let component: ColorPanelComponent;
   let fixture: ComponentFixture<ColorPanelComponent>;
   let paletteColorChange: EventEmitter<string>;
