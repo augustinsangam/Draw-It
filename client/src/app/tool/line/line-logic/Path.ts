@@ -1,6 +1,7 @@
 import { ElementRef, Renderer2 } from '@angular/core';
-import {Point} from '../../tool-common classes/Point'
+import {Point} from '../../tool-common classes/Point';
 import {Circle} from './Circle'
+import {LineLogicMathService} from './line-logic-math.service';
 export class Path {
     points: Point[] = [];
     jonctions: Circle[] = [];
@@ -25,7 +26,13 @@ export class Path {
       this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
     }
     addJonction(element: ElementRef, point: Point, jonctionRadius: string, jonctionColor: string) {
-      this.jonctions.push(new Circle(point, this.renderer, element, jonctionRadius, jonctionColor));
+      const jonction = new Circle(point, this.renderer, element, jonctionRadius, jonctionColor)
+      this.jonctions.push(jonction);
+    }
+    getAlignedPoint(newPoint: Point): Point {
+      const lastPoint = this.points[this.points.length - 1];
+      const mathService = new LineLogicMathService();
+      return mathService.findAlignedSegmentPoint(newPoint, lastPoint)
     }
     simulateNewLine(point: Point) {
       const temp = this.pathAtribute + 'L ' + point.x.toString() + ' ' + point.y.toString() + ' ';
@@ -62,23 +69,6 @@ export class Path {
       this.instructions.push(instruction)
       this.pathAtribute += instruction;
       this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
-    }
-    getAlignedPoint(point: Point): Point {
-      const deltaX = point.x - this.points[this.points.length - 1].x
-      const deltaY = point.y - this.points[this.points.length - 1].y
-      const angle = Math.atan(deltaY / deltaX)
-      if (Math.abs(angle) < Math.PI / 8) {
-        return new Point(point.x, this.points[this.points.length - 1].y)
-      }
-      if (Math.abs(angle) > Math.PI * 3 / 8) {
-        return new Point(this.points[this.points.length - 1].x, point.y)
-      } else {
-        if (deltaY * deltaX > 0) {
-          return new Point(point.x, this.points[this.points.length - 1].y + deltaX)
-        } else {
-          return new Point(point.x, this.points[this.points.length - 1].y - deltaX)
-        }
-      }
     }
     setLineCss(strokewidth: string, strokeColor: string) {
       this.renderer.setAttribute(this.element, 'stroke-width', strokewidth);

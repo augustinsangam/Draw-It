@@ -6,7 +6,6 @@ import { LineService } from '../line.service';
 import {LineLogicMathService} from './line-logic-math.service'
 import { Path } from './Path'
 
-const MINDIST = 3;
 @Component({
   selector: 'app-line-logic',
   templateUrl: './line-logic.component.html',
@@ -52,7 +51,7 @@ export class LineLogicComponent extends ToolLogicComponent {
         let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
         this.getPath().removeLastLine(); // cancel the click event
         this.getPath().removeLastLine();
-        let math =  new LineLogicMathService()
+        const math =  new LineLogicMathService()
         const isLessThan3pixels = math.distanceIsLessThan3Pixel(currentPoint, this.getPath().points[0])
         if (isLessThan3pixels) {
           this.getPath().closePath();
