@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-//import { /*FormBuilder, */Form/*, Validators */} from '@angular/forms';
 import { MaterialModule } from 'src/app/material.module';
 import { BrushPanelComponent } from './brush-panel.component';
 

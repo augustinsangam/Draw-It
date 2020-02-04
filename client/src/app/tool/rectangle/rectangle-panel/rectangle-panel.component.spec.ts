@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
 import { MaterialModule } from 'src/app/material.module';
 import { RectanglePanelComponent } from './rectangle-panel.component';
-import { FormGroup } from '@angular/forms';
 
 describe('RectanglePanelComponent', () => {
   let component: RectanglePanelComponent;

@@ -9,7 +9,11 @@
       <td class="color-preview-circle">
         <app-color-pickler-item #colorPreviewPrimary></app-color-pickler-item>
       </td>
-      <td rowspan="2"><button mat-raised-button color="primary" (click)="swapColors()">
+      <td rowspan="2">
+        <button mat-raised-button 
+                color="primary" 
+                (click)="swapColors()"
+                id="swapButton">
           <mat-icon>swap_vert</mat-icon>
         </button></td>
     </tr>
@@ -32,5 +36,8 @@
   PALETTE
   <mat-icon>palette</mat-icon>
 </button>
-<app-color-pickler-content [startColor]="'#808080'" (colorChange)="onColorPicked($event)" *ngIf="showPolatte">
+<app-color-pickler-content [startColor]="getStartColor()" 
+                            (colorChange)="onColorPicked($event)" 
+                            *ngIf="showPalette"
+                            #colorPalette>
 </app-color-pickler-content>
