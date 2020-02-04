@@ -27,6 +27,7 @@ client-lint:
 client-test:
   script:
    - npm install -g @angular/cli
+   - npm --prefix client/ install
    - npm --prefix client/ t
   <<: *client
 
@@ -37,23 +38,23 @@ client-test:
       prefix: server
     paths:
       - server/node_modules/
-.server: &server
-  only:
-    changes:
-      - server/**/*
-server-pre:
-  stage: .pre
-  script: npm --prefix server/ ci
-  cache:
-    <<: *server_cache
-  <<: *server
-server-lint:
-  stage: build
-  script: npm --prefix server/ run lint
-  cache:
-    <<: *server_cache
-    policy: pull
-  <<: *server
-server-test:
-  script: npm --prefix server/ t
-  <<: *server
+# .server: &server
+#   only:
+#     changes:
+#       - server/**/*
+# server-pre:
+#   stage: .pre
+#   script: npm --prefix server/ ci
+#   cache:
+#     <<: *server_cache
+#   <<: *server
+# server-lint:
+#   stage: build
+#   script: npm --prefix server/ run lint
+#   cache:
+#     <<: *server_cache
+#     policy: pull
+#   <<: *server
+# server-test:
+#   script: npm --prefix server/ t
+#   <<: *server
