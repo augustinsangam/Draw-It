@@ -6,11 +6,13 @@ import { NewDrawComponent } from './new-draw.component';
 import { CdkObserveContent } from '@angular/cdk/observers';
 import { Overlay } from '@angular/cdk/overlay';
 import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialog, MatDialogRef,
-   MatFormField, MatHint, MatInputModule, MatLabel } from '@angular/material';
+   MatFormField, MatHint, MatLabel, MatInput } from '@angular/material';
 import { ColorPicklerItemComponent } from 'src/app/tool/color/color-panel/color-pickler-item/color-pickler-item.component';
 import { ScreenService } from './sreen-service/screen.service';
+import { NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-fdescribe('NewDrawComponent', () => {
+describe('NewDrawComponent', () => {
   let component: NewDrawComponent;
   let fixture: ComponentFixture<NewDrawComponent>;
   const mockDialogRef = {
@@ -22,8 +24,7 @@ fdescribe('NewDrawComponent', () => {
       imports: [
         FormsModule,
         ReactiveFormsModule,
-        MatInputModule,
-        MatLabel
+        BrowserAnimationsModule,
       ],
       declarations: [
         NewDrawComponent,
@@ -32,6 +33,8 @@ fdescribe('NewDrawComponent', () => {
         MatHint,
         MatFormField,
         CdkObserveContent,
+        MatInput,
+
       ],
       providers: [
         ScreenService,
@@ -44,7 +47,8 @@ fdescribe('NewDrawComponent', () => {
           useValue: mockDialogRef
         },
         { provide: MAT_DIALOG_DATA, useValue: {} },
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA]
     })
     .compileComponents();
   }));
