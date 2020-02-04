@@ -12,7 +12,7 @@ import { ColorPicklerContentComponent } from './color-pickler-content/color-pick
 import { MockColorPicklerContentComponent } from './color-pickler-content/mock-color-pickler-content.component';
 import { ColorPicklerItemComponent } from './color-pickler-item/color-pickler-item.component';
 
-describe('ColorPanelComponent', () => {
+fdescribe('ColorPanelComponent', () => {
   let component: ColorPanelComponent;
   let fixture: ComponentFixture<ColorPanelComponent>;
   let paletteColorChange: EventEmitter<string>;
@@ -100,6 +100,15 @@ describe('ColorPanelComponent', () => {
     expect(spySelectSecondaryColor).toHaveBeenCalled();
   });
 
+  it('#onColorPicked() can change Background color', () => {
+    const spyUpdateColor = spyOn(component.colorPreviewBackground, 'updateColor');
+    const spySelectBackgroundColor = spyOn(component.colorService, 'selectBackgroundColor');
+    component.colorOption = ColorOption.Background;
+    component.onColorPicked('rgba(255, 255, 255, 1)');
+    expect(spyUpdateColor).toHaveBeenCalled();
+    expect(spySelectBackgroundColor).toHaveBeenCalled();
+  });
+
   it('#addEvents() should updateRecentColors when Palette not defined', fakeAsync(() => {
     const spyUpdateRecentColors = spyOn(component, 'updateRecentColors');
     component.colorPalette = new MockColorPicklerContentComponent() as unknown as ColorPicklerContentComponent;
@@ -154,6 +163,10 @@ describe('ColorPanelComponent', () => {
 
     component.colorOption = ColorOption.Secondary;
     component.colorService.secondaryColor = 'rgba(255, 255, 255, 1)';
+    expect(component.getStartColor()).toEqual('#FFFFFF');
+
+    component.colorOption = ColorOption.Background;
+    component.colorService.backgroundColor = 'rgba(255, 255, 255, 1)';
     expect(component.getStartColor()).toEqual('#FFFFFF');
   });
 
