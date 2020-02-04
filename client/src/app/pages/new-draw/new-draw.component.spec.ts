@@ -1,13 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-<<<<<<< HEAD
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material';
-import { MccColorPickerModule } from 'material-community-components';
-import { MaterialModule } from 'src/app/material.module';
-=======
 
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
->>>>>>> next
 import { NewDrawComponent } from './new-draw.component';
 
 import { CdkObserveContent } from '@angular/cdk/observers';
@@ -22,10 +15,6 @@ fdescribe('NewDrawComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-<<<<<<< HEAD
-      imports: [ MaterialModule, FormsModule, ReactiveFormsModule, MccColorPickerModule, MatDialogRef, MatDialog ],
-      declarations: [ NewDrawComponent ],
-=======
       imports: [
         FormsModule,
         ReactiveFormsModule
@@ -46,7 +35,6 @@ fdescribe('NewDrawComponent', () => {
         MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
         MatDialogRef
       ]
->>>>>>> next
     })
     .compileComponents();
   }));
