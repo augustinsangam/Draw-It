@@ -4,6 +4,8 @@ import { MatDialog } from '@angular/material';
 import { DocumentationComponent } from './pages/documentation/documentation.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
+import { SvgService } from './svg/svg.service';
+import { ColorService } from './tool/color/color.service';
 import { ToolSelectorService } from './tool/tool-selector/tool-selector.service';
 import { Tool } from './tool/tool.enum';
 
@@ -12,6 +14,13 @@ export interface NewDrawOptions {
   height: number;
   color: string;
 }
+
+export enum OverlayPages {
+  Documentation = 'documentation',
+  Home = 'home',
+  Library = 'library',
+  New = 'new',
+};
 
 @Component({
   selector: 'app-root',
@@ -37,7 +46,10 @@ export class AppComponent implements AfterViewInit {
     };
   }
 
-  constructor(public dialog: MatDialog, private readonly toolSelectorService: ToolSelectorService) {
+  constructor(public dialog: MatDialog,
+              private readonly toolSelectorService: ToolSelectorService,
+              private colorService: ColorService,
+              private svgService: SvgService) {
     this.toolSelector = new Map()
     this.toolSelector.set('KeyC', Tool.Pencil);
     this.toolSelector.set('Digit1', Tool.Rectangle);
@@ -60,6 +72,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
+    this.svgService.instance = this.svg;
     this.openHomeDialog();
   }
 
@@ -68,13 +81,13 @@ export class AppComponent implements AfterViewInit {
     dialogRef.disableClose = true;
     dialogRef.afterClosed().subscribe((result: string) => {
       switch (result) {
-        case 'new':
+        case OverlayPages.New:
           this.openNewDrawDialog();
           break;
-        case 'library':
+        case OverlayPages.Library:
           console.log('On ouvre la librairie');
           break;
-        case 'documentation':
+        case OverlayPages.Documentation:
           this.openDocumentationDialog(true);
           break;
         default:
@@ -88,7 +101,7 @@ export class AppComponent implements AfterViewInit {
     newDialog.disableClose = true;
 
     newDialog.afterClosed().subscribe((resultNewDialog) => {
-      if (resultNewDialog === 'home') {
+      if (resultNewDialog === OverlayPages.Home) {
         this.openHomeDialog();
       } else if (resultNewDialog !== null) {
         this.createNewDraw(resultNewDialog);
@@ -118,6 +131,8 @@ export class AppComponent implements AfterViewInit {
   createNewDraw(option: NewDrawOptions) {
     this.drawOption = option;
     this.drawInProgress = true;
+    const rgb = this.colorService.hexToRgb(option.color);
+    this.colorService.backgroundColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
     const childrens = Array.from(this.svg.nativeElement.children)
     childrens.forEach(element => {
       element.remove();

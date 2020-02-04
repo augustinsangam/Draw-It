@@ -12,7 +12,6 @@ export class PaletteDialogComponent {
 
   onPickColor($color: string) {
     this.dialogRef.close(this.colorService.hexFormRgba($color));
-    this.colorService.pushColor($color)
   }
 
 }
