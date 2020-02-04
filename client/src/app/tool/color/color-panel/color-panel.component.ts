@@ -16,7 +16,7 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
 
   constructor(elementRef: ElementRef<HTMLElement>,
               public colorService: ColorService,
-              private eventManager: EventManager) {
+              public eventManager: EventManager) {
     super(elementRef);
   }
 
