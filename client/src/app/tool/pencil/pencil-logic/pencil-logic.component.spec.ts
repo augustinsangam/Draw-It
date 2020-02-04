@@ -30,10 +30,25 @@ fdescribe('PencilLogicComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('#MakeFirstPoint shoul set the good value to path', fakeAsync(() => {
+  it('#MakeFirstPoint should set the good value to path', fakeAsync(() => {
     const mouseEv: MouseEvent = new MouseEvent('mousedown', {offsetX: 10, offsetY: 30, button: 0} as MouseEventInit);
     const pathExpected: string = 'M' + mouseEv.offsetX + ',' + mouseEv.offsetY + ' h0';
     component.makeFirstPoint(mouseEv);
+    expect(component.stringPath).toEqual(pathExpected);
+  }));
+
+  it('#MakeFirstPoint shouldnt set the value if the left button isnt hold', fakeAsync(() => {
+    const mouseEv: MouseEvent = new MouseEvent('mousedown', {offsetX: 10, offsetY: 30, button: 1} as MouseEventInit);
+    const pathExpected: string = '';
+    component.makeFirstPoint(mouseEv);
+    expect(component.stringPath).toEqual(pathExpected);
+  }));
+
+  it('#drawing should set the good value to path', fakeAsync(() => {
+    const mouseEv: MouseEvent = new MouseEvent('mousedown', {offsetX: 10, offsetY: 30, button: 0} as MouseEventInit);
+    let pathExpected: string = ' L' + mouseEv.offsetX + ',' + mouseEv.offsetY;
+    pathExpected += ' M' + mouseEv.offsetX + ',' + mouseEv.offsetY;
+    component.drawing(mouseEv);
     expect(component.stringPath).toEqual(pathExpected);
   }));
 
@@ -118,9 +133,10 @@ fdescribe('PencilLogicComponent', () => {
     tick(1000);
   }));
 
-  it('#shouldnt updates stringPath values when mouse isnt hold', fakeAsync(() => {
-    const mouseEv: MouseEvent = new MouseEvent('mousedown', {offsetX: 10, offsetY: 30, button: 0} as MouseEventInit);
+  it('# onMouseMove shouldnt updates stringPath values when mouse isnt hold', fakeAsync(() => {
+    const mouseEv: MouseEvent = new MouseEvent('mousemove', {offsetX: 10, offsetY: 30, button: 0} as MouseEventInit);
     component.onMouseDown(mouseEv);
+    component.svgElRef.nativeElement.dispatchEvent(mouseEv);
     const pathExpected: string = 'M' + mouseEv.offsetX + ',' + mouseEv.offsetY + ' h0';
     setTimeout(() => {
       expect(component.stringPath).toEqual(pathExpected);
@@ -128,7 +144,7 @@ fdescribe('PencilLogicComponent', () => {
     tick(1000);
   }));
 
-  it('#shouldnt call onMouseMove when mouse isnt hold', fakeAsync(() => {
+  it('# event mousemove shouldnt call onMouseMove method when mouse isnt hold', fakeAsync(() => {
     const spy = spyOn(component, 'onMouseMove');
     component.svgElRef.nativeElement.dispatchEvent(
       new MouseEvent('mousemove', {
@@ -142,4 +158,5 @@ fdescribe('PencilLogicComponent', () => {
     }, 1000);
     tick(1000);
   }));
+
 });
