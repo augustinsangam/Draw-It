@@ -1,60 +1,80 @@
-image: node:buster
-
-.cache: &client_cache
-    key:
-      files:
-        - client/package-lock.json
-      prefix: client
+image: xwiillz/node-yarn-firefox-chromium:latest
+cache:
+    key: "$CI_COMMIT_REF_NAME"
     paths:
-      - client/node_modules/
-.client: &client
-  only:
-    changes:
-      - client/**/*
-client-pre:
-  stage: .pre
-  script: npm --prefix client/ ci
-  cache:
-    <<: *client_cache
-  <<: *client
-client-lint:
-  stage: build
-  script: npm --prefix client/ run lint
-  cache:
-    <<: *client_cache
+        - client/node_modules/
+        - server/node_modules/
     policy: pull
-  <<: *client
-client-test:
-  script:
-   - npm install -g @angular/cli
-   - npm --prefix client/ install
-   - npm --prefix client/ t
-  <<: *client
-
-.cache: &server_cache
-    key:
-      files:
-        - server/package-lock.json
-      prefix: server
-    paths:
-      - server/node_modules/
-# .server: &server
-#   only:
-#     changes:
-#       - server/**/*
-# server-pre:
-#   stage: .pre
-#   script: npm --prefix server/ ci
-#   cache:
-#     <<: *server_cache
-#   <<: *server
-# server-lint:
-#   stage: build
-#   script: npm --prefix server/ run lint
-#   cache:
-#     <<: *server_cache
-#     policy: pull
-#   <<: *server
-# server-test:
-#   script: npm --prefix server/ t
-#   <<: *server
+stages:
+    - install
+    - lint
+    - build
+    - test
+install:
+    stage: install
+    script:
+        - pushd client
+        - yarn
+        - popd
+        - pushd server
+        - yarn
+        - popd
+    cache:
+        key: "$CI_COMMIT_REF_NAME"
+        paths:
+            - client/node_modules/
+            - server/node_modules/
+        policy: pull-push
+lint:client:
+    stage: lint
+    script:
+        - pushd client
+        - yarn lint
+        - popd
+lint:server:
+    stage: lint
+    script:
+        - pushd server
+        - yarn lint
+        - popd
+build:client:
+    stage: build
+    script:
+        - pushd client
+        - yarn build
+        - popd
+    artifacts:
+        paths:
+            - client/dist/
+build:server:
+    stage: build
+    script:
+        - pushd server
+        - yarn tsc
+        - popd
+    artifacts:
+        paths:
+            - server/out/
+test:client:
+    stage: test
+    script:
+        - Xvfb :99 -ac -screen 0 1920x1080x24 &
+        - pushd client
+        - yarn coverage --browsers ChromeHeadlessNoSandbox
+        - popd
+    dependencies:
+        - build:client
+    artifacts:
+        paths:
+            - client/coverage/
+test:server:
+    stage: test
+    script:
+        - pushd server
+        - yarn coverage
+        - popd
+    dependencies:
+        - build:server
+    artifacts:
+        paths:
+            - server/coverage/
