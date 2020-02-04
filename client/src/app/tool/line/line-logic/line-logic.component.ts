@@ -3,6 +3,7 @@ import { ColorService } from '../../color/color.service';
 import { Point } from '../../tool-common classes/Point'
 import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
 import { LineService } from '../line.service';
+import {LineLogicMathService} from './line-logic-math.service'
 import { Path } from './Path'
 
 const MINDIST = 3;
@@ -43,15 +44,16 @@ export class LineLogicComponent extends ToolLogicComponent {
         if (mouseEv.shiftKey) {
           point = this.getPath().getAlignedPoint(point)
         }
-        this.getPath().addTemporaryLine(point);
+        this.getPath().simulateNewLine(point);
       }
     });
     const onMouseUp = this.renderer.listen(this.svgElRef.nativeElement, 'dblclick', (mouseEv: MouseEvent) => {
       if (!this.isNewPath) {
         let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
-        this.getPath().removeLastLine(); //cancel the click event
+        this.getPath().removeLastLine(); // cancel the click event
         this.getPath().removeLastLine();
-        const isLessThan3pixels = this.distanceIsLessThan3Pixel(currentPoint, this.getPath().points[0])
+        let math =  new LineLogicMathService()
+        const isLessThan3pixels = math.distanceIsLessThan3Pixel(currentPoint, this.getPath().points[0])
         if (isLessThan3pixels) {
           this.getPath().closePath();
         } else {
@@ -71,17 +73,17 @@ export class LineLogicComponent extends ToolLogicComponent {
       }
       if (keyEv.code === 'Backspace' && this.getPath().points.length >= 2) {
         this.getPath().removeLastLine();
-        this.getPath().addTemporaryLine(this.getPath().lastPoint);
+        this.getPath().simulateNewLine(this.getPath().lastPoint);
       }
       if (shiftIsPressed && !this.isNewPath) {
         const transformedPoint = this.getPath().getAlignedPoint(this.mousePosition);
-        this.getPath().addTemporaryLine(transformedPoint);
+        this.getPath().simulateNewLine(transformedPoint);
       }
     });
     const onKeyUp = this.renderer.listen('document', 'keyup', (keyEv: KeyboardEvent) => {
       const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight')
       if (shiftIsPressed && !this.isNewPath) {
-        this.getPath().addTemporaryLine(this.mousePosition);
+        this.getPath().simulateNewLine(this.mousePosition);
       }
     });
     this.listeners = [onMouseDown, onMouseMove, onMouseUp, onKeyUp, onKeyDown];
@@ -90,13 +92,12 @@ export class LineLogicComponent extends ToolLogicComponent {
     const path = this.renderer.createElement('path', this.svgNS);
     this.renderer.appendChild(this.svgElRef.nativeElement, path);
     this.paths[++this.currentPathIndex] = new Path(initialPoint, this.renderer, path, this.service.withJonction)
-    this.getPath().setParameters(this.service.thickness.toString(), this.serviceColor.primaryColor);
+    this.getPath().setLineCss(this.service.thickness.toString(), this.serviceColor.primaryColor);
   }
   createJonction(center: Point) {
     const circle = this.renderer.createElement('circle', this.svgNS);
     this.renderer.appendChild(this.svgElRef.nativeElement, circle);
-    this.renderer.setAttribute(circle, 'fill', this.serviceColor.primaryColor);
-    this.getPath().addJonction(circle, center, this.service.radius.toString());
+    this.getPath().addJonction(circle, center, this.service.radius.toString(), this.serviceColor.primaryColor);
   }
   addNewLine(currentPoint: Point) {
     this.getPath().addLine(currentPoint);
@@ -104,9 +105,6 @@ export class LineLogicComponent extends ToolLogicComponent {
       this.createJonction(currentPoint);
     }
 
-  }
-  distanceIsLessThan3Pixel(point1: Point, point2: Point): boolean {
-    return ((Math.abs(point1.x - point2.x) <= 3) && (Math.abs(point1.y - point2.y) <= 3));
   }
   getPath(): Path {
     return this.paths[this.currentPathIndex];

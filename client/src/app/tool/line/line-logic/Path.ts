@@ -2,19 +2,18 @@ import { ElementRef, Renderer2 } from '@angular/core';
 import {Point} from '../../tool-common classes/Point'
 import {Circle} from './Circle'
 export class Path {
-    svgNS = ' http://www.w3.org/2000/svg ';
     points: Point[] = [];
     jonctions: Circle[] = [];
     instructions: string[] = [];
-    private pathString = '';
+    private pathAtribute = '';
     lastPoint: Point;
     withJonctions: boolean;
     constructor( initialPoint: Point, private renderer: Renderer2, private element: ElementRef, withJonction: boolean ) {
       this.points.push(initialPoint);
       const instruction = 'M ' + initialPoint.x.toString() + ' ' + initialPoint.y.toString() + ' ';
       this.instructions.push(instruction);
-      this.pathString += instruction;
-      this.renderer.setAttribute(this.element, 'd', this.pathString);
+      this.pathAtribute += instruction;
+      this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
       this.renderer.setAttribute(this.element, 'fill', 'none')
       this.withJonctions = withJonction;
     }
@@ -22,30 +21,30 @@ export class Path {
       this.points.push(point);
       const instruction = 'L ' + point.x.toString() + ' ' + point.y.toString() + ' ';
       this.instructions.push(instruction);
-      this.pathString += instruction;
-      this.renderer.setAttribute(this.element, 'd', this.pathString);
+      this.pathAtribute += instruction;
+      this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
     }
-    addJonction(element: ElementRef, point: Point, jonctionRadius: string) {
-      this.jonctions.push(new Circle(point, this.renderer, element, jonctionRadius));
+    addJonction(element: ElementRef, point: Point, jonctionRadius: string, jonctionColor: string) {
+      this.jonctions.push(new Circle(point, this.renderer, element, jonctionRadius, jonctionColor));
     }
     simulateNewLine(point: Point) {
-      const temp = this.pathString + 'L ' + point.x.toString() + ' ' + point.y.toString() + ' ';
+      const temp = this.pathAtribute + 'L ' + point.x.toString() + ' ' + point.y.toString() + ' ';
       this.lastPoint = point;
       this.renderer.setAttribute(this.element, 'd', temp);
     }
     removeLastLine() {
       this.points.pop();
-      this.pathString = this.pathString.substr(0, this.pathString.length - String(this.instructions.pop()).length );
-      this.renderer.setAttribute(this.element, 'd', this.pathString );
+      this.pathAtribute = this.pathAtribute.substr(0, this.pathAtribute.length - String(this.instructions.pop()).length );
+      this.renderer.setAttribute(this.element, 'd', this.pathAtribute );
       if (this.withJonctions && this.jonctions.length > 1) {
         this.removeLastJonction();
       }
     }
     removePath() {
-      this.pathString = '';
+      this.pathAtribute = '';
       this.points = [];
       this.instructions = [];
-      this.renderer.setAttribute(this.element, 'd', this.pathString);
+      this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
       while (this.jonctions.length) {
         this.removeLastJonction()
       }
@@ -61,8 +60,8 @@ export class Path {
       this.points.push(this.points[0]);
       const instruction = 'Z';
       this.instructions.push(instruction)
-      this.pathString += instruction;
-      this.renderer.setAttribute(this.element, 'd', this.pathString);
+      this.pathAtribute += instruction;
+      this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
     }
     getAlignedPoint(point: Point): Point {
       const deltaX = point.x - this.points[this.points.length - 1].x
@@ -81,7 +80,7 @@ export class Path {
         }
       }
     }
-    setParameters(strokewidth: string, strokeColor: string) {
+    setLineCss(strokewidth: string, strokeColor: string) {
       this.renderer.setAttribute(this.element, 'stroke-width', strokewidth);
       this.renderer.setAttribute(this.element, 'stroke', strokeColor);
     }
