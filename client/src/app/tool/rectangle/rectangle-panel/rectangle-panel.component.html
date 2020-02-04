@@ -11,7 +11,7 @@
     Contour
   </p>
   <div class="thickness" *ngIf="this.service.borderOption">
-    <mat-slider min=1 max=100 step=1 (input)="onThicknessChange($event)" (change)="onThicknessChange($event)"
+    <mat-slider min=1 max=100 step=1 (input)="onThicknessChange()" (change)="onThicknessChange()"
       formControlName="thicknessSlider">
     </mat-slider>
     <mat-form-field>

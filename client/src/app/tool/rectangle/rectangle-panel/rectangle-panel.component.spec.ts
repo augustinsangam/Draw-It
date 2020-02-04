@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCard, MatCardContent, MatCardTitle, MatFormField, MatIcon, MatInput,
   MatRadioButton, MatRadioGroup, MatRipple, MatSlider, MatSlideToggle } from '@angular/material';
+import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ColorPanelComponent } from '../../color/color-panel/color-panel.component';
 import { ColorPicklerContentComponent } from '../../color/color-panel/color-pickler-content/color-pickler-content.component';
@@ -53,4 +54,20 @@ describe('RectanglePanelComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('onThicknessChange devrait appeler la méthode patchValue de rectangleForm', () => {
+    const spy = spyOn(component.rectangleForm, 'patchValue');
+    component.onThicknessChange();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('ngAfterViewChecked devrait avoir subscribed borderOption et fillOption, et ces valeurs devraient ' +
+    'changer dans le service lorsqu\'on émet un MatSlideToggleChange', () => {
+    component.ngAfterViewChecked();
+    component.borderOptionRef.change.emit(new MatSlideToggleChange(component.borderOptionRef, false));
+    component.fillOptionRef.change.emit(new MatSlideToggleChange(component.fillOptionRef, false));
+    expect(component.service.borderOption).toBeFalsy();
+    expect(component.service.fillOption).toBeFalsy();
+  });
+
 });
