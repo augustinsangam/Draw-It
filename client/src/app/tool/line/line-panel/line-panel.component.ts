@@ -1,10 +1,10 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatSlideToggleChange } from '@angular/material';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MatSlideToggleChange} from '@angular/material';
+import {MatSlideToggle} from '@angular/material/slide-toggle';
 
-import { ToolPanelComponent } from '../../tool-panel/tool-panel.component';
-import { LineService } from '../line.service';
-import {MatSlideToggle} from "@angular/material/slide-toggle";
+import {ToolPanelComponent} from '../../tool-panel/tool-panel.component';
+import {LineService} from '../line.service';
 
 @Component({
   selector: 'app-line-panel',
@@ -20,7 +20,7 @@ export class LinePanelComponent extends ToolPanelComponent {
   }) slideToggle: MatSlideToggle;
 
   constructor(elementRef: ElementRef<HTMLElement>,
-              public readonly service: LineService,
+              readonly service: LineService,
               private formBuilder: FormBuilder) {
     super(elementRef);
     this.lineForm = this.formBuilder.group({

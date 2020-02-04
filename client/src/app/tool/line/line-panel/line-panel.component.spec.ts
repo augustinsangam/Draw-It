@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {NO_ERRORS_SCHEMA} from '@angular/core';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {FormBuilder} from '@angular/forms';
+import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 
-import { FormBuilder } from "@angular/forms";
-import { LinePanelComponent } from './line-panel.component';
-import { MatSlideToggleChange } from "@angular/material/slide-toggle";
-import { NO_ERRORS_SCHEMA } from "@angular/core";
+import {LinePanelComponent} from './line-panel.component';
 
 fdescribe('LinePanelComponent', () => {
   let component: LinePanelComponent;
@@ -17,7 +17,7 @@ fdescribe('LinePanelComponent', () => {
         LinePanelComponent,
       ],
       schemas: [NO_ERRORS_SCHEMA],
-      providers:[
+      providers: [
         FormBuilder,
       ]
     })
