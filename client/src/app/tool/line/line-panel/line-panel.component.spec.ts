@@ -3,14 +3,15 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 import { CdkObserveContent } from '@angular/cdk/observers';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
-import { MatCard, MatCardContent, MatCardTitle, MatFormField, MatIcon, MatInput, MatRadioButton, MatRadioGroup, MatRipple, MatSlider, MatSlideToggle, MatSlideToggleChange } from '@angular/material';
+import { MatCard, MatCardContent, MatCardTitle, MatFormField, MatIcon, MatInput,
+   MatRadioButton, MatRadioGroup, MatRipple, MatSlider, MatSlideToggle, MatSlideToggleChange } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ColorPanelComponent } from '../../color/color-panel/color-panel.component';
 import { ColorPicklerContentComponent } from '../../color/color-panel/color-pickler-content/color-pickler-content.component';
 import { ColorPicklerItemComponent } from '../../color/color-panel/color-pickler-item/color-pickler-item.component';
 import {LinePanelComponent} from './line-panel.component';
 
-fdescribe('LinePanelComponent', () => {
+describe('LinePanelComponent', () => {
   let component: LinePanelComponent;
   let fixture: ComponentFixture<LinePanelComponent>;
 

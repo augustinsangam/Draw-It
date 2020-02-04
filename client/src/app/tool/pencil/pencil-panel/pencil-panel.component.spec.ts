@@ -5,7 +5,7 @@ import {FormBuilder, FormsModule} from '@angular/forms';
 import {PencilService} from '../pencil.service';
 import { PencilPanelComponent } from './pencil-panel.component';
 
-fdescribe('PencilPanelComponent', () => {
+describe('PencilPanelComponent', () => {
   let component: PencilPanelComponent;
   let fixture: ComponentFixture<PencilPanelComponent>;
 
