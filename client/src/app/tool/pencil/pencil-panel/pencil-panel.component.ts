@@ -22,7 +22,7 @@ export class PencilPanelComponent extends ToolPanelComponent {
     });
   }
 
-  onThicknessChange($event: Event) {
+  onThicknessChange() {
     this.pencilForm.patchValue({
       thicknessFormField: this.pencilForm.value.thicknessSlider,
     });
