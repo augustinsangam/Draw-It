@@ -28,7 +28,7 @@ export class Path {
     addJonction(element: ElementRef, point: Point, jonctionRadius: string) {
       this.jonctions.push(new Circle(point, this.renderer, element, jonctionRadius));
     }
-    addTemporaryLine(point: Point) {
+    simulateNewLine(point: Point) {
       const temp = this.pathString + 'L ' + point.x.toString() + ' ' + point.y.toString() + ' ';
       this.lastPoint = point;
       this.renderer.setAttribute(this.element, 'd', temp);

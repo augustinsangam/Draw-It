@@ -1,11 +1,11 @@
 import { Component, ElementRef, Renderer2 } from '@angular/core';
-
 import { ColorService } from '../../color/color.service';
 import { Point } from '../../tool-common classes/Point'
 import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
 import { LineService } from '../line.service';
 import { Path } from './Path'
 
+const MINDIST = 3;
 @Component({
   selector: 'app-line-logic',
   templateUrl: './line-logic.component.html',

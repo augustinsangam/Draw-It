@@ -6,7 +6,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { ToolSelectorService } from './tool/tool-selector/tool-selector.service';
 import { Tool } from './tool/tool.enum';
-import { SvgService } from './svg/svg.service';
+
 
 export interface NewDrawOptions {
   width: number;
@@ -38,7 +38,7 @@ export class AppComponent implements AfterViewInit {
     };
   }
 
-  constructor(public dialog: MatDialog, private readonly toolSelectorService: ToolSelectorService, private svgService: SvgService) {
+  constructor(public dialog: MatDialog, private readonly toolSelectorService: ToolSelectorService) {
     this.toolSelector = new Map()
     this.toolSelector.set('KeyC', Tool.Pencil);
     this.toolSelector.set('Digit1', Tool.Rectangle);
