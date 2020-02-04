@@ -101,9 +101,7 @@ fdescribe('PencilLogicComponent', () => {
 
   }));
 
-
-
-  it('#should upadates stringPath values when mouse is leaving', fakeAsync(() => {
+  it('#should updates stringPath values when mouse is leaving', fakeAsync(() => {
     component.svgElRef.nativeElement.dispatchEvent(
       new MouseEvent('mousedown', {
         offsetX: 10,
@@ -111,6 +109,7 @@ fdescribe('PencilLogicComponent', () => {
         button: 0
       } as MouseEventInit)
     );
+
     component.svgElRef.nativeElement.dispatchEvent(
       new MouseEvent('mouseleave', {button: 0} as MouseEventInit));
     setTimeout(() => {
@@ -118,23 +117,4 @@ fdescribe('PencilLogicComponent', () => {
     }, 1000);
     tick(1000);
   }));
-
-
-  // it ('#Should trigger Drawing method', async() => {
-  //   const spy = spyOn(component, 'drawing');
-  //   component.svgElRef.nativeElement.dispatchEvent(
-  //     new MouseEvent('mousemove', {
-  //       offsetX: 10,
-  //       offsetY: 30,
-  //       button: 0
-  //     } as MouseEventInit)
-  //   );
-  //   const mouseEv = new MouseEvent('mousemove', {offsetX: 10,offsetY: 30,button: 0} as MouseEventInit);
-  //   // component.onMouseMove(mouseEv);
-  //   // expect(mouseEv.button).toBe(0);
-  //   component.onMouseMove(mouseEv);
-  //   fixture.whenRenderingDone().then();
-
-  //   expect(spy).toHaveBeenCalled();
-  // })
 });
