@@ -29,7 +29,7 @@ client-test:
     - apt-get update -qq && apt-get install -y -qq firefox-esr
     - firefox --version
     - sed -i '/browsers/c browsers:["FirefoxHeadless"],' client/karma.conf.js
-  script: npm --prefix client/ t
+  script: npm --prefix client/ run coverage
   cache:
     <<: *client_cache
     policy: pull
