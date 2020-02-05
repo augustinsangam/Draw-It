@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
+import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { ColorService } from '../color.service';
 
 @Component({
@@ -8,7 +8,7 @@ import { ColorService } from '../color.service';
   templateUrl: './color-logic.component.html',
   styleUrls: ['./color-logic.component.scss']
 })
-export class ColorLogicComponent extends ToolLogicComponent {
+export class ColorLogicComponent extends ToolLogicDirective {
 
   constructor(private readonly service: ColorService) {
     super();

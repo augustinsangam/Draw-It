@@ -1,11 +1,9 @@
-import { Component, ElementRef, Input, OnInit } from '@angular/core';
+import { Directive, ElementRef, Input, OnInit } from '@angular/core';
 
-@Component({
+@Directive({
   selector: 'app-tool-logic',
-  templateUrl: './tool-logic.component.html',
-  styleUrls: ['./tool-logic.component.scss']
 })
-export abstract class ToolLogicComponent implements OnInit {
+export abstract class ToolLogicDirective implements OnInit {
   @Input() svgElRef: ElementRef<SVGElement>;
   protected readonly svgNS: string;
 

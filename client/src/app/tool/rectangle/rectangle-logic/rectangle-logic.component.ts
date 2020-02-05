@@ -1,7 +1,7 @@
 import { Component, ElementRef, Renderer2, } from '@angular/core';
 
 import { ColorService } from '../../color/color.service';
-import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
+import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { RectangleService } from '../rectangle.service';
 
 enum ClickType {
@@ -14,7 +14,7 @@ enum ClickType {
   templateUrl: './rectangle-logic.component.html',
   styleUrls: ['./rectangle-logic.component.scss']
 })
-export class RectangleLogicComponent extends ToolLogicComponent {
+export class RectangleLogicComponent extends ToolLogicDirective {
 
   private rectangles: Rectangle[] = [];
   private currentRectangleIndex = -1;

@@ -1,7 +1,7 @@
 import { Component, Renderer2 } from '@angular/core';
 import { ColorService } from '../../color/color.service';
 import { Point } from '../../tool-common classes/Point'
-import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
+import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { LineService } from '../line.service';
 import {LineLogicMathService} from './line-logic-math.service'
 import { Path } from './Path'
@@ -11,7 +11,7 @@ import { Path } from './Path'
   templateUrl: './line-logic.component.html',
   styleUrls: ['./line-logic.component.scss']
 })
-export class LineLogicComponent extends ToolLogicComponent {
+export class LineLogicComponent extends ToolLogicDirective {
   private paths: Path[] = [];
   private currentPathIndex = -1;
   private isNewPath = true;
