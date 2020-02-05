@@ -60,7 +60,9 @@ server-lint:
     policy: pull
   <<: *server
 server-test:
-  script: npm --prefix server/ t
+  script:
+    - npm --prefix server/ run build
+    - npm --prefix server/ run coverage #t
   cache:
     <<: *server_cache
     policy: pull

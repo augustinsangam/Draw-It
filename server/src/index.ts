@@ -4,6 +4,5 @@ import { TYPES } from './types';
 
 const ninja = myContainer.get<Warrior>(TYPES.Warrior);
 
-console.log('Hello world!');
 console.log(ninja.fight());
 console.log(ninja.sneak());
