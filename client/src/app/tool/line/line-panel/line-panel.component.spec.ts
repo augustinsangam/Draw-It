@@ -57,9 +57,9 @@ describe('LinePanelComponent', () => {
   });
 
   it('devrait changer l\'attribut withJonction du service à false', () => {
-    component.service.withJonction = true;
+    component["service"].withJonction = true;
     component.onChangeJonctionOption(new MatSlideToggleChange(component.slideToggle, false));
-    expect(component.service.withJonction).toBeFalsy();
+    expect(component["service"].withJonction).toBeFalsy();
   });
 
   it('onThicknessChange devrait appeler la fonction patchValue', () => {
