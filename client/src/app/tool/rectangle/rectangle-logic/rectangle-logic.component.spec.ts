@@ -1,6 +1,6 @@
 import { ElementRef } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
+import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { RectangleLogicComponent } from './rectangle-logic.component';
 
 describe('RectangleLogicComponent', () => {
@@ -9,7 +9,7 @@ describe('RectangleLogicComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RectangleLogicComponent, ToolLogicComponent ],
+      declarations: [ RectangleLogicComponent, ToolLogicDirective ],
       imports: [],
     })
     .compileComponents();
