@@ -42,7 +42,7 @@ export class BrushPanelComponent extends ToolPanelComponent {
   ];
 
   constructor(elementRef: ElementRef<HTMLElement>,
-              readonly service: BrushService,
+              private readonly service: BrushService,
               private formBuilder: FormBuilder) {
     super(elementRef);
     this.brushForm = this.formBuilder.group({

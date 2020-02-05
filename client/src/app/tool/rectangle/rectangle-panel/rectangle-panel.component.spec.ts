@@ -62,12 +62,25 @@ describe('RectanglePanelComponent', () => {
   });
 
   it('ngAfterViewChecked devrait avoir subscribed borderOption et fillOption, et ces valeurs devraient ' +
-    'changer dans le service lorsqu\'on émet un MatSlideToggleChange', () => {
+    'changer dans le service lorsqu\'on émet un MatSlideToggleChange en false', () => {
     component.ngAfterViewChecked();
     component.borderOptionRef.change.emit(new MatSlideToggleChange(component.borderOptionRef, false));
     component.fillOptionRef.change.emit(new MatSlideToggleChange(component.fillOptionRef, false));
-    expect(component.service.borderOption).toBeFalsy();
-    expect(component.service.fillOption).toBeFalsy();
+    // tslint:disable-next-line: no-string-literal
+    expect(component['service'].borderOption).toBeFalsy();
+    // tslint:disable-next-line: no-string-literal
+    expect(component['service'].fillOption).toBeFalsy();
+  });
+
+  it('ngAfterViewChecked devrait avoir subscribed borderOption et fillOption, et ces valeurs devraient ' +
+    'changer dans le service lorsqu\'on émet un MatSlideToggleChange en true', () => {
+    component.ngAfterViewChecked();
+    component.borderOptionRef.change.emit(new MatSlideToggleChange(component.borderOptionRef, true));
+    component.fillOptionRef.change.emit(new MatSlideToggleChange(component.fillOptionRef, true));
+    // tslint:disable-next-line: no-string-literal
+    expect(component['service'].borderOption).toBeTruthy();
+    // tslint:disable-next-line: no-string-literal
+    expect(component['service'].fillOption).toBeTruthy();
   });
 
 });
