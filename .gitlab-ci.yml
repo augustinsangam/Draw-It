@@ -48,7 +48,7 @@ client-test:
       - server/**/*
 server-pre:
   stage: .pre
-  script: npm --prefix server/ ci
+  script: npm --prefix server/ i #ci
   cache:
     <<: *server_cache
   <<: *server
