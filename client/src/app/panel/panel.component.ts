@@ -5,7 +5,7 @@ import { BrushPanelComponent } from '../tool/brush/brush-panel/brush-panel.compo
 import { LinePanelComponent } from '../tool/line/line-panel/line-panel.component';
 import { PencilPanelComponent } from '../tool/pencil/pencil-panel/pencil-panel.component';
 import { RectanglePanelComponent } from '../tool/rectangle/rectangle-panel/rectangle-panel.component';
-import { ToolPanelComponent } from '../tool/tool-panel/tool-panel.component';
+import { ToolPanelDirective } from '../tool/tool-panel/tool-panel.directive';
 import { ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
 
@@ -15,7 +15,7 @@ import { Tool } from '../tool/tool.enum';
   styleUrls: ['./panel.component.scss']
 })
 export class PanelComponent implements OnInit {
-  private readonly components: Type<ToolPanelComponent>[];
+  private readonly components: Type<ToolPanelDirective>[];
   @ViewChild('container', {
     read: ViewContainerRef,
     static: true,

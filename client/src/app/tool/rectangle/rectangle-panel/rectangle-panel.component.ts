@@ -2,7 +2,7 @@ import { AfterViewChecked, Component, ElementRef, ViewChild } from '@angular/cor
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatSlideToggle, MatSlideToggleChange } from '@angular/material';
 
-import { ToolPanelComponent } from '../../tool-panel/tool-panel.component';
+import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
 import { RectangleService } from '../rectangle.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { RectangleService } from '../rectangle.service';
   templateUrl: './rectangle-panel.component.html',
   styleUrls: ['./rectangle-panel.component.scss']
 })
-export class RectanglePanelComponent extends ToolPanelComponent implements AfterViewChecked {
+export class RectanglePanelComponent extends ToolPanelDirective implements AfterViewChecked {
 
   rectangleForm: FormGroup;
 
@@ -36,6 +36,7 @@ export class RectanglePanelComponent extends ToolPanelComponent implements After
     });
   }
 
+  // TODO: AfterViewInit??
   ngAfterViewChecked() {
     this.fillOptionRef.change.subscribe(($event: MatSlideToggleChange) => {
       this.service.fillOption = ($event.checked);

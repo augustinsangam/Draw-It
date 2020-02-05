@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  ViewChild,
+} from '@angular/core';
 import { MatDialog } from '@angular/material';
 
 import { DocumentationComponent } from './pages/documentation/documentation.component';
@@ -30,20 +36,29 @@ export enum OverlayPages {
 export class AppComponent implements AfterViewInit {
   private readonly toolSelector: Map<string, Tool> ;
   private onMainPage = false;
-  drawInProgress = false;
-  drawOption: NewDrawOptions = { height : 0, width : 0, color: ''};
+  private drawInProgress = false;
+  protected drawOption: NewDrawOptions;
 
   @ViewChild('svg', {
+    read: ElementRef,
     static: false,
-    read: ElementRef
-  }) svg: ElementRef<SVGElement>;
+  })
+  private svg: ElementRef<SVGElement>;
 
-  getCommomDialogOptions = () => {
-    return {
-      width: '650px',
-      height: '90%',
-      data: { drawInProgress: this.drawInProgress }
-    };
+  @HostListener('document:keydown', ['$event'])
+  protected keyEvent(keyEv: KeyboardEvent) {
+    if (this.onMainPage) {
+      if (keyEv.ctrlKey) {
+        if (keyEv.code === 'KeyO') {
+          // TODO: Pourquoi?
+          keyEv.preventDefault();
+          this.openNewDrawDialog();
+        }
+      } else if (this.toolSelector.has(keyEv.code)) {
+        const tool = this.toolSelector.get(keyEv.code);
+        this.toolSelectorService.set(tool as Tool);
+      }
+    }
   }
 
   constructor(public dialog: MatDialog,
@@ -51,35 +66,36 @@ export class AppComponent implements AfterViewInit {
               private colorService: ColorService,
               private svgService: SvgService) {
     this.toolSelector = new Map()
-    this.toolSelector.set('KeyC', Tool.Pencil);
     this.toolSelector.set('Digit1', Tool.Rectangle);
     this.toolSelector.set('KeyL', Tool.Line);
+    this.toolSelector.set('KeyC', Tool.Pencil);
     this.toolSelector.set('KeyW', Tool.Brush);
+    this.drawOption = {
+      color: '',
+      height: 0,
+      width : 0,
+    };
    };
-
-  @HostListener('window:keydown', ['$event'])
-  keyEvent(event: KeyboardEvent) {
-    if (this.onMainPage) {
-      if (this.toolSelector.has( event.code)) {
-        const tool = this.toolSelector.get(event.code);
-        this.toolSelectorService.set(tool as Tool);
-      }
-      if (event.code === 'KeyO' && event.ctrlKey) {
-        event.preventDefault();
-        this.openNewDrawDialog();
-      }
-    }
-  }
 
   ngAfterViewInit() {
     this.svgService.instance = this.svg;
     this.openHomeDialog();
   }
 
-  openHomeDialog() {
+  private getCommomDialogOptions() {
+    return {
+      width: '650px',
+      height: '90%',
+      data: {
+        drawInProgress: this.drawInProgress,
+      },
+    };
+  }
+
+  private openHomeDialog() {
     const dialogRef = this.dialog.open(HomeComponent, this.getCommomDialogOptions());
     dialogRef.disableClose = true;
-    dialogRef.afterClosed().subscribe((result: string) => {
+    dialogRef.afterClosed().subscribe(result => {
       switch (result) {
         case OverlayPages.New:
           this.openNewDrawDialog();
@@ -96,11 +112,11 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
-  openNewDrawDialog() {
+  private openNewDrawDialog() {
     const newDialog = this.dialog.open(NewDrawComponent, this.getCommomDialogOptions());
     newDialog.disableClose = true;
 
-    newDialog.afterClosed().subscribe((resultNewDialog) => {
+    newDialog.afterClosed().subscribe(resultNewDialog => {
       if (resultNewDialog === OverlayPages.Home) {
         this.openHomeDialog();
       } else if (resultNewDialog !== null) {
@@ -110,7 +126,7 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
-  openDocumentationDialog(fromHome: boolean) {
+  private openDocumentationDialog(fromHome: boolean) {
     const dialogOptions = {
       width: '115vw',
       height: '100vh',
@@ -119,7 +135,7 @@ export class AppComponent implements AfterViewInit {
     const newDialog = this.dialog.open(DocumentationComponent, dialogOptions);
     newDialog.disableClose = false;
     this.onMainPage = false;
-    newDialog.afterClosed().subscribe((resultNewDialog) => {
+    newDialog.afterClosed().subscribe(() => {
       if (fromHome) {
         this.openHomeDialog();
       } else {
@@ -128,14 +144,13 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
-  createNewDraw(option: NewDrawOptions) {
+  private createNewDraw(option: NewDrawOptions) {
     this.drawOption = option;
     this.drawInProgress = true;
     const rgb = this.colorService.hexToRgb(option.color);
     this.colorService.backgroundColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
+    // FIXME: Creer et detruire proprement le component au lieu de supprimer
     const childrens = Array.from(this.svg.nativeElement.children)
-    childrens.forEach(element => {
-      element.remove();
-    });
+    childrens.forEach(el => el.remove());
   }
 }

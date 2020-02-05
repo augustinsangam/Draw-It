@@ -3,7 +3,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild,
 import { EventManager } from '@angular/platform-browser';
 
 import { SvgService } from 'src/app/svg/svg.service';
-import { ToolPanelComponent } from '../../tool-panel/tool-panel.component';
+import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
 import { ColorService } from '../color.service';
 import { ColorPicklerContentComponent } from './color-pickler-content/color-pickler-content.component';
 import { ColorPicklerItemComponent } from './color-pickler-item/color-pickler-item.component';
@@ -19,7 +19,7 @@ export enum ColorOption {
   templateUrl: './color-panel.component.html',
   styleUrls: ['./color-panel.component.scss']
 })
-export class ColorPanelComponent extends ToolPanelComponent implements OnInit, AfterViewInit {
+export class ColorPanelComponent extends ToolPanelDirective implements OnInit, AfterViewInit {
 
   constructor(elementRef: ElementRef<HTMLElement>,
               public colorService: ColorService,

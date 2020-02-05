@@ -1,17 +1,17 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatSlideToggleChange} from '@angular/material';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSlideToggleChange } from '@angular/material';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 
-import {ToolPanelComponent} from '../../tool-panel/tool-panel.component';
-import {LineService} from '../line.service';
+import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
+import { LineService } from '../line.service';
 
 @Component({
   selector: 'app-line-panel',
   templateUrl: './line-panel.component.html',
   styleUrls: ['./line-panel.component.scss']
 })
-export class LinePanelComponent extends ToolPanelComponent {
+export class LinePanelComponent extends ToolPanelDirective {
 
   lineForm: FormGroup;
 

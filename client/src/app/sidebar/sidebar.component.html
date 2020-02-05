@@ -1,13 +1,13 @@
-<a title="Ligne"     (click)="selectLine($event)"
+<a title="Ligne"     #line      (click)="selectLine($event)"
    style="background-image:url(/assets/line.png)"></a>
-<a title="Rectangle" (click)="selectRectangle($event)"
+<a title="Rectangle" #rectangle (click)="selectRectangle($event)"
    style="background-image:url(/assets/rectangle.png)"></a>
-<a title="Crayon"    (click)="selectPencil($event)"
+<a title="Crayon"    #pencil    (click)="selectPencil($event)"
    style="background-image:url(/assets/gimp-tool-pencil.png)"></a>
-<a title="Pinceau"   (click)="selectBrush($event)"
+<a title="Pinceau"   #brush     (click)="selectBrush($event)"
    style="background-image:url(/assets/gimp-tool-paintbrush.png)"></a>
 <!-- <a title="Efface"    (click)="selectEraser($event)"
    style="background-image:url(/assets/gimp-tool-eraser.png)"></a> -->
 <span></span>
 <a title="Exporter" class="colored" style="background-image:url(/assets/gimp-prefs-import-export.png)"></a>
-<a title="Aide"     class="colored" style="background-image:url(/assets/gimp-prefs-help-system.svg)" (click)="onClick($event)"></a>
+<a title="Aide"     class="colored" style="background-image:url(/assets/gimp-prefs-help-system.svg)" (click)="documentationEv.emit(null)"></a>

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatRadioChange } from '@angular/material';
 import {MatRadioButton} from '@angular/material/radio';
 
-import { ToolPanelComponent } from '../../tool-panel/tool-panel.component';
+import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
 import { BrushService, Texture } from '../brush.service';
 
 @Component({
@@ -11,7 +11,7 @@ import { BrushService, Texture } from '../brush.service';
   templateUrl: './brush-panel.component.html',
   styleUrls: ['./brush-panel.component.scss']
 })
-export class BrushPanelComponent extends ToolPanelComponent {
+export class BrushPanelComponent extends ToolPanelDirective {
   brushForm: FormGroup;
 
   @ViewChild('radioChoice', {
