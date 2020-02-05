@@ -25,7 +25,14 @@ client-lint:
     policy: pull
   <<: *client
 client-test:
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq firefox-esr
+    - firefox --version
+    - sed -i '/browsers/c browsers:["FirefoxHeadless"],' client/karma.conf.js
   script: npm --prefix client/ t
+  cache:
+    <<: *client_cache
+    policy: pull
   <<: *client
 
 .cache: &server_cache
