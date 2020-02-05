@@ -61,4 +61,7 @@ server-lint:
   <<: *server
 server-test:
   script: npm --prefix server/ t
+  cache:
+    <<: *server_cache
+    policy: pull
   <<: *server
