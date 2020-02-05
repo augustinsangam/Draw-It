@@ -57,9 +57,11 @@ describe('LinePanelComponent', () => {
   });
 
   it('devrait changer l\'attribut withJonction du service à false', () => {
-    component["service"].withJonction = true;
+    // tslint:disable-next-line: no-string-literal
+    component['service'].withJonction = true;
     component.onChangeJonctionOption(new MatSlideToggleChange(component.slideToggle, false));
-    expect(component["service"].withJonction).toBeFalsy();
+    // tslint:disable-next-line: no-string-literal
+    expect(component['service'].withJonction).toBeFalsy();
   });
 
   it('onThicknessChange devrait appeler la fonction patchValue', () => {
