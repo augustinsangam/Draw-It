@@ -144,14 +144,7 @@ describe('PencilLogicComponent', () => {
   }));
 
   it('#should updates stringPath values when mouse is leaving', fakeAsync(() => {
-    component.svgElRef.nativeElement.dispatchEvent(
-      new MouseEvent('mousedown', {
-        offsetX: 10,
-        offsetY: 30,
-        button: 0
-      } as MouseEventInit)
-    );
-
+    component.mouseOnHold = true;
     component.svgElRef.nativeElement.dispatchEvent(
       new MouseEvent('mouseleave', { button: 0 } as MouseEventInit));
     setTimeout(() => {
@@ -172,14 +165,15 @@ describe('PencilLogicComponent', () => {
     tick(1000);
   }));
 
-  it('#onMouseMove shouldnt updates stringPath values when mouse isnt hold', fakeAsync(() => {
+  it('#onMouseMove shouldnt updates stringPath values when left mouse button isnt hold', fakeAsync(() => {
     const mouseEv: MouseEvent = new MouseEvent('mousemove', { offsetX: 10, offsetY: 30, button: 0 } as MouseEventInit);
+    const mouseEvRight: MouseEvent = new MouseEvent('mousemove', { offsetX: 10, offsetY: 30, button: 2 } as MouseEventInit);
     component.onMouseDown(mouseEv);
-    component.svgElRef.nativeElement.dispatchEvent(mouseEv);
+    component.svgElRef.nativeElement.dispatchEvent(mouseEvRight);
     const pathExpected: string = 'M' + mouseEv.offsetX + ',' + mouseEv.offsetY + ' h0';
     setTimeout(() => {
-      expect(component.stringPath).toEqual(pathExpected);
-    }, 1000);
+          expect(component.stringPath).toEqual(pathExpected);
+        }, 1000);
     tick(1000);
   }));
 
