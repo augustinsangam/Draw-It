@@ -38,7 +38,7 @@ client-test:
 .cache: &server_cache
     key:
       files:
-        - server/package-lock.json
+        - server/package.json
       prefix: server
     paths:
       - server/node_modules/
