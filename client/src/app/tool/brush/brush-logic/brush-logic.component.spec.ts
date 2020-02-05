@@ -111,4 +111,17 @@ describe('BrushLogicComponent', () => {
         setTimeout(() => {expect(component.stringPath).toEqual('')}, 1000);
         tick(1000);
     }));
+
+  it('#mouseleave event shouldnt updates stringPath values when left button is unhold', fakeAsync(() => {
+        const mouseEv = new MouseEvent('mousedown', { offsetX: 10, offsetY: 30, button: 0 } as MouseEventInit);
+        component.onMouseDown(mouseEv);
+        const pathExpected: string = 'M' + mouseEv.offsetX + ',' + mouseEv.offsetY + ' h0'
+        component.svgElRef.nativeElement.dispatchEvent(
+          new MouseEvent('mouseleave', { button: 2 } as MouseEventInit));
+        setTimeout(() => {
+          expect(component.stringPath).toEqual(pathExpected);
+        }, 1000);
+        tick(1000);
+      }));
+
 });
