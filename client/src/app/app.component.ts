@@ -143,7 +143,7 @@ export class AppComponent implements AfterViewInit {
     this.drawOption = option;
     this.drawInProgress = true;
     const rgb = this.colorService.hexToRgb(option.color);
-    this.colorService.backgroundColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
+    this.colorService.selectBackgroundColor(`rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`);
     const childrens = Array.from(this.svg.nativeElement.children)
     childrens.forEach(element => {
       element.remove();
