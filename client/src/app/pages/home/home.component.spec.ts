@@ -6,7 +6,7 @@ import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
     MatDialog, MatDialogClose, MatDialogRef, MatGridList, MatGridTile, MatIcon } from '@angular/material';
 import { DialogData, HomeComponent } from './home.component';
 
-fdescribe('HomeComponent', () => {
+describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
   const options = [
