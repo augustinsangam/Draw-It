@@ -57,6 +57,11 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
     this.renderer.appendChild(this.svgElRef.nativeElement, this.svgPath);
   }
 
+  stopDrawing() {
+    this.mouseOnHold = false;
+    this.stringPath = '';
+  }
+
   ngAfterViewInit() {
     const mouseDownListen = this.renderer.listen(this.svgElRef.nativeElement,
       'mousedown', (mouseEv: MouseEvent) => {
@@ -75,15 +80,13 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
 
     const mouseUpListen = this.renderer.listen(this.svgElRef.nativeElement,
       'mouseup', (mouseEv: MouseEvent) => {
-        this.mouseOnHold = false;
-        this.stringPath = '';
+        this.stopDrawing();
       });
 
     const mouseLeaveListen = this.renderer.listen(this.svgElRef.nativeElement,
       'mouseleave', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0 && this.mouseOnHold) {
-          this.mouseOnHold = false;
-          this.stringPath = '';
+          this.stopDrawing();
         }
     });
     this.listeners = [mouseDownListen, mouseMoveListen, mouseUpListen, mouseLeaveListen];

@@ -12,7 +12,6 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
 
   strokeLineCap: string;
   filter: string;
-  private svgPath: SVGPathElement;
   private listeners: (() => void)[] = [];
 
   constructor(protected renderer: Renderer2,
@@ -37,12 +36,21 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
 
   }
 
+  // configureSvgElement(element: SVGElement): void {
+  //   element.setAttribute('d', this.stringPath);
+  //   element.setAttribute('stroke-width', this.strokeWidth.toString());
+  //   element.setAttribute('stroke', this.stroke);
+  //   element.setAttribute('fill', this.fill);
+  //   element.setAttribute('filter', `url(#${this.filter})`);
+  //   element.setAttribute('stroke-linecap', this.strokeLineCap);
+  // }
+
   configureSvgElement(element: SVGElement): void {
     element.setAttribute('d', this.stringPath);
-    element.setAttribute('stroke-width', this.strokeWidth.toString());
-    element.setAttribute('stroke', this.stroke);
-    element.setAttribute('fill', this.fill);
-    element.setAttribute('filter', `url(#${this.filter})`);
+    element.setAttribute('stroke-width', this.brushService.thickness.toString());
+    element.setAttribute('stroke', this.colorService.primaryColor);
+    element.setAttribute('fill', this.colorService.primaryColor);
+    element.setAttribute('filter', `url(#${this.brushService.texture})`);
     element.setAttribute('stroke-linecap', this.strokeLineCap);
   }
 
@@ -69,6 +77,11 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
     })
   }
 
+  stopDrawing() {
+    this.mouseOnHold = false;
+    this.stringPath = '';
+  }
+
   ngAfterViewInit() {
     const mouseDownListen = this.renderer.listen(this.svgElRef.nativeElement,
       'mousedown', (mouseEv: MouseEvent) => {
@@ -87,15 +100,13 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
 
     const mouseUpListen = this.renderer.listen(this.svgElRef.nativeElement,
       'mouseup', (mouseEv: MouseEvent) => {
-        this.mouseOnHold = false;
-        this.stringPath = '';
+        this.stopDrawing();
       });
 
     const mouseLeaveListen = this.renderer.listen(this.svgElRef.nativeElement,
       'mouseleave', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0 && this.mouseOnHold) {
-          this.mouseOnHold = false;
-          this.stringPath = '';
+          this.stopDrawing();
         }
       });
     this.listeners = [mouseDownListen, mouseMoveListen, mouseUpListen, mouseLeaveListen]
