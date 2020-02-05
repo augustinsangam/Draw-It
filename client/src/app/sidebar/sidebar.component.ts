@@ -41,13 +41,13 @@ export class SidebarComponent implements AfterViewInit {
   private toolToElRef: Map<Tool, ElementRef<HTMLElement>>;
 
   // Must be pubilc
-  public constructor(private readonly toolSelectorService: ToolSelectorService) {
+  constructor(private readonly toolSelectorService: ToolSelectorService) {
     this.documentationEv = new EventEmitter<null>();
     this.toolToElRef = new Map();
   }
 
   // Must be pubilc
-  public ngAfterViewInit() {
+  ngAfterViewInit() {
     this.toolToElRef.set(Tool.Line, this.lineElRef);
     this.toolToElRef.set(Tool.Rectangle, this.rectangleElRef);
     this.toolToElRef.set(Tool.Pencil, this.pencilElRef);
@@ -56,12 +56,16 @@ export class SidebarComponent implements AfterViewInit {
   }
 
   private selectTool(tool: Tool, old?: Tool) {
-    // TODO: TS 3.7 get(…)?.native w/o ‘has’ check
-    if (!!old && this.toolToElRef.has(old)) {
-      this.toolToElRef.get(old)!.nativeElement.classList.remove('selected');
+    // TODO: TS 3.7 get(…)?.nativeEl w/o ‘has’ check
+    if (old != null) {
+      const oldElRef = this.toolToElRef.get(old)
+      if (!!oldElRef) {
+        oldElRef.nativeElement.classList.remove('selected');
+      }
     }
-    if (this.toolToElRef.has(tool)) {
-      this.toolToElRef.get(tool)!.nativeElement.classList.add('selected');
+    const elRef = this.toolToElRef.get(tool);
+    if (!!elRef) {
+      elRef.nativeElement.classList.add('selected');
     }
   }
 

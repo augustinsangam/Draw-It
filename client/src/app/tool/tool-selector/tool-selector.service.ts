@@ -19,7 +19,7 @@ export class ToolSelectorService {
   }
 
   // Must be public
-  public set(tool: Tool) {
+  set(tool: Tool) {
     console.assert(tool != null);
     if (this.tool !== tool) {
       this.onChangeCallbacks.forEach(cb => cb(tool, this.tool));
@@ -30,12 +30,12 @@ export class ToolSelectorService {
   }
 
   // Must be public
-  public onChange(cb: callback) {
+  onChange(cb: callback) {
     this.onChangeCallbacks.push(cb);
   }
 
   // Must be public
-  public onSame(cb: callback) {
+  onSame(cb: callback) {
     this.onSameCallbacks.push(cb);
   }
 }
