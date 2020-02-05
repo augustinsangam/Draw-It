@@ -69,7 +69,7 @@ describe('BrushPanelComponent', () => {
 
   it('onOptionChange devrait changer la valeur de la texture du service', () => {
     component.onOptionChange(new MatRadioChange(component.radioChoice, 'filter2'));
-    expect(component.service.texture).toEqual('filter2');
+    expect(component["service"].texture).toEqual('filter2');
   })
 
 });
