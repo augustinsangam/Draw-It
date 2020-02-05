@@ -20,7 +20,7 @@ export class PanelComponent implements OnInit {
     read: ViewContainerRef,
     static: true,
   }) private viewContainerRef: ViewContainerRef;
-  @HostBinding('style.width.px') hostWidth: number;
+  @HostBinding('style.width.px') private hostWidth: number;
   private childWidth: number;
 
   constructor(private readonly componentFactoryResolver: ComponentFactoryResolver,
@@ -56,10 +56,6 @@ export class PanelComponent implements OnInit {
   }
 
   private toggle() {
-    if (this.hostWidth) {
-      this.hostWidth = 0;
-    } else {
-      this.hostWidth = this.childWidth;
-    }
+    this.hostWidth = this.hostWidth ? 0 : this.childWidth;
   }
 }
