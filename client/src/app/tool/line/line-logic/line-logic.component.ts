@@ -30,51 +30,16 @@ export class LineLogicComponent extends ToolLogicComponent {
     });
 
     const onMouseMove = this.renderer.listen(this.svgElRef.nativeElement, 'mousemove', (mouseEv: MouseEvent) => {
-      if (!this.isNewPath) {
-        let point = this.mousePosition = new Point(mouseEv.offsetX, mouseEv.offsetY);
-        if (mouseEv.shiftKey) {
-          point = this.getPath().getAlignedPoint(point)
-        }
-        this.getPath().simulateNewLine(point);
-      }
+      this.onMouseMove(mouseEv);
     });
     const onMouseUp = this.renderer.listen(this.svgElRef.nativeElement, 'dblclick', (mouseEv: MouseEvent) => {
-      if (!this.isNewPath) {
-        let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
-        this.getPath().removeLastLine(); // cancel the click event
-        this.getPath().removeLastLine();
-        const isLessThan3pixels = this.service.distanceIsLessThan3Pixel(currentPoint, this.getPath().datas.points[0])
-        if (isLessThan3pixels) {
-          this.getPath().closePath();
-        } else {
-          if (mouseEv.shiftKey) {
-            currentPoint = this.getPath().getAlignedPoint(currentPoint)
-          }
-          this.addNewLine(currentPoint)
-        }
-        this.isNewPath = true;
-      }
+      this.onMouseUp(mouseEv);
     });
     const onKeyDown = this.renderer.listen('document', 'keydown', (keyEv: KeyboardEvent) => {
-      const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight')
-      if (keyEv.code === 'Escape' && !this.isNewPath) {
-        this.getPath().removePath();
-        this.isNewPath = true;
-      }
-      if (keyEv.code === 'Backspace' && this.getPath().datas.points.length >= 2) {
-        this.getPath().removeLastLine();
-        this.getPath().simulateNewLine(this.getPath().lastPoint);
-      }
-      if (shiftIsPressed && !this.isNewPath) {
-        const transformedPoint = this.getPath().getAlignedPoint(this.mousePosition);
-        this.getPath().simulateNewLine(transformedPoint);
-      }
+      this.onKeyDown(keyEv);
     });
     const onKeyUp = this.renderer.listen('document', 'keyup', (keyEv: KeyboardEvent) => {
-      const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight')
-      if (shiftIsPressed && !this.isNewPath) {
-        this.getPath().simulateNewLine(this.mousePosition);
-      }
+      this.onKeyUp(keyEv);
     });
     this.listeners = [onMouseDown, onMouseMove, onMouseUp, onKeyUp, onKeyDown];
   }
@@ -107,6 +72,53 @@ export class LineLogicComponent extends ToolLogicComponent {
       currentPoint = this.getPath().getAlignedPoint(currentPoint);
     }
     this.addNewLine(currentPoint)
+  }
+  onMouseMove(mouseEv: MouseEvent) {
+    if (!this.isNewPath) {
+      let point = this.mousePosition = new Point(mouseEv.offsetX, mouseEv.offsetY);
+      if (mouseEv.shiftKey) {
+        point = this.getPath().getAlignedPoint(point)
+      }
+      this.getPath().simulateNewLine(point);
+    }
+  }
+  onMouseUp(mouseEv: MouseEvent) {
+    if (!this.isNewPath) {
+      let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+      this.getPath().removeLastLine(); // cancel the click event
+      this.getPath().removeLastLine();
+      const isLessThan3pixels = this.service.distanceIsLessThan3Pixel(currentPoint, this.getPath().datas.points[0])
+      if (isLessThan3pixels) {
+        this.getPath().closePath();
+      } else {
+        if (mouseEv.shiftKey) {
+          currentPoint = this.getPath().getAlignedPoint(currentPoint)
+        }
+        this.addNewLine(currentPoint)
+      }
+      this.isNewPath = true;
+    }
+  }
+  onKeyDown(keyEv: KeyboardEvent) {
+    const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight')
+    if (keyEv.code === 'Escape' && !this.isNewPath) {
+      this.getPath().removePath();
+      this.isNewPath = true;
+    }
+    if (keyEv.code === 'Backspace' && this.getPath().datas.points.length >= 2) {
+      this.getPath().removeLastLine();
+      this.getPath().simulateNewLine(this.getPath().lastPoint);
+    }
+    if (shiftIsPressed && !this.isNewPath) {
+      const transformedPoint = this.getPath().getAlignedPoint(this.mousePosition);
+      this.getPath().simulateNewLine(transformedPoint);
+    }
+  }
+  onKeyUp(keyEv: KeyboardEvent) {
+    const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight')
+    if (shiftIsPressed && !this.isNewPath) {
+      this.getPath().simulateNewLine(this.mousePosition);
+    }
   }
   getPath(): Path {
     return this.paths[this.paths.length - 1];
