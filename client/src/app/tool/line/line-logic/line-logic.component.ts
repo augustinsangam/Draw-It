@@ -3,7 +3,7 @@ import { ColorService } from '../../color/color.service';
 import { Point } from '../../tool-common classes/Point'
 import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
 import { LineService } from '../line.service';
-import {LineLogicMathService} from './line-logic-math.service'
+import { JonctionOption } from './jonctionOptions'
 import { Path } from './Path'
 
 @Component({
@@ -13,9 +13,9 @@ import { Path } from './Path'
 })
 export class LineLogicComponent extends ToolLogicComponent {
   private paths: Path[] = [];
-  private currentPathIndex = -1;
   private isNewPath = true;
   private mousePosition: Point;
+  private currentJonctionOptions: JonctionOption
   constructor(private readonly service: LineService,
               private readonly renderer: Renderer2,
               private readonly serviceColor: ColorService) {
@@ -26,15 +26,7 @@ export class LineLogicComponent extends ToolLogicComponent {
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
     const onMouseDown = this.renderer.listen(this.svgElRef.nativeElement, 'click', (mouseEv: MouseEvent) => {
-      let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
-      if (this.isNewPath) {
-        this.createNewPath(currentPoint)
-        this.isNewPath = false;
-      }
-      if (mouseEv.shiftKey && !this.isNewPath) {
-        currentPoint = this.getPath().getAlignedPoint(currentPoint);
-      }
-      this.addNewLine(currentPoint)
+      this.onMouseClick(mouseEv);
     });
 
     const onMouseMove = this.renderer.listen(this.svgElRef.nativeElement, 'mousemove', (mouseEv: MouseEvent) => {
@@ -51,8 +43,7 @@ export class LineLogicComponent extends ToolLogicComponent {
         let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
         this.getPath().removeLastLine(); // cancel the click event
         this.getPath().removeLastLine();
-        const math =  new LineLogicMathService()
-        const isLessThan3pixels = math.distanceIsLessThan3Pixel(currentPoint, this.getPath().datas.points[0])
+        const isLessThan3pixels = this.service.distanceIsLessThan3Pixel(currentPoint, this.getPath().datas.points[0])
         if (isLessThan3pixels) {
           this.getPath().closePath();
         } else {
@@ -90,23 +81,35 @@ export class LineLogicComponent extends ToolLogicComponent {
   createNewPath(initialPoint: Point) {
     const path = this.renderer.createElement('path', this.svgNS);
     this.renderer.appendChild(this.svgElRef.nativeElement, path);
-    this.paths[++this.currentPathIndex] = new Path(initialPoint, this.renderer, path, this.service.withJonction)
+    this.paths.push(new Path(initialPoint, this.renderer, path, this.service.withJonction));
     this.getPath().setLineCss(this.service.thickness.toString(), this.serviceColor.primaryColor);
   }
   createJonction(center: Point) {
     const circle = this.renderer.createElement('circle', this.svgNS);
     this.renderer.appendChild(this.svgElRef.nativeElement, circle);
-    this.getPath().addJonction(circle, center, this.service.radius.toString(), this.serviceColor.primaryColor);
+    this.getPath().addJonction(circle, center, this.currentJonctionOptions.radius, this.currentJonctionOptions.color);
   }
   addNewLine(currentPoint: Point) {
     this.getPath().addLine(currentPoint);
     if (this.getPath().withJonctions) {
       this.createJonction(currentPoint);
     }
-
+  }
+  onMouseClick(mouseEv: MouseEvent) {
+    let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+    if (this.isNewPath) {
+      this.createNewPath(currentPoint)
+      this.currentJonctionOptions = {radius: this.service.radius.toString(),
+                                     color: this.serviceColor.primaryColor }
+      this.isNewPath = false;
+    }
+    if (mouseEv.shiftKey && !this.isNewPath) {
+      currentPoint = this.getPath().getAlignedPoint(currentPoint);
+    }
+    this.addNewLine(currentPoint)
   }
   getPath(): Path {
-    return this.paths[this.currentPathIndex];
+    return this.paths[this.paths.length - 1];
   }
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnDestroy() {
