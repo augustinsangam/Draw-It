@@ -3,7 +3,7 @@ import { AbstractControl } from '@angular/forms';
 import { MatSliderChange } from '@angular/material';
 import { MockColorPicklerContentComponent } from './mock-color-pickler-content.component';
 
-fdescribe('ColorPicklerContentComponent', () => {
+describe('ColorPicklerContentComponent', () => {
   let component: MockColorPicklerContentComponent;
   let fixture: ComponentFixture<MockColorPicklerContentComponent>;
 
@@ -24,11 +24,8 @@ fdescribe('ColorPicklerContentComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create and Functions should at least launch', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('Functions should at least launch', () => {
     MockColorPicklerContentComponent.ValidatorHex('' as unknown as AbstractControl);
     MockColorPicklerContentComponent.ValidatorInteger('' as unknown as AbstractControl);
     component.initialiseStartingColor();

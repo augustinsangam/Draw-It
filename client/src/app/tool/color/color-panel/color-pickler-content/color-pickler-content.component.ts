@@ -16,25 +16,25 @@ export class ColorPicklerContentComponent implements AfterViewInit {
 
   @Output() colorChange = new EventEmitter();
 
-  baseColors = ['#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF',
+  private baseColors = ['#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF',
                 '#FFFF00', '#FF00FF', '#00FFFF', '#FF6600', '#FF6699'];
 
   @ViewChild('canvas', {
     read: ElementRef,
     static: false
-  }) canvas: ElementRef;
+  }) private canvas: ElementRef;
 
   @ViewChild('actualColor', {
     read: ColorPicklerItemComponent,
     static: false
-  }) actualColor: ColorPicklerItemComponent;
+  }) private actualColor: ColorPicklerItemComponent;
 
   @ViewChildren(ColorPicklerItemComponent)
-  baseColorsCircles: QueryList<ColorPicklerItemComponent>;
+  private baseColorsCircles: QueryList<ColorPicklerItemComponent>;
 
-  context: CanvasRenderingContext2D;
+  private context: CanvasRenderingContext2D;
 
-  colorForm: FormGroup;
+  private colorForm: FormGroup;
 
   static ValidatorHex(formControl: AbstractControl) {
     if (/^[0-9A-F]{6}$/i.test(formControl.value)) {
@@ -84,7 +84,6 @@ export class ColorPicklerContentComponent implements AfterViewInit {
 
     const startColor = this.colorService.hexToRgb(this.startColor);
 
-    // TODO : Remove Timeout
     setTimeout(() => {
       this.colorForm.patchValue({ r: startColor.r });
       this.buildCanvas(startColor.r);
@@ -149,7 +148,7 @@ export class ColorPicklerContentComponent implements AfterViewInit {
     this.buildCanvas(value);
   }
 
-  onChangeR($event: Event) {
+  onChangeR() {
     if (this.colorForm.controls.r.value < 0) {
       this.colorForm.patchValue({ r: 0 });
       return;
@@ -162,7 +161,7 @@ export class ColorPicklerContentComponent implements AfterViewInit {
     this.updateHex();
   }
 
-  onChangeG($event: Event) {
+  onChangeG() {
     if (this.colorForm.controls.g.value < 0) {
       this.colorForm.patchValue({ g: 0 });
       return;
@@ -174,7 +173,7 @@ export class ColorPicklerContentComponent implements AfterViewInit {
     this.updateHex();
   }
 
-  onChangeB($event: Event) {
+  onChangeB() {
     if (this.colorForm.controls.b.value < 0) {
       this.colorForm.patchValue({ b: 0 });
       return;
@@ -186,7 +185,7 @@ export class ColorPicklerContentComponent implements AfterViewInit {
     this.updateHex();
   }
 
-  onChangeA($event: Event) {
+  onChangeA() {
     if (this.colorForm.controls.a.value < 0) {
       this.colorForm.patchValue({ a: 0 });
       return;
@@ -197,7 +196,7 @@ export class ColorPicklerContentComponent implements AfterViewInit {
     this.actualColor.updateColor(this.getActualRgba());
   }
 
-  onChangeHex($event: Event) {
+  onChangeHex() {
     if (/^[0-9A-F]{6}$/i.test(this.colorForm.controls.hex.value)) {
       const rgb: RGBColor = this.colorService.hexToRgb(this.colorForm.controls.hex.value);
       this.colorForm.patchValue({
