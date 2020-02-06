@@ -25,16 +25,20 @@ client-lint:
     policy: pull
   <<: *client
 client-test:
-  script:
-   - npm install -g @angular/cli
-   - ng build -prod
-   - npm --prefix client/ t
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq firefox-esr
+    - firefox --version
+    - sed -i '/browsers/c browsers:["FirefoxHeadless"],' client/karma.conf.js
+  script: npm --prefix client/ run coverage
+  cache:
+    <<: *client_cache
+    policy: pull
   <<: *client
 
 .cache: &server_cache
     key:
       files:
-        - server/package-lock.json
+        - server/package.json
       prefix: server
     paths:
       - server/node_modules/
@@ -44,7 +48,7 @@ client-test:
       - server/**/*
 server-pre:
   stage: .pre
-  script: npm --prefix server/ ci
+  script: npm --prefix server/ i #ci
   cache:
     <<: *server_cache
   <<: *server
@@ -56,5 +60,10 @@ server-lint:
     policy: pull
   <<: *server
 server-test:
-  script: npm --prefix server/ t
+  script:
+    - npm --prefix server/ run build
+    - npm --prefix server/ run coverage #t
+  cache:
+    <<: *server_cache
+    policy: pull
   <<: *server

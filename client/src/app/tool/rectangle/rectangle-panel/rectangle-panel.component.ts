@@ -25,7 +25,7 @@ export class RectanglePanelComponent extends ToolPanelComponent implements After
   }) borderOptionRef: MatSlideToggle;
 
   constructor(elementRef: ElementRef<HTMLElement>,
-              readonly service: RectangleService,
+              private readonly service: RectangleService,
               private readonly formBuilder: FormBuilder) {
     super(elementRef);
     this.rectangleForm = this.formBuilder.group({
@@ -39,12 +39,24 @@ export class RectanglePanelComponent extends ToolPanelComponent implements After
   ngAfterViewChecked() {
     this.fillOptionRef.change.subscribe(($event: MatSlideToggleChange) => {
       this.service.fillOption = ($event.checked);
-      this.borderOptionRef.disabled = !$event.checked;
+      if (!$event.checked) {
+        this.borderOptionRef.disabled = true;
+        this.rectangleForm.controls.borderOption.disable();
+      } else {
+        this.borderOptionRef.disabled = false;
+        this.rectangleForm.controls.borderOption.enable();
+      }
     });
 
     this.borderOptionRef.change.subscribe(($event: MatSlideToggleChange) => {
       this.service.borderOption = $event.checked;
-      this.fillOptionRef.disabled = !$event.checked;
+      if (!$event.checked) {
+        this.fillOptionRef.disabled = true;
+        this.rectangleForm.controls.fillOption.disable();
+      } else {
+        this.fillOptionRef.disabled = false;
+        this.rectangleForm.controls.fillOption.enable();
+      }
     });
   }
 

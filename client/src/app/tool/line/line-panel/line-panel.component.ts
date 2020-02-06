@@ -20,7 +20,7 @@ export class LinePanelComponent extends ToolPanelComponent {
   }) slideToggle: MatSlideToggle;
 
   constructor(elementRef: ElementRef<HTMLElement>,
-              readonly service: LineService,
+              private readonly service: LineService,
               private formBuilder: FormBuilder) {
     super(elementRef);
     this.lineForm = this.formBuilder.group({
