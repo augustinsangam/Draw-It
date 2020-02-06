@@ -2,10 +2,17 @@ import { AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild,
   ViewChildren } from '@angular/core';
 import { EventManager } from '@angular/platform-browser';
 
+import { SvgService } from 'src/app/svg/svg.service';
 import { ToolPanelComponent } from '../../tool-panel/tool-panel.component';
 import { ColorService } from '../color.service';
 import { ColorPicklerContentComponent } from './color-pickler-content/color-pickler-content.component';
 import { ColorPicklerItemComponent } from './color-pickler-item/color-pickler-item.component';
+
+export enum ColorOption {
+  Primary = 'PRIMARY',
+  Secondary = 'SECONDARY',
+  Background = 'BACKGROUND'
+};
 
 @Component({
   selector: 'app-color-panel',
@@ -15,12 +22,15 @@ import { ColorPicklerItemComponent } from './color-pickler-item/color-pickler-it
 export class ColorPanelComponent extends ToolPanelComponent implements OnInit, AfterViewInit {
 
   constructor(elementRef: ElementRef<HTMLElement>,
-              private colorService: ColorService,
-              private eventManager: EventManager) {
+              public colorService: ColorService,
+              public eventManager: EventManager,
+              public svgService: SvgService) {
     super(elementRef);
   }
 
-  colorOption = 'PRIMARY';
+  colorOptionEnum: typeof ColorOption = ColorOption;
+
+  colorOption = ColorOption.Primary;
   recentColors: string[];
   showPalette = false;
 
@@ -33,6 +43,11 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
     read : ColorPicklerItemComponent,
     static : false
   }) colorPreviewSecondary: ColorPicklerItemComponent;
+
+  @ViewChild('colorPreviewBackground', {
+    read : ColorPicklerItemComponent,
+    static : false
+  }) colorPreviewBackground: ColorPicklerItemComponent;
 
   @ViewChildren(ColorPicklerItemComponent)
   colorsItems: QueryList<ColorPicklerItemComponent>;
@@ -51,7 +66,7 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
   ngAfterViewInit() {
     super.ngAfterViewInit();
     this.updatePreviewColors();
-    this.colorsItemsArray = this.colorsItems.toArray().slice(2);
+    this.colorsItemsArray = this.colorsItems.toArray().slice(3);
 
     this.addEvents();
     // Ajouter les couleurs au cercle
@@ -64,7 +79,7 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
         this.colorPreviewPrimary.updateColor(this.colorsItemsArray[i].color);
         this.colorService.primaryColor = this.colorsItemsArray[i].color;
         if (this.colorPalette) {
-          this.colorPalette.startColor = `#${this.colorService.rgbToHex(this.colorService.rgbFormRgba(this.colorsItemsArray[i].color))}`;
+          this.colorPalette.startColor = this.colorService.hexFormRgba(this.colorsItemsArray[i].color);
           this.colorPalette.initialiseStartingColor();
         }
         this.colorService.promote(i);
@@ -76,7 +91,7 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
         this.colorPreviewSecondary.updateColor(this.colorsItemsArray[i].color);
         this.colorService.secondaryColor = this.colorsItemsArray[i].color;
         if (this.colorPalette) {
-          this.colorPalette.startColor = `#${this.colorService.rgbToHex(this.colorService.rgbFormRgba(this.colorsItemsArray[i].color))}`;
+          this.colorPalette.startColor = this.colorService.hexFormRgba(this.colorsItemsArray[i].color);
           this.colorPalette.initialiseStartingColor();
         }
         this.colorService.promote(i);
@@ -100,14 +115,17 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
   }
 
   onColorPicked(data: string) {
-    if (this.colorOption === 'PRIMARY') {
+    if (this.colorOption === ColorOption.Primary) {
       this.colorPreviewPrimary.updateColor(data);
       this.colorService.selectPrimaryColor(data);
-    } else {
+    } else if (this.colorOption === ColorOption.Secondary) {
       this.colorPreviewSecondary.updateColor(data);
       this.colorService.selectSecondaryColor(data);
+    } else {
+      this.colorPreviewBackground.updateColor(data);
+      this.colorService.selectBackgroundColor(data);
+      this.svgService.changeBackgroundColor(data);
     }
-    // Reafficher
     this.updateRecentColors();
     this.showPalette = false;
   }
@@ -115,6 +133,7 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
   updatePreviewColors() {
     this.colorPreviewPrimary.updateColor(this.colorService.primaryColor);
     this.colorPreviewSecondary.updateColor(this.colorService.secondaryColor);
+    this.colorPreviewBackground.updateColor(this.colorService.backgroundColor);
   }
 
   onShowPalette() {
@@ -122,9 +141,13 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
   }
 
   getStartColor() {
-    const color = (this.colorOption === 'PRIMARY') ?
-    this.colorService.primaryColor : this.colorService.secondaryColor;
-    return `#${this.colorService.rgbToHex(this.colorService.rgbFormRgba(color))}`;
+    if (this.colorOption === ColorOption.Primary) {
+      return this.colorService.hexFormRgba(this.colorService.primaryColor);
+    } else if (this.colorOption === ColorOption.Secondary) {
+      return this.colorService.hexFormRgba(this.colorService.secondaryColor);
+    } else {
+      return this.colorService.hexFormRgba(this.colorService.backgroundColor);
+    }
   }
 
 }
