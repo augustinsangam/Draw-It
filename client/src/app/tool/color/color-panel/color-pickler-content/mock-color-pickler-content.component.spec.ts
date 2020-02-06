@@ -24,11 +24,8 @@ describe('ColorPicklerContentComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create and Functions should at least launch', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('Functions should at least launch', () => {
     MockColorPicklerContentComponent.ValidatorHex('' as unknown as AbstractControl);
     MockColorPicklerContentComponent.ValidatorInteger('' as unknown as AbstractControl);
     component.initialiseStartingColor();
