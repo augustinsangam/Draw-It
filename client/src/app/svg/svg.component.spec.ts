@@ -43,4 +43,10 @@ fdescribe('CanvasComponent', () => {
     expect(refReturned.instance.svgElRef).toEqual(component['elementRef']);
   });
 
+  it('#ngOnInit should call onChange', () => {
+    const spy = spyOn(component['toolSelectorService'], 'onChange');
+    component.ngOnInit();
+    expect(spy).toHaveBeenCalled();
+  });
+
 });
