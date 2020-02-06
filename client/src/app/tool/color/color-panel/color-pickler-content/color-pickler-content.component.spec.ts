@@ -1,7 +1,8 @@
 import { CdkObserveContent } from '@angular/cdk/observers';
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButton, MatCard, MatCardContent, MatCardTitle, MatFormField, MatInput, MatRipple, MatSlider, MatSliderChange } from '@angular/material';
+import { MatButton, MatCard, MatCardContent, MatCardTitle, MatFormField,
+  MatInput, MatRipple, MatSlider, MatSliderChange } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ColorPicklerItemComponent } from '../color-pickler-item/color-pickler-item.component';
 import { ColorPicklerContentComponent } from './color-pickler-content.component';
@@ -33,6 +34,8 @@ describe('ColorPicklerContentComponent', () => {
     })
       .compileComponents();
   }));
+
+  /* tslint:disable:no-string-literal */
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ColorPicklerContentComponent);
@@ -144,7 +147,7 @@ describe('ColorPicklerContentComponent', () => {
         // Si on arrive ici cela veut dire qu'une couleur a bien été émise
         expect(true).toBe(true);
       });
-      component['onConfirm']();
+      component.onConfirm();
     }, 500);
     tick(600);
   }))

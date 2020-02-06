@@ -33,6 +33,8 @@ describe('DocumentationComponent', () => {
     fixture.detectChanges();
   });
 
+  /* tslint:disable:no-string-literal */
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });

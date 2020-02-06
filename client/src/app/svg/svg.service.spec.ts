@@ -20,8 +20,8 @@ describe('SvgService', () => {
   });
 
   it('#changeBackgroundColor() should change svg background color', () => {
-    service.changeBackgroundColor('#ABCDEF');
-    expect(service.instance.nativeElement.style.backgroundColor).toEqual('#ABCDEF');
+    service.changeBackgroundColor('rgb(171, 205, 239)');
+    expect(service.instance.nativeElement.style.backgroundColor).toEqual('rgb(171, 205, 239)');
   });
 
 });
