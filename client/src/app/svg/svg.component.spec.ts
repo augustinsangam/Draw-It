@@ -1,7 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { ComponentRef } from '@angular/core';
+import { ToolLogicComponent } from '../tool/tool-logic/tool-logic.component';
+import {Tool} from '../tool/tool.enum';
 import { SvgComponent } from './svg.component';
-import {Tool} from "../tool/tool.enum";
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { LineLogicComponent } from '../tool/line/line-logic/line-logic.component';
 
 fdescribe('CanvasComponent', () => {
   let component: SvgComponent;
@@ -11,8 +15,16 @@ fdescribe('CanvasComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         SvgComponent,
+        LineLogicComponent
       ],
-    }).compileComponents();
+    })
+    .overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [
+          LineLogicComponent,
+        ]
+      }
+    })
   }));
 
   beforeEach(() => {
@@ -25,10 +37,10 @@ fdescribe('CanvasComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('asddd', () => {
-    const spy = spyOn(component["viewContainerRef"], 'createComponent');
-    component["setTool"](Tool.Line);
-    expect(spy).toHaveBeenCalled();
-  })
+  it('#setTool should set the good value to the variable ref', () => {
+    let refReturned: ComponentRef<ToolLogicComponent>;
+    refReturned = component['setTool'](Tool.Line);
+    expect(refReturned.instance.svgElRef).toEqual(component['elementRef']);
+  });
 
 });

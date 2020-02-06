@@ -1,5 +1,5 @@
-import { Component, ComponentFactoryResolver, ElementRef, OnInit, Type,
-  ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentFactoryResolver, ComponentRef, ElementRef, OnInit,
+  Type, ViewChild, ViewContainerRef } from '@angular/core';
 
 import { BrushLogicComponent } from '../tool/brush/brush-logic/brush-logic.component';
 import { LineLogicComponent } from '../tool/line/line-logic/line-logic.component';
@@ -37,12 +37,14 @@ export class SvgComponent implements OnInit {
     this.toolSelectorService.onChange(tool => this.setTool(tool));
   }
 
-  private setTool(tool: Tool) {
+  private setTool(tool: Tool): ComponentRef<ToolLogicComponent>  {
     this.viewContainerRef.clear();
     const component = this.components[tool];
     const factory = this.componentFactoryResolver.resolveComponentFactory(component);
-    const ref = this.viewContainerRef.createComponent(factory);
+    let ref: ComponentRef<ToolLogicComponent>;
+    ref = this.viewContainerRef.createComponent(factory);
     ref.instance.svgElRef = this.elementRef;
     ref.changeDetectorRef.detectChanges();
+    return ref;
   }
 }
