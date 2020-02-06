@@ -3,11 +3,15 @@ import {Point} from '../../tool-common classes/Point';
 import { LineService } from '../line.service';
 import {Circle} from './Circle'
 import {PathData} from './PathData'
+
 export class Path {
     datas: PathData = {points: [], jonctions: [], instructions: []}
     private pathAtribute = '';
     lastPoint: Point;
-    constructor( initialPoint: Point, private renderer: Renderer2, private element: ElementRef, public withJonctions: boolean ) {
+    constructor( initialPoint: Point,
+                 private renderer: Renderer2,
+                 private element: ElementRef,
+                 public withJonctions: boolean ) {
       this.datas.points.push(initialPoint);
       const instruction = 'M ' + initialPoint.x.toString() + ' ' + initialPoint.y.toString() + ' ';
       this.addInstruction(instruction);
