@@ -42,6 +42,11 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
     element.setAttribute('stroke-linecap', this.strokeLineCap);
   }
 
+  onMouseMove(mouseEv: MouseEvent) {
+    this.drawing(mouseEv);
+    this.svgPath.setAttribute('d', this.stringPath);
+  }
+
   defineParameter(): void {
     this.color = this.colorService.primaryColor;
     this.stroke = this.colorService.primaryColor;

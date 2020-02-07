@@ -12,6 +12,7 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
 
   strokeLineCap: string;
   filter: string;
+  private svgCircle: SVGCircleElement;
   private listeners: (() => void)[] = [];
 
   constructor(protected renderer: Renderer2,
@@ -21,7 +22,7 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
   }
 
   // tslint:disable-next-line use-lifecycle-interface
-  ngOnInit() {
+  ngOnInit(): void {
     this.stringPath = '';
     this.svgTag = 'path';
     this.strokeLineCap = 'round';
@@ -35,15 +36,6 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
     this.generateFilterFive();
 
   }
-
-  // configureSvgElement(element: SVGElement): void {
-  //   element.setAttribute('d', this.stringPath);
-  //   element.setAttribute('stroke-width', this.strokeWidth.toString());
-  //   element.setAttribute('stroke', this.stroke);
-  //   element.setAttribute('fill', this.fill);
-  //   element.setAttribute('filter', `url(#${this.filter})`);
-  //   element.setAttribute('stroke-linecap', this.strokeLineCap);
-  // }
 
   configureSvgElement(element: SVGElement): void {
     element.setAttribute('d', this.stringPath);
@@ -62,12 +54,14 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
     this.filter = this.brushService.texture;
   }
 
-  onMouseDown(mouseEv: MouseEvent) {
+  onMouseDown(mouseEv: MouseEvent): void {
     this.defineParameter();
     this.makeFirstPoint(mouseEv);
+    this.svgCircle = this.createSVGCircle(mouseEv);
     this.svgPath = this.renderer.createElement(this.svgTag, this.svgNS);
     this.configureSvgElement(this.svgPath);
     this.renderer.appendChild(this.svgElRef.nativeElement, this.svgPath);
+    this.renderer.appendChild(this.svgElRef.nativeElement, this.svgCircle);
   }
 
   // tslint:disable-next-line:use-lifecycle-interface
@@ -77,9 +71,18 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
     })
   }
 
-  stopDrawing() {
+  stopDrawing(): void {
     this.mouseOnHold = false;
     this.stringPath = '';
+  }
+
+  onMouseMove(mouseEv: MouseEvent) {
+    this.renderer.removeChild(this.renderer.parentNode(
+      this.svgCircle),
+      this.svgCircle
+    );
+    this.drawing(mouseEv);
+    this.svgPath.setAttribute('d', this.stringPath);
   }
 
   ngAfterViewInit() {
@@ -257,5 +260,22 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
       'defs', this.svgNS);
     this.renderer.appendChild(defsSvgEl, filterSvgEl);
     this.renderer.appendChild(this.svgElRef.nativeElement, defsSvgEl);
+  }
+
+  createSVGCircle(mouseEv: MouseEvent): SVGCircleElement {
+    const svgCircle: SVGCircleElement = this.renderer.createElement(
+      'circle',
+      this.svgNS
+    );
+    const radius = this.brushService.thickness / 2;
+    svgCircle.setAttribute('cx', mouseEv.offsetX.toString());
+    svgCircle.setAttribute('cy', mouseEv.offsetY.toString());
+    svgCircle.setAttribute('r', radius.toString());
+    svgCircle.setAttribute(
+      'fill',
+      this.colorService.primaryColor
+    );
+    svgCircle.setAttribute('filter', `url(#${this.filter})`);
+    return svgCircle;
   }
 }
