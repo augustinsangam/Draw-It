@@ -1,23 +1,23 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatSlideToggleChange} from '@angular/material';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSlideToggleChange } from '@angular/material';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 
-import {ToolPanelComponent} from '../../tool-panel/tool-panel.component';
-import {LineService} from '../line.service';
+import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
+import { LineService } from '../line.service';
 
 @Component({
   selector: 'app-line-panel',
   templateUrl: './line-panel.component.html',
   styleUrls: ['./line-panel.component.scss']
 })
-export class LinePanelComponent extends ToolPanelComponent {
+export class LinePanelComponent extends ToolPanelDirective {
 
-  lineForm: FormGroup;
+  private lineForm: FormGroup;
 
   @ViewChild ('slideToggle', {
     static: false
-  }) slideToggle: MatSlideToggle;
+  }) protected slideToggle: MatSlideToggle;
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: LineService,
@@ -32,16 +32,16 @@ export class LinePanelComponent extends ToolPanelComponent {
     });
   }
 
-  onChangeJonctionOption($event: MatSlideToggleChange) {
+  protected onChangeJonctionOption($event: MatSlideToggleChange): void {
     this.service.withJonction = ($event.checked);
   }
 
-  onThicknessChange() {
+  protected onThicknessChange(): void {
     this.lineForm.patchValue({ thicknessFormField: this.lineForm.value.thicknessSlider });
     this.service.thickness = this.lineForm.value.thicknessSlider;
   }
 
-  onRadiusChange() {
+  protected onRadiusChange(): void {
     this.lineForm.patchValue({ radiusFormField: this.lineForm.value.radiusSlider });
     this.service.radius = this.lineForm.value.radiusSlider;
   }

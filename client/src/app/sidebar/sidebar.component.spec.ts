@@ -1,11 +1,12 @@
 /* tslint:disable:no-string-literal */
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA} from '@angular/core';
-import {MatLabel} from '@angular/material';
-import {ToolSelectorService} from '../tool/tool-selector/tool-selector.service';
-import {Tool} from '../tool/tool.enum';
-import {SidebarComponent} from './sidebar.component';
+import { CUSTOM_ELEMENTS_SCHEMA, ElementRef, NO_ERRORS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatLabel } from '@angular/material';
+
+import { ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
+import { Tool } from '../tool/tool.enum';
+import { SidebarComponent } from './sidebar.component';
 
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
@@ -15,12 +16,15 @@ describe('SidebarComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         MatLabel,
-        SidebarComponent
+        SidebarComponent,
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
       providers: [
         ToolSelectorService,
-      ]
+      ],
+      schemas: [
+        CUSTOM_ELEMENTS_SCHEMA,
+        NO_ERRORS_SCHEMA,
+      ],
     })
     .compileComponents();
   }));
@@ -35,69 +39,87 @@ describe('SidebarComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('selectTool devrait appeler la méthode set ' +
-    'du service sur un appel d\'un DOMTokenListe existant', () => {
+  it('should call setTool on tool change', () => {
+    // NOTE: Asynchronous call of callback is handled
+    // automatically because the spy will wait until
+    // the function is executed.
+    // stackoverflow.com/a/48734437
+    spyOn<any>(component, 'setTool').and.callFake(
+      (tool: Tool, old?: Tool) => {
+        expect(tool).toBe(Tool.Line);
+        expect(old).toBe(Tool._None);
+      });
+    component.ngAfterViewInit();
+    component['toolSelectorService'].set(Tool.Line);
+  });
+
+  it('setTool with second argument null should do nothing', () => {
+    const oldHtmlEl = document.createElement('a');
+    oldHtmlEl.classList.add('selected');
+    const oldElRef = new ElementRef(oldHtmlEl);
+    component['toolToElRef'].set(Tool.Line, oldElRef);
+
+    const newHtmlEl = document.createElement('a');
+    const newElRef = new ElementRef(newHtmlEl);
+    component['toolToElRef'].set(Tool.Rectangle, newElRef);
+
+    component['setTool'](Tool._None);
+    expect(oldHtmlEl.classList.contains('selected')).toBeTruthy();
+    expect(newHtmlEl.classList.contains('selected')).toBeFalsy();
+  });
+
+  it('setTool with tools none should do nothing', () => {
+    const oldHtmlEl = document.createElement('a');
+    oldHtmlEl.classList.add('selected');
+    const oldElRef = new ElementRef(oldHtmlEl);
+    component['toolToElRef'].set(Tool.Line, oldElRef);
+
+    const newHtmlEl = document.createElement('a');
+    const newElRef = new ElementRef(newHtmlEl);
+    component['toolToElRef'].set(Tool.Rectangle, newElRef);
+
+    component['setTool'](Tool._None, Tool._None);
+    expect(oldHtmlEl.classList.contains('selected')).toBeTruthy();
+    expect(newHtmlEl.classList.contains('selected')).toBeFalsy();
+  });
+
+  it('setTool should remove .selected from old element' +
+    'and append .selected to new element', () => {
+    const oldHtmlEl = document.createElement('a');
+    oldHtmlEl.classList.add('selected');
+    const oldElRef = new ElementRef(oldHtmlEl);
+    component['toolToElRef'].set(Tool.Line, oldElRef);
+
+    const newHtmlEl = document.createElement('a');
+    const newElRef = new ElementRef(newHtmlEl);
+    component['toolToElRef'].set(Tool.Rectangle, newElRef);
+
+    component['setTool'](Tool.Rectangle, Tool.Line);
+    expect(oldHtmlEl.classList.contains('selected')).toBeFalsy();
+    expect(newHtmlEl.classList.contains('selected')).toBeTruthy();
+  });
+
+  it('selectLine devrait appeler ToolSelectorService.set', () => {
     const spy = spyOn(component['toolSelectorService'], 'set');
-
-    const htmlElement = document.createElement('a');
-    htmlElement.setAttribute('title', 'Ligne');
-    htmlElement.setAttribute('style', '"background-image:url(/assets/gimp-tool-pencil.png)"');
-
-    component.selectTool(Tool.Line, htmlElement);
+    component['selectLine']();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('selectTool devrait appeler la méthode set ' +
-    'du service sur un appel d\'un DOMTokenList non existant', () => {
+  it('selectRectangle devrait appeler ToolSelectorService.set', () => {
     const spy = spyOn(component['toolSelectorService'], 'set');
-
-    const htmlElement = document.createElement('a');
-    htmlElement.setAttribute('title', 'Ligne');
-    htmlElement.setAttribute('style', '"background-image:url(/assets/gimp-tool-pencil.png)"');
-
-    const param = document.querySelector('a');
-    // @ts-ignore
-    component['selectedElDOMTokenList'] =  param.classList;
-    component['selectedElDOMTokenList'].add('asdasdasdasdasdassda');
-
-    component.selectTool(Tool.Line, htmlElement);
+    component['selectRectangle']();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('selectPencil devrait appeler selectTool', () => {
-    const spy = spyOn(component, 'selectTool');
-    component.selectPencil({target: null} as unknown as MouseEvent);
+  it('selectPencil devrait appeler ToolSelectorService.set', () => {
+    const spy = spyOn(component['toolSelectorService'], 'set');
+    component['selectPencil']();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('selectBrush devrait appeler selectTool', () => {
-    const spy = spyOn(component, 'selectTool');
-    component.selectBrush({target: null} as unknown as MouseEvent);
+  it('selectBrush devrait appeler ToolSelectorService.set', () => {
+    const spy = spyOn(component['toolSelectorService'], 'set');
+    component['selectBrush']();
     expect(spy).toHaveBeenCalled();
   });
-
-  it('selectLine devrait appeler selectTool', () => {
-    const spy = spyOn(component, 'selectTool');
-    component.selectLine({target: null} as unknown as MouseEvent);
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('selectLine devrait appeler selectTool', () => {
-    const spy = spyOn(component, 'selectTool');
-    component.selectLine({target: null} as unknown as MouseEvent);
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('selectRectangle devrait appeler selectTool', () => {
-    const spy = spyOn(component, 'selectTool');
-    component.selectRectangle({target: null} as unknown as MouseEvent);
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('emit de documentationClicsk devrait avoir été appelé lors de l\'appel de onClick', () => {
-    const spy = spyOn(component.documentationClick, 'emit');
-    component.onClick(new MouseEvent('click'));
-    expect(spy).toHaveBeenCalled();
-  });
-
 });

@@ -2,7 +2,7 @@ import { Component, OnDestroy, Renderer2 } from '@angular/core';
 import { ColorService } from '../../color/color.service';
 import { MathService} from '../../mathematicService/tool.math-service.service'
 import { Point } from '../../tool-common classes/Point'
-import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
+import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { LineService } from '../line.service';
 import { JonctionOption } from './jonctionOptions'
 import { Path } from './Path'
@@ -11,7 +11,8 @@ import { Path } from './Path'
   selector: 'app-line-logic',
   template: ''
 })
-export class LineLogicComponent extends ToolLogicComponent
+
+export class LineLogicComponent extends ToolLogicDirective
                                 implements OnDestroy {
   private paths: Path[];
   private listeners: (() => void)[];

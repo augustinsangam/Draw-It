@@ -30,12 +30,12 @@
             </mat-card-content>
             <mat-card-title>COULEURS PRÉDÉFINIES</mat-card-title>
             <mat-card-content>
-                <app-color-pickler-item [color]="color" *ngFor="let color of baseColors"></app-color-pickler-item>
+                <app-color-picker-item [color]="color" *ngFor="let color of baseColors"></app-color-picker-item>
             </mat-card-content>
             <mat-card-title>CONFIRMATION</mat-card-title>
             <mat-card-content>
                 COULEUR ACTUELLE 
-                <app-color-pickler-item id="actual-color" #actualColor></app-color-pickler-item>
+                <app-color-picker-item id="actual-color" #actualColor></app-color-picker-item>
                 <button mat-button color="primary" (click)="onConfirm()" [disabled]="colorForm.invalid">OK</button>
             </mat-card-content>
         </mat-card>

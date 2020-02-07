@@ -1,6 +1,6 @@
-import { ToolLogicComponent } from '../tool-logic/tool-logic.component';
+import { ToolLogicDirective } from '../tool-logic/tool-logic.directive';
 
-export abstract class PencilBrushCommon extends ToolLogicComponent {
+export abstract class PencilBrushCommon extends ToolLogicDirective {
     svgTag: string;
     color: string;
     stroke: string;
@@ -17,6 +17,7 @@ export abstract class PencilBrushCommon extends ToolLogicComponent {
     abstract defineParameter(): void;
     abstract onMouseDown(mouseEv: MouseEvent): void;
     abstract configureSvgElement(element: SVGElement): void;
+    abstract onMouseMove(mouseEv: MouseEvent): void;
     drawing(mouseEv: MouseEvent): void {
         if (mouseEv.button === 0) {
           this.stringPath += ' L' + mouseEv.offsetX + ',' + mouseEv.offsetY;
@@ -24,15 +25,9 @@ export abstract class PencilBrushCommon extends ToolLogicComponent {
         }
     }
 
-    onMouseMove(mouseEv: MouseEvent) {
-        this.drawing(mouseEv);
-        this.svgPath.setAttribute('d', this.stringPath);
-    }
-
-    makeFirstPoint(mouseEv: MouseEvent) {
+    makeFirstPoint(mouseEv: MouseEvent): void {
         if (mouseEv.button === 0) {
           this.stringPath = 'M' + mouseEv.offsetX + ',' + mouseEv.offsetY + ' h0';
         }
     }
-
 }

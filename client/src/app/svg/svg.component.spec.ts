@@ -4,7 +4,7 @@ import { ComponentRef } from '@angular/core';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { BrushLogicComponent } from '../tool/brush/brush-logic/brush-logic.component';
 import { LineLogicComponent } from '../tool/line/line-logic/line-logic.component';
-import { ToolLogicComponent } from '../tool/tool-logic/tool-logic.component';
+import { ToolLogicDirective } from '../tool/tool-logic/tool-logic.directive';
 import { Tool } from '../tool/tool.enum';
 import { SvgComponent } from './svg.component';
 
@@ -42,7 +42,7 @@ describe('SvgComponent', () => {
   });
 
   it('#setTool should set the good value to the variable ref', () => {
-    let refReturned: ComponentRef<ToolLogicComponent>;
+    let refReturned: ComponentRef<ToolLogicDirective>;
     refReturned = component['setTool'](Tool.Line);
     expect(refReturned.instance.svgElRef).toEqual(component['elementRef']);
   });

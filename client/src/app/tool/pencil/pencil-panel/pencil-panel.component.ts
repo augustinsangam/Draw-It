@@ -1,7 +1,7 @@
 import { Component, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { ToolPanelComponent } from '../../tool-panel/tool-panel.component';
+import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
 import { PencilService } from '../pencil.service';
 
 @Component({
@@ -9,8 +9,9 @@ import { PencilService } from '../pencil.service';
   templateUrl: './pencil-panel.component.html',
   styleUrls: ['./pencil-panel.component.scss']
 })
-export class PencilPanelComponent extends ToolPanelComponent {
-  pencilForm: FormGroup;
+export class PencilPanelComponent extends ToolPanelDirective {
+
+  private pencilForm: FormGroup;
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: PencilService,
@@ -22,7 +23,7 @@ export class PencilPanelComponent extends ToolPanelComponent {
     });
   }
 
-  onThicknessChange() {
+  protected onThicknessChange(): void {
     this.pencilForm.patchValue({
       thicknessFormField: this.pencilForm.value.thicknessSlider,
     });
