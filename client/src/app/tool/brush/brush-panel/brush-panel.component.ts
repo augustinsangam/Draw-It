@@ -12,13 +12,14 @@ import { BrushService, Texture } from '../brush.service';
   styleUrls: ['./brush-panel.component.scss']
 })
 export class BrushPanelComponent extends ToolPanelDirective {
-  brushForm: FormGroup;
+
+  private brushForm: FormGroup;
 
   @ViewChild('radioChoice', {
     static: false
-  }) radioChoice: MatRadioButton;
+  }) protected radioChoice: MatRadioButton;
 
-  textures = [
+  protected textures = [
     {
       value: Texture.Texture1,
       name: 'Fractal',
@@ -57,12 +58,12 @@ export class BrushPanelComponent extends ToolPanelDirective {
     });
   }
 
-  onThicknessChange() {
+  protected onThicknessChange(): void {
     this.brushForm.patchValue({ thicknessFormField: this.brushForm.value.thicknessSlider });
     this.service.thickness = this.brushForm.value.thicknessSlider;
   }
 
-  onOptionChange($event: MatRadioChange) {
+  protected onOptionChange($event: MatRadioChange): void {
     this.service.texture = $event.value;
   }
 

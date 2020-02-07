@@ -21,7 +21,7 @@ export class ColorPickerItemComponent implements AfterViewInit {
     this.renderer.setStyle(this.button.nativeElement, 'border', '2px solid grey');
   }
 
-  updateColor(color: string) {
+  updateColor(color: string): void {
     this.renderer.setStyle(this.button.nativeElement, 'background-color', color);
   }
 

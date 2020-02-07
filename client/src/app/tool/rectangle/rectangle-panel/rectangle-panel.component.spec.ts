@@ -10,6 +10,7 @@ import { ColorPickerContentComponent } from '../../color/color-panel/color-picke
 import { ColorPickerItemComponent } from '../../color/color-panel/color-picker-item/color-picker-item.component';
 import { RectanglePanelComponent } from './rectangle-panel.component';
 
+// tslint:disable: no-string-literal
 describe('RectanglePanelComponent', () => {
   let component: RectanglePanelComponent;
   let fixture: ComponentFixture<RectanglePanelComponent>;
@@ -56,30 +57,26 @@ describe('RectanglePanelComponent', () => {
   });
 
   it('onThicknessChange devrait appeler la méthode patchValue de rectangleForm', () => {
-    const spy = spyOn(component.rectangleForm, 'patchValue');
-    component.onThicknessChange();
+    const spy = spyOn(component['rectangleForm'], 'patchValue');
+    component['onThicknessChange']();
     expect(spy).toHaveBeenCalled();
   });
 
   it('ngAfterViewChecked devrait avoir subscribed borderOption et fillOption, et ces valeurs devraient ' +
     'changer dans le service lorsqu\'on émet un MatSlideToggleChange en false', () => {
     component.ngAfterViewChecked();
-    component.borderOptionRef.change.emit(new MatSlideToggleChange(component.borderOptionRef, false));
-    component.fillOptionRef.change.emit(new MatSlideToggleChange(component.fillOptionRef, false));
-    // tslint:disable-next-line: no-string-literal
+    component['borderOptionRef'].change.emit(new MatSlideToggleChange(component['borderOptionRef'], false));
+    component['fillOptionRef'].change.emit(new MatSlideToggleChange(component['fillOptionRef'], false));
     expect(component['service'].borderOption).toBeFalsy();
-    // tslint:disable-next-line: no-string-literal
     expect(component['service'].fillOption).toBeFalsy();
   });
 
   it('ngAfterViewChecked devrait avoir subscribed borderOption et fillOption, et ces valeurs devraient ' +
     'changer dans le service lorsqu\'on émet un MatSlideToggleChange en true', () => {
     component.ngAfterViewChecked();
-    component.borderOptionRef.change.emit(new MatSlideToggleChange(component.borderOptionRef, true));
-    component.fillOptionRef.change.emit(new MatSlideToggleChange(component.fillOptionRef, true));
-    // tslint:disable-next-line: no-string-literal
+    component['borderOptionRef'].change.emit(new MatSlideToggleChange(component['borderOptionRef'], true));
+    component['fillOptionRef'].change.emit(new MatSlideToggleChange(component['fillOptionRef'], true));
     expect(component['service'].borderOption).toBeTruthy();
-    // tslint:disable-next-line: no-string-literal
     expect(component['service'].fillOption).toBeTruthy();
   });
 

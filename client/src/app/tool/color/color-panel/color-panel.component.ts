@@ -28,36 +28,36 @@ export class ColorPanelComponent extends ToolPanelDirective implements OnInit, A
     super(elementRef);
   }
 
-  colorOptionEnum: typeof ColorOption = ColorOption;
+  protected colorOptionEnum: typeof ColorOption = ColorOption;
 
-  colorOption = ColorOption.Primary;
-  recentColors: string[];
-  showPalette = false;
+  private colorOption = ColorOption.Primary;
+  private recentColors: string[];
+  private showPalette = false;
 
   @ViewChild('colorPreviewPrimary', {
     read : ColorPickerItemComponent,
     static : false
-  }) colorPreviewPrimary: ColorPickerItemComponent;
+  }) private colorPreviewPrimary: ColorPickerItemComponent;
 
   @ViewChild('colorPreviewSecondary', {
     read : ColorPickerItemComponent,
     static : false
-  }) colorPreviewSecondary: ColorPickerItemComponent;
+  }) private colorPreviewSecondary: ColorPickerItemComponent;
 
   @ViewChild('colorPreviewBackground', {
     read : ColorPickerItemComponent,
     static : false
-  }) colorPreviewBackground: ColorPickerItemComponent;
+  }) private colorPreviewBackground: ColorPickerItemComponent;
 
   @ViewChildren(ColorPickerItemComponent)
-  colorsItems: QueryList<ColorPickerItemComponent>;
+  private colorsItems: QueryList<ColorPickerItemComponent>;
 
   @ViewChild('colorPalette', {
     static: false,
     read: ColorPickerContentComponent
-  }) colorPalette: ColorPickerContentComponent;
+  }) private colorPalette: ColorPickerContentComponent;
 
-  colorsItemsArray: ColorPickerItemComponent[];
+  protected colorsItemsArray: ColorPickerItemComponent[];
 
   ngOnInit() {
     this.recentColors = this.colorService.recentColors;
@@ -69,11 +69,10 @@ export class ColorPanelComponent extends ToolPanelDirective implements OnInit, A
     this.colorsItemsArray = this.colorsItems.toArray().slice(3);
 
     this.addEvents();
-    // Ajouter les couleurs au cercle
     this.updateRecentColors();
   }
 
-  addEvents() {
+  private addEvents(): void {
     for (let i = 0; i < this.recentColors.length; i++) {
       this.eventManager.addEventListener(this.colorsItemsArray[i].button.nativeElement, 'click', ($event: MouseEvent) => {
         this.colorPreviewPrimary.updateColor(this.colorsItemsArray[i].color);
@@ -83,7 +82,6 @@ export class ColorPanelComponent extends ToolPanelDirective implements OnInit, A
           this.colorPalette.initialiseStartingColor();
         }
         this.colorService.promote(i);
-        // Ajouter les couleurs au cercle
         this.updateRecentColors();
       });
       this.eventManager.addEventListener(this.colorsItemsArray[i].button.nativeElement, 'contextmenu', ($event: MouseEvent) => {
@@ -95,26 +93,25 @@ export class ColorPanelComponent extends ToolPanelDirective implements OnInit, A
           this.colorPalette.initialiseStartingColor();
         }
         this.colorService.promote(i);
-        // Ajouter les couleurs au cercle
         this.updateRecentColors();
       });
     }
   }
 
-  updateRecentColors() {
+  private updateRecentColors(): void {
     for (let i = 0; i < this.recentColors.length; i++) {
       this.colorsItemsArray[i].color = this.colorService.recentColors[i];
       this.colorsItemsArray[i].updateColor(this.colorService.recentColors[i]);
     }
   }
 
-  swapColors() {
+  protected swapColors(): void {
     [this.colorService.primaryColor, this.colorService.secondaryColor] =
       [this.colorService.secondaryColor, this.colorService.primaryColor];
     this.updatePreviewColors();
   }
 
-  onColorPicked(data: string) {
+  protected onColorPicked(data: string): void {
     if (this.colorOption === ColorOption.Primary) {
       this.colorPreviewPrimary.updateColor(data);
       this.colorService.selectPrimaryColor(data);
@@ -130,17 +127,17 @@ export class ColorPanelComponent extends ToolPanelDirective implements OnInit, A
     this.showPalette = false;
   }
 
-  updatePreviewColors() {
+  private updatePreviewColors(): void {
     this.colorPreviewPrimary.updateColor(this.colorService.primaryColor);
     this.colorPreviewSecondary.updateColor(this.colorService.secondaryColor);
     this.colorPreviewBackground.updateColor(this.colorService.backgroundColor);
   }
 
-  onShowPalette() {
+  protected onShowPalette(): void {
     this.showPalette = !this.showPalette ;
   }
 
-  getStartColor() {
+  protected getStartColor(): string {
     if (this.colorOption === ColorOption.Primary) {
       return this.colorService.hexFormRgba(this.colorService.primaryColor);
     } else if (this.colorOption === ColorOption.Secondary) {
