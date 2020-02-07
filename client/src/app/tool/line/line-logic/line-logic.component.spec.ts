@@ -2,11 +2,11 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import { ElementRef } from '@angular/core';
+import {Point} from '../../tool-common classes/Point';
 import { LineLogicComponent } from './line-logic.component';
 import {Path} from './Path';
-import {Point} from '../../tool-common classes/Point';
 
-fdescribe('LineLogicComponent', () => {
+describe('LineLogicComponent', () => {
   let component: LineLogicComponent;
   let fixture: ComponentFixture<LineLogicComponent>;
   let defaultPath: Path;
@@ -168,7 +168,7 @@ fdescribe('LineLogicComponent', () => {
     const spy = spyOn(component.getPath(), 'removePath');
 
     component.onKeyDown(new KeyboardEvent(
-      'shift',
+      'escape',
       {code: 'Escape'}
     ));
     expect(spy).toHaveBeenCalledTimes(1);
@@ -186,11 +186,36 @@ fdescribe('LineLogicComponent', () => {
     const spySimu = spyOn(component.getPath(), 'simulateNewLine').and.callFake((): Point => ({x: 10, y: 10}));
 
     component.onKeyDown(new KeyboardEvent(
-      'shift',
+      'backspace',
       {code: 'Backspace'}
     ));
     expect(spyRemo).toHaveBeenCalled();
     expect(spySimu).toHaveBeenCalled();
   });
 
+  it('onKeyUp devrait appeler simulateNewLine si elle est appelée avec ShiftLeft', () => {
+    component['isNewPath'] = false;
+    const spy = spyOn(component, 'getPath').and.callFake(() => defaultPath);
+    spyOn(component.getPath(), 'simulateNewLine');
+
+    component.onKeyUp(new KeyboardEvent(
+      'shift',
+      {code: 'ShiftLeft'}
+    ));
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('onKeyUp devrait appeler simulateNewLine si elle est appelée avec ShiftRight', () => {
+    component['isNewPath'] = false;
+    const spy = spyOn(component, 'getPath').and.callFake(() => defaultPath);
+    spyOn(component.getPath(), 'simulateNewLine');
+
+    component.onKeyUp(new KeyboardEvent(
+      'shift',
+      {code: 'ShiftRight'}
+    ));
+
+    expect(spy).toHaveBeenCalled();
+  });
 });
