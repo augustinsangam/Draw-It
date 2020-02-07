@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { Tool } from '../tool.enum';
 
-type callback = (tool: Tool, old?: Tool) => void;
+export type callback = (tool: Tool, old?: Tool) => void;
 
 @Injectable({
   providedIn: 'root'
@@ -14,13 +14,12 @@ export class ToolSelectorService {
 
   private constructor() {
     this.tool = Tool._None;
-    this.onSameCallbacks = new Array();
-    this.onChangeCallbacks = new Array();
+    this.onSameCallbacks = [];
+    this.onChangeCallbacks = [];
   }
 
   // Must be public
   set(tool: Tool) {
-    console.assert(tool != null);
     if (this.tool !== tool) {
       this.onChangeCallbacks.forEach(cb => cb(tool, this.tool));
       this.tool = tool;

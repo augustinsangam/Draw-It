@@ -52,13 +52,14 @@ export class SidebarComponent implements AfterViewInit {
     this.toolToElRef.set(Tool.Rectangle, this.rectangleElRef);
     this.toolToElRef.set(Tool.Pencil, this.pencilElRef);
     this.toolToElRef.set(Tool.Brush, this.brushElRef);
-    this.toolSelectorService.onChange((tool, old) => this.selectTool(tool, old));
+    this.toolSelectorService.onChange(
+      (tool, old) => this.selectTool(tool, old));
   }
 
   private selectTool(tool: Tool, old?: Tool) {
     // TODO: TS 3.7 get(…)?.nativeEl w/o ‘has’ check
     if (old != null) {
-      const oldElRef = this.toolToElRef.get(old)
+      const oldElRef = this.toolToElRef.get(old);
       if (!!oldElRef) {
         oldElRef.nativeElement.classList.remove('selected');
       }

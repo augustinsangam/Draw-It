@@ -1,7 +1,7 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatRadioChange } from '@angular/material';
-import {MatRadioButton} from '@angular/material/radio';
+import { MatRadioButton } from '@angular/material/radio';
 
 import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
 import { BrushService, Texture } from '../brush.service';
@@ -21,22 +21,27 @@ export class BrushPanelComponent extends ToolPanelDirective {
   textures = [
     {
       value: Texture.Texture1,
+      name: 'nom 1',
       src: '/assets/texture1.png',
     },
     {
       value: Texture.Texture2,
+      name: 'nom 2',
       src: '/assets/texture2.png',
     },
     {
       value: Texture.Texture3,
+      name: 'nom 3',
       src: '/assets/texture3.png',
     },
     {
       value: Texture.Texture4,
+      name: 'nom 4',
       src: '/assets/texture4.png',
     },
     {
       value: Texture.Texture5,
+      name: 'nom 5',
       src: '/assets/texture5.png',
     },
   ];
@@ -60,4 +65,5 @@ export class BrushPanelComponent extends ToolPanelDirective {
   onOptionChange($event: MatRadioChange) {
     this.service.texture = $event.value;
   }
+
 }
