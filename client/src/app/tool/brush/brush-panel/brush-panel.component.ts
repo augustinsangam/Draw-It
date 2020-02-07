@@ -21,27 +21,27 @@ export class BrushPanelComponent extends ToolPanelDirective {
   textures = [
     {
       value: Texture.Texture1,
-      name: 'nom 1',
+      name: 'Fractal',
       src: '/assets/texture1.png',
     },
     {
       value: Texture.Texture2,
-      name: 'nom 2',
+      name: 'Flou',
       src: '/assets/texture2.png',
     },
     {
       value: Texture.Texture3,
-      name: 'nom 3',
+      name: 'Ombre',
       src: '/assets/texture3.png',
     },
     {
       value: Texture.Texture4,
-      name: 'nom 4',
+      name: 'Graffiti',
       src: '/assets/texture4.png',
     },
     {
       value: Texture.Texture5,
-      name: 'nom 5',
+      name: 'Poussière',
       src: '/assets/texture5.png',
     },
   ];
