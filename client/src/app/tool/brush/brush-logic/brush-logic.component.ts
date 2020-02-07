@@ -45,16 +45,7 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
     element.setAttribute('stroke-linecap', this.strokeLineCap);
   }
 
-  defineParameter(): void {
-    this.color = this.colorService.primaryColor;
-    this.stroke = this.colorService.primaryColor;
-    this.fill = this.colorService.primaryColor;
-    this.strokeWidth = this.brushService.thickness;
-    this.filter = this.brushService.texture;
-  }
-
   onMouseDown(mouseEv: MouseEvent): void {
-    this.defineParameter();
     this.makeFirstPoint(mouseEv);
     this.svgCircle = this.createSVGCircle(mouseEv);
     this.svgPath = this.renderer.createElement(this.svgTag, this.svgNS);

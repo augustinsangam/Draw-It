@@ -35,26 +35,18 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
 
   configureSvgElement(element: SVGElement): void {
     element.setAttribute('d', this.stringPath);
-    element.setAttribute('stroke-width', this.strokeWidth.toString());
-    element.setAttribute('stroke', this.stroke);
-    element.setAttribute('fill', this.fill);
+    element.setAttribute('stroke-width', this.pencilService.thickness.toString());
+    element.setAttribute('stroke', this.colorService.primaryColor);
+    element.setAttribute('fill', this.colorService.primaryColor);
     element.setAttribute('stroke-linecap', this.strokeLineCap);
   }
 
-  onMouseMove(mouseEv: MouseEvent) {
+  onMouseMove(mouseEv: MouseEvent): void {
     this.drawing(mouseEv);
     this.svgPath.setAttribute('d', this.stringPath);
   }
 
-  defineParameter(): void {
-    this.color = this.colorService.primaryColor;
-    this.stroke = this.colorService.primaryColor;
-    this.fill = this.colorService.primaryColor;
-    this.strokeWidth = this.pencilService.thickness;
-  }
-
-  onMouseDown(mouseEv: MouseEvent) {
-    this.defineParameter();
+  onMouseDown(mouseEv: MouseEvent): void {
     this.makeFirstPoint(mouseEv);
     this.svgPath = this.renderer.createElement(this.svgTag, this.svgNS);
     this.configureSvgElement(this.svgPath);
