@@ -1,6 +1,6 @@
 import { ElementRef, Renderer2 } from '@angular/core';
+import { MathService} from '../../mathematicService/tool.math-service.service'
 import {Point} from '../../tool-common classes/Point';
-import { LineService } from '../line.service';
 import {Circle} from './Circle'
 import {PathData} from './PathData'
 
@@ -8,6 +8,7 @@ export class Path {
     datas: PathData = {points: [], jonctions: [], instructions: []}
     private pathAtribute = '';
     lastPoint: Point;
+    private mathService = new MathService();
     constructor( initialPoint: Point,
                  private renderer: Renderer2,
                  private element: ElementRef,
@@ -15,7 +16,7 @@ export class Path {
       this.datas.points.push(initialPoint);
       const instruction = 'M ' + initialPoint.x.toString() + ' ' + initialPoint.y.toString() + ' ';
       this.addInstruction(instruction);
-      this.renderer.setAttribute(this.element, 'fill', 'none')
+      this.renderer.setAttribute(this.element, 'fill', 'none');
     }
     addLine(point: Point) {
       this.datas.points.push(point);
@@ -33,8 +34,7 @@ export class Path {
     }
     getAlignedPoint(newPoint: Point): Point {
       const lastPoint = this.datas.points[this.datas.points.length - 1];
-      const lineService = new LineService();
-      return lineService.findAlignedSegmentPoint(newPoint, lastPoint)
+      return this.mathService.findAlignedSegmentPoint(newPoint, lastPoint)
     }
     simulateNewLine(point: Point) {
       const temp = this.pathAtribute + 'L ' + point.x.toString() + ' ' + point.y.toString() + ' ';

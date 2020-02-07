@@ -1,5 +1,6 @@
 import { Component, Renderer2 } from '@angular/core';
 import { ColorService } from '../../color/color.service';
+import { MathService} from '../../mathematicService/tool.math-service.service'
 import { Point } from '../../tool-common classes/Point'
 import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
 import { LineService } from '../line.service';
@@ -14,6 +15,7 @@ export class LineLogicComponent extends ToolLogicComponent {
   private paths: Path[] = [];
   private isNewPath = true;
   private mousePosition: Point;
+  private mathService = new MathService();
   private currentJonctionOptions: JonctionOption
   constructor(private readonly service: LineService,
               private readonly renderer: Renderer2,
@@ -86,7 +88,7 @@ export class LineLogicComponent extends ToolLogicComponent {
       let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
       this.getPath().removeLastLine(); // cancel the click event
       this.getPath().removeLastLine();
-      const isLessThan3pixels = this.service.distanceIsLessThan3Pixel(currentPoint, this.getPath().datas.points[0])
+      const isLessThan3pixels = this.mathService.distanceIsLessThan3Pixel(currentPoint, this.getPath().datas.points[0])
       if (isLessThan3pixels) {
         this.getPath().closePath();
       } else {
