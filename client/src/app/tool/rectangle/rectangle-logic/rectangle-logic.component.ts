@@ -1,6 +1,7 @@
 import { Component, Renderer2, } from '@angular/core';
+
 import { ColorService } from '../../color/color.service';
-import { Point } from '../../tool-common classes/Point'
+import { Point } from '../../common/Point'
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { RectangleService } from '../rectangle.service';
 import { Rectangle } from './Rectangle';
