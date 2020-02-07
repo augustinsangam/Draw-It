@@ -21,7 +21,6 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { SvgComponent } from './svg/svg.component';
 import { BrushLogicComponent } from './tool/brush/brush-logic/brush-logic.component';
 import { BrushPanelComponent } from './tool/brush/brush-panel/brush-panel.component';
-import { ColorLogicComponent } from './tool/color/color-logic/color-logic.component';
 import { ColorPanelComponent } from './tool/color/color-panel/color-panel.component';
 import { ColorPicklerContentComponent } from './tool/color/color-panel/color-pickler-content/color-pickler-content.component';
 import { ColorPicklerItemComponent } from './tool/color/color-panel/color-pickler-item/color-pickler-item.component';
@@ -37,7 +36,6 @@ import { RectanglePanelComponent } from './tool/rectangle/rectangle-panel/rectan
     AppComponent,
     BrushLogicComponent,
     BrushPanelComponent,
-    ColorLogicComponent,
     ColorPanelComponent,
     ColorPicklerContentComponent,
     ColorPicklerItemComponent,
@@ -75,7 +73,6 @@ import { RectanglePanelComponent } from './tool/rectangle/rectangle-panel/rectan
   entryComponents: [
     BrushLogicComponent,
     BrushPanelComponent,
-    ColorLogicComponent,
     ColorPanelComponent,
     PaletteDialogComponent,
     ConfirmationDialogComponent,

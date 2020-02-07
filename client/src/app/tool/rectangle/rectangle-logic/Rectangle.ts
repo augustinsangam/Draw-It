@@ -1,6 +1,6 @@
 import { ElementRef, Renderer2 } from '@angular/core';
+import { MathService} from '../../mathematicService/tool.math-service.service'
 import { Point } from '../../tool-common classes/Point';
-import {RectangleService} from '../rectangle.service';
 import { Dimension } from './Dimension';
 import { Style } from './Style';
 
@@ -8,7 +8,7 @@ export class Rectangle {
     private initialPoint: Point;
     private styleAtr = ''
     private filled = true
-    private service = new RectangleService();
+    private mathService = new MathService ();
     constructor(initialPoint: Point, private renderer: Renderer2, private element: ElementRef) {
       this.initialPoint = initialPoint;
     }
@@ -21,15 +21,15 @@ export class Rectangle {
     }
 
     drawTemporaryRectangle(oppositePoint: Point) {
-      const dimensions = this.service.getRectangleSize(this.initialPoint, oppositePoint);
-      const transformedPoint = this.service.getRectangleUpLeftCorner(this.initialPoint, oppositePoint);
+      const dimensions = this.mathService.getRectangleSize(this.initialPoint, oppositePoint);
+      const transformedPoint = this.mathService.getRectangleUpLeftCorner(this.initialPoint, oppositePoint);
       this.drawRectangle(transformedPoint, dimensions);
       this.setOpacity('0.55');
     }
     drawTemporarySquare(oppositePoint: Point) {
-      const transformedPoint = this.service.transformRectangleToSquare(this.initialPoint, oppositePoint);
-      const finalPoint = this.service.getRectangleUpLeftCorner(this.initialPoint, transformedPoint);
-      const squareDimension = this.service.getRectangleSize(this.initialPoint, transformedPoint);
+      const transformedPoint = this.mathService.transformRectangleToSquare(this.initialPoint, oppositePoint);
+      const finalPoint = this.mathService.getRectangleUpLeftCorner(this.initialPoint, transformedPoint);
+      const squareDimension = this.mathService.getRectangleSize(this.initialPoint, transformedPoint);
       this.drawRectangle(finalPoint, squareDimension);
       this.setOpacity('0.55')
     }

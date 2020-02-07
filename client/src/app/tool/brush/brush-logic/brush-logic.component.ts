@@ -5,8 +5,7 @@ import { BrushService } from '../brush.service';
 
 @Component({
   selector: 'app-brush-logic',
-  templateUrl: './brush-logic.component.html',
-  styleUrls: ['./brush-logic.component.scss']
+  template: ''
 })
 export class BrushLogicComponent extends PencilBrushCommon implements AfterViewInit {
 
@@ -35,15 +34,6 @@ export class BrushLogicComponent extends PencilBrushCommon implements AfterViewI
     this.generateFilterFive();
 
   }
-
-  // configureSvgElement(element: SVGElement): void {
-  //   element.setAttribute('d', this.stringPath);
-  //   element.setAttribute('stroke-width', this.strokeWidth.toString());
-  //   element.setAttribute('stroke', this.stroke);
-  //   element.setAttribute('fill', this.fill);
-  //   element.setAttribute('filter', `url(#${this.filter})`);
-  //   element.setAttribute('stroke-linecap', this.strokeLineCap);
-  // }
 
   configureSvgElement(element: SVGElement): void {
     element.setAttribute('d', this.stringPath);

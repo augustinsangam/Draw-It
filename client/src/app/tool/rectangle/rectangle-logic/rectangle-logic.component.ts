@@ -12,8 +12,7 @@ enum ClickType {
 
 @Component({
   selector: 'app-rectangle-logic',
-  templateUrl: './rectangle-logic.component.html',
-  styleUrls: ['./rectangle-logic.component.scss']
+  template: ''
 })
 export class RectangleLogicComponent extends ToolLogicComponent {
 
@@ -37,7 +36,7 @@ export class RectangleLogicComponent extends ToolLogicComponent {
 
     const onMouseMove = this.renderer.listen(this.svgElRef.nativeElement, 'mousemove', (mouseEv: MouseEvent) => {
       if (this.onDrag) {
-        this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+        this.currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
         this.viewTemporaryForm(mouseEv)
       }
     }
@@ -75,7 +74,7 @@ export class RectangleLogicComponent extends ToolLogicComponent {
   }
   initRectangle(mouseEv: MouseEvent) {
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
-      this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+      this.currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
       const rectangle = this.renderer.createElement('rect', this.svgNS);
       this.renderer.appendChild(this.svgElRef.nativeElement, rectangle);
       this.rectangles[++this.currentRectangleIndex] = new Rectangle(this.currentPoint, this.renderer, rectangle);
