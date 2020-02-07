@@ -1,5 +1,5 @@
 /* tslint:disable:no-string-literal */
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, fakeAsync, TestBed} from '@angular/core/testing';
 
 import { ElementRef } from '@angular/core';
 import { LineLogicComponent } from './line-logic.component';
@@ -36,11 +36,16 @@ fdescribe('LineLogicComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // it('createNewPath devrait xxx', () => {
-  //  const spy = spyOn(component, 'getPath');
-  //  component.createNewPath({x: 100, y: 100});
-  //  expect(spy).toHaveBeenCalled();
-  // });
+  it('createNewPath devrait xxx', fakeAsync (() => {
+    fixture.whenStable().then((() => {
+      const spy = spyOn(component, 'getPath');
+      component['isNewPath'] = true;
+      component['paths'] = [];
+      component.createNewPath({x: 100, y: 100});
+      expect(spy).toHaveBeenCalled();
+    }))
+  })
+  );
 
   it('getPath devrait retourner le path contenant les points passés en paramètre', () => {
     component['paths'] = [];
@@ -56,7 +61,18 @@ fdescribe('LineLogicComponent', () => {
     const spy = spyOn(component.getPath(), 'addLine');
     component.addNewLine({x: 100, y: 100});
     expect(spy).toHaveBeenCalled();
-  })
+  });
 
+  it('onMouseDown devrait appeler isNewLine et ' +
+    'setter isNewPath à false lorsque Shift n\'est pas pressé', () => {
+    const spy = spyOn(component, 'addNewLine');
+    component['isNewPath'] = true;
+    component.onMouseDown(new MouseEvent(
+      'mousedown',
+      {offSetX: 100, offSetY: 100, button: 0, shiftKey: false} as MouseEventInit)
+    );
+    expect(spy).toHaveBeenCalled();
+    expect(component['isNewPath']).toBeFalsy();
+  });
 
 });

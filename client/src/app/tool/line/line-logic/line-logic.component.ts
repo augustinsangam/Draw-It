@@ -11,6 +11,7 @@ import { Path } from './Path'
   selector: 'app-line-logic',
   template: ''
 })
+
 export class LineLogicComponent extends ToolLogicDirective {
   private paths: Path[] = [];
   private isNewPath = true;
@@ -21,7 +22,8 @@ export class LineLogicComponent extends ToolLogicDirective {
               private readonly renderer: Renderer2,
               private readonly serviceColor: ColorService) {
     super();
-  }
+  };
+
   private listeners: (() => void)[] = [];
 
   // tslint:disable-next-line use-lifecycle-interface
@@ -33,42 +35,51 @@ export class LineLogicComponent extends ToolLogicDirective {
     const onMouseMove = this.renderer.listen(this.svgElRef.nativeElement, 'mousemove', (mouseEv: MouseEvent) => {
       this.onMouseMove(mouseEv);
     });
+
     const onMouseUp = this.renderer.listen(this.svgElRef.nativeElement, 'dblclick', (mouseEv: MouseEvent) => {
       this.onMouseUp(mouseEv);
     });
+
     const onKeyDown = this.renderer.listen('document', 'keydown', (keyEv: KeyboardEvent) => {
       this.onKeyDown(keyEv);
     });
+
     const onKeyUp = this.renderer.listen('document', 'keyup', (keyEv: KeyboardEvent) => {
       this.onKeyUp(keyEv);
     });
+
     this.listeners = [onMouseDown, onMouseMove, onMouseUp, onKeyUp, onKeyDown];
-  }
+  };
+
   createNewPath(initialPoint: Point) {
     const path = this.renderer.createElement('path', this.svgNS);
     this.renderer.appendChild(this.svgElRef.nativeElement, path);
-    const asd = new Path(initialPoint, this.renderer, path, this.service.withJonction);
-    console.log(asd);
-    this.paths.push(asd);
+    // TODO remove la variable tmp si oublié
+    const tmp = new Path(initialPoint, this.renderer, path, this.service.withJonction);
+    this.paths.push(tmp);
 
-    // console.log('paths');
-    // console.log(this.paths);
-    // console.log('this.getPath()');
-    // console.log(this.getPath());
+    console.log('paths');
+    console.log(this.paths);
+    console.log('this.getPath()');
+    console.log(this.paths[this.paths.length - 1]);
+    console.log(this.getPath());
 
     this.getPath().setLineCss(this.service.thickness.toString(), this.serviceColor.primaryColor);
-  }
+  };
+
   createJonction(center: Point) {
     const circle = this.renderer.createElement('circle', this.svgNS);
     this.renderer.appendChild(this.svgElRef.nativeElement, circle);
     this.getPath().addJonction(circle, center, this.currentJonctionOptions.radius, this.currentJonctionOptions.color);
-  }
+  };
+
   addNewLine(currentPoint: Point) {
     this.getPath().addLine(currentPoint);
     if (this.getPath().withJonctions) {
       this.createJonction(currentPoint);
     }
-  }
+  };
+
   onMouseDown(mouseEv: MouseEvent) {
     let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
     if (this.isNewPath) {
@@ -81,7 +92,8 @@ export class LineLogicComponent extends ToolLogicDirective {
       currentPoint = this.getPath().getAlignedPoint(currentPoint);
     }
     this.addNewLine(currentPoint)
-  }
+  };
+
   onMouseMove(mouseEv: MouseEvent) {
     if (!this.isNewPath) {
       let point = this.mousePosition = {x: mouseEv.offsetX, y: mouseEv.offsetY};
@@ -90,7 +102,8 @@ export class LineLogicComponent extends ToolLogicDirective {
       }
       this.getPath().simulateNewLine(point);
     }
-  }
+  };
+
   onMouseUp(mouseEv: MouseEvent) {
     if (!this.isNewPath) {
       let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
@@ -107,7 +120,8 @@ export class LineLogicComponent extends ToolLogicDirective {
       }
       this.isNewPath = true;
     }
-  }
+  };
+
   onKeyDown(keyEv: KeyboardEvent) {
     const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight');
     if (keyEv.code === 'Escape' && !this.isNewPath) {
@@ -122,22 +136,24 @@ export class LineLogicComponent extends ToolLogicDirective {
       const transformedPoint = this.getPath().getAlignedPoint(this.mousePosition);
       this.getPath().simulateNewLine(transformedPoint);
     }
-  }
+  };
+
   onKeyUp(keyEv: KeyboardEvent) {
     const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight');
     if (shiftIsPressed && !this.isNewPath) {
       this.getPath().simulateNewLine(this.mousePosition);
     }
-  }
+  };
+
   getPath(): Path {
-    // console.log('this.getPath() -> this.paths');
-    // console.log(this.paths.length);
     return this.paths[this.paths.length - 1];
-  }
+  };
+
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnDestroy() {
     this.listeners.forEach(listenner => {
       listenner();
     })
-  }
+  };
+
 }
