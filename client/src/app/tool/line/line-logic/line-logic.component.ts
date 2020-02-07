@@ -1,5 +1,6 @@
 import { Component, Renderer2 } from '@angular/core';
 import { ColorService } from '../../color/color.service';
+import { MathService} from '../../mathematicService/tool.math-service.service'
 import { Point } from '../../tool-common classes/Point'
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { LineService } from '../line.service';
@@ -8,13 +9,13 @@ import { Path } from './Path'
 
 @Component({
   selector: 'app-line-logic',
-  templateUrl: './line-logic.component.html',
-  styleUrls: ['./line-logic.component.scss']
+  template: ''
 })
 export class LineLogicComponent extends ToolLogicDirective {
   private paths: Path[] = [];
   private isNewPath = true;
   private mousePosition: Point;
+  private mathService = new MathService();
   private currentJonctionOptions: JonctionOption
   constructor(private readonly service: LineService,
               private readonly renderer: Renderer2,
@@ -61,7 +62,7 @@ export class LineLogicComponent extends ToolLogicDirective {
     }
   }
   onMouseClick(mouseEv: MouseEvent) {
-    let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+    let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
     if (this.isNewPath) {
       this.createNewPath(currentPoint)
       this.currentJonctionOptions = {radius: this.service.radius.toString(),
@@ -75,7 +76,7 @@ export class LineLogicComponent extends ToolLogicDirective {
   }
   onMouseMove(mouseEv: MouseEvent) {
     if (!this.isNewPath) {
-      let point = this.mousePosition = new Point(mouseEv.offsetX, mouseEv.offsetY);
+      let point = this.mousePosition = {x: mouseEv.offsetX, y: mouseEv.offsetY};
       if (mouseEv.shiftKey) {
         point = this.getPath().getAlignedPoint(point)
       }
@@ -84,10 +85,10 @@ export class LineLogicComponent extends ToolLogicDirective {
   }
   onMouseUp(mouseEv: MouseEvent) {
     if (!this.isNewPath) {
-      let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+      let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
       this.getPath().removeLastLine(); // cancel the click event
       this.getPath().removeLastLine();
-      const isLessThan3pixels = this.service.distanceIsLessThan3Pixel(currentPoint, this.getPath().datas.points[0])
+      const isLessThan3pixels = this.mathService.distanceIsLessThan3Pixel(currentPoint, this.getPath().datas.points[0])
       if (isLessThan3pixels) {
         this.getPath().closePath();
       } else {

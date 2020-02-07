@@ -116,13 +116,6 @@ export class AppComponent implements AfterViewInit {
     this.dialogRefs.newDraw.disableClose = true;
 
     this.dialogRefs.newDraw.afterClosed().subscribe((resultNewDialog) => {
-      // console.log(resultNewDialog);
-      // if (resultNewDialog === OverlayPages.Home) {
-      //   this.openHomeDialog();
-      // } else if (resultNewDialog !== null) {
-      //   this.createNewDraw(resultNewDialog);
-      //   this.onMainPage = true;
-      // }
       this.closeNewDrawDialog(resultNewDialog);
     });
   }

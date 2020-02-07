@@ -3,7 +3,7 @@ import { AbstractControl } from '@angular/forms';
 import { MatSliderChange } from '@angular/material';
 import { MockColorPicklerContentComponent } from './mock-color-pickler-content.component';
 
-describe('ColorPicklerContentComponent', () => {
+describe('MockColorPicklerContentComponent', () => {
   let component: MockColorPicklerContentComponent;
   let fixture: ComponentFixture<MockColorPicklerContentComponent>;
 
