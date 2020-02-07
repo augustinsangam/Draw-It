@@ -93,4 +93,11 @@ describe('ColorService', () => {
     expect(service.secondaryColor).toEqual('rgba(8, 8, 8, 1)');
   });
 
+  it('#method selectBackgroundColor()', () => {
+    initialiseArray();
+    service.selectBackgroundColor('rgba(8, 8, 8, 1)');
+    expect(service.recentColors[0]).toEqual('rgba(8, 8, 8, 1)');
+    expect(service.backgroundColor).toEqual('rgba(8, 8, 8, 1)');
+  });
+
 });

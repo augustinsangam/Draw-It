@@ -33,6 +33,8 @@ describe('DocumentationComponent', () => {
     fixture.detectChanges();
   });
 
+  /* tslint:disable:no-string-literal */
+
   it('should create', () => {
     expect(component).toBeTruthy();
   });
@@ -48,7 +50,7 @@ describe('DocumentationComponent', () => {
     );
 
     component.leafNodeArray = new Array<Node>();
-    component.constructLeafNodeArray(defaultArray);
+    component['constructLeafNodeArray'](defaultArray);
     expect(component.leafNodeArray).toEqual(expectedArray);
   });
 
@@ -57,7 +59,7 @@ describe('DocumentationComponent', () => {
     const expectedArray: Node[] = Array<Node>();
 
     component.leafNodeArray = new Array<Node>();
-    component.constructLeafNodeArray(refArray);
+    component['constructLeafNodeArray'](refArray);
     expect(component.leafNodeArray).toEqual(expectedArray);
   });
 
@@ -84,7 +86,7 @@ describe('DocumentationComponent', () => {
     );
 
     component.leafNodeArray = new Array<Node>();
-    component.constructLeafNodeArray(refArray);
+    component['constructLeafNodeArray'](refArray);
     expect(component.leafNodeArray).toEqual(expectedArray);
   });
 
@@ -98,7 +100,7 @@ describe('DocumentationComponent', () => {
 
     const refNode: Node = {label: 'Enfant1'};
 
-    expect(component.leafNodeArrayContains(refNode)).toBe(true);
+    expect(component['leafNodeArrayContains'](refNode)).toBe(true);
   });
 
   it('#leafNodeArrayContains devrais retourner false si leafNodeArray ne contient pas la node en parametre.', () => {
@@ -111,7 +113,7 @@ describe('DocumentationComponent', () => {
 
     const refNode: Node = {label: 'Enfant3'};
 
-    expect(component.leafNodeArrayContains(refNode)).toBe(false);
+    expect(component['leafNodeArrayContains'](refNode)).toBe(false);
   });
 
   it('#expand devrait expand les nodes parent de la node id en parametre', () => {
@@ -149,7 +151,7 @@ describe('DocumentationComponent', () => {
 
     spyOn(component.treeControl, 'expand');
 
-    component.expandParent(refArray, 0);
+    component['expandParent'](refArray, 0);
     expect(component.treeControl.expand).toHaveBeenCalledTimes(2);
     expect(component.treeControl.expand).toHaveBeenCalledWith(refNode1);
     expect(component.treeControl.expand).toHaveBeenCalledWith(refNode2);
@@ -172,7 +174,7 @@ describe('DocumentationComponent', () => {
 
     spyOn(component.treeControl, 'expand');
 
-    component.expandParent(refArray, 4);
+    component['expandParent'](refArray, 4);
     expect(component.treeControl.expand).toHaveBeenCalledTimes(0);
   });
 
@@ -193,7 +195,7 @@ describe('DocumentationComponent', () => {
 
     spyOn(component.treeControl, 'expand');
 
-    component.expandParent(refArray, 5);
+    component['expandParent'](refArray, 5);
     expect(component.treeControl.expand).toHaveBeenCalledTimes(0);
   });
 
@@ -221,10 +223,10 @@ describe('DocumentationComponent', () => {
   it('#next() ne devrait pas changer la variable contentToDisplay',
     () => {
       component.leafNodeArray = new Array<Node>();
-      component.constructLeafNodeArray(defaultArray);
-      component.displayNodeContent(defaultArray[defaultArray.length - 1]);
+      component['constructLeafNodeArray'](defaultArray);
+      component['displayNodeContent'](defaultArray[defaultArray.length - 1]);
       const refContent = defaultArray[defaultArray.length - 1];
-      component.next();
+      component['next']();
       expect(
         component.contentToDisplay.title === refContent.label
       ).toBeTruthy();
@@ -233,60 +235,60 @@ describe('DocumentationComponent', () => {
   it('#next() devrait changer la variable contentToDisplay', () => {
     component.dataSource.data = defaultArray;
     component.leafNodeArray = [];
-    component.constructLeafNodeArray(defaultArray);
+    component['constructLeafNodeArray'](defaultArray);
 
     component.contentToDisplay = {title: 'PetitEnfant1', body: 'PLACEHOLDER'};
     component.currentNodeIndex = 0;
 
-    component.next();
+    component['next']();
 
     expect(component.contentToDisplay.title).toEqual('PetitEnfant2')
   });
 
   it('#previous() ne devrait pas changer la variable contentToDisplay', () => {
-      component.dataSource.data = defaultArray;
-      component.leafNodeArray = [];
-      component.constructLeafNodeArray(defaultArray);
+    component.dataSource.data = defaultArray;
+    component.leafNodeArray = [];
+    component['constructLeafNodeArray'](defaultArray);
 
-      component.contentToDisplay = {title: 'PetitEnfant1', body: 'PLACEHOLDER'};
-      component.currentNodeIndex = 0;
+    component.contentToDisplay = {title: 'PetitEnfant1', body: 'PLACEHOLDER'};
+    component.currentNodeIndex = 0;
 
-      component.previous();
+    component['previous']();
 
-      expect(component.contentToDisplay.title).toEqual('PetitEnfant1')
-    });
+    expect(component.contentToDisplay.title).toEqual('PetitEnfant1')
+  });
 
   it('#previous() devrait changer la variable contentToDisplay', () => {
     component.dataSource.data = defaultArray;
     component.leafNodeArray = [];
-    component.constructLeafNodeArray(defaultArray);
+    component['constructLeafNodeArray'](defaultArray);
 
     component.contentToDisplay = {title: 'PetitEnfant2', body: 'PLACEHOLDER'};
     component.currentNodeIndex = 1;
 
-    component.previous();
+    component['previous']();
 
     expect(component.contentToDisplay.title).toEqual('PetitEnfant1')
   });
 
   it('#isFirstNode() devrait retourner true', () => {
     component.leafNodeArray = new Array<Node>();
-    component.constructLeafNodeArray(defaultArray);
+    component['constructLeafNodeArray'](defaultArray);
 
     component.currentNodeIndex = 0;
-    expect(component.isFirstNode()).toBeTruthy();
+    expect(component['isLastNode']).toBeTruthy();
   });
 
   it('#isLastNode() devrait retourner true', () => {
     component.leafNodeArray = new Array<Node>();
-    component.constructLeafNodeArray(defaultArray);
+    component['constructLeafNodeArray'](defaultArray);
 
     component.currentNodeIndex = defaultArray.length + 1;
-    expect(component.isLastNode()).toBeTruthy();
+    expect(component['isLastNode']).toBeTruthy();
   });
 
   it('#displayContent ne devrait pas mettre a jour currentNodeIndex si la node en parametre n\'a pas d\'id', () => {
-    component.displayNodeContent({label: 'nodeTest'});
+    component['displayNodeContent']({label: 'nodeTest'});
     component.currentNodeIndex = 0;
     expect(component.currentNodeIndex).toBe(0);
   });

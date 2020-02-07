@@ -29,15 +29,16 @@ module.exports = function(config) {
         autoWatch: true,
         singleRun: false,
         browsers: ['Chrome'],
-        customLaunchers: {
-            FirefoxHeadless: {
-                base: 'Firefox',
-                flags: ['-headless'],
-            },
-            ChromeHeadlessNoSandbox: {
-                base: 'ChromeHeadless',
-                flags: ['--no-sandbox'],
-            },
-        },
+        // browsers: ['Chrome', 'ChromeHeadlessNoSandbox', 'Firefox', 'FirefoxHeadless'],
+        // customLaunchers: {
+        //     FirefoxHeadless: {
+        //         base: 'Firefox',
+        //         flags: ['-headless'],
+        //     },
+        //     ChromeHeadlessNoSandbox: {
+        //         base: 'ChromeHeadless',
+        //         flags: ['--no-sandbox'],
+        //     },
+        // },
     });
 };

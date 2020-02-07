@@ -16,12 +16,20 @@ import { Tool } from '../tool/tool.enum';
 })
 export class PanelComponent implements OnInit {
   private readonly components: Type<ToolPanelComponent>[];
+
   @ViewChild('container', {
     read: ViewContainerRef,
     static: true,
   }) private viewContainerRef: ViewContainerRef;
-  @HostBinding('style.width.px') hostWidth: number;
+
+  @HostBinding('style.width.px') private hostWidth: number;
   private childWidth: number;
+
+  private handlers = {
+    onSameHandler: () => this.toggle(),
+    onSetToolHandler: (tool: Tool) => this.setTool(tool),
+    widthHandler: (w: number) => this.setWidthOfChild(w)
+  }
 
   constructor(private readonly componentFactoryResolver: ComponentFactoryResolver,
               private readonly toolSelectorService: ToolSelectorService) {
@@ -37,8 +45,8 @@ export class PanelComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.toolSelectorService.onChange(tool => this.setTool(tool));
-    this.toolSelectorService.onSame(() => this.toggle());
+    this.toolSelectorService.onChange(this.handlers.onSetToolHandler);
+    this.toolSelectorService.onSame(this.handlers.onSameHandler);
   }
 
   private setTool(tool: Tool) {
@@ -47,7 +55,7 @@ export class PanelComponent implements OnInit {
     const factory = this.componentFactoryResolver.resolveComponentFactory(component);
     const ref = this.viewContainerRef.createComponent(factory);
     // TODO: param w/o explicit cast to number
-    ref.instance.width.subscribe((w: number) => this.setWidthOfChild(w));
+    ref.instance.width.subscribe(this.handlers.widthHandler);
     ref.changeDetectorRef.detectChanges();
   }
 
@@ -56,10 +64,6 @@ export class PanelComponent implements OnInit {
   }
 
   private toggle() {
-    if (this.hostWidth) {
-      this.hostWidth = 0;
-    } else {
-      this.hostWidth = this.childWidth;
-    }
+    this.hostWidth = this.hostWidth ? 0 : this.childWidth;
   }
 }
