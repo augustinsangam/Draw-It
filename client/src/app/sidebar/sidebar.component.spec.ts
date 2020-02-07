@@ -1,13 +1,13 @@
 /* tslint:disable:no-string-literal */
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, ElementRef} from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, ElementRef, NO_ERRORS_SCHEMA} from '@angular/core';
 import {MatLabel} from '@angular/material';
 import {ToolSelectorService} from '../tool/tool-selector/tool-selector.service';
 import {Tool} from '../tool/tool.enum';
 import {SidebarComponent} from './sidebar.component';
 
-fdescribe('SidebarComponent', () => {
+describe('SidebarComponent', () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
 
