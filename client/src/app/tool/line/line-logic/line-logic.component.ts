@@ -16,7 +16,7 @@ export class LineLogicComponent extends ToolLogicDirective {
   private isNewPath = true;
   private mousePosition: Point;
   private mathService = new MathService();
-  private currentJonctionOptions: JonctionOption
+  private currentJonctionOptions: JonctionOption;
   constructor(private readonly service: LineService,
               private readonly renderer: Renderer2,
               private readonly serviceColor: ColorService) {
@@ -27,7 +27,7 @@ export class LineLogicComponent extends ToolLogicDirective {
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
     const onMouseDown = this.renderer.listen(this.svgElRef.nativeElement, 'click', (mouseEv: MouseEvent) => {
-      this.onMouseClick(mouseEv);
+      this.onMouseDown(mouseEv);
     });
 
     const onMouseMove = this.renderer.listen(this.svgElRef.nativeElement, 'mousemove', (mouseEv: MouseEvent) => {
@@ -47,7 +47,15 @@ export class LineLogicComponent extends ToolLogicDirective {
   createNewPath(initialPoint: Point) {
     const path = this.renderer.createElement('path', this.svgNS);
     this.renderer.appendChild(this.svgElRef.nativeElement, path);
-    this.paths.push(new Path(initialPoint, this.renderer, path, this.service.withJonction));
+    const asd = new Path(initialPoint, this.renderer, path, this.service.withJonction);
+    console.log(asd);
+    this.paths.push(asd);
+
+    // console.log('paths');
+    // console.log(this.paths);
+    // console.log('this.getPath()');
+    // console.log(this.getPath());
+
     this.getPath().setLineCss(this.service.thickness.toString(), this.serviceColor.primaryColor);
   }
   createJonction(center: Point) {
@@ -61,12 +69,12 @@ export class LineLogicComponent extends ToolLogicDirective {
       this.createJonction(currentPoint);
     }
   }
-  onMouseClick(mouseEv: MouseEvent) {
+  onMouseDown(mouseEv: MouseEvent) {
     let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
     if (this.isNewPath) {
-      this.createNewPath(currentPoint)
+      this.createNewPath(currentPoint);
       this.currentJonctionOptions = {radius: this.service.radius.toString(),
-                                     color: this.serviceColor.primaryColor }
+                                     color: this.serviceColor.primaryColor };
       this.isNewPath = false;
     }
     if (mouseEv.shiftKey && !this.isNewPath) {
@@ -101,7 +109,7 @@ export class LineLogicComponent extends ToolLogicDirective {
     }
   }
   onKeyDown(keyEv: KeyboardEvent) {
-    const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight')
+    const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight');
     if (keyEv.code === 'Escape' && !this.isNewPath) {
       this.getPath().removePath();
       this.isNewPath = true;
@@ -116,12 +124,14 @@ export class LineLogicComponent extends ToolLogicDirective {
     }
   }
   onKeyUp(keyEv: KeyboardEvent) {
-    const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight')
+    const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight');
     if (shiftIsPressed && !this.isNewPath) {
       this.getPath().simulateNewLine(this.mousePosition);
     }
   }
   getPath(): Path {
+    // console.log('this.getPath() -> this.paths');
+    // console.log(this.paths.length);
     return this.paths[this.paths.length - 1];
   }
   // tslint:disable-next-line:use-lifecycle-interface
