@@ -37,15 +37,15 @@ export class AppComponent implements AfterViewInit {
   private readonly toolSelector: Map<string, Tool> ;
   private onMainPage = false;
   private dialogRefs: DialogRefs;
-  drawInProgress = false;
-  drawOption: NewDrawOptions = { height : 0, width : 0, color: ''};
+  private drawInProgress = false;
+  protected drawOption: NewDrawOptions = { height : 0, width : 0, color: ''};
 
   @ViewChild('svg', {
     static: false,
     read: ElementRef
   }) svg: ElementRef<SVGElement>;
 
-  getCommomDialogOptions = () => {
+  private getCommomDialogOptions = () => {
     return {
       width: '650px',
       height: '90%',
@@ -88,7 +88,7 @@ export class AppComponent implements AfterViewInit {
     this.openHomeDialog();
   }
 
-  openHomeDialog() {
+  private openHomeDialog() {
     this.dialogRefs.home = this.dialog.open(HomeComponent, this.getCommomDialogOptions());
     this.dialogRefs.home.disableClose = true;
     this.dialogRefs.home.afterClosed().subscribe((result: string) => {
@@ -111,7 +111,7 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
-  openNewDrawDialog() {
+  private openNewDrawDialog() {
     this.dialogRefs.newDraw = this.dialog.open(NewDrawComponent, this.getCommomDialogOptions());
     this.dialogRefs.newDraw.disableClose = true;
 
@@ -129,7 +129,7 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
-  openDocumentationDialog(fromHome: boolean) {
+  private openDocumentationDialog(fromHome: boolean) {
     const dialogOptions = {
       width: '115vw',
       height: '100vh',
@@ -151,7 +151,7 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
-  createNewDraw(option: NewDrawOptions) {
+  private createNewDraw(option: NewDrawOptions) {
     this.drawOption = option;
     this.drawInProgress = true;
     const rgb = this.colorService.hexToRgb(option.color);

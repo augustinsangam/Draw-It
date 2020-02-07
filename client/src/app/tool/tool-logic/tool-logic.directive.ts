@@ -11,7 +11,8 @@ import {
 export abstract class ToolLogicDirective implements OnInit {
   // Must be public
   @Input() svgElRef: ElementRef<SVGElement>;
-  protected readonly svgNS: string;
+  // must be public
+  readonly svgNS: string;
 
   protected constructor() {
     this.svgNS = 'http://www.w3.org/2000/svg';
