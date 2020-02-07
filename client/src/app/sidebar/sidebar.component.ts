@@ -53,10 +53,10 @@ export class SidebarComponent implements AfterViewInit {
     this.toolToElRef.set(Tool.Pencil, this.pencilElRef);
     this.toolToElRef.set(Tool.Brush, this.brushElRef);
     this.toolSelectorService.onChange(
-      (tool, old) => this.selectTool(tool, old));
+      (tool, old) => this.setTool(tool, old));
   }
 
-  private selectTool(tool: Tool, old?: Tool) {
+  private setTool(tool: Tool, old?: Tool) {
     // TODO: TS 3.7 get(…)?.nativeEl w/o ‘has’ check
     if (old != null) {
       const oldElRef = this.toolToElRef.get(old);

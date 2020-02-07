@@ -1,42 +1,16 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+// tslint:disable:no-string-literal
 
-import { ViewContainerRef } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+
 import { MaterialModule } from '../material.module';
-import { BrushPanelComponent } from '../tool/brush/brush-panel/brush-panel.component';
 import { ColorPanelComponent } from '../tool/color/color-panel/color-panel.component';
 import { ColorPickerContentComponent } from '../tool/color/color-panel/color-picker-content/color-picker-content.component';
 import { ColorPickerItemComponent } from '../tool/color/color-panel/color-picker-item/color-picker-item.component';
+import { LinePanelComponent } from '../tool/line/line-panel/line-panel.component';
 import { Tool } from '../tool/tool.enum';
 import { PanelComponent } from './panel.component';
-
-// tslint:disable: no-string-literal
-
-export class MockViewContainerRef {
-  createComponent = (arg: any) => new MockFactoryComponent(arg);
-  clear = () => {};
-}
-
-export class MockFactoryComponent {
-
-  constructor(arg: any) {}
-
-  instance = {
-    width : {
-      subscribe : (w: number) => {}
-    }
-  };
-
-  changeDetectorRef = {
-    detectChanges: () => {}
-  }
-}
-
-export class MockToolSelectorService {
-  onChange(cb: (tool: Tool) => void) {};
-  onSame(cb: () => void) {};
-}
 
 describe('PanelComponent', () => {
   let component: PanelComponent;
@@ -44,23 +18,24 @@ describe('PanelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PanelComponent,
-        BrushPanelComponent,
+      declarations: [
         ColorPanelComponent,
         ColorPickerItemComponent,
         ColorPickerContentComponent,
+        LinePanelComponent,
+        PanelComponent,
       ],
       imports: [
         MaterialModule,
         FormsModule,
-        ReactiveFormsModule
-      ]
+        ReactiveFormsModule,
+      ],
     }).overrideModule(BrowserDynamicTestingModule, {
       set: {
         entryComponents: [
-          BrushPanelComponent,
-        ]
-      }
+          LinePanelComponent,
+        ],
+      },
     })
   }));
 
@@ -74,46 +49,56 @@ describe('PanelComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('#setTool should call this.componentFactoryResolver.resolveComponentFactory() with the panel component of tool', () => {
-    const tool: Tool = Tool.Brush;
-    component['viewContainerRef'] = new MockViewContainerRef() as unknown as ViewContainerRef;
-    const spyFactory = spyOn(component['componentFactoryResolver'],
-    'resolveComponentFactory');
-    component['setTool'](tool);
-    expect(spyFactory).toHaveBeenCalledWith(BrushPanelComponent);
-  });
-
-  it('#setWidthOfChild should change hostWidth to width', () => {
-    const width = 40;
-    component['setWidthOfChild'](width);
-    expect(component['hostWidth']).toEqual(width);
-  });
-
-  it('#toggle should set hostwidth to 0', () => {
-    component['hostWidth'] = 10;
-    component['toggle']();
-    expect(component['hostWidth']).toEqual(0);
-  });
-
-  it('#toggle should set hostwidth to childWidth', () => {
-    component['hostWidth'] = 0;
-    component['childWidth'] = 20;
-    component['toggle']();
-    expect(component['hostWidth']).toEqual(20);
-  });
-
-  it('#ngOnInit should call onChange', () => {
-    const spy = spyOn(component['toolSelectorService'], 'onChange')
-    component.ngOnInit()
+  it('should toggle panel on same tool', () => {
+    const spy = spyOn<any>(component, 'toggle');
+    component.ngOnInit();
+    component['toolSelectorService'].set(Tool._None);
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#others', () => {
-    // Les handlers sont des fonctions qui sont déja testées.
-    component['handlers'].onSameHandler();
-    component['handlers'].widthHandler(25);
-    component['handlers'].onSetToolHandler(Tool.Brush);
-    expect(true).toEqual(true);
+  it('should toggle panel on change tool', () => {
+    spyOn<any>(component, 'setTool').and.callFake(
+      (tool: Tool) => expect(tool).toBe(Tool.Line));
+    component.ngOnInit();
+    component['toolSelectorService'].set(Tool.Line);
   });
 
+  it('should open panel', () => {
+    component['childWidth'] = 42;
+    component['toggle']();
+    expect(component['hostWidth']).toBe(42);
+  });
+
+  it('should close panel', () => {
+    component['hostWidth'] = 42;
+    component['toggle']();
+    expect(component['hostWidth']).toBe(0);
+  });
+
+  it('should do nothing when tool is none on setTool', () => {
+    const spy = spyOn(component['viewContainerRef'], 'clear').and.callThrough();
+    component['setTool'](Tool._None);
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('should clear ViewContainerRef', () => {
+    const spy = spyOn(component['viewContainerRef'], 'clear').and.callThrough();
+    component['setTool'](Tool.Line);
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('should set width', () => {
+    component['setWidthOfChild'](42);
+    expect(component['hostWidth']).toBe(42);
+    expect(component['childWidth']).toBe(42);
+  });
+
+  it('should set width from setTool', () => {
+    const refOrNull = component['setTool'](Tool.Line);
+    if (!!refOrNull) {
+      spyOn<any>(component, 'setWidthOfChild').and.callFake(
+        (w: number) => expect(w).toBe(42));
+      refOrNull.instance.width.emit(42);
+    }
+  });
 });
