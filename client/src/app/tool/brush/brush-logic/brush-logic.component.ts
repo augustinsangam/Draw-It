@@ -10,9 +10,6 @@ import { BrushService } from '../brush.service';
 export class BrushLogicComponent extends PencilBrushCommon
        implements AfterViewInit {
 
-  strokeLineCap: string;
-  filter: string;
-  private svgCircle: SVGCircleElement;
   private listeners: (() => void)[] = [];
 
   constructor(protected renderer: Renderer2,
@@ -23,18 +20,11 @@ export class BrushLogicComponent extends PencilBrushCommon
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit(): void {
-    this.stringPath = '';
-    this.svgTag = 'path';
-    this.strokeLineCap = 'round';
-    this.filter = this.brushService.texture;
-    this.mouseOnHold = false;
-
     this.generateFilterOne();
     this.generateFilterTwo();
     this.generateFilterThree();
     this.generateFilterFour();
     this.generateFilterFive();
-
   }
 
   ngAfterViewInit() {
@@ -83,11 +73,9 @@ export class BrushLogicComponent extends PencilBrushCommon
 
   onMouseDown(mouseEv: MouseEvent): void {
     this.makeFirstPoint(mouseEv);
-    this.svgCircle = this.createSVGCircle(mouseEv);
     this.svgPath = this.renderer.createElement(this.svgTag, this.svgNS);
     this.configureSvgElement(this.svgPath);
     this.renderer.appendChild(this.svgElRef.nativeElement, this.svgPath);
-    this.renderer.appendChild(this.svgElRef.nativeElement, this.svgCircle);
   }
 
   // tslint:disable-next-line:use-lifecycle-interface
@@ -103,34 +91,17 @@ export class BrushLogicComponent extends PencilBrushCommon
   }
 
   onMouseMove(mouseEv: MouseEvent) {
-    this.renderer.removeChild(this.renderer.parentNode(
-      this.svgCircle),
-      this.svgCircle
-    );
     this.drawing(mouseEv);
     this.svgPath.setAttribute('d', this.stringPath);
   }
 
-  createSVGCircle(mouseEv: MouseEvent): SVGCircleElement {
-    const svgCircle: SVGCircleElement =
-      this.renderer.createElement('circle', this.svgNS);
-    const radius = this.brushService.thickness / 2;
-    svgCircle.setAttribute('cx', mouseEv.offsetX.toString());
-    svgCircle.setAttribute('cy', mouseEv.offsetY.toString());
-    svgCircle.setAttribute('r', radius.toString());
-    svgCircle.setAttribute('fill', this.colorService.primaryColor);
-    svgCircle.setAttribute('filter', `url(#${this.filter})`);
-    return svgCircle;
-  }
-
   generateFilterOne() {
     const svgDefsEl: SVGDefsElement = this.renderer.createElement(
-      'defs', this.svgNS
-    );
+      'defs', this.svgNS);
     const svgFilterEl: SVGFilterElement = this.renderer.createElement(
-      'filter', this.svgNS
-    );
+      'filter', this.svgNS);
     svgFilterEl.setAttribute('id', 'filter1');
+    svgFilterEl.setAttribute('filterUnits', 'userSpaceOnUse');
 
     const svgFeTurbulence: SVGFETurbulenceElement =
       this.renderer.createElement('feTurbulence', this.svgNS);
@@ -156,9 +127,12 @@ export class BrushLogicComponent extends PencilBrushCommon
   generateFilterTwo() {
     const defsSvgEl: SVGDefsElement =
       this.renderer.createElement('defs', this.svgNS);
+
     const filterSvgEl: SVGFilterElement =
       this.renderer.createElement('filter', this.svgNS);
     filterSvgEl.setAttribute('id', 'filter2');
+    filterSvgEl.setAttribute('filterUnits', 'userSpaceOnUse');
+
     const feGaussianBlurSvgEl: SVGFEGaussianBlurElement =
       this.renderer.createElement('feGaussianBlur', this.svgNS);
     feGaussianBlurSvgEl.setAttribute('in', 'SourceGraphic');
@@ -244,6 +218,7 @@ export class BrushLogicComponent extends PencilBrushCommon
     const svgFilterEl: SVGFilterElement =
       this.renderer.createElement('filter', this.svgNS);
     svgFilterEl.setAttribute('id', 'filter4');
+    svgFilterEl.setAttribute('filterUnits', 'userSpaceOnUse');
     svgFilterEl.setAttribute('x', '0%');
     svgFilterEl.setAttribute('y', '0%');
     svgFilterEl.setAttribute('width', '100%');
@@ -274,6 +249,7 @@ export class BrushLogicComponent extends PencilBrushCommon
     const filterSvgEl: SVGFilterElement =
       this.renderer.createElement('filter', this.svgNS);
     filterSvgEl.setAttribute('id', 'filter5');
+    filterSvgEl.setAttribute('filterUnits', 'userSpaceOnUse');
 
     const feTurbulenceSvgEl: SVGFETurbulenceElement =
       this.renderer.createElement('feTurbulence', this.svgNS);

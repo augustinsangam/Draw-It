@@ -11,7 +11,6 @@ import { PencilService } from '../pencil.service';
 export class PencilLogicComponent extends PencilBrushCommon
        implements AfterViewInit {
 
-  strokeLineCap: string;
   private listeners: (() => void)[] = [];
 
   constructor(public renderer: Renderer2,
@@ -22,10 +21,6 @@ export class PencilLogicComponent extends PencilBrushCommon
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
-    this.stringPath = '';
-    this.svgTag = 'path';
-    this.strokeLineCap = 'round';
-    this.mouseOnHold = false;
   }
 
   // tslint:disable-next-line:use-lifecycle-interface
