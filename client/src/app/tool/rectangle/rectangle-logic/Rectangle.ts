@@ -1,5 +1,5 @@
 import { ElementRef, Renderer2 } from '@angular/core';
-import { MathService} from '../../mathematicService/tool.math-service.service'
+import { MathService} from '../../mathematics/tool.math-service.service'
 import { Point } from '../../tool-common classes/Point';
 import { Dimension } from './Dimension';
 import { Style } from './Style';

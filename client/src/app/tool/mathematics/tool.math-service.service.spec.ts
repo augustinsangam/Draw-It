@@ -24,7 +24,7 @@ describe('MathService', () => {
 
     const point2 = point1;
 
-    const result = service['distanceIsLessThan3Pixel'](point1, point2);
+    const result = service.distanceIsLessThan3Pixel(point1, point2);
 
     expect(result).toBeTruthy();
   });
@@ -40,7 +40,7 @@ describe('MathService', () => {
       y: 40,
     }
 
-    const result = service['distanceIsLessThan3Pixel'](point1, point2);
+    const result = service.distanceIsLessThan3Pixel(point1, point2);
 
     expect(result).toBeTruthy();
   });
@@ -56,7 +56,7 @@ describe('MathService', () => {
       y: 39,
     }
 
-    const result = service['distanceIsLessThan3Pixel'](point1, point2);
+    const result = service.distanceIsLessThan3Pixel(point1, point2);
 
     expect(result).toBeTruthy();
   });
@@ -72,7 +72,7 @@ describe('MathService', () => {
       y: 69,
     }
 
-    const result = service['distanceIsLessThan3Pixel'](point1, point2);
+    const result = service.distanceIsLessThan3Pixel(point1, point2);
 
     expect(result).toBeFalsy();
   });
@@ -88,7 +88,7 @@ describe('MathService', () => {
       y: 1,
     }
 
-    const result = service['distanceIsLessThan3Pixel'](point1, point2);
+    const result = service.distanceIsLessThan3Pixel(point1, point2);
 
     expect(result).toBeTruthy();
   });
@@ -104,7 +104,7 @@ describe('MathService', () => {
       y: 0,
     }
 
-    const result = service['findAlignedSegmentPoint'](mousePosition, lastpoint);
+    const result = service.findAlignedSegmentPoint(mousePosition, lastpoint);
 
     expect(result).toEqual({x: mousePosition.x, y: lastpoint.y});
   });
@@ -120,7 +120,7 @@ describe('MathService', () => {
       y: 0,
     }
 
-    const result = service['findAlignedSegmentPoint'](mousePosition, lastpoint);
+    const result = service.findAlignedSegmentPoint(mousePosition, lastpoint);
 
     expect(result).toEqual({x: lastpoint.x, y: mousePosition.y});
   });
@@ -136,7 +136,7 @@ describe('MathService', () => {
       y: 0,
     }
 
-    const result = service['findAlignedSegmentPoint'](mousePosition, lastpoint);
+    const result = service.findAlignedSegmentPoint(mousePosition, lastpoint);
 
     expect(result).toEqual({x: mousePosition.x, y: lastpoint.y + 3});
   });
@@ -152,7 +152,7 @@ describe('MathService', () => {
       y: 0,
     }
 
-    const result = service['findAlignedSegmentPoint'](mousePosition, lastpoint);
+    const result = service.findAlignedSegmentPoint(mousePosition, lastpoint);
 
     expect(result).toEqual({x: mousePosition.x, y: lastpoint.y - -3});
   });
@@ -168,7 +168,7 @@ describe('MathService', () => {
       y: -42,
     }
 
-    const result = service['getRectangleUpLeftCorner'](initialPoint, oppositePoint);
+    const result = service.getRectangleUpLeftCorner(initialPoint, oppositePoint);
 
     expect(result).toEqual({x: initialPoint.x, y: initialPoint.y + (-42)});
   });
@@ -184,7 +184,7 @@ describe('MathService', () => {
       y: -42,
     }
 
-    const result = service['getRectangleUpLeftCorner'](initialPoint, oppositePoint);
+    const result = service.getRectangleUpLeftCorner(initialPoint, oppositePoint);
 
     expect(result).toEqual({x: initialPoint.x + (-69), y: initialPoint.y + (-42)});
   });
@@ -200,7 +200,7 @@ describe('MathService', () => {
       y: 42,
     }
 
-    const result = service['getRectangleUpLeftCorner'](initialPoint, oppositePoint);
+    const result = service.getRectangleUpLeftCorner(initialPoint, oppositePoint);
 
     expect(result).toEqual({x: initialPoint.x + (-69), y: initialPoint.y});
   });
@@ -216,7 +216,7 @@ describe('MathService', () => {
       y: 42,
     }
 
-    const result = service['getRectangleUpLeftCorner'](initialPoint, oppositePoint);
+    const result = service.getRectangleUpLeftCorner(initialPoint, oppositePoint);
 
     expect(result).toEqual({x: initialPoint.x, y: initialPoint.y});
   });
@@ -232,7 +232,7 @@ describe('MathService', () => {
       y: -42,
     }
 
-    const result = service['getRectangleSize'](initialPoint, oppositePoint);
+    const result = service.getRectangleSize(initialPoint, oppositePoint);
 
     expect(result).toEqual({width: 69, height: 42});
   });
@@ -248,7 +248,7 @@ describe('MathService', () => {
       y: 42,
     }
 
-    const result = service['getRectangleSize'](initialPoint, oppositePoint);
+    const result = service.getRectangleSize(initialPoint, oppositePoint);
 
     expect(result).toEqual({width: 69, height: 42});
   });
@@ -264,7 +264,7 @@ describe('MathService', () => {
       y: 42,
     }
 
-    const result = service['transformRectangleToSquare'](initialPoint, oppositePoint);
+    const result = service.transformRectangleToSquare(initialPoint, oppositePoint);
 
     expect(result).toEqual({x: 42, y: 42});
   });
@@ -279,7 +279,7 @@ describe('MathService', () => {
       y: 69,
     }
 
-    const result = service['transformRectangleToSquare'](initialPoint, oppositePoint);
+    const result = service.transformRectangleToSquare(initialPoint, oppositePoint);
 
     expect(result).toEqual({x: 42, y: 42});
   });
