@@ -1,5 +1,5 @@
 /* tslint:disable:no-string-literal */
-import {async, ComponentFixture, fakeAsync, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import { ElementRef } from '@angular/core';
 import { LineLogicComponent } from './line-logic.component';
@@ -36,16 +36,13 @@ fdescribe('LineLogicComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('createNewPath devrait xxx', fakeAsync (() => {
-    fixture.whenStable().then((() => {
-      const spy = spyOn(component, 'getPath');
+  it('createNewPath devrait xxx', () => {
+      const spy = spyOn(component, 'getPath').and.callThrough();
       component['isNewPath'] = true;
       component['paths'] = [];
       component.createNewPath({x: 100, y: 100});
       expect(spy).toHaveBeenCalled();
-    }))
-  })
-  );
+  });
 
   it('getPath devrait retourner le path contenant les points passés en paramètre', () => {
     component['paths'] = [];
