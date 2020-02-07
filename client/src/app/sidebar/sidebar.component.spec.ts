@@ -39,12 +39,12 @@ describe('SidebarComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call selectTool on tool change', () => {
+  it('should call setTool on tool change', () => {
     // NOTE: Asynchronous call of callback is handled
     // automatically because the spy will wait until
     // the function is executed.
     // stackoverflow.com/a/48734437
-    spyOn<any>(component, 'selectTool').and.callFake(
+    spyOn<any>(component, 'setTool').and.callFake(
       (tool: Tool, old?: Tool) => {
         expect(tool).toBe(Tool.Line);
         expect(old).toBe(Tool._None);
@@ -53,7 +53,7 @@ describe('SidebarComponent', () => {
     component['toolSelectorService'].set(Tool.Line);
   });
 
-  it('selectTool with second argument null should do nothing', () => {
+  it('setTool with second argument null should do nothing', () => {
     const oldHtmlEl = document.createElement('a');
     oldHtmlEl.classList.add('selected');
     const oldElRef = new ElementRef(oldHtmlEl);
@@ -63,12 +63,12 @@ describe('SidebarComponent', () => {
     const newElRef = new ElementRef(newHtmlEl);
     component['toolToElRef'].set(Tool.Rectangle, newElRef);
 
-    component['selectTool'](Tool._None);
+    component['setTool'](Tool._None);
     expect(oldHtmlEl.classList.contains('selected')).toBeTruthy();
     expect(newHtmlEl.classList.contains('selected')).toBeFalsy();
   });
 
-  it('selectTool with tools none should do nothing', () => {
+  it('setTool with tools none should do nothing', () => {
     const oldHtmlEl = document.createElement('a');
     oldHtmlEl.classList.add('selected');
     const oldElRef = new ElementRef(oldHtmlEl);
@@ -78,12 +78,12 @@ describe('SidebarComponent', () => {
     const newElRef = new ElementRef(newHtmlEl);
     component['toolToElRef'].set(Tool.Rectangle, newElRef);
 
-    component['selectTool'](Tool._None, Tool._None);
+    component['setTool'](Tool._None, Tool._None);
     expect(oldHtmlEl.classList.contains('selected')).toBeTruthy();
     expect(newHtmlEl.classList.contains('selected')).toBeFalsy();
   });
 
-  it('selectTool should remove .selected from old element' +
+  it('setTool should remove .selected from old element' +
     'and append .selected to new element', () => {
     const oldHtmlEl = document.createElement('a');
     oldHtmlEl.classList.add('selected');
@@ -94,7 +94,7 @@ describe('SidebarComponent', () => {
     const newElRef = new ElementRef(newHtmlEl);
     component['toolToElRef'].set(Tool.Rectangle, newElRef);
 
-    component['selectTool'](Tool.Rectangle, Tool.Line);
+    component['setTool'](Tool.Rectangle, Tool.Line);
     expect(oldHtmlEl.classList.contains('selected')).toBeFalsy();
     expect(newHtmlEl.classList.contains('selected')).toBeTruthy();
   });
