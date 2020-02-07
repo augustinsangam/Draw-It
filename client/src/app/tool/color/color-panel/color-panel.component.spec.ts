@@ -8,9 +8,9 @@ import {
   MatRadioButton, MatRadioGroup, MatRipple, MatSlider
 } from '@angular/material';
 import { ColorOption, ColorPanelComponent } from './color-panel.component';
-import { ColorPicklerContentComponent } from './color-pickler-content/color-pickler-content.component';
-import { MockColorPicklerContentComponent } from './color-pickler-content/mock-color-pickler-content.component';
-import { ColorPicklerItemComponent } from './color-pickler-item/color-pickler-item.component';
+import { ColorPickerContentComponent } from './color-picker-content/color-picker-content.component';
+import { MockColorPickerContentComponent } from './color-picker-content/mock-color-picker-content.component';
+import { ColorPickerItemComponent } from './color-picker-item/color-picker-item.component';
 
 describe('ColorPanelComponent', () => {
   let component: ColorPanelComponent;
@@ -22,8 +22,8 @@ describe('ColorPanelComponent', () => {
       declarations: [
         CdkObserveContent,
         ColorPanelComponent,
-        ColorPicklerContentComponent,
-        ColorPicklerItemComponent,
+        ColorPickerContentComponent,
+        ColorPickerItemComponent,
         MatCard,
         MatCardTitle,
         MatCardContent,
@@ -112,7 +112,7 @@ describe('ColorPanelComponent', () => {
 
   it('#addEvents() should updateRecentColors when Palette not defined', fakeAsync(() => {
     const spyUpdateRecentColors = spyOn(component, 'updateRecentColors');
-    component.colorPalette = new MockColorPicklerContentComponent() as unknown as ColorPicklerContentComponent;
+    component.colorPalette = new MockColorPickerContentComponent() as unknown as ColorPickerContentComponent;
     component.addEvents();
     component.colorsItemsArray[2].button.nativeElement.click();
     fixture.whenStable().then(() => {

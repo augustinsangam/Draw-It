@@ -9,8 +9,8 @@ import {MatRadioChange} from '@angular/material/radio';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SidebarComponent } from 'src/app/sidebar/sidebar.component';
 import { ColorPanelComponent } from '../../color/color-panel/color-panel.component';
-import { ColorPicklerContentComponent } from '../../color/color-panel/color-pickler-content/color-pickler-content.component';
-import { ColorPicklerItemComponent } from '../../color/color-panel/color-pickler-item/color-pickler-item.component';
+import { ColorPickerContentComponent } from '../../color/color-panel/color-picker-content/color-picker-content.component';
+import { ColorPickerItemComponent } from '../../color/color-panel/color-picker-item/color-picker-item.component';
 import { BrushPanelComponent } from './brush-panel.component';
 
 describe('BrushPanelComponent', () => {
@@ -28,8 +28,8 @@ describe('BrushPanelComponent', () => {
         BrushPanelComponent,
         CdkObserveContent,
         ColorPanelComponent,
-        ColorPicklerItemComponent,
-        ColorPicklerContentComponent,
+        ColorPickerItemComponent,
+        ColorPickerContentComponent,
         MatCard,
         MatCardTitle,
         MatCardContent,

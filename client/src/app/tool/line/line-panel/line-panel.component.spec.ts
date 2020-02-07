@@ -7,8 +7,8 @@ import { MatCard, MatCardContent, MatCardTitle, MatFormField, MatIcon, MatInput,
    MatRadioButton, MatRadioGroup, MatRipple, MatSlider, MatSlideToggle, MatSlideToggleChange } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ColorPanelComponent } from '../../color/color-panel/color-panel.component';
-import { ColorPicklerContentComponent } from '../../color/color-panel/color-pickler-content/color-pickler-content.component';
-import { ColorPicklerItemComponent } from '../../color/color-panel/color-pickler-item/color-pickler-item.component';
+import { ColorPickerContentComponent } from '../../color/color-panel/color-picker-content/color-picker-content.component';
+import { ColorPickerItemComponent } from '../../color/color-panel/color-picker-item/color-picker-item.component';
 import {LinePanelComponent} from './line-panel.component';
 
 describe('LinePanelComponent', () => {
@@ -32,8 +32,8 @@ describe('LinePanelComponent', () => {
         MatRipple,
         CdkObserveContent,
         MatRadioButton,
-        ColorPicklerItemComponent,
-        ColorPicklerContentComponent,
+        ColorPickerItemComponent,
+        ColorPickerContentComponent,
         MatIcon,
         MatRadioGroup,
         MatCardTitle,

@@ -1,13 +1,13 @@
 import { Component, ElementRef, EventEmitter, Input, Output, QueryList } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatSliderChange } from '@angular/material';
-import { ColorPicklerItemComponent } from '../color-pickler-item/color-pickler-item.component';
+import { ColorPickerItemComponent } from '../color-picker-item/color-picker-item.component';
 
 @Component({
-    selector: 'app-color-pickler-content',
+    selector: 'app-color-picker-content',
     template: '',
 })
-export class MockColorPicklerContentComponent {
+export class MockColorPickerContentComponent {
 
     @Input()
     startColor: string;
@@ -19,9 +19,9 @@ export class MockColorPicklerContentComponent {
 
     canvas: ElementRef;
 
-    actualColor: ColorPicklerItemComponent;
+    actualColor: ColorPickerItemComponent;
 
-    baseColorsCircles: QueryList<ColorPicklerItemComponent>;
+    baseColorsCircles: QueryList<ColorPickerItemComponent>;
 
     context: CanvasRenderingContext2D;
 
