@@ -61,7 +61,7 @@ export class LineLogicComponent extends ToolLogicComponent {
     }
   }
   onMouseClick(mouseEv: MouseEvent) {
-    let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+    let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
     if (this.isNewPath) {
       this.createNewPath(currentPoint)
       this.currentJonctionOptions = {radius: this.service.radius.toString(),
@@ -75,7 +75,7 @@ export class LineLogicComponent extends ToolLogicComponent {
   }
   onMouseMove(mouseEv: MouseEvent) {
     if (!this.isNewPath) {
-      let point = this.mousePosition = new Point(mouseEv.offsetX, mouseEv.offsetY);
+      let point = this.mousePosition = {x: mouseEv.offsetX, y: mouseEv.offsetY};
       if (mouseEv.shiftKey) {
         point = this.getPath().getAlignedPoint(point)
       }
@@ -84,7 +84,7 @@ export class LineLogicComponent extends ToolLogicComponent {
   }
   onMouseUp(mouseEv: MouseEvent) {
     if (!this.isNewPath) {
-      let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+      let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
       this.getPath().removeLastLine(); // cancel the click event
       this.getPath().removeLastLine();
       const isLessThan3pixels = this.service.distanceIsLessThan3Pixel(currentPoint, this.getPath().datas.points[0])

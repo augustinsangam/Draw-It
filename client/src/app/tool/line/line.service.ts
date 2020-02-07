@@ -22,15 +22,15 @@ export class LineService extends ToolService {
     const deltaY = mousePosition.y - lastPoint.y
     const angleAxeX = Math.atan(deltaY / deltaX)
     if (Math.abs(angleAxeX) < Math.PI / 8) {
-      return new Point(mousePosition.x, lastPoint.y)
+      return {x: mousePosition.x, y: lastPoint.y}
     }
     if (Math.abs(angleAxeX) > Math.PI * 3 / 8) {
-      return new Point(lastPoint.x, mousePosition.y)
+      return {x: lastPoint.x, y: mousePosition.y}
     } else {
       if (deltaY * deltaX > 0) {
-        return new Point(mousePosition.x, lastPoint.y + deltaX)
+        return {x: mousePosition.x, y: lastPoint.y + deltaX}
       } else {
-        return new Point(mousePosition.x, lastPoint.y - deltaX)
+        return {x: mousePosition.x, y: lastPoint.y - deltaX}
       }
     }
   }

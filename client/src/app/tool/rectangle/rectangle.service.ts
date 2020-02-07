@@ -19,13 +19,13 @@ export class RectangleService extends ToolService {
     const deltaX = oppositePoint.x - initialPoint.x;
     const deltaY = oppositePoint.y - initialPoint.y;
     if (deltaX > 0 && deltaY < 0) {
-      return new Point(initialPoint.x, initialPoint.y + deltaY);
+      return {x: initialPoint.x, y: initialPoint.y + deltaY};
     }
     if (deltaX < 0 && deltaY < 0) {
-      return new Point(initialPoint.x + deltaX, initialPoint.y + deltaY);
+      return {x: initialPoint.x + deltaX, y: initialPoint.y + deltaY};
     }
     if (deltaX < 0 && deltaY > 0) {
-      return new Point(initialPoint.x + deltaX, initialPoint.y);
+      return {x: initialPoint.x + deltaX, y: initialPoint.y};
     } else {
       return initialPoint;
     }
@@ -46,6 +46,6 @@ export class RectangleService extends ToolService {
     } else {
       deltaY = Math.sign(deltaY) * min;
     }
-    return new Point(deltaX + initialPoint.x, deltaY + initialPoint.y)
+    return {x: deltaX + initialPoint.x, y: deltaY + initialPoint.y}
   }
 }
