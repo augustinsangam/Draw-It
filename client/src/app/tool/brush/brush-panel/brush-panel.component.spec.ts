@@ -9,10 +9,11 @@ import {MatRadioChange} from '@angular/material/radio';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SidebarComponent } from 'src/app/sidebar/sidebar.component';
 import { ColorPanelComponent } from '../../color/color-panel/color-panel.component';
-import { ColorPicklerContentComponent } from '../../color/color-panel/color-pickler-content/color-pickler-content.component';
-import { ColorPicklerItemComponent } from '../../color/color-panel/color-pickler-item/color-pickler-item.component';
+import { ColorPickerContentComponent } from '../../color/color-panel/color-picker-content/color-picker-content.component';
+import { ColorPickerItemComponent } from '../../color/color-panel/color-picker-item/color-picker-item.component';
 import { BrushPanelComponent } from './brush-panel.component';
 
+// tslint:disable: no-string-literal
 describe('BrushPanelComponent', () => {
   let component: BrushPanelComponent;
   let fixture: ComponentFixture<BrushPanelComponent>;
@@ -28,8 +29,8 @@ describe('BrushPanelComponent', () => {
         BrushPanelComponent,
         CdkObserveContent,
         ColorPanelComponent,
-        ColorPicklerItemComponent,
-        ColorPicklerContentComponent,
+        ColorPickerItemComponent,
+        ColorPickerContentComponent,
         MatCard,
         MatCardTitle,
         MatCardContent,
@@ -62,14 +63,13 @@ describe('BrushPanelComponent', () => {
   });
 
   it('onThicknessChange devrait appeler la méthode patchValue de brushForm', () => {
-    const spy = spyOn(component.brushForm, 'patchValue');
-    component.onThicknessChange();
+    const spy = spyOn(component['brushForm'], 'patchValue');
+    component['onThicknessChange']();
     expect(spy).toHaveBeenCalled();
   });
 
   it('onOptionChange devrait changer la valeur de la texture du service', () => {
-    component.onOptionChange(new MatRadioChange(component.radioChoice, 'filter2'));
-    // tslint:disable-next-line: no-string-literal
+    component['onOptionChange'](new MatRadioChange(component['radioChoice'], 'filter2'));
     expect(component['service'].texture).toEqual('filter2');
   })
 

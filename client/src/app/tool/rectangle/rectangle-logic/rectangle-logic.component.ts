@@ -1,7 +1,7 @@
 import { Component, Renderer2, } from '@angular/core';
 import { ColorService } from '../../color/color.service';
 import { Point } from '../../tool-common classes/Point'
-import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
+import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { RectangleService } from '../rectangle.service';
 import { Rectangle } from './Rectangle';
 
@@ -14,7 +14,7 @@ enum ClickType {
   selector: 'app-rectangle-logic',
   template: ''
 })
-export class RectangleLogicComponent extends ToolLogicComponent {
+export class RectangleLogicComponent extends ToolLogicDirective {
 
   private rectangles: Rectangle[] = [];
   private currentRectangleIndex = -1;
@@ -43,9 +43,7 @@ export class RectangleLogicComponent extends ToolLogicComponent {
     );
 
     const onMouseUp = this.renderer.listen('document', 'mouseup', (mouseEv: MouseEvent) => {
-      console.log('go plz')
       if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
-        console.log('go')
         this.onDrag = false;
         this.viewTemporaryForm(mouseEv)
         this.getRectangle().setOpacity('1.0')

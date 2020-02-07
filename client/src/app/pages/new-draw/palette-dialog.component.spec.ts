@@ -5,8 +5,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatCard, MatCardContent,
   MatCardTitle, MatDialogRef, MatFormField, MatInput, MatSlider } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ColorPicklerContentComponent } from 'src/app/tool/color/color-panel/color-pickler-content/color-pickler-content.component';
-import { ColorPicklerItemComponent } from 'src/app/tool/color/color-panel/color-pickler-item/color-pickler-item.component';
+import { ColorPickerContentComponent } from 'src/app/tool/color/color-panel/color-picker-content/color-picker-content.component';
+import { ColorPickerItemComponent } from 'src/app/tool/color/color-panel/color-picker-item/color-picker-item.component';
 import { PaletteDialogComponent } from './palette-dialog.component';
 
 describe('ColorPanelComponent', () => {
@@ -20,8 +20,8 @@ describe('ColorPanelComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         PaletteDialogComponent,
-        ColorPicklerContentComponent,
-        ColorPicklerItemComponent,
+        ColorPickerContentComponent,
+        ColorPickerItemComponent,
         MatSlider,
         MatCard,
         MatCardContent,

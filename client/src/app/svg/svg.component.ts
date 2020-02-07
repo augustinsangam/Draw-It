@@ -5,7 +5,7 @@ import { BrushLogicComponent } from '../tool/brush/brush-logic/brush-logic.compo
 import { LineLogicComponent } from '../tool/line/line-logic/line-logic.component';
 import { PencilLogicComponent } from '../tool/pencil/pencil-logic/pencil-logic.component';
 import { RectangleLogicComponent } from '../tool/rectangle/rectangle-logic/rectangle-logic.component';
-import { ToolLogicComponent } from '../tool/tool-logic/tool-logic.component';
+import { ToolLogicDirective } from '../tool/tool-logic/tool-logic.directive';
 import { ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
 
@@ -20,7 +20,7 @@ export class SvgComponent implements OnInit {
     read: ViewContainerRef,
     static: true,
   }) private viewContainerRef: ViewContainerRef;
-  private readonly components: Type<ToolLogicComponent>[];
+  private readonly components: Type<ToolLogicDirective>[];
 
   constructor(private readonly elementRef: ElementRef<SVGElement>,
               private readonly componentFactoryResolver: ComponentFactoryResolver,
@@ -39,11 +39,11 @@ export class SvgComponent implements OnInit {
     this.toolSelectorService.onChange(this.setToolHandler);
   }
 
-  private setTool(tool: Tool): ComponentRef<ToolLogicComponent>  {
+  private setTool(tool: Tool): ComponentRef<ToolLogicDirective>  {
     this.viewContainerRef.clear();
     const component = this.components[tool];
     const factory = this.componentFactoryResolver.resolveComponentFactory(component);
-    let ref: ComponentRef<ToolLogicComponent>;
+    let ref: ComponentRef<ToolLogicDirective>;
     ref = this.viewContainerRef.createComponent(factory);
     ref.instance.svgElRef = this.elementRef;
     ref.changeDetectorRef.detectChanges();

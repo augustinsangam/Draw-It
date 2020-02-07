@@ -1,8 +1,8 @@
 import { ElementRef, Renderer2 } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ColorService } from '../../color/color.service';
-import {Point} from '../../tool-common classes/Point'
-import { ToolLogicComponent } from '../../tool-logic/tool-logic.component';
+import { Point } from '../../tool-common classes/Point';
+import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { RectangleService } from '../rectangle.service';
 import { RectangleLogicComponent } from './rectangle-logic.component';
 
@@ -10,13 +10,13 @@ const createClickMouseEvent = (event: string): MouseEvent => {
   return new MouseEvent(event, { offsetX: 10, offsetY: 30, button: 0 } as MouseEventInit);
 }
 // tslint:disable:no-string-literal
-fdescribe('RectangleLogicComponent', () => {
+describe('RectangleLogicComponent', () => {
   let component: RectangleLogicComponent;
   let fixture: ComponentFixture<RectangleLogicComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RectangleLogicComponent, ToolLogicComponent ],
+      declarations: [ RectangleLogicComponent, ToolLogicDirective ],
       providers: [Renderer2, ColorService, RectangleService ]
     })
     .compileComponents();
