@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, Optional, Renderer2, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
@@ -12,6 +12,11 @@ export interface DialogData {
   drawInProgress: boolean;
 }
 
+export interface DialogRefs {
+  palette: MatDialogRef<PaletteDialogComponent>,
+  confirm: MatDialogRef<ConfirmationDialogComponent>,
+};
+
 @Component({
   selector: 'app-new-draw',
   templateUrl: './new-draw.component.html',
@@ -19,14 +24,13 @@ export interface DialogData {
 })
 export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  startColor = '#FFFFFF';
-  baseColors = ['#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF',
-    '#FFFF00', '#FF00FF', '#00FFFF', '#FF6600', '#FF6699'];
-  form: FormGroup;
-  maxWidth: number;
-  maxHeight: number;
-  screenSize: Subscription;
-  userChangeSizeMannually = false;
+  private startColor = '#FFFFFF';
+  private form: FormGroup;
+  private maxWidth: number;
+  private maxHeight: number;
+  private screenSize: Subscription;
+  private userChangeSizeMannually = false;
+  private dialogRefs: DialogRefs;
 
   @ViewChild('palette', {
     static: false,
@@ -51,7 +55,7 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
               private screenService: ScreenService,
               private renderer: Renderer2,
               private dialog: MatDialog,
-              public dialogRef: MatDialogRef<NewDrawComponent>,
+              @Optional() public dialogRef: MatDialogRef<NewDrawComponent>,
               @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     const screenSize: ScreenSize = this.screenService.getCurrentSize();
     this.maxWidth = screenSize.width;
@@ -67,6 +71,10 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
           NewDrawComponent.validatorInteger]],
           color: ['', []]
     });
+    this.dialogRefs = {
+      palette: undefined as unknown as MatDialogRef<PaletteDialogComponent>,
+      confirm: undefined as unknown as MatDialogRef<ConfirmationDialogComponent>,
+    };
   }
 
   ngOnInit() {
@@ -87,15 +95,19 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 0);
 
     this.renderer.listen(this.palette.button.nativeElement, 'click', () => {
-      const dialogRef = this.dialog.open(PaletteDialogComponent);
-      dialogRef.afterClosed().subscribe((colorPicked: string|undefined) => {
-        if (colorPicked !== undefined) {
-          this.palette.updateColor(colorPicked);
-          this.form.patchValue({color: colorPicked});
-        }
-        this.button.nativeElement.focus();
+      this.dialogRefs.palette = this.dialog.open(PaletteDialogComponent);
+      this.dialogRefs.palette.afterClosed().subscribe((colorPicked: string|undefined) => {
+        this.closePaletteDialog(colorPicked);
       });
     });
+  }
+
+  private closePaletteDialog(colorPicked: string | undefined) {
+    if (colorPicked !== undefined) {
+      this.palette.updateColor(colorPicked);
+      this.form.patchValue({color: colorPicked});
+    }
+    this.button.nativeElement.focus();
   }
 
   updateFormSize(screenSize: ScreenSize) {
@@ -109,23 +121,32 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  onDimensionsChangedByUser($event: Event) {
+  onDimensionsChangedByUser() {
     this.userChangeSizeMannually = true;
   }
 
   onSubmit() {
     if (this.data.drawInProgress) {
-      const dialogRef = this.dialog.open(ConfirmationDialogComponent);
-      dialogRef.disableClose = true;
-      dialogRef.afterClosed().subscribe((result: boolean) => {
-        if (result) {
-          this.dialogRef.close(this.form.value);
-        } else {
-          this.dialogRef.close('home');
-        }
+      this.dialogRefs.confirm = this.dialog.open(ConfirmationDialogComponent);
+      this.dialogRefs.confirm.disableClose = true;
+      this.dialogRefs.confirm.afterClosed().subscribe((result: boolean) => {
+        // if (result) {
+        //   this.dialogRef.close(this.form.value);
+        // } else {
+        //   this.dialogRef.close('home');
+        // }
+        this.closeDialog(result);
       });
     } else {
       this.dialogRef.close(this.form.value);
+    }
+  }
+
+  private closeDialog(result: boolean) {
+    if (result) {
+      this.dialogRef.close(this.form.value);
+    } else {
+      this.dialogRef.close('home');
     }
   }
 
