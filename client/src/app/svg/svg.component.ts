@@ -39,11 +39,11 @@ export class SvgComponent implements OnInit {
     this.toolSelectorService.onChange(this.setToolHandler);
   }
 
-  private setTool(tool: Tool): ComponentRef<ToolLogicComponent>  {
+  private setTool(tool: Tool): ComponentRef<ToolLogicDirective>  {
     this.viewContainerRef.clear();
     const component = this.components[tool];
     const factory = this.componentFactoryResolver.resolveComponentFactory(component);
-    let ref: ComponentRef<ToolLogicComponent>;
+    let ref: ComponentRef<ToolLogicDirective>;
     ref = this.viewContainerRef.createComponent(factory);
     ref.instance.svgElRef = this.elementRef;
     ref.changeDetectorRef.detectChanges();
