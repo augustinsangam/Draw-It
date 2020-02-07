@@ -4,6 +4,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import { ElementRef } from '@angular/core';
 import { LineLogicComponent } from './line-logic.component';
 import {Path} from './Path';
+import {Point} from '../../tool-common classes/Point';
 
 fdescribe('LineLogicComponent', () => {
   let component: LineLogicComponent;
@@ -143,6 +144,53 @@ fdescribe('LineLogicComponent', () => {
 
     expect(component['isNewPath']).toBeTruthy();
     expect(spy).toHaveBeenCalledTimes(5);
-  })
+  });
+
+  it('onKeyDown devrait appeler 2 fois la méthode getPath lorsqu\'elle est appelée avec Shift', () => {
+    component['isNewPath'] = false;
+    component['paths'] = [];
+    component['paths'].push(defaultPath);
+    spyOn(component.getPath(), 'getAlignedPoint').and.callFake((): Point => ({x: 10, y: 10}));
+    const spy = spyOn(component, 'getPath').and.callThrough();
+
+    component.onKeyDown(new KeyboardEvent(
+      'shift',
+      {code: 'ShiftLeft'}
+    ));
+    expect(spy).toHaveBeenCalledTimes(2);
+  });
+
+  it('onKeyDown devrait appeler 1 fois la méthode getPath lorsqu\'elle est appelée ' +
+    'avec Escape, et devrait set isNewPath à true', () => {
+    component['isNewPath'] = false;
+    component['paths'] = [];
+    component['paths'].push(defaultPath);
+    const spy = spyOn(component.getPath(), 'removePath');
+
+    component.onKeyDown(new KeyboardEvent(
+      'shift',
+      {code: 'Escape'}
+    ));
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(component['isNewPath']).toBeTruthy();
+  });
+
+  it('onKeyDown devrait appeler les métthodes removeLastLine et ' +
+    'simulateNewLine lorsqu\'elle est appelée avec Backspace', () => {
+    defaultPath.datas.points = [];
+    defaultPath.datas.points.push({x: 42, y: 42});
+    defaultPath.datas.points.push({x: 404, y: 404});
+    component['paths'] = [];
+    component['paths'].push(defaultPath);
+    const spyRemo = spyOn(component.getPath(), 'removeLastLine');
+    const spySimu = spyOn(component.getPath(), 'simulateNewLine').and.callFake((): Point => ({x: 10, y: 10}));
+
+    component.onKeyDown(new KeyboardEvent(
+      'shift',
+      {code: 'Backspace'}
+    ));
+    expect(spyRemo).toHaveBeenCalled();
+    expect(spySimu).toHaveBeenCalled();
+  });
 
 });
