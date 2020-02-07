@@ -113,24 +113,26 @@ fdescribe('RectangleLogicComponent', () => {
   });
 
   it('mouseUp should call viewTemporaryForm and setOpacity', fakeAsync(() => {
-    const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
-   // const spy2 = spyOn<any>(component['getRectangle'](), 'setOpacity').and.callThrough();
     component['initRectangle'](createClickMouseEvent('mousedown'));
+    const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
+    spyOn<any>(component, 'getRectangle').and.callThrough();
+    const spy2 = spyOn<any>(component['getRectangle'](), 'setOpacity').and.callThrough();
     document.dispatchEvent(new MouseEvent('mouseup', {button: 0} as MouseEventInit));
     setTimeout(() => {
       expect(spy1).toHaveBeenCalled();
-    //  expect(spy2).toHaveBeenCalled();
+      expect(spy2).toHaveBeenCalled();
     }, 500);
     tick(500);
   }));
 
   it('if the fill atribute is off, the opacity is null', fakeAsync(() => {
-    const spy = spyOn<any>(component['getRectangle'](), 'setOpacity').and.callThrough();
     component['initRectangle'](createClickMouseEvent('mousedown'));
+    spyOn<any>(component, 'getRectangle').and.callThrough();
     component['getRectangle']()['filled'] = false;
+    const spy1 = spyOn<any>(component['getRectangle'](), 'setOpacity').and.callThrough();
     document.dispatchEvent(new MouseEvent('mouseup', {button: 0} as MouseEventInit));
     setTimeout(() => {
-    expect(spy).toHaveBeenCalled();
+    expect(spy1).toHaveBeenCalled();
     }, 500);
     tick(500);
   }));
