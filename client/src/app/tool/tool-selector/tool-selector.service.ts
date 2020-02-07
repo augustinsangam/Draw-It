@@ -20,11 +20,11 @@ export class ToolSelectorService {
 
   // Must be public
   set(tool: Tool) {
-    if (this.tool !== tool) {
-      this.onChangeCallbacks.forEach(cb => cb(tool, this.tool));
-      this.tool = tool;
+    if (this.tool === tool) {
+      this.onSameCallbacks.forEach(async cb => cb(tool));
     } else {
-      this.onSameCallbacks.forEach(cb => cb(tool));
+      this.onChangeCallbacks.forEach(async cb => cb(tool, this.tool));
+      this.tool = tool;
     }
   }
 
