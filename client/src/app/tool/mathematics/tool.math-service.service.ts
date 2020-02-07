@@ -8,10 +8,11 @@ const MINDIST = 3;
 export class MathService {
   constructor() {
   }
-  distanceIsLessThan3Pixel(point1: Point, point2: Point): boolean {
+  protected distanceIsLessThan3Pixel(point1: Point, point2: Point): boolean {
     return ((Math.abs(point1.x - point2.x) <= MINDIST) && (Math.abs(point1.y - point2.y) <= MINDIST));
   }
-  findAlignedSegmentPoint(mousePosition: Point, lastPoint: Point): Point {
+
+  protected findAlignedSegmentPoint(mousePosition: Point, lastPoint: Point): Point {
     const deltaX = mousePosition.x - lastPoint.x
     const deltaY = mousePosition.y - lastPoint.y
     const angleAxeX = Math.atan(deltaY / deltaX)
@@ -28,7 +29,8 @@ export class MathService {
       }
     }
   }
-  getRectangleUpLeftCorner(initialPoint: Point, oppositePoint: Point): Point {
+
+  protected getRectangleUpLeftCorner(initialPoint: Point, oppositePoint: Point): Point {
     const deltaX = oppositePoint.x - initialPoint.x;
     const deltaY = oppositePoint.y - initialPoint.y;
     if (deltaX > 0 && deltaY < 0) {
@@ -43,14 +45,14 @@ export class MathService {
       return initialPoint;
     }
   }
-  getRectangleSize(initialPoint: Point, oppositePoint: Point): Dimension {
+  protected getRectangleSize(initialPoint: Point, oppositePoint: Point): Dimension {
     const x = Math.abs(oppositePoint.x - initialPoint.x);
     const y = Math.abs(oppositePoint.y - initialPoint.y);
     return { height: y, width: x };
   }
   // transform a rectangle to a square
   // return the point diagonally opposite to the initial point
-  transformRectangleToSquare(initialPoint: Point, oppositePoint: Point): Point {
+  protected transformRectangleToSquare(initialPoint: Point, oppositePoint: Point): Point {
     let deltaX = oppositePoint.x - initialPoint.x;
     let deltaY = oppositePoint.y - initialPoint.y;
     const min = Math.min(Math.abs(deltaY), Math.abs(deltaX));
