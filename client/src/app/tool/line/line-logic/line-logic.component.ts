@@ -16,7 +16,7 @@ export class LineLogicComponent extends ToolLogicComponent {
   private isNewPath = true;
   private mousePosition: Point;
   private mathService = new MathService();
-  private currentJonctionOptions: JonctionOption
+  private currentJonctionOptions: JonctionOption;
   constructor(private readonly service: LineService,
               private readonly renderer: Renderer2,
               private readonly serviceColor: ColorService) {
@@ -64,9 +64,9 @@ export class LineLogicComponent extends ToolLogicComponent {
   onMouseClick(mouseEv: MouseEvent) {
     let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
     if (this.isNewPath) {
-      this.createNewPath(currentPoint)
+      this.createNewPath(currentPoint);
       this.currentJonctionOptions = {radius: this.service.radius.toString(),
-                                     color: this.serviceColor.primaryColor }
+                                     color: this.serviceColor.primaryColor };
       this.isNewPath = false;
     }
     if (mouseEv.shiftKey && !this.isNewPath) {

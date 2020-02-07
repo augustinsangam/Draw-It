@@ -1,3 +1,4 @@
+/* tslint:disable:no-string-literal */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ElementRef } from '@angular/core';
