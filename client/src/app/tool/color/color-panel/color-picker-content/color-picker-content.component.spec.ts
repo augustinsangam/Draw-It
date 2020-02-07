@@ -4,18 +4,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButton, MatCard, MatCardContent, MatCardTitle, MatFormField,
   MatInput, MatRipple, MatSlider, MatSliderChange } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ColorPicklerItemComponent } from '../color-pickler-item/color-pickler-item.component';
-import { ColorPicklerContentComponent } from './color-pickler-content.component';
+import { ColorPickerItemComponent } from '../color-picker-item/color-picker-item.component';
+import { ColorPickerContentComponent } from './color-picker-content.component';
 
-describe('ColorPicklerContentComponent', () => {
-  let component: ColorPicklerContentComponent;
-  let fixture: ComponentFixture<ColorPicklerContentComponent>;
+describe('ColorPickerContentComponent', () => {
+  let component: ColorPickerContentComponent;
+  let fixture: ComponentFixture<ColorPickerContentComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        ColorPicklerContentComponent,
-        ColorPicklerItemComponent,
+        ColorPickerContentComponent,
+        ColorPickerItemComponent,
         MatInput,
         MatFormField,
         MatSlider,
@@ -38,7 +38,7 @@ describe('ColorPicklerContentComponent', () => {
   /* tslint:disable:no-string-literal */
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ColorPicklerContentComponent);
+    fixture = TestBed.createComponent(ColorPickerContentComponent);
     component = fixture.componentInstance;
     component.startColor = '#FFFFFF';
     fixture.detectChanges();

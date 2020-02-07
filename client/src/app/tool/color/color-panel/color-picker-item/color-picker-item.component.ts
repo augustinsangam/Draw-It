@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, ElementRef, Input, Renderer2, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'app-color-pickler-item',
-  templateUrl: './color-pickler-item.component.html',
-  styleUrls: ['./color-pickler-item.component.scss']
+  selector: 'app-color-picker-item',
+  templateUrl: './color-picker-item.component.html',
+  styleUrls: ['./color-picker-item.component.scss']
 })
-export class ColorPicklerItemComponent implements AfterViewInit {
+export class ColorPickerItemComponent implements AfterViewInit {
 
   @Input() color: string;
 

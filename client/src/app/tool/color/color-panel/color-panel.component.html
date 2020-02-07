@@ -7,7 +7,7 @@
       </td>
       <td class="radio-button-text">Primaire</td>
       <td class="color-preview-circle">
-        <app-color-pickler-item #colorPreviewPrimary></app-color-pickler-item>
+        <app-color-picker-item #colorPreviewPrimary></app-color-picker-item>
       </td>
       <td rowspan="2">
         <button mat-raised-button 
@@ -23,7 +23,7 @@
       </td>
       <td class="radio-button-text">Secondaire</td>
       <td class="color-preview-circle">
-        <app-color-pickler-item #colorPreviewSecondary></app-color-pickler-item>
+        <app-color-picker-item #colorPreviewSecondary></app-color-picker-item>
       </td>
     </tr>
     <tr>
@@ -32,21 +32,21 @@
       </td>
       <td class="radio-button-text">Arrière plan</td>
       <td class="color-preview-circle">
-        <app-color-pickler-item #colorPreviewBackground></app-color-pickler-item>
+        <app-color-picker-item #colorPreviewBackground></app-color-picker-item>
       </td>
     </tr>
   </table>
 </mat-radio-group>
 <div #recentElements class="recent-colors">
   <p>Couleurs récentes</p>
-  <app-color-pickler-item *ngFor="let number of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"></app-color-pickler-item>
+  <app-color-picker-item *ngFor="let number of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"></app-color-picker-item>
 </div>
 <button mat-raised-button color="primary" (click)="onShowPalette()" class="palette">
   PALETTE
   <mat-icon>palette</mat-icon>
 </button>
-<app-color-pickler-content [startColor]="getStartColor()" 
+<app-color-picker-content [startColor]="getStartColor()" 
                             (colorChange)="onColorPicked($event)" 
                             *ngIf="showPalette"
                             #colorPalette>
-</app-color-pickler-content>
+</app-color-picker-content>

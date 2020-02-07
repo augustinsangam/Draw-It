@@ -6,8 +6,8 @@ import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/t
 import { MaterialModule } from '../material.module';
 import { BrushPanelComponent } from '../tool/brush/brush-panel/brush-panel.component';
 import { ColorPanelComponent } from '../tool/color/color-panel/color-panel.component';
-import { ColorPicklerContentComponent } from '../tool/color/color-panel/color-pickler-content/color-pickler-content.component';
-import { ColorPicklerItemComponent } from '../tool/color/color-panel/color-pickler-item/color-pickler-item.component';
+import { ColorPickerContentComponent } from '../tool/color/color-panel/color-picker-content/color-picker-content.component';
+import { ColorPickerItemComponent } from '../tool/color/color-panel/color-picker-item/color-picker-item.component';
 import { Tool } from '../tool/tool.enum';
 import { PanelComponent } from './panel.component';
 
@@ -47,8 +47,8 @@ describe('PanelComponent', () => {
       declarations: [ PanelComponent,
         BrushPanelComponent,
         ColorPanelComponent,
-        ColorPicklerItemComponent,
-        ColorPicklerContentComponent,
+        ColorPickerItemComponent,
+        ColorPickerContentComponent,
       ],
       imports: [
         MaterialModule,

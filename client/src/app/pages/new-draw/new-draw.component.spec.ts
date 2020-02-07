@@ -9,7 +9,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialog, MatDialogRef,
    MatFormField, MatHint, MatInput, MatLabel } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ColorPicklerItemComponent } from 'src/app/tool/color/color-panel/color-pickler-item/color-pickler-item.component';
+import { ColorPickerItemComponent } from 'src/app/tool/color/color-panel/color-picker-item/color-picker-item.component';
 import { ScreenService } from './sreen-service/screen.service';
 
 describe('NewDrawComponent', () => {
@@ -28,7 +28,7 @@ describe('NewDrawComponent', () => {
       ],
       declarations: [
         NewDrawComponent,
-        ColorPicklerItemComponent,
+        ColorPickerItemComponent,
         MatLabel,
         MatHint,
         MatFormField,
