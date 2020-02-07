@@ -43,7 +43,9 @@ export class RectangleLogicComponent extends ToolLogicComponent {
     );
 
     const onMouseUp = this.renderer.listen('document', 'mouseup', (mouseEv: MouseEvent) => {
+      console.log('go plz')
       if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
+        console.log('go')
         this.onDrag = false;
         this.viewTemporaryForm(mouseEv)
         this.getRectangle().setOpacity('1.0')

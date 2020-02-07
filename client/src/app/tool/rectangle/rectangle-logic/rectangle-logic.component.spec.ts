@@ -96,8 +96,9 @@ fdescribe('RectangleLogicComponent', () => {
       code: 'ShiftRight',
       key: 'Shift'
     });
+    const spy = spyOn<any>(component['getRectangle'](), 'drawTemporarySquare').and.callThrough();
     component['onKeyDown'](event);
-    spyOn<any>(component['getRectangle'](), 'drawTemporaryRectangle').and.callThrough();
+    expect(spy).toHaveBeenCalled();
   });
 
   it('#onKeyUp should call drawTemporaryRectangle', ()  => {
@@ -106,35 +107,32 @@ fdescribe('RectangleLogicComponent', () => {
       code: 'ShiftRight',
       key: 'Shift'
     });
+    const spy = spyOn<any>(component['getRectangle'](), 'drawTemporaryRectangle').and.callThrough();
     component['onKeyUp'](event);
-    spyOn<any>(component['getRectangle'](), 'drawTemporaryRectangle').and.callThrough();
+    expect(spy).toHaveBeenCalled();
   });
 
-  // it('when the shift is pressed the renderer.listen should be called', fakeAsync(()  => {
-  //   component['initRectangle'](createClickMouseEvent('mousedown'));
+  it('mouseUp should call viewTemporaryForm and setOpacity', fakeAsync(() => {
+    const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
+   // const spy2 = spyOn<any>(component['getRectangle'](), 'setOpacity').and.callThrough();
+    component['initRectangle'](createClickMouseEvent('mousedown'));
+    document.dispatchEvent(new MouseEvent('mouseup', {button: 0} as MouseEventInit));
+    setTimeout(() => {
+      expect(spy1).toHaveBeenCalled();
+    //  expect(spy2).toHaveBeenCalled();
+    }, 500);
+    tick(500);
+  }));
 
-  //   const event = new KeyboardEvent('window:keydown', {
-  //     code: 'ShiftRight',
-  //     key: 'Shift'
-  //   });
-
-  //   const spy = spyOn<any>(component, 'onKeyDown').and.callThrough();
-
-  //   component.ngOnInit();
-  //   tick();
-
-  //   document.dispatchEvent(event);
-  //   tick();
-
-  //   setTimeout(() => {
-  //     expect(spy).toHaveBeenCalled();
-  //   }, 500);
-
-  //   tick(500);
-
-  // }));
+  it('if the fill atribute is off, the opacity is null', fakeAsync(() => {
+    const spy = spyOn<any>(component['getRectangle'](), 'setOpacity').and.callThrough();
+    component['initRectangle'](createClickMouseEvent('mousedown'));
+    component['getRectangle']()['filled'] = false;
+    document.dispatchEvent(new MouseEvent('mouseup', {button: 0} as MouseEventInit));
+    setTimeout(() => {
+    expect(spy).toHaveBeenCalled();
+    }, 500);
+    tick(500);
+  }));
 
 });
-// component.viewTemporaryForm(mouseEv);
-// let pathExpected: string = ' L' + mouseEv.offsetX + ',' + mouseEv.offsetY;
-// pathExpected += ' M' + mouseEv.offsetX + ',' + mouseEv.offsetY;
