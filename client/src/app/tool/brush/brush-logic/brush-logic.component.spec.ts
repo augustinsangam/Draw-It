@@ -15,9 +15,6 @@ describe('BrushLogicComponent', () => {
       providers: [Renderer2, ColorService, BrushService]
     })
     .compileComponents();
-    // const mouseEvLeftButton: MouseEvent = new MouseEvent(
-    //     'mousedown', { offsetX: 10, offsetY: 30, button: 0 } as MouseEventInit
-    // );
   }));
 
   beforeEach(() => {
@@ -92,7 +89,22 @@ describe('BrushLogicComponent', () => {
           expect(component.stringPath).toEqual(pathExpected);
         }, 1000);
         tick(1000);
-    }));
+  }));
+
+  it('#drawing should set the good values to the stringPath', fakeAsync(() => {
+    const mouseEv: MouseEvent = new MouseEvent('mousemove', {
+      offsetX: 10,
+      offsetY: 30,
+      button: 0 } as MouseEventInit
+    );
+    component.drawing(mouseEv);
+    let pathExpected: string = ' L' + mouseEv.offsetX + ',' + mouseEv.offsetY;
+    pathExpected += ' M' + mouseEv.offsetX + ',' + mouseEv.offsetY;
+    setTimeout(() => {
+      expect(component.stringPath).toEqual(pathExpected);
+    }, 1000);
+    tick(1000);
+  }));
 
   it('#should reset the values of stringPath and mouseOnHold when mouse is up', fakeAsync(() => {
         component.svgElRef.nativeElement.dispatchEvent(
@@ -103,6 +115,18 @@ describe('BrushLogicComponent', () => {
         }, 500);
         tick(500);
     }));
+
+  it('#onMouseMove should be triggered when the mousemove event is launched', fakeAsync(() => {
+      const spy = spyOn(component, 'drawing');
+      const mouseEv: MouseEvent = new MouseEvent('mousemove', { offsetX: 10, offsetY: 30, button: 0 } as MouseEventInit);
+      const mouseEvDown: MouseEvent = new MouseEvent('mousedown', { offsetX: 10, offsetY: 30, button: 0 } as MouseEventInit);
+      component.svgElRef.nativeElement.dispatchEvent(mouseEvDown);
+      component.svgElRef.nativeElement.dispatchEvent(mouseEv);
+      setTimeout(() => {
+        expect(spy).toHaveBeenCalledTimes(1);
+      }, 1000);
+      tick(1000);
+}));
 
   it('#should updates stringPath values when mouse is leaving', fakeAsync(() => {
         component.mouseOnHold = true;
