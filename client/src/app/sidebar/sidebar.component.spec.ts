@@ -1,11 +1,12 @@
 /* tslint:disable:no-string-literal */
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, ElementRef} from '@angular/core';
-import {MatLabel} from '@angular/material';
-import {ToolSelectorService} from '../tool/tool-selector/tool-selector.service';
-import {Tool} from '../tool/tool.enum';
-import {SidebarComponent} from './sidebar.component';
+import { CUSTOM_ELEMENTS_SCHEMA, ElementRef, NO_ERRORS_SCHEMA } from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatLabel } from '@angular/material';
+
+import { ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
+import { Tool } from '../tool/tool.enum';
+import { SidebarComponent } from './sidebar.component';
 
 fdescribe('SidebarComponent', () => {
   let component: SidebarComponent;
@@ -15,12 +16,15 @@ fdescribe('SidebarComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         MatLabel,
-        SidebarComponent
+        SidebarComponent,
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
       providers: [
         ToolSelectorService,
-      ]
+      ],
+      schemas: [
+        CUSTOM_ELEMENTS_SCHEMA,
+        NO_ERRORS_SCHEMA,
+      ],
     })
     .compileComponents();
   }));
@@ -35,12 +39,16 @@ fdescribe('SidebarComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call selectTool on tool change', (done) => {
+  it('should call selectTool on tool change', () => {
+    // NOTE: Asynchronous call of callback is handled
+    // automatically because the spy will wait until
+    // the function is executed.
     // stackoverflow.com/a/48734437
-    spyOn<any>(component, 'selectTool').and.callFake((tool: Tool) => {
-      expect(tool).toBe(Tool.Line);
-      done();
-    });
+    spyOn<any>(component, 'selectTool').and.callFake(
+      (tool: Tool, old?: Tool) => {
+        expect(tool).toBe(Tool.Line);
+        expect(old).toBe(Tool._None);
+      });
     component.ngAfterViewInit();
     component['toolSelectorService'].set(Tool.Line);
   });
@@ -114,12 +122,4 @@ fdescribe('SidebarComponent', () => {
     component['selectBrush']();
     expect(spy).toHaveBeenCalled();
   });
-
-  // TODO
-  /*it('emit de documentationClicsk devrait avoir été appelé lors de l\'appel de onClick', () => {
-    const spy = spyOn(component.documentationClick, 'emit');
-    component.onClick(new MouseEvent('click'));
-    expect(spy).toHaveBeenCalled();
-  });*/
-
 });
