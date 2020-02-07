@@ -36,7 +36,7 @@ fdescribe('LineLogicComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('createNewPath devrait xxx', () => {
+  it('createNewPath devrait appeler getPath', () => {
       const spy = spyOn(component, 'getPath').and.callThrough();
       component['isNewPath'] = true;
       component['paths'] = [];
@@ -53,7 +53,7 @@ fdescribe('LineLogicComponent', () => {
   it('addNewLine devrait appeler addLine du path de line-logic', () => {
     component.onMouseDown(new MouseEvent(
       'mousedown',
-      {offSetX: 100, offSetY: 100, button: 0} as MouseEventInit)
+      {clientX: 100, clientY: 100, button: 0} as MouseEventInit)
     );
     const spy = spyOn(component.getPath(), 'addLine');
     component.addNewLine({x: 100, y: 100});
@@ -66,10 +66,48 @@ fdescribe('LineLogicComponent', () => {
     component['isNewPath'] = true;
     component.onMouseDown(new MouseEvent(
       'mousedown',
-      {offSetX: 100, offSetY: 100, button: 0, shiftKey: false} as MouseEventInit)
+      {clientX: 100, clientY: 100, button: 0, shiftKey: false} as MouseEventInit)
     );
     expect(spy).toHaveBeenCalled();
     expect(component['isNewPath']).toBeFalsy();
   });
+
+  it('onMouseMove devrait appeler getPath 1 seule fois' +
+    ' lorsque SHIFT n\'est pas pressé', () => {
+    component['isNewPath'] = false;
+    component['paths'] = [];
+    component['paths'].push(defaultPath);
+    const spy = spyOn(component, 'getPath').and.callThrough();
+    component.onMouseMove(new MouseEvent(
+      'mousemove',
+      {clientX: 100, clientY: 100, button: 0, shiftKey: false} as MouseEventInit)
+    );
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it('onMouseMove devrait appeler getPath 2 fois' +
+    ' lorsque SHIFT est pressé', () => {
+    component['isNewPath'] = false;
+    component['paths'] = [];
+    component['paths'].push(defaultPath);
+    const spy = spyOn(component, 'getPath').and.callThrough();
+    component.onMouseMove(new MouseEvent(
+      'mousemove',
+      {clientX: 100, clientY: 100, button: 0, shiftKey: true} as MouseEventInit)
+    );
+    expect(spy).toHaveBeenCalledTimes(2);
+  });
+
+  it('onMouseUp devrait setter isNewPath à true', () => {
+    component.onMouseDown(new MouseEvent(
+      'mousedown',
+      {clientX: 10, clientY: 10, button: 0, shiftKey: false}
+    ));
+    component.onMouseUp(new MouseEvent(
+      'mouseup',
+      {clientX: 100, clientY: 100, button: 0, shiftKey: false})
+    );
+    expect(component['isNewPath']).toBeTruthy();
+  })
 
 });

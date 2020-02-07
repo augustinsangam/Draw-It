@@ -9,6 +9,8 @@ export class MathService {
   constructor() {
   }
   distanceIsLessThan3Pixel(point1: Point, point2: Point): boolean {
+    console.log(point1);
+    console.log(point2);
     return ((Math.abs(point1.x - point2.x) <= MINDIST) && (Math.abs(point1.y - point2.y) <= MINDIST));
   }
   findAlignedSegmentPoint(mousePosition: Point, lastPoint: Point): Point {

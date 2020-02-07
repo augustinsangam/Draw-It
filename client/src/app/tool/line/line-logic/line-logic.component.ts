@@ -18,6 +18,7 @@ export class LineLogicComponent extends ToolLogicDirective {
   private mousePosition: Point;
   private mathService = new MathService();
   private currentJonctionOptions: JonctionOption;
+
   constructor(private readonly service: LineService,
               private readonly renderer: Renderer2,
               private readonly serviceColor: ColorService) {
@@ -54,16 +55,7 @@ export class LineLogicComponent extends ToolLogicDirective {
   createNewPath(initialPoint: Point) {
     const path = this.renderer.createElement('path', this.svgNS);
     this.renderer.appendChild(this.svgElRef.nativeElement, path);
-    // TODO remove la variable tmp si oublié
-    const tmp = new Path(initialPoint, this.renderer, path, this.service.withJonction);
-    this.paths.push(tmp);
-
-    console.log('paths');
-    console.log(this.paths);
-    console.log('this.getPath()');
-    console.log(this.paths[this.paths.length - 1]);
-    console.log(this.getPath());
-
+    this.paths.push(new Path(initialPoint, this.renderer, path, this.service.withJonction));
     this.getPath().setLineCss(this.service.thickness.toString(), this.serviceColor.primaryColor);
   };
 
@@ -82,23 +74,26 @@ export class LineLogicComponent extends ToolLogicDirective {
 
   onMouseDown(mouseEv: MouseEvent) {
     let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
+
     if (this.isNewPath) {
       this.createNewPath(currentPoint);
       this.currentJonctionOptions = {radius: this.service.radius.toString(),
                                      color: this.serviceColor.primaryColor };
       this.isNewPath = false;
     }
+
     if (mouseEv.shiftKey && !this.isNewPath) {
       currentPoint = this.getPath().getAlignedPoint(currentPoint);
     }
-    this.addNewLine(currentPoint)
+
+    this.addNewLine(currentPoint);
   };
 
   onMouseMove(mouseEv: MouseEvent) {
     if (!this.isNewPath) {
       let point = this.mousePosition = {x: mouseEv.offsetX, y: mouseEv.offsetY};
       if (mouseEv.shiftKey) {
-        point = this.getPath().getAlignedPoint(point)
+        point = this.getPath().getAlignedPoint(point);
       }
       this.getPath().simulateNewLine(point);
     }
@@ -109,14 +104,15 @@ export class LineLogicComponent extends ToolLogicDirective {
       let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
       this.getPath().removeLastLine(); // cancel the click event
       this.getPath().removeLastLine();
-      const isLessThan3pixels = this.mathService.distanceIsLessThan3Pixel(currentPoint, this.getPath().datas.points[0])
+      console.log(this.getPath());
+      const isLessThan3pixels = this.mathService.distanceIsLessThan3Pixel(currentPoint, this.getPath().datas.points[0]);
       if (isLessThan3pixels) {
         this.getPath().closePath();
       } else {
         if (mouseEv.shiftKey) {
-          currentPoint = this.getPath().getAlignedPoint(currentPoint)
+          currentPoint = this.getPath().getAlignedPoint(currentPoint);
         }
-        this.addNewLine(currentPoint)
+        this.addNewLine(currentPoint);
       }
       this.isNewPath = true;
     }
@@ -124,18 +120,22 @@ export class LineLogicComponent extends ToolLogicDirective {
 
   onKeyDown(keyEv: KeyboardEvent) {
     const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight');
+
     if (keyEv.code === 'Escape' && !this.isNewPath) {
       this.getPath().removePath();
       this.isNewPath = true;
     }
+
     if (keyEv.code === 'Backspace' && this.getPath().datas.points.length >= 2) {
       this.getPath().removeLastLine();
       this.getPath().simulateNewLine(this.getPath().lastPoint);
     }
+
     if (shiftIsPressed && !this.isNewPath) {
       const transformedPoint = this.getPath().getAlignedPoint(this.mousePosition);
       this.getPath().simulateNewLine(transformedPoint);
     }
+
   };
 
   onKeyUp(keyEv: KeyboardEvent) {
