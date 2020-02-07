@@ -1,5 +1,7 @@
 import { ElementRef, Renderer2 } from '@angular/core';
-import { Point } from '../../tool-common classes/Point';
+
+import { Point } from '../../common/Point';
+
 export class Circle {
   constructor(private center: Point,
               private renderer: Renderer2,

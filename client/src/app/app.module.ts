@@ -15,7 +15,6 @@ import { HomeComponent } from './pages/home/home.component';
 import { ConfirmationDialogComponent } from './pages/new-draw/confirmation-dialog.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { PaletteDialogComponent } from './pages/new-draw/palette-dialog.component';
-import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 import { PanelComponent } from './panel/panel.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { SvgComponent } from './svg/svg.component';
@@ -45,7 +44,6 @@ import { RectanglePanelComponent } from './tool/rectangle/rectangle-panel/rectan
     LineLogicComponent,
     LinePanelComponent,
     NewDrawComponent,
-    NotFoundPageComponent,
     PanelComponent,
     PaletteDialogComponent,
     PencilLogicComponent,

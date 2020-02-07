@@ -16,7 +16,6 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { ToolSelectorService } from './tool/tool-selector/tool-selector.service';
 
 // tslint:disable: no-string-literal
-
 describe('AppComponent', () => {
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
@@ -90,7 +89,8 @@ describe('AppComponent', () => {
       ctrlKey: true,
     });
 
-    const spy = spyOn(component, 'openNewDrawDialog');
+    // La fonction est privée. On a besoin du any
+    const spy = spyOn<any>(component, 'openNewDrawDialog');
 
     component.keyEvent(event);
 
@@ -107,7 +107,7 @@ describe('AppComponent', () => {
 
     const spy1 = spyOn(component['toolSelectorService'], 'set');
 
-    const spy2 = spyOn(component, 'openNewDrawDialog');
+    const spy2 = spyOn<any>(component, 'openNewDrawDialog');
 
     component.keyEvent(event);
 
@@ -122,7 +122,7 @@ describe('AppComponent', () => {
   it('#openHomeDialog should call openSelectedDialog()', () => {
     component['dialogRefs'].home.disableClose = false;
 
-    component.openHomeDialog()
+    component['openHomeDialog']()
 
     component['dialogRefs'].home.close();
 
@@ -130,7 +130,7 @@ describe('AppComponent', () => {
   });
 
   it('#openSelectedDialog should call openNewDrawDialog', () => {
-    const spy = spyOn(component, 'openNewDrawDialog');
+    const spy = spyOn<any>(component, 'openNewDrawDialog');
 
     component['openSelectedDialog']('new');
 
@@ -138,7 +138,7 @@ describe('AppComponent', () => {
   });
 
   it('#openSelectedDialog should call openDocumentationDialog', () => {
-    const spy = spyOn(component, 'openDocumentationDialog');
+    const spy = spyOn<any>(component, 'openDocumentationDialog');
 
     component['openSelectedDialog']('documentation');
 
@@ -146,8 +146,8 @@ describe('AppComponent', () => {
   });
 
   it('#openSelectedDialog should not call openNewDrawDialog and openDocumentationDialog', () => {
-    const spy1 = spyOn(component, 'openNewDrawDialog');
-    const spy2 = spyOn(component, 'openDocumentationDialog');
+    const spy1 = spyOn<any>(component, 'openNewDrawDialog');
+    const spy2 = spyOn<any>(component, 'openDocumentationDialog');
 
     component['openSelectedDialog']('library');
 
@@ -156,8 +156,8 @@ describe('AppComponent', () => {
   });
 
   it('#openSelectedDialog should not call openNewDrawDialog and openDocumentationDialog', () => {
-    const spy1 = spyOn(component, 'openNewDrawDialog');
-    const spy2 = spyOn(component, 'openDocumentationDialog');
+    const spy1 = spyOn<any>(component, 'openNewDrawDialog');
+    const spy2 = spyOn<any>(component, 'openDocumentationDialog');
 
     component['openSelectedDialog']('home');
 
@@ -166,9 +166,9 @@ describe('AppComponent', () => {
   });
 
   it('#openNewDrawDialog should call getCommomDialogOptions.', () => {
-    const spy = spyOn(component, 'getCommomDialogOptions');
+    const spy = spyOn<any>(component, 'getCommomDialogOptions');
 
-    component.openNewDrawDialog();
+    component['openNewDrawDialog']();
 
     component['dialogRefs'].newDraw.close();
 
@@ -176,7 +176,7 @@ describe('AppComponent', () => {
   });
 
   it('#closeNewDrawDialog should call openHomeDialog if option is "home".', () => {
-    const spy = spyOn(component, 'openHomeDialog');
+    const spy = spyOn<any>(component, 'openHomeDialog');
 
     component['closeNewDrawDialog']('home');
 
@@ -184,7 +184,7 @@ describe('AppComponent', () => {
   });
 
   it('#closeNewDrawDialog should call createNewDraw if option is a NewDrawOtion type.', () => {
-    const spy = spyOn(component, 'createNewDraw');
+    const spy = spyOn<any>(component, 'createNewDraw');
 
     const option: NewDrawOptions = {
       width: 2,
@@ -198,8 +198,8 @@ describe('AppComponent', () => {
   });
 
   it('#closeNewDrawDialog should not call openHomeDialog and createNewDraw if option null.', () => {
-    const spy1 = spyOn(component, 'openHomeDialog');
-    const spy2 = spyOn(component, 'createNewDraw');
+    const spy1 = spyOn<any>(component, 'openHomeDialog');
+    const spy2 = spyOn<any>(component, 'createNewDraw');
 
     const option = null as unknown as NewDrawOptions;
 
@@ -212,7 +212,7 @@ describe('AppComponent', () => {
   it('#openDocumentationDialog should set onMainPage to false', () => {
     component['onMainPage'] = true;
 
-    component.openDocumentationDialog(true); // Le parametre n'a pas d'impact direct
+    component['openDocumentationDialog'](true); // Le parametre n'a pas d'impact direct
 
     component['dialogRefs'].documentation.close();
 
@@ -220,7 +220,7 @@ describe('AppComponent', () => {
   });
 
   it('#closeDocumentationDialog should call openHomeDialog if fromHome (arg) is true', () => {
-    const spy = spyOn(component, 'openHomeDialog');
+    const spy = spyOn<any>(component, 'openHomeDialog');
 
     component['closeDocumentationDialog'](true);
 
@@ -242,12 +242,12 @@ describe('AppComponent', () => {
       color: '#FFFFFF'
     }
 
-    component.drawInProgress = false;
+    component['drawInProgress'] = false;
 
     component.svg.nativeElement.appendChild(document.createElement('circle'))
 
-    component.createNewDraw(option);
+    component['createNewDraw'](option);
 
-    expect(component.drawInProgress).toBeTruthy();
+    expect(component['drawInProgress']).toBeTruthy();
   });
 });

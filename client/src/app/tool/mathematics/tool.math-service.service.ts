@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
+
+import { Point } from '../common/Point';
 import { Dimension } from '../rectangle/rectangle-logic/Dimension';
-import {Point} from '../tool-common classes/Point';
+
 const MINDIST = 3;
+
 @Injectable({
   providedIn: 'root'
 })

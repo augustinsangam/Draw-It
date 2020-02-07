@@ -3,7 +3,6 @@ import { TestBed } from '@angular/core/testing';
 import { Point } from '../tool-common classes/Point';
 import { MathService } from './tool.math-service.service';
 
-// tslint:disable: no-string-literal
 describe('MathService', () => {
   let service: MathService;
 
