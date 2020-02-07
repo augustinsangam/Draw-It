@@ -1,16 +1,22 @@
 import { ElementRef, Renderer2 } from '@angular/core';
+
+import { Point } from '../../common/Point';
 import { MathService} from '../../mathematicService/tool.math-service.service'
-import { Point } from '../../tool-common classes/Point';
 import { Dimension } from './Dimension';
 import { Style } from './Style';
 
 export class Rectangle {
+  private filled: boolean;
+    private styleAtr: string;
     private initialPoint: Point;
-    private styleAtr = ''
-    private filled = true
-    private mathService = new MathService ();
+    private mathService: MathService;
+
     constructor(initialPoint: Point, private renderer: Renderer2, private element: ElementRef) {
+      this.filled = true;
+      this.styleAtr = '';
       this.initialPoint = initialPoint;
+      // TODO: Do not recreate
+      this.mathService = new MathService();
     }
 
     drawRectangle(upLeftCorner: Point, dimension: Dimension) {

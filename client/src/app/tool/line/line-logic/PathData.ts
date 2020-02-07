@@ -1,5 +1,5 @@
-import {Point} from '../../tool-common classes/Point';
-import {Circle} from './Circle'
+import { Point } from '../../common/Point';
+import { Circle } from './Circle'
 
 export interface PathData {
     points: Point[],
