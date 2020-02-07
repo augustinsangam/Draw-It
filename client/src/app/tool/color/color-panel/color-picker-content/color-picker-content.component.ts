@@ -3,14 +3,14 @@ import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/fo
 import { MatSliderChange } from '@angular/material';
 import { EventManager } from '@angular/platform-browser';
 import { ColorService, RGBColor } from '../../color.service';
-import { ColorPicklerItemComponent } from '../color-pickler-item/color-pickler-item.component';
+import { ColorPickerItemComponent } from '../color-picker-item/color-picker-item.component';
 
 @Component({
-  selector: 'app-color-pickler-content',
-  templateUrl: './color-pickler-content.component.html',
-  styleUrls: ['./color-pickler-content.component.scss']
+  selector: 'app-color-picker-content',
+  templateUrl: './color-picker-content.component.html',
+  styleUrls: ['./color-picker-content.component.scss']
 })
-export class ColorPicklerContentComponent implements AfterViewInit {
+export class ColorPickerContentComponent implements AfterViewInit {
 
   @Input() startColor: string;
 
@@ -25,12 +25,12 @@ export class ColorPicklerContentComponent implements AfterViewInit {
   }) private canvas: ElementRef;
 
   @ViewChild('actualColor', {
-    read: ColorPicklerItemComponent,
+    read: ColorPickerItemComponent,
     static: false
-  }) private actualColor: ColorPicklerItemComponent;
+  }) private actualColor: ColorPickerItemComponent;
 
-  @ViewChildren(ColorPicklerItemComponent)
-  private baseColorsCircles: QueryList<ColorPicklerItemComponent>;
+  @ViewChildren(ColorPickerItemComponent)
+  private baseColorsCircles: QueryList<ColorPickerItemComponent>;
 
   private context: CanvasRenderingContext2D;
 
@@ -56,12 +56,12 @@ export class ColorPicklerContentComponent implements AfterViewInit {
 
   constructor(private formBuilder: FormBuilder, private eventManager: EventManager, private colorService: ColorService) {
     this.colorForm = this.formBuilder.group({
-      r: ['', [Validators.required, ColorPicklerContentComponent.ValidatorInteger]],
-      g: ['', [Validators.required, ColorPicklerContentComponent.ValidatorInteger]],
-      b: ['', [Validators.required, ColorPicklerContentComponent.ValidatorInteger]],
-      a: ['', [Validators.required, ColorPicklerContentComponent.ValidatorInteger]],
+      r: ['', [Validators.required, ColorPickerContentComponent.ValidatorInteger]],
+      g: ['', [Validators.required, ColorPickerContentComponent.ValidatorInteger]],
+      b: ['', [Validators.required, ColorPickerContentComponent.ValidatorInteger]],
+      a: ['', [Validators.required, ColorPickerContentComponent.ValidatorInteger]],
       slider: [''],
-      hex: ['', [Validators.required, ColorPicklerContentComponent.ValidatorHex]]
+      hex: ['', [Validators.required, ColorPickerContentComponent.ValidatorHex]]
     });
   }
 
@@ -70,7 +70,7 @@ export class ColorPicklerContentComponent implements AfterViewInit {
     this.initialiseStartingColor();
 
     this.baseColorsCircles.toArray().slice(0, this.baseColors.length)
-    .forEach((circle: ColorPicklerItemComponent) => {
+    .forEach((circle: ColorPickerItemComponent) => {
       this.eventManager.addEventListener(circle.button.nativeElement, 'click', () => {
         this.startColor = circle.color;
         this.initialiseStartingColor();

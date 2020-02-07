@@ -5,8 +5,8 @@ import { EventManager } from '@angular/platform-browser';
 import { SvgService } from 'src/app/svg/svg.service';
 import { ToolPanelComponent } from '../../tool-panel/tool-panel.component';
 import { ColorService } from '../color.service';
-import { ColorPicklerContentComponent } from './color-pickler-content/color-pickler-content.component';
-import { ColorPicklerItemComponent } from './color-pickler-item/color-pickler-item.component';
+import { ColorPickerContentComponent } from './color-picker-content/color-picker-content.component';
+import { ColorPickerItemComponent } from './color-picker-item/color-picker-item.component';
 
 export enum ColorOption {
   Primary = 'PRIMARY',
@@ -35,29 +35,29 @@ export class ColorPanelComponent extends ToolPanelComponent implements OnInit, A
   showPalette = false;
 
   @ViewChild('colorPreviewPrimary', {
-    read : ColorPicklerItemComponent,
+    read : ColorPickerItemComponent,
     static : false
-  }) colorPreviewPrimary: ColorPicklerItemComponent;
+  }) colorPreviewPrimary: ColorPickerItemComponent;
 
   @ViewChild('colorPreviewSecondary', {
-    read : ColorPicklerItemComponent,
+    read : ColorPickerItemComponent,
     static : false
-  }) colorPreviewSecondary: ColorPicklerItemComponent;
+  }) colorPreviewSecondary: ColorPickerItemComponent;
 
   @ViewChild('colorPreviewBackground', {
-    read : ColorPicklerItemComponent,
+    read : ColorPickerItemComponent,
     static : false
-  }) colorPreviewBackground: ColorPicklerItemComponent;
+  }) colorPreviewBackground: ColorPickerItemComponent;
 
-  @ViewChildren(ColorPicklerItemComponent)
-  colorsItems: QueryList<ColorPicklerItemComponent>;
+  @ViewChildren(ColorPickerItemComponent)
+  colorsItems: QueryList<ColorPickerItemComponent>;
 
   @ViewChild('colorPalette', {
     static: false,
-    read: ColorPicklerContentComponent
-  }) colorPalette: ColorPicklerContentComponent;
+    read: ColorPickerContentComponent
+  }) colorPalette: ColorPickerContentComponent;
 
-  colorsItemsArray: ColorPicklerItemComponent[];
+  colorsItemsArray: ColorPickerItemComponent[];
 
   ngOnInit() {
     this.recentColors = this.colorService.recentColors;
