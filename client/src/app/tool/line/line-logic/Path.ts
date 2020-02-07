@@ -5,7 +5,7 @@ import {Circle} from './Circle'
 import {PathData} from './PathData'
 
 export class Path {
-    datas: PathData = {points: [], jonctions: [], instructions: []}
+    datas: PathData = {points: [], jonctions: [], instructions: []};
     private pathAtribute = '';
     lastPoint: Point;
     private mathService = new MathService();
