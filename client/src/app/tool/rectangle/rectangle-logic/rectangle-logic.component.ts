@@ -12,8 +12,7 @@ enum ClickType {
 
 @Component({
   selector: 'app-rectangle-logic',
-  templateUrl: './rectangle-logic.component.html',
-  styleUrls: ['./rectangle-logic.component.scss']
+  template: ''
 })
 export class RectangleLogicComponent extends ToolLogicComponent {
 
