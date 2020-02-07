@@ -16,7 +16,6 @@ export class Path {
                private element: ElementRef,
                public withJonctions: boolean ) {
     this.datas.points.push(initialPoint);
-    console.log(this.datas.points);
     const instruction = 'M ' + initialPoint.x.toString() + ' ' + initialPoint.y.toString() + ' ';
 
     this.addInstruction(instruction);

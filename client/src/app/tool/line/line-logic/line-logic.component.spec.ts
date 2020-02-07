@@ -98,16 +98,51 @@ fdescribe('LineLogicComponent', () => {
     expect(spy).toHaveBeenCalledTimes(2);
   });
 
-  it('onMouseUp devrait setter isNewPath à true', () => {
-    component.onMouseDown(new MouseEvent(
-      'mousedown',
-      {clientX: 10, clientY: 10, button: 0, shiftKey: false}
-    ));
+  it('onMouseUp devrait setter isNewPath à true pour un point à plus de 3 pixels', () => {
+    component['paths'] = [];
+    component['paths'].push(defaultPath);
+    defaultPath.datas.points = [];
+    defaultPath.datas.points.push({x: 42, y: 42});
+
     component.onMouseUp(new MouseEvent(
       'mouseup',
       {clientX: 100, clientY: 100, button: 0, shiftKey: false})
     );
+
     expect(component['isNewPath']).toBeTruthy();
+  });
+
+  it('onMouseUp devrait setter isNewPath à true et appeler getPath ' +
+    '5 fois pour un point à plus de 3 pixels et lorsqu\'on appuie sur shift', () => {
+    component['paths'] = [];
+    component['paths'].push(defaultPath);
+    defaultPath.datas.points = [];
+    defaultPath.datas.points.push({x: 42, y: 42});
+
+    component.onMouseUp(new MouseEvent(
+      'mouseup',
+      {clientX: 100, clientY: 100, button: 0, shiftKey: true})
+    );
+
+    expect(component['isNewPath']).toBeTruthy();
+  });
+
+  it('onMouseUp devrait appeler 5 fois getPath pour un point à moins de 3 pixels', () => {
+    component['isNewPath'] = false;
+
+    component['paths'] = [];
+    component['paths'].push(defaultPath);
+
+    const spy = spyOn(component, 'getPath').and.callThrough();
+    spyOn(component['mathService'], 'distanceIsLessThan3Pixel').and.callFake(() => true);
+
+    component.onMouseUp(new MouseEvent(
+      'mouseup',
+      {clientX: 43, clientY: 43, button: 0, shiftKey: false})
+    );
+
+    expect(component['isNewPath']).toBeTruthy();
+    expect(spy).toHaveBeenCalledTimes(5);
   })
 
 });

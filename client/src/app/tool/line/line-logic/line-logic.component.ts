@@ -104,7 +104,7 @@ export class LineLogicComponent extends ToolLogicDirective {
       let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
       this.getPath().removeLastLine(); // cancel the click event
       this.getPath().removeLastLine();
-      console.log(this.getPath());
+      console.log(this.getPath().datas);
       const isLessThan3pixels = this.mathService.distanceIsLessThan3Pixel(currentPoint, this.getPath().datas.points[0]);
       if (isLessThan3pixels) {
         this.getPath().closePath();
