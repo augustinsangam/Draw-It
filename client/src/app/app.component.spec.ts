@@ -1,16 +1,61 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AppComponent } from './app.component';
+import {  Overlay } from '@angular/cdk/overlay';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialog, MatDialogModule } from '@angular/material';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AppComponent, NewDrawOptions } from './app.component';
+import { MaterialModule } from './material.module';
+import { DocumentationComponent } from './pages/documentation/documentation.component';
+import { HomeComponent } from './pages/home/home.component';
+import { NewDrawComponent } from './pages/new-draw/new-draw.component';
+import { PanelComponent } from './panel/panel.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { ToolSelectorService } from './tool/tool-selector/tool-selector.service';
 
-describe('SidebarComponent', () => {
+// tslint:disable: no-string-literal
+
+describe('AppComponent', () => {
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AppComponent ]
+      declarations: [
+        AppComponent,
+        PanelComponent,
+        SidebarComponent,
+        HomeComponent,
+        NewDrawComponent,
+        DocumentationComponent,
+      ],
+      imports: [
+        BrowserAnimationsModule,
+        MatDialogModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MaterialModule,
+      ],
+      providers: [
+        ToolSelectorService,
+        Overlay,
+        MatDialog,
+        MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
     })
-    .compileComponents();
+    .overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [
+          HomeComponent,
+          NewDrawComponent,
+          DocumentationComponent,
+        ]
+      }
+    })
+
   }));
 
   beforeEach(() => {
@@ -23,4 +68,186 @@ describe('SidebarComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('#keyEvent should call this.toolSelectorService.set()', () => {
+    component['onMainPage'] = true;
+
+    const event = new KeyboardEvent('window:keydown', {
+      code: 'KeyC',
+    });
+
+    const spy = spyOn(component['toolSelectorService'], 'set');
+
+    component.keyEvent(event);
+
+    expect(spy).toHaveBeenCalled()
+  });
+
+  it('#keyEvent should call this.toolSelectorService.set()', () => {
+    component['onMainPage'] = true;
+
+    const event = new KeyboardEvent('window:keydown', {
+      code: 'KeyO',
+      ctrlKey: true,
+    });
+
+    const spy = spyOn(component, 'openNewDrawDialog');
+
+    component.keyEvent(event);
+
+    expect(spy).toHaveBeenCalled()
+  });
+
+  it('#keyEvent should call this.toolSelectorService.set()', () => {
+    component['onMainPage'] = false;
+
+    const event = new KeyboardEvent('window:keydown', {
+      code: 'KeyX',
+      ctrlKey: true,
+    });
+
+    const spy1 = spyOn(component['toolSelectorService'], 'set');
+
+    const spy2 = spyOn(component, 'openNewDrawDialog');
+
+    component.keyEvent(event);
+
+    expect(spy1).toHaveBeenCalledTimes(0);
+    expect(spy2).toHaveBeenCalledTimes(0);
+  });
+
+  it('#ngAfterViewInit should set component.svgService.instance to component.svg', () => {
+    expect(component['svgService'].instance).toBe(component.svg);
+  })
+
+  it('#openHomeDialog should call openSelectedDialog()', () => {
+    component['dialogRefs'].home.disableClose = false;
+
+    component.openHomeDialog()
+
+    component['dialogRefs'].home.close();
+
+    expect(component['dialogRefs'].home.disableClose).toBe(true);
+  });
+
+  it('#openSelectedDialog should call openNewDrawDialog', () => {
+    const spy = spyOn(component, 'openNewDrawDialog');
+
+    component['openSelectedDialog']('new');
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#openSelectedDialog should call openDocumentationDialog', () => {
+    const spy = spyOn(component, 'openDocumentationDialog');
+
+    component['openSelectedDialog']('documentation');
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#openSelectedDialog should not call openNewDrawDialog and openDocumentationDialog', () => {
+    const spy1 = spyOn(component, 'openNewDrawDialog');
+    const spy2 = spyOn(component, 'openDocumentationDialog');
+
+    component['openSelectedDialog']('library');
+
+    expect(spy1).toHaveBeenCalledTimes(0);
+    expect(spy2).toHaveBeenCalledTimes(0);
+  });
+
+  it('#openSelectedDialog should not call openNewDrawDialog and openDocumentationDialog', () => {
+    const spy1 = spyOn(component, 'openNewDrawDialog');
+    const spy2 = spyOn(component, 'openDocumentationDialog');
+
+    component['openSelectedDialog']('home');
+
+    expect(spy1).toHaveBeenCalledTimes(0);
+    expect(spy2).toHaveBeenCalledTimes(0);
+  });
+
+  it('#openNewDrawDialog should call getCommomDialogOptions.', () => {
+    const spy = spyOn(component, 'getCommomDialogOptions');
+
+    component.openNewDrawDialog();
+
+    component['dialogRefs'].newDraw.close();
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#closeNewDrawDialog should call openHomeDialog if option is "home".', () => {
+    const spy = spyOn(component, 'openHomeDialog');
+
+    component['closeNewDrawDialog']('home');
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#closeNewDrawDialog should call createNewDraw if option is a NewDrawOtion type.', () => {
+    const spy = spyOn(component, 'createNewDraw');
+
+    const option: NewDrawOptions = {
+      width: 2,
+      height: 2,
+      color: '#FFFFFF'
+    }
+
+    component['closeNewDrawDialog'](option);
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#closeNewDrawDialog should not call openHomeDialog and createNewDraw if option null.', () => {
+    const spy1 = spyOn(component, 'openHomeDialog');
+    const spy2 = spyOn(component, 'createNewDraw');
+
+    const option = null as unknown as NewDrawOptions;
+
+    component['closeNewDrawDialog'](option);
+
+    expect(spy1).toHaveBeenCalledTimes(0);
+    expect(spy2).toHaveBeenCalledTimes(0);
+  });
+
+  it('#openDocumentationDialog should set onMainPage to false', () => {
+    component['onMainPage'] = true;
+
+    component.openDocumentationDialog(true); // Le parametre n'a pas d'impact direct
+
+    component['dialogRefs'].documentation.close();
+
+    expect(component['onMainPage']).toBe(false);
+  });
+
+  it('#closeDocumentationDialog should call openHomeDialog if fromHome (arg) is true', () => {
+    const spy = spyOn(component, 'openHomeDialog');
+
+    component['closeDocumentationDialog'](true);
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#closeDocumentationDialog should set onMainpage tu true if fromHome (arg) is false.', () => {
+    component['onMainPage'] = false;
+
+    component['closeDocumentationDialog'](false);
+
+    expect(component['onMainPage']).toBeTruthy();
+  });
+
+  it('#createNewDraw should set drawInProgress to true', () => {
+    const option: NewDrawOptions = {
+      width: 2,
+      height: 2,
+      color: '#FFFFFF'
+    }
+
+    component.drawInProgress = false;
+
+    component.svg.nativeElement.appendChild(document.createElement('circle'))
+
+    component.createNewDraw(option);
+
+    expect(component.drawInProgress).toBeTruthy();
+  });
 });

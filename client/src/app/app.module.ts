@@ -2,10 +2,10 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatListModule } from '@angular/material';
+import { MatFormFieldModule, MatListModule } from '@angular/material';
 import { MatIconModule } from '@angular/material/icon';
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MccColorPickerModule } from 'material-community-components';
 
 import { AppComponent } from './app.component';
@@ -21,10 +21,9 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { SvgComponent } from './svg/svg.component';
 import { BrushLogicComponent } from './tool/brush/brush-logic/brush-logic.component';
 import { BrushPanelComponent } from './tool/brush/brush-panel/brush-panel.component';
-import { ColorLogicComponent } from './tool/color/color-logic/color-logic.component';
 import { ColorPanelComponent } from './tool/color/color-panel/color-panel.component';
-import { ColorPicklerContentComponent } from './tool/color/color-panel/color-pickler-content/color-pickler-content.component';
-import { ColorPicklerItemComponent } from './tool/color/color-panel/color-pickler-item/color-pickler-item.component';
+import { ColorPickerContentComponent } from './tool/color/color-panel/color-picker-content/color-picker-content.component';
+import { ColorPickerItemComponent } from './tool/color/color-panel/color-picker-item/color-picker-item.component';
 import { LineLogicComponent } from './tool/line/line-logic/line-logic.component';
 import { LinePanelComponent } from './tool/line/line-panel/line-panel.component';
 import { PencilLogicComponent } from './tool/pencil/pencil-logic/pencil-logic.component';
@@ -37,10 +36,9 @@ import { RectanglePanelComponent } from './tool/rectangle/rectangle-panel/rectan
     AppComponent,
     BrushLogicComponent,
     BrushPanelComponent,
-    ColorLogicComponent,
     ColorPanelComponent,
-    ColorPicklerContentComponent,
-    ColorPicklerItemComponent,
+    ColorPickerContentComponent,
+    ColorPickerItemComponent,
     ConfirmationDialogComponent,
     DocumentationComponent,
     HomeComponent,
@@ -64,16 +62,17 @@ import { RectanglePanelComponent } from './tool/rectangle/rectangle-panel/rectan
     FormsModule,
     HttpClientModule,
     MaterialModule,
+    MatFormFieldModule,
     MatIconModule,
     MatListModule,
     MccColorPickerModule,
+    NoopAnimationsModule,
     ReactiveFormsModule,
   ],
   providers: [],
   entryComponents: [
     BrushLogicComponent,
     BrushPanelComponent,
-    ColorLogicComponent,
     ColorPanelComponent,
     PaletteDialogComponent,
     ConfirmationDialogComponent,

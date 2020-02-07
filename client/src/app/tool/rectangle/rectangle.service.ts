@@ -6,12 +6,11 @@ import { ToolService } from '../tool.service';
 })
 export class RectangleService extends ToolService {
 
-  fillOption    = true;
-  borderOption  = true;
-  thickness     = 2;
+  fillOption = true;
+  borderOption = true;
+  thickness = 2;
 
   constructor() {
     super();
   }
-
 }

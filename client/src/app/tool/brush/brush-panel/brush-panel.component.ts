@@ -1,8 +1,9 @@
-import { Component, ElementRef } from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatRadioChange } from '@angular/material';
+import { MatRadioButton } from '@angular/material/radio';
 
-import { ToolPanelComponent } from '../../tool-panel/tool-panel.component';
+import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
 import { BrushService, Texture } from '../brush.service';
 
 @Component({
@@ -10,28 +11,38 @@ import { BrushService, Texture } from '../brush.service';
   templateUrl: './brush-panel.component.html',
   styleUrls: ['./brush-panel.component.scss']
 })
-export class BrushPanelComponent extends ToolPanelComponent {
-  brushForm: FormGroup;
+export class BrushPanelComponent extends ToolPanelDirective {
 
-  textures = [
+  private brushForm: FormGroup;
+
+  @ViewChild('radioChoice', {
+    static: false
+  }) protected radioChoice: MatRadioButton;
+
+  protected textures = [
     {
       value: Texture.Texture1,
+      name: 'Fractal',
       src: '/assets/texture1.png',
     },
     {
       value: Texture.Texture2,
+      name: 'Flou',
       src: '/assets/texture2.png',
     },
     {
       value: Texture.Texture3,
+      name: 'Ombre',
       src: '/assets/texture3.png',
     },
     {
       value: Texture.Texture4,
+      name: 'Graffiti',
       src: '/assets/texture4.png',
     },
     {
       value: Texture.Texture5,
+      name: 'Poussière',
       src: '/assets/texture5.png',
     },
   ];
@@ -47,12 +58,13 @@ export class BrushPanelComponent extends ToolPanelComponent {
     });
   }
 
-  onThicknessChange($event: Event) {
+  protected onThicknessChange(): void {
     this.brushForm.patchValue({ thicknessFormField: this.brushForm.value.thicknessSlider });
     this.service.thickness = this.brushForm.value.thicknessSlider;
   }
 
-  onOptionChange($event: MatRadioChange) {
+  protected onOptionChange($event: MatRadioChange): void {
     this.service.texture = $event.value;
   }
+
 }

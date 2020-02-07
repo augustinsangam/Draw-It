@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Output,
+  ViewChild,
+} from '@angular/core';
 
 import { ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
@@ -8,51 +15,74 @@ import { Tool } from '../tool/tool.enum';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent {
-  @Output() selectedTool: EventEmitter<Tool>;
-  @Output() documentationClick: EventEmitter<null>;
-  private selectedElDOMTokenList: DOMTokenList;
+export class SidebarComponent implements AfterViewInit {
+  @ViewChild('line', {
+    static: false,
+  })
+  protected lineElRef: ElementRef<HTMLElement>
 
+  @ViewChild('rectangle', {
+    static: false,
+  })
+  protected rectangleElRef: ElementRef<HTMLElement>
+
+  @ViewChild('pencil', {
+    static: false,
+  })
+  protected pencilElRef: ElementRef<HTMLElement>
+
+  @ViewChild('brush', {
+    static: false,
+  })
+  protected brushElRef: ElementRef<HTMLElement>
+
+  @Output() protected documentationEv: EventEmitter<null>;
+
+  private toolToElRef: Map<Tool, ElementRef<HTMLElement>>;
+
+  // Must be pubilc
   constructor(private readonly toolSelectorService: ToolSelectorService) {
-    this.selectedTool = new EventEmitter<Tool>();
-    this.documentationClick = new EventEmitter<null>();
+    this.documentationEv = new EventEmitter<null>();
+    this.toolToElRef = new Map();
   }
 
-  selectTool(tool: Tool, {classList}: HTMLElement) {
-    // TODO: TypeScript 3.7: this.selectedElDOMTokenList?.remove(…)
-    if (!!this.selectedElDOMTokenList) {
-      this.selectedElDOMTokenList.remove('selected');
+  // Must be pubilc
+  ngAfterViewInit() {
+    this.toolToElRef.set(Tool.Line, this.lineElRef);
+    this.toolToElRef.set(Tool.Rectangle, this.rectangleElRef);
+    this.toolToElRef.set(Tool.Pencil, this.pencilElRef);
+    this.toolToElRef.set(Tool.Brush, this.brushElRef);
+    this.toolSelectorService.onChange(
+      (tool, old) => this.selectTool(tool, old));
+  }
+
+  private selectTool(tool: Tool, old?: Tool) {
+    // TODO: TS 3.7 get(…)?.nativeEl w/o ‘has’ check
+    if (old != null) {
+      const oldElRef = this.toolToElRef.get(old);
+      if (!!oldElRef) {
+        oldElRef.nativeElement.classList.remove('selected');
+      }
     }
-    classList.add('selected');
-    this.selectedElDOMTokenList = classList;
-    this.toolSelectorService.set(tool);
+    const elRef = this.toolToElRef.get(tool);
+    if (!!elRef) {
+      elRef.nativeElement.classList.add('selected');
+    }
   }
 
-  selectPencil({target}: MouseEvent) {
-    this.selectTool(Tool.Pencil, target as HTMLElement);
+  protected selectLine() {
+    this.toolSelectorService.set(Tool.Line);
   }
 
-  selectBrush({target}: MouseEvent) {
-    this.selectTool(Tool.Brush, target as HTMLElement);
+  protected selectRectangle() {
+    this.toolSelectorService.set(Tool.Rectangle);
   }
 
-  selectEraser({target}: MouseEvent) {
-    this.selectTool(Tool.Eraser, target as HTMLElement);
+  protected selectPencil() {
+    this.toolSelectorService.set(Tool.Pencil);
   }
 
-  selectColor({target}: MouseEvent) {
-    this.selectTool(Tool.Color, target as HTMLElement);
+  protected selectBrush() {
+    this.toolSelectorService.set(Tool.Brush);
   }
-
-  selectLine({target}: MouseEvent) {
-    this.selectTool(Tool.Line, target as HTMLElement);
-  }
-
-  selectRectangle({target}: MouseEvent) {
-    this.selectTool(Tool.Rectangle, target as HTMLElement);
-  }
-
-  onClick($event: Event) {
-    this.documentationClick.emit(null);
-  };
 }

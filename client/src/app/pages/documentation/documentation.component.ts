@@ -43,7 +43,7 @@ export class DocumentationComponent {
     }
   }
 
-  constructLeafNodeArray(nodes: Node[]) {
+  private constructLeafNodeArray(nodes: Node[]) {
     for (const node of nodes) {
       if (!!node.children) {
         this.constructLeafNodeArray(node.children);
@@ -54,7 +54,7 @@ export class DocumentationComponent {
     }
   }
 
-  leafNodeArrayContains(node: Node): boolean {
+  private leafNodeArrayContains(node: Node): boolean {
     for (const nodes of this.leafNodeArray) {
       if (node.label === nodes.label) {
         return true;
@@ -63,27 +63,29 @@ export class DocumentationComponent {
     return false;
   }
 
-  isFirstNode(): boolean {
+  private isFirstNode(): boolean {
     return this.currentNodeIndex === 0;
   }
 
-  isLastNode(): boolean {
+  private isLastNode(): boolean {
     return this.currentNodeIndex + 1 === this.leafNodeArray.length;
   }
 
+  // not private because only called in the html => "next() is declared but its value is never read" warning
   previous() {
     if (!this.isFirstNode()) {
       this.displayNodeContent(this.leafNodeArray[this.currentNodeIndex - 1]);
     }
   }
 
+  // not private because only called in the html => "next() is declared but its value is never read" warning
   next() {
     if (!this.isLastNode()) {
       this.displayNodeContent(this.leafNodeArray[this.currentNodeIndex + 1]);
     }
   }
 
-  expandParent(nodes: Node[], id: number): boolean {
+  private expandParent(nodes: Node[], id: number): boolean {
     for (const node of nodes) {
       if (!!node.children) {
         if (this.expandParent(node.children, id)) {
@@ -97,7 +99,7 @@ export class DocumentationComponent {
     return false;
   }
 
-  displayNodeContent(node: Node) {
+  private displayNodeContent(node: Node) {
     this.contentToDisplay.title = node.label;
     if (node.id != null) {
       this.currentNodeIndex = node.id;

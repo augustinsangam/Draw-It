@@ -1,8 +1,9 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSlideToggleChange } from '@angular/material';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 
-import { ToolPanelComponent } from '../../tool-panel/tool-panel.component';
+import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
 import { LineService } from '../line.service';
 
 @Component({
@@ -10,9 +11,13 @@ import { LineService } from '../line.service';
   templateUrl: './line-panel.component.html',
   styleUrls: ['./line-panel.component.scss']
 })
-export class LinePanelComponent extends ToolPanelComponent {
+export class LinePanelComponent extends ToolPanelDirective {
 
-  lineForm: FormGroup;
+  private lineForm: FormGroup;
+
+  @ViewChild ('slideToggle', {
+    static: false
+  }) protected slideToggle: MatSlideToggle;
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: LineService,
@@ -27,16 +32,16 @@ export class LinePanelComponent extends ToolPanelComponent {
     });
   }
 
-  onChangeJonctionOption($event: MatSlideToggleChange) {
+  protected onChangeJonctionOption($event: MatSlideToggleChange): void {
     this.service.withJonction = ($event.checked);
   }
 
-  onThicknessChange($event: Event) {
+  protected onThicknessChange(): void {
     this.lineForm.patchValue({ thicknessFormField: this.lineForm.value.thicknessSlider });
     this.service.thickness = this.lineForm.value.thicknessSlider;
   }
 
-  onRadiusChange($event: Event) {
+  protected onRadiusChange(): void {
     this.lineForm.patchValue({ radiusFormField: this.lineForm.value.radiusSlider });
     this.service.radius = this.lineForm.value.radiusSlider;
   }

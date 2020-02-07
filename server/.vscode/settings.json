@@ -3,8 +3,5 @@
     "source.fixAll": false,
     "source.fixAll.eslint": true
   },
-  "editor.rulers": [
-    80
-  ],
   "eslint.format.enable": true
 }

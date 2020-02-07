@@ -1,23 +1,24 @@
-import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NewDrawComponent } from './new-draw.component';
 
 import { CdkObserveContent } from '@angular/cdk/observers';
-import { Overlay, ComponentType } from '@angular/cdk/overlay';
+import { ComponentType, Overlay } from '@angular/cdk/overlay';
 import { ElementRef } from '@angular/core';
 import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatCard, MatCardContent,
    MatCardTitle, MatDialog, MatDialogActions, MatDialogClose, MatDialogContainer, MatDialogContent,
    MatDialogRef, MatFormField, MatHint, MatInput, MatLabel, MatSlider } from '@angular/material';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ColorPicklerContentComponent } from 'src/app/tool/color/color-panel/color-pickler-content/color-pickler-content.component';
-import { ColorPicklerItemComponent } from 'src/app/tool/color/color-panel/color-pickler-item/color-pickler-item.component';
+import { Observable } from 'rxjs';
+// import { ColorPickerContentComponent } from 'src/app/tool/color/color-panel/color-picker-content/color-picker-content.component';
+import { ColorPickerItemComponent } from 'src/app/tool/color/color-panel/color-picker-item/color-picker-item.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 import { PaletteDialogComponent } from './palette-dialog.component';
 import { ScreenService } from './sreen-service/screen.service';
-import { Observable } from 'rxjs';
 
+// tslint:disable: no-string-literal
 describe('NewDrawComponent', () => {
   let component: NewDrawComponent;
   let fixture: ComponentFixture<NewDrawComponent>;
@@ -34,7 +35,7 @@ describe('NewDrawComponent', () => {
       ],
       declarations: [
         NewDrawComponent,
-        ColorPicklerItemComponent,
+        ColorPickerItemComponent,
         MatLabel,
         MatHint,
         MatFormField,
@@ -43,7 +44,6 @@ describe('NewDrawComponent', () => {
         PaletteDialogComponent,
         ConfirmationDialogComponent,
         MatDialogContainer,
-        ColorPicklerContentComponent,
         MatDialogActions,
         MatDialogContent,
         MatDialogClose,
@@ -129,7 +129,7 @@ describe('NewDrawComponent', () => {
 
     component['palette'] = {
       button: new ElementRef(component['renderer'].createElement('button')),
-    } as ColorPicklerItemComponent;
+    } as ColorPickerItemComponent;
 
     component.ngAfterViewInit();
     tick(500);

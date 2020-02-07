@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/fo
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
 
-import { ColorPicklerItemComponent } from 'src/app/tool/color/color-panel/color-pickler-item/color-pickler-item.component';
+import { ColorPickerItemComponent } from 'src/app/tool/color/color-panel/color-picker-item/color-picker-item.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 import { PaletteDialogComponent } from './palette-dialog.component';
 import { ScreenService, ScreenSize } from './sreen-service/screen.service';
@@ -34,8 +34,8 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('palette', {
     static: false,
-    read: ColorPicklerItemComponent
-  }) palette: ColorPicklerItemComponent;
+    read: ColorPickerItemComponent
+  }) palette: ColorPickerItemComponent;
 
   @ViewChild('button', {
     static: false,

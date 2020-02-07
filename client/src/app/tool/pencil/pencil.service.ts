@@ -8,9 +8,7 @@ import { ToolService } from '../tool.service';
 export class PencilService extends ToolService {
 
   thickness = 10;
-
   constructor() {
     super();
   }
-
 }

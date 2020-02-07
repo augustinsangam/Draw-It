@@ -10,4 +10,6 @@ Vous pouvez également sélectionner une couleur manuellement en entrant des val
 
 Les dernières couleurs choisies peuvent être accédées en les sélectionnant dans la liste `Couleurs récentes` se trouvant au dessus de la palette. Pour définir une couleur récente comme couleur primaire, effectuez un clic gauche. Pour définir une couleur récente comme couleur secondaire, effectuez un clic droit.
 
-Enfin, des couleurs prédéfinies vous sont proposées dans la barre `Couleur principales` se trouvant en dessous de la palette de couleur.
+Des couleurs prédéfinies vous sont proposées dans la barre `Couleur principales` se trouvant en dessous de la palette de couleur.
+
+Enfin, vous pouvez en tout temps changer la couleur du fond de l'image, en cliquant sur le bouton PLACEHOLDER placé en dessous ? de la palette de couleurs.
