@@ -1,9 +1,16 @@
 import { ElementRef, Renderer2 } from '@angular/core';
+<<<<<<< HEAD
+import { MathService} from '../../mathematics/tool.math-service.service'
+import {Point} from '../../tool-common classes/Point';
+import {Circle} from './Circle'
+import {PathData} from './PathData'
+=======
 
 import { Point } from '../../common/Point';
 import { MathService } from '../../mathematicService/tool.math-service.service'
 import { Circle } from './Circle'
 import { PathData } from './PathData'
+>>>>>>> next
 
 export class Path {
     datas: PathData = {points: [], jonctions: [], instructions: []};

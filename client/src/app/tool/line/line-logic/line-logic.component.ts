@@ -1,7 +1,12 @@
 import { Component, OnDestroy, Renderer2 } from '@angular/core';
 import { ColorService } from '../../color/color.service';
+<<<<<<< HEAD
+import { MathService} from '../../mathematics/tool.math-service.service'
+import { Point } from '../../tool-common classes/Point'
+=======
 import { Point } from '../../common/Point'
 import { MathService} from '../../mathematicService/tool.math-service.service'
+>>>>>>> next
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { LineService } from '../line.service';
 import { JonctionOption } from './jonctionOptions'

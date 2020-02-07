@@ -1,7 +1,6 @@
 import { ElementRef, Renderer2 } from '@angular/core';
-
 import { Point } from '../../common/Point';
-import { MathService} from '../../mathematicService/tool.math-service.service'
+import { MathService} from '../../mathematics/tool.math-service.service'
 import { Dimension } from './Dimension';
 import { Style } from './Style';
 
