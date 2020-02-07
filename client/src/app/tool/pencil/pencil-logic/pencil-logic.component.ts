@@ -8,7 +8,8 @@ import { PencilService } from '../pencil.service';
   selector: 'app-pencil-logic',
   template: ''
 })
-export class PencilLogicComponent extends PencilBrushCommon implements AfterViewInit {
+export class PencilLogicComponent extends PencilBrushCommon
+       implements AfterViewInit {
 
   strokeLineCap: string;
   private listeners: (() => void)[] = [];
@@ -85,6 +86,10 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
           this.stopDrawing();
         }
     });
-    this.listeners = [mouseDownListen, mouseMoveListen, mouseUpListen, mouseLeaveListen];
+    this.listeners = [mouseDownListen,
+      mouseMoveListen,
+      mouseUpListen,
+      mouseLeaveListen
+    ];
   }
 }
