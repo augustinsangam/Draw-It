@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ColorPickerItemComponent } from '../color-picker-item/color-picker-item.component';
 import { ColorPickerContentComponent } from './color-picker-content.component';
 
+/* tslint:disable:no-string-literal */
 describe('ColorPickerContentComponent', () => {
   let component: ColorPickerContentComponent;
   let fixture: ComponentFixture<ColorPickerContentComponent>;
@@ -34,8 +35,6 @@ describe('ColorPickerContentComponent', () => {
     })
       .compileComponents();
   }));
-
-  /* tslint:disable:no-string-literal */
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ColorPickerContentComponent);
@@ -106,8 +105,9 @@ describe('ColorPickerContentComponent', () => {
   });
 
   it('#onChangeR methods should replace the slider and update hex value', () => {
-    const spyPlaceSlider = spyOn(component, 'placeSlider');
-    const spyUpdateHex = spyOn(component, 'updateHex');
+    // any est demandé parceque c'est une méthode privée
+    const spyPlaceSlider = spyOn<any>(component, 'placeSlider');
+    const spyUpdateHex = spyOn<any>(component, 'updateHex');
     component['colorForm'].patchValue({ r: 100 });
     component['onChangeR']();
     expect(spyPlaceSlider).toHaveBeenCalled();
@@ -115,14 +115,14 @@ describe('ColorPickerContentComponent', () => {
   });
 
   it('#onChangeG methods should update the hex value', () => {
-    const spyUpdateHex = spyOn(component, 'updateHex');
+    const spyUpdateHex = spyOn<any>(component, 'updateHex');
     component['colorForm'].patchValue({ g: 100 });
     component['onChangeG']();
     expect(spyUpdateHex).toHaveBeenCalled();
   });
 
   it('#onChangeB methods should update the hex value', () => {
-    const spyUpdateHex = spyOn(component, 'updateHex');
+    const spyUpdateHex = spyOn<any>(component, 'updateHex');
     component['colorForm'].patchValue({ b: 100 });
     component['onChangeB']();
     expect(spyUpdateHex).toHaveBeenCalled();
@@ -147,7 +147,7 @@ describe('ColorPickerContentComponent', () => {
         // Si on arrive ici cela veut dire qu'une couleur a bien été émise
         expect(true).toBe(true);
       });
-      component.onConfirm();
+      component['onConfirm']();
     }, 500);
     tick(600);
   }))
@@ -197,13 +197,13 @@ describe('ColorPickerContentComponent', () => {
   });
 
   it('#traker should be redraw after a click on the canvas', () => {
-    const spy = spyOn(component, 'drawTracker');
+    const spy = spyOn<any>(component, 'drawTracker');
     component['canvas'].nativeElement.click();
     expect(spy).toHaveBeenCalled();
   });
 
   it('#palette should be reinitialised after a click on a recent color', () => {
-    const spy = spyOn(component, 'initialiseStartingColor');
+    const spy = spyOn<any>(component, 'initialiseStartingColor');
     component['baseColorsCircles'].toArray()[3].button.nativeElement.click();
     expect(spy).toHaveBeenCalled();
   });

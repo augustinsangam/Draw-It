@@ -12,17 +12,17 @@ import { RectangleService } from '../rectangle.service';
 })
 export class RectanglePanelComponent extends ToolPanelDirective implements AfterViewChecked {
 
-  rectangleForm: FormGroup;
+  private rectangleForm: FormGroup;
 
   @ViewChild('fillOptionRef', {
     static: false,
     read : MatSlideToggle
-  }) fillOptionRef: MatSlideToggle;
+  }) protected fillOptionRef: MatSlideToggle;
 
   @ViewChild('borderOptionRef', {
     static: false,
     read : MatSlideToggle
-  }) borderOptionRef: MatSlideToggle;
+  }) protected borderOptionRef: MatSlideToggle;
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: RectangleService,
@@ -36,7 +36,6 @@ export class RectanglePanelComponent extends ToolPanelDirective implements After
     });
   }
 
-  // TODO: AfterViewInit??
   ngAfterViewChecked() {
     this.fillOptionRef.change.subscribe(($event: MatSlideToggleChange) => {
       this.service.fillOption = ($event.checked);
@@ -61,7 +60,7 @@ export class RectanglePanelComponent extends ToolPanelDirective implements After
     });
   }
 
-  onThicknessChange() {
+  protected onThicknessChange(): void {
     this.rectangleForm.patchValue({ thicknessFormField: this.rectangleForm.value.thicknessSlider });
     this.service.thickness = this.rectangleForm.value.thicknessSlider;
   }

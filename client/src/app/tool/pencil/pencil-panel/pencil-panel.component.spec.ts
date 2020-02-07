@@ -5,6 +5,7 @@ import {FormBuilder, FormsModule} from '@angular/forms';
 import {PencilService} from '../pencil.service';
 import { PencilPanelComponent } from './pencil-panel.component';
 
+// tslint:disable: no-string-literal
 describe('PencilPanelComponent', () => {
   let component: PencilPanelComponent;
   let fixture: ComponentFixture<PencilPanelComponent>;
@@ -33,13 +34,13 @@ describe('PencilPanelComponent', () => {
   });
 
   it ('pencilForm devrait avoir été créé correctement', () => {
-    expect(component.pencilForm).toBeTruthy();
+    expect(component['pencilForm']).toBeTruthy();
   });
 
   it ('onThicknessCahange devrait appeler patchValue', () => {
-    const spy = spyOn(component.pencilForm, 'patchValue');
-    component.onThicknessChange();
+    const spy = spyOn(component['pencilForm'], 'patchValue');
+    component['onThicknessChange']();
     expect(spy).toHaveBeenCalled();
-  })
+  });
 
 });

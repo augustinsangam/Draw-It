@@ -11,6 +11,7 @@ import { ColorPickerContentComponent } from '../../color/color-panel/color-picke
 import { ColorPickerItemComponent } from '../../color/color-panel/color-picker-item/color-picker-item.component';
 import {LinePanelComponent} from './line-panel.component';
 
+// tslint:disable: no-string-literal
 describe('LinePanelComponent', () => {
   let component: LinePanelComponent;
   let fixture: ComponentFixture<LinePanelComponent>;
@@ -57,22 +58,20 @@ describe('LinePanelComponent', () => {
   });
 
   it('devrait changer l\'attribut withJonction du service à false', () => {
-    // tslint:disable-next-line: no-string-literal
     component['service'].withJonction = true;
-    component.onChangeJonctionOption(new MatSlideToggleChange(component.slideToggle, false));
-    // tslint:disable-next-line: no-string-literal
+    component['onChangeJonctionOption'](new MatSlideToggleChange(component['slideToggle'], false));
     expect(component['service'].withJonction).toBeFalsy();
   });
 
   it('onThicknessChange devrait appeler la fonction patchValue', () => {
-    const spy = spyOn(component.lineForm, 'patchValue');
-    component.onThicknessChange();
+    const spy = spyOn(component['lineForm'], 'patchValue');
+    component['onThicknessChange']();
     expect(spy).toHaveBeenCalled();
   });
 
   it('onRadiusChange devrait appeler la fonction patchValue', () => {
-    const spy = spyOn(component.lineForm, 'patchValue');
-    component.onRadiusChange();
+    const spy = spyOn(component['lineForm'], 'patchValue');
+    component['onRadiusChange']();
     expect(spy).toHaveBeenCalled();
   });
 

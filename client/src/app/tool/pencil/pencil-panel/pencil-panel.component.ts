@@ -10,7 +10,8 @@ import { PencilService } from '../pencil.service';
   styleUrls: ['./pencil-panel.component.scss']
 })
 export class PencilPanelComponent extends ToolPanelDirective {
-  pencilForm: FormGroup;
+
+  private pencilForm: FormGroup;
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: PencilService,
@@ -22,7 +23,7 @@ export class PencilPanelComponent extends ToolPanelDirective {
     });
   }
 
-  onThicknessChange() {
+  protected onThicknessChange(): void {
     this.pencilForm.patchValue({
       thicknessFormField: this.pencilForm.value.thicknessSlider,
     });

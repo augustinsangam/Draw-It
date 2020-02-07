@@ -79,7 +79,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
 
   }
 
-  initialiseStartingColor() {
+  initialiseStartingColor(): void {
     this.context = this.canvas.nativeElement.getContext('2d');
 
     const startColor = this.colorService.hexToRgb(this.startColor);
@@ -120,7 +120,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
     });
   }
 
-  buildCanvas(redValue: number) {
+  private buildCanvas(redValue: number): void {
 
     const allPixels = this.context.createImageData(256, 256);
     let i = 0;
@@ -136,19 +136,19 @@ export class ColorPickerContentComponent implements AfterViewInit {
     this.context.putImageData(allPixels, 0, 0);
   }
 
-  onSlide($event: MatSliderChange) {
+  protected onSlide($event: MatSliderChange): void {
     this.buildCanvas(Number($event.value));
     this.colorForm.patchValue({ r: Number($event.value) });
     this.drawTracker(this.colorForm.controls.b.value, this.colorForm.controls.g.value);
     this.updateHex();
   }
 
-  placeSlider(value: number) {
+  private placeSlider(value: number): void {
     this.colorForm.patchValue({ slider: value });
     this.buildCanvas(value);
   }
 
-  onChangeR() {
+  protected onChangeR(): void {
     if (this.colorForm.controls.r.value < 0) {
       this.colorForm.patchValue({ r: 0 });
       return;
@@ -161,7 +161,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
     this.updateHex();
   }
 
-  onChangeG() {
+  protected onChangeG(): void {
     if (this.colorForm.controls.g.value < 0) {
       this.colorForm.patchValue({ g: 0 });
       return;
@@ -173,7 +173,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
     this.updateHex();
   }
 
-  onChangeB() {
+  protected onChangeB(): void {
     if (this.colorForm.controls.b.value < 0) {
       this.colorForm.patchValue({ b: 0 });
       return;
@@ -185,7 +185,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
     this.updateHex();
   }
 
-  onChangeA() {
+  protected onChangeA(): void {
     if (this.colorForm.controls.a.value < 0) {
       this.colorForm.patchValue({ a: 0 });
       return;
@@ -196,7 +196,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
     this.actualColor.updateColor(this.getActualRgba());
   }
 
-  onChangeHex() {
+  protected onChangeHex(): void {
     if (/^[0-9A-F]{6}$/i.test(this.colorForm.controls.hex.value)) {
       const rgb: RGBColor = this.colorService.hexToRgb(this.colorForm.controls.hex.value);
       this.colorForm.patchValue({
@@ -209,19 +209,19 @@ export class ColorPickerContentComponent implements AfterViewInit {
     this.reDrawTracker();
   }
 
-  drawTracker(blue: number, green: number) {
+  private drawTracker(blue: number, green: number): void {
     this.context.beginPath();
     this.context.arc(blue, green, 7, 0, 2 * Math.PI);
     this.context.stroke();
     this.actualColor.updateColor(this.getActualRgba());
   }
 
-  reDrawTracker() {
+  private reDrawTracker(): void {
     this.buildCanvas(this.colorForm.controls.r.value);
     this.drawTracker(this.colorForm.controls.b.value, this.colorForm.controls.g.value);
   }
 
-  updateHex() {
+  private updateHex(): void {
     const hexValue = this.colorService.rgbToHex({
       r : this.colorForm.controls.r.value,
       g : this.colorForm.controls.g.value,
@@ -230,14 +230,14 @@ export class ColorPickerContentComponent implements AfterViewInit {
     this.colorForm.patchValue({ hex: hexValue });
   }
 
-  getActualRgba() {
+  private getActualRgba(): string {
     return `rgba(${this.colorForm.controls.r.value}, ` +
     `${this.colorForm.controls.g.value}, ` +
     `${this.colorForm.controls.b.value}, ` +
     `${this.colorForm.controls.a.value / 100})`;
   }
 
-  onConfirm() {
+  protected onConfirm(): void {
     this.colorChange.emit(this.getActualRgba());
   }
 
