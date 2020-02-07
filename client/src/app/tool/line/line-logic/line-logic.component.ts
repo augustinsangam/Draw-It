@@ -78,7 +78,7 @@ export class LineLogicComponent extends ToolLogicComponent {
     if (!this.isNewPath) {
       let point = this.mousePosition = {x: mouseEv.offsetX, y: mouseEv.offsetY};
       if (mouseEv.shiftKey) {
-        point = this.getPath().getAlignedPoint(point)
+        point = this.getPath().getAlignedPoint(point);
       }
       this.getPath().simulateNewLine(point);
     }

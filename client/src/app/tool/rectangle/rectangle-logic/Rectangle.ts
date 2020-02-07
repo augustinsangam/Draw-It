@@ -12,7 +12,6 @@ export class Rectangle {
     constructor(initialPoint: Point, private renderer: Renderer2, private element: ElementRef) {
       this.initialPoint = initialPoint;
     }
-
     drawRectangle(upLeftCorner: Point, dimension: Dimension) {
       this.renderer.setAttribute(this.element, 'x', upLeftCorner.x.toString());
       this.renderer.setAttribute(this.element, 'y', upLeftCorner.y.toString());
