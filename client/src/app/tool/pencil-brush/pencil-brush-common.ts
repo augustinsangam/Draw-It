@@ -2,10 +2,7 @@ import { ToolLogicDirective } from '../tool-logic/tool-logic.directive';
 
 export abstract class PencilBrushCommon extends ToolLogicDirective {
     svgTag: string;
-    color: string;
-    stroke: string;
     strokeWidth: number;
-    fill: string;
     stringPath: string;
     mouseOnHold: boolean;
     svgPath: SVGPathElement;
