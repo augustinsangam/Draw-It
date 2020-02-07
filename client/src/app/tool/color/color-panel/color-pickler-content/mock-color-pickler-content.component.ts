@@ -5,7 +5,7 @@ import { ColorPicklerItemComponent } from '../color-pickler-item/color-pickler-i
 
 @Component({
     selector: 'app-color-pickler-content',
-    template: '<p>HahahahHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHha</p>',
+    template: '',
 })
 export class MockColorPicklerContentComponent {
 

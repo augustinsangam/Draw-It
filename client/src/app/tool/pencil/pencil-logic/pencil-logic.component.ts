@@ -6,8 +6,7 @@ import { PencilService } from '../pencil.service';
 
 @Component({
   selector: 'app-pencil-logic',
-  templateUrl: './pencil-logic.component.html',
-  styleUrls: ['./pencil-logic.component.scss']
+  template: ''
 })
 export class PencilLogicComponent extends PencilBrushCommon implements AfterViewInit {
 

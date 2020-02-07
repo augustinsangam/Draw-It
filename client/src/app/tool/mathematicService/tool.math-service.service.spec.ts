@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { LineLogicMathService } from './line-logic-math.service';
+import { MathService } from './tool.math-service.service';
 
-describe('LineLogicMathService', () => {
+describe('MathService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: LineLogicMathService = TestBed.get(LineLogicMathService);
+    const service: MathService = TestBed.get(MathService);
     expect(service).toBeTruthy();
   });
 });

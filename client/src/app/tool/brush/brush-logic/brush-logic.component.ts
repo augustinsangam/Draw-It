@@ -5,8 +5,7 @@ import { BrushService } from '../brush.service';
 
 @Component({
   selector: 'app-brush-logic',
-  templateUrl: './brush-logic.component.html',
-  styleUrls: ['./brush-logic.component.scss']
+  template: ''
 })
 export class BrushLogicComponent extends PencilBrushCommon implements AfterViewInit {
 

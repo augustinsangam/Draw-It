@@ -11,4 +11,6 @@ export class Circle {
     this.renderer.setAttribute(this.element, 'r'    , this.radius);
     this.renderer.setAttribute(this.element, 'fill' , this.color);
   }
+  setCircleCss() {
+  }
 }

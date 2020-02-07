@@ -1,35 +1,23 @@
 {
-  "name": "log2990-server",
-  "version": "0.0.0-development",
-  "license": "ISC",
-  "author": "Issam Maghni <me@concati.me>",
-  "contributors": [
-    "Samba Bal",
-    "Hubert Grootenboer",
-    "Eya-Tom Augustin Sangam",
-    "Nicolas Verbaere",
-    "Mathurin"
-  ],
   "main": "lib/index.js",
   "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "https://gitlab.com/francafrique/log2990.git"
-  },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=13.2.0"
   },
   "scripts": {
     "start": "nodemon --es-module-specifier-resolution=node",
-    "clean": "rimraf lib/ tsconfig.tsbuildinfo",
+    "clean": "rimraf coverage/ lib/ tsconfig.tsbuildinfo",
     "build": "tsc",
     "watch": "tsc --watch",
-    "test": "echo nop",
-    "coverage": "echo not yet",
+    "test": "node --es-module-specifier-resolution=node node_modules/.bin/mocha",
+    "coverage": "c8 npm t",
     "lint": "eslint --max-warnings 0 --fix --ext .js,.ts src/"
   },
   "nodemonConfig": {
     "watch": "lib"
+  },
+  "mocha": {
+    "spec": "lib/__tests__/"
   },
   "eslintConfig": {
     "root": true,
@@ -44,7 +32,7 @@
       "plugin:prettier/recommended"
     ],
     "parserOptions": {
-      "ecmaVersion": 2019,
+      "ecmaVersion": 2020,
       "sourceType": "module"
     },
     "rules": {
@@ -62,15 +50,23 @@
     "trailingComma": "all"
   },
   "dependencies": {
-    "nodemon": "^2.0.2"
+    "inversify": "^5.0.1",
+    "nodemon": "^2.0.2",
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.8",
+    "@types/mocha": "^7.0.1",
     "@typescript-eslint/eslint-plugin": "^2.17.0",
     "@typescript-eslint/parser": "^2.17.0",
+    "c8": "^7.0.1",
+    "chai": "^4.2.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-prettier": "^3.1.2",
+    "mocha": "7.0.0-esm1",
     "prettier": "^1.19.1",
+    "rimraf": "^3.0.1",
     "typescript": "^3.7.5"
   }
 }

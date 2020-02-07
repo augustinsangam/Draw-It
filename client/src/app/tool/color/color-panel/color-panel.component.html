@@ -3,7 +3,7 @@
   <table>
     <tr>
       <td class="radio-button">
-        <mat-radio-button value="PRIMARY" checked></mat-radio-button>
+        <mat-radio-button [value]="colorOptionEnum.Primary" checked></mat-radio-button>
       </td>
       <td class="radio-button-text">Primaire</td>
       <td class="color-preview-circle">
@@ -19,11 +19,20 @@
     </tr>
     <tr>
       <td>
-        <mat-radio-button value="SECONDARY"></mat-radio-button>
+        <mat-radio-button [value]="colorOptionEnum.Secondary"></mat-radio-button>
       </td>
       <td class="radio-button-text">Secondaire</td>
       <td class="color-preview-circle">
         <app-color-pickler-item #colorPreviewSecondary></app-color-pickler-item>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <mat-radio-button [value]="colorOptionEnum.Background"></mat-radio-button>
+      </td>
+      <td class="radio-button-text">Arrière plan</td>
+      <td class="color-preview-circle">
+        <app-color-pickler-item #colorPreviewBackground></app-color-pickler-item>
       </td>
     </tr>
   </table>

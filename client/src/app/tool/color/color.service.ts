@@ -11,6 +11,7 @@ export class ColorService {
 
   primaryColor = 'rgba(230, 25, 75, 1)';
   secondaryColor = 'rgba(240, 50, 230, 1)';
+  backgroundColor = 'rgba(255, 255, 255, 1)';
 
   promote(index: number) {
     const colorToPromote = this.recentColors[index];
@@ -37,6 +38,11 @@ export class ColorService {
 
   selectSecondaryColor(color: string) {
     this.secondaryColor = color;
+    this.pushColor(color);
+  }
+
+  selectBackgroundColor(color: string) {
+    this.backgroundColor = color;
     this.pushColor(color);
   }
 
