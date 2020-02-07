@@ -8,7 +8,7 @@ import { ToolSelectorService } from '../tool/tool-selector/tool-selector.service
 import { Tool } from '../tool/tool.enum';
 import { SidebarComponent } from './sidebar.component';
 
-fdescribe('SidebarComponent', () => {
+describe('SidebarComponent', () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
 
