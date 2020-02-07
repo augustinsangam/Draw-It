@@ -49,4 +49,10 @@ fdescribe('CanvasComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
+  it('#others', () => {
+    // All handlers function have been tested
+    component['setToolHandler'](Tool.Brush);
+  });
+
+  
 });

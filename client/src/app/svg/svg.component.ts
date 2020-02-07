@@ -33,8 +33,10 @@ export class SvgComponent implements OnInit {
     this.components[Tool.Rectangle] = RectangleLogicComponent;
   }
 
+  private setToolHandler = (tool: Tool) => this.setTool(tool);
+
   ngOnInit() {
-    this.toolSelectorService.onChange(tool => this.setTool(tool));
+    this.toolSelectorService.onChange(this.setToolHandler);
   }
 
   private setTool(tool: Tool): ComponentRef<ToolLogicComponent>  {
