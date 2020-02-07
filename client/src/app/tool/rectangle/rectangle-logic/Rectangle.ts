@@ -1,7 +1,6 @@
 import { ElementRef, Renderer2 } from '@angular/core';
-
 import { Point } from '../../common/Point';
-import { MathService} from '../../mathematicService/tool.math-service.service'
+import { MathService} from '../../mathematics/tool.math-service.service'
 import { Dimension } from './Dimension';
 import { Style } from './Style';
 
@@ -18,7 +17,6 @@ export class Rectangle {
       // TODO: Do not recreate
       this.mathService = new MathService();
     }
-
     drawRectangle(upLeftCorner: Point, dimension: Dimension) {
       this.renderer.setAttribute(this.element, 'x', upLeftCorner.x.toString());
       this.renderer.setAttribute(this.element, 'y', upLeftCorner.y.toString());

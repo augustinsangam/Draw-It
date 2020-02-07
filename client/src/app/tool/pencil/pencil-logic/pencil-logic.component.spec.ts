@@ -1,12 +1,6 @@
-import {
-  async,
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick,
-} from '@angular/core/testing';
 
 import { ElementRef, Renderer2 } from '@angular/core';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ColorService } from '../../color/color.service';
 import { PencilService } from '../pencil.service';
 import { PencilLogicComponent } from './pencil-logic.component';

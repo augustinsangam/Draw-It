@@ -52,28 +52,39 @@ export class RectangleLogicComponent extends ToolLogicDirective {
     }
     );
 
-    const onKeyDown = this.renderer.listen('document', 'keydown', (keyEv: KeyboardEvent) => {
-      if (this.onDrag) {
-        if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
-          this.getRectangle().drawTemporarySquare(this.currentPoint)
-        }
-      }
+    const onKeyDown = this.renderer.listen('document', 'keydown',
+      (keyEv: KeyboardEvent) => {
+        this.onKeyDown(keyEv);
+      });
+
+    const onKeyUp = this.renderer.listen('document', 'keyup',
+      (keyEv: KeyboardEvent) => {
+        this.onKeyUp(keyEv);
     });
 
-    const onKeyUp = this.renderer.listen('document', 'keyup', (keyEv: KeyboardEvent) => {
-      if (this.onDrag) {
-        if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
-          this.getRectangle().drawTemporaryRectangle(this.currentPoint)
-        }
-      }
-    });
     this.allListeners = [onMouseDown, onKeyDown, onKeyUp, onMouseMove, onMouseUp]
   }
 
-  getRectangle(): Rectangle {
+  private onKeyDown(keyEv: KeyboardEvent) {
+    if (this.onDrag) {
+       if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
+         this.getRectangle().drawTemporarySquare(this.currentPoint)
+       }
+     }
+  }
+
+  private onKeyUp(keyEv: KeyboardEvent) {
+    if (this.onDrag) {
+      if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
+        this.getRectangle().drawTemporaryRectangle(this.currentPoint)
+      }
+    }
+  }
+
+  private getRectangle(): Rectangle {
     return this.rectangles[this.currentRectangleIndex];
   }
-  initRectangle(mouseEv: MouseEvent) {
+  private initRectangle(mouseEv: MouseEvent) {
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
       this.currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
       const rectangle = this.renderer.createElement('rect', this.svgNS);
@@ -88,7 +99,7 @@ export class RectangleLogicComponent extends ToolLogicDirective {
       this.onDrag = true;
     }
   }
-  viewTemporaryForm(mouseEv: MouseEvent) {
+  private viewTemporaryForm(mouseEv: MouseEvent) {
     if (mouseEv.shiftKey) {
       this.getRectangle().drawTemporarySquare(this.currentPoint)
     } else {

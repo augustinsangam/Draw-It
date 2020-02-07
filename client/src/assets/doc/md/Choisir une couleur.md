@@ -1,6 +1,6 @@
 La **palette de couleur** permet de choisir les couleurs utilisées par les différents outils de DrawIt. Elle toujours accessible depuis le panneau de l'outil sélectionné.
 
-<img src="../../assets/doc/doc.imgs/outilCouleur.png" class="doc-img, floatLeft" title="Panneau de l'outil couleur" alt="image outil couleur" width="30%">
+<img src="../../assets/doc/imgs/outilCouleur.png" class="doc-img, floatLeft" title="Panneau de l'outil couleur" alt="image outil couleur" width="30%">
 
 Vous pouvez choisir une couleur primaire ainsi qu’une couleur secondaire. La couleur primaire sera utilisée pour dessiner, la couleur secondaire sera utilisée pour les contours lorsque l’outil sélectionné présentera cette option.
 
