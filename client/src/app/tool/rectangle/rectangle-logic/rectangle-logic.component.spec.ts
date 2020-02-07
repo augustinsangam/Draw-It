@@ -1,7 +1,7 @@
 import { ElementRef, Renderer2 } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ColorService } from '../../color/color.service';
-import { Point } from '../../tool-common classes/Point';
+import { Point } from '../../common/Point';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { RectangleService } from '../rectangle.service';
 import { RectangleLogicComponent } from './rectangle-logic.component';
