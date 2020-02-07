@@ -1,13 +1,14 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NewDrawComponent } from './new-draw.component';
 
 import { CdkObserveContent } from '@angular/cdk/observers';
-import { Overlay } from '@angular/cdk/overlay';
+import { Overlay, ComponentType } from '@angular/cdk/overlay';
 import { ElementRef } from '@angular/core';
 import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatCard, MatCardContent,
-   MatCardTitle, MatDialog, MatDialogActions, MatDialogClose, MatDialogContainer, MatDialogContent, MatDialogRef, MatFormField, MatHint, MatInput, MatLabel, MatSlider } from '@angular/material';
+   MatCardTitle, MatDialog, MatDialogActions, MatDialogClose, MatDialogContainer, MatDialogContent,
+   MatDialogRef, MatFormField, MatHint, MatInput, MatLabel, MatSlider } from '@angular/material';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ColorPicklerContentComponent } from 'src/app/tool/color/color-panel/color-pickler-content/color-pickler-content.component';
@@ -15,8 +16,9 @@ import { ColorPicklerItemComponent } from 'src/app/tool/color/color-panel/color-
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 import { PaletteDialogComponent } from './palette-dialog.component';
 import { ScreenService } from './sreen-service/screen.service';
+import { Observable } from 'rxjs';
 
-fdescribe('NewDrawComponent', () => {
+describe('NewDrawComponent', () => {
   let component: NewDrawComponent;
   let fixture: ComponentFixture<NewDrawComponent>;
   const mockDialogRef = {
@@ -105,26 +107,48 @@ fdescribe('NewDrawComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#ngAfterViewInit should do smth when click', (done: DoneFn) => {
+  it('#ngAfterViewInit should do smth when click', fakeAsync(() => {
     // const spy = spyOn(component['dialog'], 'open').and.callThrough();
+    // const spyDialogOpen = spyOn(component['dialog'], 'open').and.callFake(() => {
+    //   return {
+    //     afterClosed: (colorPicked: string|undefined) => {
+    //         subscribe: (colorPicked: any) => {};
+    //       }
+    //   };
+    // });
+
+    // tslint:disable-next-line: only-arrow-functions
+    const spyDialogOpen = spyOn(component['dialog'], 'open').and
+    .callFake(
+      function<PaletteDialogComponent>(component: ComponentType<PaletteDialogComponent>): MatDialogRef<PaletteDialogComponent> {
+        return {
+          afterClosed: () => new Observable<any>()
+        } as unknown as MatDialogRef<PaletteDialogComponent>;
+      }
+    );
 
     component['palette'] = {
-      button: new ElementRef(document.createElement('button')),
+      button: new ElementRef(component['renderer'].createElement('button')),
     } as ColorPicklerItemComponent;
 
-    // component['palette'].button.nativeElement = document.createElement('div');
-
     component.ngAfterViewInit();
+    tick(500);
 
-    console.log(component['palette'].button);
+    console.log(component['dialogRefs'].palette);
+
+    console.log(component['palette']);
 
     component['palette'].button.nativeElement.click();
 
+    setTimeout(() => {
+      expect(spyDialogOpen).toHaveBeenCalled();
+    }, 500);
+    tick(500);
+
     // setTimeout(() => {
     //   // expect(spy).toHaveBeenCalled();
-    //   done();
     // }, 500);
-  });
+  }));
 
   it('#closePaletteDialog should call palette.updateColor with colorPicked if it is not undefine', () => {
     const spy = spyOn(component.palette, 'updateColor');
@@ -133,7 +157,6 @@ fdescribe('NewDrawComponent', () => {
 
     expect(spy).toHaveBeenCalledWith('#FFFFFF');
   });
-
 
   it('#closePaletteDialog should not call palette.updateColor if colorPiked is undefine', () => {
     const spy = spyOn(component.palette, 'updateColor');
@@ -179,18 +202,19 @@ fdescribe('NewDrawComponent', () => {
     expect(mockDialogRef.close).toHaveBeenCalled();
   });
 
-  it('#onSubmit should call dialogRef.close if data.drawInProgress is false', () => {
-    component.data.drawInProgress = true;
-    component['dialogRefs'].confirm = component['dialog'].open(ConfirmationDialogComponent);
-    component['dialogRefs'].confirm.disableClose = false;
+  // it('#onSubmit should call dialogRef.close if data.drawInProgress is false', () => {
+  //   component.data.drawInProgress = true;
+  //   component['dialogRefs'].confirm = component['dialog'].open(ConfirmationDialogComponent);
+  //   component['dialogRefs'].confirm.disableClose = false;
 
-    component.onSubmit();
+  //   component.onSubmit();
 
-    component['dialogRefs'].confirm.close();
+  //   component['dialogRefs'].confirm.close();
 
-    expect(component['dialogRefs'].confirm.disableClose).toBe(true);
-  });
-///////////// plus de onSubmit
+  //   expect(component['dialogRefs'].confirm.disableClose).toBe(true);
+  // });
+
+  ///////////// plus de onSubmit
 
   it('#closeDialog should call dialogRef.close with this.form.value if result is true', () => {
     component['closeDialog'](true);
