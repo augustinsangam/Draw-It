@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 import { DocumentationComponent } from './pages/documentation/documentation.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -22,6 +22,12 @@ export enum OverlayPages {
   New = 'new',
 };
 
+export interface DialogRefs {
+  home: MatDialogRef<HomeComponent>,
+  newDraw: MatDialogRef<NewDrawComponent>,
+  documentation: MatDialogRef<DocumentationComponent>,
+};
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -30,6 +36,7 @@ export enum OverlayPages {
 export class AppComponent implements AfterViewInit {
   private readonly toolSelector: Map<string, Tool> ;
   private onMainPage = false;
+  private dialogRefs: DialogRefs;
   drawInProgress = false;
   drawOption: NewDrawOptions = { height : 0, width : 0, color: ''};
 
@@ -55,6 +62,11 @@ export class AppComponent implements AfterViewInit {
     this.toolSelector.set('Digit1', Tool.Rectangle);
     this.toolSelector.set('KeyL', Tool.Line);
     this.toolSelector.set('KeyW', Tool.Brush);
+    this.dialogRefs = {
+      home: undefined as unknown as MatDialogRef<HomeComponent>,
+      newDraw: undefined as unknown as MatDialogRef<NewDrawComponent>,
+      documentation: undefined as unknown as MatDialogRef<DocumentationComponent>,
+    };
    };
 
   @HostListener('window:keydown', ['$event'])
@@ -77,37 +89,44 @@ export class AppComponent implements AfterViewInit {
   }
 
   openHomeDialog() {
-    const dialogRef = this.dialog.open(HomeComponent, this.getCommomDialogOptions());
-    dialogRef.disableClose = true;
-    dialogRef.afterClosed().subscribe((result: string) => {
-      switch (result) {
-        case OverlayPages.New:
-          this.openNewDrawDialog();
-          break;
-        case OverlayPages.Library:
-          console.log('On ouvre la librairie');
-          break;
-        case OverlayPages.Documentation:
-          this.openDocumentationDialog(true);
-          break;
-        default:
-          break;
-      }
+    this.dialogRefs.home = this.dialog.open(HomeComponent, this.getCommomDialogOptions());
+    this.dialogRefs.home.disableClose = true;
+    this.dialogRefs.home.afterClosed().subscribe((result: string) => {
+      this.openSelectedDialog(result);
     });
   }
 
-  openNewDrawDialog() {
-    const newDialog = this.dialog.open(NewDrawComponent, this.getCommomDialogOptions());
-    newDialog.disableClose = true;
+  private openSelectedDialog(dialog: string) {
+    switch (dialog) {
+      case OverlayPages.New:
+        this.openNewDrawDialog();
+        break;
+      case OverlayPages.Library:
+        break;
+      case OverlayPages.Documentation:
+        this.openDocumentationDialog(true);
+        break;
+      default:
+        break;
+    }
+  }
 
-    newDialog.afterClosed().subscribe((resultNewDialog) => {
-      if (resultNewDialog === OverlayPages.Home) {
-        this.openHomeDialog();
-      } else if (resultNewDialog !== null) {
-        this.createNewDraw(resultNewDialog);
-        this.onMainPage = true;
-      }
+  openNewDrawDialog() {
+    this.dialogRefs.newDraw = this.dialog.open(NewDrawComponent, this.getCommomDialogOptions());
+    this.dialogRefs.newDraw.disableClose = true;
+
+    this.dialogRefs.newDraw.afterClosed().subscribe((resultNewDialog) => {
+      this.closeNewDrawDialog(resultNewDialog);
     });
+  }
+
+  private closeNewDrawDialog(option: string | NewDrawOptions) {
+    if (option === OverlayPages.Home) {
+      this.openHomeDialog();
+    } else if (option !== null ) {
+      this.createNewDraw(option as NewDrawOptions);
+      this.onMainPage = true;
+    }
   }
 
   openDocumentationDialog(fromHome: boolean) {
@@ -116,16 +135,20 @@ export class AppComponent implements AfterViewInit {
       height: '100vh',
       panelClass: 'documentation',
     };
-    const newDialog = this.dialog.open(DocumentationComponent, dialogOptions);
-    newDialog.disableClose = false;
+    this.dialogRefs.documentation = this.dialog.open(DocumentationComponent, dialogOptions);
+    this.dialogRefs.documentation.disableClose = false;
     this.onMainPage = false;
-    newDialog.afterClosed().subscribe((resultNewDialog) => {
-      if (fromHome) {
-        this.openHomeDialog();
-      } else {
-        this.onMainPage = true;
-      }
+    this.dialogRefs.documentation.afterClosed().subscribe(() => {
+      this.closeDocumentationDialog(fromHome);
     });
+  }
+
+  private closeDocumentationDialog(fromHome: boolean) {
+    if (fromHome) {
+      this.openHomeDialog();
+    } else {
+      this.onMainPage = true;
+    }
   }
 
   createNewDraw(option: NewDrawOptions) {
@@ -137,5 +160,6 @@ export class AppComponent implements AfterViewInit {
     childrens.forEach(element => {
       element.remove();
     });
+
   }
 }

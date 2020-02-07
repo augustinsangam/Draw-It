@@ -36,13 +36,13 @@ export class SidebarComponent {
     this.selectTool(Tool.Brush, target as HTMLElement);
   }
 
-  selectEraser({target}: MouseEvent) {
-    this.selectTool(Tool.Eraser, target as HTMLElement);
-  }
-
-  selectColor({target}: MouseEvent) {
-    this.selectTool(Tool.Color, target as HTMLElement);
-  }
+  // selectEraser({target}: MouseEvent) {
+  //   this.selectTool(Tool.Eraser, target as HTMLElement);
+  // }
+  //
+  // selectColor({target}: MouseEvent) {
+  //   this.selectTool(Tool.Color, target as HTMLElement);
+  // }
 
   selectLine({target}: MouseEvent) {
     this.selectTool(Tool.Line, target as HTMLElement);

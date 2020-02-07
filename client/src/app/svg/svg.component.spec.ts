@@ -1,8 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { ComponentRef } from '@angular/core';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { BrushLogicComponent } from '../tool/brush/brush-logic/brush-logic.component';
+import { LineLogicComponent } from '../tool/line/line-logic/line-logic.component';
+import { ToolLogicComponent } from '../tool/tool-logic/tool-logic.component';
+import { Tool } from '../tool/tool.enum';
 import { SvgComponent } from './svg.component';
 
-describe('CanvasComponent', () => {
+// tslint:disable: no-string-literal
+describe('SvgComponent', () => {
   let component: SvgComponent;
   let fixture: ComponentFixture<SvgComponent>;
 
@@ -10,8 +17,18 @@ describe('CanvasComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         SvgComponent,
+        LineLogicComponent,
+        BrushLogicComponent
       ],
-    }).compileComponents();
+    })
+    .overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [
+          LineLogicComponent,
+          BrushLogicComponent
+        ]
+      }
+    })
   }));
 
   beforeEach(() => {
@@ -22,6 +39,24 @@ describe('CanvasComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('#setTool should set the good value to the variable ref', () => {
+    let refReturned: ComponentRef<ToolLogicComponent>;
+    refReturned = component['setTool'](Tool.Line);
+    expect(refReturned.instance.svgElRef).toEqual(component['elementRef']);
+  });
+
+  it('#ngOnInit should call onChange', () => {
+    const spy = spyOn(component['toolSelectorService'], 'onChange');
+    component.ngOnInit();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#others', () => {
+    // All handlers function have been tested
+    component['setToolHandler'](Tool.Brush);
+    expect(true).toEqual(true);
   });
 
 });

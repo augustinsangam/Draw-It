@@ -8,8 +8,7 @@ import { Path } from './Path'
 
 @Component({
   selector: 'app-line-logic',
-  templateUrl: './line-logic.component.html',
-  styleUrls: ['./line-logic.component.scss']
+  template: ''
 })
 export class LineLogicComponent extends ToolLogicComponent {
   private paths: Path[] = [];
