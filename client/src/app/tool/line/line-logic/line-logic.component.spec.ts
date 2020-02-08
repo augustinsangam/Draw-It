@@ -105,7 +105,18 @@ describe('LineLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('onMouseDown devrait appeler isNewLine et ' +
+  it('addNewLine ne devrait pas appeler createJonction si withJonction est false', () => {
+    component['onMouseClick'](new MouseEvent(
+      'mousedown',
+      {clientX: 100, clientY: 100, button: 0} as MouseEventInit)
+    );
+    component['getPath']().withJonctions = false;
+    const spy = spyOn<any>(component, 'createJonction');
+    component['addNewLine']({x: 100, y: 100});
+    expect(spy).toHaveBeenCalledTimes(0);
+  });
+
+  it('onMouseClick devrait appeler isNewLine et ' +
     'setter isNewPath à false lorsque Shift n\'est pas pressé', () => {
     const spy = spyOn<any>(component, 'addNewLine');
     component['isNewPath'] = true;
@@ -117,7 +128,7 @@ describe('LineLogicComponent', () => {
     expect(component['isNewPath']).toBeFalsy();
   });
 
-  it('onMouseDown devrait appeler getAlignedPoint et ' +
+  it('onMouseClick devrait appeler getAlignedPoint et ' +
     'setter isNewPath à false lorsque Shift est pressé', () => {
     component['paths'].push(defaultPath);
     const spy = spyOn(component['paths'][0], 'getAlignedPoint').and.callFake((): Point => ({x: 100, y: 100}));
@@ -157,7 +168,17 @@ describe('LineLogicComponent', () => {
     expect(spy).toHaveBeenCalledTimes(2);
   });
 
-  it('onMouseUp devrait setter isNewPath à true pour un point à plus de 3 pixels', () => {
+  it('onMouseMove ne devrait rien faire si isNewPath est true', () => {
+    component['isNewPath'] = true;
+    const spy = spyOn<any>(component, 'getPath').and.callThrough();
+    component['onMouseMove'](new MouseEvent(
+      'mousemove',
+      {clientX: 100, clientY: 100, button: 0, shiftKey: true} as MouseEventInit)
+    );
+    expect(spy).toHaveBeenCalledTimes(0);
+  });
+
+  it('onMouseDblClick devrait setter isNewPath à true pour un point à plus de 3 pixels', () => {
     component['paths'] = [];
     component['paths'].push(defaultPath);
     defaultPath.datas.points = [];
@@ -171,7 +192,7 @@ describe('LineLogicComponent', () => {
     expect(component['isNewPath']).toBeTruthy();
   });
 
-  it('onMouseUp devrait seter isNewPath à true et appeler getPath ' +
+  it('onMouseDblClick devrait seter isNewPath à true et appeler getPath ' +
     '5 fois pour un point à plus de 3 pixels et lorsqu\'on appuie sur shift', () => {
     component['paths'] = [];
     component['paths'].push(defaultPath);
@@ -180,18 +201,42 @@ describe('LineLogicComponent', () => {
     spyOn(component['mathService'], 'distanceIsLessThan3Pixel').and.callFake(() => false);
     spyOn(component['mathService'], 'findAlignedSegmentPoint');
     spyOn(component['paths'][0], 'getAlignedPoint').and.callFake((): Point => ({x: 300, y: 300}));
-    const spy = spyOn<any>(component, 'addNewLine');
+    const spyaddNewLine = spyOn<any>(component, 'addNewLine');
+    const spygetPath = spyOn<any>(component, 'getPath').and.callThrough();
 
     component['onMouseDblClick'](new MouseEvent(
       'mouseup',
       {clientX: 100, clientY: 100, button: 0, shiftKey: true})
     );
 
-    expect(spy).toHaveBeenCalled();
+    expect(spyaddNewLine).toHaveBeenCalled();
+    expect(spygetPath).toHaveBeenCalledTimes(4);
     expect(component['isNewPath']).toBeTruthy();
   });
 
-  it('onMouseUp devrait appeler 5 fois getPath pour un point à moins de 3 pixels', () => {
+  it('onMouseDblClick devrait seter isNewPath à true et appeler getPath ' +
+    '5 fois pour un point à plus de 3 pixels et lorsqu\'on n\'appuie pas sur shift', () => {
+    component['paths'] = [];
+    component['paths'].push(defaultPath);
+    component['isNewPath'] = false;
+
+    spyOn(component['mathService'], 'distanceIsLessThan3Pixel').and.callFake(() => false);
+    spyOn(component['mathService'], 'findAlignedSegmentPoint');
+    spyOn(component['paths'][0], 'getAlignedPoint').and.callFake((): Point => ({x: 300, y: 300}));
+    const spyaddNewLine = spyOn<any>(component, 'addNewLine');
+    const spygetPath = spyOn<any>(component, 'getPath').and.callThrough();
+
+    component['onMouseDblClick'](new MouseEvent(
+      'mouseup',
+      {clientX: 100, clientY: 100, button: 0, shiftKey: false})
+    );
+
+    expect(spyaddNewLine).toHaveBeenCalled();
+    expect(spygetPath).toHaveBeenCalledTimes(3);
+    expect(component['isNewPath']).toBeTruthy();
+  });
+
+  it('onMouseDblClick devrait appeler 5 fois getPath pour un point à moins de 3 pixels', () => {
     component['isNewPath'] = false;
 
     component['paths'] = [];
@@ -280,6 +325,17 @@ describe('LineLogicComponent', () => {
     ));
 
     expect(spy).toHaveBeenCalled();
+  });
+
+  it('onKeyUp ne devrait rien faire si isNewPath n\'est pas true', () => {
+    component['isNewPath'] = true;
+    const spy = spyOn<any>(component, 'getPath');
+    component['onKeyUp'](new KeyboardEvent(
+      'shift',
+      {code: 'ShiftRight'}
+    ));
+
+    expect(spy).toHaveBeenCalledTimes(0);
   });
 
   it('ngOnDestroy devrait rendre called à true ' +

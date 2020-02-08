@@ -26,8 +26,8 @@ export class LineLogicComponent extends ToolLogicDirective
               private readonly serviceColor: ColorService,
               private readonly mathService: MathService) {
     super();
-    this.paths = new Array();
-    this.listeners = new Array();
+    this.paths = [];
+    this.listeners = [];
     this.isNewPath = true;
   }
 
@@ -73,7 +73,7 @@ export class LineLogicComponent extends ToolLogicDirective
       this.getPath().removeLastLine(); // cancel the click event
       this.getPath().removeLastLine();
       const isLessThan3pixels = this.mathService.distanceIsLessThan3Pixel(
-        currentPoint, this.getPath().datas.points[0])
+        currentPoint, this.getPath().datas.points[0]);
       if (isLessThan3pixels) {
         this.getPath().closePath();
       } else {
@@ -97,7 +97,7 @@ export class LineLogicComponent extends ToolLogicDirective
   }
 
   private onKeyDown(keyEv: KeyboardEvent) {
-    const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight')
+    const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight');
     if (keyEv.code === 'Escape' && !this.isNewPath) {
       this.getPath().removePath();
       this.isNewPath = true;
@@ -113,7 +113,7 @@ export class LineLogicComponent extends ToolLogicDirective
   }
 
   private onKeyUp(keyEv: KeyboardEvent) {
-    const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight')
+    const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight');
     if (shiftIsPressed && !this.isNewPath) {
       this.getPath().simulateNewLine(this.mousePosition);
     }
