@@ -93,7 +93,7 @@ export class BrushLogicComponent extends PencilBrushCommon {
     this.stringPath = '';
   }
 
-  onMouseMove(mouseEv: MouseEvent) {
+  onMouseMove(mouseEv: MouseEvent): void {
     this.drawing(mouseEv);
     this.svgPath.setAttribute('d', this.stringPath);
   }
@@ -124,7 +124,7 @@ export class BrushLogicComponent extends PencilBrushCommon {
     return svgFilterEl;
   }
 
-  generateFilterTwo() {
+  generateFilterTwo(): SVGFilterElement {
     const filterSvgEl: SVGFilterElement =
       this.renderer.createElement('filter', this.svgNS);
     filterSvgEl.setAttribute('id', 'filter2');
@@ -143,7 +143,7 @@ export class BrushLogicComponent extends PencilBrushCommon {
     return filterSvgEl;
   }
 
-  generateFilterThree() {
+  generateFilterThree(): SVGFilterElement {
     const svgFilterEl: SVGFilterElement =
       this.renderer.createElement('filter', this.svgNS);
     svgFilterEl.setAttribute('id', 'filter3');
@@ -198,13 +198,12 @@ export class BrushLogicComponent extends PencilBrushCommon {
       this.renderer.createElement('feMergeNode', this.svgNS);
     feMergeNode2.setAttribute('in', 'litPaint');
     this.renderer.appendChild(feMerge, feMergeNode2);
-
     this.renderer.appendChild(svgFilterEl, feMerge);
 
     return svgFilterEl;
   }
 
-  generateFilterFour() {
+  generateFilterFour(): SVGFilterElement {
     const svgFilterEl: SVGFilterElement =
       this.renderer.createElement('filter', this.svgNS);
     svgFilterEl.setAttribute('id', 'filter4');
@@ -229,10 +228,9 @@ export class BrushLogicComponent extends PencilBrushCommon {
     this.renderer.appendChild(svgFilterEl, svgDisplacementMap);
 
     return svgFilterEl;
-
   }
 
-  generateFilterFive() {
+  generateFilterFive(): SVGFilterElement {
     const filterSvgEl: SVGFilterElement =
       this.renderer.createElement('filter', this.svgNS);
     filterSvgEl.setAttribute('id', 'filter5');
