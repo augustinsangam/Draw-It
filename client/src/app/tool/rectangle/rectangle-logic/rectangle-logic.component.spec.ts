@@ -10,7 +10,7 @@ const createClickMouseEvent = (event: string): MouseEvent => {
   return new MouseEvent(event, { offsetX: 10, offsetY: 30, button: 0 } as MouseEventInit);
 }
 // tslint:disable:no-string-literal
-fdescribe('RectangleLogicComponent', () => {
+describe('RectangleLogicComponent', () => {
   let component: RectangleLogicComponent;
   let fixture: ComponentFixture<RectangleLogicComponent>;
 

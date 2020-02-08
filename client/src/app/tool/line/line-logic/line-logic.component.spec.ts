@@ -7,7 +7,7 @@ import {Point} from '../../common/Point';
 import { LineLogicComponent } from './line-logic.component';
 import {Path} from './Path';
 
-describe('LineLogicComponent', () => {
+fdescribe('LineLogicComponent', () => {
   let component: LineLogicComponent;
   let fixture: ComponentFixture<LineLogicComponent>;
   let defaultPath: Path;
@@ -268,6 +268,19 @@ describe('LineLogicComponent', () => {
     expect(spy).toHaveBeenCalledTimes(2);
   });
 
+  it('onKeyDown devrait ne rien appeler si isNewPath est true', () => {
+  component['isNewPath'] = true;
+  component['paths'] = [];
+  component['paths'].push(defaultPath);
+  const spy = spyOn<any>(component['getPath'](), 'removePath');
+
+  component['onKeyDown'](new KeyboardEvent(
+    'escape',
+    {code: 'Escape'}
+  ));
+  expect(spy).toHaveBeenCalledTimes(0);
+});
+
   it('onKeyDown devrait appeler 1 fois la méthode getPath lorsqu\'elle est appelée ' +
     'avec Escape, et devrait set isNewPath à true', () => {
     component['isNewPath'] = false;
@@ -288,6 +301,7 @@ describe('LineLogicComponent', () => {
     defaultPath.datas.points = [];
     defaultPath.datas.points.push({x: 42, y: 42});
     defaultPath.datas.points.push({x: 404, y: 404});
+    component['isNewPath'] = false;
     component['paths'] = [];
     component['paths'].push(defaultPath);
     const spyRemo = spyOn(component['getPath'](), 'removeLastLine');
