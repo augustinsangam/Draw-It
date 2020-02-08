@@ -44,6 +44,30 @@ fdescribe('RectangleLogicComponent', () => {
     tick(1000);
   }));
 
+  it('the onDrag atribute is valid only when the left button is clicked', () => {
+    const event = new MouseEvent('mousedown', { offsetX: 10, offsetY: 30, button: 2 } as MouseEventInit)
+    component['service'].borderOption = false;
+    component['initRectangle'](event)
+    expect(component['onDrag']).toEqual(false);
+  });
+  it('the rectangle css is defined by the rectangleService and the colorService', () => {
+    const event = createClickMouseEvent('mousedown');
+    component['initRectangle'](event);
+    const spy = spyOn<any>(component['getRectangle'](), 'setParameters');
+    component['service'].borderOption = false;
+    component['service'].fillOption = true;
+    component['colorService'].secondaryColor = 'black';
+    component['colorService'].primaryColor = 'black';
+    const style = {
+      borderWidth: '0',
+      borderColor: 'red',
+        fillColor: 'red',
+        filled: true,
+      }
+    component['initRectangle'](event);
+    expect(spy).not.toHaveBeenCalledWith(style);
+  });
+
   it('in initRectangle() currentPoint should be equal to the mouse coordinates, the array should be initialised', fakeAsync(() => {
     const mouseEv: MouseEvent = createClickMouseEvent('mousedown');
     const pointExpected: Point = {x: mouseEv.offsetX, y: mouseEv.offsetY};
@@ -63,6 +87,21 @@ fdescribe('RectangleLogicComponent', () => {
     );
     setTimeout(() => {
       expect(spy1).toHaveBeenCalledTimes(1);
+    }, 1000);
+    tick(1000);
+  }));
+
+  it('mouseMove should not do anything if not on drag', fakeAsync(() => {
+    const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
+    component.svgElRef.nativeElement.dispatchEvent(
+      createClickMouseEvent('mousedown')
+    );
+    component['onDrag'] = false;
+    component.svgElRef.nativeElement.dispatchEvent(
+      createClickMouseEvent('mousemove')
+    );
+    setTimeout(() => {
+      expect(spy1).not.toHaveBeenCalled();
     }, 1000);
     tick(1000);
   }));
@@ -89,6 +128,15 @@ fdescribe('RectangleLogicComponent', () => {
     component['viewTemporaryForm'](event);
     expect(spy1).toHaveBeenCalled();
   }));
+
+  // it('mousemove should not do anything when its not on drag ', fakeAsync(() => {
+  //   component['initRectangle'](createClickMouseEvent('mousedown'));
+  //   component['onDrag'] = false;
+  //   const spy1 = spyOn<any>(component['getRectangle'](), 'drawTemporarySquare');
+  //   const event: MouseEvent = new MouseEvent('mousemove', { offsetX: 10, offsetY: 30, button: 0, shiftKey: true } as MouseEventInit);
+  //   component['viewTemporaryForm'](event);
+  //   expect(spy1).toHaveBeenCalled();
+  // }));
 
   it('a pressed shift should call drawTemporarySquare', ()  => {
     component['initRectangle'](createClickMouseEvent('mousedown'));
@@ -181,6 +229,5 @@ fdescribe('RectangleLogicComponent', () => {
     component.ngOnInit();
     component['svgElRef'].nativeElement.dispatchEvent(globKeyEv);
   });
-
 
 });
