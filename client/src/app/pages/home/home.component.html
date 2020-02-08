@@ -9,6 +9,7 @@
       <!-- TODO: tabindex utility -->
       <button mat-stroked-button
               *ngIf='option.canDisplay'
+              tabindex="-1"
               class='option mat-elevation-z5'
               [mat-dialog-close]='option.dialogCloseResult'>
         <mat-grid-list cols='5' rowHeight='55px'>
