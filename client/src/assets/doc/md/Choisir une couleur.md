@@ -12,4 +12,4 @@ Les dernières couleurs choisies peuvent être accédées en les sélectionnant 
 
 Des couleurs prédéfinies vous sont proposées dans la barre `Couleur principales` se trouvant en dessous de la palette de couleur.
 
-Enfin, vous pouvez en tout temps changer la couleur du fond de l'image, en cliquant sur le bouton PLACEHOLDER placé en dessous ? de la palette de couleurs.
+Enfin, vous pouvez en tout temps changer la couleur du fond de l'image, en sélectionant le bouton `Arrière plan` de la palette de couleurs.
