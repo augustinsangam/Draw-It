@@ -53,7 +53,7 @@ export class LineLogicComponent extends ToolLogicDirective
     this.listeners.forEach(listenner => listenner())
   }
 
-  onMouseClick(mouseEv: MouseEvent) {
+  private onMouseClick(mouseEv: MouseEvent) {
     let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
     if (this.isNewPath) {
       this.createNewPath(currentPoint);
@@ -67,7 +67,7 @@ export class LineLogicComponent extends ToolLogicDirective
     this.addNewLine(currentPoint)
   }
 
-  onMouseDblClick(mouseEv: MouseEvent) {
+  private onMouseDblClick(mouseEv: MouseEvent) {
     if (!this.isNewPath) {
       let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
       this.getPath().removeLastLine(); // cancel the click event
@@ -86,7 +86,7 @@ export class LineLogicComponent extends ToolLogicDirective
     }
   }
 
-  onMouseMove(mouseEv: MouseEvent) {
+  private onMouseMove(mouseEv: MouseEvent) {
     if (!this.isNewPath) {
       let point = this.mousePosition = {x: mouseEv.offsetX, y: mouseEv.offsetY};
       if (mouseEv.shiftKey) {
@@ -96,7 +96,7 @@ export class LineLogicComponent extends ToolLogicDirective
     }
   }
 
-  onKeyDown(keyEv: KeyboardEvent) {
+  private onKeyDown(keyEv: KeyboardEvent) {
     const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight')
     if (keyEv.code === 'Escape' && !this.isNewPath) {
       this.getPath().removePath();
@@ -112,34 +112,34 @@ export class LineLogicComponent extends ToolLogicDirective
     }
   }
 
-  onKeyUp(keyEv: KeyboardEvent) {
+  private onKeyUp(keyEv: KeyboardEvent) {
     const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight')
     if (shiftIsPressed && !this.isNewPath) {
       this.getPath().simulateNewLine(this.mousePosition);
     }
   }
 
-  createNewPath(initialPoint: Point) {
+  private createNewPath(initialPoint: Point) {
     const path = this.renderer.createElement('path', this.svgNS);
     this.renderer.appendChild(this.svgElRef.nativeElement, path);
     this.paths.push(new Path(initialPoint, this.renderer, path, this.service.withJonction));
     this.getPath().setLineCss(this.service.thickness.toString(), this.serviceColor.primaryColor);
   }
 
-  createJonction(center: Point) {
+  private createJonction(center: Point) {
     const circle = this.renderer.createElement('circle', this.svgNS);
     this.renderer.appendChild(this.svgElRef.nativeElement, circle);
     this.getPath().addJonction(circle, center, this.currentJonctionOptions.radius, this.currentJonctionOptions.color);
   }
 
-  addNewLine(currentPoint: Point) {
+  private addNewLine(currentPoint: Point) {
     this.getPath().addLine(currentPoint);
     if (this.getPath().withJonctions) {
       this.createJonction(currentPoint);
     }
   }
 
-  getPath(): Path {
+  private getPath(): Path {
     return this.paths[this.paths.length - 1];
   }
 }

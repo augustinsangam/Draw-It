@@ -2,8 +2,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import { ElementRef } from '@angular/core';
-import {Point} from '../../tool-common classes/Point';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {Point} from '../../common/Point';
 
 import { LineLogicComponent } from './line-logic.component';
 import {Path} from './Path';
@@ -38,7 +37,7 @@ describe('LineLogicComponent', () => {
 
   });
 
-  it('should create', () => {
+  it('should create ', () => {
     expect(component).toBeTruthy();
   });
 
@@ -83,34 +82,34 @@ describe('LineLogicComponent', () => {
   });
 
   it('createNewPath devrait appeler getPath', () => {
-      const spy = spyOn(component, 'getPath').and.callThrough();
+      const spy = spyOn<any>(component, 'getPath').and.callThrough();
       component['isNewPath'] = true;
       component['paths'] = [];
-      component.createNewPath({x: 100, y: 100});
+      component['createNewPath']({x: 100, y: 100});
       expect(spy).toHaveBeenCalled();
   });
 
   it('getPath devrait retourner le path contenant les points passés en paramètre', () => {
     component['paths'] = [];
     component['paths'].push(defaultPath);
-    expect(component.getPath().datas.points).toEqual([{x: 42, y: 42}]);
+    expect(component['getPath']().datas.points).toEqual([{x: 42, y: 42}]);
   });
 
   it('addNewLine devrait appeler addLine du path de line-logic', () => {
-    component.onMouseDown(new MouseEvent(
+    component['onMouseClick'](new MouseEvent(
       'mousedown',
       {clientX: 100, clientY: 100, button: 0} as MouseEventInit)
     );
-    const spy = spyOn(component.getPath(), 'addLine');
-    component.addNewLine({x: 100, y: 100});
+    const spy = spyOn(component['getPath'](), 'addLine');
+    component['addNewLine']({x: 100, y: 100});
     expect(spy).toHaveBeenCalled();
   });
 
   it('onMouseDown devrait appeler isNewLine et ' +
     'setter isNewPath à false lorsque Shift n\'est pas pressé', () => {
-    const spy = spyOn(component, 'addNewLine');
+    const spy = spyOn<any>(component, 'addNewLine');
     component['isNewPath'] = true;
-    component.onMouseDown(new MouseEvent(
+    component['onMouseClick'](new MouseEvent(
       'mousedown',
       {clientX: 100, clientY: 100, button: 0, shiftKey: false} as MouseEventInit)
     );
@@ -122,9 +121,9 @@ describe('LineLogicComponent', () => {
     'setter isNewPath à false lorsque Shift est pressé', () => {
     component['paths'].push(defaultPath);
     const spy = spyOn(component['paths'][0], 'getAlignedPoint').and.callFake((): Point => ({x: 100, y: 100}));
-    spyOn(component, 'addNewLine');
+    spyOn<any>(component, 'addNewLine');
     component['isNewPath'] = false;
-    component.onMouseDown(new MouseEvent(
+    component['onMouseClick'](new MouseEvent(
       'mousedown',
       {clientX: 100, clientY: 100, button: 0, shiftKey: true} as MouseEventInit)
     );
@@ -137,8 +136,8 @@ describe('LineLogicComponent', () => {
     component['isNewPath'] = false;
     component['paths'] = [];
     component['paths'].push(defaultPath);
-    const spy = spyOn(component, 'getPath').and.callThrough();
-    component.onMouseMove(new MouseEvent(
+    const spy = spyOn<any>(component, 'getPath').and.callThrough();
+    component['onMouseMove'](new MouseEvent(
       'mousemove',
       {clientX: 100, clientY: 100, button: 0, shiftKey: false} as MouseEventInit)
     );
@@ -150,8 +149,8 @@ describe('LineLogicComponent', () => {
     component['isNewPath'] = false;
     component['paths'] = [];
     component['paths'].push(defaultPath);
-    const spy = spyOn(component, 'getPath').and.callThrough();
-    component.onMouseMove(new MouseEvent(
+    const spy = spyOn<any>(component, 'getPath').and.callThrough();
+    component['onMouseMove'](new MouseEvent(
       'mousemove',
       {clientX: 100, clientY: 100, button: 0, shiftKey: true} as MouseEventInit)
     );
@@ -164,7 +163,7 @@ describe('LineLogicComponent', () => {
     defaultPath.datas.points = [];
     defaultPath.datas.points.push({x: 42, y: 42});
 
-    component.onMouseUp(new MouseEvent(
+    component['onMouseDblClick'](new MouseEvent(
       'mouseup',
       {clientX: 100, clientY: 100, button: 0, shiftKey: false})
     );
@@ -181,9 +180,9 @@ describe('LineLogicComponent', () => {
     spyOn(component['mathService'], 'distanceIsLessThan3Pixel').and.callFake(() => false);
     spyOn(component['mathService'], 'findAlignedSegmentPoint');
     spyOn(component['paths'][0], 'getAlignedPoint').and.callFake((): Point => ({x: 300, y: 300}));
-    const spy = spyOn(component, 'addNewLine');
+    const spy = spyOn<any>(component, 'addNewLine');
 
-    component.onMouseUp(new MouseEvent(
+    component['onMouseDblClick'](new MouseEvent(
       'mouseup',
       {clientX: 100, clientY: 100, button: 0, shiftKey: true})
     );
@@ -198,10 +197,10 @@ describe('LineLogicComponent', () => {
     component['paths'] = [];
     component['paths'].push(defaultPath);
 
-    const spy = spyOn(component, 'getPath').and.callThrough();
+    const spy = spyOn<any>(component, 'getPath').and.callThrough();
     spyOn(component['mathService'], 'distanceIsLessThan3Pixel').and.callFake(() => true);
 
-    component.onMouseUp(new MouseEvent(
+    component['onMouseDblClick'](new MouseEvent(
       'mouseup',
       {clientX: 43, clientY: 43, button: 0, shiftKey: false})
     );
@@ -214,10 +213,10 @@ describe('LineLogicComponent', () => {
     component['isNewPath'] = false;
     component['paths'] = [];
     component['paths'].push(defaultPath);
-    spyOn(component.getPath(), 'getAlignedPoint').and.callFake((): Point => ({x: 10, y: 10}));
-    const spy = spyOn(component, 'getPath').and.callThrough();
+    spyOn(component['getPath'](), 'getAlignedPoint').and.callFake((): Point => ({x: 10, y: 10}));
+    const spy = spyOn<any>(component, 'getPath').and.callThrough();
 
-    component.onKeyDown(new KeyboardEvent(
+    component['onKeyDown'](new KeyboardEvent(
       'shift',
       {code: 'ShiftLeft'}
     ));
@@ -229,9 +228,9 @@ describe('LineLogicComponent', () => {
     component['isNewPath'] = false;
     component['paths'] = [];
     component['paths'].push(defaultPath);
-    const spy = spyOn(component.getPath(), 'removePath');
+    const spy = spyOn<any>(component['getPath'](), 'removePath');
 
-    component.onKeyDown(new KeyboardEvent(
+    component['onKeyDown'](new KeyboardEvent(
       'escape',
       {code: 'Escape'}
     ));
@@ -246,10 +245,10 @@ describe('LineLogicComponent', () => {
     defaultPath.datas.points.push({x: 404, y: 404});
     component['paths'] = [];
     component['paths'].push(defaultPath);
-    const spyRemo = spyOn(component.getPath(), 'removeLastLine');
-    const spySimu = spyOn(component.getPath(), 'simulateNewLine').and.callFake((): Point => ({x: 10, y: 10}));
+    const spyRemo = spyOn(component['getPath'](), 'removeLastLine');
+    const spySimu = spyOn(component['getPath'](), 'simulateNewLine').and.callFake((): Point => ({x: 10, y: 10}));
 
-    component.onKeyDown(new KeyboardEvent(
+    component['onKeyDown'](new KeyboardEvent(
       'backspace',
       {code: 'Backspace'}
     ));
@@ -259,10 +258,10 @@ describe('LineLogicComponent', () => {
 
   it('onKeyUp devrait appeler simulateNewLine si elle est appelée avec ShiftLeft', () => {
     component['isNewPath'] = false;
-    const spy = spyOn(component, 'getPath').and.callFake(() => defaultPath);
-    spyOn(component.getPath(), 'simulateNewLine');
+    const spy = spyOn<any>(component, 'getPath').and.callFake(() => defaultPath);
+    spyOn(component['getPath'](), 'simulateNewLine');
 
-    component.onKeyUp(new KeyboardEvent(
+    component['onKeyUp'](new KeyboardEvent(
       'shift',
       {code: 'ShiftLeft'}
     ));
@@ -272,10 +271,10 @@ describe('LineLogicComponent', () => {
 
   it('onKeyUp devrait appeler simulateNewLine si elle est appelée avec ShiftRight', () => {
     component['isNewPath'] = false;
-    const spy = spyOn(component, 'getPath').and.callFake(() => defaultPath);
-    spyOn(component.getPath(), 'simulateNewLine');
+    const spy = spyOn<any>(component, 'getPath').and.callFake(() => defaultPath);
+    spyOn(component['getPath'](), 'simulateNewLine');
 
-    component.onKeyUp(new KeyboardEvent(
+    component['onKeyUp'](new KeyboardEvent(
       'shift',
       {code: 'ShiftRight'}
     ));
