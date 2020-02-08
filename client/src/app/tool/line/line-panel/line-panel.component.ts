@@ -13,11 +13,11 @@ import { LineService } from '../line.service';
 })
 export class LinePanelComponent extends ToolPanelDirective {
 
-  lineForm: FormGroup;
+  private lineForm: FormGroup;
 
   @ViewChild ('slideToggle', {
     static: false
-  }) slideToggle: MatSlideToggle;
+  }) protected slideToggle: MatSlideToggle;
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: LineService,
@@ -32,16 +32,16 @@ export class LinePanelComponent extends ToolPanelDirective {
     });
   }
 
-  onChangeJonctionOption($event: MatSlideToggleChange) {
+  protected onChangeJonctionOption($event: MatSlideToggleChange): void {
     this.service.withJonction = ($event.checked);
   }
 
-  onThicknessChange() {
+  protected onThicknessChange(): void {
     this.lineForm.patchValue({ thicknessFormField: this.lineForm.value.thicknessSlider });
     this.service.thickness = this.lineForm.value.thicknessSlider;
   }
 
-  onRadiusChange() {
+  protected onRadiusChange(): void {
     this.lineForm.patchValue({ radiusFormField: this.lineForm.value.radiusSlider });
     this.service.radius = this.lineForm.value.radiusSlider;
   }

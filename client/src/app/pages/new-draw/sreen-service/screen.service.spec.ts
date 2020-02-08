@@ -27,7 +27,7 @@ describe('ScreenService', () => {
   });
 
   it('#Should trigger onResize method when window is resized', fakeAsync(() => {
-    const spy = spyOn(service, 'onResize');
+    const spy = spyOn(service, 'onResize').and.callThrough();
     window.dispatchEvent(new Event('resize'));
     // We wait a little bit to make sure that the event had been catched
     setTimeout(() => {

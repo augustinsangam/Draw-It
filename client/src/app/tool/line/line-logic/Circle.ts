@@ -1,5 +1,7 @@
 import { ElementRef, Renderer2 } from '@angular/core';
-import { Point } from '../../tool-common classes/Point';
+
+import { Point } from '../../common/Point';
+
 export class Circle {
   constructor(private center: Point,
               private renderer: Renderer2,
@@ -10,7 +12,5 @@ export class Circle {
     this.renderer.setAttribute(this.element, 'cy'   , this.center.y.toString());
     this.renderer.setAttribute(this.element, 'r'    , this.radius);
     this.renderer.setAttribute(this.element, 'fill' , this.color);
-  }
-  setCircleCss() {
   }
 }

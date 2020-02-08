@@ -38,34 +38,32 @@ export class SidebarComponent implements AfterViewInit {
 
   @Output() protected documentationEv: EventEmitter<null>;
 
-  private toolToElRef: Map<Tool, ElementRef<HTMLElement>>;
+  private toolToElRef: ElementRef<HTMLElement>[];
 
   // Must be pubilc
   constructor(private readonly toolSelectorService: ToolSelectorService) {
     this.documentationEv = new EventEmitter<null>();
-    this.toolToElRef = new Map();
+    this.toolToElRef = new Array(Tool._Len);
   }
 
   // Must be pubilc
   ngAfterViewInit() {
-    this.toolToElRef.set(Tool.Line, this.lineElRef);
-    this.toolToElRef.set(Tool.Rectangle, this.rectangleElRef);
-    this.toolToElRef.set(Tool.Pencil, this.pencilElRef);
-    this.toolToElRef.set(Tool.Brush, this.brushElRef);
+    this.toolToElRef[Tool.Brush] = this.brushElRef;
+    this.toolToElRef[Tool.Line] = this.lineElRef;
+    this.toolToElRef[Tool.Pencil] = this.pencilElRef;
+    this.toolToElRef[Tool.Rectangle] = this.rectangleElRef;
     this.toolSelectorService.onChange(
-      (tool, old) => this.selectTool(tool, old));
+      (tool, old) => this.setTool(tool, old));
   }
 
-  private selectTool(tool: Tool, old?: Tool) {
+  private setTool(tool: Tool, old?: Tool) {
     // TODO: TS 3.7 get(…)?.nativeEl w/o ‘has’ check
-    if (old != null) {
-      const oldElRef = this.toolToElRef.get(old);
-      if (!!oldElRef) {
-        oldElRef.nativeElement.classList.remove('selected');
-      }
+    if (old != null && old < Tool._Len) {
+      const oldElRef = this.toolToElRef[old];
+      oldElRef.nativeElement.classList.remove('selected');
     }
-    const elRef = this.toolToElRef.get(tool);
-    if (!!elRef) {
+    if (tool < Tool._Len) {
+      const elRef = this.toolToElRef[tool];
       elRef.nativeElement.classList.add('selected');
     }
   }

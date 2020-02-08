@@ -6,10 +6,11 @@ import { MatCard, MatCardContent, MatCardTitle, MatFormField, MatIcon, MatInput,
 import {MatSlideToggleChange} from '@angular/material/slide-toggle';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ColorPanelComponent } from '../../color/color-panel/color-panel.component';
-import { ColorPicklerContentComponent } from '../../color/color-panel/color-pickler-content/color-pickler-content.component';
-import { ColorPicklerItemComponent } from '../../color/color-panel/color-pickler-item/color-pickler-item.component';
+import { ColorPickerContentComponent } from '../../color/color-panel/color-picker-content/color-picker-content.component';
+import { ColorPickerItemComponent } from '../../color/color-panel/color-picker-item/color-picker-item.component';
 import { RectanglePanelComponent } from './rectangle-panel.component';
 
+// tslint:disable: no-string-literal
 describe('RectanglePanelComponent', () => {
   let component: RectanglePanelComponent;
   let fixture: ComponentFixture<RectanglePanelComponent>;
@@ -30,8 +31,8 @@ describe('RectanglePanelComponent', () => {
         MatSlider,
         MatSlideToggle,
         MatRadioButton,
-        ColorPicklerItemComponent,
-        ColorPicklerContentComponent,
+        ColorPickerItemComponent,
+        ColorPickerContentComponent,
         MatIcon,
         MatRadioGroup,
         MatRipple,
@@ -56,30 +57,26 @@ describe('RectanglePanelComponent', () => {
   });
 
   it('onThicknessChange devrait appeler la méthode patchValue de rectangleForm', () => {
-    const spy = spyOn(component.rectangleForm, 'patchValue');
-    component.onThicknessChange();
+    const spy = spyOn(component['rectangleForm'], 'patchValue');
+    component['onThicknessChange']();
     expect(spy).toHaveBeenCalled();
   });
 
   it('ngAfterViewChecked devrait avoir subscribed borderOption et fillOption, et ces valeurs devraient ' +
     'changer dans le service lorsqu\'on émet un MatSlideToggleChange en false', () => {
     component.ngAfterViewChecked();
-    component.borderOptionRef.change.emit(new MatSlideToggleChange(component.borderOptionRef, false));
-    component.fillOptionRef.change.emit(new MatSlideToggleChange(component.fillOptionRef, false));
-    // tslint:disable-next-line: no-string-literal
+    component['borderOptionRef'].change.emit(new MatSlideToggleChange(component['borderOptionRef'], false));
+    component['fillOptionRef'].change.emit(new MatSlideToggleChange(component['fillOptionRef'], false));
     expect(component['service'].borderOption).toBeFalsy();
-    // tslint:disable-next-line: no-string-literal
     expect(component['service'].fillOption).toBeFalsy();
   });
 
   it('ngAfterViewChecked devrait avoir subscribed borderOption et fillOption, et ces valeurs devraient ' +
     'changer dans le service lorsqu\'on émet un MatSlideToggleChange en true', () => {
     component.ngAfterViewChecked();
-    component.borderOptionRef.change.emit(new MatSlideToggleChange(component.borderOptionRef, true));
-    component.fillOptionRef.change.emit(new MatSlideToggleChange(component.fillOptionRef, true));
-    // tslint:disable-next-line: no-string-literal
+    component['borderOptionRef'].change.emit(new MatSlideToggleChange(component['borderOptionRef'], true));
+    component['fillOptionRef'].change.emit(new MatSlideToggleChange(component['fillOptionRef'], true));
     expect(component['service'].borderOption).toBeTruthy();
-    // tslint:disable-next-line: no-string-literal
     expect(component['service'].fillOption).toBeTruthy();
   });
 

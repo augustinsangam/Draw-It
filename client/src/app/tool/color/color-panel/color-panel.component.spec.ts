@@ -8,10 +8,11 @@ import {
   MatRadioButton, MatRadioGroup, MatRipple, MatSlider
 } from '@angular/material';
 import { ColorOption, ColorPanelComponent } from './color-panel.component';
-import { ColorPicklerContentComponent } from './color-pickler-content/color-pickler-content.component';
-import { MockColorPicklerContentComponent } from './color-pickler-content/mock-color-pickler-content.component';
-import { ColorPicklerItemComponent } from './color-pickler-item/color-pickler-item.component';
+import { ColorPickerContentComponent } from './color-picker-content/color-picker-content.component';
+import { MockColorPickerContentComponent } from './color-picker-content/mock-color-picker-content.component';
+import { ColorPickerItemComponent } from './color-picker-item/color-picker-item.component';
 
+// tslint:disable: no-string-literal
 describe('ColorPanelComponent', () => {
   let component: ColorPanelComponent;
   let fixture: ComponentFixture<ColorPanelComponent>;
@@ -22,8 +23,8 @@ describe('ColorPanelComponent', () => {
       declarations: [
         CdkObserveContent,
         ColorPanelComponent,
-        ColorPicklerContentComponent,
-        ColorPicklerItemComponent,
+        ColorPickerContentComponent,
+        ColorPickerItemComponent,
         MatCard,
         MatCardTitle,
         MatCardContent,
@@ -49,7 +50,7 @@ describe('ColorPanelComponent', () => {
     spyOn(component.svgService, 'changeBackgroundColor');
     paletteColorChange = new EventEmitter();
     paletteColorChange.subscribe(($color: string) => {
-      component.onColorPicked($color);
+      component['onColorPicked']($color);
     });
     fixture.detectChanges();
 
@@ -60,7 +61,9 @@ describe('ColorPanelComponent', () => {
   });
 
   it('#Button Palette should call swapColors() method', fakeAsync(() => {
-    const spy = spyOn(component, 'swapColors');
+    // Synthaxe pour appeler une méthode privée.
+    // Le any est demandé.
+    const spy = spyOn<any>(component, 'swapColors');
     const swapButton = fixture.debugElement.nativeElement.querySelector('#swapButton');
     swapButton.click();
     fixture.whenStable().then(() => {
@@ -72,49 +75,49 @@ describe('ColorPanelComponent', () => {
   }));
 
   it('#onShowPalette() should change showPalette attribute', () => {
-    const oldShowPalette = component.showPalette;
-    component.onShowPalette();
-    expect(!oldShowPalette).toEqual(component.showPalette);
+    const oldShowPalette = component['showPalette'];
+    component['onShowPalette']();
+    expect(!oldShowPalette).toEqual(component['showPalette']);
   });
 
   it('#swapColor() swap colors and update the preview', () => {
-    const spy = spyOn(component, 'updatePreviewColors');
-    component.swapColors();
+    const spy = spyOn<any>(component, 'updatePreviewColors');
+    component['swapColors']();
     expect(spy).toHaveBeenCalled();
   });
 
   it('#onColorPicked() can change Primary color', () => {
-    const spyUpdateColor = spyOn(component.colorPreviewPrimary, 'updateColor');
+    const spyUpdateColor = spyOn(component['colorPreviewPrimary'], 'updateColor');
     const spySelectPrimaryColor = spyOn(component.colorService, 'selectPrimaryColor');
-    component.colorOption = ColorOption.Primary;
-    component.onColorPicked('rgba(255, 255, 255, 1)');
+    component['colorOption'] = ColorOption.Primary;
+    component['onColorPicked']('rgba(255, 255, 255, 1)');
     expect(spyUpdateColor).toHaveBeenCalled();
     expect(spySelectPrimaryColor).toHaveBeenCalled();
   });
 
   it('#onColorPicked() can change Secondary color', () => {
-    const spyUpdateColor = spyOn(component.colorPreviewSecondary, 'updateColor');
+    const spyUpdateColor = spyOn(component['colorPreviewSecondary'], 'updateColor');
     const spySelectSecondaryColor = spyOn(component.colorService, 'selectSecondaryColor');
-    component.colorOption = ColorOption.Secondary;
-    component.onColorPicked('rgba(255, 255, 255, 1)');
+    component['colorOption'] = ColorOption.Secondary;
+    component['onColorPicked']('rgba(255, 255, 255, 1)');
     expect(spyUpdateColor).toHaveBeenCalled();
     expect(spySelectSecondaryColor).toHaveBeenCalled();
   });
 
   it('#onColorPicked() can change Background color', () => {
-    const spyUpdateColor = spyOn(component.colorPreviewBackground, 'updateColor');
+    const spyUpdateColor = spyOn(component['colorPreviewBackground'], 'updateColor');
     const spySelectBackgroundColor = spyOn(component.colorService, 'selectBackgroundColor');
-    component.colorOption = ColorOption.Background;
-    component.onColorPicked('rgba(255, 255, 255, 1)');
+    component['colorOption'] = ColorOption.Background;
+    component['onColorPicked']('rgba(255, 255, 255, 1)');
     expect(spyUpdateColor).toHaveBeenCalled();
     expect(spySelectBackgroundColor).toHaveBeenCalled();
   });
 
   it('#addEvents() should updateRecentColors when Palette not defined', fakeAsync(() => {
-    const spyUpdateRecentColors = spyOn(component, 'updateRecentColors');
-    component.colorPalette = new MockColorPicklerContentComponent() as unknown as ColorPicklerContentComponent;
-    component.addEvents();
-    component.colorsItemsArray[2].button.nativeElement.click();
+    const spyUpdateRecentColors = spyOn<any>(component, 'updateRecentColors');
+    component['colorPalette'] = new MockColorPickerContentComponent() as unknown as ColorPickerContentComponent;
+    component['addEvents']();
+    component['colorsItemsArray'][2].button.nativeElement.click();
     fixture.whenStable().then(() => {
       setTimeout(() => {
         expect(spyUpdateRecentColors).toHaveBeenCalled();
@@ -124,7 +127,7 @@ describe('ColorPanelComponent', () => {
 
     const rightClickEvent = document.createEvent('HTMLEvents');
     rightClickEvent.initEvent('contextmenu', true, false);
-    component.colorsItemsArray[2].button.nativeElement.dispatchEvent(rightClickEvent);
+    component['colorsItemsArray'][2].button.nativeElement.dispatchEvent(rightClickEvent);
     fixture.whenStable().then(() => {
       setTimeout(() => {
         expect(spyUpdateRecentColors).toHaveBeenCalled();
@@ -135,9 +138,9 @@ describe('ColorPanelComponent', () => {
   }));
 
   it('#addEvents() should updateRecentColors', fakeAsync(() => {
-    const spyUpdateRecentColors = spyOn(component, 'updateRecentColors');
-    component.addEvents();
-    component.colorsItemsArray[2].button.nativeElement.click();
+    const spyUpdateRecentColors = spyOn<any>(component, 'updateRecentColors');
+    component['addEvents']();
+    component['colorsItemsArray'][2].button.nativeElement.click();
     fixture.whenStable().then(() => {
       setTimeout(() => {
         expect(spyUpdateRecentColors).toHaveBeenCalled();
@@ -147,7 +150,7 @@ describe('ColorPanelComponent', () => {
 
     const rightClickEvent = document.createEvent('HTMLEvents');
     rightClickEvent.initEvent('contextmenu', true, false);
-    component.colorsItemsArray[2].button.nativeElement.dispatchEvent(rightClickEvent);
+    component['colorsItemsArray'][2].button.nativeElement.dispatchEvent(rightClickEvent);
     fixture.whenStable().then(() => {
       setTimeout(() => {
         expect(spyUpdateRecentColors).toHaveBeenCalled();
@@ -158,17 +161,17 @@ describe('ColorPanelComponent', () => {
   }));
 
   it('#getStartColor() works !', () => {
-    component.colorOption = ColorOption.Primary;
+    component['colorOption'] = ColorOption.Primary;
     component.colorService.primaryColor = 'rgba(255, 255, 255, 1)';
-    expect(component.getStartColor()).toEqual('#FFFFFF');
+    expect(component['getStartColor']()).toEqual('#FFFFFF');
 
-    component.colorOption = ColorOption.Secondary;
+    component['colorOption'] = ColorOption.Secondary;
     component.colorService.secondaryColor = 'rgba(255, 255, 255, 1)';
-    expect(component.getStartColor()).toEqual('#FFFFFF');
+    expect(component['getStartColor']()).toEqual('#FFFFFF');
 
-    component.colorOption = ColorOption.Background;
+    component['colorOption'] = ColorOption.Background;
     component.colorService.backgroundColor = 'rgba(255, 255, 255, 1)';
-    expect(component.getStartColor()).toEqual('#FFFFFF');
+    expect(component['getStartColor']()).toEqual('#FFFFFF');
   });
 
 });

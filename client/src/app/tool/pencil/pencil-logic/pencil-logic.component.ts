@@ -8,9 +8,9 @@ import { PencilService } from '../pencil.service';
   selector: 'app-pencil-logic',
   template: ''
 })
-export class PencilLogicComponent extends PencilBrushCommon implements AfterViewInit {
+export class PencilLogicComponent extends PencilBrushCommon
+       implements AfterViewInit {
 
-  strokeLineCap: string;
   private listeners: (() => void)[] = [];
 
   constructor(public renderer: Renderer2,
@@ -21,10 +21,6 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
-    this.stringPath = '';
-    this.svgTag = 'path';
-    this.strokeLineCap = 'round';
-    this.mouseOnHold = false;
   }
 
   // tslint:disable-next-line:use-lifecycle-interface
@@ -35,21 +31,18 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
 
   configureSvgElement(element: SVGElement): void {
     element.setAttribute('d', this.stringPath);
-    element.setAttribute('stroke-width', this.strokeWidth.toString());
-    element.setAttribute('stroke', this.stroke);
-    element.setAttribute('fill', this.fill);
+    element.setAttribute('stroke-width', this.pencilService.thickness.toString());
+    element.setAttribute('stroke', this.colorService.primaryColor);
+    element.setAttribute('fill', this.colorService.primaryColor);
     element.setAttribute('stroke-linecap', this.strokeLineCap);
   }
 
-  defineParameter(): void {
-    this.color = this.colorService.primaryColor;
-    this.stroke = this.colorService.primaryColor;
-    this.fill = this.colorService.primaryColor;
-    this.strokeWidth = this.pencilService.thickness;
+  onMouseMove(mouseEv: MouseEvent): void {
+    this.drawing(mouseEv);
+    this.svgPath.setAttribute('d', this.stringPath);
   }
 
-  onMouseDown(mouseEv: MouseEvent) {
-    this.defineParameter();
+  onMouseDown(mouseEv: MouseEvent): void {
     this.makeFirstPoint(mouseEv);
     this.svgPath = this.renderer.createElement(this.svgTag, this.svgNS);
     this.configureSvgElement(this.svgPath);
@@ -88,6 +81,10 @@ export class PencilLogicComponent extends PencilBrushCommon implements AfterView
           this.stopDrawing();
         }
     });
-    this.listeners = [mouseDownListen, mouseMoveListen, mouseUpListen, mouseLeaveListen];
+    this.listeners = [mouseDownListen,
+      mouseMoveListen,
+      mouseUpListen,
+      mouseLeaveListen
+    ];
   }
 }

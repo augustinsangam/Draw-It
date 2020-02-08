@@ -3,6 +3,7 @@
 <main>
   <!-- app-svg is a selector for svg.component.ts -->
   <svg #svg app-svg
+    tabindex=0
     [attr.height.px]="drawOption.height"
     [attr.width.px]="drawOption.width"
     [ngStyle]="{backgroundColor:drawOption.color}"

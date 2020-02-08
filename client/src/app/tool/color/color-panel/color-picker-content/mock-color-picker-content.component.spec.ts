@@ -1,16 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractControl } from '@angular/forms';
 import { MatSliderChange } from '@angular/material';
-import { MockColorPicklerContentComponent } from './mock-color-pickler-content.component';
+import { MockColorPickerContentComponent } from './mock-color-picker-content.component';
 
-describe('MockColorPicklerContentComponent', () => {
-  let component: MockColorPicklerContentComponent;
-  let fixture: ComponentFixture<MockColorPicklerContentComponent>;
+describe('MockColorPickerContentComponent', () => {
+  let component: MockColorPickerContentComponent;
+  let fixture: ComponentFixture<MockColorPickerContentComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        MockColorPicklerContentComponent,
+        MockColorPickerContentComponent,
       ],
       imports: [
       ]
@@ -19,15 +19,15 @@ describe('MockColorPicklerContentComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MockColorPicklerContentComponent);
+    fixture = TestBed.createComponent(MockColorPickerContentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create and Functions should at least launch', () => {
     expect(component).toBeTruthy();
-    MockColorPicklerContentComponent.ValidatorHex('' as unknown as AbstractControl);
-    MockColorPicklerContentComponent.ValidatorInteger('' as unknown as AbstractControl);
+    MockColorPickerContentComponent.ValidatorHex('' as unknown as AbstractControl);
+    MockColorPickerContentComponent.ValidatorInteger('' as unknown as AbstractControl);
     component.initialiseStartingColor();
     component.buildCanvas(1);
     component.onSlide('' as unknown as MatSliderChange);
