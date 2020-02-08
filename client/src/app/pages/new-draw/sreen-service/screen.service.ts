@@ -12,7 +12,7 @@ export class ScreenService {
   constructor(private eventManager: EventManager) {
     this.size = new Subject<ScreenSize>();
     this.eventManager.addGlobalEventListener('window', 'resize', ($event: Event) => {
-      this.onResize($event);
+      this.onResize();
     });
   }
 
@@ -23,7 +23,7 @@ export class ScreenService {
     }
   }
 
-  onResize($event: Event) {
+  onResize(): void {
     this.size.next(this.getCurrentSize());
   }
 }

@@ -11,20 +11,20 @@
             <mat-card-title id="hex-rgb-title">HEX OU RGB</mat-card-title>
             <mat-card-content id="hex-rgb-content">
                 <mat-form-field class="rgb">
-                    <input matInput placeholder="R" type="number" (input)="onChangeR($event)" formControlName="r">
+                    <input matInput placeholder="R" type="number" (input)="onChangeR($event)" formControlName="r" #rField>
                 </mat-form-field>
                 <mat-form-field class="rgb">
-                    <input matInput placeholder="G" type="number" (input)="onChangeG($event)" formControlName="g">
+                    <input matInput placeholder="G" type="number" (input)="onChangeG($event)" formControlName="g" #gField>
                 </mat-form-field>
                 <mat-form-field class="rgb">
-                    <input matInput placeholder="B" type="number" (input)="onChangeB($event)" formControlName="b">
+                    <input matInput placeholder="B" type="number" (input)="onChangeB($event)" formControlName="b" #bField>
                 </mat-form-field>
                 <mat-form-field class="rgb" id="alpha">
-                    <input matInput placeholder="A" type="number" step="5" (input)="onChangeA($event)" formControlName="a">
+                    <input matInput placeholder="A" type="number" step="5" (input)="onChangeA($event)" formControlName="a" #aField>
                     <span matSuffix>%</span>
                 </mat-form-field>
                 <mat-form-field class="hex">
-                    <input matInput placeholder="HEX" formControlName="hex" (input)="onChangeHex($event)">
+                    <input matInput placeholder="HEX" formControlName="hex" (input)="onChangeHex($event)" #hexField>
                     <span matPrefix>#</span>
                 </mat-form-field>
             </mat-card-content>
