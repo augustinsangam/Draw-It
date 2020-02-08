@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Renderer2 } from '@angular/core';
+import { Component, Renderer2 } from '@angular/core';
 import { ColorService } from '../../color/color.service';
 import { PencilBrushCommon } from '../../pencil-brush/pencil-brush-common';
 import { BrushService } from '../brush.service';
@@ -7,8 +7,7 @@ import { BrushService } from '../brush.service';
   selector: 'app-brush-logic',
   template: ''
 })
-export class BrushLogicComponent extends PencilBrushCommon
-       implements AfterViewInit {
+export class BrushLogicComponent extends PencilBrushCommon {
 
   private listeners: (() => void)[] = [];
 
@@ -20,14 +19,17 @@ export class BrushLogicComponent extends PencilBrushCommon
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit(): void {
-    this.generateFilterOne();
-    this.generateFilterTwo();
-    this.generateFilterThree();
-    this.generateFilterFour();
-    this.generateFilterFive();
-  }
-
-  ngAfterViewInit() {
+    if (this.brushService.isFirstLoaded) {
+      const svgDefsEl: SVGDefsElement =
+        this.renderer.createElement('defs', this.svgNS);
+      this.renderer.appendChild(svgDefsEl, this.generateFilterOne());
+      this.renderer.appendChild(svgDefsEl, this.generateFilterTwo());
+      this.renderer.appendChild(svgDefsEl, this.generateFilterThree());
+      this.renderer.appendChild(svgDefsEl, this.generateFilterFour());
+      this.renderer.appendChild(svgDefsEl, this.generateFilterFive());
+      this.renderer.appendChild(this.svgElRef.nativeElement, svgDefsEl);
+      this.brushService.isFirstLoaded = false;
+    }
     const mouseDownListen = this.renderer.listen(this.svgElRef.nativeElement,
       'mousedown', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0) {
@@ -95,9 +97,7 @@ export class BrushLogicComponent extends PencilBrushCommon
     this.svgPath.setAttribute('d', this.stringPath);
   }
 
-  generateFilterOne() {
-    const svgDefsEl: SVGDefsElement = this.renderer.createElement(
-      'defs', this.svgNS);
+  generateFilterOne(): SVGFilterElement {
     const svgFilterEl: SVGFilterElement = this.renderer.createElement(
       'filter', this.svgNS);
     svgFilterEl.setAttribute('id', 'filter1');
@@ -120,19 +120,14 @@ export class BrushLogicComponent extends PencilBrushCommon
     svgDisplacementMap.setAttribute('yChannelSelector', 'G');
     this.renderer.appendChild(svgFilterEl, svgDisplacementMap);
 
-    this.renderer.appendChild(svgDefsEl, svgFilterEl);
-    this.renderer.appendChild(this.svgElRef.nativeElement, svgDefsEl);
+    return svgFilterEl;
   }
 
   generateFilterTwo() {
-    const defsSvgEl: SVGDefsElement =
-      this.renderer.createElement('defs', this.svgNS);
-
     const filterSvgEl: SVGFilterElement =
       this.renderer.createElement('filter', this.svgNS);
     filterSvgEl.setAttribute('id', 'filter2');
     filterSvgEl.setAttribute('filterUnits', 'userSpaceOnUse');
-
     const feGaussianBlurSvgEl: SVGFEGaussianBlurElement =
       this.renderer.createElement('feGaussianBlur', this.svgNS);
     feGaussianBlurSvgEl.setAttribute('in', 'SourceGraphic');
@@ -144,13 +139,10 @@ export class BrushLogicComponent extends PencilBrushCommon
     feOffset.setAttribute('in', 'blur');
     feOffset.setAttribute('result', 'offsetBlur');
     this.renderer.appendChild(filterSvgEl, feOffset);
-    this.renderer.appendChild(defsSvgEl, filterSvgEl);
-    this.renderer.appendChild(this.svgElRef.nativeElement, defsSvgEl);
+    return filterSvgEl;
   }
 
   generateFilterThree() {
-    const svgDefsEl: SVGDefsElement =
-      this.renderer.createElement('defs', this.svgNS);
     const svgFilterEl: SVGFilterElement =
       this.renderer.createElement('filter', this.svgNS);
     svgFilterEl.setAttribute('id', 'filter3');
@@ -208,21 +200,16 @@ export class BrushLogicComponent extends PencilBrushCommon
 
     this.renderer.appendChild(svgFilterEl, feMerge);
 
-    this.renderer.appendChild(svgDefsEl, svgFilterEl);
-    this.renderer.appendChild(this.svgElRef.nativeElement, svgDefsEl);
+    return svgFilterEl;
   }
 
   generateFilterFour() {
-    const svgDefsEl: SVGDefsElement =
-      this.renderer.createElement('defs', this.svgNS);
     const svgFilterEl: SVGFilterElement =
       this.renderer.createElement('filter', this.svgNS);
     svgFilterEl.setAttribute('id', 'filter4');
     svgFilterEl.setAttribute('filterUnits', 'userSpaceOnUse');
     svgFilterEl.setAttribute('x', '0%');
     svgFilterEl.setAttribute('y', '0%');
-    svgFilterEl.setAttribute('width', '100%');
-    svgFilterEl.setAttribute('height', '100%');
 
     const svgFeTurbulence: SVGFETurbulenceElement =
       this.renderer.createElement('feTurbulence', this.svgNS);
@@ -240,8 +227,7 @@ export class BrushLogicComponent extends PencilBrushCommon
     svgDisplacementMap.setAttribute('yChannelSelector', 'R');
     this.renderer.appendChild(svgFilterEl, svgDisplacementMap);
 
-    this.renderer.appendChild(svgDefsEl, svgFilterEl);
-    this.renderer.appendChild(this.svgElRef.nativeElement, svgDefsEl);
+    return svgFilterEl;
 
   }
 
@@ -262,9 +248,6 @@ export class BrushLogicComponent extends PencilBrushCommon
     feDisplacementMapSvgEl.setAttribute('scale', '20');
     this.renderer.appendChild(filterSvgEl, feDisplacementMapSvgEl);
 
-    const defsSvgEl: SVGDefsElement =
-      this.renderer.createElement('defs', this.svgNS);
-    this.renderer.appendChild(defsSvgEl, filterSvgEl);
-    this.renderer.appendChild(this.svgElRef.nativeElement, defsSvgEl);
+    return filterSvgEl;
   }
 }
