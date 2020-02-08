@@ -43,7 +43,7 @@ export class DocumentationComponent {
     }
   }
 
-  private constructLeafNodeArray(nodes: Node[]) {
+  private constructLeafNodeArray(nodes: Node[]): void {
     for (const node of nodes) {
       if (!!node.children) {
         this.constructLeafNodeArray(node.children);
@@ -72,14 +72,14 @@ export class DocumentationComponent {
   }
 
   // not private because only called in the html => "next() is declared but its value is never read" warning
-  previous() {
+  previous(): void {
     if (!this.isFirstNode()) {
       this.displayNodeContent(this.leafNodeArray[this.currentNodeIndex - 1]);
     }
   }
 
   // not private because only called in the html => "next() is declared but its value is never read" warning
-  next() {
+  next(): void {
     if (!this.isLastNode()) {
       this.displayNodeContent(this.leafNodeArray[this.currentNodeIndex + 1]);
     }
@@ -99,7 +99,7 @@ export class DocumentationComponent {
     return false;
   }
 
-  private displayNodeContent(node: Node) {
+  private displayNodeContent(node: Node): void {
     this.contentToDisplay.title = node.label;
     if (node.id != null) {
       this.currentNodeIndex = node.id;
