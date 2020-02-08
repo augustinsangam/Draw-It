@@ -265,7 +265,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
     `${this.colorForm.controls.a.value / 100})`;
   }
 
-  protected onConfirm(): void {
+  onConfirm(): void {
     this.colorChange.emit(this.getActualRgba());
   }
 

@@ -147,7 +147,7 @@ describe('ColorPickerContentComponent', () => {
         // Si on arrive ici cela veut dire qu'une couleur a bien été émise
         expect(true).toBe(true);
       });
-      component['onConfirm']();
+      component.onConfirm();
     }, 500);
     tick(600);
   }))
@@ -220,7 +220,7 @@ describe('ColorPickerContentComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('####', () => {
+  it('#In Focusing and Out Focus disable when blockAllShortcus is true', () => {
     const spy = spyOn(component['eventManager'], 'addEventListener');
     component['blockAllShortcus'] = true;
     component.ngAfterViewInit();
