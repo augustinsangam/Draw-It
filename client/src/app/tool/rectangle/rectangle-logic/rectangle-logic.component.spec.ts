@@ -129,15 +129,6 @@ fdescribe('RectangleLogicComponent', () => {
     expect(spy1).toHaveBeenCalled();
   }));
 
-  // it('mousemove should not do anything when its not on drag ', fakeAsync(() => {
-  //   component['initRectangle'](createClickMouseEvent('mousedown'));
-  //   component['onDrag'] = false;
-  //   const spy1 = spyOn<any>(component['getRectangle'](), 'drawTemporarySquare');
-  //   const event: MouseEvent = new MouseEvent('mousemove', { offsetX: 10, offsetY: 30, button: 0, shiftKey: true } as MouseEventInit);
-  //   component['viewTemporaryForm'](event);
-  //   expect(spy1).toHaveBeenCalled();
-  // }));
-
   it('a pressed shift should call drawTemporarySquare', ()  => {
     component['initRectangle'](createClickMouseEvent('mousedown'));
     const event = new KeyboardEvent('window:keydown', {
