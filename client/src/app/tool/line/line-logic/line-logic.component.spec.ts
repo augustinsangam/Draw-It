@@ -7,7 +7,7 @@ import {Point} from '../../common/Point';
 import { LineLogicComponent } from './line-logic.component';
 import {Path} from './Path';
 
-fdescribe('LineLogicComponent', () => {
+describe('LineLogicComponent', () => {
   let component: LineLogicComponent;
   let fixture: ComponentFixture<LineLogicComponent>;
   let defaultPath: Path;
