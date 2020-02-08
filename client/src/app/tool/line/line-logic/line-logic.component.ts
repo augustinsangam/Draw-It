@@ -57,8 +57,10 @@ export class LineLogicComponent extends ToolLogicDirective
     let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
     if (this.isNewPath) {
       this.createNewPath(currentPoint);
-      this.currentJonctionOptions = {radius: this.service.radius.toString(),
-                                     color: this.serviceColor.primaryColor };
+      this.currentJonctionOptions = {
+        color: this.serviceColor.primaryColor,
+        radius: this.service.radius.toString(),
+      };
       this.isNewPath = false;
     }
     if (mouseEv.shiftKey && !this.isNewPath) {

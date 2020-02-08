@@ -1,4 +1,4 @@
-import { Component, Renderer2, } from '@angular/core';
+import { Component, OnDestroy, Renderer2 } from '@angular/core';
 
 import { ColorService } from '../../color/color.service';
 import { Point } from '../../common/Point'
@@ -7,15 +7,16 @@ import { RectangleService } from '../rectangle.service';
 import { Rectangle } from './Rectangle';
 
 enum ClickType {
-  CLICKGAUCHE = 0,
-  CLICKDROIT = 1
+  CLICKGAUCHE,
+  CLICKDROIT,
 };
 
 @Component({
   selector: 'app-rectangle-logic',
   template: ''
 })
-export class RectangleLogicComponent extends ToolLogicDirective {
+export class RectangleLogicComponent extends ToolLogicDirective
+                                     implements OnDestroy {
 
   private rectangles: Rectangle[] = [];
   private currentRectangleIndex = -1;
@@ -46,29 +47,29 @@ export class RectangleLogicComponent extends ToolLogicDirective {
     const onMouseUp = this.renderer.listen('document', 'mouseup', (mouseEv: MouseEvent) => {
       if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
         this.onDrag = false;
-        this.viewTemporaryForm(mouseEv)
-        this.getRectangle().setOpacity('1.0')
+        this.viewTemporaryForm(mouseEv);
+        this.getRectangle().setOpacity('1.0');
       }
     }
     );
 
-    const onKeyDown = this.renderer.listen('document', 'keydown',
-      (keyEv: KeyboardEvent) => {
-        this.onKeyDown(keyEv);
-      });
+    const onKeyDown = this.renderer.listen(this.svgElRef.nativeElement,
+      'keydown', (keyEv: KeyboardEvent) => this.onKeyDown(keyEv));
 
-    const onKeyUp = this.renderer.listen('document', 'keyup',
-      (keyEv: KeyboardEvent) => {
-        this.onKeyUp(keyEv);
-    });
+    const onKeyUp = this.renderer.listen(this.svgElRef.nativeElement,
+      'keyup', (keyEv: KeyboardEvent) => this.onKeyUp(keyEv));
 
-    this.allListeners = [onMouseDown, onKeyDown, onKeyUp, onMouseMove, onMouseUp]
+    this.allListeners = [onMouseDown, onKeyDown, onKeyUp, onMouseMove, onMouseUp];
+  }
+
+  ngOnDestroy() {
+    this.allListeners.forEach(listenner => listenner());
   }
 
   private onKeyDown(keyEv: KeyboardEvent) {
     if (this.onDrag) {
        if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
-         this.getRectangle().drawTemporarySquare(this.currentPoint)
+         this.getRectangle().drawTemporarySquare(this.currentPoint);
        }
      }
   }
@@ -76,7 +77,7 @@ export class RectangleLogicComponent extends ToolLogicDirective {
   private onKeyUp(keyEv: KeyboardEvent) {
     if (this.onDrag) {
       if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
-        this.getRectangle().drawTemporaryRectangle(this.currentPoint)
+        this.getRectangle().drawTemporaryRectangle(this.currentPoint);
       }
     }
   }
@@ -106,11 +107,4 @@ export class RectangleLogicComponent extends ToolLogicDirective {
       this.getRectangle().drawTemporaryRectangle(this.currentPoint);
     }
   }
-  // tslint:disable-next-line:use-lifecycle-interface
-  ngOnDestroy() {
-    this.allListeners.forEach(listenner => {
-      listenner();
-    });
-  }
-
 }
