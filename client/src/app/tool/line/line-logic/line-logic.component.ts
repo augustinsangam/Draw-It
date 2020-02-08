@@ -83,6 +83,7 @@ export class LineLogicComponent extends ToolLogicDirective {
     }
 
     if (mouseEv.shiftKey && !this.isNewPath) {
+      console.log('dummy')
       currentPoint = this.getPath().getAlignedPoint(currentPoint);
     }
 

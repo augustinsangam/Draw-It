@@ -73,6 +73,20 @@ fdescribe('LineLogicComponent', () => {
     expect(component['isNewPath']).toBeFalsy();
   });
 
+  it('onMouseDown devrait appeler getAlignedPoint et ' +
+    'setter isNewPath à false lorsque Shift est pressé', () => {
+    component['paths'].push(defaultPath);
+    const spy = spyOn(component['paths'][0], 'getAlignedPoint').and.callFake((): Point => ({x: 100, y: 100}));
+    spyOn(component, 'addNewLine');
+    component['isNewPath'] = false;
+    component.onMouseDown(new MouseEvent(
+      'mousedown',
+      {clientX: 100, clientY: 100, button: 0, shiftKey: true} as MouseEventInit)
+    );
+    expect(spy).toHaveBeenCalled();
+    expect(component['isNewPath']).toBeFalsy();
+  });
+
   it('onMouseMove devrait appeler getPath 1 seule fois' +
     ' lorsque SHIFT n\'est pas pressé', () => {
     component['isNewPath'] = false;
@@ -123,7 +137,6 @@ fdescribe('LineLogicComponent', () => {
     spyOn(component['mathService'], 'findAlignedSegmentPoint');
     spyOn(component['paths'][0], 'getAlignedPoint').and.callFake((): Point => ({x: 300, y: 300}));
     const spy = spyOn(component, 'addNewLine');
-
 
     component.onMouseUp(new MouseEvent(
       'mouseup',
