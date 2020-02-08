@@ -53,7 +53,7 @@ export class LineLogicComponent extends ToolLogicDirective
     this.listeners.forEach(listenner => listenner())
   }
 
-  private onMouseClick(mouseEv: MouseEvent) {
+  private onMouseClick(mouseEv: MouseEvent): void {
     let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
     if (this.isNewPath) {
       this.createNewPath(currentPoint);
@@ -67,7 +67,7 @@ export class LineLogicComponent extends ToolLogicDirective
     this.addNewLine(currentPoint)
   }
 
-  private onMouseDblClick(mouseEv: MouseEvent) {
+  private onMouseDblClick(mouseEv: MouseEvent): void {
     if (!this.isNewPath) {
       let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
       this.getPath().removeLastLine(); // cancel the click event
@@ -86,7 +86,7 @@ export class LineLogicComponent extends ToolLogicDirective
     }
   }
 
-  private onMouseMove(mouseEv: MouseEvent) {
+  private onMouseMove(mouseEv: MouseEvent): void {
     if (!this.isNewPath) {
       let point = this.mousePosition = {x: mouseEv.offsetX, y: mouseEv.offsetY};
       if (mouseEv.shiftKey) {
@@ -96,7 +96,7 @@ export class LineLogicComponent extends ToolLogicDirective
     }
   }
 
-  private onKeyDown(keyEv: KeyboardEvent) {
+  private onKeyDown(keyEv: KeyboardEvent): void {
     const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight');
     if (keyEv.code === 'Escape' && !this.isNewPath) {
       this.getPath().removePath();
@@ -112,27 +112,27 @@ export class LineLogicComponent extends ToolLogicDirective
     }
   }
 
-  private onKeyUp(keyEv: KeyboardEvent) {
+  private onKeyUp(keyEv: KeyboardEvent): void {
     const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight');
     if (shiftIsPressed && !this.isNewPath) {
       this.getPath().simulateNewLine(this.mousePosition);
     }
   }
 
-  private createNewPath(initialPoint: Point) {
+  private createNewPath(initialPoint: Point): void {
     const path = this.renderer.createElement('path', this.svgNS);
     this.renderer.appendChild(this.svgElRef.nativeElement, path);
     this.paths.push(new Path(initialPoint, this.renderer, path, this.service.withJonction));
     this.getPath().setLineCss(this.service.thickness.toString(), this.serviceColor.primaryColor);
   }
 
-  private createJonction(center: Point) {
+  private createJonction(center: Point): void {
     const circle = this.renderer.createElement('circle', this.svgNS);
     this.renderer.appendChild(this.svgElRef.nativeElement, circle);
     this.getPath().addJonction(circle, center, this.currentJonctionOptions.radius, this.currentJonctionOptions.color);
   }
 
-  private addNewLine(currentPoint: Point) {
+  private addNewLine(currentPoint: Point): void {
     this.getPath().addLine(currentPoint);
     if (this.getPath().withJonctions) {
       this.createJonction(currentPoint);
