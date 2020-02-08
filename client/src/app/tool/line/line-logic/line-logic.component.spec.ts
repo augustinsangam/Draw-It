@@ -113,18 +113,24 @@ fdescribe('LineLogicComponent', () => {
     expect(component['isNewPath']).toBeTruthy();
   });
 
-  it('onMouseUp devrait setter isNewPath à true et appeler getPath ' +
+  it('onMouseUp devrait seter isNewPath à true et appeler getPath ' +
     '5 fois pour un point à plus de 3 pixels et lorsqu\'on appuie sur shift', () => {
     component['paths'] = [];
     component['paths'].push(defaultPath);
-    defaultPath.datas.points = [];
-    defaultPath.datas.points.push({x: 42, y: 42});
+    component['isNewPath'] = false;
+
+    spyOn(component['mathService'], 'distanceIsLessThan3Pixel').and.callFake(() => false);
+    spyOn(component['mathService'], 'findAlignedSegmentPoint');
+    spyOn(component['paths'][0], 'getAlignedPoint').and.callFake((): Point => ({x: 300, y: 300}));
+    const spy = spyOn(component, 'addNewLine');
+
 
     component.onMouseUp(new MouseEvent(
       'mouseup',
       {clientX: 100, clientY: 100, button: 0, shiftKey: true})
     );
 
+    expect(spy).toHaveBeenCalled();
     expect(component['isNewPath']).toBeTruthy();
   });
 
@@ -143,7 +149,7 @@ fdescribe('LineLogicComponent', () => {
     );
 
     expect(component['isNewPath']).toBeTruthy();
-    expect(spy).toHaveBeenCalledTimes(5);
+    expect(spy).toHaveBeenCalledTimes(4);
   });
 
   it('onKeyDown devrait appeler 2 fois la méthode getPath lorsqu\'elle est appelée avec Shift', () => {
@@ -227,5 +233,6 @@ fdescribe('LineLogicComponent', () => {
     ];
     component.ngOnDestroy();
     expect(called).toBeTruthy();
-  })
+  });
+
 });
