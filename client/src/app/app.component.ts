@@ -36,8 +36,8 @@ export interface DialogRefs {
 })
 export class AppComponent implements AfterViewInit {
   private dialogRefs: DialogRefs;
-  private drawInProgress = false;
-  protected drawOption: NewDrawOptions = { height : 0, width : 0, color: ''};
+  private drawInProgress: boolean
+  protected drawOption: NewDrawOptions;
 
   @ViewChild('svg', {
     static: false,
@@ -57,6 +57,9 @@ export class AppComponent implements AfterViewInit {
               private colorService: ColorService,
               private svgService: SvgService,
               private shortcutHanler: ShortcutHandlerService) {
+
+    this.drawInProgress = false;
+    this.drawOption = { height : 0, width : 0, color: ''};
 
     this.shortcutHanler.set(Shortcut.C,
       () => this.toolSelectorService.set(Tool.Pencil));

@@ -16,10 +16,9 @@ export class ColorPickerContentComponent implements AfterViewInit {
   @Input() startColor: string;
   @Input() blockAllShortcus = false;
 
-  @Output() colorChange = new EventEmitter();
+  @Output() colorChange: EventEmitter<string>;
 
-  private baseColors = ['#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF',
-                '#FFFF00', '#FF00FF', '#00FFFF', '#FF6600', '#FF6699'];
+  private baseColors: string[];
 
   @ViewChild('canvas', {
     read: ElementRef,
@@ -79,6 +78,9 @@ export class ColorPickerContentComponent implements AfterViewInit {
       slider: [''],
       hex: ['', [Validators.required, ColorPickerContentComponent.ValidatorHex]]
     });
+    this.baseColors = [ '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF',
+                        '#FFFF00', '#FF00FF', '#00FFFF', '#FF6600', '#FF6699'];
+    this.colorChange = new EventEmitter();
   }
 
   ngAfterViewInit() {
