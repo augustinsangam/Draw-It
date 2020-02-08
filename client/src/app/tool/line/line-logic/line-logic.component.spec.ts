@@ -1,11 +1,11 @@
-/* tslint:disable:no-string-literal */
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+// tslint:disable:no-string-literal
 
 import { ElementRef } from '@angular/core';
-import {Point} from '../../common/Point';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
+import { Point } from '../../common/Point';
 import { LineLogicComponent } from './line-logic.component';
-import {Path} from './Path';
+import { Path } from './Path';
 
 describe('LineLogicComponent', () => {
   let component: LineLogicComponent;
@@ -29,12 +29,14 @@ describe('LineLogicComponent', () => {
     fixture.detectChanges();
 
     defaultPath = new Path(
-      {x: 42, y: 42},
+      {
+        x: 42,
+        y: 42,
+      },
       component['renderer'],
       component['renderer'].createElement('path', component['svgNS']),
       true
     );
-
   });
 
   it('should create', () => {
@@ -85,31 +87,40 @@ describe('LineLogicComponent', () => {
       const spy = spyOn<any>(component, 'getPath').and.callThrough();
       component['isNewPath'] = true;
       component['paths'] = [];
-      component['createNewPath']({x: 100, y: 100});
+      component['createNewPath']({
+        x: 100,
+        y: 100,
+      });
       expect(spy).toHaveBeenCalled();
   });
 
   it('getPath devrait retourner le path contenant les points passés en paramètre', () => {
-    component['paths'] = [];
-    component['paths'].push(defaultPath);
-    expect(component['getPath']().datas.points).toEqual([{x: 42, y: 42}]);
+    component['paths'] = [
+      defaultPath,
+    ];
+    expect(component['getPath']().datas.points).toEqual([{
+      x: 42,
+      y: 42,
+    }]);
   });
 
   it('addNewLine devrait appeler addLine du path de line-logic', () => {
-    component['onMouseClick'](new MouseEvent(
-      'mousedown',
-      {clientX: 100, clientY: 100, button: 0} as MouseEventInit)
-    );
+    component['onMouseClick'](new MouseEvent('mousedown', {
+      button: 0,
+      clientX: 100,
+      clientY: 100,
+    } as MouseEventInit));
     const spy = spyOn(component['getPath'](), 'addLine');
     component['addNewLine']({x: 100, y: 100});
     expect(spy).toHaveBeenCalled();
   });
 
   it('addNewLine ne devrait pas appeler createJonction si withJonction est false', () => {
-    component['onMouseClick'](new MouseEvent(
-      'mousedown',
-      {clientX: 100, clientY: 100, button: 0} as MouseEventInit)
-    );
+    component['onMouseClick'](new MouseEvent('mousedown', {
+      button: 0,
+      clientX: 100,
+      clientY: 100,
+    } as MouseEventInit));
     component['getPath']().withJonctions = false;
     const spy = spyOn<any>(component, 'createJonction');
     component['addNewLine']({x: 100, y: 100});
@@ -117,13 +128,15 @@ describe('LineLogicComponent', () => {
   });
 
   it('onMouseClick devrait appeler isNewLine et ' +
-    'setter isNewPath à false lorsque Shift n\'est pas pressé', () => {
+    'setter isNewPath à false lorsque Shift n’est pas pressé', () => {
     const spy = spyOn<any>(component, 'addNewLine');
     component['isNewPath'] = true;
-    component['onMouseClick'](new MouseEvent(
-      'mousedown',
-      {clientX: 100, clientY: 100, button: 0, shiftKey: false} as MouseEventInit)
-    );
+    component['onMouseClick'](new MouseEvent('mousedown', {
+      button: 0,
+      clientX: 100,
+      clientY: 100,
+      shiftKey: false,
+    } as MouseEventInit));
     expect(spy).toHaveBeenCalled();
     expect(component['isNewPath']).toBeFalsy();
   });
@@ -134,68 +147,86 @@ describe('LineLogicComponent', () => {
     const spy = spyOn(component['paths'][0], 'getAlignedPoint').and.callFake((): Point => ({x: 100, y: 100}));
     spyOn<any>(component, 'addNewLine');
     component['isNewPath'] = false;
-    component['onMouseClick'](new MouseEvent(
-      'mousedown',
-      {clientX: 100, clientY: 100, button: 0, shiftKey: true} as MouseEventInit)
-    );
+    component['onMouseClick'](new MouseEvent('mousedown', {
+      button: 0,
+      clientX: 100,
+      clientY: 100,
+      shiftKey: true,
+    } as MouseEventInit));
     expect(spy).toHaveBeenCalled();
     expect(component['isNewPath']).toBeFalsy();
   });
 
   it('onMouseMove devrait appeler getPath 1 seule fois' +
-    ' lorsque SHIFT n\'est pas pressé', () => {
+    ' lorsque SHIFT n’est pas pressé', () => {
     component['isNewPath'] = false;
-    component['paths'] = [];
-    component['paths'].push(defaultPath);
+    component['paths'] = [
+      defaultPath,
+    ];
     const spy = spyOn<any>(component, 'getPath').and.callThrough();
-    component['onMouseMove'](new MouseEvent(
-      'mousemove',
-      {clientX: 100, clientY: 100, button: 0, shiftKey: false} as MouseEventInit)
-    );
+    component['onMouseMove'](new MouseEvent('mousemove', {
+      button: 0,
+      clientX: 100,
+      clientY: 100,
+      shiftKey: false,
+    } as MouseEventInit));
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
   it('onMouseMove devrait appeler getPath 2 fois' +
     ' lorsque SHIFT est pressé', () => {
     component['isNewPath'] = false;
-    component['paths'] = [];
-    component['paths'].push(defaultPath);
+    component['paths'] = [
+      defaultPath,
+    ];
     const spy = spyOn<any>(component, 'getPath').and.callThrough();
-    component['onMouseMove'](new MouseEvent(
-      'mousemove',
-      {clientX: 100, clientY: 100, button: 0, shiftKey: true} as MouseEventInit)
-    );
+    component['onMouseMove'](new MouseEvent('mousemove', {
+      button: 0,
+      clientX: 100,
+      clientY: 100,
+      shiftKey: true,
+    } as MouseEventInit));
     expect(spy).toHaveBeenCalledTimes(2);
   });
 
   it('onMouseMove ne devrait rien faire si isNewPath est true', () => {
     component['isNewPath'] = true;
     const spy = spyOn<any>(component, 'getPath').and.callThrough();
-    component['onMouseMove'](new MouseEvent(
-      'mousemove',
-      {clientX: 100, clientY: 100, button: 0, shiftKey: true} as MouseEventInit)
-    );
+    component['onMouseMove'](new MouseEvent('mousemove', {
+      button: 0,
+      clientX: 100,
+      clientY: 100,
+      shiftKey: false,
+    } as MouseEventInit));
     expect(spy).toHaveBeenCalledTimes(0);
   });
 
   it('onMouseDblClick devrait setter isNewPath à true pour un point à plus de 3 pixels', () => {
-    component['paths'] = [];
-    component['paths'].push(defaultPath);
-    defaultPath.datas.points = [];
-    defaultPath.datas.points.push({x: 42, y: 42});
+    component['paths'] = [
+      defaultPath,
+    ];
+    defaultPath.datas.points = [
+      {
+        x: 42,
+        y: 42,
+      },
+    ];
 
-    component['onMouseDblClick'](new MouseEvent(
-      'mouseup',
-      {clientX: 100, clientY: 100, button: 0, shiftKey: false})
-    );
+    component['onMouseDblClick'](new MouseEvent('dblclick', {
+      button: 0,
+      clientX: 100,
+      clientY: 100,
+      shiftKey: false,
+    }));
 
     expect(component['isNewPath']).toBeTruthy();
   });
 
   it('onMouseDblClick devrait seter isNewPath à true et appeler getPath ' +
-    '5 fois pour un point à plus de 3 pixels et lorsqu\'on appuie sur shift', () => {
-    component['paths'] = [];
-    component['paths'].push(defaultPath);
+    '5 fois pour un point à plus de 3 pixels et lorsqu’on appuie sur shift', () => {
+    component['paths'] = [
+      defaultPath,
+    ];
     component['isNewPath'] = false;
 
     spyOn(component['mathService'], 'distanceIsLessThan3Pixel').and.callFake(() => false);
@@ -204,10 +235,12 @@ describe('LineLogicComponent', () => {
     const spyaddNewLine = spyOn<any>(component, 'addNewLine');
     const spygetPath = spyOn<any>(component, 'getPath').and.callThrough();
 
-    component['onMouseDblClick'](new MouseEvent(
-      'mouseup',
-      {clientX: 100, clientY: 100, button: 0, shiftKey: true})
-    );
+    component['onMouseDblClick'](new MouseEvent('dblclick', {
+      button: 0,
+      clientX: 100,
+      clientY: 100,
+      shiftKey: true,
+    }));
 
     expect(spyaddNewLine).toHaveBeenCalled();
     expect(spygetPath).toHaveBeenCalledTimes(4);
@@ -215,9 +248,10 @@ describe('LineLogicComponent', () => {
   });
 
   it('onMouseDblClick devrait seter isNewPath à true et appeler getPath ' +
-    '5 fois pour un point à plus de 3 pixels et lorsqu\'on n\'appuie pas sur shift', () => {
-    component['paths'] = [];
-    component['paths'].push(defaultPath);
+    '5 fois pour un point à plus de 3 pixels et lorsqu’on n’appuie pas sur shift', () => {
+    component['paths'] = [
+      defaultPath,
+    ];
     component['isNewPath'] = false;
 
     spyOn(component['mathService'], 'distanceIsLessThan3Pixel').and.callFake(() => false);
@@ -226,10 +260,12 @@ describe('LineLogicComponent', () => {
     const spyaddNewLine = spyOn<any>(component, 'addNewLine');
     const spygetPath = spyOn<any>(component, 'getPath').and.callThrough();
 
-    component['onMouseDblClick'](new MouseEvent(
-      'mouseup',
-      {clientX: 100, clientY: 100, button: 0, shiftKey: false})
-    );
+    component['onMouseDblClick'](new MouseEvent('dblclick', {
+      button: 0,
+      clientX: 100,
+      clientY: 100,
+      shiftKey: false,
+    }));
 
     expect(spyaddNewLine).toHaveBeenCalled();
     expect(spygetPath).toHaveBeenCalledTimes(3);
@@ -239,78 +275,88 @@ describe('LineLogicComponent', () => {
   it('onMouseDblClick devrait appeler 5 fois getPath pour un point à moins de 3 pixels', () => {
     component['isNewPath'] = false;
 
-    component['paths'] = [];
-    component['paths'].push(defaultPath);
+    component['paths'] = [
+      defaultPath,
+    ];
 
     const spy = spyOn<any>(component, 'getPath').and.callThrough();
     spyOn(component['mathService'], 'distanceIsLessThan3Pixel').and.callFake(() => true);
 
-    component['onMouseDblClick'](new MouseEvent(
-      'mouseup',
-      {clientX: 43, clientY: 43, button: 0, shiftKey: false})
-    );
+    component['onMouseDblClick'](new MouseEvent('dblclick', {
+      button: 0,
+      clientX: 43,
+      clientY: 43,
+      shiftKey: false,
+    }));
 
     expect(component['isNewPath']).toBeTruthy();
     expect(spy).toHaveBeenCalledTimes(4);
   });
 
-  it('onKeyDown devrait appeler 2 fois la méthode getPath lorsqu\'elle est appelée avec Shift', () => {
+  it('onKeyDown devrait appeler 2 fois la méthode getPath lorsqu’elle est appelée avec Shift', () => {
     component['isNewPath'] = false;
-    component['paths'] = [];
-    component['paths'].push(defaultPath);
+    component['paths'] = [defaultPath];
     spyOn(component['getPath'](), 'getAlignedPoint').and.callFake((): Point => ({x: 10, y: 10}));
     const spy = spyOn<any>(component, 'getPath').and.callThrough();
 
-    component['onKeyDown'](new KeyboardEvent(
-      'shift',
-      {code: 'ShiftLeft'}
-    ));
+    component['onKeyDown'](new KeyboardEvent('shift', {
+      code: 'ShiftLeft',
+    }));
     expect(spy).toHaveBeenCalledTimes(2);
   });
 
   it('onKeyDown devrait ne rien appeler si isNewPath est true', () => {
   component['isNewPath'] = true;
-  component['paths'] = [];
-  component['paths'].push(defaultPath);
+  component['paths'] = [
+    defaultPath,
+  ];
   const spy = spyOn<any>(component['getPath'](), 'removePath');
 
-  component['onKeyDown'](new KeyboardEvent(
-    'escape',
-    {code: 'Escape'}
-  ));
+  component['onKeyDown'](new KeyboardEvent('escape', {
+    code: 'Escape',
+  }));
   expect(spy).toHaveBeenCalledTimes(0);
 });
 
-  it('onKeyDown devrait appeler 1 fois la méthode getPath lorsqu\'elle est appelée ' +
+  it('onKeyDown devrait appeler 1 fois la méthode getPath lorsqu’elle est appelée ' +
     'avec Escape, et devrait set isNewPath à true', () => {
     component['isNewPath'] = false;
-    component['paths'] = [];
-    component['paths'].push(defaultPath);
+    component['paths'] = [
+      defaultPath,
+    ];
     const spy = spyOn<any>(component['getPath'](), 'removePath');
 
-    component['onKeyDown'](new KeyboardEvent(
-      'escape',
-      {code: 'Escape'}
-    ));
+    component['onKeyDown'](new KeyboardEvent('escape', {
+      code: 'Escape',
+    }));
     expect(spy).toHaveBeenCalledTimes(1);
     expect(component['isNewPath']).toBeTruthy();
   });
 
   it('onKeyDown devrait appeler les métthodes removeLastLine et ' +
-    'simulateNewLine lorsqu\'elle est appelée avec Backspace', () => {
-    defaultPath.datas.points = [];
-    defaultPath.datas.points.push({x: 42, y: 42});
-    defaultPath.datas.points.push({x: 404, y: 404});
+    'simulateNewLine lorsqu’elle est appelée avec Backspace', () => {
+    defaultPath.datas.points = [
+      {
+        x: 42,
+        y: 42
+      },
+      {
+        x: 404,
+        y: 404,
+      },
+    ];
     component['isNewPath'] = false;
-    component['paths'] = [];
-    component['paths'].push(defaultPath);
+    component['paths'] = [defaultPath];
     const spyRemo = spyOn(component['getPath'](), 'removeLastLine');
-    const spySimu = spyOn(component['getPath'](), 'simulateNewLine').and.callFake((): Point => ({x: 10, y: 10}));
+    const spySimu = spyOn(component['getPath'](), 'simulateNewLine')
+      .and.callFake((): Point => ({
+        x: 10,
+        y: 10,
+      }));
 
-    component['onKeyDown'](new KeyboardEvent(
-      'backspace',
-      {code: 'Backspace'}
-    ));
+    component['onKeyDown'](new KeyboardEvent('backspace', {
+      code: 'Backspace',
+    }));
     expect(spyRemo).toHaveBeenCalled();
     expect(spySimu).toHaveBeenCalled();
   });
@@ -320,10 +366,9 @@ describe('LineLogicComponent', () => {
     const spy = spyOn<any>(component, 'getPath').and.callFake(() => defaultPath);
     spyOn(component['getPath'](), 'simulateNewLine');
 
-    component['onKeyUp'](new KeyboardEvent(
-      'shift',
-      {code: 'ShiftLeft'}
-    ));
+    component['onKeyUp'](new KeyboardEvent('shift', {
+      code: 'ShiftLeft',
+    }));
 
     expect(spy).toHaveBeenCalled();
   });
@@ -333,30 +378,28 @@ describe('LineLogicComponent', () => {
     const spy = spyOn<any>(component, 'getPath').and.callFake(() => defaultPath);
     spyOn(component['getPath'](), 'simulateNewLine');
 
-    component['onKeyUp'](new KeyboardEvent(
-      'shift',
-      {code: 'ShiftRight'}
-    ));
+    component['onKeyUp'](new KeyboardEvent('shift', {
+      code: 'ShiftRight',
+    }));
 
     expect(spy).toHaveBeenCalled();
   });
 
-  it('onKeyUp ne devrait rien faire si isNewPath n\'est pas true', () => {
+  it('onKeyUp ne devrait rien faire si isNewPath n’est pas true', () => {
     component['isNewPath'] = true;
     const spy = spyOn<any>(component, 'getPath');
-    component['onKeyUp'](new KeyboardEvent(
-      'shift',
-      {code: 'ShiftRight'}
-    ));
+    component['onKeyUp'](new KeyboardEvent('shift', {
+      code: 'ShiftRight',
+    }));
 
     expect(spy).toHaveBeenCalledTimes(0);
   });
 
   it('ngOnDestroy devrait rendre called à true ' +
-    '(= appeler toutes les fonctions de l\'objet listener)', () => {
+    '(= appeler toutes les fonctions de l’objet listener)', () => {
     let called = false;
     component['listeners'] = [
-      () => called = true
+      () => called = true,
     ];
     component.ngOnDestroy();
     expect(called).toBeTruthy();
