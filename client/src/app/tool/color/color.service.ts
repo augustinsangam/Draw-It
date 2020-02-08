@@ -5,13 +5,21 @@ import { Injectable } from '@angular/core';
 })
 export class ColorService {
 
-  recentColors: string[] = ['rgba(230, 25, 75, 1)', 'rgba(255, 225, 25, 1)', 'rgba(245, 130, 49, 1)', 'rgba(70, 240, 240, 1)',
+  recentColors: string[];
+  primaryColor: string;
+  secondaryColor: string;
+  backgroundColor: string;
+
+  constructor() {
+    this.recentColors  = ['rgba(230, 25, 75, 1)', 'rgba(255, 225, 25, 1)', 'rgba(245, 130, 49, 1)', 'rgba(70, 240, 240, 1)',
     'rgba(240, 50, 230, 1)', 'rgba(250, 190, 190, 1)', 'rgba(0, 128, 128, 1)', 'rgba(154, 99, 36, 1)',
     'rgba(255, 250, 200, 1)', 'rgba(128, 0, 0, 1)'];
 
-  primaryColor = 'rgba(230, 25, 75, 1)';
-  secondaryColor = 'rgba(240, 50, 230, 1)';
-  backgroundColor = 'rgba(255, 255, 255, 1)';
+    this.primaryColor = 'rgba(230, 25, 75, 1)';
+    this.secondaryColor = 'rgba(240, 50, 230, 1)';
+    this.backgroundColor = 'rgba(255, 255, 255, 1)';
+
+  }
 
   promote(index: number) {
     const colorToPromote = this.recentColors[index];

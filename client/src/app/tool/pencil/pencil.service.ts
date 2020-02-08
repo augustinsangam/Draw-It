@@ -7,8 +7,10 @@ import { ToolService } from '../tool.service';
 })
 export class PencilService extends ToolService {
 
-  thickness = 10;
+  thickness: number;
+
   constructor() {
     super();
+    this.thickness = 10;
   }
 }

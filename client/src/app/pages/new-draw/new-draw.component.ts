@@ -64,12 +64,14 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
       width: ['', [
         Validators.required,
         Validators.min(1),
+        Validators.max(1000000),
         NewDrawComponent.validatorInteger]],
-        height: ['', [
-          Validators.required,
-          Validators.min(1),
-          NewDrawComponent.validatorInteger]],
-          color: ['', []]
+      height: ['', [
+        Validators.required,
+        Validators.min(1),
+        Validators.max(1000000),
+        NewDrawComponent.validatorInteger]],
+        color: ['', []]
     });
     this.dialogRefs = {
       palette: undefined as unknown as MatDialogRef<PaletteDialogComponent>,

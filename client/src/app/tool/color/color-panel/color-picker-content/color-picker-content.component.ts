@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, Quer
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSliderChange } from '@angular/material';
 import { EventManager } from '@angular/platform-browser';
+import { ShortcutHandlerService } from 'src/app/shortcut-handler.service';
 import { ColorService, RGBColor } from '../../color.service';
 import { ColorPickerItemComponent } from '../color-picker-item/color-picker-item.component';
 
@@ -13,11 +14,11 @@ import { ColorPickerItemComponent } from '../color-picker-item/color-picker-item
 export class ColorPickerContentComponent implements AfterViewInit {
 
   @Input() startColor: string;
+  @Input() blockAllShortcus = false;
 
-  @Output() colorChange = new EventEmitter();
+  @Output() colorChange: EventEmitter<string>;
 
-  private baseColors = ['#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF',
-                '#FFFF00', '#FF00FF', '#00FFFF', '#FF6600', '#FF6699'];
+  private baseColors: string[];
 
   @ViewChild('canvas', {
     read: ElementRef,
@@ -32,9 +33,19 @@ export class ColorPickerContentComponent implements AfterViewInit {
   @ViewChildren(ColorPickerItemComponent)
   private baseColorsCircles: QueryList<ColorPickerItemComponent>;
 
-  private context: CanvasRenderingContext2D;
+  @ViewChild('rField',    { static: false }) private rField: ElementRef;
+  @ViewChild('gField',    { static: false }) private gField: ElementRef;
+  @ViewChild('bField',    { static: false }) private bField: ElementRef;
+  @ViewChild('aField',    { static: false }) private aField: ElementRef;
+  @ViewChild('hexField',  { static: false }) private hexField: ElementRef;
 
+  private context: CanvasRenderingContext2D;
   private colorForm: FormGroup;
+
+  private focusHandlers = {
+    in : () => this.shortcutHandler.desactivateAll(),
+    out : () => this.shortcutHandler.activateAll()
+  }
 
   static ValidatorHex(formControl: AbstractControl) {
     if (/^[0-9A-F]{6}$/i.test(formControl.value)) {
@@ -54,7 +65,11 @@ export class ColorPickerContentComponent implements AfterViewInit {
     }
   }
 
-  constructor(private formBuilder: FormBuilder, private eventManager: EventManager, private colorService: ColorService) {
+  constructor(private formBuilder: FormBuilder,
+              private eventManager: EventManager,
+              private colorService: ColorService,
+              private shortcutHandler: ShortcutHandlerService
+              ) {
     this.colorForm = this.formBuilder.group({
       r: ['', [Validators.required, ColorPickerContentComponent.ValidatorInteger]],
       g: ['', [Validators.required, ColorPickerContentComponent.ValidatorInteger]],
@@ -63,6 +78,9 @@ export class ColorPickerContentComponent implements AfterViewInit {
       slider: [''],
       hex: ['', [Validators.required, ColorPickerContentComponent.ValidatorHex]]
     });
+    this.baseColors = [ '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF',
+                        '#FFFF00', '#FF00FF', '#00FFFF', '#FF6600', '#FF6699'];
+    this.colorChange = new EventEmitter();
   }
 
   ngAfterViewInit() {
@@ -76,6 +94,16 @@ export class ColorPickerContentComponent implements AfterViewInit {
         this.initialiseStartingColor();
       })
     });
+
+    if (!this.blockAllShortcus) {
+      [this.rField, this.gField, this.bField, this.aField, this.hexField]
+      .forEach((field: ElementRef) => {
+        this.eventManager.addEventListener(field.nativeElement, 'focus',
+          this.focusHandlers.in);
+        this.eventManager.addEventListener(field.nativeElement, 'focusout',
+          this.focusHandlers.out);
+      });
+    }
 
   }
 

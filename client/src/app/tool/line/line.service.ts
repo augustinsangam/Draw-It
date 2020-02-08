@@ -5,11 +5,14 @@ import { ToolService } from '../tool.service';
 })
 export class LineService extends ToolService {
 
-  thickness = 2;
-  withJonction = true;
-  radius = 2;
+  thickness: number;
+  withJonction: boolean;
+  radius: number;
 
   constructor() {
     super();
+    this.thickness = 2;
+    this.withJonction = true;
+    this.radius = 2;
   }
 }

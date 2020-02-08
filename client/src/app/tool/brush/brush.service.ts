@@ -15,11 +15,13 @@ export enum Texture {
 })
 export class BrushService extends ToolService {
 
-  thickness = 10;
-  texture = Texture.Texture2;
+  thickness: number;
+  texture: Texture;
 
   constructor() {
     super();
+    this.thickness = 10;
+    this.texture = Texture.Texture1;
   }
 
 }

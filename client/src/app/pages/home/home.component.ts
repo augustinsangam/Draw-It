@@ -15,13 +15,13 @@ export class HomeComponent {
   options = [
     {
       icon              : 'add',
-      message           : 'Créer un nouveau dessin',
+      message           : 'Nouveau dessin',
       dialogCloseResult : 'new',
       canDisplay        : true,
     },
     {
       icon              : 'photo_library',
-      message           : 'Aller à la galerie',
+      message           : 'Galerie',
       dialogCloseResult : 'library',
       canDisplay        : true,
     },
@@ -33,7 +33,7 @@ export class HomeComponent {
     },
     {
       icon              : 'save',
-      message           : 'Continuer un ancien dessin',
+      message           : 'Continuer le dernier dessin',
       dialogCloseResult : 'continue',
       canDisplay        : true,
     },

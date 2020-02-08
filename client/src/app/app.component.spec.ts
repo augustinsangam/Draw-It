@@ -67,52 +67,16 @@ describe('AppComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('#keyEvent should call this.toolSelectorService.set()', () => {
-    component['onMainPage'] = true;
-
+  it('#keyEvent should call this.shortcutHanler.execute()', () => {
     const event = new KeyboardEvent('window:keydown', {
       code: 'KeyC',
     });
 
-    const spy = spyOn(component['toolSelectorService'], 'set');
+    const spy = spyOn(component['shortcutHanler'], 'execute');
 
     component.keyEvent(event);
 
     expect(spy).toHaveBeenCalled()
-  });
-
-  it('#keyEvent should call this.toolSelectorService.set()', () => {
-    component['onMainPage'] = true;
-
-    const event = new KeyboardEvent('window:keydown', {
-      code: 'KeyO',
-      ctrlKey: true,
-    });
-
-    // La fonction est privée. On a besoin du any
-    const spy = spyOn<any>(component, 'openNewDrawDialog');
-
-    component.keyEvent(event);
-
-    expect(spy).toHaveBeenCalled()
-  });
-
-  it('#keyEvent should call this.toolSelectorService.set()', () => {
-    component['onMainPage'] = false;
-
-    const event = new KeyboardEvent('window:keydown', {
-      code: 'KeyX',
-      ctrlKey: true,
-    });
-
-    const spy1 = spyOn(component['toolSelectorService'], 'set');
-
-    const spy2 = spyOn<any>(component, 'openNewDrawDialog');
-
-    component.keyEvent(event);
-
-    expect(spy1).toHaveBeenCalledTimes(0);
-    expect(spy2).toHaveBeenCalledTimes(0);
   });
 
   it('#ngAfterViewInit should set component.svgService.instance to component.svg', () => {
@@ -209,30 +173,12 @@ describe('AppComponent', () => {
     expect(spy2).toHaveBeenCalledTimes(0);
   });
 
-  it('#openDocumentationDialog should set onMainPage to false', () => {
-    component['onMainPage'] = true;
-
-    component['openDocumentationDialog'](true); // Le parametre n'a pas d'impact direct
-
-    component['dialogRefs'].documentation.close();
-
-    expect(component['onMainPage']).toBe(false);
-  });
-
   it('#closeDocumentationDialog should call openHomeDialog if fromHome (arg) is true', () => {
     const spy = spyOn<any>(component, 'openHomeDialog');
 
     component['closeDocumentationDialog'](true);
 
     expect(spy).toHaveBeenCalled();
-  });
-
-  it('#closeDocumentationDialog should set onMainpage tu true if fromHome (arg) is false.', () => {
-    component['onMainPage'] = false;
-
-    component['closeDocumentationDialog'](false);
-
-    expect(component['onMainPage']).toBeTruthy();
   });
 
   it('#createNewDraw should set drawInProgress to true', () => {

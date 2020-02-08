@@ -9,4 +9,4 @@ Le panneau d'options de l'outil pinceau permet la configuration de deux paramèt
 
 Les 5 textures sont présentées ici :
 
-<img class="doc-img" src="../../assets/doc/imgs/doc-outilPinceau.png" title="Les textures de l'outil pinceau" alt="image outil pinceau">
+<img class="doc-img" src="../../assets/doc/imgs/doc-outilPinceau.png" title="Les textures de l'outil pinceau" alt="image outil pinceau" width="100%">
