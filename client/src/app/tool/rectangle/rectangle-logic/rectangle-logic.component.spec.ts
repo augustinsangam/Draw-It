@@ -10,7 +10,7 @@ const createClickMouseEvent = (event: string): MouseEvent => {
   return new MouseEvent(event, { offsetX: 10, offsetY: 30, button: 0 } as MouseEventInit);
 }
 // tslint:disable:no-string-literal
-describe('RectangleLogicComponent', () => {
+fdescribe('RectangleLogicComponent', () => {
   let component: RectangleLogicComponent;
   let fixture: ComponentFixture<RectangleLogicComponent>;
 
@@ -90,7 +90,7 @@ describe('RectangleLogicComponent', () => {
     expect(spy1).toHaveBeenCalled();
   }));
 
-  it('#onKeyDown should call drawTemporarySquare', ()  => {
+  it('a pressed shift should call drawTemporarySquare', ()  => {
     component['initRectangle'](createClickMouseEvent('mousedown'));
     const event = new KeyboardEvent('window:keydown', {
       code: 'ShiftRight',
@@ -99,6 +99,35 @@ describe('RectangleLogicComponent', () => {
     const spy = spyOn<any>(component['getRectangle'](), 'drawTemporarySquare').and.callThrough();
     component['onKeyDown'](event);
     expect(spy).toHaveBeenCalled();
+  });
+
+  it('#if it is not on onDrag, keyEvent should not call any function', ()  => {
+    component['initRectangle'](createClickMouseEvent('mousedown'));
+    const event1 = new KeyboardEvent('window:keydown', {
+      code: 'ShiftRight',
+      key: 'Shift'
+    });
+    component['onDrag'] = false;
+    const spy1 = spyOn<any>(component['getRectangle'](), 'drawTemporarySquare').and.callThrough();
+    const spy2 = spyOn<any>(component['getRectangle'](), 'drawTemporaryRectangle').and.callThrough();
+    component['onKeyDown'](event1);
+    const event2 = new KeyboardEvent('window:keyup', {});
+    component['onKeyUp'](event2);
+    expect(spy1).toHaveBeenCalledTimes(0);
+    expect(spy2).toHaveBeenCalledTimes(0);
+  });
+
+  it('#if it is not on ShiftKey, keyDown should not call any function', ()  => {
+    component['initRectangle'](createClickMouseEvent('mousedown'));
+    const event1 = new KeyboardEvent('window:keydown', {code: 'BackSpace'});
+    const event2 = new KeyboardEvent('window:keyup', {code: 'BackSpace'});
+    component['onDrag'] = true;
+    const spy1 = spyOn<any>(component['getRectangle'](), 'drawTemporarySquare').and.callThrough();
+    component['onKeyDown'](event1);
+    expect(spy1).not.toHaveBeenCalled();
+    const spy2 = spyOn<any>(component['getRectangle'](), 'drawTemporaryRectangle').and.callThrough();
+    component['onKeyUp'](event2);
+    expect(spy2).not.toHaveBeenCalled();
   });
 
   it('#onKeyUp should call drawTemporaryRectangle', ()  => {
@@ -136,5 +165,22 @@ describe('RectangleLogicComponent', () => {
     }, 500);
     tick(500);
   }));
+
+  it('should handle key downs', () => {
+    const globKeyEv = new KeyboardEvent('keydown');
+    spyOn<any>(component, 'onKeyDown').and.callFake(
+      (keyEv: KeyboardEvent) => expect(keyEv).toBe(globKeyEv));
+    component.ngOnInit();
+    component['svgElRef'].nativeElement.dispatchEvent(globKeyEv);
+  });
+
+  it('should handle key ups', () => {
+    const globKeyEv = new KeyboardEvent('keyup');
+    spyOn<any>(component, 'onKeyUp').and.callFake(
+      (keyEv: KeyboardEvent) => expect(keyEv).toBe(globKeyEv));
+    component.ngOnInit();
+    component['svgElRef'].nativeElement.dispatchEvent(globKeyEv);
+  });
+
 
 });

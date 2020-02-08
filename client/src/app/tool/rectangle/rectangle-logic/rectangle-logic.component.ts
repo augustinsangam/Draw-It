@@ -85,6 +85,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
   private getRectangle(): Rectangle {
     return this.rectangles[this.currentRectangleIndex];
   }
+
   private initRectangle(mouseEv: MouseEvent) {
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
       this.currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
