@@ -37,26 +37,26 @@ export class BrushLogicComponent extends PencilBrushCommon {
           this.mouseOnHold = true;
           this.onMouseDown(mouseEv);
         }
-      });
+    });
 
     const mouseMoveListen = this.renderer.listen(this.svgElRef.nativeElement,
       'mousemove', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0 && this.mouseOnHold) {
           this.onMouseMove(mouseEv);
         }
-      });
+    });
 
     const mouseUpListen = this.renderer.listen(this.svgElRef.nativeElement,
       'mouseup', (mouseEv: MouseEvent) => {
         this.stopDrawing();
-      });
+    });
 
     const mouseLeaveListen = this.renderer.listen(this.svgElRef.nativeElement,
       'mouseleave', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0 && this.mouseOnHold) {
           this.stopDrawing();
         }
-      });
+    });
     this.listeners = [
       mouseDownListen,
       mouseMoveListen,
@@ -83,9 +83,7 @@ export class BrushLogicComponent extends PencilBrushCommon {
 
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnDestroy() {
-    this.listeners.forEach(listenner => {
-      listenner();
-    })
+    this.listeners.forEach(listenner => { listenner(); });
   }
 
   stopDrawing(): void {
@@ -136,7 +134,7 @@ export class BrushLogicComponent extends PencilBrushCommon {
     feGaussianBlurSvgEl.setAttribute('result', 'blur');
     this.renderer.appendChild(filterSvgEl, feGaussianBlurSvgEl);
     const feOffset: SVGFEOffsetElement =
-    this.renderer.createElement('feOffset', this.svgNS);
+      this.renderer.createElement('feOffset', this.svgNS);
     feOffset.setAttribute('in', 'blur');
     feOffset.setAttribute('result', 'offsetBlur');
     this.renderer.appendChild(filterSvgEl, feOffset);
