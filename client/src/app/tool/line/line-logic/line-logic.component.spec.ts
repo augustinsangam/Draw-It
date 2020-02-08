@@ -6,7 +6,7 @@ import {Point} from '../../tool-common classes/Point';
 import { LineLogicComponent } from './line-logic.component';
 import {Path} from './Path';
 
-describe('LineLogicComponent', () => {
+fdescribe('LineLogicComponent', () => {
   let component: LineLogicComponent;
   let fixture: ComponentFixture<LineLogicComponent>;
   let defaultPath: Path;
@@ -218,4 +218,14 @@ describe('LineLogicComponent', () => {
 
     expect(spy).toHaveBeenCalled();
   });
+
+  it('ngOnDestroy devrait rendre called à true ' +
+    '(= appeler toutes les fonctions de l\'objet listener)', () => {
+    let called = false;
+    component['listeners'] = [
+      () => called = true
+    ];
+    component.ngOnDestroy();
+    expect(called).toBeTruthy();
+  })
 });
