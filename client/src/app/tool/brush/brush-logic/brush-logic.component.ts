@@ -9,12 +9,13 @@ import { BrushService } from '../brush.service';
 })
 export class BrushLogicComponent extends PencilBrushCommon {
 
-  private listeners: (() => void)[] = [];
+  private listeners: (() => void)[];
 
   constructor(protected renderer: Renderer2,
               private colorService: ColorService,
               private brushService: BrushService) {
     super();
+    this.listeners = new Array();
   }
 
   // tslint:disable-next-line use-lifecycle-interface
