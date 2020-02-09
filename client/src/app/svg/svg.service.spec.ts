@@ -21,7 +21,8 @@ describe('SvgService', () => {
 
   it('#changeBackgroundColor() should change svg background color', () => {
     service.changeBackgroundColor('rgb(171, 205, 239)');
-    expect(service.instance.nativeElement.style.backgroundColor).toEqual('rgb(171, 205, 239)');
+    const color = service.instance.nativeElement.style.backgroundColor;
+    expect(color).toEqual('rgb(171, 205, 239)');
   });
 
 });

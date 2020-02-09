@@ -1,11 +1,32 @@
 import { CdkObserveContent } from '@angular/cdk/observers';
 import { ComponentType, Overlay } from '@angular/cdk/overlay';
 import { ElementRef } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import {
+  async,
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick
+} from '@angular/core/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatCard, MatCardContent,
-   MatCardTitle, MatDialog, MatDialogActions, MatDialogClose, MatDialogContainer, MatDialogContent,
-   MatDialogRef, MatFormField, MatHint, MatInput, MatLabel, MatSlider } from '@angular/material';
+import {
+  MAT_DIALOG_DATA,
+  MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
+  MatCard,
+  MatCardContent,
+  MatCardTitle,
+  MatDialog,
+  MatDialogActions,
+  MatDialogClose,
+  MatDialogContainer,
+  MatDialogContent,
+  MatDialogRef,
+  MatFormField,
+  MatHint,
+  MatInput,
+  MatLabel,
+  MatSlider
+} from '@angular/material';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -18,6 +39,7 @@ import { NewDrawComponent } from './new-draw.component';
 import { PaletteDialogComponent } from './palette-dialog.component';
 import { ScreenService } from './sreen-service/screen.service';
 
+// we remove this rule to have acces to some private
 // tslint:disable: no-string-literal
 describe('NewDrawComponent', () => {
   let component: NewDrawComponent;
@@ -28,11 +50,7 @@ describe('NewDrawComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
-      ],
+      imports: [FormsModule, ReactiveFormsModule, BrowserAnimationsModule],
       declarations: [
         NewDrawComponent,
         ColorPickerItemComponent,
@@ -51,7 +69,7 @@ describe('NewDrawComponent', () => {
         MatCard,
         MatCardContent,
         MatCardTitle,
-        ColorPickerContentComponent,
+        ColorPickerContentComponent
       ],
       providers: [
         ScreenService,
@@ -69,21 +87,20 @@ describe('NewDrawComponent', () => {
         },
         {
           provide: HAMMER_LOADER,
-          useValue: () => new Promise(() => {}),
+          useValue: () => new Promise(() => { })
         }
       ],
       schemas: []
-    })
-    .overrideModule(BrowserDynamicTestingModule, {
+    }).overrideModule(BrowserDynamicTestingModule, {
       set: {
         entryComponents: [
           PaletteDialogComponent,
           ConfirmationDialogComponent,
           NewDrawComponent,
-          MatDialogContainer,
+          MatDialogContainer
         ]
       }
-    })
+    });
   }));
 
   beforeEach(() => {
@@ -100,7 +117,7 @@ describe('NewDrawComponent', () => {
     // On a explicitement besoin du any car c'est une méthode privée
     const spy = spyOn<any>(component, 'updateFormSize');
     component.ngOnInit();
-    component['screenService'].size.next({height: 100, width: 100});
+    component['screenService'].size.next({ height: 100, width: 100 });
     expect(spy).toHaveBeenCalled();
   });
 
@@ -111,18 +128,18 @@ describe('NewDrawComponent', () => {
   });
 
   it('#ngAfterViewInit should do smth when click', fakeAsync(() => {
-    const spyDialogOpen = spyOn(component['dialog'], 'open').and
-    .callFake(
+    const spyDialogOpen = spyOn(component['dialog'], 'open').and.callFake(
       // On a besoin d'utiliser les funtion à cause du template
       // tslint:disable-next-line: no-shadowed-variable only-arrow-functions
-      function<PaletteDialogComponent>(): MatDialogRef<PaletteDialogComponent> {
-        return {
+      function <PaletteDialogComponent>():
+        MatDialogRef<PaletteDialogComponent> {
+        return ({
           afterClosed: () => new Observable<any>()
-        } as unknown as MatDialogRef<PaletteDialogComponent>;
+        } as unknown) as MatDialogRef<PaletteDialogComponent>;
       }
     );
     component['palette'] = {
-      button: new ElementRef(component['renderer'].createElement('button')),
+      button: new ElementRef(component['renderer'].createElement('button'))
     } as ColorPickerItemComponent;
     component.ngAfterViewInit();
     tick(500);
@@ -131,7 +148,6 @@ describe('NewDrawComponent', () => {
       expect(spyDialogOpen).toHaveBeenCalled();
     }, 500);
     tick(500);
-
   }));
 
   it('#paletteCloseHandler should call closePaletteDialog', () => {
@@ -140,63 +156,90 @@ describe('NewDrawComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#closePaletteDialog should call palette.updateColor with colorPicked if it is not undefine', () => {
-    const spy = spyOn(component['palette'], 'updateColor');
-    component['closePaletteDialog']('#FFFFFF');
-    expect(spy).toHaveBeenCalledWith('#FFFFFF');
-  });
+  it(
+    '#closePaletteDialog should call palette.' +
+    'updateColor with colorPicked if it is not undefine',
+    () => {
+      const spy = spyOn(component['palette'], 'updateColor');
+      component['closePaletteDialog']('#FFFFFF');
+      expect(spy).toHaveBeenCalledWith('#FFFFFF');
+    }
+  );
 
-  it('#closePaletteDialog should not call palette.updateColor if colorPiked is undefine', () => {
-    const spy = spyOn(component['palette'], 'updateColor');
-    component['closePaletteDialog'](undefined);
-    expect(spy).toHaveBeenCalledTimes(0);
-  });
+  it(
+    '#closePaletteDialog should not call palette.updateColor' +
+    'if colorPiked is undefine',
+    () => {
+      const spy = spyOn(component['palette'], 'updateColor');
+      component['closePaletteDialog'](undefined);
+      expect(spy).toHaveBeenCalledTimes(0);
+    }
+  );
 
-  it('#updateFormSize should not call form.patchVale() if userChangeSizeMannually is true', () => {
-    const spy = spyOn(component['form'], 'patchValue');
-    component['userChangeSizeMannually'] = true;
-    component['updateFormSize']({width: 100, height: 100});
-    expect(spy).toHaveBeenCalledTimes(0);
-  });
+  it(
+    '#updateFormSize should not call form.patchVale()' +
+    'if userChangeSizeMannually is true',
+    () => {
+      const spy = spyOn(component['form'], 'patchValue');
+      component['userChangeSizeMannually'] = true;
+      component['updateFormSize']({ width: 100, height: 100 });
+      expect(spy).toHaveBeenCalledTimes(0);
+    }
+  );
 
-  it('#updateFormSize should call form.patchVale() if userChangeSizeMannually is false', () => {
-    const spy = spyOn(component['form'], 'patchValue');
-    component['userChangeSizeMannually'] = false;
-    component['updateFormSize']({width: 100, height: 100});
-    expect(spy).toHaveBeenCalled();
-  });
+  it(
+    '#updateFormSize should call form.patchVale()' +
+    'if userChangeSizeMannually is false',
+    () => {
+      const spy = spyOn(component['form'], 'patchValue');
+      component['userChangeSizeMannually'] = false;
+      component['updateFormSize']({ width: 100, height: 100 });
+      expect(spy).toHaveBeenCalled();
+    }
+  );
 
-  it('#onDimensionsChangedByUser should set userChangeSizeMannually to true', () => {
-    component['userChangeSizeMannually'] = false;
-    component['onDimensionsChangedByUser']();
-    expect(component['userChangeSizeMannually']).toBe(true);
-  });
+  it(
+    '#onDimensionsChangedByUser should set ' +
+    'userChangeSizeMannually to true',
+    () => {
+      component['userChangeSizeMannually'] = false;
+      component['onDimensionsChangedByUser']();
+      expect(component['userChangeSizeMannually']).toBe(true);
+    }
+  );
 
-  it('#onSubmit should call dialogRef.close if data.drawInProgress is false', () => {
-    component.data.drawInProgress = false;
-    component['onSubmit']();
-    expect(mockDialogRef.close).toHaveBeenCalled();
-  });
+  it(
+    '#onSubmit should call dialogRef.close' + 'if data.drawInProgress is false',
+    () => {
+      component.data.drawInProgress = false;
+      component['onSubmit']();
+      expect(mockDialogRef.close).toHaveBeenCalled();
+    }
+  );
 
-  it('#onSubmit should call dialogRef.close if data.drawInProgress is false', fakeAsync(() => {
-    const spyDialogOpen = spyOn(component['dialog'], 'open').and
-    .callFake(
-      // On a besoin d'utiliser les funtion à cause du template
-      // tslint:disable-next-line: no-shadowed-variable only-arrow-functions
-      function<PaletteDialogComponent>(component: ComponentType<PaletteDialogComponent>): MatDialogRef<PaletteDialogComponent> {
-        return {
-          afterClosed: () => new Observable<boolean>(),
-          close: (result: boolean) => {},
-          disableclose: Boolean,
-        } as unknown as MatDialogRef<PaletteDialogComponent>;
-      }
-    );
-    component.data.drawInProgress = true;
-    component['onSubmit']();
-    component['dialogRefs'].confirm.close(false);
-    expect(spyDialogOpen).toBeTruthy();
-    expect(component['dialogRefs'].confirm.disableClose).toBe(true);
-  }));
+  it(
+    '#onSubmit should call dialogRef.close' + 'if data.drawInProgress is false',
+    fakeAsync(() => {
+      const spyDialogOpen = spyOn(component['dialog'], 'open').and.callFake(
+        // On a besoin d'utiliser les funtion à cause du template
+        // tslint:disable-next-line: no-shadowed-variable only-arrow-functions
+        function <PaletteDialogComponent>(component:
+          ComponentType<PaletteDialogComponent>
+        ): MatDialogRef<PaletteDialogComponent> {
+          return ({
+            afterClosed: () => new Observable<boolean>(),
+            close: (result: boolean) => { },
+            disableclose: Boolean
+          } as unknown) as MatDialogRef<PaletteDialogComponent>;
+        }
+      );
+      component.data.drawInProgress = true;
+      component['onSubmit']();
+      component['dialogRefs'].confirm.close(false);
+      expect(spyDialogOpen).toBeTruthy();
+      expect(component['dialogRefs'].confirm.disableClose).toBe(true);
+    })
+  );
 
   it('#onSubmitHandler should call closeDialog', () => {
     // Any uniquement parceque la methode est privee
@@ -205,19 +248,26 @@ describe('NewDrawComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#closeDialog should call dialogRef.close with this.form.value if result is true', () => {
-    component['closeDialog'](true);
-    expect(mockDialogRef.close).toHaveBeenCalledWith(component['form'].value);
-  });
+  it(
+    '#closeDialog should call dialogRef.close with' +
+    'this.form.value if result is true',
+    () => {
+      component['closeDialog'](true);
+      expect(mockDialogRef.close).toHaveBeenCalledWith(component['form'].value);
+    }
+  );
 
-  it('#closeDialog should call dialogRef.close with "home" if result is false', () => {
-    component['closeDialog'](false);
-    expect(mockDialogRef.close).toHaveBeenCalledWith('home');
-  });
+  it(
+    '#closeDialog should call dialogRef.close' +
+    'with "home" if result is false',
+    () => {
+      component['closeDialog'](false);
+      expect(mockDialogRef.close).toHaveBeenCalledWith('home');
+    }
+  );
 
   it('#onReturn should call dialogRef.close with "home"', () => {
     component['onReturn']();
     expect(mockDialogRef.close).toHaveBeenCalledWith('home');
   });
-
 });

@@ -1,5 +1,12 @@
-import { AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild,
-  ViewChildren } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
 import { EventManager } from '@angular/platform-browser';
 
 import { SvgService } from 'src/app/svg/svg.service';
@@ -12,15 +19,15 @@ export enum ColorOption {
   Primary = 'PRIMARY',
   Secondary = 'SECONDARY',
   Background = 'BACKGROUND'
-};
+}
 
 @Component({
   selector: 'app-color-panel',
   templateUrl: './color-panel.component.html',
   styleUrls: ['./color-panel.component.scss']
 })
-export class ColorPanelComponent extends ToolPanelDirective implements OnInit, AfterViewInit {
-
+export class ColorPanelComponent extends ToolPanelDirective
+  implements OnInit, AfterViewInit {
   protected colorOptionEnum: typeof ColorOption = ColorOption;
 
   private colorOption: ColorOption;
@@ -28,19 +35,22 @@ export class ColorPanelComponent extends ToolPanelDirective implements OnInit, A
   private showPalette: boolean;
 
   @ViewChild('colorPreviewPrimary', {
-    read : ColorPickerItemComponent,
-    static : false
-  }) private colorPreviewPrimary: ColorPickerItemComponent;
+    read: ColorPickerItemComponent,
+    static: false
+  })
+  private colorPreviewPrimary: ColorPickerItemComponent;
 
   @ViewChild('colorPreviewSecondary', {
-    read : ColorPickerItemComponent,
-    static : false
-  }) private colorPreviewSecondary: ColorPickerItemComponent;
+    read: ColorPickerItemComponent,
+    static: false
+  })
+  private colorPreviewSecondary: ColorPickerItemComponent;
 
   @ViewChild('colorPreviewBackground', {
-    read : ColorPickerItemComponent,
-    static : false
-  }) private colorPreviewBackground: ColorPickerItemComponent;
+    read: ColorPickerItemComponent,
+    static: false
+  })
+  private colorPreviewBackground: ColorPickerItemComponent;
 
   @ViewChildren(ColorPickerItemComponent)
   private colorsItems: QueryList<ColorPickerItemComponent>;
@@ -48,14 +58,17 @@ export class ColorPanelComponent extends ToolPanelDirective implements OnInit, A
   @ViewChild('colorPalette', {
     static: false,
     read: ColorPickerContentComponent
-  }) private colorPalette: ColorPickerContentComponent;
+  })
+  private colorPalette: ColorPickerContentComponent;
 
   protected colorsItemsArray: ColorPickerItemComponent[];
 
-  constructor(elementRef: ElementRef<HTMLElement>,
-              public colorService: ColorService,
-              public eventManager: EventManager,
-              public svgService: SvgService) {
+  constructor(
+    elementRef: ElementRef<HTMLElement>,
+    public colorService: ColorService,
+    public eventManager: EventManager,
+    public svgService: SvgService
+  ) {
     super(elementRef);
     this.colorOption = ColorOption.Primary;
     this.showPalette = false;
@@ -76,27 +89,41 @@ export class ColorPanelComponent extends ToolPanelDirective implements OnInit, A
 
   private addEvents(): void {
     for (let i = 0; i < this.recentColors.length; i++) {
-      this.eventManager.addEventListener(this.colorsItemsArray[i].button.nativeElement, 'click', ($event: MouseEvent) => {
-        this.colorPreviewPrimary.updateColor(this.colorsItemsArray[i].color);
-        this.colorService.primaryColor = this.colorsItemsArray[i].color;
-        if (this.colorPalette) {
-          this.colorPalette.startColor = this.colorService.hexFormRgba(this.colorsItemsArray[i].color);
-          this.colorPalette.initialiseStartingColor();
+      this.eventManager.addEventListener(
+        this.colorsItemsArray[i].button.nativeElement,
+        'click',
+        ($event: MouseEvent) => {
+          this.colorPreviewPrimary.updateColor(this.colorsItemsArray[i].color);
+          this.colorService.primaryColor = this.colorsItemsArray[i].color;
+          if (this.colorPalette) {
+            this.colorPalette.startColor = this.colorService.hexFormRgba(
+              this.colorsItemsArray[i].color
+            );
+            this.colorPalette.initialiseStartingColor();
+          }
+          this.colorService.promote(i);
+          this.updateRecentColors();
         }
-        this.colorService.promote(i);
-        this.updateRecentColors();
-      });
-      this.eventManager.addEventListener(this.colorsItemsArray[i].button.nativeElement, 'contextmenu', ($event: MouseEvent) => {
-        $event.preventDefault();
-        this.colorPreviewSecondary.updateColor(this.colorsItemsArray[i].color);
-        this.colorService.secondaryColor = this.colorsItemsArray[i].color;
-        if (this.colorPalette) {
-          this.colorPalette.startColor = this.colorService.hexFormRgba(this.colorsItemsArray[i].color);
-          this.colorPalette.initialiseStartingColor();
+      );
+      this.eventManager.addEventListener(
+        this.colorsItemsArray[i].button.nativeElement,
+        'contextmenu',
+        ($event: MouseEvent) => {
+          $event.preventDefault();
+          this.colorPreviewSecondary.updateColor(
+            this.colorsItemsArray[i].color
+          );
+          this.colorService.secondaryColor = this.colorsItemsArray[i].color;
+          if (this.colorPalette) {
+            this.colorPalette.startColor = this.colorService.hexFormRgba(
+              this.colorsItemsArray[i].color
+            );
+            this.colorPalette.initialiseStartingColor();
+          }
+          this.colorService.promote(i);
+          this.updateRecentColors();
         }
-        this.colorService.promote(i);
-        this.updateRecentColors();
-      });
+      );
     }
   }
 
@@ -108,8 +135,10 @@ export class ColorPanelComponent extends ToolPanelDirective implements OnInit, A
   }
 
   protected swapColors(): void {
-    [this.colorService.primaryColor, this.colorService.secondaryColor] =
-      [this.colorService.secondaryColor, this.colorService.primaryColor];
+    [this.colorService.primaryColor, this.colorService.secondaryColor] = [
+      this.colorService.secondaryColor,
+      this.colorService.primaryColor
+    ];
     this.updatePreviewColors();
   }
 
@@ -136,7 +165,7 @@ export class ColorPanelComponent extends ToolPanelDirective implements OnInit, A
   }
 
   protected onShowPalette(): void {
-    this.showPalette = !this.showPalette ;
+    this.showPalette = !this.showPalette;
   }
 
   protected getStartColor(): string {
@@ -148,5 +177,4 @@ export class ColorPanelComponent extends ToolPanelDirective implements OnInit, A
       return this.colorService.hexFormRgba(this.colorService.backgroundColor);
     }
   }
-
 }

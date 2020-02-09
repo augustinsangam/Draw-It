@@ -6,7 +6,7 @@ import {
   OnInit,
   Type,
   ViewChild,
-  ViewContainerRef,
+  ViewContainerRef
 } from '@angular/core';
 
 import { BrushPanelComponent } from '../tool/brush/brush-panel/brush-panel.component';
@@ -25,8 +25,9 @@ import { Tool } from '../tool/tool.enum';
 export class PanelComponent implements OnInit {
   @ViewChild('container', {
     read: ViewContainerRef,
-    static: true,
-  }) private viewContainerRef: ViewContainerRef;
+    static: true
+  })
+  private viewContainerRef: ViewContainerRef;
 
   @HostBinding('style.width.px')
   private hostWidth: number;
@@ -34,8 +35,10 @@ export class PanelComponent implements OnInit {
   private readonly components: Type<ToolPanelDirective>[];
   private childWidth: number;
 
-  constructor(private readonly componentFactoryResolver: ComponentFactoryResolver,
-              private readonly toolSelectorService: ToolSelectorService) {
+  constructor(
+    private readonly componentFactoryResolver: ComponentFactoryResolver,
+    private readonly toolSelectorService: ToolSelectorService
+  ) {
     this.components = new Array(Tool._Len);
     this.components[Tool.Brush] = BrushPanelComponent;
     this.components[Tool.Line] = LinePanelComponent;
@@ -54,7 +57,7 @@ export class PanelComponent implements OnInit {
     this.toolSelectorService.onChange((tool: Tool) => this.setTool(tool));
   }
 
-  private toggle() {
+  private toggle(): void {
     this.hostWidth = this.hostWidth ? 0 : this.childWidth;
   }
 
@@ -62,10 +65,10 @@ export class PanelComponent implements OnInit {
     if (tool < Tool._Len) {
       this.viewContainerRef.clear();
       const component = this.components[tool];
-      const factory = this.componentFactoryResolver
-        .resolveComponentFactory(component);
+      const factory = this.componentFactoryResolver.resolveComponentFactory(
+        component
+      );
       const ref = this.viewContainerRef.createComponent(factory);
-      // TODO: param w/o explicit cast to number
       ref.instance.width.subscribe((w: number) => this.setWidthOfChild(w));
       ref.changeDetectorRef.detectChanges();
       return ref;

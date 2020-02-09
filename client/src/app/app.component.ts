@@ -20,29 +20,30 @@ export enum OverlayPages {
   Documentation = 'documentation',
   Home = 'home',
   Library = 'library',
-  New = 'new',
-};
+  New = 'new'
+}
 
 export interface DialogRefs {
-  home: MatDialogRef<HomeComponent>,
-  newDraw: MatDialogRef<NewDrawComponent>,
-  documentation: MatDialogRef<DocumentationComponent>,
-};
+  home: MatDialogRef<HomeComponent>;
+  newDraw: MatDialogRef<NewDrawComponent>;
+  documentation: MatDialogRef<DocumentationComponent>;
+}
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements AfterViewInit {
   private dialogRefs: DialogRefs;
-  private drawInProgress: boolean
+  private drawInProgress: boolean;
   protected drawOption: NewDrawOptions;
 
   @ViewChild('svg', {
     static: false,
     read: ElementRef
-  }) svg: ElementRef<SVGElement>;
+  })
+  svg: ElementRef<SVGElement>;
 
   private getCommomDialogOptions = () => {
     return {
@@ -50,28 +51,33 @@ export class AppComponent implements AfterViewInit {
       height: '90%',
       data: { drawInProgress: this.drawInProgress }
     };
-  }
+  };
 
-  constructor(public dialog: MatDialog,
-              private readonly toolSelectorService: ToolSelectorService,
-              private colorService: ColorService,
-              private svgService: SvgService,
-              private shortcutHanler: ShortcutHandlerService) {
-
+  constructor(
+    public dialog: MatDialog,
+    private readonly toolSelectorService: ToolSelectorService,
+    private colorService: ColorService,
+    private svgService: SvgService,
+    private shortcutHanler: ShortcutHandlerService
+  ) {
     this.drawInProgress = false;
-    this.drawOption = { height : 0, width : 0, color: ''};
+    this.drawOption = { height: 0, width: 0, color: '' };
 
-    this.shortcutHanler.set(Shortcut.C,
-      () => this.toolSelectorService.set(Tool.Pencil));
+    this.shortcutHanler.set(Shortcut.C, () =>
+      this.toolSelectorService.set(Tool.Pencil)
+    );
 
-    this.shortcutHanler.set(Shortcut.L,
-      () => this.toolSelectorService.set(Tool.Line));
+    this.shortcutHanler.set(Shortcut.L, () =>
+      this.toolSelectorService.set(Tool.Line)
+    );
 
-    this.shortcutHanler.set(Shortcut.W,
-      () => this.toolSelectorService.set(Tool.Brush));
+    this.shortcutHanler.set(Shortcut.W, () =>
+      this.toolSelectorService.set(Tool.Brush)
+    );
 
-    this.shortcutHanler.set(Shortcut.Digit1,
-      () => this.toolSelectorService.set(Tool.Rectangle));
+    this.shortcutHanler.set(Shortcut.Digit1, () =>
+      this.toolSelectorService.set(Tool.Rectangle)
+    );
 
     this.shortcutHanler.set(Shortcut.O, event => {
       // TODO: TS3.7 event?.ctrlKey
@@ -82,11 +88,13 @@ export class AppComponent implements AfterViewInit {
     });
 
     this.dialogRefs = {
-      home: undefined as unknown as MatDialogRef<HomeComponent>,
-      newDraw: undefined as unknown as MatDialogRef<NewDrawComponent>,
-      documentation: undefined as unknown as MatDialogRef<DocumentationComponent>,
+      home: (undefined as unknown) as MatDialogRef<HomeComponent>,
+      newDraw: (undefined as unknown) as MatDialogRef<NewDrawComponent>,
+      documentation: (undefined as unknown) as MatDialogRef<
+        DocumentationComponent
+      >
     };
-   };
+  }
 
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -99,7 +107,10 @@ export class AppComponent implements AfterViewInit {
   }
 
   private openHomeDialog() {
-    this.dialogRefs.home = this.dialog.open(HomeComponent, this.getCommomDialogOptions());
+    this.dialogRefs.home = this.dialog.open(
+      HomeComponent,
+      this.getCommomDialogOptions()
+    );
     this.dialogRefs.home.disableClose = true;
     this.shortcutHanler.desactivateAll();
     this.dialogRefs.home.afterClosed().subscribe((result: string) => {
@@ -124,10 +135,13 @@ export class AppComponent implements AfterViewInit {
   }
 
   private openNewDrawDialog() {
-    this.dialogRefs.newDraw = this.dialog.open(NewDrawComponent, this.getCommomDialogOptions());
+    this.dialogRefs.newDraw = this.dialog.open(
+      NewDrawComponent,
+      this.getCommomDialogOptions()
+    );
     this.dialogRefs.newDraw.disableClose = true;
     this.shortcutHanler.desactivateAll();
-    this.dialogRefs.newDraw.afterClosed().subscribe((resultNewDialog) => {
+    this.dialogRefs.newDraw.afterClosed().subscribe(resultNewDialog => {
       this.shortcutHanler.activateAll();
       this.closeNewDrawDialog(resultNewDialog);
     });
@@ -136,7 +150,7 @@ export class AppComponent implements AfterViewInit {
   private closeNewDrawDialog(option: string | NewDrawOptions) {
     if (option === OverlayPages.Home) {
       this.openHomeDialog();
-    } else if (option !== null ) {
+    } else if (option !== null) {
       this.createNewDraw(option as NewDrawOptions);
     }
   }
@@ -145,9 +159,12 @@ export class AppComponent implements AfterViewInit {
     const dialogOptions = {
       width: '115vw',
       height: '100vh',
-      panelClass: 'documentation',
+      panelClass: 'documentation'
     };
-    this.dialogRefs.documentation = this.dialog.open(DocumentationComponent, dialogOptions);
+    this.dialogRefs.documentation = this.dialog.open(
+      DocumentationComponent,
+      dialogOptions
+    );
     this.dialogRefs.documentation.disableClose = false;
     this.shortcutHanler.desactivateAll();
     this.dialogRefs.documentation.afterClosed().subscribe(() => {
@@ -166,11 +183,15 @@ export class AppComponent implements AfterViewInit {
     this.drawOption = option;
     this.drawInProgress = true;
     const rgb = this.colorService.hexToRgb(option.color);
-    this.colorService.selectBackgroundColor(`rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`);
+    this.colorService.selectBackgroundColor(
+      `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`
+    );
     // TODO: Reset from svg component
-    const childrens = Array.from(this.svg.nativeElement.children)
+    const childrens = Array.from(this.svg.nativeElement.children);
     childrens.forEach(element => {
       element.remove();
     });
+    this.toolSelectorService.set(Tool.Pencil);
   }
 }
+

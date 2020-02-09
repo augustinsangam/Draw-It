@@ -1,8 +1,23 @@
 import { CdkObserveContent } from '@angular/cdk/observers';
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import {
+  async,
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick
+} from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButton, MatCard, MatCardContent, MatCardTitle, MatFormField,
-  MatInput, MatRipple, MatSlider, MatSliderChange } from '@angular/material';
+import {
+  MatButton,
+  MatCard,
+  MatCardContent,
+  MatCardTitle,
+  MatFormField,
+  MatInput,
+  MatRipple,
+  MatSlider,
+  MatSliderChange
+} from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ColorPickerItemComponent } from '../color-picker-item/color-picker-item.component';
 import { ColorPickerContentComponent } from './color-picker-content.component';
@@ -25,15 +40,10 @@ describe('ColorPickerContentComponent', () => {
         MatCardTitle,
         MatCardContent,
         CdkObserveContent,
-        MatRipple,
+        MatRipple
       ],
-      imports: [
-        BrowserAnimationsModule,
-        FormsModule,
-        ReactiveFormsModule,
-      ]
-    })
-      .compileComponents();
+      imports: [BrowserAnimationsModule, FormsModule, ReactiveFormsModule]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -48,7 +58,6 @@ describe('ColorPickerContentComponent', () => {
   });
 
   it('#onSlide should change only r value', () => {
-
     component['ngAfterViewInit']();
 
     const oldG = component['colorForm'].controls.g.value;
@@ -61,7 +70,6 @@ describe('ColorPickerContentComponent', () => {
     expect(oldG).toBe(component['colorForm'].controls.g.value);
     expect(oldB).toBe(component['colorForm'].controls.b.value);
     expect(component['colorForm'].controls.r.value).toEqual(200);
-
   });
 
   it('#Red field should not accept bad value', () => {
@@ -104,7 +112,8 @@ describe('ColorPickerContentComponent', () => {
     expect(component['colorForm'].controls.a.value).toEqual(100);
   });
 
-  it('#onChangeR methods should replace the slider and update hex value', () => {
+  it('#onChangeR methods should replace the slider'
+    + 'and update hex value', () => {
     // any est demandé parceque c'est une méthode privée
     const spyPlaceSlider = spyOn<any>(component, 'placeSlider');
     const spyUpdateHex = spyOn<any>(component, 'updateHex');
@@ -150,10 +159,9 @@ describe('ColorPickerContentComponent', () => {
       component.onConfirm();
     }, 500);
     tick(600);
-  }))
+  }));
 
   it('#hex field should accept only hexadecimal color value', () => {
-
     component['colorForm'].patchValue({ r: '20' });
     component['colorForm'].patchValue({ g: '20' });
     component['colorForm'].patchValue({ b: '20' });
@@ -165,7 +173,6 @@ describe('ColorPickerContentComponent', () => {
     expect(component['colorForm'].controls.r.value).toBe('20');
     expect(component['colorForm'].controls.g.value).toBe('20');
     expect(component['colorForm'].controls.b.value).toBe('20');
-
   });
 
   it('#onChangeHex should change other form fields', () => {
@@ -179,10 +186,10 @@ describe('ColorPickerContentComponent', () => {
     expect(component['colorForm'].controls.r.value).toEqual(255);
     expect(component['colorForm'].controls.g.value).toEqual(255);
     expect(component['colorForm'].controls.b.value).toEqual(255);
-
   });
 
-  it('#onChangeHex should not change other form fields when hex value is invalid', () => {
+  it('#onChangeHex should not change other form fields'
+  + 'when hex value is invalid', () => {
     component['colorForm'].patchValue({ r: 255 });
     component['colorForm'].patchValue({ g: 255 });
     component['colorForm'].patchValue({ b: 255 });
@@ -193,7 +200,6 @@ describe('ColorPickerContentComponent', () => {
     expect(component['colorForm'].controls.r.value).toEqual(255);
     expect(component['colorForm'].controls.g.value).toEqual(255);
     expect(component['colorForm'].controls.b.value).toEqual(255);
-
   });
 
   it('#traker should be redraw after a click on the canvas', () => {
@@ -226,5 +232,4 @@ describe('ColorPickerContentComponent', () => {
     component.ngAfterViewInit();
     expect(spy).toHaveBeenCalledTimes(11); // 10 fois pour chaque couleur et 1 fois pour le canvas
   });
-
 });

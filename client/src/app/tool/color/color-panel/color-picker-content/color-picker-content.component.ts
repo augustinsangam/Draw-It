@@ -1,5 +1,20 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  QueryList,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  Validators
+} from '@angular/forms';
 import { MatSliderChange } from '@angular/material';
 import { EventManager } from '@angular/platform-browser';
 import { ShortcutHandlerService } from 'src/app/shortcut-handler.service';
@@ -12,7 +27,6 @@ import { ColorPickerItemComponent } from '../color-picker-item/color-picker-item
   styleUrls: ['./color-picker-content.component.scss']
 })
 export class ColorPickerContentComponent implements AfterViewInit {
-
   @Input() startColor: string;
   @Input() blockAllShortcus = false;
 
@@ -23,37 +37,39 @@ export class ColorPickerContentComponent implements AfterViewInit {
   @ViewChild('canvas', {
     read: ElementRef,
     static: false
-  }) private canvas: ElementRef;
+  })
+  private canvas: ElementRef;
 
   @ViewChild('actualColor', {
     read: ColorPickerItemComponent,
     static: false
-  }) private actualColor: ColorPickerItemComponent;
+  })
+  private actualColor: ColorPickerItemComponent;
 
   @ViewChildren(ColorPickerItemComponent)
   private baseColorsCircles: QueryList<ColorPickerItemComponent>;
 
-  @ViewChild('rField',    { static: false }) private rField: ElementRef;
-  @ViewChild('gField',    { static: false }) private gField: ElementRef;
-  @ViewChild('bField',    { static: false }) private bField: ElementRef;
-  @ViewChild('aField',    { static: false }) private aField: ElementRef;
-  @ViewChild('hexField',  { static: false }) private hexField: ElementRef;
+  @ViewChild('rField', { static: false }) private rField: ElementRef;
+  @ViewChild('gField', { static: false }) private gField: ElementRef;
+  @ViewChild('bField', { static: false }) private bField: ElementRef;
+  @ViewChild('aField', { static: false }) private aField: ElementRef;
+  @ViewChild('hexField', { static: false }) private hexField: ElementRef;
 
   private context: CanvasRenderingContext2D;
   private colorForm: FormGroup;
 
   private focusHandlers = {
-    in : () => this.shortcutHandler.desactivateAll(),
-    out : () => this.shortcutHandler.activateAll()
-  }
+    in: () => this.shortcutHandler.desactivateAll(),
+    out: () => this.shortcutHandler.activateAll()
+  };
 
   static ValidatorHex(formControl: AbstractControl) {
     if (/^[0-9A-F]{6}$/i.test(formControl.value)) {
       return null;
     }
     return {
-      valid: true,
-    }
+      valid: true
+    };
   }
 
   static ValidatorInteger(formControl: AbstractControl) {
@@ -61,50 +77,88 @@ export class ColorPickerContentComponent implements AfterViewInit {
       return null;
     }
     return {
-      valid: true,
-    }
+      valid: true
+    };
   }
 
-  constructor(private formBuilder: FormBuilder,
-              private eventManager: EventManager,
-              private colorService: ColorService,
-              private shortcutHandler: ShortcutHandlerService
-              ) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private eventManager: EventManager,
+    private colorService: ColorService,
+    private shortcutHandler: ShortcutHandlerService
+  ) {
     this.colorForm = this.formBuilder.group({
-      r: ['', [Validators.required, ColorPickerContentComponent.ValidatorInteger]],
-      g: ['', [Validators.required, ColorPickerContentComponent.ValidatorInteger]],
-      b: ['', [Validators.required, ColorPickerContentComponent.ValidatorInteger]],
-      a: ['', [Validators.required, ColorPickerContentComponent.ValidatorInteger]],
+      r: [
+        '',
+        [Validators.required, ColorPickerContentComponent.ValidatorInteger]
+      ],
+      g: [
+        '',
+        [Validators.required, ColorPickerContentComponent.ValidatorInteger]
+      ],
+      b: [
+        '',
+        [Validators.required, ColorPickerContentComponent.ValidatorInteger]
+      ],
+      a: [
+        '',
+        [Validators.required, ColorPickerContentComponent.ValidatorInteger]
+      ],
       slider: [''],
       hex: ['', [Validators.required, ColorPickerContentComponent.ValidatorHex]]
     });
-    this.baseColors = [ '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF',
-                        '#FFFF00', '#FF00FF', '#00FFFF', '#FF6600', '#FF6699'];
+    this.baseColors = [
+      '#000000',
+      '#FFFFFF',
+      '#FF0000',
+      '#00FF00',
+      '#0000FF',
+      '#FFFF00',
+      '#FF00FF',
+      '#00FFFF',
+      '#FF6600',
+      '#FF6699'
+    ];
     this.colorChange = new EventEmitter();
   }
 
   ngAfterViewInit() {
-
     this.initialiseStartingColor();
 
-    this.baseColorsCircles.toArray().slice(0, this.baseColors.length)
-    .forEach((circle: ColorPickerItemComponent) => {
-      this.eventManager.addEventListener(circle.button.nativeElement, 'click', () => {
-        this.startColor = circle.color;
-        this.initialiseStartingColor();
-      })
-    });
+    this.baseColorsCircles
+      .toArray()
+      .slice(0, this.baseColors.length)
+      .forEach((circle: ColorPickerItemComponent) => {
+        this.eventManager.addEventListener(
+          circle.button.nativeElement,
+          'click',
+          () => {
+            this.startColor = circle.color;
+            this.initialiseStartingColor();
+          }
+        );
+      });
 
     if (!this.blockAllShortcus) {
-      [this.rField, this.gField, this.bField, this.aField, this.hexField]
-      .forEach((field: ElementRef) => {
-        this.eventManager.addEventListener(field.nativeElement, 'focus',
-          this.focusHandlers.in);
-        this.eventManager.addEventListener(field.nativeElement, 'focusout',
-          this.focusHandlers.out);
+      [
+        this.rField,
+        this.gField,
+        this.bField,
+        this.aField,
+        this.hexField
+      ].forEach((field: ElementRef) => {
+        this.eventManager.addEventListener(
+          field.nativeElement,
+          'focus',
+          this.focusHandlers.in
+        );
+        this.eventManager.addEventListener(
+          field.nativeElement,
+          'focusout',
+          this.focusHandlers.out
+        );
       });
     }
-
   }
 
   initialiseStartingColor(): void {
@@ -131,25 +185,29 @@ export class ColorPickerContentComponent implements AfterViewInit {
       this.drawTracker(startColor.b, startColor.g);
     }, 0);
 
-    this.eventManager.addEventListener(this.canvas.nativeElement, 'click', ($event: MouseEvent) => {
-      this.buildCanvas(this.colorForm.controls.r.value);
+    this.eventManager.addEventListener(
+      this.canvas.nativeElement,
+      'click',
+      ($event: MouseEvent) => {
+        this.buildCanvas(this.colorForm.controls.r.value);
 
-      const boundingClient = this.canvas.nativeElement.getBoundingClientRect();
-      const blue = Math.round($event.clientX - boundingClient.left);
-      const green = Math.round($event.clientY - boundingClient.top);
+        const boundingClient =
+          this.canvas.nativeElement.getBoundingClientRect();
+        const blue = Math.round($event.clientX - boundingClient.left);
+        const green = Math.round($event.clientY - boundingClient.top);
 
-      this.colorForm.patchValue({
-        b: blue,
-        g: green
-      });
+        this.colorForm.patchValue({
+          b: blue,
+          g: green
+        });
 
-      this.drawTracker(blue, green);
-      this.updateHex();
-    });
+        this.drawTracker(blue, green);
+        this.updateHex();
+      }
+    );
   }
 
   private buildCanvas(redValue: number): void {
-
     const allPixels = this.context.createImageData(256, 256);
     let i = 0;
     for (let g = 0; g < 256; ++g) {
@@ -157,7 +215,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
         allPixels.data[i] = redValue;
         allPixels.data[i + 1] = g;
         allPixels.data[i + 2] = b;
-        allPixels.data[i + 3] = 255;  // Alpha stay the max value.
+        allPixels.data[i + 3] = 255; // Alpha stay the max value.
         i += 4;
       }
     }
@@ -167,7 +225,10 @@ export class ColorPickerContentComponent implements AfterViewInit {
   protected onSlide($event: MatSliderChange): void {
     this.buildCanvas(Number($event.value));
     this.colorForm.patchValue({ r: Number($event.value) });
-    this.drawTracker(this.colorForm.controls.b.value, this.colorForm.controls.g.value);
+    this.drawTracker(
+      this.colorForm.controls.b.value,
+      this.colorForm.controls.g.value
+    );
     this.updateHex();
   }
 
@@ -226,7 +287,9 @@ export class ColorPickerContentComponent implements AfterViewInit {
 
   protected onChangeHex(): void {
     if (/^[0-9A-F]{6}$/i.test(this.colorForm.controls.hex.value)) {
-      const rgb: RGBColor = this.colorService.hexToRgb(this.colorForm.controls.hex.value);
+      const rgb: RGBColor = this.colorService.hexToRgb(
+        this.colorForm.controls.hex.value
+      );
       this.colorForm.patchValue({
         r: rgb.r,
         g: rgb.g,
@@ -246,27 +309,31 @@ export class ColorPickerContentComponent implements AfterViewInit {
 
   private reDrawTracker(): void {
     this.buildCanvas(this.colorForm.controls.r.value);
-    this.drawTracker(this.colorForm.controls.b.value, this.colorForm.controls.g.value);
+    this.drawTracker(
+      this.colorForm.controls.b.value,
+      this.colorForm.controls.g.value
+    );
   }
 
   private updateHex(): void {
     const hexValue = this.colorService.rgbToHex({
-      r : this.colorForm.controls.r.value,
-      g : this.colorForm.controls.g.value,
-      b : this.colorForm.controls.b.value,
+      r: this.colorForm.controls.r.value,
+      g: this.colorForm.controls.g.value,
+      b: this.colorForm.controls.b.value
     });
     this.colorForm.patchValue({ hex: hexValue });
   }
 
   private getActualRgba(): string {
-    return `rgba(${this.colorForm.controls.r.value}, ` +
-    `${this.colorForm.controls.g.value}, ` +
-    `${this.colorForm.controls.b.value}, ` +
-    `${this.colorForm.controls.a.value / 100})`;
+    return (
+      `rgba(${this.colorForm.controls.r.value}, ` +
+      `${this.colorForm.controls.g.value}, ` +
+      `${this.colorForm.controls.b.value}, ` +
+      `${this.colorForm.controls.a.value / 100})`
+    );
   }
 
   onConfirm(): void {
     this.colorChange.emit(this.getActualRgba());
   }
-
 }

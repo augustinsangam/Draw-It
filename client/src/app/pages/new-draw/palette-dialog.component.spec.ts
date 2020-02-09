@@ -65,7 +65,9 @@ describe('ColorPanelComponent', () => {
   // On en a besoin car les attributs sont privés
   // tslint:disable: no-string-literal
   it('#onKeydownHandler should be call after pressing enter key', () => {
-    component['palette'] = { onConfirm: () => { } } as unknown as ColorPickerContentComponent;
+    component['palette'] =
+    { onConfirm: () => { } } as unknown as ColorPickerContentComponent;
+
     const spy = spyOn(component['palette'], 'onConfirm');
     document.dispatchEvent(new KeyboardEvent('keydown', {
       code: 'Enter',
