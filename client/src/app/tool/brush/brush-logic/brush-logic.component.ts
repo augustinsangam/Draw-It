@@ -11,9 +11,9 @@ export class BrushLogicComponent extends PencilBrushCommon {
 
   private listeners: (() => void)[];
 
-  constructor(protected renderer: Renderer2,
-              private colorService: ColorService,
-              private brushService: BrushService) {
+  constructor(public renderer: Renderer2,
+              public colorService: ColorService,
+              public brushService: BrushService) {
     super();
     this.listeners = new Array();
   }
@@ -67,11 +67,13 @@ export class BrushLogicComponent extends PencilBrushCommon {
 
   configureSvgElement(element: SVGElement): void {
     element.setAttribute('d', this.stringPath);
-    element.setAttribute('stroke-width', this.brushService.thickness.toString());
     element.setAttribute('stroke', this.colorService.primaryColor);
     element.setAttribute('fill', this.colorService.primaryColor);
     element.setAttribute('filter', `url(#${this.brushService.texture})`);
     element.setAttribute('stroke-linecap', this.strokeLineCap);
+    element.setAttribute(
+      'stroke-width', this.brushService.thickness.toString()
+    );
   }
 
   onMouseDown(mouseEv: MouseEvent): void {

@@ -18,8 +18,7 @@ describe('PencilLogicComponent', () => {
     TestBed.configureTestingModule({
       declarations: [PencilLogicComponent],
       providers: [Renderer2, ColorService, PencilService]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

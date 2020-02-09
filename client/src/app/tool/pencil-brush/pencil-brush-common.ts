@@ -16,8 +16,8 @@ export abstract class PencilBrushCommon extends ToolLogicDirective {
   }
 
   abstract onMouseDown(mouseEv: MouseEvent): void;
-  abstract configureSvgElement(element: SVGElement): void;
   abstract onMouseMove(mouseEv: MouseEvent): void;
+  abstract configureSvgElement(element: SVGElement): void;
 
   drawing(mouseEv: MouseEvent): void {
     if (mouseEv.button === 0) {

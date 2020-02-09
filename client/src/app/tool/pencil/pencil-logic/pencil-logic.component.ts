@@ -11,12 +11,13 @@ import { PencilService } from '../pencil.service';
 export class PencilLogicComponent extends PencilBrushCommon
   implements AfterViewInit {
 
-  private listeners: (() => void)[] = [];
+  private listeners: (() => void)[];
 
   constructor(public renderer: Renderer2,
               public colorService: ColorService,
               public pencilService: PencilService) {
     super();
+    this.listeners = new Array();
   }
 
   // tslint:disable-next-line use-lifecycle-interface
@@ -30,10 +31,12 @@ export class PencilLogicComponent extends PencilBrushCommon
 
   configureSvgElement(element: SVGElement): void {
     element.setAttribute('d', this.stringPath);
-    element.setAttribute('stroke-width', this.pencilService.thickness.toString());
     element.setAttribute('stroke', this.colorService.primaryColor);
     element.setAttribute('fill', this.colorService.primaryColor);
     element.setAttribute('stroke-linecap', this.strokeLineCap);
+    element.setAttribute(
+      'stroke-width', this.pencilService.thickness.toString()
+    );
   }
 
   onMouseMove(mouseEv: MouseEvent): void {

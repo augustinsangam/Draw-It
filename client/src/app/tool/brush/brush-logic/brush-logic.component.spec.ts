@@ -16,8 +16,7 @@ describe('BrushLogicComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ BrushLogicComponent ],
       providers: [Renderer2, ColorService, BrushService]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     mouseEvLeft = new MouseEvent('mousedown', {
       button: 0,
@@ -65,6 +64,16 @@ describe('BrushLogicComponent', () => {
     component.svgElRef.nativeElement.dispatchEvent(mouseEvLeft);
     component.onMouseMove(mouseMoveEvLeft);
     expect(component.svgPath.getAttribute('d')).toEqual(component.stringPath);
+  }));
+
+  it ('#we shouldnt recreate defs the second loading', fakeAsync(() => {
+    component.brushService.isFirstLoaded = false;
+    component.ngOnInit();
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      const nbChild = component.svgElRef.nativeElement.childElementCount;
+      expect(nbChild).toEqual(1);
+    });
   }));
 
   it('#should trigger onMouseDown method when mouse is down', fakeAsync(() => {
