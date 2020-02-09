@@ -209,22 +209,17 @@ describe('ColorPickerContentComponent', () => {
   });
 
   it('focusing in handler works', () => {
-    const spy = spyOn(component['shortcutHandler'], 'desactivateAll');
+    const spyDesactivate = spyOn(component['shortcutHandler'], 'desactivateAll');
+    const spyPush = spyOn(component['shortcutHandler'], 'push');
     component['focusHandlers'].in();
-    expect(spy).toHaveBeenCalled();
+    expect(spyDesactivate).toHaveBeenCalled();
+    expect(spyPush).toHaveBeenCalled();
   });
 
   it('focusing out handler works', () => {
-    const spy = spyOn(component['shortcutHandler'], 'activateAll');
+    const spy = spyOn(component['shortcutHandler'], 'pop');
     component['focusHandlers'].out();
     expect(spy).toHaveBeenCalled();
-  });
-
-  it('#In Focusing and Out Focus disable when blockAllShortcus is true', () => {
-    const spy = spyOn(component['eventManager'], 'addEventListener');
-    component['blockAllShortcus'] = true;
-    component.ngAfterViewInit();
-    expect(spy).toHaveBeenCalledTimes(11); // 10 fois pour chaque couleur et 1 fois pour le canvas
   });
 
 });

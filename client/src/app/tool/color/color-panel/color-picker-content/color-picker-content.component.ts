@@ -14,7 +14,6 @@ import { ColorPickerItemComponent } from '../color-picker-item/color-picker-item
 export class ColorPickerContentComponent implements AfterViewInit {
 
   @Input() startColor: string;
-  @Input() blockAllShortcus = false;
 
   @Output() colorChange: EventEmitter<string>;
 
@@ -43,24 +42,21 @@ export class ColorPickerContentComponent implements AfterViewInit {
   private colorForm: FormGroup;
 
   private focusHandlers = {
-    in : () => this.shortcutHandler.desactivateAll(),
-    out : () => this.shortcutHandler.activateAll()
+    in : () => {
+      this.shortcutHandler.push();
+      this.shortcutHandler.desactivateAll();
+    },
+    out : () => this.shortcutHandler.pop()
   }
 
   static ValidatorHex(formControl: AbstractControl) {
-    if (/^[0-9A-F]{6}$/i.test(formControl.value)) {
-      return null;
-    }
-    return {
+    return (/^[0-9A-F]{6}$/i.test(formControl.value)) ? null : {
       valid: true,
     }
   }
 
   static ValidatorInteger(formControl: AbstractControl) {
-    if (Number.isInteger(formControl.value)) {
-      return null;
-    }
-    return {
+    return (Number.isInteger(formControl.value)) ? null : {
       valid: true,
     }
   }
@@ -95,15 +91,13 @@ export class ColorPickerContentComponent implements AfterViewInit {
       })
     });
 
-    if (!this.blockAllShortcus) {
-      [this.rField, this.gField, this.bField, this.aField, this.hexField]
-      .forEach((field: ElementRef) => {
-        this.eventManager.addEventListener(field.nativeElement, 'focus',
-          this.focusHandlers.in);
-        this.eventManager.addEventListener(field.nativeElement, 'focusout',
-          this.focusHandlers.out);
-      });
-    }
+    [this.rField, this.gField, this.bField, this.aField, this.hexField]
+    .forEach((field: ElementRef) => {
+      this.eventManager.addEventListener(field.nativeElement, 'focus',
+        this.focusHandlers.in);
+      this.eventManager.addEventListener(field.nativeElement, 'focusout',
+        this.focusHandlers.out);
+    });
 
   }
 
