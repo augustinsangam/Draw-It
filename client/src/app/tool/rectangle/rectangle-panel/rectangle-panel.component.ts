@@ -1,6 +1,6 @@
 import { AfterViewChecked, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatSlideToggle, MatSlideToggleChange } from '@angular/material';
+import { MatSlider, MatSlideToggle, MatSlideToggleChange } from '@angular/material';
 
 import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
 import { RectangleService } from '../rectangle.service';
@@ -23,6 +23,11 @@ export class RectanglePanelComponent extends ToolPanelDirective implements After
     static: false,
     read : MatSlideToggle
   }) protected borderOptionRef: MatSlideToggle;
+
+  @ViewChild('thicknessSlider', {
+    static: false,
+    read: MatSlider
+  }) private thicknessSlider: MatSlider;
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: RectangleService,
@@ -61,7 +66,7 @@ export class RectanglePanelComponent extends ToolPanelDirective implements After
   }
 
   protected onThicknessChange(): void {
-    this.rectangleForm.patchValue({ thicknessFormField: this.rectangleForm.value.thicknessSlider });
-    this.service.thickness = this.rectangleForm.value.thicknessSlider;
+    this.rectangleForm.patchValue({ thicknessFormField: this.thicknessSlider.value });
+    this.service.thickness = this.thicknessSlider.value as number;
   }
 }

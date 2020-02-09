@@ -13,6 +13,7 @@ import { ColorPickerContentComponent } from '../../color/color-panel/color-picke
 import { ColorPickerItemComponent } from '../../color/color-panel/color-picker-item/color-picker-item.component';
 import { BrushPanelComponent } from './brush-panel.component';
 
+// On a besoin des string-literal pour accéder aux attributs privés
 // tslint:disable: no-string-literal
 describe('BrushPanelComponent', () => {
   let component: BrushPanelComponent;
@@ -23,7 +24,7 @@ describe('BrushPanelComponent', () => {
       imports: [
         FormsModule,
         ReactiveFormsModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
       ],
       declarations: [
         BrushPanelComponent,

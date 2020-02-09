@@ -1,6 +1,6 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatRadioChange } from '@angular/material';
+import { MatRadioChange, MatSlider } from '@angular/material';
 import { MatRadioButton } from '@angular/material/radio';
 
 import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
@@ -18,6 +18,10 @@ export class BrushPanelComponent extends ToolPanelDirective {
   @ViewChild('radioChoice', {
     static: false
   }) protected radioChoice: MatRadioButton;
+
+  @ViewChild('thicknessSlider', {
+    static: false
+  }) private thicknessSlider: MatSlider;
 
   protected textures = [
     {
@@ -59,8 +63,8 @@ export class BrushPanelComponent extends ToolPanelDirective {
   }
 
   protected onThicknessChange(): void {
-    this.brushForm.patchValue({ thicknessFormField: this.brushForm.value.thicknessSlider });
-    this.service.thickness = this.brushForm.value.thicknessSlider;
+    this.brushForm.patchValue({ thicknessFormField: this.thicknessSlider.value });
+    this.service.thickness = this.thicknessSlider.value as number;
   }
 
   protected onOptionChange($event: MatRadioChange): void {

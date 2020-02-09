@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatSlideToggleChange } from '@angular/material';
+import { MatSlider, MatSlideToggleChange } from '@angular/material';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 
 import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
@@ -18,6 +18,16 @@ export class LinePanelComponent extends ToolPanelDirective {
   @ViewChild ('slideToggle', {
     static: false
   }) protected slideToggle: MatSlideToggle;
+
+  @ViewChild('thicknessSlider', {
+    static: false,
+    read: MatSlider
+  }) private thicknessSlider: MatSlider;
+
+  @ViewChild('radiusSlider', {
+    static: false,
+    read: MatSlider
+  }) private radiusSlider: MatSlider;
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: LineService,
@@ -37,13 +47,13 @@ export class LinePanelComponent extends ToolPanelDirective {
   }
 
   protected onThicknessChange(): void {
-    this.lineForm.patchValue({ thicknessFormField: this.lineForm.value.thicknessSlider });
-    this.service.thickness = this.lineForm.value.thicknessSlider;
+    this.lineForm.patchValue({ thicknessFormField: this.thicknessSlider.value });
+    this.service.thickness = this.thicknessSlider.value as number;
   }
 
   protected onRadiusChange(): void {
-    this.lineForm.patchValue({ radiusFormField: this.lineForm.value.radiusSlider });
-    this.service.radius = this.lineForm.value.radiusSlider;
+    this.lineForm.patchValue({ radiusFormField: this.radiusSlider.value });
+    this.service.radius = this.radiusSlider.value as number;
   }
 
 }
