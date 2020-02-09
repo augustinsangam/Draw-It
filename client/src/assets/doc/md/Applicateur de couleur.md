@@ -1,3 +1,3 @@
 L’applicateur de couleur permet de changer la couleur d’un objet. 
 
- Afin de choisir les couleurs à appliquer sur l’objet, utilisez l’outil Couleur. Pour utiliser l’applicateur de couleur, cliquez sur le bouton ![icône outil applicateur de couleur](../../assets/PLACEHOLDER.png). Effectuez un clic gauche sur un objet afin de changer sa couleur de remplissage pour la couleur principale sélectionnée préalablement. Effectuez un clic droit pour changer la couleur du contour de l’objet cliqué pour la couleur secondaire sélectionnée préalablement.
+ Afin de choisir les couleurs à appliquer sur l’objet, utilisez l’outil Couleur. Pour utiliser l’applicateur de couleur, cliquez sur le bouton  . Effectuez un clic gauche sur un objet afin de changer sa couleur de remplissage pour la couleur principale sélectionnée préalablement. Effectuez un clic droit pour changer la couleur du contour de l’objet cliqué pour la couleur secondaire sélectionnée préalablement.

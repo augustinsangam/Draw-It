@@ -1,4 +1,4 @@
-L’outil Sceau de peinture sert é changer la couleur de toute une région de l’image. Commencez par sélectionner la couleur à appliquer avec l’outil Couleur (couleur principale). Cliquez ensuite sur l’outil Sceau de peinture ![icône outil sceau de peinture](../../assets/PLACEHOLDER.png). 
+L’outil Sceau de peinture sert é changer la couleur de toute une région de l’image. Commencez par sélectionner la couleur à appliquer avec l’outil Couleur (couleur principale). Cliquez ensuite sur l’outil Sceau de peinture . 
 
 Le sceau de peinture remplace tous les pixels adjacents et de la même couleur que le pixel cliqué par l’outil par la couleur principale sélectionnée précédemment.
 
