@@ -1,11 +1,12 @@
 import { Component, OnDestroy, Renderer2 } from '@angular/core';
+
 import { ColorService } from '../../color/color.service';
 import { Point } from '../../common/Point'
-import { MathService} from '../../mathematics/tool.math-service.service'
+import { MathService } from '../../mathematics/tool.math-service.service'
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { LineService } from '../line.service';
-import { JonctionOption } from './jonctionOptions'
-import { Path } from './Path'
+import { JonctionOption } from './jonctionOptions';
+import { Path } from './Path';
 
 @Component({
   selector: 'app-line-logic',
@@ -13,7 +14,7 @@ import { Path } from './Path'
 })
 
 export class LineLogicComponent extends ToolLogicDirective
-                                implements OnDestroy {
+  implements OnDestroy {
   private paths: Path[];
   private listeners: (() => void)[];
   private isNewPath: boolean;
@@ -25,8 +26,8 @@ export class LineLogicComponent extends ToolLogicDirective
               private readonly serviceColor: ColorService,
               private readonly mathService: MathService) {
     super();
-    this.paths = new Array();
-    this.listeners = new Array();
+    this.paths = [];
+    this.listeners = [];
     this.isNewPath = true;
   }
 
@@ -52,12 +53,14 @@ export class LineLogicComponent extends ToolLogicDirective
     this.listeners.forEach(listenner => listenner())
   }
 
-  onMouseClick(mouseEv: MouseEvent) {
-    let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
+  private onMouseClick(mouseEv: MouseEvent): void {
+    let currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
     if (this.isNewPath) {
       this.createNewPath(currentPoint);
-      this.currentJonctionOptions = {radius: this.service.radius.toString(),
-                                     color: this.serviceColor.primaryColor };
+      this.currentJonctionOptions = {
+        color: this.serviceColor.primaryColor,
+        radius: this.service.radius.toString(),
+      };
       this.isNewPath = false;
     }
     if (mouseEv.shiftKey && !this.isNewPath) {
@@ -66,13 +69,13 @@ export class LineLogicComponent extends ToolLogicDirective
     this.addNewLine(currentPoint)
   }
 
-  onMouseDblClick(mouseEv: MouseEvent) {
+  private onMouseDblClick(mouseEv: MouseEvent): void {
     if (!this.isNewPath) {
-      let currentPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY};
+      let currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
       this.getPath().removeLastLine(); // cancel the click event
       this.getPath().removeLastLine();
       const isLessThan3pixels = this.mathService.distanceIsLessThan3Pixel(
-        currentPoint, this.getPath().datas.points[0])
+        currentPoint, this.getPath().datas.points[0]);
       if (isLessThan3pixels) {
         this.getPath().closePath();
       } else {
@@ -85,9 +88,9 @@ export class LineLogicComponent extends ToolLogicDirective
     }
   }
 
-  onMouseMove(mouseEv: MouseEvent) {
+  private onMouseMove(mouseEv: MouseEvent): void {
     if (!this.isNewPath) {
-      let point = this.mousePosition = {x: mouseEv.offsetX, y: mouseEv.offsetY};
+      let point = this.mousePosition = { x: mouseEv.offsetX, y: mouseEv.offsetY };
       if (mouseEv.shiftKey) {
         point = this.getPath().getAlignedPoint(point)
       }
@@ -95,50 +98,52 @@ export class LineLogicComponent extends ToolLogicDirective
     }
   }
 
-  onKeyDown(keyEv: KeyboardEvent) {
-    const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight')
-    if (keyEv.code === 'Escape' && !this.isNewPath) {
-      this.getPath().removePath();
-      this.isNewPath = true;
-    }
-    if (keyEv.code === 'Backspace' && this.getPath().datas.points.length >= 2) {
-      this.getPath().removeLastLine();
-      this.getPath().simulateNewLine(this.getPath().lastPoint);
-    }
-    if (shiftIsPressed && !this.isNewPath) {
-      const transformedPoint = this.getPath().getAlignedPoint(this.mousePosition);
-      this.getPath().simulateNewLine(transformedPoint);
+  private onKeyDown(keyEv: KeyboardEvent): void {
+    const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight');
+    if (!this.isNewPath) {
+      if (keyEv.code === 'Escape') {
+        this.getPath().removePath();
+        this.isNewPath = true;
+      }
+      if (keyEv.code === 'Backspace' && this.getPath().datas.points.length >= 2) {
+        this.getPath().removeLastLine();
+        this.getPath().simulateNewLine(this.getPath().lastPoint);
+      }
+      if (shiftIsPressed) {
+        const transformedPoint = this.getPath().getAlignedPoint(this.mousePosition);
+        this.getPath().simulateNewLine(transformedPoint);
+      }
     }
   }
 
-  onKeyUp(keyEv: KeyboardEvent) {
-    const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight')
+  private onKeyUp(keyEv: KeyboardEvent): void {
+    const shiftIsPressed = (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight');
     if (shiftIsPressed && !this.isNewPath) {
       this.getPath().simulateNewLine(this.mousePosition);
     }
   }
 
-  createNewPath(initialPoint: Point) {
+  private createNewPath(initialPoint: Point): void {
     const path = this.renderer.createElement('path', this.svgNS);
     this.renderer.appendChild(this.svgElRef.nativeElement, path);
     this.paths.push(new Path(initialPoint, this.renderer, path, this.service.withJonction));
     this.getPath().setLineCss(this.service.thickness.toString(), this.serviceColor.primaryColor);
   }
 
-  createJonction(center: Point) {
+  private createJonction(center: Point): void {
     const circle = this.renderer.createElement('circle', this.svgNS);
     this.renderer.appendChild(this.svgElRef.nativeElement, circle);
     this.getPath().addJonction(circle, center, this.currentJonctionOptions.radius, this.currentJonctionOptions.color);
   }
 
-  addNewLine(currentPoint: Point) {
+  private addNewLine(currentPoint: Point): void {
     this.getPath().addLine(currentPoint);
     if (this.getPath().withJonctions) {
       this.createJonction(currentPoint);
     }
   }
 
-  getPath(): Path {
+  private getPath(): Path {
     return this.paths[this.paths.length - 1];
   }
 }

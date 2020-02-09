@@ -147,7 +147,7 @@ describe('ColorPickerContentComponent', () => {
         // Si on arrive ici cela veut dire qu'une couleur a bien été émise
         expect(true).toBe(true);
       });
-      component['onConfirm']();
+      component.onConfirm();
     }, 500);
     tick(600);
   }))
@@ -206,6 +206,25 @@ describe('ColorPickerContentComponent', () => {
     const spy = spyOn<any>(component, 'initialiseStartingColor');
     component['baseColorsCircles'].toArray()[3].button.nativeElement.click();
     expect(spy).toHaveBeenCalled();
+  });
+
+  it('focusing in handler works', () => {
+    const spy = spyOn(component['shortcutHandler'], 'desactivateAll');
+    component['focusHandlers'].in();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('focusing out handler works', () => {
+    const spy = spyOn(component['shortcutHandler'], 'activateAll');
+    component['focusHandlers'].out();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#In Focusing and Out Focus disable when blockAllShortcus is true', () => {
+    const spy = spyOn(component['eventManager'], 'addEventListener');
+    component['blockAllShortcus'] = true;
+    component.ngAfterViewInit();
+    expect(spy).toHaveBeenCalledTimes(11); // 10 fois pour chaque couleur et 1 fois pour le canvas
   });
 
 });

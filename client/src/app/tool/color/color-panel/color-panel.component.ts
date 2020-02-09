@@ -21,18 +21,11 @@ export enum ColorOption {
 })
 export class ColorPanelComponent extends ToolPanelDirective implements OnInit, AfterViewInit {
 
-  constructor(elementRef: ElementRef<HTMLElement>,
-              public colorService: ColorService,
-              public eventManager: EventManager,
-              public svgService: SvgService) {
-    super(elementRef);
-  }
-
   protected colorOptionEnum: typeof ColorOption = ColorOption;
 
-  private colorOption = ColorOption.Primary;
+  private colorOption: ColorOption;
   private recentColors: string[];
-  private showPalette = false;
+  private showPalette: boolean;
 
   @ViewChild('colorPreviewPrimary', {
     read : ColorPickerItemComponent,
@@ -58,6 +51,15 @@ export class ColorPanelComponent extends ToolPanelDirective implements OnInit, A
   }) private colorPalette: ColorPickerContentComponent;
 
   protected colorsItemsArray: ColorPickerItemComponent[];
+
+  constructor(elementRef: ElementRef<HTMLElement>,
+              public colorService: ColorService,
+              public eventManager: EventManager,
+              public svgService: SvgService) {
+    super(elementRef);
+    this.colorOption = ColorOption.Primary;
+    this.showPalette = false;
+  }
 
   ngOnInit() {
     this.recentColors = this.colorService.recentColors;

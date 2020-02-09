@@ -1,6 +1,7 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+import { MatSlider } from '@angular/material';
 import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
 import { PencilService } from '../pencil.service';
 
@@ -13,6 +14,10 @@ export class PencilPanelComponent extends ToolPanelDirective {
 
   private pencilForm: FormGroup;
 
+  @ViewChild('thicknessSlider', {
+    static: false,
+  }) private thicknessSlider: MatSlider;
+
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: PencilService,
               private readonly formBuilder: FormBuilder) {
@@ -24,9 +29,7 @@ export class PencilPanelComponent extends ToolPanelDirective {
   }
 
   protected onThicknessChange(): void {
-    this.pencilForm.patchValue({
-      thicknessFormField: this.pencilForm.value.thicknessSlider,
-    });
-    this.service.thickness = this.pencilForm.value.thicknessSlider;
+    this.pencilForm.patchValue({ thicknessFormField: this.thicknessSlider.value });
+    this.service.thickness = this.thicknessSlider.value as number;
   }
 }

@@ -57,11 +57,11 @@ describe('SidebarComponent', () => {
     const oldHtmlEl = document.createElement('a');
     oldHtmlEl.classList.add('selected');
     const oldElRef = new ElementRef(oldHtmlEl);
-    component['toolToElRef'].set(Tool.Line, oldElRef);
+    component['toolToElRef'][Tool.Line] = oldElRef;
 
     const newHtmlEl = document.createElement('a');
     const newElRef = new ElementRef(newHtmlEl);
-    component['toolToElRef'].set(Tool.Rectangle, newElRef);
+    component['toolToElRef'][Tool.Rectangle] = newElRef;
 
     component['setTool'](Tool._None);
     expect(oldHtmlEl.classList.contains('selected')).toBeTruthy();
@@ -72,11 +72,11 @@ describe('SidebarComponent', () => {
     const oldHtmlEl = document.createElement('a');
     oldHtmlEl.classList.add('selected');
     const oldElRef = new ElementRef(oldHtmlEl);
-    component['toolToElRef'].set(Tool.Line, oldElRef);
+    component['toolToElRef'][Tool.Line] = oldElRef;
 
     const newHtmlEl = document.createElement('a');
     const newElRef = new ElementRef(newHtmlEl);
-    component['toolToElRef'].set(Tool.Rectangle, newElRef);
+    component['toolToElRef'][Tool.Rectangle] = newElRef;
 
     component['setTool'](Tool._None, Tool._None);
     expect(oldHtmlEl.classList.contains('selected')).toBeTruthy();
@@ -88,11 +88,11 @@ describe('SidebarComponent', () => {
     const oldHtmlEl = document.createElement('a');
     oldHtmlEl.classList.add('selected');
     const oldElRef = new ElementRef(oldHtmlEl);
-    component['toolToElRef'].set(Tool.Line, oldElRef);
+    component['toolToElRef'][Tool.Line] = oldElRef;
 
     const newHtmlEl = document.createElement('a');
     const newElRef = new ElementRef(newHtmlEl);
-    component['toolToElRef'].set(Tool.Rectangle, newElRef);
+    component['toolToElRef'][Tool.Rectangle] = newElRef;
 
     component['setTool'](Tool.Rectangle, Tool.Line);
     expect(oldHtmlEl.classList.contains('selected')).toBeFalsy();

@@ -4,6 +4,8 @@ L’outil **Ligne** permet de tracer un ou plusieurs segments connectés entre e
  
  Vous pouvez également effectuer un simple clic pour déterminer le nouveau point de départ de votre ligne. Vous êtes libres de tracer une ligne de la longueur que vous voulez. Double-cliquez simplement pour terminer la ligne. 
 
+<img src="../../assets/doc/imgs/doc-outilLigne.png" class="doc-img" title="Exemple d'utilisation de l'outil Ligne" alt="image outil ligne" width="100%">
+
 En maintenant la touche **`SHIFT`** de votre clavier lors du traçage d’une ligne, vous activez un magnétisme attirant l’aperçu de la ligne selon des angles de 45°.
 
 Vous pouvez annuler le traçage du dernier point en appuyant sur la touche `BACKSPACE` de votre clavier, et ce jusqu’au premier point tracé. 
@@ -12,7 +14,6 @@ Vous pouvez annuler le traçage du dernier point en appuyant sur la touche `BACK
 
 Enfin, il est possible de fermer les lignes que vous avez tracé sur elles-mêmes, en effectuant votre double-clic sur le point de départ de votre ligne. Cela facilite la création de polygones irréguliers au nombre quelconque de faces.
 
-<img src="../../assets/doc/imgs/panneauLigne.png" class="doc-img, floatRight" title="Panneau de l'outil ligne" alt="image outil ligne" width="30%">
 
 Le panneau d'options de cet outil présente les options suivantes :
 
