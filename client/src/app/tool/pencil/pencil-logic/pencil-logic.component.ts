@@ -9,14 +9,15 @@ import { PencilService } from '../pencil.service';
   template: ''
 })
 export class PencilLogicComponent extends PencilBrushCommon
-       implements AfterViewInit {
+  implements AfterViewInit {
 
-  private listeners: (() => void)[] = [];
+  private listeners: (() => void)[];
 
   constructor(public renderer: Renderer2,
               public colorService: ColorService,
               public pencilService: PencilService) {
     super();
+    this.listeners = new Array();
   }
 
   // tslint:disable-next-line use-lifecycle-interface
@@ -25,16 +26,17 @@ export class PencilLogicComponent extends PencilBrushCommon
 
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnDestroy() {
-    this.listeners.forEach(listenner => {
-      listenner();
-    })}
+    this.listeners.forEach(listenner => { listenner(); });
+  }
 
   configureSvgElement(element: SVGElement): void {
     element.setAttribute('d', this.stringPath);
-    element.setAttribute('stroke-width', this.pencilService.thickness.toString());
     element.setAttribute('stroke', this.colorService.primaryColor);
     element.setAttribute('fill', this.colorService.primaryColor);
     element.setAttribute('stroke-linecap', this.strokeLineCap);
+    element.setAttribute(
+      'stroke-width', this.pencilService.thickness.toString()
+    );
   }
 
   onMouseMove(mouseEv: MouseEvent): void {
@@ -49,7 +51,7 @@ export class PencilLogicComponent extends PencilBrushCommon
     this.renderer.appendChild(this.svgElRef.nativeElement, this.svgPath);
   }
 
-  stopDrawing() {
+  stopDrawing(): void {
     this.mouseOnHold = false;
     this.stringPath = '';
   }
@@ -61,19 +63,19 @@ export class PencilLogicComponent extends PencilBrushCommon
           this.mouseOnHold = true;
           this.onMouseDown(mouseEv);
         }
-      });
+    });
 
     const mouseMoveListen = this.renderer.listen(this.svgElRef.nativeElement,
       'mousemove', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0 && this.mouseOnHold) {
           this.onMouseMove(mouseEv);
         }
-      });
+    });
 
     const mouseUpListen = this.renderer.listen(this.svgElRef.nativeElement,
       'mouseup', (mouseEv: MouseEvent) => {
         this.stopDrawing();
-      });
+    });
 
     const mouseLeaveListen = this.renderer.listen(this.svgElRef.nativeElement,
       'mouseleave', (mouseEv: MouseEvent) => {
@@ -81,6 +83,7 @@ export class PencilLogicComponent extends PencilBrushCommon
           this.stopDrawing();
         }
     });
+
     this.listeners = [mouseDownListen,
       mouseMoveListen,
       mouseUpListen,

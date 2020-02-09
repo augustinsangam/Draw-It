@@ -14,14 +14,15 @@ export enum Texture {
   providedIn: 'root'
 })
 export class BrushService extends ToolService {
-
+  isFirstLoaded: boolean;
   thickness: number;
-  texture: Texture;
+  texture: Texture ;
 
   constructor() {
     super();
     this.thickness = 10;
-    this.texture = Texture.Texture1;
+    this.isFirstLoaded = true;
+    this.texture = Texture.Texture2;
   }
 
 }
