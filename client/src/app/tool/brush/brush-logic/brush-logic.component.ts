@@ -238,7 +238,7 @@ export class BrushLogicComponent extends PencilBrushCommon {
 
     const feTurbulenceSvgEl: SVGFETurbulenceElement =
       this.renderer.createElement('feTurbulence', this.svgNS);
-    feTurbulenceSvgEl.setAttribute('baseFrequency', '.9');
+    feTurbulenceSvgEl.setAttribute('baseFrequency', '0.7');
     this.renderer.appendChild(filterSvgEl, feTurbulenceSvgEl);
 
     const feDisplacementMapSvgEl: SVGFEDisplacementMapElement =
