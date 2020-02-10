@@ -21,9 +21,11 @@ export interface Handler {
 export class ShortcutHandlerService {
 
   private manager: Map<Shortcut, Handler>;
+  private history: (Map<Shortcut, Handler>)[];
 
   constructor() {
     this.manager = new Map();
+    this.history = [];
   }
 
   execute(event: KeyboardEvent): void {
@@ -55,5 +57,24 @@ export class ShortcutHandlerService {
       handlerFunction: handler,
       isActive: true,
     });
+  }
+
+  private clone(manager: Map<Shortcut, Handler>) {
+    const managerClone = new Map<Shortcut, Handler>();
+    for (const [shortcut, handler] of manager) {
+      managerClone.set(shortcut, {
+        isActive: handler.isActive,
+        handlerFunction: handler.handlerFunction
+      });
+    }
+    return managerClone;
+  }
+
+  push() {
+    this.history.push(this.clone(this.manager));
+  }
+
+  pop() {
+    this.manager = this.history.pop() as Map<Shortcut, Handler>;
   }
 }

@@ -1,7 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import {  Overlay } from '@angular/cdk/overlay';
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialog, MatDialogModule } from '@angular/material';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
@@ -12,7 +11,9 @@ import { DocumentationComponent } from './pages/documentation/documentation.comp
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { PanelComponent } from './panel/panel.component';
+import { ShortcutHandlerService } from './shortcut-handler.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { ColorPickerItemComponent } from './tool/color/color-panel/color-picker-item/color-picker-item.component';
 import { ToolSelectorService } from './tool/tool-selector/tool-selector.service';
 
 // tslint:disable: no-string-literal
@@ -29,6 +30,7 @@ describe('AppComponent', () => {
         HomeComponent,
         NewDrawComponent,
         DocumentationComponent,
+        ColorPickerItemComponent
       ],
       imports: [
         BrowserAnimationsModule,
@@ -41,9 +43,9 @@ describe('AppComponent', () => {
         ToolSelectorService,
         Overlay,
         MatDialog,
+        ShortcutHandlerService,
         MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
     })
     .overrideModule(BrowserDynamicTestingModule, {
       set: {
@@ -177,6 +179,16 @@ describe('AppComponent', () => {
     const spy = spyOn<any>(component, 'openHomeDialog');
 
     component['closeDocumentationDialog'](true);
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#openDocumentationDialog should set dialogRefs.documentation.disableClose to false', () => {
+    const spy = spyOn(component['shortcutHanler'], 'desactivateAll');
+
+    component['openDocumentationDialog'](true);
+
+    component['dialogRefs'].documentation.close();
 
     expect(spy).toHaveBeenCalled();
   });
