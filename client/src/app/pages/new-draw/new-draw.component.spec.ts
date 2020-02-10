@@ -270,4 +270,12 @@ describe('NewDrawComponent', () => {
     component['onReturn']();
     expect(mockDialogRef.close).toHaveBeenCalledWith('home');
   });
+
+  it('#Other', () => {
+    const spy = spyOn(component['renderer'], 'listen');
+    component['palette'] = undefined as unknown as ColorPickerItemComponent;
+    component['ngAfterViewInit']();
+    expect(spy).toHaveBeenCalledTimes(0);
+  });
+
 });

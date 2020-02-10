@@ -11,16 +11,27 @@
             <mat-card-title id="hex-rgb-title">HEX OU RGB</mat-card-title>
             <mat-card-content id="hex-rgb-content">
                 <mat-form-field class="rgb">
-                    <input matInput placeholder="R" type="number" (input)="onChangeR($event)" formControlName="r" #rField>
+                    <input matInput placeholder="R" 
+                            type="number" (input)="onChangeR($event)" 
+                            formControlName="r" #rField
+                            onkeydown="return event.keyCode !== 69 && event.keyCode !== 189">
                 </mat-form-field>
                 <mat-form-field class="rgb">
-                    <input matInput placeholder="G" type="number" (input)="onChangeG($event)" formControlName="g" #gField>
+                    <input matInput placeholder="G" 
+                            type="number" (input)="onChangeG($event)" 
+                            formControlName="g" #gField
+                            onkeydown="return event.keyCode !== 69 && event.keyCode !== 189">
                 </mat-form-field>
                 <mat-form-field class="rgb">
-                    <input matInput placeholder="B" type="number" (input)="onChangeB($event)" formControlName="b" #bField>
+                    <input matInput placeholder="B" type="number" 
+                            (input)="onChangeB($event)" 
+                            formControlName="b" #bField
+                            onkeydown="return event.keyCode !== 69 && event.keyCode !== 189">
                 </mat-form-field>
                 <mat-form-field class="rgb" id="alpha">
-                    <input matInput placeholder="A" type="number" step="5" (input)="onChangeA($event)" formControlName="a" #aField>
+                    <input matInput placeholder="A" type="number" step="5" 
+                            (input)="onChangeA($event)" formControlName="a" #aField
+                            onkeydown="return event.keyCode !== 69 && event.keyCode !== 189">
                     <span matSuffix>%</span>
                 </mat-form-field>
                 <mat-form-field class="hex">

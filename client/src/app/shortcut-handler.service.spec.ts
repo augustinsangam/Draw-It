@@ -96,4 +96,29 @@ describe('ShortcutHandlerService', () => {
     service.execute(({ code: 'KeyL' } as unknown) as KeyboardEvent);
     expect(debugVariable).toBe(8);
   });
+
+  it('#clone works well', () => {
+    service.set(Shortcut.C, debugFunction1);
+    service.set(Shortcut.L, debugFunction2);
+    const managerSaved = service['manager'];
+    expect(service['clone'](service['manager'])).not.toBe(managerSaved);
+  });
+
+  it('#push should save the manger in the history', () => {
+    service.set(Shortcut.C, debugFunction1);
+    service.set(Shortcut.L, debugFunction2);
+    const managerSaved = service['manager'];
+    service.push();
+    expect(service['history'].pop()).toEqual(managerSaved);
+  });
+
+  it('#pop should set the manager to its last state', () => {
+    service.set(Shortcut.C, debugFunction1);
+    // const managerSaved = service['clone'](service['manager']);
+    service.push();
+    service.set(Shortcut.L, debugFunction2);
+    service.pop();
+    expect(service['manager'].get(Shortcut.L)).toEqual(undefined);
+  });
+
 });
