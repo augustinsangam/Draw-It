@@ -10,7 +10,11 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { DocumentationComponent } from './pages/documentation/documentation.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
-import { Shortcut, ShortcutHandlerService } from './shortcut-handler.service';
+import {
+  KeybardCallback,
+  Shortcut,
+  ShortcutHandlerService
+} from './shortcut-handler.service';
 import { SvgService } from './svg/svg.service';
 import { ColorService } from './tool/color/color.service';
 import { ToolSelectorService } from './tool/tool-selector/tool-selector.service';
@@ -51,6 +55,8 @@ export class AppComponent implements AfterViewInit {
   })
   svg: ElementRef<SVGElement>;
 
+  handlersFunc: Map<Shortcut, KeybardCallback>;
+
   private getCommomDialogOptions = () => {
     return {
       width: '650px',
@@ -69,28 +75,34 @@ export class AppComponent implements AfterViewInit {
     this.drawInProgress = false;
     this.drawOption = { height: 0, width: 0, color: '' };
 
-    this.shortcutHanler.set(Shortcut.C, () =>
+    this.handlersFunc = new Map();
+    this.handlersFunc.set(Shortcut.C, () =>
       this.toolSelectorService.set(Tool.Pencil)
     );
-
-    this.shortcutHanler.set(Shortcut.L, () =>
+    this.handlersFunc.set(Shortcut.L, () =>
       this.toolSelectorService.set(Tool.Line)
     );
-
-    this.shortcutHanler.set(Shortcut.W, () =>
+    this.handlersFunc.set(Shortcut.W, () =>
       this.toolSelectorService.set(Tool.Brush)
     );
-
-    this.shortcutHanler.set(Shortcut.Digit1, () =>
+    this.handlersFunc.set(Shortcut.Digit1, () =>
       this.toolSelectorService.set(Tool.Rectangle)
     );
-
-    this.shortcutHanler.set(Shortcut.O, event => {
+    this.handlersFunc.set(Shortcut.O, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
         this.openNewDrawDialog();
       }
     });
+
+    [Shortcut.C, Shortcut.L, Shortcut.W, Shortcut.Digit1, Shortcut.O].forEach(
+      shortcut => {
+        this.shortcutHanler.set(
+          shortcut,
+          this.handlersFunc.get(shortcut) as KeybardCallback
+        );
+      }
+    );
 
     this.dialogRefs = {
       home: (undefined as unknown) as MatDialogRef<HomeComponent>,
@@ -191,6 +203,7 @@ export class AppComponent implements AfterViewInit {
     this.colorService.selectBackgroundColor(
       `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`
     );
+    // TODO: Reset from svg service
     const childrens = Array.from(this.svg.nativeElement.children);
     childrens.forEach(element => {
       element.remove();

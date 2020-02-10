@@ -1,10 +1,10 @@
 import { Component, OnDestroy, Renderer2 } from '@angular/core';
 import { ColorService } from '../../../color/color.service';
-import { Point } from '../../common/Point';
 import { MathService } from '../../../mathematics/tool.math-service.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
-import { LineService } from '../line.service';
 import { Path } from '../../common/Path';
+import { Point } from '../../common/Point';
+import { LineService } from '../line.service';
 
 @Component({
   selector: 'app-line-logic',

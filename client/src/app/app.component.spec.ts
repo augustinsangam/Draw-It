@@ -15,7 +15,7 @@ import { DocumentationComponent } from './pages/documentation/documentation.comp
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { PanelComponent } from './panel/panel.component';
-import { ShortcutHandlerService } from './shortcut-handler.service';
+import { KeybardCallback, Shortcut, ShortcutHandlerService } from './shortcut-handler.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ColorPickerItemComponent } from './tool/color/color-panel/color-picker-item/color-picker-item.component';
 import { ToolSelectorService } from './tool/tool-selector/tool-selector.service';
@@ -171,7 +171,7 @@ describe('AppComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#closeNewDrawDialog should not call openHomeDialog and' 
+  it('#closeNewDrawDialog should not call openHomeDialog and'
    + 'createNewDraw if option null.', () => {
     const spy1 = spyOn<any>(component, 'openHomeDialog');
     const spy2 = spyOn<any>(component, 'createNewDraw');
@@ -184,7 +184,7 @@ describe('AppComponent', () => {
     expect(spy2).toHaveBeenCalledTimes(0);
   });
 
-  it('#closeDocumentationDialog should call openHomeDialog if fromHome' 
+  it('#closeDocumentationDialog should call openHomeDialog if fromHome'
    + '(arg) is true', () => {
     const spy = spyOn<any>(component, 'openHomeDialog');
 
@@ -193,8 +193,17 @@ describe('AppComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#openDocumentationDialog should set'
-   + ' dialogRefs.documentation.disableClose to false', () => {
+  it('#closeDocumentationDialog should not call openHomeDialog'
+   + 'if fromHome (arg) is false', () => {
+    const spy = spyOn<any>(component, 'openHomeDialog');
+
+    component['closeDocumentationDialog'](false);
+
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('#openDocumentationDialog should set '
+    + 'dialogRefs.documentation.disableClose to false', () => {
     const spy = spyOn(component['shortcutHanler'], 'desactivateAll');
 
     component['openDocumentationDialog'](true);
@@ -219,4 +228,28 @@ describe('AppComponent', () => {
 
     expect(component['drawInProgress']).toBeTruthy();
   });
+
+  it('#Handlers works for C, L, W and digit 1', () => {
+    const spy = spyOn(component['toolSelectorService'], 'set');
+    (component['handlersFunc'].get(Shortcut.C) as KeybardCallback)();
+    (component['handlersFunc'].get(Shortcut.L) as KeybardCallback)();
+    (component['handlersFunc'].get(Shortcut.W) as KeybardCallback)();
+    (component['handlersFunc'].get(Shortcut.Digit1) as KeybardCallback)();
+    expect(spy).toHaveBeenCalledTimes(4);
+  })
+
+  it('#Handler works for digit O', () => {
+    const spy = spyOn<any>(component, 'openNewDrawDialog');
+    const eventOWithoutControl = new KeyboardEvent('window:keydown', {
+      code: 'KeyO',
+      ctrlKey: false
+    });
+    (component['handlersFunc'].get(Shortcut.O) as KeybardCallback)(eventOWithoutControl);
+    const eventOWithControl = new KeyboardEvent('window:keydown', {
+      code: 'KeyO',
+      ctrlKey: true,
+    });
+    (component['handlersFunc'].get(Shortcut.O) as KeybardCallback)(eventOWithControl);
+    expect(spy).toHaveBeenCalledTimes(1);
+  })
 });

@@ -245,6 +245,25 @@ describe('RectangleLogicComponent', () => {
     tick(500);
   }));
 
+  it('mouseUp should not do anything if its not on drag', fakeAsync(() => {
+    component['initRectangle'](createClickMouseEvent('mousedown'));
+    const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
+    spyOn<any>(component, 'getRectangle').and.callThrough();
+    const spy2 = spyOn<any>(
+      component['getRectangle'](),
+      'setOpacity'
+    ).and.callThrough();
+    document.dispatchEvent(
+      new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
+    );
+    component['onDrag'] = false;
+    setTimeout(() => {
+      expect(spy1).toHaveBeenCalled();
+      expect(spy2).toHaveBeenCalled();
+    }, 500);
+    tick(500);
+  }));
+
   it('if the fill atribute is off, the opacity is null', fakeAsync(() => {
     component['initRectangle'](createClickMouseEvent('mousedown'));
     spyOn<any>(component, 'getRectangle').and.callThrough();
