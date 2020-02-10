@@ -89,7 +89,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
     this.allListeners.forEach(listenner => listenner());
   }
 
-  private onKeyDown(keyEv: KeyboardEvent) {
+  private onKeyDown(keyEv: KeyboardEvent): void {
     if (this.onDrag) {
       if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
         this.getRectangle().drawTemporarySquare(this.currentPoint);
@@ -97,7 +97,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
     }
   }
 
-  private onKeyUp(keyEv: KeyboardEvent) {
+  private onKeyUp(keyEv: KeyboardEvent): void {
     if (this.onDrag) {
       if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
         this.getRectangle().drawTemporaryRectangle(this.currentPoint);
@@ -109,7 +109,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
     return this.rectangles[this.currentRectangleIndex];
   }
 
-  private initRectangle(mouseEv: MouseEvent) {
+  private initRectangle(mouseEv: MouseEvent): void {
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
       this.currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
       const rectangle = this.renderer.createElement('rect', this.svgNS);
@@ -130,7 +130,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
       this.onDrag = true;
     }
   }
-  private viewTemporaryForm(mouseEv: MouseEvent) {
+  private viewTemporaryForm(mouseEv: MouseEvent): void {
     if (mouseEv.shiftKey) {
       this.getRectangle().drawTemporarySquare(this.currentPoint);
     } else {

@@ -21,7 +21,7 @@ export class Rectangle {
     this.mathService = new MathService();
   }
 
-  drawRectangle(upLeftCorner: Point, dimension: Dimension) {
+  drawRectangle(upLeftCorner: Point, dimension: Dimension): void {
     this.renderer.setAttribute(this.element, 'x', upLeftCorner.x.toString());
     this.renderer.setAttribute(this.element, 'y', upLeftCorner.y.toString());
     this.renderer.setAttribute(
@@ -36,7 +36,7 @@ export class Rectangle {
     );
   }
 
-  drawTemporaryRectangle(oppositePoint: Point) {
+  drawTemporaryRectangle(oppositePoint: Point): void {
     const dimensions = this.mathService.getRectangleSize(
       this.initialPoint,
       oppositePoint
@@ -48,7 +48,7 @@ export class Rectangle {
     this.drawRectangle(transformedPoint, dimensions);
     this.setOpacity('0.55');
   }
-  drawTemporarySquare(oppositePoint: Point) {
+  drawTemporarySquare(oppositePoint: Point): void {
     const transformedPoint = this.mathService.transformRectangleToSquare(
       this.initialPoint,
       oppositePoint
@@ -64,7 +64,7 @@ export class Rectangle {
     this.drawRectangle(finalPoint, squareDimension);
     this.setOpacity('0.55');
   }
-  setParameters(style: Style) {
+  setParameters(style: Style): void {
     this.style = style;
     const styleAtr = `fill:${this.style.fillColor};`
                    + `stroke:${this.style.borderColor};`
@@ -72,7 +72,7 @@ export class Rectangle {
     this.renderer.setAttribute(this.element, 'style', styleAtr);
     this.filled = style.filled;
   }
-  setOpacity(opacityPourcent: string) {
+  setOpacity(opacityPourcent: string): void {
     if (this.filled) {
       this.renderer.setAttribute(this.element, 'fill-opacity', opacityPourcent);
     } else {

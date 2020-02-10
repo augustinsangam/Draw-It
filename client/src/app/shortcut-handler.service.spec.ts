@@ -1,14 +1,22 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Handler, KeybardCallback, Shortcut, ShortcutHandlerService } from './shortcut-handler.service';
+import {
+  Handler,
+  KeybardCallback,
+  Shortcut,
+  ShortcutHandlerService
+} from './shortcut-handler.service';
 
 // tslint:disable no-string-literal
 describe('ShortcutHandlerService', () => {
-
   let service: ShortcutHandlerService;
   let debugVariable = 1;
-  const debugFunction1: KeybardCallback = (event: KeyboardEvent) => { debugVariable += 2};
-  const debugFunction2: KeybardCallback = (event: KeyboardEvent) => { debugVariable += 5};
+  const debugFunction1: KeybardCallback = (event: KeyboardEvent) => {
+    debugVariable += 2;
+  };
+  const debugFunction2: KeybardCallback = (event: KeyboardEvent) => {
+    debugVariable += 5;
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -38,43 +46,54 @@ describe('ShortcutHandlerService', () => {
   it('#activate should set the active property to true', () => {
     service.set(Shortcut.C, debugFunction1);
     service.activate(Shortcut.C);
-    expect((service['manager'].get(Shortcut.C) as Handler).isActive).toEqual(true);
+    expect((service['manager'].get(Shortcut.C) as Handler).isActive).toEqual(
+      true
+    );
   });
 
   it('#desactivate should set the active property to true', () => {
     service.set(Shortcut.C, debugFunction1);
     service.desactivate(Shortcut.C);
-    expect((service['manager'].get(Shortcut.C) as Handler).isActive).toEqual(false);
+    expect((service['manager'].get(Shortcut.C) as Handler).isActive).toEqual(
+      false
+    );
   });
 
   it('#activateAll should set all active properties to true', () => {
     service.set(Shortcut.C, debugFunction1);
     service.set(Shortcut.L, debugFunction2);
     service.activateAll();
-    expect((service['manager'].get(Shortcut.C) as Handler).isActive).toEqual(true);
-    expect((service['manager'].get(Shortcut.L) as Handler).isActive).toEqual(true);
+    expect((service['manager'].get(Shortcut.C) as Handler).isActive).toEqual(
+      true
+    );
+    expect((service['manager'].get(Shortcut.L) as Handler).isActive).toEqual(
+      true
+    );
   });
 
   it('#desactivateAll should set all active properties to false', () => {
     service.set(Shortcut.C, debugFunction1);
     service.set(Shortcut.L, debugFunction2);
     service.desactivateAll();
-    expect((service['manager'].get(Shortcut.C) as Handler).isActive).toEqual(false);
-    expect((service['manager'].get(Shortcut.L) as Handler).isActive).toEqual(false);
+    expect((service['manager'].get(Shortcut.C) as Handler).isActive).toEqual(
+      false
+    );
+    expect((service['manager'].get(Shortcut.L) as Handler).isActive).toEqual(
+      false
+    );
   });
 
   it('#execute should not call the hander fonction when inactive', () => {
-    service.execute('' as unknown as KeyboardEvent);
+    service.execute(('' as unknown) as KeyboardEvent);
     expect(debugVariable).toEqual(1);
   });
 
   it('#execute should not call the hander fonction when inactive', () => {
     service.set(Shortcut.C, debugFunction1);
     service.set(Shortcut.L, debugFunction2);
-    service.execute({code: 'KeyC'} as unknown as KeyboardEvent);
+    service.execute(({ code: 'KeyC' } as unknown) as KeyboardEvent);
     expect(debugVariable).toBe(3);
-    service.execute({code: 'KeyL'} as unknown as KeyboardEvent);
+    service.execute(({ code: 'KeyL' } as unknown) as KeyboardEvent);
     expect(debugVariable).toBe(8);
   });
-
 });

@@ -111,7 +111,7 @@ export class AppComponent implements AfterViewInit {
     this.openHomeDialog();
   }
 
-  private openHomeDialog() {
+  private openHomeDialog(): void {
     this.dialogRefs.home = this.dialog.open(
       HomeComponent,
       this.getCommomDialogOptions()
@@ -124,7 +124,7 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
-  private openSelectedDialog(dialog: string) {
+  private openSelectedDialog(dialog: string): void {
     switch (dialog) {
       case OverlayPages.New:
         this.openNewDrawDialog();
@@ -139,7 +139,7 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
-  private openNewDrawDialog() {
+  private openNewDrawDialog(): void {
     this.dialogRefs.newDraw = this.dialog.open(
       NewDrawComponent,
       this.getCommomDialogOptions()
@@ -152,7 +152,7 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
-  private closeNewDrawDialog(option: string | NewDrawOptions) {
+  private closeNewDrawDialog(option: string | NewDrawOptions): void {
     if (option === OverlayPages.Home) {
       this.openHomeDialog();
     } else if (option !== null) {
@@ -160,7 +160,7 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
-  private openDocumentationDialog(fromHome: boolean) {
+  private openDocumentationDialog(fromHome: boolean): void {
     const dialogOptions = {
       width: '115vw',
       height: '100vh',
@@ -178,13 +178,13 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
-  private closeDocumentationDialog(fromHome: boolean) {
+  private closeDocumentationDialog(fromHome: boolean): void {
     if (fromHome) {
       this.openHomeDialog();
     }
   }
 
-  private createNewDraw(option: NewDrawOptions) {
+  private createNewDraw(option: NewDrawOptions): void {
     this.drawOption = option;
     this.drawInProgress = true;
     const rgb = this.colorService.hexToRgb(option.color);

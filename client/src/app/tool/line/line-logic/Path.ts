@@ -3,7 +3,6 @@ import { ElementRef, Renderer2 } from '@angular/core';
 import { Point } from '../../common/Point';
 import { MathService } from '../../mathematics/tool.math-service.service';
 import { Circle } from './Circle';
-import { PathData } from './PathData';
 
 export class Path {
   private pathAtribute = '';
@@ -26,14 +25,14 @@ export class Path {
     this.renderer.setAttribute(this.element, 'fill', 'none');
   }
 
-  addLine(point: Point) {
+  addLine(point: Point): void {
     this.datas.points.push(point);
     const instruction =
       'L ' + point.x.toString() + ' ' + point.y.toString() + ' ';
     this.addInstruction(instruction);
   }
 
-  addInstruction(instruction: string) {
+  addInstruction(instruction: string): void {
     this.datas.instructions.push(instruction);
     this.pathAtribute += instruction;
     this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
@@ -62,7 +61,7 @@ export class Path {
     return this.mathService.findAlignedSegmentPoint(newPoint, lastPoint);
   }
 
-  simulateNewLine(point: Point) {
+  simulateNewLine(point: Point): void {
     const temp =
       this.pathAtribute +
       'L ' +
@@ -122,3 +121,9 @@ export class Path {
     this.renderer.setAttribute(this.element, 'stroke', strokeColor);
   }
 }
+
+interface PathData {
+    points: Point[],
+    jonctions: Circle[],
+    instructions: string[],
+  }

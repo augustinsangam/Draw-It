@@ -14,7 +14,6 @@ describe('ToolSelectorService', () => {
   beforeEach(() => {
     service = TestBed.get(ToolSelectorService);
     service['onChangeCallbacks'][0] = (tool: Tool) => {};
-
     service['onSameCallbacks'][0] = (tool: Tool) => {};
   });
 
