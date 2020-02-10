@@ -22,7 +22,7 @@ export class BrushService extends ToolService {
     super();
     this.thickness = 10;
     this.isFirstLoaded = true;
-    this.texture = Texture.Texture2;
+    this.texture = Texture.Texture1;
   }
 
 }

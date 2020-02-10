@@ -8,7 +8,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import {
   BrowserAnimationsModule, NoopAnimationsModule
 } from '@angular/platform-browser/animations';
-import { MccColorPickerModule } from 'material-community-components';
 import { AppComponent } from './app.component';
 import { MaterialModule } from './material.module';
 import {
@@ -95,7 +94,6 @@ import {
     MatFormFieldModule,
     MatIconModule,
     MatListModule,
-    MccColorPickerModule,
     NoopAnimationsModule,
     ReactiveFormsModule,
   ],
