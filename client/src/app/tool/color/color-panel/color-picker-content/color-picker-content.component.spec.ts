@@ -230,6 +230,7 @@ describe('ColorPickerContentComponent', () => {
     const spy = spyOn(component['eventManager'], 'addEventListener');
     component['blockAllShortcus'] = true;
     component.ngAfterViewInit();
-    expect(spy).toHaveBeenCalledTimes(11); // 10 fois pour chaque couleur et 1 fois pour le canvas
+    // 10 fois pour chaque couleur et 1 fois pour le canvas
+    expect(spy).toHaveBeenCalledTimes(11);
   });
 });

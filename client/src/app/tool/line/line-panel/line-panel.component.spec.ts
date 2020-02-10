@@ -1,15 +1,27 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CdkObserveContent } from '@angular/cdk/observers';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
-import { MatCard, MatCardContent, MatCardTitle, MatFormField, MatIcon, MatInput,
-   MatRadioButton, MatRadioGroup, MatRipple, MatSlider, MatSlideToggle, MatSlideToggleChange } from '@angular/material';
+import {
+  MatCard,
+  MatCardContent,
+  MatCardTitle,
+  MatFormField,
+  MatIcon,
+  MatInput,
+  MatRadioButton,
+  MatRadioGroup,
+  MatRipple,
+  MatSlider,
+  MatSlideToggle,
+  MatSlideToggleChange
+} from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ColorPanelComponent } from '../../color/color-panel/color-panel.component';
 import { ColorPickerContentComponent } from '../../color/color-panel/color-picker-content/color-picker-content.component';
 import { ColorPickerItemComponent } from '../../color/color-panel/color-picker-item/color-picker-item.component';
-import {LinePanelComponent} from './line-panel.component';
+import { LinePanelComponent } from './line-panel.component';
 
 // tslint:disable: no-string-literal
 describe('LinePanelComponent', () => {
@@ -18,11 +30,7 @@ describe('LinePanelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
-      ],
+      imports: [FormsModule, ReactiveFormsModule, BrowserAnimationsModule],
       declarations: [
         LinePanelComponent,
         MatSlider,
@@ -39,12 +47,11 @@ describe('LinePanelComponent', () => {
         MatRadioGroup,
         MatCardTitle,
         MatCardContent,
-        MatCard,
+        MatCard
       ],
       schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
       providers: []
-    })
-    .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -57,9 +64,11 @@ describe('LinePanelComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('devrait changer l\'attribut withJonction du service à false', () => {
+  it("devrait changer l'attribut withJonction du service à false", () => {
     component['service'].withJonction = true;
-    component['onChangeJonctionOption'](new MatSlideToggleChange(component['slideToggle'], false));
+    component['onChangeJonctionOption'](
+      new MatSlideToggleChange(component['slideToggle'], false)
+    );
     expect(component['service'].withJonction).toBeFalsy();
   });
 
@@ -74,5 +83,4 @@ describe('LinePanelComponent', () => {
     component['onRadiusChange']();
     expect(spy).toHaveBeenCalled();
   });
-
 });

@@ -47,7 +47,8 @@ export class LinePanelComponent extends ToolPanelDirective {
   }
 
   protected onThicknessChange(): void {
-    this.lineForm.patchValue({ thicknessFormField: this.thicknessSlider.value });
+    this.lineForm.patchValue
+                 ({ thicknessFormField: this.thicknessSlider.value });
     this.service.thickness = this.thicknessSlider.value as number;
   }
 

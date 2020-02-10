@@ -1,9 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {  Overlay } from '@angular/cdk/overlay';
+import { Overlay } from '@angular/cdk/overlay';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialog, MatDialogModule } from '@angular/material';
+import {
+  MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
+  MatDialog,
+  MatDialogModule
+} from '@angular/material';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent, NewDrawOptions } from './app.component';
@@ -28,33 +32,31 @@ describe('AppComponent', () => {
         SidebarComponent,
         HomeComponent,
         NewDrawComponent,
-        DocumentationComponent,
+        DocumentationComponent
       ],
       imports: [
         BrowserAnimationsModule,
         MatDialogModule,
         ReactiveFormsModule,
         FormsModule,
-        MaterialModule,
+        MaterialModule
       ],
       providers: [
         ToolSelectorService,
         Overlay,
         MatDialog,
-        MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
+        MAT_DIALOG_SCROLL_STRATEGY_PROVIDER
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
-    })
-    .overrideModule(BrowserDynamicTestingModule, {
+    }).overrideModule(BrowserDynamicTestingModule, {
       set: {
         entryComponents: [
           HomeComponent,
           NewDrawComponent,
-          DocumentationComponent,
+          DocumentationComponent
         ]
       }
-    })
-
+    });
   }));
 
   beforeEach(() => {
@@ -69,24 +71,25 @@ describe('AppComponent', () => {
 
   it('#keyEvent should call this.shortcutHanler.execute()', () => {
     const event = new KeyboardEvent('window:keydown', {
-      code: 'KeyC',
+      code: 'KeyC'
     });
 
     const spy = spyOn(component['shortcutHanler'], 'execute');
 
     component.keyEvent(event);
 
-    expect(spy).toHaveBeenCalled()
+    expect(spy).toHaveBeenCalled();
   });
 
-  it('#ngAfterViewInit should set component.svgService.instance to component.svg', () => {
+  it('#ngAfterViewInit should set component.svgService.instance'
+   + 'to component.svg', () => {
     expect(component['svgService'].instance).toBe(component.svg);
-  })
+  });
 
   it('#openHomeDialog should call openSelectedDialog()', () => {
     component['dialogRefs'].home.disableClose = false;
 
-    component['openHomeDialog']()
+    component['openHomeDialog']();
 
     component['dialogRefs'].home.close();
 
@@ -109,7 +112,8 @@ describe('AppComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#openSelectedDialog should not call openNewDrawDialog and openDocumentationDialog', () => {
+  it('#openSelectedDialog should not call openNewDrawDialog '
+   + 'and openDocumentationDialog', () => {
     const spy1 = spyOn<any>(component, 'openNewDrawDialog');
     const spy2 = spyOn<any>(component, 'openDocumentationDialog');
 
@@ -119,7 +123,8 @@ describe('AppComponent', () => {
     expect(spy2).toHaveBeenCalledTimes(0);
   });
 
-  it('#openSelectedDialog should not call openNewDrawDialog and openDocumentationDialog', () => {
+  it('#openSelectedDialog should not call openNewDrawDialog'
+  +  'and openDocumentationDialog', () => {
     const spy1 = spyOn<any>(component, 'openNewDrawDialog');
     const spy2 = spyOn<any>(component, 'openDocumentationDialog');
 
@@ -139,7 +144,8 @@ describe('AppComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#closeNewDrawDialog should call openHomeDialog if option is "home".', () => {
+  it('#closeNewDrawDialog should call openHomeDialog if option '
+   + 'is "home".', () => {
     const spy = spyOn<any>(component, 'openHomeDialog');
 
     component['closeNewDrawDialog']('home');
@@ -147,25 +153,27 @@ describe('AppComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#closeNewDrawDialog should call createNewDraw if option is a NewDrawOtion type.', () => {
+  it('#closeNewDrawDialog should call createNewDraw if option is a'
+  + ' NewDrawOtion type.', () => {
     const spy = spyOn<any>(component, 'createNewDraw');
 
     const option: NewDrawOptions = {
       width: 2,
       height: 2,
       color: '#FFFFFF'
-    }
+    };
 
     component['closeNewDrawDialog'](option);
 
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#closeNewDrawDialog should not call openHomeDialog and createNewDraw if option null.', () => {
+  it('#closeNewDrawDialog should not call openHomeDialog and' 
+   + 'createNewDraw if option null.', () => {
     const spy1 = spyOn<any>(component, 'openHomeDialog');
     const spy2 = spyOn<any>(component, 'createNewDraw');
 
-    const option = null as unknown as NewDrawOptions;
+    const option = (null as unknown) as NewDrawOptions;
 
     component['closeNewDrawDialog'](option);
 
@@ -173,7 +181,8 @@ describe('AppComponent', () => {
     expect(spy2).toHaveBeenCalledTimes(0);
   });
 
-  it('#closeDocumentationDialog should call openHomeDialog if fromHome (arg) is true', () => {
+  it('#closeDocumentationDialog should call openHomeDialog if fromHome' 
+   + '(arg) is true', () => {
     const spy = spyOn<any>(component, 'openHomeDialog');
 
     component['closeDocumentationDialog'](true);
@@ -186,11 +195,11 @@ describe('AppComponent', () => {
       width: 2,
       height: 2,
       color: '#FFFFFF'
-    }
+    };
 
     component['drawInProgress'] = false;
 
-    component.svg.nativeElement.appendChild(document.createElement('circle'))
+    component.svg.nativeElement.appendChild(document.createElement('circle'));
 
     component['createNewDraw'](option);
 

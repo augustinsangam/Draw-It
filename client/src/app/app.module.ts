@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MccColorPickerModule } from 'material-community-components';
-
 import { AppComponent } from './app.component';
 import { MaterialModule } from './material.module';
 import { DocumentationComponent } from './pages/documentation/documentation.component';

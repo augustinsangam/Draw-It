@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  ViewChild
+} from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 
 import { DocumentationComponent } from './pages/documentation/documentation.component';
@@ -80,7 +86,6 @@ export class AppComponent implements AfterViewInit {
     );
 
     this.shortcutHanler.set(Shortcut.O, event => {
-      // TODO: TS3.7 event?.ctrlKey
       if (!!event && event.ctrlKey) {
         event.preventDefault();
         this.openNewDrawDialog();
@@ -186,7 +191,6 @@ export class AppComponent implements AfterViewInit {
     this.colorService.selectBackgroundColor(
       `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`
     );
-    // TODO: Reset from svg component
     const childrens = Array.from(this.svg.nativeElement.children);
     childrens.forEach(element => {
       element.remove();
@@ -194,4 +198,3 @@ export class AppComponent implements AfterViewInit {
     this.toolSelectorService.set(Tool.Pencil);
   }
 }
-

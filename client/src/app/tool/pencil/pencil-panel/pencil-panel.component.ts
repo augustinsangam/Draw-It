@@ -29,7 +29,8 @@ export class PencilPanelComponent extends ToolPanelDirective {
   }
 
   protected onThicknessChange(): void {
-    this.pencilForm.patchValue({ thicknessFormField: this.thicknessSlider.value });
+    this.pencilForm.patchValue
+              ({ thicknessFormField: this.thicknessSlider.value });
     this.service.thickness = this.thicknessSlider.value as number;
   }
 }

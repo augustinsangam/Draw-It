@@ -3,9 +3,21 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CdkObserveContent } from '@angular/cdk/observers';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatCard, MatCardContent, MatCardTitle, MatDialogClose, MatFormField, MatGridList, MatIcon,
-  MatInput, MatRadioButton, MatRadioGroup, MatRipple, MatSlider } from '@angular/material';
-import {MatRadioChange} from '@angular/material/radio';
+import {
+  MatCard,
+  MatCardContent,
+  MatCardTitle,
+  MatDialogClose,
+  MatFormField,
+  MatGridList,
+  MatIcon,
+  MatInput,
+  MatRadioButton,
+  MatRadioGroup,
+  MatRipple,
+  MatSlider
+} from '@angular/material';
+import { MatRadioChange } from '@angular/material/radio';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SidebarComponent } from 'src/app/sidebar/sidebar.component';
 import { ColorPanelComponent } from '../../color/color-panel/color-panel.component';
@@ -21,11 +33,7 @@ describe('BrushPanelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        BrowserAnimationsModule,
-      ],
+      imports: [FormsModule, ReactiveFormsModule, BrowserAnimationsModule],
       declarations: [
         BrushPanelComponent,
         CdkObserveContent,
@@ -46,11 +54,9 @@ describe('BrushPanelComponent', () => {
         SidebarComponent,
         MatInput
       ],
-      schemas: [ NO_ERRORS_SCHEMA ],
-      providers: [
-      ],
-    })
-    .compileComponents();
+      schemas: [NO_ERRORS_SCHEMA],
+      providers: []
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -63,15 +69,18 @@ describe('BrushPanelComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('onThicknessChange devrait appeler la méthode patchValue de brushForm', () => {
-    const spy = spyOn(component['brushForm'], 'patchValue');
-    component['onThicknessChange']();
-    expect(spy).toHaveBeenCalled();
-  });
+  it('onThicknessChange devrait appeler la méthode'
+    + 'patchValue de brushForm', () => {
+      const spy = spyOn(component['brushForm'], 'patchValue');
+      component['onThicknessChange']();
+      expect(spy).toHaveBeenCalled();
+    });
 
-  it('onOptionChange devrait changer la valeur de la texture du service', () => {
-    component['onOptionChange'](new MatRadioChange(component['radioChoice'], 'filter2'));
-    expect(component['service'].texture).toEqual('filter2');
-  })
-
+  it('onOptionChange devrait changer la valeur de la texture du service',
+    () => {
+      component['onOptionChange'](
+        new MatRadioChange(component['radioChoice'], 'filter2')
+      );
+      expect(component['service'].texture).toEqual('filter2');
+    });
 });

@@ -143,31 +143,31 @@ describe('ColorPanelComponent', () => {
   });
 
   it('#addEvents() should updateRecentColors+'
-  + 'when Palette not defined', fakeAsync(() => {
-    const spyUpdateRecentColors = spyOn<any>(component, 'updateRecentColors');
-    component['colorPalette'] =
-      (new MockColorPickerContentComponent() as unknown) as ColorPickerContentComponent;
-    component['addEvents']();
-    component['colorsItemsArray'][2].button.nativeElement.click();
-    fixture.whenStable().then(() => {
-      setTimeout(() => {
-        expect(spyUpdateRecentColors).toHaveBeenCalled();
-      }, 500);
-      tick(500);
-    });
+    + 'when Palette not defined', fakeAsync(() => {
+      const spyUpdateRecentColors = spyOn<any>(component, 'updateRecentColors');
+      component['colorPalette'] =
+        (new MockColorPickerContentComponent() as unknown) as ColorPickerContentComponent;
+      component['addEvents']();
+      component['colorsItemsArray'][2].button.nativeElement.click();
+      fixture.whenStable().then(() => {
+        setTimeout(() => {
+          expect(spyUpdateRecentColors).toHaveBeenCalled();
+        }, 500);
+        tick(500);
+      });
 
-    const rightClickEvent = document.createEvent('HTMLEvents');
-    rightClickEvent.initEvent('contextmenu', true, false);
-    component['colorsItemsArray'][2].button.nativeElement.dispatchEvent(
-      rightClickEvent
-    );
-    fixture.whenStable().then(() => {
-      setTimeout(() => {
-        expect(spyUpdateRecentColors).toHaveBeenCalled();
-      }, 500);
-      tick(500);
-    });
-  }));
+      const rightClickEvent = document.createEvent('HTMLEvents');
+      rightClickEvent.initEvent('contextmenu', true, false);
+      component['colorsItemsArray'][2].button.nativeElement.dispatchEvent(
+        rightClickEvent
+      );
+      fixture.whenStable().then(() => {
+        setTimeout(() => {
+          expect(spyUpdateRecentColors).toHaveBeenCalled();
+        }, 500);
+        tick(500);
+      });
+    }));
 
   it('#addEvents() should updateRecentColors', fakeAsync(() => {
     const spyUpdateRecentColors = spyOn<any>(component, 'updateRecentColors');
