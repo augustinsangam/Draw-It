@@ -20,9 +20,17 @@ import {
 import { MatRadioChange } from '@angular/material/radio';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SidebarComponent } from 'src/app/sidebar/sidebar.component';
-import { ColorPanelComponent } from '../../../color/color-panel/color-panel.component';
-import { ColorPickerContentComponent } from '../../../color/color-panel/color-picker-content/color-picker-content.component';
-import { ColorPickerItemComponent } from '../../../color/color-panel/color-picker-item/color-picker-item.component';
+import {
+  ColorPanelComponent
+} from '../../../color/color-panel/color-panel.component';
+import {
+  ColorPickerContentComponent
+// tslint:disable-next-line: max-line-length
+} from '../../../color/color-panel/color-picker-content/color-picker-content.component';
+import {
+  ColorPickerItemComponent
+// tslint:disable-next-line: max-line-length
+} from '../../../color/color-panel/color-picker-item/color-picker-item.component';
 import { BrushPanelComponent } from './brush-panel.component';
 
 // On a besoin des string-literal pour accéder aux attributs privés

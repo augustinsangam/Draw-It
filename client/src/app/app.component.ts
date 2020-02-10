@@ -7,7 +7,9 @@ import {
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 
-import { DocumentationComponent } from './pages/documentation/documentation.component';
+import {
+  DocumentationComponent
+} from './pages/documentation/documentation.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import {
@@ -17,7 +19,9 @@ import {
 } from './shortcut-handler.service';
 import { SvgService } from './svg/svg.service';
 import { ColorService } from './tool/color/color.service';
-import { ToolSelectorService } from './tool/tool-selector/tool-selector.service';
+import {
+  ToolSelectorService
+} from './tool/tool-selector/tool-selector.service';
 import { Tool } from './tool/tool.enum';
 
 export interface NewDrawOptions {

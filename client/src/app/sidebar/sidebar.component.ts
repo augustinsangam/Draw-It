@@ -7,7 +7,9 @@ import {
   ViewChild,
 } from '@angular/core';
 
-import { ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
+import {
+  ToolSelectorService
+} from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
 
 @Component({

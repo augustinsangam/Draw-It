@@ -7,18 +7,40 @@ import {
   MatDialog,
   MatDialogModule
 } from '@angular/material';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {
+  BrowserDynamicTestingModule
+} from '@angular/platform-browser-dynamic/testing';
+import {
+  BrowserAnimationsModule
+} from '@angular/platform-browser/animations';
 import { AppComponent, NewDrawOptions } from './app.component';
 import { MaterialModule } from './material.module';
-import { DocumentationComponent } from './pages/documentation/documentation.component';
+import {
+  DocumentationComponent
+} from './pages/documentation/documentation.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { PanelComponent } from './panel/panel.component';
-import { KeybardCallback, Shortcut, ShortcutHandlerService } from './shortcut-handler.service';
+import {
+  KeybardCallback, Shortcut, ShortcutHandlerService
+} from './shortcut-handler.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { ColorPickerItemComponent } from './tool/color/color-panel/color-picker-item/color-picker-item.component';
-import { ToolSelectorService } from './tool/tool-selector/tool-selector.service';
+import {
+  ColorPanelComponent
+} from './tool/color/color-panel/color-panel.component';
+import {
+  ColorPickerContentComponent
+// tslint:disable-next-line: max-line-length
+} from './tool/color/color-panel/color-picker-content/color-picker-content.component';
+import {
+  ColorPickerItemComponent
+} from './tool/color/color-panel/color-picker-item/color-picker-item.component';
+import {
+  PencilPanelComponent
+} from './tool/drawing-instruments/pencil/pencil-panel/pencil-panel.component';
+import {
+  ToolSelectorService
+} from './tool/tool-selector/tool-selector.service';
 
 // tslint:disable: no-string-literal
 describe('AppComponent', () => {
@@ -34,7 +56,11 @@ describe('AppComponent', () => {
         HomeComponent,
         NewDrawComponent,
         DocumentationComponent,
-        ColorPickerItemComponent
+        ColorPickerItemComponent,
+        PencilPanelComponent,
+        ColorPanelComponent,
+        ColorPickerContentComponent,
+
       ],
       imports: [
         BrowserAnimationsModule,
@@ -56,7 +82,8 @@ describe('AppComponent', () => {
         entryComponents: [
           HomeComponent,
           NewDrawComponent,
-          DocumentationComponent
+          DocumentationComponent,
+          PencilPanelComponent
         ]
       }
     });
@@ -244,12 +271,14 @@ describe('AppComponent', () => {
       code: 'KeyO',
       ctrlKey: false
     });
-    (component['handlersFunc'].get(Shortcut.O) as KeybardCallback)(eventOWithoutControl);
+    (component['handlersFunc'].get(Shortcut.O) as
+    KeybardCallback)(eventOWithoutControl);
     const eventOWithControl = new KeyboardEvent('window:keydown', {
       code: 'KeyO',
       ctrlKey: true,
     });
-    (component['handlersFunc'].get(Shortcut.O) as KeybardCallback)(eventOWithControl);
+    (component['handlersFunc'].get(Shortcut.O) as
+      KeybardCallback)(eventOWithControl);
     expect(spy).toHaveBeenCalledTimes(1);
   })
 });

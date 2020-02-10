@@ -7,8 +7,14 @@ import {
   MatCardTitle, MatDialogRef, MatFormField, MatInput, MatSlider
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ColorPickerContentComponent } from 'src/app/tool/color/color-panel/color-picker-content/color-picker-content.component';
-import { ColorPickerItemComponent } from 'src/app/tool/color/color-panel/color-picker-item/color-picker-item.component';
+import {
+  ColorPickerContentComponent
+// tslint:disable-next-line: max-line-length
+} from 'src/app/tool/color/color-panel/color-picker-content/color-picker-content.component';
+import {
+  ColorPickerItemComponent
+// tslint:disable-next-line: max-line-length
+} from 'src/app/tool/color/color-panel/color-picker-item/color-picker-item.component';
 import { PaletteDialogComponent } from './palette-dialog.component';
 
 describe('ColorPanelComponent', () => {

@@ -19,7 +19,9 @@ import {
   MatSliderChange
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ColorPickerItemComponent } from '../color-picker-item/color-picker-item.component';
+import {
+  ColorPickerItemComponent
+} from '../color-picker-item/color-picker-item.component';
 import { ColorPickerContentComponent } from './color-picker-content.component';
 
 /* tslint:disable:no-string-literal */

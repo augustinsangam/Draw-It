@@ -18,9 +18,17 @@ import {
   MatSlideToggleChange
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ColorPanelComponent } from '../../../color/color-panel/color-panel.component';
-import { ColorPickerContentComponent } from '../../../color/color-panel/color-picker-content/color-picker-content.component';
-import { ColorPickerItemComponent } from '../../../color/color-panel/color-picker-item/color-picker-item.component';
+import {
+  ColorPanelComponent
+} from '../../../color/color-panel/color-panel.component';
+import {
+  ColorPickerContentComponent
+// tslint:disable-next-line: max-line-length
+} from '../../../color/color-panel/color-picker-content/color-picker-content.component';
+import {
+  ColorPickerItemComponent
+// tslint:disable-next-line: max-line-length
+} from '../../../color/color-panel/color-picker-item/color-picker-item.component';
 import { LinePanelComponent } from './line-panel.component';
 
 // tslint:disable: no-string-literal

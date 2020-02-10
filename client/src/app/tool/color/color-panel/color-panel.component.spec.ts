@@ -21,9 +21,15 @@ import {
   MatSlider
 } from '@angular/material';
 import { ColorOption, ColorPanelComponent } from './color-panel.component';
-import { ColorPickerContentComponent } from './color-picker-content/color-picker-content.component';
-import { MockColorPickerContentComponent } from './color-picker-content/mock-color-picker-content.component';
-import { ColorPickerItemComponent } from './color-picker-item/color-picker-item.component';
+import {
+  ColorPickerContentComponent
+} from './color-picker-content/color-picker-content.component';
+import {
+  MockColorPickerContentComponent
+} from './color-picker-content/mock-color-picker-content.component';
+import {
+  ColorPickerItemComponent
+} from './color-picker-item/color-picker-item.component';
 
 // tslint:disable: no-string-literal
 describe('ColorPanelComponent', () => {
@@ -146,7 +152,8 @@ describe('ColorPanelComponent', () => {
     + 'when Palette not defined', fakeAsync(() => {
       const spyUpdateRecentColors = spyOn<any>(component, 'updateRecentColors');
       component['colorPalette'] =
-        (new MockColorPickerContentComponent() as unknown) as ColorPickerContentComponent;
+        (new MockColorPickerContentComponent() as unknown) as
+          ColorPickerContentComponent;
       component['addEvents']();
       component['colorsItemsArray'][2].button.nativeElement.click();
       fixture.whenStable().then(() => {

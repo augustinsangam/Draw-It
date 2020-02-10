@@ -1,6 +1,15 @@
-import { AfterViewChecked, Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  AfterViewChecked,
+  Component,
+  ElementRef,
+  ViewChild
+} from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatSlider, MatSlideToggle, MatSlideToggleChange } from '@angular/material';
+import {
+  MatSlider,
+  MatSlideToggle,
+  MatSlideToggleChange
+} from '@angular/material';
 
 import { ToolPanelDirective } from '../../../tool-panel/tool-panel.directive';
 import { RectangleService } from '../rectangle.service';
@@ -10,7 +19,8 @@ import { RectangleService } from '../rectangle.service';
   templateUrl: './rectangle-panel.component.html',
   styleUrls: ['./rectangle-panel.component.scss']
 })
-export class RectanglePanelComponent extends ToolPanelDirective implements AfterViewChecked {
+export class RectanglePanelComponent
+  extends ToolPanelDirective implements AfterViewChecked {
 
   private rectangleForm: FormGroup;
 
@@ -66,7 +76,9 @@ export class RectanglePanelComponent extends ToolPanelDirective implements After
   }
 
   protected onThicknessChange(): void {
-    this.rectangleForm.patchValue({ thicknessFormField: this.thicknessSlider.value });
+    this.rectangleForm.patchValue({
+      thicknessFormField: this.thicknessSlider.value
+    });
     this.service.thickness = this.thicknessSlider.value as number;
   }
 }

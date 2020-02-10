@@ -27,13 +27,21 @@ import {
   MatLabel,
   MatSlider
 } from '@angular/material';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import {
+  BrowserDynamicTestingModule
+} from '@angular/platform-browser-dynamic/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { HAMMER_LOADER } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
-import { ColorPickerContentComponent } from 'src/app/tool/color/color-panel/color-picker-content/color-picker-content.component';
-import { ColorPickerItemComponent } from 'src/app/tool/color/color-panel/color-picker-item/color-picker-item.component';
+import {
+  ColorPickerContentComponent
+// tslint:disable-next-line: max-line-length
+} from 'src/app/tool/color/color-panel/color-picker-content/color-picker-content.component';
+import {
+  ColorPickerItemComponent
+// tslint:disable-next-line: max-line-length
+} from 'src/app/tool/color/color-panel/color-picker-item/color-picker-item.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 import { NewDrawComponent } from './new-draw.component';
 import { PaletteDialogComponent } from './palette-dialog.component';

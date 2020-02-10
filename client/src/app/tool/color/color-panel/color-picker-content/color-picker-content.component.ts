@@ -19,6 +19,7 @@ import { MatSliderChange } from '@angular/material';
 import { EventManager } from '@angular/platform-browser';
 import { ShortcutHandlerService } from 'src/app/shortcut-handler.service';
 import { ColorService, RGBColor } from '../../color.service';
+// tslint:disable-next-line: max-line-length
 import { ColorPickerItemComponent } from '../color-picker-item/color-picker-item.component';
 
 @Component({
@@ -245,9 +246,9 @@ export class ColorPickerContentComponent implements AfterViewInit {
 
   protected onChangeB(): void {
     this.checkValidity('b', 0, 255);
-    this.reDrawTracker(); // On aurait pu combiner ces deux actions pour en faire
-    this.updateHex();     // une fonction. Mais ce ne serait pas intutif de comprendre
-                          // le code.
+    this.reDrawTracker(); // On aurait pu combiner ces deux actions
+    this.updateHex();     // pour en faire une fonction. Mais ce ne
+                          // serait pas intutif de comprendre le code.
   }
 
   protected onChangeA(): void {

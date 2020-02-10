@@ -18,7 +18,10 @@ import {
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
 
-import { ColorPickerItemComponent } from 'src/app/tool/color/color-panel/color-picker-item/color-picker-item.component';
+import {
+  ColorPickerItemComponent
+// tslint:disable-next-line: max-line-length
+} from 'src/app/tool/color/color-panel/color-picker-item/color-picker-item.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 import { PaletteDialogComponent } from './palette-dialog.component';
 import { ScreenService, ScreenSize } from './sreen-service/screen.service';

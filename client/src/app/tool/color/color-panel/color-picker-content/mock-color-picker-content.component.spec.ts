@@ -1,7 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractControl } from '@angular/forms';
 import { MatSliderChange } from '@angular/material';
-import { MockColorPickerContentComponent } from './mock-color-picker-content.component';
+import {
+  MockColorPickerContentComponent
+} from './mock-color-picker-content.component';
 
 describe('MockColorPickerContentComponent', () => {
   let component: MockColorPickerContentComponent;

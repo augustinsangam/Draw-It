@@ -12,8 +12,12 @@ import { EventManager } from '@angular/platform-browser';
 import { SvgService } from 'src/app/svg/svg.service';
 import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
 import { ColorService } from '../color.service';
-import { ColorPickerContentComponent } from './color-picker-content/color-picker-content.component';
-import { ColorPickerItemComponent } from './color-picker-item/color-picker-item.component';
+import {
+  ColorPickerContentComponent
+} from './color-picker-content/color-picker-content.component';
+import {
+  ColorPickerItemComponent
+} from './color-picker-item/color-picker-item.component';
 
 export enum ColorOption {
   Primary = 'PRIMARY',

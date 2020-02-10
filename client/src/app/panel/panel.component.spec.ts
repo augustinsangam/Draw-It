@@ -2,13 +2,24 @@
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import {
+  BrowserDynamicTestingModule
+} from '@angular/platform-browser-dynamic/testing';
 
 import { MaterialModule } from '../material.module';
-import { ColorPanelComponent } from '../tool/color/color-panel/color-panel.component';
-import { ColorPickerContentComponent } from '../tool/color/color-panel/color-picker-content/color-picker-content.component';
-import { ColorPickerItemComponent } from '../tool/color/color-panel/color-picker-item/color-picker-item.component';
-import { LinePanelComponent } from '../tool/shape/line/line-panel/line-panel.component';
+import {
+  ColorPanelComponent } from '../tool/color/color-panel/color-panel.component';
+import {
+  ColorPickerContentComponent
+// tslint:disable-next-line: max-line-length
+} from '../tool/color/color-panel/color-picker-content/color-picker-content.component';
+import {
+  ColorPickerItemComponent
+// tslint:disable-next-line: max-line-length
+} from '../tool/color/color-panel/color-picker-item/color-picker-item.component';
+import {
+  LinePanelComponent
+} from '../tool/shape/line/line-panel/line-panel.component';
 import { Tool } from '../tool/tool.enum';
 import { PanelComponent } from './panel.component';
 
