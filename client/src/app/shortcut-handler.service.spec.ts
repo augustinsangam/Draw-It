@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import {
   Handler,
-  KeybardCallback,
+  ShortcutCallBack,
   Shortcut,
   ShortcutHandlerService
 } from './shortcut-handler.service';
@@ -11,10 +11,10 @@ import {
 describe('ShortcutHandlerService', () => {
   let service: ShortcutHandlerService;
   let debugVariable = 1;
-  const debugFunction1: KeybardCallback = (event: KeyboardEvent) => {
+  const debugFunction1: ShortcutCallBack = (event: KeyboardEvent) => {
     debugVariable += 2;
   };
-  const debugFunction2: KeybardCallback = (event: KeyboardEvent) => {
+  const debugFunction2: ShortcutCallBack = (event: KeyboardEvent) => {
     debugVariable += 5;
   };
 

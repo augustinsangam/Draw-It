@@ -13,7 +13,7 @@ import {
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import {
-  KeybardCallback,
+  ShortcutCallBack,
   Shortcut,
   ShortcutHandlerService
 } from './shortcut-handler.service';
@@ -59,7 +59,7 @@ export class AppComponent implements AfterViewInit {
   })
   svg: ElementRef<SVGElement>;
 
-  handlersFunc: Map<Shortcut, KeybardCallback>;
+  handlersFunc: Map<Shortcut, ShortcutCallBack>;
 
   private getCommomDialogOptions = () => {
     return {
@@ -103,7 +103,7 @@ export class AppComponent implements AfterViewInit {
       shortcut => {
         this.shortcutHanler.set(
           shortcut,
-          this.handlersFunc.get(shortcut) as KeybardCallback
+          this.handlersFunc.get(shortcut) as ShortcutCallBack
         );
       }
     );

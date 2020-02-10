@@ -22,7 +22,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { PanelComponent } from './panel/panel.component';
 import {
-  KeybardCallback, Shortcut, ShortcutHandlerService
+  ShortcutCallBack, Shortcut, ShortcutHandlerService
 } from './shortcut-handler.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import {
@@ -258,10 +258,10 @@ describe('AppComponent', () => {
 
   it('#Handlers works for C, L, W and digit 1', () => {
     const spy = spyOn(component['toolSelectorService'], 'set');
-    (component['handlersFunc'].get(Shortcut.C) as KeybardCallback)();
-    (component['handlersFunc'].get(Shortcut.L) as KeybardCallback)();
-    (component['handlersFunc'].get(Shortcut.W) as KeybardCallback)();
-    (component['handlersFunc'].get(Shortcut.Digit1) as KeybardCallback)();
+    (component['handlersFunc'].get(Shortcut.C) as ShortcutCallBack)();
+    (component['handlersFunc'].get(Shortcut.L) as ShortcutCallBack)();
+    (component['handlersFunc'].get(Shortcut.W) as ShortcutCallBack)();
+    (component['handlersFunc'].get(Shortcut.Digit1) as ShortcutCallBack)();
     expect(spy).toHaveBeenCalledTimes(4);
   })
 
@@ -272,13 +272,13 @@ describe('AppComponent', () => {
       ctrlKey: false
     });
     (component['handlersFunc'].get(Shortcut.O) as
-    KeybardCallback)(eventOWithoutControl);
+    ShortcutCallBack)(eventOWithoutControl);
     const eventOWithControl = new KeyboardEvent('window:keydown', {
       code: 'KeyO',
       ctrlKey: true,
     });
     (component['handlersFunc'].get(Shortcut.O) as
-      KeybardCallback)(eventOWithControl);
+      ShortcutCallBack)(eventOWithControl);
     expect(spy).toHaveBeenCalledTimes(1);
   })
 });
