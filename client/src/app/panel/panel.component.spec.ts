@@ -8,7 +8,7 @@ import { MaterialModule } from '../material.module';
 import { ColorPanelComponent } from '../tool/color/color-panel/color-panel.component';
 import { ColorPickerContentComponent } from '../tool/color/color-panel/color-picker-content/color-picker-content.component';
 import { ColorPickerItemComponent } from '../tool/color/color-panel/color-picker-item/color-picker-item.component';
-import { LinePanelComponent } from '../tool/line/line-panel/line-panel.component';
+import { LinePanelComponent } from '../tool/shape/line/line-panel/line-panel.component';
 import { Tool } from '../tool/tool.enum';
 import { PanelComponent } from './panel.component';
 

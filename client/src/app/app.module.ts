@@ -17,17 +17,17 @@ import { PaletteDialogComponent } from './pages/new-draw/palette-dialog.componen
 import { PanelComponent } from './panel/panel.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { SvgComponent } from './svg/svg.component';
-import { BrushLogicComponent } from './tool/brush/brush-logic/brush-logic.component';
-import { BrushPanelComponent } from './tool/brush/brush-panel/brush-panel.component';
 import { ColorPanelComponent } from './tool/color/color-panel/color-panel.component';
 import { ColorPickerContentComponent } from './tool/color/color-panel/color-picker-content/color-picker-content.component';
 import { ColorPickerItemComponent } from './tool/color/color-panel/color-picker-item/color-picker-item.component';
-import { LineLogicComponent } from './tool/line/line-logic/line-logic.component';
-import { LinePanelComponent } from './tool/line/line-panel/line-panel.component';
-import { PencilLogicComponent } from './tool/pencil/pencil-logic/pencil-logic.component';
-import { PencilPanelComponent } from './tool/pencil/pencil-panel/pencil-panel.component';
-import { RectangleLogicComponent } from './tool/rectangle/rectangle-logic/rectangle-logic.component';
-import { RectanglePanelComponent } from './tool/rectangle/rectangle-panel/rectangle-panel.component';
+import { BrushLogicComponent } from './tool/drawing-instruments/brush/brush-logic/brush-logic.component';
+import { BrushPanelComponent } from './tool/drawing-instruments/brush/brush-panel/brush-panel.component';
+import { PencilLogicComponent } from './tool/drawing-instruments/pencil/pencil-logic/pencil-logic.component';
+import { PencilPanelComponent } from './tool/drawing-instruments/pencil/pencil-panel/pencil-panel.component';
+import { LineLogicComponent } from './tool/shape/line/line-logic/line-logic.component';
+import { LinePanelComponent } from './tool/shape/line/line-panel/line-panel.component';
+import { RectangleLogicComponent } from './tool/shape/rectangle/rectangle-logic/rectangle-logic.component';
+import { RectanglePanelComponent } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
 
 @NgModule({
   declarations: [

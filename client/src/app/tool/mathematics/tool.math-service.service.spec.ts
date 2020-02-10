@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { Point } from '../common/Point';
+import { Point } from '../shape/common/Point';
 import { MathService } from './tool.math-service.service';
 
 describe('MathService', () => {

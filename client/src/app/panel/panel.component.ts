@@ -9,10 +9,10 @@ import {
   ViewContainerRef
 } from '@angular/core';
 
-import { BrushPanelComponent } from '../tool/brush/brush-panel/brush-panel.component';
-import { LinePanelComponent } from '../tool/line/line-panel/line-panel.component';
-import { PencilPanelComponent } from '../tool/pencil/pencil-panel/pencil-panel.component';
-import { RectanglePanelComponent } from '../tool/rectangle/rectangle-panel/rectangle-panel.component';
+import { BrushPanelComponent } from '../tool/drawing-instruments/brush/brush-panel/brush-panel.component';
+import { LinePanelComponent } from '../tool/shape/line/line-panel/line-panel.component';
+import { PencilPanelComponent } from '../tool/drawing-instruments/pencil/pencil-panel/pencil-panel.component';
+import { RectanglePanelComponent } from '../tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
 import { ToolPanelDirective } from '../tool/tool-panel/tool-panel.directive';
 import { ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';

@@ -1,11 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-<<<<<<< HEAD
-import { Overlay } from '@angular/cdk/overlay';
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
-=======
 import {  Overlay } from '@angular/cdk/overlay';
->>>>>>> next
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
@@ -38,12 +33,8 @@ describe('AppComponent', () => {
         SidebarComponent,
         HomeComponent,
         NewDrawComponent,
-<<<<<<< HEAD
-        DocumentationComponent
-=======
         DocumentationComponent,
         ColorPickerItemComponent
->>>>>>> next
       ],
       imports: [
         BrowserAnimationsModule,
@@ -56,18 +47,11 @@ describe('AppComponent', () => {
         ToolSelectorService,
         Overlay,
         MatDialog,
-<<<<<<< HEAD
-        MAT_DIALOG_SCROLL_STRATEGY_PROVIDER
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
-    }).overrideModule(BrowserDynamicTestingModule, {
-=======
         ShortcutHandlerService,
         MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
       ],
     })
     .overrideModule(BrowserDynamicTestingModule, {
->>>>>>> next
       set: {
         entryComponents: [
           HomeComponent,

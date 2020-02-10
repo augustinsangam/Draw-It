@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { Point } from '../common/Point';
-import { Dimension } from '../rectangle/rectangle-logic/Dimension';
+import { Point } from '../shape/common/Point';
+import { Dimension } from '../shape/common/Rectangle';
 
 const MINIMALDISTANCE = 3;
 
