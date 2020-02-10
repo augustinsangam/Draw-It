@@ -170,51 +170,37 @@ export class ColorPickerContentComponent implements AfterViewInit {
     this.buildCanvas(value);
   }
 
-  protected onChangeR(): void {
-    if (this.colorForm.controls.r.value < 0) {
-      this.colorForm.patchValue({ r: 0 });
-      return;
-    } else if (this.colorForm.controls.r.value > 255) {
-      this.colorForm.patchValue({ r: 255 });
-      return;
+  private checkValidity(name: string, min: number, max: number): void {
+    if (this.colorForm.controls[name].value < min ||
+        this.colorForm.controls[name].value == null ) {
+      (this.colorForm.get(name) as AbstractControl).patchValue( min );
+    } else if (this.colorForm.controls[name].value > max) {
+      (this.colorForm.get(name) as AbstractControl).patchValue( max );
     }
+  }
+
+  protected onChangeR(): void {
+    this.checkValidity('r', 0, 255);
     this.placeSlider(this.colorForm.controls.r.value);
     this.reDrawTracker();
     this.updateHex();
   }
 
   protected onChangeG(): void {
-    if (this.colorForm.controls.g.value < 0) {
-      this.colorForm.patchValue({ g: 0 });
-      return;
-    } else if (this.colorForm.controls.g.value > 255) {
-      this.colorForm.patchValue({ g: 255 });
-      return;
-    }
+    this.checkValidity('g', 0, 255);
     this.reDrawTracker();
     this.updateHex();
   }
 
   protected onChangeB(): void {
-    if (this.colorForm.controls.b.value < 0) {
-      this.colorForm.patchValue({ b: 0 });
-      return;
-    } else if (this.colorForm.controls.b.value > 255) {
-      this.colorForm.patchValue({ b: 255 });
-      return;
-    }
-    this.reDrawTracker();
-    this.updateHex();
+    this.checkValidity('b', 0, 255);
+    this.reDrawTracker(); // On aurait pu combiner ces deux actions pour en faire
+    this.updateHex();     // une fonction. Mais ce ne serait pas intutif de comprendre
+                          // le code.
   }
 
   protected onChangeA(): void {
-    if (this.colorForm.controls.a.value < 0) {
-      this.colorForm.patchValue({ a: 0 });
-      return;
-    } else if (this.colorForm.controls.a.value > 100) {
-      this.colorForm.patchValue({ a: 100 });
-      return;
-    }
+    this.checkValidity('a', 0, 100);
     this.actualColor.updateColor(this.getActualRgba());
   }
 
