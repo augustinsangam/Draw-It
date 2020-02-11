@@ -13,8 +13,8 @@ import {
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import {
-  ShortcutCallBack,
   Shortcut,
+  ShortcutCallBack,
   ShortcutHandlerService
 } from './shortcut-handler.service';
 import { SvgService } from './svg/svg.service';

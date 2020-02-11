@@ -99,14 +99,10 @@ export class Path {
 
   removeLastJonction() {
     const lastCircle = this.datas.jonctions.pop();
-
-    if (lastCircle !== undefined) {
-      const lastJonction = lastCircle.element;
-      this.renderer.removeChild(
-        this.renderer.parentNode(lastJonction),
-        lastJonction
-      );
-    }
+    const lastJonction = (lastCircle as Circle).element;
+    this.renderer.removeChild(
+      this.renderer.parentNode(lastJonction),
+      lastJonction)
   }
 
   closePath() {
