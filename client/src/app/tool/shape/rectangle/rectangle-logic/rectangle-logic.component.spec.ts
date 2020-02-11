@@ -20,7 +20,7 @@ const createClickMouseEvent = (event: string): MouseEvent => {
   } as MouseEventInit);
 };
 // tslint:disable:no-string-literal
-describe('RectangleLogicComponent', () => {
+fdescribe('RectangleLogicComponent', () => {
   let component: RectangleLogicComponent;
   let fixture: ComponentFixture<RectangleLogicComponent>;
 
@@ -51,22 +51,76 @@ describe('RectangleLogicComponent', () => {
     );
     setTimeout(() => {
       expect(spy1).toHaveBeenCalledTimes(1);
-    }, 1000);
-    tick(1000);
+    }, 500);
+    tick(500);
   }));
 
-  it('the onDrag atribute is valid only when the left button is clicked',
+  it('initRectangle should initialise all the atributes ', () => {
+    expect(component['rectangles']).toEqual([]);
+    expect(component['currentRectangleIndex']).toEqual(-1);
+    expect(component['onDrag']).toBeFalsy();
+    const event = createClickMouseEvent('mousedown');
+    component['initRectangle'](event);
+    const pointExpected: Point = { x: event.offsetX, y: event.offsetY };
+    expect(component['currentPoint']).toEqual(pointExpected);
+    expect(component['rectangles'].length).toEqual(1);
+    expect(component['onDrag']).toBeTruthy();
+    expect(component['currentRectangleIndex']).toEqual(0);
+  });
+
+  it('the atributes are not initialised when the wrong button clicked',
    () => {
+    expect(component['rectangles']).toEqual([]);
+    expect(component['currentRectangleIndex']).toEqual(-1);
+    expect(component['onDrag']).toBeFalsy();
     const event = new MouseEvent('mousedown', {
       offsetX: 10,
       offsetY: 30,
-      button: 2
+      button: 1 // right click.
     } as MouseEventInit);
     component['service'].borderOption = false;
     component['initRectangle'](event);
-    expect(component['onDrag']).toEqual(false);
+    const pointExpected: Point = { x: event.offsetX, y: event.offsetY };
+    expect(component['currentPoint']).not.toEqual(pointExpected);
+    expect(component['rectangles'].length).not.toEqual(1);
+    expect(component['onDrag']).toBeFalsy();
+    expect(component['currentRectangleIndex']).toEqual(-1);
   });
-  it('the rectangle css is defined by the rectangleService'
+
+  it('the listeners should handle key downs', () => {
+    const globKeyEv = new KeyboardEvent('keydown');
+    spyOn<any>(component, 'onKeyDown').and.callFake((keyEv: KeyboardEvent) =>
+      expect(keyEv).toBe(globKeyEv)
+    );
+    component.ngOnInit();
+    component['svgElRef'].nativeElement.dispatchEvent(globKeyEv);
+  });
+
+  it('the listeners should handle key ups', () => {
+    const globKeyEv = new KeyboardEvent('keyup');
+    spyOn<any>(component, 'onKeyUp').and.callFake((keyEv: KeyboardEvent) =>
+      expect(keyEv).toBe(globKeyEv)
+    );
+    component.ngOnInit();
+    component['svgElRef'].nativeElement.dispatchEvent(globKeyEv);
+  });
+
+  it('the ngOnInit initialise the arrow of listeners', () => {
+    component.ngOnInit();
+    expect(component['allListeners'].length).toEqual(5);
+  });
+
+  it ('the getPath() should return an error if the index is out of bound',
+  () => {
+        component['initRectangle'](createClickMouseEvent('mousedown'));
+        component['currentRectangleIndex'] += 1;
+        const spy = spyOn<any>(
+          component, 'getRectangle').and.callThrough();
+        expect(spy).toThrowError();
+
+      });
+
+  it('the rectangle css is only defined by the rectangleService'
    + 'and the colorService', () => {
     const event = createClickMouseEvent('mousedown');
     component['initRectangle'](event);
@@ -84,17 +138,6 @@ describe('RectangleLogicComponent', () => {
     component['initRectangle'](event);
     expect(spy).not.toHaveBeenCalledWith(style);
   });
-
-  it('in initRectangle() currentPoint should be equal'
-   + 'to the mouse coordinates, the array should be initialised',
-    fakeAsync(() => {
-    const mouseEv: MouseEvent = createClickMouseEvent('mousedown');
-    const pointExpected: Point = { x: mouseEv.offsetX, y: mouseEv.offsetY };
-    component['initRectangle'](mouseEv);
-    expect(component['currentPoint']).toEqual(pointExpected);
-    expect(component['rectangles'].length).toEqual(1);
-    expect(component['onDrag']).toBeTruthy();
-  }));
 
   it('mouseMove should call the viewTemporaryForm function', fakeAsync(() => {
     const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
@@ -121,8 +164,8 @@ describe('RectangleLogicComponent', () => {
     );
     setTimeout(() => {
       expect(spy1).not.toHaveBeenCalled();
-    }, 1000);
-    tick(1000);
+    }, 500);
+    tick(500);
   }));
 
   it('viewTemporaryForm should call the function simulateRectangle'
@@ -140,8 +183,8 @@ describe('RectangleLogicComponent', () => {
     );
     setTimeout(() => {
       expect(spy).toHaveBeenCalled();
-    }, 1000);
-    tick(1000);
+    }, 500);
+    tick(500);
   }));
 
   it('viewTemporaryForm should call the function simulateSquare'
@@ -281,21 +324,30 @@ describe('RectangleLogicComponent', () => {
     tick(500);
   }));
 
-  it('should handle key downs', () => {
-    const globKeyEv = new KeyboardEvent('keydown');
-    spyOn<any>(component, 'onKeyDown').and.callFake((keyEv: KeyboardEvent) =>
-      expect(keyEv).toBe(globKeyEv)
-    );
-    component.ngOnInit();
-    component['svgElRef'].nativeElement.dispatchEvent(globKeyEv);
+  it('#onKeyUp should call simulateRectangle', () => {
+    component['initRectangle'](createClickMouseEvent('mousedown'));
+    const event = new KeyboardEvent('window:keyup', {
+      code: 'ShiftRight',
+      key: 'Shift'
+    });
+    const spy = spyOn<any>(
+      component['getRectangle'](),
+      'simulateRectangle'
+    ).and.callThrough();
+    component['onKeyUp'](event);
+    expect(spy).toHaveBeenCalled();
   });
 
-  it('should handle key ups', () => {
-    const globKeyEv = new KeyboardEvent('keyup');
-    spyOn<any>(component, 'onKeyUp').and.callFake((keyEv: KeyboardEvent) =>
-      expect(keyEv).toBe(globKeyEv)
-    );
-    component.ngOnInit();
-    component['svgElRef'].nativeElement.dispatchEvent(globKeyEv);
+  it('#insertRectangle throw an error if the dimension is negative', () => {
+    component['initRectangle'](createClickMouseEvent('mousedown'));
+    const point = {x: 20, y: -30};
+    const dimension = {width: -4, height: -5};
+    const spy = spyOn<any>(
+      component['getRectangle'](),
+      'insertRectangleInSVG'
+    ).and.callThrough();
+    component['getRectangle']()['insertRectangleInSVG'](point, dimension);
+    expect(spy).toThrowError();
   });
+
 });
