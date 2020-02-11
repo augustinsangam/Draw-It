@@ -369,7 +369,8 @@ describe('LineLogicComponent', () => {
   it('onKeyDown shouldn´t do anything if isNewPath is true', () => {
     component['isNewPath'] = true;
     component['paths'] = [defaultPath];
-    const spy = spyOn<any>(component['getPath'](), 'removePath').and.callThrough();
+    const spy = spyOn<any>(component['getPath'](), 'removePath')
+                .and.callThrough();
     component['onKeyDown'](
       new KeyboardEvent('escape', {
         code: 'Escape'
@@ -384,8 +385,10 @@ describe('LineLogicComponent', () => {
     () => {
       component['isNewPath'] = false;
       component['paths'] = [defaultPath];
-      const spy = spyOn<any>(component['getPath'](), 'removePath').and.callThrough();
-      component['getPath']()['datas'].jonctions = [defaultCircle, defaultCircle];
+      const spy = spyOn<any>(component['getPath'](), 'removePath')
+                  .and.callThrough();
+      component['getPath']()['datas'].jonctions
+        = [defaultCircle, defaultCircle];
       component['onKeyDown'](
         new KeyboardEvent('escape', {
           code: 'Escape'
@@ -443,7 +446,8 @@ describe('LineLogicComponent', () => {
       component['isNewPath'] = false;
       component['paths'] = [defaultPath];
       component['getPath']().withJonctions = true;
-      component['getPath']()['datas'].jonctions = [defaultCircle, defaultCircle];
+      component['getPath']()['datas'].jonctions
+        = [defaultCircle, defaultCircle];
       const spyJonction = spyOn(
         component['getPath'](),
         'removeLastJonction').and.callThrough();

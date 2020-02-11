@@ -22,7 +22,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { PanelComponent } from './panel/panel.component';
 import {
-  ShortcutCallBack, Shortcut, ShortcutHandlerService
+  Shortcut, ShortcutCallBack, ShortcutHandlerService
 } from './shortcut-handler.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import {
