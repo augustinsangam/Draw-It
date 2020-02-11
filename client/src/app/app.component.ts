@@ -156,12 +156,12 @@ export class AppComponent implements AfterViewInit {
   }
 
   private openNewDrawDialog(): void {
+    this.shortcutHanler.desactivateAll();
     this.dialogRefs.newDraw = this.dialog.open(
       NewDrawComponent,
       this.getCommomDialogOptions()
     );
     this.dialogRefs.newDraw.disableClose = true;
-    this.shortcutHanler.desactivateAll();
     this.dialogRefs.newDraw.afterClosed().subscribe(resultNewDialog => {
       this.shortcutHanler.activateAll();
       this.closeNewDrawDialog(resultNewDialog);
@@ -182,15 +182,15 @@ export class AppComponent implements AfterViewInit {
       height: '100vh',
       panelClass: 'documentation'
     };
+    this.shortcutHanler.desactivateAll();
     this.dialogRefs.documentation = this.dialog.open(
       DocumentationComponent,
       dialogOptions
     );
     this.dialogRefs.documentation.disableClose = false;
-    this.shortcutHanler.desactivateAll();
     this.dialogRefs.documentation.afterClosed().subscribe(() => {
-      this.closeDocumentationDialog(fromHome);
       this.shortcutHanler.activateAll();
+      this.closeDocumentationDialog(fromHome);
     });
   }
 
