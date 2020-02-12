@@ -46,52 +46,6 @@ describe('LineLogicComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should handle mouse click', () => {
-    const globMouseEv = new MouseEvent('click');
-    spyOn<any>(component, 'onMouseClick').and.callFake((mouseEv: MouseEvent) =>
-      expect(mouseEv).toBe(globMouseEv)
-    );
-    component.ngOnInit();
-    component['svgElRef'].nativeElement.dispatchEvent(globMouseEv);
-  });
-
-  it('should handle mouse double click', () => {
-    const globMouseEv = new MouseEvent('dblclick');
-    spyOn<any>(
-      component,
-      'onMouseDblClick'
-    ).and.callFake((mouseEv: MouseEvent) => expect(mouseEv).toBe(globMouseEv));
-    component.ngOnInit();
-    component['svgElRef'].nativeElement.dispatchEvent(globMouseEv);
-  });
-
-  it('should handle mouse move', () => {
-    const globMouseEv = new MouseEvent('mousemove');
-    spyOn<any>(component, 'onMouseMove').and.callFake((mouseEv: MouseEvent) =>
-      expect(mouseEv).toBe(globMouseEv)
-    );
-    component.ngOnInit();
-    component['svgElRef'].nativeElement.dispatchEvent(globMouseEv);
-  });
-
-  it('should handle key downs', () => {
-    const globKeyEv = new KeyboardEvent('keydown');
-    spyOn<any>(component, 'onKeyDown').and.callFake((keyEv: KeyboardEvent) =>
-      expect(keyEv).toBe(globKeyEv)
-    );
-    component.ngOnInit();
-    component['svgElRef'].nativeElement.dispatchEvent(globKeyEv);
-  });
-
-  it('should handle key ups', () => {
-    const globKeyEv = new KeyboardEvent('keyup');
-    spyOn<any>(component, 'onKeyUp').and.callFake((keyEv: KeyboardEvent) =>
-      expect(keyEv).toBe(globKeyEv)
-    );
-    component.ngOnInit();
-    component['svgElRef'].nativeElement.dispatchEvent(globKeyEv);
-  });
-
   it('createNewPath should call getPath', () => {
     const spy = spyOn<any>(component, 'getPath').and.callThrough();
     component['isNewPath'] = true;
@@ -261,7 +215,7 @@ describe('LineLogicComponent', () => {
   );
 
   it(
-    'onMouseDblClick suld set isNewPath to true and call getPath ' +
+    'onMouseDblClick should set isNewPath to true and call getPath ' +
     '5 for a point that´s further than 3 pixels and when we press Shift',
     () => {
       component['paths'] = [defaultPath];
@@ -521,8 +475,53 @@ describe('LineLogicComponent', () => {
         code: 'ShiftRight'
       })
     );
-
     expect(spy).toHaveBeenCalledTimes(0);
+  });
+
+  it('listeners should handle mouse click', () => {
+    const globMouseEv = new MouseEvent('click');
+    spyOn<any>(component, 'onMouseClick').and.callFake((mouseEv: MouseEvent) =>
+      expect(mouseEv).toBe(globMouseEv)
+    );
+    component.ngOnInit();
+    component['svgElRef'].nativeElement.dispatchEvent(globMouseEv);
+  });
+
+  it('listeners should handle mouse double click', () => {
+    const globMouseEv = new MouseEvent('dblclick');
+    spyOn<any>(
+      component,
+      'onMouseDblClick'
+    ).and.callFake((mouseEv: MouseEvent) => expect(mouseEv).toBe(globMouseEv));
+    component.ngOnInit();
+    component['svgElRef'].nativeElement.dispatchEvent(globMouseEv);
+  });
+
+  it('listeners should handle mouse move', () => {
+    const globMouseEv = new MouseEvent('mousemove');
+    spyOn<any>(component, 'onMouseMove').and.callFake((mouseEv: MouseEvent) =>
+      expect(mouseEv).toBe(globMouseEv)
+    );
+    component.ngOnInit();
+    component['svgElRef'].nativeElement.dispatchEvent(globMouseEv);
+  });
+
+  it('listeners should handle key downs', () => {
+    const globKeyEv = new KeyboardEvent('keydown');
+    spyOn<any>(component, 'onKeyDown').and.callFake((keyEv: KeyboardEvent) =>
+      expect(keyEv).toBe(globKeyEv)
+    );
+    component.ngOnInit();
+    component['svgElRef'].nativeElement.dispatchEvent(globKeyEv);
+  });
+
+  it('listeners should handle key ups', () => {
+    const globKeyEv = new KeyboardEvent('keyup');
+    spyOn<any>(component, 'onKeyUp').and.callFake((keyEv: KeyboardEvent) =>
+      expect(keyEv).toBe(globKeyEv)
+    );
+    component.ngOnInit();
+    component['svgElRef'].nativeElement.dispatchEvent(globKeyEv);
   });
 
 });

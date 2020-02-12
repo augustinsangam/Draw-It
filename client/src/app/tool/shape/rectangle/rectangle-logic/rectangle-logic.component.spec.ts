@@ -20,7 +20,7 @@ const createClickMouseEvent = (event: string): MouseEvent => {
   } as MouseEventInit);
 };
 // tslint:disable:no-string-literal
-fdescribe('RectangleLogicComponent', () => {
+describe('RectangleLogicComponent', () => {
   let component: RectangleLogicComponent;
   let fixture: ComponentFixture<RectangleLogicComponent>;
 
@@ -68,7 +68,7 @@ fdescribe('RectangleLogicComponent', () => {
     expect(component['currentRectangleIndex']).toEqual(0);
   });
 
-  it('the atributes are not initialised when the wrong button clicked',
+  it('the atributes are not initialised when the wrong button is clicked',
    () => {
     expect(component['rectangles']).toEqual([]);
     expect(component['currentRectangleIndex']).toEqual(-1);
@@ -110,14 +110,11 @@ fdescribe('RectangleLogicComponent', () => {
     expect(component['allListeners'].length).toEqual(5);
   });
 
-  it ('the getPath() should return an error if the index is out of bound',
+  it ('the getPath() should return undifined if the index is out of bound',
   () => {
         component['initRectangle'](createClickMouseEvent('mousedown'));
         component['currentRectangleIndex'] += 1;
-        const spy = spyOn<any>(
-          component, 'getRectangle').and.callThrough();
-        expect(spy).toThrowError();
-
+        expect(component['getRectangle']()).toBeUndefined();
       });
 
   it('the rectangle css is only defined by the rectangleService'
@@ -338,16 +335,14 @@ fdescribe('RectangleLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#insertRectangle throw an error if the dimension is negative', () => {
-    component['initRectangle'](createClickMouseEvent('mousedown'));
-    const point = {x: 20, y: -30};
-    const dimension = {width: -4, height: -5};
-    const spy = spyOn<any>(
-      component['getRectangle'](),
-      'insertRectangleInSVG'
-    ).and.callThrough();
-    component['getRectangle']()['insertRectangleInSVG'](point, dimension);
-    expect(spy).toThrowError();
-  });
-
+  it(
+    'ngOnDestroy should set "called" to true ' +
+    '(= call every listener´s functions)',
+    () => {
+      let called = false;
+      component['allListeners'] = [() => (called = true)];
+      component.ngOnDestroy();
+      expect(called).toBeTruthy();
+    }
+  );
 });

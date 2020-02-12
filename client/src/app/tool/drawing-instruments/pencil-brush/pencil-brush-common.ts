@@ -15,18 +15,18 @@ export abstract class PencilBrushCommon extends ToolLogicDirective {
     this.mouseOnHold = false;
   }
 
-  abstract onMouseDown(mouseEv: MouseEvent): void;
-  abstract onMouseMove(mouseEv: MouseEvent): void;
-  abstract configureSvgElement(element: SVGElement): void;
+  protected abstract onMouseDown(mouseEv: MouseEvent): void;
+  protected abstract onMouseMove(mouseEv: MouseEvent): void;
+  protected abstract configureSvgElement(element: SVGElement): void;
 
-  drawing(mouseEv: MouseEvent): void {
+  protected drawing(mouseEv: MouseEvent): void {
     if (mouseEv.button === 0) {
       this.stringPath += ' L' + mouseEv.offsetX + ',' + mouseEv.offsetY;
       this.stringPath += ' M' + mouseEv.offsetX + ',' + mouseEv.offsetY;
     }
   }
 
-  makeFirstPoint(mouseEv: MouseEvent): void {
+  protected makeFirstPoint(mouseEv: MouseEvent): void {
     if (mouseEv.button === 0) {
       this.stringPath = 'M' + mouseEv.offsetX;
       this.stringPath += ',' + mouseEv.offsetY + ' h0';

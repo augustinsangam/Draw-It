@@ -29,7 +29,7 @@ export class PencilLogicComponent extends PencilBrushCommon
     this.listeners.forEach(listenner => { listenner(); });
   }
 
-  configureSvgElement(element: SVGElement): void {
+  protected configureSvgElement(element: SVGElement): void {
     element.setAttribute('d', this.stringPath);
     element.setAttribute('stroke', this.colorService.primaryColor);
     element.setAttribute('fill', this.colorService.primaryColor);
@@ -39,19 +39,19 @@ export class PencilLogicComponent extends PencilBrushCommon
     );
   }
 
-  onMouseMove(mouseEv: MouseEvent): void {
+  protected onMouseMove(mouseEv: MouseEvent): void {
     this.drawing(mouseEv);
     this.svgPath.setAttribute('d', this.stringPath);
   }
 
-  onMouseDown(mouseEv: MouseEvent): void {
+  protected onMouseDown(mouseEv: MouseEvent): void {
     this.makeFirstPoint(mouseEv);
     this.svgPath = this.renderer.createElement(this.svgTag, this.svgNS);
     this.configureSvgElement(this.svgPath);
     this.renderer.appendChild(this.svgElRef.nativeElement, this.svgPath);
   }
 
-  stopDrawing(): void {
+  private stopDrawing(): void {
     this.mouseOnHold = false;
     this.stringPath = '';
   }
