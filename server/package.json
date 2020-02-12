@@ -37,6 +37,12 @@
       "sourceType": "module"
     },
     "rules": {
+      "@typescript-eslint/explicit-member-accessibility": [
+        1,
+        {
+          "accessibility": "no-public"
+        }
+      ],
       "@typescript-eslint/no-unused-vars": [
         0,
         {

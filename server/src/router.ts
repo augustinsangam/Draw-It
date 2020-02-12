@@ -4,10 +4,12 @@ import inversify from 'inversify';
 @inversify.injectable()
 class Router {
 	readonly router: express.Router;
+
 	constructor() {
 		this.router = express.Router();
-		this.router.get('/', (_req, res) => {
+		this.router.get('/', (req, res) => {
 			res.send('Hello, world!');
+			console.log(req.httpVersion);
 		});
 	}
 }

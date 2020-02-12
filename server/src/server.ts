@@ -14,16 +14,18 @@ class Server {
 	};
 	private readonly srv: HttpServer;
 
-	constructor(@inversify.inject(TYPES.Application) private readonly app: Application) {
+	constructor(
+		@inversify.inject(TYPES.Application) private readonly app: Application,
+	) {
 		this.srv = createServer();
 		this.srv.on('request', this.app.callback());
 	}
 
-	launch() {
+	launch(): void {
 		this.srv.listen(this.listenOptions);
 	}
 
-	close(callback?: (err?: Error) => void) {
+	close(callback?: (err?: Error) => void): void {
 		this.srv.close(callback);
 	}
 }

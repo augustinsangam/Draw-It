@@ -12,14 +12,14 @@ s.launch();
 process.on('SIGINT', () => s.close(() => log('Server closed')));
 
 interface AttrT {
-	k: string,
-	v: string,
-};
+	k: string;
+	v: string;
+}
 interface ElementT {
-	name: string,
-	attrs: AttrT[],
-	children?: ElementT[],
-};
+	name: string;
+	attrs: AttrT[];
+	children?: ElementT[];
+}
 const data = {
 	name: 'Mother',
 	attrs: [
@@ -114,19 +114,19 @@ function encode(el: ElementT): flatbuffers.flatbuffers.Offset {
 	return Element.create(b, name, attrs, children);
 }
 
-function serialize(fbb: flatbuffers.flatbuffers.ByteBuffer) {
+function serialize(fbb: flatbuffers.flatbuffers.ByteBuffer): Uint8Array {
 	return fbb.bytes().subarray(fbb.position(), fbb.capacity());
 }
 
-function decode(fbb: flatbuffers.flatbuffers.ByteBuffer) {
+function decode(fbb: flatbuffers.flatbuffers.ByteBuffer): Element {
 	return Element.getRoot(fbb);
 }
 
-function deserialize(data: ArrayBuffer) {
+function deserialize(data: ArrayBuffer): flatbuffers.flatbuffers.ByteBuffer {
 	return new flatbuffers.flatbuffers.ByteBuffer(new Uint8Array(data));
 }
 
-function disp(el: Element) {
+function disp(el: Element): void {
 	console.log(el.name());
 	const attrsLen = el.attrsLength();
 	for (let i = 0; i < attrsLen; i++) {
