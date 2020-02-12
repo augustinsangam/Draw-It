@@ -88,11 +88,6 @@ export class BrushLogicComponent extends PencilBrushCommon {
     this.listeners.forEach(listenner => { listenner(); });
   }
 
-  private stopDrawing(): void {
-    this.mouseOnHold = false;
-    this.stringPath = '';
-  }
-
   protected onMouseMove(mouseEv: MouseEvent): void {
     this.drawing(mouseEv);
     this.svgPath.setAttribute('d', this.stringPath);

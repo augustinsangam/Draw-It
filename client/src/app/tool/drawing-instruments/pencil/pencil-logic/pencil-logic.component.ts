@@ -51,11 +51,6 @@ export class PencilLogicComponent extends PencilBrushCommon
     this.renderer.appendChild(this.svgElRef.nativeElement, this.svgPath);
   }
 
-  private stopDrawing(): void {
-    this.mouseOnHold = false;
-    this.stringPath = '';
-  }
-
   ngAfterViewInit() {
     const mouseDownListen = this.renderer.listen(this.svgElRef.nativeElement,
       'mousedown', (mouseEv: MouseEvent) => {

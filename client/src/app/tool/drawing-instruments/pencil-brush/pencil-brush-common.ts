@@ -32,4 +32,9 @@ export abstract class PencilBrushCommon extends ToolLogicDirective {
       this.stringPath += ',' + mouseEv.offsetY + ' h0';
     }
   }
+
+  protected stopDrawing(): void {
+    this.mouseOnHold = false;
+    this.stringPath = '';
+  }
 }
