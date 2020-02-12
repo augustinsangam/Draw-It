@@ -19,7 +19,7 @@ export class MathService {
   }
 
   // returns a point that forms an angle
-  // multiple of 45 degrees with the X axis.
+  // of a multiple of 45 degrees with the X axis.
   findAlignedSegmentPoint(mousePosition: Point, lastPoint: Point): Point {
     const deltaX = mousePosition.x - lastPoint.x;
     const deltaY = mousePosition.y - lastPoint.y;
