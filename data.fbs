@@ -1,0 +1,10 @@
+table Element {
+	name: string;
+	attrs: [Attr];
+	children: [Element];
+}
+
+table Attr {
+	k: string;
+	v: string;
+}
