@@ -114,7 +114,6 @@ describe('ShortcutHandlerService', () => {
 
   it('#pop should set the manager to its last state', () => {
     service.set(Shortcut.C, debugFunction1);
-    // const managerSaved = service['clone'](service['manager']);
     service.push();
     service.set(Shortcut.L, debugFunction2);
     service.pop();
