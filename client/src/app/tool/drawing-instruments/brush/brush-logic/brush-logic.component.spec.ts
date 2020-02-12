@@ -11,6 +11,7 @@ import { ColorService } from '../../../color/color.service';
 import { BrushService } from '../brush.service';
 import { BrushLogicComponent } from './brush-logic.component';
 
+// tslint:disable:no-string-literal
 describe('BrushLogicComponent', () => {
   let component: BrushLogicComponent;
   let fixture: ComponentFixture<BrushLogicComponent>;
@@ -63,13 +64,13 @@ describe('BrushLogicComponent', () => {
       'http://www.w3.org/2000/svg',
       'path'
     );
-    component.configureSvgElement(anPathElement);
+    component['configureSvgElement'](anPathElement);
     expect(anPathElement.getAttribute('d')).toEqual(pathExpected);
   }));
 
   it('#onMouseMove should set the good value to svgPath', fakeAsync(() => {
     component.svgElRef.nativeElement.dispatchEvent(mouseEvLeft);
-    component.onMouseMove(mouseMoveEvLeft);
+    component['onMouseMove'](mouseMoveEvLeft);
     expect(component.svgPath.getAttribute('d')).toEqual(component.stringPath);
   }));
 
@@ -84,7 +85,7 @@ describe('BrushLogicComponent', () => {
   }));
 
   it('#should trigger onMouseDown method when mouse is down', fakeAsync(() => {
-    const spy = spyOn(component, 'onMouseDown');
+    const spy = spyOn<any>(component, 'onMouseDown');
     component.svgElRef.nativeElement.dispatchEvent(mouseEvLeft);
     setTimeout(() => {
       expect(spy).toHaveBeenCalled();
@@ -95,7 +96,7 @@ describe('BrushLogicComponent', () => {
   it(
     '#shouldnt trigger onMouseDown method ' + 'when left button is unhold',
     fakeAsync(() => {
-      const spy = spyOn(component, 'onMouseDown');
+      const spy = spyOn<any>(component, 'onMouseDown');
       component.svgElRef.nativeElement.dispatchEvent(mouseEvRight);
       setTimeout(() => {
         expect(spy).toHaveBeenCalledTimes(0);
@@ -105,7 +106,7 @@ describe('BrushLogicComponent', () => {
   );
 
   it('#should call onMouseMove method when mouse is moving', fakeAsync(() => {
-    const spy = spyOn(component, 'onMouseMove');
+    const spy = spyOn<any>(component, 'onMouseMove');
     component.mouseOnHold = true;
     component.svgElRef.nativeElement.dispatchEvent(mouseMoveEvLeft);
     setTimeout(() => {
@@ -131,7 +132,7 @@ describe('BrushLogicComponent', () => {
   it(
     '#onMouseMove shouldnt be called ' + 'when left button isnt hold',
     fakeAsync(() => {
-      const spy = spyOn(component, 'onMouseMove');
+      const spy = spyOn<any>(component, 'onMouseMove');
       component.svgElRef.nativeElement.dispatchEvent(mouseMoveEvLeft);
       setTimeout(() => {
         expect(spy).toHaveBeenCalledTimes(0);
@@ -141,7 +142,7 @@ describe('BrushLogicComponent', () => {
   );
 
   it('#drawing should set the good values to the stringPath', fakeAsync(() => {
-    component.drawing(mouseMoveEvLeft);
+    component['drawing'](mouseMoveEvLeft);
     let pathExpected: string = ' L' + mouseMoveEvLeft.offsetX;
     pathExpected += ',' + mouseMoveEvLeft.offsetY + ' M';
     pathExpected += mouseMoveEvLeft.offsetX + ',' + mouseMoveEvLeft.offsetY;
@@ -170,7 +171,7 @@ describe('BrushLogicComponent', () => {
     '#onMouseMove should be triggered when' +
       ' the mousemove event is launched',
     fakeAsync(() => {
-      const spy = spyOn(component, 'onMouseMove');
+      const spy = spyOn<any>(component, 'onMouseMove');
       component.mouseOnHold = true;
       component.svgElRef.nativeElement.dispatchEvent(mouseMoveEvLeft);
       setTimeout(() => {
@@ -195,7 +196,7 @@ describe('BrushLogicComponent', () => {
     '#mouseleave event shouldnt updates stringPath' +
       ' when left button is unhold',
     fakeAsync(() => {
-      component.onMouseDown(mouseEvLeft);
+      component['onMouseDown'](mouseEvLeft);
       let pathExpected: string = 'M' + mouseEvLeft.offsetX;
       pathExpected += ',' + mouseEvLeft.offsetY + ' h0';
       component.svgElRef.nativeElement.dispatchEvent(

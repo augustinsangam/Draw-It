@@ -3,6 +3,7 @@ import { MathService } from '../../mathematics/tool.math-service.service';
 import { Circle } from './Circle';
 import { Point } from './Point';
 
+// Class tested in ../Line/line-logic.component.spec.ts
 export class Path {
   private pathAtribute = '';
   private mathService = new MathService();

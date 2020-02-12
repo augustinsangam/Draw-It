@@ -65,7 +65,7 @@ export class BrushLogicComponent extends PencilBrushCommon {
     ];
   }
 
-  configureSvgElement(element: SVGElement): void {
+  protected configureSvgElement(element: SVGElement): void {
     element.setAttribute('d', this.stringPath);
     element.setAttribute('stroke', this.colorService.primaryColor);
     element.setAttribute('fill', this.colorService.primaryColor);
@@ -76,7 +76,7 @@ export class BrushLogicComponent extends PencilBrushCommon {
     );
   }
 
-  onMouseDown(mouseEv: MouseEvent): void {
+  protected onMouseDown(mouseEv: MouseEvent): void {
     this.makeFirstPoint(mouseEv);
     this.svgPath = this.renderer.createElement(this.svgTag, this.svgNS);
     this.configureSvgElement(this.svgPath);
@@ -88,17 +88,17 @@ export class BrushLogicComponent extends PencilBrushCommon {
     this.listeners.forEach(listenner => { listenner(); });
   }
 
-  stopDrawing(): void {
+  private stopDrawing(): void {
     this.mouseOnHold = false;
     this.stringPath = '';
   }
 
-  onMouseMove(mouseEv: MouseEvent): void {
+  protected onMouseMove(mouseEv: MouseEvent): void {
     this.drawing(mouseEv);
     this.svgPath.setAttribute('d', this.stringPath);
   }
 
-  generateFilterOne(): SVGFilterElement {
+  private generateFilterOne(): SVGFilterElement {
     const svgFilterEl: SVGFilterElement = this.renderer.createElement(
       'filter', this.svgNS);
     svgFilterEl.setAttribute('id', 'filter1');
@@ -124,7 +124,7 @@ export class BrushLogicComponent extends PencilBrushCommon {
     return svgFilterEl;
   }
 
-  generateFilterTwo(): SVGFilterElement {
+  private generateFilterTwo(): SVGFilterElement {
     const filterSvgEl: SVGFilterElement =
       this.renderer.createElement('filter', this.svgNS);
     filterSvgEl.setAttribute('id', 'filter2');
@@ -143,7 +143,7 @@ export class BrushLogicComponent extends PencilBrushCommon {
     return filterSvgEl;
   }
 
-  generateFilterThree(): SVGFilterElement {
+  private generateFilterThree(): SVGFilterElement {
     const svgFilterEl: SVGFilterElement =
       this.renderer.createElement('filter', this.svgNS);
     svgFilterEl.setAttribute('id', 'filter3');
@@ -203,7 +203,7 @@ export class BrushLogicComponent extends PencilBrushCommon {
     return svgFilterEl;
   }
 
-  generateFilterFour(): SVGFilterElement {
+  private generateFilterFour(): SVGFilterElement {
     const svgFilterEl: SVGFilterElement =
       this.renderer.createElement('filter', this.svgNS);
     svgFilterEl.setAttribute('id', 'filter4');
@@ -230,7 +230,7 @@ export class BrushLogicComponent extends PencilBrushCommon {
     return svgFilterEl;
   }
 
-  generateFilterFive(): SVGFilterElement {
+  private generateFilterFive(): SVGFilterElement {
     const filterSvgEl: SVGFilterElement =
       this.renderer.createElement('filter', this.svgNS);
     filterSvgEl.setAttribute('id', 'filter5');

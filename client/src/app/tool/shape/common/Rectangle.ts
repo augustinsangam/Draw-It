@@ -2,6 +2,8 @@ import { ElementRef, Renderer2 } from '@angular/core';
 import { MathService } from '../../mathematics/tool.math-service.service';
 import { Point } from './Point';
 
+// Class tested in ../Rectangle/rectangle-logic.component.spec.ts
+const SEMIOPACITY = '0.5';
 export class Rectangle {
   private filled: boolean;
   private initialPoint: Point;
@@ -42,7 +44,7 @@ export class Rectangle {
       oppositePoint
     );
     this.insertRectangleInSVG(transformedPoint, dimensions);
-    this.setOpacity('0.55');
+    this.setOpacity(SEMIOPACITY);
   }
 
   simulateSquare(oppositePoint: Point): void {
@@ -59,7 +61,7 @@ export class Rectangle {
       transformedPoint
     );
     this.insertRectangleInSVG(finalPoint, squareDimension);
-    this.setOpacity('0.55');
+    this.setOpacity(SEMIOPACITY);
   }
 
   setParameters(style: Style): void {
