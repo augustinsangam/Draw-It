@@ -18,7 +18,8 @@ describe('ScreenService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('#getCurrentSize() should return current size minus left bar width', () => {
+  it('#getCurrentSize() should return current size minus left bar width',
+    () => {
     const currentScreenSize = {
       width: innerWidth - service.sideBarWidth,
       height: innerHeight

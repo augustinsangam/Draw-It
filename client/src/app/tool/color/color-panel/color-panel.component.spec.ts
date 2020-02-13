@@ -1,16 +1,35 @@
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import {
+  async,
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick
+} from '@angular/core/testing';
 
 import { CdkObserveContent } from '@angular/cdk/observers';
 import { EventEmitter, NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
-  MatCard, MatCardContent, MatCardTitle, MatFormField, MatIcon,
-  MatRadioButton, MatRadioGroup, MatRipple, MatSlider
+  MatCard,
+  MatCardContent,
+  MatCardTitle,
+  MatFormField,
+  MatIcon,
+  MatRadioButton,
+  MatRadioGroup,
+  MatRipple,
+  MatSlider
 } from '@angular/material';
 import { ColorOption, ColorPanelComponent } from './color-panel.component';
-import { ColorPickerContentComponent } from './color-picker-content/color-picker-content.component';
-import { MockColorPickerContentComponent } from './color-picker-content/mock-color-picker-content.component';
-import { ColorPickerItemComponent } from './color-picker-item/color-picker-item.component';
+import {
+  ColorPickerContentComponent
+} from './color-picker-content/color-picker-content.component';
+import {
+  MockColorPickerContentComponent
+} from './color-picker-content/mock-color-picker-content.component';
+import {
+  ColorPickerItemComponent
+} from './color-picker-item/color-picker-item.component';
 
 // tslint:disable: no-string-literal
 describe('ColorPanelComponent', () => {
@@ -33,12 +52,9 @@ describe('ColorPanelComponent', () => {
         MatRadioButton,
         MatRadioGroup,
         MatRipple,
-        MatSlider,
+        MatSlider
       ],
-      imports: [
-        FormsModule,
-        ReactiveFormsModule
-      ],
+      imports: [FormsModule, ReactiveFormsModule],
       schemas: [NO_ERRORS_SCHEMA],
       providers: []
     }).compileComponents();
@@ -53,7 +69,6 @@ describe('ColorPanelComponent', () => {
       component['onColorPicked']($color);
     });
     fixture.detectChanges();
-
   }));
 
   it('should create', () => {
@@ -62,9 +77,11 @@ describe('ColorPanelComponent', () => {
 
   it('#Button Palette should call swapColors() method', fakeAsync(() => {
     // Synthaxe pour appeler une méthode privée.
-    // Le any est demandé.
+    // Le any est necessaire pour acceder a la methode prive.
     const spy = spyOn<any>(component, 'swapColors');
-    const swapButton = fixture.debugElement.nativeElement.querySelector('#swapButton');
+    const swapButton = fixture.debugElement.nativeElement.querySelector(
+      '#swapButton'
+    );
     swapButton.click();
     fixture.whenStable().then(() => {
       setTimeout(() => {
@@ -87,8 +104,14 @@ describe('ColorPanelComponent', () => {
   });
 
   it('#onColorPicked() can change Primary color', () => {
-    const spyUpdateColor = spyOn(component['colorPreviewPrimary'], 'updateColor');
-    const spySelectPrimaryColor = spyOn(component.colorService, 'selectPrimaryColor');
+    const spyUpdateColor = spyOn(
+      component['colorPreviewPrimary'],
+      'updateColor'
+    );
+    const spySelectPrimaryColor = spyOn(
+      component.colorService,
+      'selectPrimaryColor'
+    );
     component['colorOption'] = ColorOption.Primary;
     component['onColorPicked']('rgba(255, 255, 255, 1)');
     expect(spyUpdateColor).toHaveBeenCalled();
@@ -96,8 +119,14 @@ describe('ColorPanelComponent', () => {
   });
 
   it('#onColorPicked() can change Secondary color', () => {
-    const spyUpdateColor = spyOn(component['colorPreviewSecondary'], 'updateColor');
-    const spySelectSecondaryColor = spyOn(component.colorService, 'selectSecondaryColor');
+    const spyUpdateColor = spyOn(
+      component['colorPreviewSecondary'],
+      'updateColor'
+    );
+    const spySelectSecondaryColor = spyOn(
+      component.colorService,
+      'selectSecondaryColor'
+    );
     component['colorOption'] = ColorOption.Secondary;
     component['onColorPicked']('rgba(255, 255, 255, 1)');
     expect(spyUpdateColor).toHaveBeenCalled();
@@ -105,37 +134,47 @@ describe('ColorPanelComponent', () => {
   });
 
   it('#onColorPicked() can change Background color', () => {
-    const spyUpdateColor = spyOn(component['colorPreviewBackground'], 'updateColor');
-    const spySelectBackgroundColor = spyOn(component.colorService, 'selectBackgroundColor');
+    const spyUpdateColor = spyOn(
+      component['colorPreviewBackground'],
+      'updateColor'
+    );
+    const spySelectBackgroundColor = spyOn(
+      component.colorService,
+      'selectBackgroundColor'
+    );
     component['colorOption'] = ColorOption.Background;
     component['onColorPicked']('rgba(255, 255, 255, 1)');
     expect(spyUpdateColor).toHaveBeenCalled();
     expect(spySelectBackgroundColor).toHaveBeenCalled();
   });
 
-  it('#addEvents() should updateRecentColors when Palette not defined', fakeAsync(() => {
-    const spyUpdateRecentColors = spyOn<any>(component, 'updateRecentColors');
-    component['colorPalette'] = new MockColorPickerContentComponent() as unknown as ColorPickerContentComponent;
-    component['addEvents']();
-    component['colorsItemsArray'][2].button.nativeElement.click();
-    fixture.whenStable().then(() => {
-      setTimeout(() => {
-        expect(spyUpdateRecentColors).toHaveBeenCalled();
-      }, 500);
-      tick(500);
-    });
+  it('#addEvents() should updateRecentColors+'
+    + 'when Palette not defined', fakeAsync(() => {
+      const spyUpdateRecentColors = spyOn<any>(component, 'updateRecentColors');
+      component['colorPalette'] =
+        (new MockColorPickerContentComponent() as unknown) as
+          ColorPickerContentComponent;
+      component['addEvents']();
+      component['colorsItemsArray'][2].button.nativeElement.click();
+      fixture.whenStable().then(() => {
+        setTimeout(() => {
+          expect(spyUpdateRecentColors).toHaveBeenCalled();
+        }, 500);
+        tick(500);
+      });
 
-    const rightClickEvent = document.createEvent('HTMLEvents');
-    rightClickEvent.initEvent('contextmenu', true, false);
-    component['colorsItemsArray'][2].button.nativeElement.dispatchEvent(rightClickEvent);
-    fixture.whenStable().then(() => {
-      setTimeout(() => {
-        expect(spyUpdateRecentColors).toHaveBeenCalled();
-      }, 500);
-      tick(500);
-    });
-
-  }));
+      const rightClickEvent = document.createEvent('HTMLEvents');
+      rightClickEvent.initEvent('contextmenu', true, false);
+      component['colorsItemsArray'][2].button.nativeElement.dispatchEvent(
+        rightClickEvent
+      );
+      fixture.whenStable().then(() => {
+        setTimeout(() => {
+          expect(spyUpdateRecentColors).toHaveBeenCalled();
+        }, 500);
+        tick(500);
+      });
+    }));
 
   it('#addEvents() should updateRecentColors', fakeAsync(() => {
     const spyUpdateRecentColors = spyOn<any>(component, 'updateRecentColors');
@@ -150,14 +189,15 @@ describe('ColorPanelComponent', () => {
 
     const rightClickEvent = document.createEvent('HTMLEvents');
     rightClickEvent.initEvent('contextmenu', true, false);
-    component['colorsItemsArray'][2].button.nativeElement.dispatchEvent(rightClickEvent);
+    component['colorsItemsArray'][2].button.nativeElement.dispatchEvent(
+      rightClickEvent
+    );
     fixture.whenStable().then(() => {
       setTimeout(() => {
         expect(spyUpdateRecentColors).toHaveBeenCalled();
       }, 500);
       tick(500);
     });
-
   }));
 
   it('#getStartColor() works !', () => {
@@ -173,5 +213,4 @@ describe('ColorPanelComponent', () => {
     component.colorService.backgroundColor = 'rgba(255, 255, 255, 1)';
     expect(component['getStartColor']()).toEqual('#FFFFFF');
   });
-
 });

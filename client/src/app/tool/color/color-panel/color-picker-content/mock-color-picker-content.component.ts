@@ -1,7 +1,11 @@
-import { Component, ElementRef, EventEmitter, Input, Output, QueryList } from '@angular/core';
+import {
+    Component, ElementRef, EventEmitter, Input, Output, QueryList
+} from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatSliderChange } from '@angular/material';
-import { ColorPickerItemComponent } from '../color-picker-item/color-picker-item.component';
+import {
+    ColorPickerItemComponent
+} from '../color-picker-item/color-picker-item.component';
 
 @Component({
     selector: 'app-color-picker-content',
