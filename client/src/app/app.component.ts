@@ -74,7 +74,7 @@ export class AppComponent implements AfterViewInit {
     private readonly toolSelectorService: ToolSelectorService,
     private colorService: ColorService,
     private svgService: SvgService,
-    private shortcutHanler: ShortcutHandlerService
+    private shortcutHanler: ShortcutHandlerService,
   ) {
     this.drawInProgress = false;
     this.drawOption = { height: 0, width: 0, color: '' };
@@ -207,11 +207,9 @@ export class AppComponent implements AfterViewInit {
     this.colorService.selectBackgroundColor(
       `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`
     );
-    // TODO: Reset from svg service
-    const childrens = Array.from(this.svg.nativeElement.children);
-    childrens.forEach(element => {
-      element.remove();
-    });
+    this.svgService.clearDom();
+    this.toolSelectorService.set(Tool.Pencil);
+    // Deuxième fois juste pour fermer le panneau latéral
     this.toolSelectorService.set(Tool.Pencil);
   }
 }

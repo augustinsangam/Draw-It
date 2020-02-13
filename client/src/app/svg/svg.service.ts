@@ -11,4 +11,11 @@ export class SvgService {
     this.instance.nativeElement.style.backgroundColor = color;
   }
 
+  clearDom(): void {
+    const childrens = Array.from(this.instance.nativeElement.children);
+    childrens.forEach(element => {
+      element.remove();
+    });
+  }
+
 }
