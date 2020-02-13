@@ -92,6 +92,9 @@ export class AppComponent implements AfterViewInit {
     this.handlersFunc.set(Shortcut.Digit1, () =>
       this.toolSelectorService.set(Tool.Rectangle)
     );
+    this.handlersFunc.set(Shortcut.Digit3, () =>
+    this.toolSelectorService.set(Tool.Polygone)
+  );
     this.handlersFunc.set(Shortcut.O, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();

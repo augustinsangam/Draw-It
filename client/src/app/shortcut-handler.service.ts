@@ -5,6 +5,7 @@ export enum Shortcut {
   W = 'KeyW',
   L = 'KeyL',
   Digit1 = 'Digit1',
+  Digit3 = 'Digit3',
   O = 'KeyO',
 }
 

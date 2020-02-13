@@ -19,6 +19,9 @@ import {
   LineLogicComponent
 } from '../tool/shape/line/line-logic/line-logic.component';
 import {
+  PolygoneLogicComponent
+} from '../tool/shape/polygone/polygone-logic/polygone-logic.component';
+import {
   RectangleLogicComponent
 } from '../tool/shape/rectangle/rectangle-logic/rectangle-logic.component';
 import {
@@ -50,6 +53,7 @@ export class SvgComponent implements OnInit {
     this.components[Tool.Line] = LineLogicComponent;
     this.components[Tool.Pencil] = PencilLogicComponent;
     this.components[Tool.Rectangle] = RectangleLogicComponent;
+    this.components[Tool.Polygone] = PolygoneLogicComponent;
   }
 
   private setToolHandler = (tool: Tool) => this.setTool(tool);

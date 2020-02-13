@@ -19,6 +19,9 @@ import {
   LinePanelComponent
 } from '../tool/shape/line/line-panel/line-panel.component';
 import {
+  PolygonePanelComponent
+} from '../tool/shape/polygone/polygone-panel/polygone-panel.component';
+import {
   RectanglePanelComponent
 } from '../tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
 import {
@@ -54,6 +57,7 @@ export class PanelComponent implements OnInit {
     this.components[Tool.Line] = LinePanelComponent;
     this.components[Tool.Pencil] = PencilPanelComponent;
     this.components[Tool.Rectangle] = RectanglePanelComponent;
+    this.components[Tool.Polygone] = PolygonePanelComponent;
     this.childWidth = 0;
     // Panel is collapsed by default
     this.hostWidth = 0;
