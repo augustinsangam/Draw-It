@@ -26,7 +26,7 @@ import {
 import {
   ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
-import {EllipsePanelComponent} from '../tool/ellipse/ellipse-panel/ellipse-panel.component';
+import {EllipsePanelComponent} from '../tool/shape/ellipse/ellipse-panel/ellipse-panel.component';
 
 @Component({
   selector: 'app-panel',

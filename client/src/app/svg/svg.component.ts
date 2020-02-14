@@ -26,7 +26,7 @@ import {
 import {
   ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
-import {EllipseLogicComponent} from '../tool/ellipse/ellipse-logic/ellipse-logic.component';
+import {EllipseLogicComponent} from '../tool/shape/ellipse/ellipse-logic/ellipse-logic.component';
 
 @Component({
   selector: '[app-svg]',
