@@ -1,6 +1,6 @@
 DESCRIPTION
 Before commiting changes, format and check the code with ‘npm run lint’, and run
-the tests with ‘npm t’. NO WARNINGS PERMITTED.
+the tests with ‘npm t’. NO WARNINGS PERMITTED!
 
 SERVER {{{
 	When developing on the backend, start the server with ‘npm start’ and watch
