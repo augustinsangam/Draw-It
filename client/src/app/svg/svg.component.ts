@@ -16,6 +16,12 @@ import {
   PencilLogicComponent
 } from '../tool/drawing-instruments/pencil/pencil-logic/pencil-logic.component';
 import {
+  EraserLogicComponent
+} from '../tool/eraser/eraser-logic/eraser-logic.component';
+import {
+  SelectionLogicComponent
+} from '../tool/selection/selection-logic/selection-logic.component';
+import {
   LineLogicComponent
 } from '../tool/shape/line/line-logic/line-logic.component';
 import {
@@ -47,9 +53,11 @@ export class SvgComponent implements OnInit {
   ) {
     this.components = new Array(Tool._Len);
     this.components[Tool.Brush] = BrushLogicComponent;
+    this.components[Tool.Eraser] = EraserLogicComponent;
     this.components[Tool.Line] = LineLogicComponent;
     this.components[Tool.Pencil] = PencilLogicComponent;
     this.components[Tool.Rectangle] = RectangleLogicComponent;
+    this.components[Tool.Selection] = SelectionLogicComponent;
   }
 
   private setToolHandler = (tool: Tool) => this.setTool(tool);

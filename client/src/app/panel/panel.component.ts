@@ -16,6 +16,12 @@ import {
   PencilPanelComponent
 } from '../tool/drawing-instruments/pencil/pencil-panel/pencil-panel.component';
 import {
+  EraserPanelComponent
+} from '../tool/eraser/eraser-panel/eraser-panel.component';
+import {
+  SelectionPanelComponent
+} from '../tool/selection/selection-panel/selection-panel.component';
+import {
   LinePanelComponent
 } from '../tool/shape/line/line-panel/line-panel.component';
 import {
@@ -50,10 +56,12 @@ export class PanelComponent implements OnInit {
     private readonly toolSelectorService: ToolSelectorService
   ) {
     this.components = new Array(Tool._Len);
-    this.components[Tool.Brush] = BrushPanelComponent;
-    this.components[Tool.Line] = LinePanelComponent;
-    this.components[Tool.Pencil] = PencilPanelComponent;
+    this.components[Tool.Brush]     = BrushPanelComponent;
+    this.components[Tool.Eraser]    = EraserPanelComponent;
+    this.components[Tool.Line]      = LinePanelComponent;
+    this.components[Tool.Pencil]    = PencilPanelComponent;
     this.components[Tool.Rectangle] = RectanglePanelComponent;
+    this.components[Tool.Selection] = SelectionPanelComponent;
     this.childWidth = 0;
     // Panel is collapsed by default
     this.hostWidth = 0;

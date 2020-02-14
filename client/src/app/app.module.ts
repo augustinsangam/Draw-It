@@ -60,6 +60,10 @@ import {
 import {
   RectanglePanelComponent
 } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
+import { SelectionPanelComponent } from './tool/selection/selection-panel/selection-panel.component';
+import { SelectionLogicComponent } from './tool/selection/selection-logic/selection-logic.component';
+import { EraserPanelComponent } from './tool/eraser/eraser-panel/eraser-panel.component';
+import { EraserLogicComponent } from './tool/eraser/eraser-logic/eraser-logic.component';
 
 @NgModule({
   declarations: [
@@ -83,6 +87,10 @@ import {
     RectanglePanelComponent,
     SidebarComponent,
     SvgComponent,
+    SelectionPanelComponent,
+    SelectionLogicComponent,
+    EraserPanelComponent,
+    EraserLogicComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -102,6 +110,8 @@ import {
     BrushLogicComponent,
     BrushPanelComponent,
     ColorPanelComponent,
+    EraserLogicComponent,
+    EraserPanelComponent,
     PaletteDialogComponent,
     ConfirmationDialogComponent,
     DocumentationComponent,
@@ -113,6 +123,8 @@ import {
     PencilPanelComponent,
     RectangleLogicComponent,
     RectanglePanelComponent,
+    SelectionLogicComponent,
+    SelectionPanelComponent,
   ],
   bootstrap: [
     AppComponent,

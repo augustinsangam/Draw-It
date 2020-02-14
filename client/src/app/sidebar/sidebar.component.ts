@@ -18,6 +18,7 @@ import { Tool } from '../tool/tool.enum';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements AfterViewInit {
+
   @ViewChild('line', {
     static: false,
   })
@@ -38,6 +39,11 @@ export class SidebarComponent implements AfterViewInit {
   })
   protected brushElRef: ElementRef<HTMLElement>
 
+  @ViewChild('eraser', {
+    static: false,
+  })
+  protected eraserElRef: ElementRef<HTMLElement>
+
   @Output() protected documentationEv: EventEmitter<null>;
 
   private toolToElRef: ElementRef<HTMLElement>[];
@@ -54,6 +60,7 @@ export class SidebarComponent implements AfterViewInit {
     this.toolToElRef[Tool.Line] = this.lineElRef;
     this.toolToElRef[Tool.Pencil] = this.pencilElRef;
     this.toolToElRef[Tool.Rectangle] = this.rectangleElRef;
+    this.toolToElRef[Tool.Eraser] = this.eraserElRef;
     this.toolSelectorService.onChange(
       (tool, old) => this.setTool(tool, old));
   }
@@ -74,6 +81,10 @@ export class SidebarComponent implements AfterViewInit {
     this.toolSelectorService.set(Tool.Line);
   }
 
+  protected selectEraser(): void {
+    this.toolSelectorService.set(Tool.Eraser);
+  }
+
   protected selectRectangle(): void {
     this.toolSelectorService.set(Tool.Rectangle);
   }
@@ -85,4 +96,9 @@ export class SidebarComponent implements AfterViewInit {
   protected selectBrush(): void {
     this.toolSelectorService.set(Tool.Brush);
   }
+
+  protected selectSelection(): void {
+    this.toolSelectorService.set(Tool.Selection);
+  }
+
 }
