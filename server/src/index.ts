@@ -1,4 +1,5 @@
 import flatbuffers from 'flatbuffers';
+import mongodb from 'mongodb';
 import { log } from 'util';
 
 import { Attr, Element } from './data_generated';
@@ -10,6 +11,17 @@ const s = myContainer.get<Server>(TYPES.Server);
 
 s.launch();
 process.on('SIGINT', () => s.close(() => log('Server closed')));
+
+//const db = new MongoClient();
+// useUnifiedTopology: true
+mongodb.MongoClient.connect('mongodb://[::1]', function(err, client) {
+  console.log(err);
+  console.log("Connected successfully to server");
+
+  const db = client.db('log2990');
+
+  client.close();
+});
 
 interface AttrT {
 	k: string;
