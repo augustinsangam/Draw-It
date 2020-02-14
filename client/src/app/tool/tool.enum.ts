@@ -5,6 +5,7 @@ export enum Tool {
   Line,
   Pencil,
   Rectangle,
+  Ellipse,
   _Len,
   _None,
 }

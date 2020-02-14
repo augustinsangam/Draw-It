@@ -52,6 +52,10 @@ export class SidebarComponent {
     this.selectTool(Tool.Rectangle, target as HTMLElement);
   }
 
+  selectEllipse({target}: MouseEvent) {
+    this.selectTool(Tool.Ellipse, target as HTMLElement)
+  }
+
   onClick($event: Event) {
     this.documentationClick.emit(null);
   };

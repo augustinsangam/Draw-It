@@ -8,6 +8,7 @@ import { RectangleLogicComponent } from '../tool/rectangle/rectangle-logic/recta
 import { ToolLogicComponent } from '../tool/tool-logic/tool-logic.component';
 import { ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
+import {EllipseLogicComponent} from '../tool/ellipse/ellipse-logic/ellipse-logic.component';
 
 @Component({
   selector: '[app-svg]',
@@ -31,6 +32,7 @@ export class SvgComponent implements OnInit {
     this.components[Tool.Line] = LineLogicComponent;
     this.components[Tool.Pencil] = PencilLogicComponent;
     this.components[Tool.Rectangle] = RectangleLogicComponent;
+    this.components[Tool.Ellipse] = EllipseLogicComponent;
   }
 
   ngOnInit() {

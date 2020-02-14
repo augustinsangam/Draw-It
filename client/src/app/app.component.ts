@@ -31,9 +31,10 @@ export class AppComponent implements AfterViewInit {
   };
 
   constructor(public dialog: MatDialog, private readonly toolSelectorService: ToolSelectorService) {
-    this.toolSelector = new Map()
+    this.toolSelector = new Map();
     this.toolSelector.set('KeyC', Tool.Pencil);
     this.toolSelector.set('Digit1', Tool.Rectangle);
+    this.toolSelector.set('Digit2', Tool.Ellipse);
     this.toolSelector.set('KeyL', Tool.Line);
     this.toolSelector.set('KeyW', Tool.Brush);
    };
