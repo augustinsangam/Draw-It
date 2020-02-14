@@ -7,7 +7,9 @@ import {
   ViewChild,
 } from '@angular/core';
 
-import { ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
+import {
+  ToolSelectorService
+} from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
 
 @Component({
@@ -56,7 +58,7 @@ export class SidebarComponent implements AfterViewInit {
       (tool, old) => this.setTool(tool, old));
   }
 
-  private setTool(tool: Tool, old?: Tool) {
+  private setTool(tool: Tool, old?: Tool): void {
     // TODO: TS 3.7 get(…)?.nativeEl w/o ‘has’ check
     if (old != null && old < Tool._Len) {
       const oldElRef = this.toolToElRef[old];
@@ -68,19 +70,19 @@ export class SidebarComponent implements AfterViewInit {
     }
   }
 
-  protected selectLine() {
+  protected selectLine(): void {
     this.toolSelectorService.set(Tool.Line);
   }
 
-  protected selectRectangle() {
+  protected selectRectangle(): void {
     this.toolSelectorService.set(Tool.Rectangle);
   }
 
-  protected selectPencil() {
+  protected selectPencil(): void {
     this.toolSelectorService.set(Tool.Pencil);
   }
 
-  protected selectBrush() {
+  protected selectBrush(): void {
     this.toolSelectorService.set(Tool.Brush);
   }
 }

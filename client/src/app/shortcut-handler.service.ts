@@ -8,10 +8,10 @@ export enum Shortcut {
   O = 'KeyO',
 }
 
-export type KeybardCallback = (event?: KeyboardEvent) => void;
+export type ShortcutCallBack = (event?: KeyboardEvent) => void;
 
 export interface Handler {
-  handlerFunction: KeybardCallback;
+  handlerFunction: ShortcutCallBack;
   isActive: boolean;
 }
 
@@ -52,7 +52,7 @@ export class ShortcutHandlerService {
     this.manager.forEach(handler => handler.isActive = false);
   }
 
-  set(shortcut: Shortcut, handler: KeybardCallback): void {
+  set(shortcut: Shortcut, handler: ShortcutCallBack): void {
     this.manager.set(shortcut, {
       handlerFunction: handler,
       isActive: true,

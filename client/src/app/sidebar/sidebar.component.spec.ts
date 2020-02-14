@@ -1,10 +1,16 @@
 /* tslint:disable:no-string-literal */
 
-import { CUSTOM_ELEMENTS_SCHEMA, ElementRef, NO_ERRORS_SCHEMA } from '@angular/core';
+import {
+  CUSTOM_ELEMENTS_SCHEMA,
+  ElementRef,
+  NO_ERRORS_SCHEMA
+} from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatLabel } from '@angular/material';
 
-import { ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
+import {
+  ToolSelectorService
+} from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
 import { SidebarComponent } from './sidebar.component';
 

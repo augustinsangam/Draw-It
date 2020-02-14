@@ -1,9 +1,15 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ComponentRef } from '@angular/core';
-import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { BrushLogicComponent } from '../tool/brush/brush-logic/brush-logic.component';
-import { LineLogicComponent } from '../tool/line/line-logic/line-logic.component';
+import {
+  BrowserDynamicTestingModule
+} from '@angular/platform-browser-dynamic/testing';
+import {
+  BrushLogicComponent
+} from '../tool/drawing-instruments/brush/brush-logic/brush-logic.component';
+import {
+  LineLogicComponent
+} from '../tool/shape/line/line-logic/line-logic.component';
 import { ToolLogicDirective } from '../tool/tool-logic/tool-logic.directive';
 import { Tool } from '../tool/tool.enum';
 import { SvgComponent } from './svg.component';

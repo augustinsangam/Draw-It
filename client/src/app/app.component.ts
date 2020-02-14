@@ -1,13 +1,27 @@
-import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  ViewChild
+} from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 
-import { DocumentationComponent } from './pages/documentation/documentation.component';
+import {
+  DocumentationComponent
+} from './pages/documentation/documentation.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
-import { KeybardCallback, Shortcut, ShortcutHandlerService } from './shortcut-handler.service';
+import {
+  Shortcut,
+  ShortcutCallBack,
+  ShortcutHandlerService
+} from './shortcut-handler.service';
 import { SvgService } from './svg/svg.service';
 import { ColorService } from './tool/color/color.service';
-import { ToolSelectorService } from './tool/tool-selector/tool-selector.service';
+import {
+  ToolSelectorService
+} from './tool/tool-selector/tool-selector.service';
 import { Tool } from './tool/tool.enum';
 
 export interface NewDrawOptions {
@@ -20,31 +34,32 @@ export enum OverlayPages {
   Documentation = 'documentation',
   Home = 'home',
   Library = 'library',
-  New = 'new',
-};
+  New = 'new'
+}
 
 export interface DialogRefs {
-  home: MatDialogRef<HomeComponent>,
-  newDraw: MatDialogRef<NewDrawComponent>,
-  documentation: MatDialogRef<DocumentationComponent>,
-};
+  home: MatDialogRef<HomeComponent>;
+  newDraw: MatDialogRef<NewDrawComponent>;
+  documentation: MatDialogRef<DocumentationComponent>;
+}
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements AfterViewInit {
   private dialogRefs: DialogRefs;
-  private drawInProgress: boolean
+  private drawInProgress: boolean;
   protected drawOption: NewDrawOptions;
 
   @ViewChild('svg', {
     static: false,
     read: ElementRef
-  }) svg: ElementRef<SVGElement>;
+  })
+  svg: ElementRef<SVGElement>;
 
-  handlersFunc: Map<Shortcut, KeybardCallback>;
+  handlersFunc: Map<Shortcut, ShortcutCallBack>;
 
   private getCommomDialogOptions = () => {
     return {
@@ -52,22 +67,31 @@ export class AppComponent implements AfterViewInit {
       height: '90%',
       data: { drawInProgress: this.drawInProgress }
     };
-  }
+  };
 
-  constructor(public dialog: MatDialog,
-              private readonly toolSelectorService: ToolSelectorService,
-              private colorService: ColorService,
-              private svgService: SvgService,
-              private shortcutHanler: ShortcutHandlerService) {
-
+  constructor(
+    public dialog: MatDialog,
+    private readonly toolSelectorService: ToolSelectorService,
+    private colorService: ColorService,
+    private svgService: SvgService,
+    private shortcutHanler: ShortcutHandlerService,
+  ) {
     this.drawInProgress = false;
-    this.drawOption = { height : 0, width : 0, color: ''};
+    this.drawOption = { height: 0, width: 0, color: '' };
 
     this.handlersFunc = new Map();
-    this.handlersFunc.set(Shortcut.C, () => this.toolSelectorService.set(Tool.Pencil));
-    this.handlersFunc.set(Shortcut.L, () => this.toolSelectorService.set(Tool.Line));
-    this.handlersFunc.set(Shortcut.W, () => this.toolSelectorService.set(Tool.Brush));
-    this.handlersFunc.set(Shortcut.Digit1, () => this.toolSelectorService.set(Tool.Rectangle));
+    this.handlersFunc.set(Shortcut.C, () =>
+      this.toolSelectorService.set(Tool.Pencil)
+    );
+    this.handlersFunc.set(Shortcut.L, () =>
+      this.toolSelectorService.set(Tool.Line)
+    );
+    this.handlersFunc.set(Shortcut.W, () =>
+      this.toolSelectorService.set(Tool.Brush)
+    );
+    this.handlersFunc.set(Shortcut.Digit1, () =>
+      this.toolSelectorService.set(Tool.Rectangle)
+    );
     this.handlersFunc.set(Shortcut.O, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
@@ -75,18 +99,23 @@ export class AppComponent implements AfterViewInit {
       }
     });
 
-    [Shortcut.C, Shortcut.L, Shortcut.W, Shortcut.Digit1, Shortcut.O]
-    .forEach(shortcut => {
-      this.shortcutHanler.set(shortcut, this.handlersFunc.get(shortcut) as KeybardCallback);
-    });
+    [Shortcut.C, Shortcut.L, Shortcut.W, Shortcut.Digit1, Shortcut.O].forEach(
+      shortcut => {
+        this.shortcutHanler.set(
+          shortcut,
+          this.handlersFunc.get(shortcut) as ShortcutCallBack
+        );
+      }
+    );
 
     this.dialogRefs = {
-      home: undefined as unknown as MatDialogRef<HomeComponent>,
-      newDraw: undefined as unknown as MatDialogRef<NewDrawComponent>,
-      documentation: undefined as unknown as MatDialogRef<DocumentationComponent>,
+      home: (undefined as unknown) as MatDialogRef<HomeComponent>,
+      newDraw: (undefined as unknown) as MatDialogRef<NewDrawComponent>,
+      documentation: (undefined as unknown) as MatDialogRef<
+        DocumentationComponent
+      >
     };
-
-   };
+  }
 
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
@@ -98,8 +127,11 @@ export class AppComponent implements AfterViewInit {
     this.openHomeDialog();
   }
 
-  private openHomeDialog() {
-    this.dialogRefs.home = this.dialog.open(HomeComponent, this.getCommomDialogOptions());
+  private openHomeDialog(): void {
+    this.dialogRefs.home = this.dialog.open(
+      HomeComponent,
+      this.getCommomDialogOptions()
+    );
     this.dialogRefs.home.disableClose = true;
     this.shortcutHanler.desactivateAll();
     this.dialogRefs.home.afterClosed().subscribe((result: string) => {
@@ -108,7 +140,7 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
-  private openSelectedDialog(dialog: string) {
+  private openSelectedDialog(dialog: string): void {
     switch (dialog) {
       case OverlayPages.New:
         this.openNewDrawDialog();
@@ -123,54 +155,61 @@ export class AppComponent implements AfterViewInit {
     }
   }
 
-  private openNewDrawDialog() {
-    this.dialogRefs.newDraw = this.dialog.open(NewDrawComponent, this.getCommomDialogOptions());
-    this.dialogRefs.newDraw.disableClose = true;
+  private openNewDrawDialog(): void {
     this.shortcutHanler.desactivateAll();
-    this.dialogRefs.newDraw.afterClosed().subscribe((resultNewDialog) => {
+    this.dialogRefs.newDraw = this.dialog.open(
+      NewDrawComponent,
+      this.getCommomDialogOptions()
+    );
+    this.dialogRefs.newDraw.disableClose = true;
+    this.dialogRefs.newDraw.afterClosed().subscribe(resultNewDialog => {
       this.shortcutHanler.activateAll();
       this.closeNewDrawDialog(resultNewDialog);
     });
   }
 
-  private closeNewDrawDialog(option: string | NewDrawOptions) {
+  private closeNewDrawDialog(option: string | NewDrawOptions): void {
     if (option === OverlayPages.Home) {
       this.openHomeDialog();
-    } else if (option !== null ) {
+    } else if (option !== null) {
       this.createNewDraw(option as NewDrawOptions);
     }
   }
 
-  private openDocumentationDialog(fromHome: boolean) {
+  private openDocumentationDialog(fromHome: boolean): void {
     const dialogOptions = {
       width: '115vw',
       height: '100vh',
-      panelClass: 'documentation',
+      panelClass: 'documentation'
     };
-    this.dialogRefs.documentation = this.dialog.open(DocumentationComponent, dialogOptions);
-    this.dialogRefs.documentation.disableClose = false;
     this.shortcutHanler.desactivateAll();
+    this.dialogRefs.documentation = this.dialog.open(
+      DocumentationComponent,
+      dialogOptions
+    );
+    this.dialogRefs.documentation.disableClose = false;
     this.dialogRefs.documentation.afterClosed().subscribe(() => {
-      this.closeDocumentationDialog(fromHome);
       this.shortcutHanler.activateAll();
+      this.closeDocumentationDialog(fromHome);
     });
   }
 
-  private closeDocumentationDialog(fromHome: boolean) {
+  private closeDocumentationDialog(fromHome: boolean): void {
     if (fromHome) {
       this.openHomeDialog();
     }
   }
 
-  private createNewDraw(option: NewDrawOptions) {
+  private createNewDraw(option: NewDrawOptions): void {
     this.drawOption = option;
     this.drawInProgress = true;
     const rgb = this.colorService.hexToRgb(option.color);
-    this.colorService.selectBackgroundColor(`rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`);
-    // TODO: Reset from svg service
-    const childrens = Array.from(this.svg.nativeElement.children)
-    childrens.forEach(element => {
-      element.remove();
-    });
+    this.colorService.selectBackgroundColor(
+      `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`
+    );
+    this.svgService.clearDom();
+    this.toolSelectorService.set(Tool.Pencil);
+    // Deuxième fois juste pour fermer le panneau latéral
+    this.toolSelectorService.set(Tool.Pencil);
   }
 }

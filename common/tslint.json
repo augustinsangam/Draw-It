@@ -5,7 +5,7 @@
         "arrow-parens": true,
         "deprecation": true,
         "max-classes-per-file": [true, 1],
-        "max-line-length": [true, 140],
+        "max-line-length": [true, 80],
         "member-access": [true, "no-public"],
         "interface-name": false,
         "member-ordering": [

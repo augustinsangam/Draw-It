@@ -20,7 +20,7 @@ export interface Page {
 @Component({
   selector: 'app-documentation',
   templateUrl: './documentation.component.html',
-  styleUrls: ['./documentation.component.scss'],
+  styleUrls: ['./documentation.component.scss']
 })
 export class DocumentationComponent {
   treeControl: NestedTreeControl<Node>;
@@ -37,10 +37,15 @@ export class DocumentationComponent {
     this.constructLeafNodeArray(docs);
     this.contentToDisplay = {
       title: 'Bienvenue',
-      body: marked('**Bonjour et bienvenue** dans le guide d’utilisation de DrawIt !</br></br> ' +
-                   'Ce guide est destiné à vous aider à découvrir et utiliser les différents outils proposés par l’application. ' +
-                   'Pour naviguer dans ce guide, utilisez la barre de naviguation sur la gauche de la page.<br/>'),
-    }
+      body: marked(
+        '**Bonjour et bienvenue** '
+        + 'dans le guide d’utilisation de DrawIt !</br></br>'
+        + 'Ce guide est destiné à vous aider à découvrir et utiliser '
+        + 'les différents outils proposés par l’application. '
+        + 'Pour naviguer dans ce guide, utilisez la barre de naviguation '
+        + 'sur la gauche de la page.<br/>'
+      )
+    };
   }
 
   private constructLeafNodeArray(nodes: Node[]): void {
@@ -71,14 +76,16 @@ export class DocumentationComponent {
     return this.currentNodeIndex + 1 === this.leafNodeArray.length;
   }
 
-  // not private because only called in the html => "next() is declared but its value is never read" warning
+  // not private because only called in the html => "
+  // next() is declared but its value is never read" warning
   previous(): void {
     if (!this.isFirstNode()) {
       this.displayNodeContent(this.leafNodeArray[this.currentNodeIndex - 1]);
     }
   }
 
-  // not private because only called in the html => "next() is declared but its value is never read" warning
+  // not private because only called in the html =>
+  // "next() is declared but its value is never read" warning
   next(): void {
     if (!this.isLastNode()) {
       this.displayNodeContent(this.leafNodeArray[this.currentNodeIndex + 1]);
@@ -106,11 +113,13 @@ export class DocumentationComponent {
       this.treeControl.collapseAll();
       this.expandParent(docs, node.id);
     }
-    fetch(encodeURI('../../assets/doc/md/' + node.label + '.md')).then(res => res.text())
+    fetch(encodeURI('../../assets/doc/md/' + node.label + '.md'))
+      .then(res => res.text())
       .then(text => {
         this.contentToDisplay.body = marked(text);
-      })
+      });
   }
 
-  hasChild = (_: number, node: Node) => !!node.children && node.children.length > 0;
+  hasChild = (_: number, node: Node) =>
+    !!node.children && node.children.length > 0;
 }

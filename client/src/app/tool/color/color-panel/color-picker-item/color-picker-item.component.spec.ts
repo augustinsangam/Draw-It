@@ -25,7 +25,9 @@ describe('ColorPickerItemComponent', () => {
 
   it('#updateColor() should change the DOM background element', () => {
     component.updateColor('rgb(100, 100, 100)');
-    expect(component.button.nativeElement.style.backgroundColor).toEqual('rgb(100, 100, 100)');
+    expect(component.button.nativeElement.style.backgroundColor).toEqual(
+      'rgb(100, 100, 100)'
+    );
   });
 
 });

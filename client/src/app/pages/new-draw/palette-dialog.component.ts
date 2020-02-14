@@ -1,6 +1,9 @@
 import { Component, HostListener, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
-import { ColorPickerContentComponent } from 'src/app/tool/color/color-panel/color-picker-content/color-picker-content.component';
+import {
+  ColorPickerContentComponent
+// tslint:disable-next-line: max-line-length
+} from 'src/app/tool/color/color-panel/color-picker-content/color-picker-content.component';
 import { ColorService } from 'src/app/tool/color/color.service';
 
 @Component({
