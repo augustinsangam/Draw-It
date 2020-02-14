@@ -1,0 +1,38 @@
+:host {
+  display: block;
+  padding: 0px 10px 0px 10px;
+  width: 320px;
+  color : white;
+}
+
+mat-slider{
+  margin-top: -12px;
+  float: left;
+}
+
+mat-form-field{
+  width: 45px;
+  height: 10px;
+  margin-left: 10px;
+  margin-top: -20px;
+}
+
+mat-radio-button{
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.texture{
+  margin-top: 20px;
+}
+
+img{
+  margin-left: 40px;
+  vertical-align: middle;
+}
+
+hr {
+  border-color: grey;
+}
+

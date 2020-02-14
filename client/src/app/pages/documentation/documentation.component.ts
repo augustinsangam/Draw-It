@@ -20,7 +20,7 @@ export interface Page {
 @Component({
   selector: 'app-documentation',
   templateUrl: './documentation.component.html',
-  styleUrls: ['./documentation.component.scss'],
+  styleUrls: ['./documentation.component.scss']
 })
 export class DocumentationComponent {
   treeControl: NestedTreeControl<Node>;
@@ -37,13 +37,18 @@ export class DocumentationComponent {
     this.constructLeafNodeArray(docs);
     this.contentToDisplay = {
       title: 'Bienvenue',
-      body: marked('**Bonjour et bienvenue** dans le guide d’utilisation de DrawIt !</br></br> ' +
-                   'Ce guide est destiné à vous aider à découvrir et utiliser les différents outils proposés par l’application. ' +
-                   'Pour naviguer dans ce guide, utilisez la barre de naviguation sur la gauche de la page.<br/>'),
-    }
+      body: marked(
+        '**Bonjour et bienvenue** '
+        + 'dans le guide d’utilisation de DrawIt !</br></br>'
+        + 'Ce guide est destiné à vous aider à découvrir et utiliser '
+        + 'les différents outils proposés par l’application. '
+        + 'Pour naviguer dans ce guide, utilisez la barre de naviguation '
+        + 'sur la gauche de la page.<br/>'
+      )
+    };
   }
 
-  constructLeafNodeArray(nodes: Node[]) {
+  private constructLeafNodeArray(nodes: Node[]): void {
     for (const node of nodes) {
       if (!!node.children) {
         this.constructLeafNodeArray(node.children);
@@ -54,7 +59,7 @@ export class DocumentationComponent {
     }
   }
 
-  leafNodeArrayContains(node: Node): boolean {
+  private leafNodeArrayContains(node: Node): boolean {
     for (const nodes of this.leafNodeArray) {
       if (node.label === nodes.label) {
         return true;
@@ -63,27 +68,31 @@ export class DocumentationComponent {
     return false;
   }
 
-  isFirstNode(): boolean {
+  private isFirstNode(): boolean {
     return this.currentNodeIndex === 0;
   }
 
-  isLastNode(): boolean {
+  private isLastNode(): boolean {
     return this.currentNodeIndex + 1 === this.leafNodeArray.length;
   }
 
-  previous() {
+  // not private because only called in the html => "
+  // next() is declared but its value is never read" warning
+  previous(): void {
     if (!this.isFirstNode()) {
       this.displayNodeContent(this.leafNodeArray[this.currentNodeIndex - 1]);
     }
   }
 
-  next() {
+  // not private because only called in the html =>
+  // "next() is declared but its value is never read" warning
+  next(): void {
     if (!this.isLastNode()) {
       this.displayNodeContent(this.leafNodeArray[this.currentNodeIndex + 1]);
     }
   }
 
-  expandParent(nodes: Node[], id: number): boolean {
+  private expandParent(nodes: Node[], id: number): boolean {
     for (const node of nodes) {
       if (!!node.children) {
         if (this.expandParent(node.children, id)) {
@@ -97,18 +106,20 @@ export class DocumentationComponent {
     return false;
   }
 
-  displayNodeContent(node: Node) {
+  private displayNodeContent(node: Node): void {
     this.contentToDisplay.title = node.label;
     if (node.id != null) {
       this.currentNodeIndex = node.id;
       this.treeControl.collapseAll();
       this.expandParent(docs, node.id);
     }
-    fetch(encodeURI('../../assets/doc/doc.md/' + node.label + '.md')).then(res => res.text())
+    fetch(encodeURI('../../assets/doc/md/' + node.label + '.md'))
+      .then(res => res.text())
       .then(text => {
         this.contentToDisplay.body = marked(text);
-      })
+      });
   }
 
-  hasChild = (_: number, node: Node) => !!node.children && node.children.length > 0;
+  hasChild = (_: number, node: Node) =>
+    !!node.children && node.children.length > 0;
 }

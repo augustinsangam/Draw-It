@@ -1,15 +1,38 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Inject,
+  OnDestroy,
+  OnInit,
+  Optional,
+  Renderer2,
+  ViewChild
+} from '@angular/core';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  Validators
+} from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
 
-import { ColorPicklerItemComponent } from 'src/app/tool/color/color-panel/color-pickler-item/color-pickler-item.component';
-import { ScreenService, ScreenSize } from '../../services/sreen/screen.service';
+import {
+  ColorPickerItemComponent
+// tslint:disable-next-line: max-line-length
+} from 'src/app/tool/color/color-panel/color-picker-item/color-picker-item.component';
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 import { PaletteDialogComponent } from './palette-dialog.component';
+import { ScreenService, ScreenSize } from './sreen-service/screen.service';
 
 export interface DialogData {
   drawInProgress: boolean;
+}
+
+export interface DialogRefs {
+  palette: MatDialogRef<PaletteDialogComponent>;
+  confirm: MatDialogRef<ConfirmationDialogComponent>;
 }
 
 @Component({
@@ -18,62 +41,82 @@ export interface DialogData {
   styleUrls: ['./new-draw.component.scss']
 })
 export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
-
-  startColor = '#FFFFFF';
-  baseColors = ['#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF',
-    '#FFFF00', '#FF00FF', '#00FFFF', '#FF6600', '#FF6699'];
-  form: FormGroup;
-  maxWidth: number;
-  maxHeight: number;
-  screenSize: Subscription;
-  userChangeSizeMannually = false;
+  private startColor: string;
+  private form: FormGroup;
+  private maxWidth: number;
+  private maxHeight: number;
+  private screenSize: Subscription;
+  private userChangeSizeMannually = false;
+  private dialogRefs: DialogRefs;
 
   @ViewChild('palette', {
     static: false,
-    read: ColorPicklerItemComponent
-  }) palette: ColorPicklerItemComponent;
+    read: ColorPickerItemComponent
+  })
+  private palette: ColorPickerItemComponent;
 
   @ViewChild('button', {
     static: false,
     read: ElementRef
-  }) button: ElementRef;
+  })
+  private button: ElementRef;
 
   static validatorInteger(formControl: AbstractControl) {
     if (Number.isInteger(formControl.value)) {
       return null;
     }
     return {
-      valid: true,
-    }
+      valid: true
+    };
   }
 
-  constructor(private formBuilder: FormBuilder,
-              private screenService: ScreenService,
-              private renderer: Renderer2,
-              private dialog: MatDialog,
-              public dialogRef: MatDialogRef<NewDrawComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private screenService: ScreenService,
+    private renderer: Renderer2,
+    private dialog: MatDialog,
+    @Optional() public dialogRef: MatDialogRef<NewDrawComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
+  ) {
+    this.startColor = '#FFFFFF';
     const screenSize: ScreenSize = this.screenService.getCurrentSize();
     this.maxWidth = screenSize.width;
     this.maxHeight = screenSize.height;
     this.form = this.formBuilder.group({
-      width: ['', [
-        Validators.required,
-        Validators.min(1),
-        NewDrawComponent.validatorInteger]],
-        height: ['', [
+      width: [
+        '',
+        [
           Validators.required,
           Validators.min(1),
-          NewDrawComponent.validatorInteger]],
-          color: ['', []]
+          Validators.max(1000000),
+          NewDrawComponent.validatorInteger
+        ]
+      ],
+      height: [
+        '',
+        [
+          Validators.required,
+          Validators.min(1),
+          Validators.max(1000000),
+          NewDrawComponent.validatorInteger
+        ]
+      ],
+      color: ['', []]
     });
+    this.dialogRefs = {
+      palette: (undefined as unknown) as MatDialogRef<PaletteDialogComponent>,
+      confirm: (undefined as unknown) as MatDialogRef<
+        ConfirmationDialogComponent
+      >
+    };
   }
 
   ngOnInit() {
     const screenSize = this.screenService.getCurrentSize();
     this.updateFormSize(screenSize);
-    this.screenSize = this.screenService.getSize().subscribe(
-        screenSizeParam => this.updateFormSize(screenSizeParam));
+    this.screenSize = this.screenService.size.subscribe(screenSizeParam =>
+      this.updateFormSize(screenSizeParam)
+    );
   }
 
   ngOnDestroy() {
@@ -81,56 +124,71 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    // FIX : AFTERCONTENTCHECKEDERROR
+    // Simuler l'asynchronisité
     setTimeout(() => {
-      this.form.patchValue({color: this.startColor});
+      this.form.patchValue({ color: this.startColor });
     }, 0);
 
-    this.renderer.listen(this.palette.button.nativeElement, 'click', () => {
-      const dialogRef = this.dialog.open(PaletteDialogComponent);
-      dialogRef.afterClosed().subscribe((colorPicked: string|undefined) => {
-        if (colorPicked !== undefined) {
-          this.palette.updateColor(colorPicked);
-          this.form.patchValue({color: colorPicked});
-        }
-        this.button.nativeElement.focus();
+    if (!!this.palette) {
+      this.renderer.listen(this.palette.button.nativeElement, 'click', () => {
+        this.dialogRefs.palette = this.dialog.open(PaletteDialogComponent);
+        this.dialogRefs.palette
+          .afterClosed()
+          .subscribe(this.paletteCloseHandler);
       });
-    });
+    }
   }
 
-  updateFormSize(screenSize: ScreenSize) {
+  private paletteCloseHandler = (colorPicked: string | undefined): void => {
+    this.closePaletteDialog(colorPicked);
+  };
+
+  private closePaletteDialog(colorPicked: string | undefined): void {
+    if (colorPicked !== undefined) {
+      this.palette.updateColor(colorPicked);
+      this.form.patchValue({ color: colorPicked });
+    }
+    this.button.nativeElement.focus();
+  }
+
+  private updateFormSize(screenSize: ScreenSize): void {
     this.maxWidth = screenSize.width;
     this.maxHeight = screenSize.height;
     if (!this.userChangeSizeMannually) {
       this.form.patchValue({
         width: this.maxWidth,
-        height: this.maxHeight,
+        height: this.maxHeight
       });
     }
   }
 
-  onDimensionsChangedByUser($event: Event) {
+  protected onDimensionsChangedByUser(): void {
     this.userChangeSizeMannually = true;
   }
 
-  onSubmit() {
+  protected onSubmit(): void  {
     if (this.data.drawInProgress) {
-      const dialogRef = this.dialog.open(ConfirmationDialogComponent);
-      dialogRef.disableClose = true;
-      dialogRef.afterClosed().subscribe((result: boolean) => {
-        if (result) {
-          this.dialogRef.close(this.form.value);
-        } else {
-          this.dialogRef.close('home');
-        }
-      });
+      this.dialogRefs.confirm = this.dialog.open(ConfirmationDialogComponent);
+      this.dialogRefs.confirm.disableClose = true;
+      this.dialogRefs.confirm.afterClosed().subscribe(this.onSubmitHandler);
     } else {
       this.dialogRef.close(this.form.value);
     }
   }
 
-  onReturn() {
-    this.dialogRef.close('home');
+  private onSubmitHandler = (result: boolean): void => {
+    this.closeDialog(result);
+  };
+
+  private closeDialog(result: boolean): void {
+    if (result) {
+      this.dialogRef.close(this.form.value);
+    } else {
+      this.dialogRef.close('home');
+    }
   }
 
+  protected onReturn(): void {
+    this.dialogRef.close('home');
+  }
 }

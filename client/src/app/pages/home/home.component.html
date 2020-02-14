@@ -6,10 +6,11 @@
   </div>
   <div id='options'>
     <ng-container *ngFor='let option of options'>
+      <!-- TODO: tabindex utility -->
       <button mat-stroked-button
               *ngIf='option.canDisplay'
-              class='option mat-elevation-z5'
               tabindex="-1"
+              class='option mat-elevation-z5'
               [mat-dialog-close]='option.dialogCloseResult'>
         <mat-grid-list cols='5' rowHeight='55px'>
           <mat-grid-tile colspan='1' rowspan='1'>
