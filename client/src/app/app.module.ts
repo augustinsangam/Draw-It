@@ -13,6 +13,7 @@ import { MaterialModule } from './material.module';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
+import { GaleryComponent } from './pages/galery/galery.component';
 import {
   HomeComponent
 } from './pages/home/home.component';
@@ -83,6 +84,7 @@ import {
     RectanglePanelComponent,
     SidebarComponent,
     SvgComponent,
+    GaleryComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -105,6 +107,7 @@ import {
     PaletteDialogComponent,
     ConfirmationDialogComponent,
     DocumentationComponent,
+    GaleryComponent,
     LineLogicComponent,
     LinePanelComponent,
     HomeComponent,

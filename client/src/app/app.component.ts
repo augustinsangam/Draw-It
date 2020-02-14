@@ -10,6 +10,7 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
+import { GaleryComponent } from './pages/galery/galery.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import {
@@ -41,6 +42,7 @@ export interface DialogRefs {
   home: MatDialogRef<HomeComponent>;
   newDraw: MatDialogRef<NewDrawComponent>;
   documentation: MatDialogRef<DocumentationComponent>;
+  galery: MatDialogRef<GaleryComponent>;
 }
 
 @Component({
@@ -111,9 +113,9 @@ export class AppComponent implements AfterViewInit {
     this.dialogRefs = {
       home: (undefined as unknown) as MatDialogRef<HomeComponent>,
       newDraw: (undefined as unknown) as MatDialogRef<NewDrawComponent>,
-      documentation: (undefined as unknown) as MatDialogRef<
-        DocumentationComponent
-      >
+      documentation:
+          (undefined as unknown) as MatDialogRef<DocumentationComponent>,
+      galery: (undefined as unknown) as MatDialogRef<GaleryComponent>,
     };
   }
 
@@ -146,6 +148,7 @@ export class AppComponent implements AfterViewInit {
         this.openNewDrawDialog();
         break;
       case OverlayPages.Library:
+        this.openGaleryDialog(true);
         break;
       case OverlayPages.Documentation:
         this.openDocumentationDialog(true);
@@ -195,6 +198,30 @@ export class AppComponent implements AfterViewInit {
   }
 
   private closeDocumentationDialog(fromHome: boolean): void {
+    if (fromHome) {
+      this.openHomeDialog();
+    }
+  }
+
+  private openGaleryDialog(fromHome: boolean): void {
+    const dialogOptions = {
+      width: '115vw',
+      height: '100vh',
+      panelClass: 'galery'
+    };
+    this.shortcutHanler.desactivateAll();
+    this.dialogRefs.galery = this.dialog.open(
+      GaleryComponent,
+      dialogOptions
+    );
+    this.dialogRefs.galery.disableClose = false;
+    this.dialogRefs.galery.afterClosed().subscribe(() => {
+      this.shortcutHanler.activateAll();
+      this.closeGaleryDialog(fromHome);
+    });
+  }
+
+  private closeGaleryDialog(fromHome: boolean): void {
     if (fromHome) {
       this.openHomeDialog();
     }
