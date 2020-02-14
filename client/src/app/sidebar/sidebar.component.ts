@@ -31,12 +31,17 @@ export class SidebarComponent implements AfterViewInit {
   @ViewChild('pencil', {
     static: false,
   })
-  protected pencilElRef: ElementRef<HTMLElement>
+  protected pencilElRef: ElementRef<HTMLElement>;
 
   @ViewChild('brush', {
     static: false,
   })
-  protected brushElRef: ElementRef<HTMLElement>
+  protected brushElRef: ElementRef<HTMLElement>;
+
+  @ViewChild('ellipse', {
+    static: false
+  })
+  protected ellipseElRef: ElementRef<HTMLElement>;
 
   @Output() protected documentationEv: EventEmitter<null>;
 
@@ -54,6 +59,7 @@ export class SidebarComponent implements AfterViewInit {
     this.toolToElRef[Tool.Line] = this.lineElRef;
     this.toolToElRef[Tool.Pencil] = this.pencilElRef;
     this.toolToElRef[Tool.Rectangle] = this.rectangleElRef;
+    this.toolToElRef[Tool.Ellipse] = this.ellipseElRef;
     this.toolSelectorService.onChange(
       (tool, old) => this.setTool(tool, old));
   }
@@ -84,5 +90,9 @@ export class SidebarComponent implements AfterViewInit {
 
   protected selectBrush(): void {
     this.toolSelectorService.set(Tool.Brush);
+  }
+
+  protected selectEllipse(): void {
+    this.toolSelectorService.set(Tool.Ellipse);
   }
 }
