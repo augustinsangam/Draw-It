@@ -1,6 +1,7 @@
 import express from 'express';
 import { IncomingMessage, ServerResponse } from 'http';
 import inversify from 'inversify';
+import { log } from 'util';
 
 import { Router } from './router';
 import { TYPES } from './types';
@@ -11,7 +12,12 @@ class Application {
 
 	constructor(@inversify.inject(TYPES.Router) router: Router) {
 		this.app = express();
-		this.app.use('/', router.router);
+		this.app.use((req, _res, next) => {
+			log(`\x1b[0;32m${req.httpVersion}\x1b[0m`);
+			next();
+		});
+		// Router must be the last middleware
+		this.app.use(router.router);
 	}
 
 	// from @types/koa

@@ -7,9 +7,8 @@ class Router {
 
 	constructor() {
 		this.router = express.Router();
-		this.router.get('/', (req, res) => {
+		this.router.get('/', (_req, res) => {
 			res.send('Hello, world!');
-			console.log(req.httpVersion);
 		});
 	}
 }
