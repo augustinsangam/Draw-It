@@ -8,7 +8,6 @@ import { RectangleService } from '../rectangle.service';
 
 enum ClickType {
   CLICKGAUCHE,
-  CLICKDROIT
 }
 
 @Component({
