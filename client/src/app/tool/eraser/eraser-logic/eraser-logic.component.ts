@@ -12,6 +12,7 @@ export class EraserLogicComponent extends ToolLogicDirective {
     super();
   }
 
+  // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
 
   }

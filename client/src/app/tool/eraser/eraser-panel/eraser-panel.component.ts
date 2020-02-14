@@ -12,6 +12,7 @@ export class EraserPanelComponent extends ToolPanelDirective {
     super(elementRef);
   }
 
+  // tslint:disable-next-line: use-lifecycle-interface
   ngOnInit() {
 
   }

@@ -44,6 +44,11 @@ export class SidebarComponent implements AfterViewInit {
   })
   protected eraserElRef: ElementRef<HTMLElement>
 
+  @ViewChild('selection', {
+    static: false,
+  })
+  protected selectionElRef: ElementRef<HTMLElement>
+
   @Output() protected documentationEv: EventEmitter<null>;
 
   private toolToElRef: ElementRef<HTMLElement>[];
@@ -57,10 +62,11 @@ export class SidebarComponent implements AfterViewInit {
   // Must be pubilc
   ngAfterViewInit() {
     this.toolToElRef[Tool.Brush] = this.brushElRef;
+    this.toolToElRef[Tool.Eraser] = this.eraserElRef;
     this.toolToElRef[Tool.Line] = this.lineElRef;
     this.toolToElRef[Tool.Pencil] = this.pencilElRef;
     this.toolToElRef[Tool.Rectangle] = this.rectangleElRef;
-    this.toolToElRef[Tool.Eraser] = this.eraserElRef;
+    this.toolToElRef[Tool.Selection] = this.selectionElRef;
     this.toolSelectorService.onChange(
       (tool, old) => this.setTool(tool, old));
   }

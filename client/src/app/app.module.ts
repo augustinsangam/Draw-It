@@ -49,6 +49,18 @@ import {
   PencilPanelComponent
 } from './tool/drawing-instruments/pencil/pencil-panel/pencil-panel.component';
 import {
+  EraserLogicComponent
+} from './tool/eraser/eraser-logic/eraser-logic.component';
+import {
+  EraserPanelComponent
+} from './tool/eraser/eraser-panel/eraser-panel.component';
+import {
+  SelectionLogicComponent
+} from './tool/selection/selection-logic/selection-logic.component';
+import {
+  SelectionPanelComponent
+} from './tool/selection/selection-panel/selection-panel.component';
+import {
   LineLogicComponent
 } from './tool/shape/line/line-logic/line-logic.component';
 import {
@@ -60,10 +72,6 @@ import {
 import {
   RectanglePanelComponent
 } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
-import { SelectionPanelComponent } from './tool/selection/selection-panel/selection-panel.component';
-import { SelectionLogicComponent } from './tool/selection/selection-logic/selection-logic.component';
-import { EraserPanelComponent } from './tool/eraser/eraser-panel/eraser-panel.component';
-import { EraserLogicComponent } from './tool/eraser/eraser-logic/eraser-logic.component';
 
 @NgModule({
   declarations: [
