@@ -1,5 +1,7 @@
 import { Component, ElementRef, OnDestroy, Renderer2 } from '@angular/core';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
+import { Point } from '../Point';
+import { Offset } from '../Offset';
 
 @Component({
   selector: 'app-selection-logic',
@@ -12,57 +14,7 @@ export class SelectionLogicComponent
   private boudingRect: ElementRef<SVGElement>;
   private allListenners: (() => void)[];
 
-  private startPoint: Point;
-  private currentPoint: Point;
-  private endPoint: Point;
-  private mouseIsDown: boolean;
-
-  private handlers = {
-    click: ($event: MouseEvent) => {
-      if ($event.target !== this.svgElRef.nativeElement
-        && this.samePoint(this.startPoint, this.endPoint) ) {
-        this.createRectangle($event.target as SVGElement);
-      } else if (!this.samePoint(this.startPoint, this.endPoint)) {
-        this.drawRectangle(this.startPoint, {
-          width: this.currentPoint.x - this.startPoint.x,
-          height: this.currentPoint.y - this.startPoint.y
-        });
-      } else {
-        this.deleteRectangle();
-        console.log('On supprime tout');
-      }
-    },
-
-    mousedown: ($event: MouseEvent) => {
-      this.startPoint = {
-        x : $event.x,
-        y : $event.y
-      };
-      this.mouseIsDown = true;
-    },
-
-    mousemouve: ($event: MouseEvent) => {
-      if (this.mouseIsDown) {
-        this.currentPoint = {
-          x : $event.x,
-          y : $event.y
-        };
-        this.drawRectangle(this.startPoint, {
-          width: this.currentPoint.x - this.startPoint.x,
-          height: this.currentPoint.y - this.startPoint.y
-        });
-      }
-    },
-
-    mouseup: ($event: MouseEvent) => {
-      this.endPoint = {
-        x : $event.x,
-        y : $event.y
-      };
-      this.mouseIsDown = false;
-    }
-
-  }
+  private mouse: MouseTracking;
 
   constructor(private renderer: Renderer2) {
     super();
@@ -72,89 +24,88 @@ export class SelectionLogicComponent
     this.allListenners = [];
   }
 
+  private handlers = {
+    click: ($event: MouseEvent) => {
+      if ($event.target !== this.svgElRef.nativeElement
+        && this.mouse.startPoint.equals(this.mouse.endPoint)) {
+        this.createBoudingRectangle($event.target as SVGElement);
+      } else if (!this.mouse.startPoint.equals(this.mouse.endPoint)) {
+        this.drawRectangle(this.mouse.startPoint, this.mouse.currentPoint);
+      } else {
+        this.deleteRectangle();
+        console.log('On supprime tout');
+      }
+    },
+
+    mousedown: ($event: MouseEvent) => {
+      this.mouse.startPoint = new Point($event.x, $event.y);
+      this.mouse.mouseIsDown = true;
+    },
+
+    mousemouve: ($event: MouseEvent) => {
+      if (this.mouse.mouseIsDown) {
+        this.mouse.currentPoint = new Point($event.x, $event.y);
+        this.drawRectangle(this.mouse.startPoint, this.mouse.currentPoint);
+      }
+    },
+
+    mouseup: ($event: MouseEvent) => {
+      this.mouse.endPoint = new Point($event.x, $event.y);
+      this.mouse.mouseIsDown = false;
+      this.deleteRectangle();
+    }
+
+  }
+
   // tslint:disable-next-line: use-lifecycle-interface
   ngOnInit() {
-    this.mouseIsDown = false;
+    const fakePoint = undefined as unknown as Point;
+    this.mouse = {
+      startPoint: fakePoint, currentPoint: fakePoint,
+      endPoint: fakePoint, mouseIsDown: false
+    };
+
     this.renderer.setStyle(this.svgElRef.nativeElement, 'cursor', 'default');
 
     this.allListenners.push(
       this.renderer.listen(this.svgElRef.nativeElement,
-      'click', this.handlers.click)
+        'click', this.handlers.click)
     );
-
     this.allListenners.push(
       this.renderer.listen(this.svgElRef.nativeElement,
         'mousedown', this.handlers.mousedown)
     );
-
     this.allListenners.push(
       this.renderer.listen(this.svgElRef.nativeElement,
         'mousemove', this.handlers.mousemouve)
     );
-
     this.allListenners.push(
       this.renderer.listen(this.svgElRef.nativeElement,
         'mouseup', this.handlers.mouseup)
     );
-
     this.renderer.appendChild(this.svgElRef.nativeElement,
       this.boudingRect.nativeElement);
-
   }
 
-  private createRectangle(element: SVGElement): void {
-    const offset: Offset = {
-      left: this.svgElRef.nativeElement.getBoundingClientRect().left,
-      top: this.svgElRef.nativeElement.getBoundingClientRect().top,
+  private createBoudingRectangle(element: SVGElement): void {
+    const svgOffset : Offset = {
+
     }
-    const thikness = this.getThikness(element);
-    console.log(thikness);
-    const domRec = element.getBoundingClientRect();
-
-    const startingPoint: Point = {
-      x : domRec.left - offset.left - thikness / 2,
-      y : domRec.top - thikness / 2
-    }
-
-    const offsetIncrement = this.getOffsetIncrement(element);
-
-    const dimensions: Dimensions = {
-      width: (domRec.width + thikness + offsetIncrement.left),
-      height: (domRec.height + thikness + + offsetIncrement.top)
-    }
-
-    this.drawRectangle(startingPoint, dimensions);
+    this.drawRectangle(this.mouse.startPoint, this.mouse.endPoint);
   }
 
-  private getOffsetIncrement(element: SVGElement): Offset {
-    return element.classList.contains('filter1') ? {
-        left : this.getThikness(element),
-        top : this.getThikness(element)
-      } : {
-        left : 0,
-        top : 0
-      }
-  }
-
-  private getThikness(element: SVGElement): number {
-    const strokeWidthAttribute = element.getAttribute('stroke-width');
-    if (!!strokeWidthAttribute) {
-      return parseInt(
-        strokeWidthAttribute as string, 10
-      );
-    } else {
-      return parseInt(
-        element.style.strokeWidth, 10
-      );
-    }
-  }
-
-  private drawRectangle(startingPoint: Point, dimensions: Dimensions) {
+  private drawRectangle(p1: Point, p2: Point) {
     const rec = this.boudingRect.nativeElement;
-    rec.setAttribute('x', startingPoint.x.toString());
-    rec.setAttribute('y', startingPoint.y.toString());
-    rec.setAttribute('width', dimensions.width.toString());
-    rec.setAttribute('height', dimensions.height.toString());
+    const startPoint = new Point(
+      Math.min(p1.x, p2.x), Math.min(p1.y, p2.y)
+    );
+    const endPoint = new Point(
+      Math.max(p1.x, p2.x), Math.max(p1.y, p2.y)
+    );
+    rec.setAttribute('x', startPoint.x.toString());
+    rec.setAttribute('y', startPoint.y.toString());
+    rec.setAttribute('width', (endPoint.x - startPoint.x).toString());
+    rec.setAttribute('height', (endPoint.y - startPoint.y).toString());
     rec.setAttribute('fill', 'none');
     rec.setAttribute('stroke', 'rgba(128, 128, 128, 0.7)');
     rec.setAttribute('stroke-width', '5');
@@ -166,31 +117,19 @@ export class SelectionLogicComponent
     this.boudingRect.nativeElement.setAttribute('height', '0');
   }
 
-  private samePoint(p1: Point, p2: Point): boolean {
-    return p1.x === p2.x && p1.y === p2.y;
-  }
-
   ngOnDestroy() {
     this.allListenners.forEach(end => {
       end();
     });
     this.renderer.removeChild(this.svgElRef.nativeElement,
-                              this.boudingRect.nativeElement);
+      this.boudingRect.nativeElement);
   }
 
 }
 
-interface Offset {
-  left: number,
-  top: number
-}
-
-interface Point {
-  x: number,
-  y: number,
-}
-
-interface Dimensions {
-  width: number,
-  height: number
+interface MouseTracking {
+  startPoint: Point,
+  currentPoint: Point,
+  endPoint: Point,
+  mouseIsDown: boolean
 }
