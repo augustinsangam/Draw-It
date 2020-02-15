@@ -93,6 +93,7 @@ export class SidebarComponent implements AfterViewInit {
   }
 
   protected selectEllipse(): void {
+    console.log('selecting Ellipse');
     this.toolSelectorService.set(Tool.Ellipse);
   }
 }

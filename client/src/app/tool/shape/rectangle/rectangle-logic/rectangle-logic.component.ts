@@ -17,6 +17,7 @@ enum ClickType {
 
 export class RectangleLogicComponent extends ToolLogicDirective
   implements OnDestroy {
+
   private rectangles: Rectangle[] = [];
   private currentRectangleIndex = -1;
   private onDrag = false;

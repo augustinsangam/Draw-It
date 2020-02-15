@@ -3,8 +3,8 @@ import {ColorService} from '../../../color/color.service';
 import {MathService} from '../../../mathematics/tool.math-service.service';
 import {ToolLogicDirective} from '../../../tool-logic/tool-logic.directive';
 import {Ellipse} from '../../common/Ellipse';
-import {EllipseService} from '../ellipse.service';
 import {Point} from '../../common/Point';
+import {EllipseService} from '../ellipse.service';
 
 enum ClickType {
   CLICKGAUCHE = 0,
@@ -19,10 +19,10 @@ export class EllipseLogicComponent extends ToolLogicDirective
   implements OnDestroy {
 
   private ellipses: Ellipse[] = [];
-  private allListeners: (() => void)[] = [];
-  private onDrag = false;
   private currentEllipseIndex = -1;
+  private onDrag = false;
   private currentPoint: Point;
+  private allListeners: (() => void)[] = [];
 
   constructor(
     private readonly service: EllipseService,
@@ -39,7 +39,8 @@ export class EllipseLogicComponent extends ToolLogicDirective
       this.svgElRef.nativeElement,
       'mouseDown',
       (mouseEv: MouseEvent) => {
-        this.initRectangle(mouseEv);
+        this.initEllipse(mouseEv);
+        console.log('onMouseDown');
       }
     );
 
@@ -49,7 +50,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
       (mouseEv: MouseEvent) => {
         if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
           this.viewTemporaryForm(mouseEv);
-          this.getEllipse().setOpacity(1.0);
+          this.getEllipse().setOpacity('1.0');
           this.onDrag = false;
         }
       }
@@ -59,7 +60,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
       this.svgElRef.nativeElement,
       'mouseMove',
       (mouseEv: MouseEvent) => {
-        if (this.onDrag === true) {
+        if (this.onDrag) {
           this.currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
           this.viewTemporaryForm(mouseEv);
         }
@@ -84,10 +85,11 @@ export class EllipseLogicComponent extends ToolLogicDirective
       onMouseUp,
       onKeyDown,
       onKeyUp
-    ]
+    ];
   }
 
   ngOnDestroy(): void {
+    this.allListeners.forEach(listener => listener());
   }
 
   private onKeyDown(keyEv: KeyboardEvent): void {
@@ -110,16 +112,25 @@ export class EllipseLogicComponent extends ToolLogicDirective
     return this.ellipses[this.currentEllipseIndex];
   }
 
-  private initRectangle(mouseEv: MouseEvent): void {
+  private initEllipse(mouseEv: MouseEvent): void {
+    console.log('init Ellipse');
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
       this.currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
       const ellipse = this.renderer.createElement('ellipse', this.svgNS);
       this.renderer.appendChild(this.svgElRef.nativeElement, ellipse);
       this.ellipses[++this.currentEllipseIndex] = new Ellipse(
-        // TODO
+        this.currentPoint,
+        this.renderer,
+        ellipse,
+        this.mathService
       );
       this.getEllipse().setParameters({
-        // TODO
+        borderWidth: this.service.borderOption ?
+          this.service.thickness.toString()
+          : '0',
+        borderColor: this.colorService.secondaryColor,
+        fillColor: this.colorService.primaryColor,
+        filled: this.service.fillOption
       });
       this.onDrag = true;
     }
