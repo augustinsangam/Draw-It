@@ -13,13 +13,13 @@ image: node:buster
       - client/**/*
 client-pre:
   stage: .pre
-  script: npm --prefix client/ ci
+  script: npm --prefix=client/ ci
   cache:
     <<: *client_cache
   <<: *client
 client-lint:
   stage: build
-  script: npm --prefix client/ run lint
+  script: npm --prefix=client/ run lint
   cache:
     <<: *client_cache
     policy: pull
@@ -29,7 +29,7 @@ client-test:
     - apt-get update -qq && apt-get install -y -qq firefox-esr
     - firefox --version
   script:
-    npm --prefix client/ run coverage -- --watch=false --browsers=FirefoxHeadless
+    npm --prefix=client/ run coverage -- --no-progress --watch=false --browsers=FirefoxHeadless
   cache:
     <<: *client_cache
     policy: pull
@@ -48,21 +48,21 @@ client-test:
       - server/**/*
 server-pre:
   stage: .pre
-  script: npm --prefix server/ i #ci
+  script: npm --prefix=server/ i #ci
   cache:
     <<: *server_cache
   <<: *server
 server-lint:
   stage: build
-  script: npm --prefix server/ run lint
+  script: npm --prefix=server/ run lint
   cache:
     <<: *server_cache
     policy: pull
   <<: *server
 server-test:
   script:
-    - npm --prefix server/ run build
-    - npm --prefix server/ run coverage #t
+    - npm --prefix=server/ run build
+    - npm --prefix=server/ run coverage #t
   cache:
     <<: *server_cache
     policy: pull
