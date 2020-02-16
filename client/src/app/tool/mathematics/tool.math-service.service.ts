@@ -73,4 +73,40 @@ export class MathService {
     }
     return { x: deltaX + initialPoint.x, y: deltaY + initialPoint.y };
   }
+
+  getPolynomeCornersFromRectangle(
+    mouseDownPoint: Point,
+    upLeftCorner: Point,
+    dimension: Dimension,
+    sides: number): Point [] {
+    const minSide = Math.min(dimension.width, dimension.height);
+
+    const points: Point [] = []
+    const initialPoint: Point = {x: 0, y: 0};
+    let angle = 0;
+    const sideLength = minSide / 2;
+    if (upLeftCorner.x < mouseDownPoint.x) {
+      initialPoint.x = mouseDownPoint.x - sideLength * (3 / 2);
+    } else {
+      initialPoint.x = mouseDownPoint.x + sideLength * (1 / 2)
+    }
+    if (upLeftCorner.y === mouseDownPoint.y) {
+      initialPoint.y = mouseDownPoint.y + minSide;
+    } else {
+      initialPoint.y = upLeftCorner.y + dimension.height;
+    }
+    points.push(initialPoint)
+    let i = 1;
+
+    while (i < sides) {
+    const lastPoint = {x: 0, y: 0};
+    lastPoint.x = points[i - 1].x + sideLength * Math.cos(angle);
+    lastPoint.y = points[i - 1].y - sideLength * Math.sin(angle);
+    console.log(lastPoint, 'dedaaaaaaans')
+    points.push({ x : lastPoint.x, y: lastPoint.y});
+    angle += (Math.PI * 2) / sides;
+    i += 1;
+  }
+    return points;
+  }
 }

@@ -9,7 +9,8 @@ export class Polygone extends AbstractShape {
   constructor(
     protected renderer: Renderer2,
     public element: ElementRef,
-    private mathService: MathService
+    private mathService: MathService,
+    private sides: number
   ) {
       super(renderer, element);
     }
@@ -23,7 +24,19 @@ export class Polygone extends AbstractShape {
   }
 
   drawPolygonFromRectangle(mouseDownPoint: Point, oppositePoint: Point): void {
-    this.mathService.getRectangleSize(mouseDownPoint, oppositePoint);
+    const dimensions = this.mathService.getRectangleSize(
+      mouseDownPoint,
+      oppositePoint
+    );
+    const upLeftCorner = this.mathService.getRectangleUpLeftCorner(
+      mouseDownPoint,
+      oppositePoint
+    );
+    const points: Point [] = this.mathService.getPolynomeCornersFromRectangle(
+     mouseDownPoint, upLeftCorner, dimensions, this.sides);
+    
+    console.log(points, 'yeeeeeeeeeeeeeeeeeeeeeee')
+    this.insertPolygonInSVG(points);
   }
 
 }

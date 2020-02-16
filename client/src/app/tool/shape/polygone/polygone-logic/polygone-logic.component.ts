@@ -60,6 +60,10 @@ implements OnDestroy {
           const currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
           this.visualisationRectangle.dragRectangle(
             this.mouseDownPoint, currentPoint);
+          console.log(currentPoint.x, currentPoint.y, 'weshh')
+
+          this.getPolygone().drawPolygonFromRectangle(
+            this.mouseDownPoint, currentPoint);
         }
       }
     );
@@ -107,7 +111,7 @@ implements OnDestroy {
       this.polygones.push(new Polygone(
         this.renderer,
         polygon,
-        this.mathService));
+        this.mathService, 7));
       }
     this.setPolygoneProperties();
   }
