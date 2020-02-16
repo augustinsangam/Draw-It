@@ -1,4 +1,4 @@
-import { ElementRef, Injectable } from '@angular/core';
+import { ElementRef, EventEmitter, Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -6,6 +6,11 @@ import { ElementRef, Injectable } from '@angular/core';
 export class SvgService {
 
   instance: ElementRef<SVGElement>;
+  selectAllElements: EventEmitter<null>;
+
+  constructor() {
+    this.selectAllElements = new EventEmitter();
+  }
 
   changeBackgroundColor(color: string) {
     this.instance.nativeElement.style.backgroundColor = color;

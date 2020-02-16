@@ -1,4 +1,6 @@
 import { Component, ElementRef, OnDestroy, Renderer2 } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { SvgService } from 'src/app/svg/svg.service';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { MultipleSelection } from '../MultipleSelection';
 import { Offset } from '../Offset';
@@ -15,15 +17,17 @@ export class SelectionLogicComponent
 
   private boudingRect: ElementRef<SVGElement>;
   private allListenners: (() => void)[];
+  private allSubscriptions: Subscription[];
   // private selectedElements: SVGElement[];
   private mouse: MouseTracking;
 
-  constructor(private renderer: Renderer2) {
+  constructor(private renderer: Renderer2, private svgService: SvgService) {
     super();
     this.boudingRect = new ElementRef(
       this.renderer.createElement('rect', this.svgNS)
     );
     this.allListenners = [];
+    this.allSubscriptions = [];
     // this.selectedElements = [];
   }
 
@@ -90,6 +94,16 @@ export class SelectionLogicComponent
     );
     this.renderer.appendChild(this.svgElRef.nativeElement,
       this.boudingRect.nativeElement);
+
+    const subscription = this.svgService.selectAllElements.subscribe(() => {
+      const [startPoint, endPoint] = this.orderPoint(
+        new Point(0, 0),
+        new Point(this.svgService.instance.nativeElement.scrollWidth,
+          this.svgService.instance.nativeElement.scrollHeight)
+      );
+      this.applyMultipleSelection(startPoint, endPoint);
+    });
+    this.allSubscriptions.push(subscription);
   }
 
   private createBoudingRectangle(element: SVGElement): void {
@@ -152,9 +166,8 @@ export class SelectionLogicComponent
   }
 
   ngOnDestroy() {
-    this.allListenners.forEach(end => {
-      end();
-    });
+    this.allListenners.forEach(end => end());
+    this.allSubscriptions.forEach(sub => sub.unsubscribe());
     this.renderer.removeChild(this.svgElRef.nativeElement,
       this.boudingRect.nativeElement);
   }
