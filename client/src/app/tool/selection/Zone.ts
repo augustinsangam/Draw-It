@@ -23,7 +23,30 @@ export class Zone {
     );
   }
 
-  getPoints(): Point[] {
+  intersection(zone: Zone): [boolean, Zone] {
+    const left = Math.max(this.left, zone.left);
+    const right = Math.min(this.right, zone.right);
+    const top = Math.max(this.top, zone.top);
+    const bottom = Math.min(this.bottom, zone.bottom);
+    return [(left < right && top < bottom), new Zone(left, right, top, bottom)];
+  }
+
+  deepTestPass(element: SVGGeometryElement, point: SVGPoint): boolean {
+    for (let i = this.left; i <= this.right; i += 3) {
+      for (let j = this.top; j <= this.bottom; j += 3) {
+        point.x = i;
+        point.y = j;
+        const inFill = element.isPointInFill(point);
+        const inStroke = element.isPointInStroke(point);
+        if (inFill || inStroke) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  getPoints(): [Point, Point] {
     return [new Point(this.left, this.top), new Point(this.right, this.bottom)];
   }
 
