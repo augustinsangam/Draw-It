@@ -35,9 +35,10 @@ export class EllipseLogicComponent extends ToolLogicDirective
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit(): void {
+    console.log('ngOnInit');
     const onMouseDown = this.renderer.listen(
       this.svgElRef.nativeElement,
-      'mouseDown',
+      'mousedown',
       (mouseEv: MouseEvent) => {
         this.initEllipse(mouseEv);
         console.log('onMouseDown');
@@ -46,7 +47,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
 
     const onMouseUp = this.renderer.listen(
       'document',
-      'mouseUp',
+      'mouseup',
       (mouseEv: MouseEvent) => {
         if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
           this.viewTemporaryForm(mouseEv);
@@ -58,7 +59,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
 
     const onMouseMove = this.renderer.listen(
       this.svgElRef.nativeElement,
-      'mouseMove',
+      'mousemove',
       (mouseEv: MouseEvent) => {
         if (this.onDrag) {
           this.currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
@@ -69,13 +70,13 @@ export class EllipseLogicComponent extends ToolLogicDirective
 
     const onKeyDown = this.renderer.listen(
       this.svgElRef.nativeElement,
-      'keyDown',
+      'keydown',
       (keyEv: KeyboardEvent) => this.onKeyDown(keyEv)
     );
 
     const onKeyUp = this.renderer.listen(
       this.svgElRef.nativeElement,
-      'keyUp',
+      'keyup',
       (keyEv: KeyboardEvent) => this.onKeyUp(keyEv)
     );
 

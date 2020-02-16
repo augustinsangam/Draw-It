@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 
+import {Radius} from '../shape/common/Ellipse';
 import { Point } from '../shape/common/Point';
 import { Dimension } from '../shape/common/Rectangle';
 
@@ -52,6 +53,27 @@ export class MathService {
     } else {
       return initialPoint;
     }
+  }
+
+  getEllipseRadius(initialPoint: Point, oppositePoint: Point): Radius {
+    const rectDims = this.getRectangleSize(initialPoint, oppositePoint);
+    // case ++
+    return {
+      rx: rectDims.width / 2,
+      ry: rectDims.height / 2
+    }
+  }
+
+  getEllipseCenter(initialPoint: Point, oppositePoint: Point): Point {
+    const initToCenterv: Point = {
+      x: 0.5 * (oppositePoint.x - initialPoint.x),
+      y: 0.5 * (oppositePoint.y - initialPoint.y)
+    };
+
+    return {
+      x: initialPoint.x + initToCenterv.x,
+      y: initialPoint.y + initToCenterv.y
+    };
   }
 
   getRectangleSize(initialPoint: Point, oppositePoint: Point): Dimension {

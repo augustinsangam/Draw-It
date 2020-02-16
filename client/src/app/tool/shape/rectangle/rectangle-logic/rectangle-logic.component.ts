@@ -40,8 +40,9 @@ export class RectangleLogicComponent extends ToolLogicDirective
       'mousedown',
       (mouseEv: MouseEvent) => {
         this.initRectangle(mouseEv);
+        console.log('onMouseDown');
       }
-    );
+  );
 
     const onMouseMove = this.renderer.listen(
       this.svgElRef.nativeElement,

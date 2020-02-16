@@ -19,44 +19,44 @@ export class Ellipse {
     console.log('ellipse constructor');
   }
 
-  insertEllipseInSVG(center: Point, dimension: Dimension) {
-    this.renderer.setAttribute(this.element, 'cx', center.x.toString());
-    this.renderer.setAttribute(this.element, 'cy', center.y.toString());
+  insertEllipseInSVG(center: Point, radius: Radius) {
+    this.renderer.setAttribute(this.element, 'cx', (center.x).toString());
+    this.renderer.setAttribute(this.element, 'cy', (center.y).toString());
     this.renderer.setAttribute(
       this.element,
       'rx',
-      (dimension.width * 0.5).toString()
+      (radius.rx).toString()
     );
     this.renderer.setAttribute(
       this.element,
       'ry',
-      (dimension.height * 0.5).toString()
+      (radius.ry).toString()
     );
   }
 
   simulateEllipse(oppositePoint: Point): void {
-    const dimensions = this.mathService.getRectangleSize(
+    const radius = this.mathService.getEllipseRadius(
       this.initialPoint,
       oppositePoint
     );
-    const transformedPoint = this.mathService.getRectangleUpLeftCorner(
+    const center = this.mathService.getEllipseCenter(
       this.initialPoint,
       oppositePoint
     );
-    this.insertEllipseInSVG(transformedPoint, dimensions);
+    this.insertEllipseInSVG(center, radius);
     this.setOpacity(SEMIOPACITY);
   }
 
   simulateCircle(oppositePoint: Point): void {
-    const dimensions = this.mathService.getRectangleSize(
+    const radius = this.mathService.getEllipseRadius(
       this.initialPoint,
       oppositePoint
     );
-    const transformedPoint = this.mathService.getRectangleUpLeftCorner(
+    const center = this.mathService.getEllipseCenter(
       this.initialPoint,
       oppositePoint
     );
-    this.insertEllipseInSVG(transformedPoint, dimensions);
+    this.insertEllipseInSVG(center, radius);
     this.setOpacity(SEMIOPACITY);
   }
 
@@ -80,9 +80,11 @@ export class Ellipse {
 
 }
 
-interface Dimension {
-  width: number,
-  height: number
+// TODO maybe move it to somewhere else, it is exported because needed
+//  in tool.math-service.service.ts
+export interface Radius {
+  ry: number
+  rx: number,
 }
 
 interface Style {
