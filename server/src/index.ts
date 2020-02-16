@@ -22,14 +22,6 @@ s.launch()
 		console.error('Unable to start server');
 		console.error(err);
 	});
-
-/*
-let xhr = new XMLHttpRequest();
-xhr.open('POST', 'http://[::1]:8080/send', true);
-xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-let enc = new TextEncoder();
-xhr.send(enc.encode('hello world'));
-*/
 /*
 interface AttrT {
 	k: string;

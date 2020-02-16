@@ -1,6 +1,6 @@
 import { createServer, Server as HttpServer } from 'http';
 import inversify from 'inversify';
-import { ListenOptions } from 'net';
+import { ListenOptions, Socket } from 'net';
 import { promisify } from 'util';
 
 import { Application } from './application';
@@ -10,6 +10,7 @@ import { TYPES } from './types';
 @inversify.injectable()
 class Server {
 	private readonly listenOptions: ListenOptions;
+	private readonly openedSockets: Set<Socket>;
 	private readonly srv: HttpServer;
 
 	constructor(
@@ -21,8 +22,13 @@ class Server {
 			ipv6Only: true,
 			port: 8080,
 		};
+		this.openedSockets = new Set<Socket>();
 		this.srv = createServer();
 		this.srv.on('request', this.app.callback());
+		this.srv.on('connection', socket => {
+			this.openedSockets.add(socket);
+			socket.on('close', () => this.openedSockets.delete(socket));
+		});
 		// TODO: ws
 	}
 
@@ -32,6 +38,10 @@ class Server {
 	}
 
 	async close(): Promise<void> {
+		setTimeout(
+			() => this.openedSockets.forEach(socket => socket.destroy()),
+			3000,
+		);
 		// github.com/nodejs/node/blob/master/doc/api/util.md#utilpromisifyoriginal
 		const closePromise = promisify(this.srv.close).bind(this.srv);
 		await closePromise();

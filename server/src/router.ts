@@ -31,11 +31,13 @@ class Router {
 		};
 	}
 
+	// medium.com/@dineshuthakota/how-to-save-file-in-mongodb-using-node-js-1a9d09b019c1
 	private postData(): express.RequestHandler {
-		return (req, _res, next): void => {
+		return (req, res, next): void => {
 			console.log('hi');
-			console.log(req.headers);
-			console.log(req.body);
+			//console.log(req.headers);
+			//console.log(req.body);
+			res.send('ok');
 			next();
 		};
 	}
