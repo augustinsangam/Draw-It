@@ -23,6 +23,10 @@ export class ZoneSelection {
     });
   }
 
+  getPoints(): Point[] {
+    return this.zone.getPoints();
+  }
+
   private getZone(element: SVGElement): Zone {
     const thikness = this.getThikness(element);
     const domRectangle = element.getBoundingClientRect();

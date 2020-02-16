@@ -1,3 +1,4 @@
+import { Point } from './Point';
 
 export class Zone {
 
@@ -20,6 +21,10 @@ export class Zone {
       Math.min(this.top, zone.top),
       Math.max(this.bottom, zone.bottom)
     );
+  }
+
+  getPoints(): Point[] {
+    return [new Point(this.left, this.top), new Point(this.right, this.bottom)];
   }
 
 }
