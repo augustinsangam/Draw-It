@@ -58,7 +58,6 @@ describe('RectangleLogicComponent', () => {
 
   it('initRectangle should initialise all the atributes ', () => {
     expect(component['rectangles']).toEqual([]);
-    expect(component['currentRectangleIndex']).toEqual(-1);
     expect(component['onDrag']).toBeFalsy();
     const event = createClickMouseEvent('mousedown');
     component['initRectangle'](event);
@@ -66,13 +65,13 @@ describe('RectangleLogicComponent', () => {
     expect(component['currentPoint']).toEqual(pointExpected);
     expect(component['rectangles'].length).toEqual(1);
     expect(component['onDrag']).toBeTruthy();
-    expect(component['currentRectangleIndex']).toEqual(0);
+    expect(component['style']).toBeTruthy();
+    expect(component['mouseDownPoint']).toEqual(pointExpected);
   });
 
   it('the atributes are not initialised when the wrong button is clicked',
    () => {
     expect(component['rectangles']).toEqual([]);
-    expect(component['currentRectangleIndex']).toEqual(-1);
     expect(component['onDrag']).toBeFalsy();
     const event = new MouseEvent('mousedown', {
       offsetX: 10,
@@ -83,9 +82,9 @@ describe('RectangleLogicComponent', () => {
     component['initRectangle'](event);
     const pointExpected: Point = { x: event.offsetX, y: event.offsetY };
     expect(component['currentPoint']).not.toEqual(pointExpected);
+    expect(component['mouseDownPoint']).not.toEqual(pointExpected);
     expect(component['rectangles'].length).not.toEqual(1);
     expect(component['onDrag']).toBeFalsy();
-    expect(component['currentRectangleIndex']).toEqual(-1);
   });
 
   it('the listeners should handle key downs', () => {
@@ -114,7 +113,6 @@ describe('RectangleLogicComponent', () => {
   it ('the getPath() should return undifined if the index is out of bound',
   () => {
         component['initRectangle'](createClickMouseEvent('mousedown'));
-        component['currentRectangleIndex'] += 1;
         expect(component['getRectangle']()).toBeUndefined();
   });
 
@@ -308,7 +306,6 @@ describe('RectangleLogicComponent', () => {
   it('if the fill atribute is off, the opacity is null', fakeAsync(() => {
     component['initRectangle'](createClickMouseEvent('mousedown'));
     spyOn<any>(component, 'getRectangle').and.callThrough();
-    component['getRectangle']()['filled'] = false;
     const spy1 = spyOn<any>(
       component['getRectangle'](),
       'setOpacity'

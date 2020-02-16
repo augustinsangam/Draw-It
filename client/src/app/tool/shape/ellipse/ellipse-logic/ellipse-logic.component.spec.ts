@@ -1,4 +1,4 @@
-import { ElementRef, Renderer2 } from '@angular/core';
+import {ElementRef, Renderer2} from '@angular/core';
 import {
   async,
   ComponentFixture,
@@ -6,11 +6,12 @@ import {
   TestBed,
   tick
 } from '@angular/core/testing';
-import { ColorService } from '../../../color/color.service';
-import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
-import { Point } from '../../common/Point';
-import { EllipseService } from '../ellipse.service';
-import { EllipseLogicComponent } from './ellipse-logic.component';
+import {ColorService} from '../../../color/color.service';
+import {ToolLogicDirective} from '../../../tool-logic/tool-logic.directive';
+import {Point} from '../../common/Point';
+import {EllipseService} from '../ellipse.service';
+import {EllipseLogicComponent} from './ellipse-logic.component';
+// import {BackGroundProperties} from '../../common/AbstractShape';
 
 const createClickMouseEvent = (event: string): MouseEvent => {
   return new MouseEvent(event, {
@@ -58,21 +59,20 @@ describe('EllipseLogicComponent', () => {
 
   it('initEllipse should initialise all the atributes ', () => {
     expect(component['ellipses']).toEqual([]);
-    expect(component['currentEllipseIndex']).toEqual(-1);
     expect(component['onDrag']).toBeFalsy();
     const event = createClickMouseEvent('mousedown');
     component['initEllipse'](event);
     const pointExpected: Point = { x: event.offsetX, y: event.offsetY };
     expect(component['currentPoint']).toEqual(pointExpected);
+    expect(component['initialPoint']).toEqual(pointExpected);
     expect(component['ellipses'].length).toEqual(1);
     expect(component['onDrag']).toBeTruthy();
-    expect(component['currentEllipseIndex']).toEqual(0);
+    expect(component['style']).toBeTruthy();
   });
 
-  it('the atributes are not initialised when the wrong button is clicked',
+  it('the attributes are not initialised when the wrong button is clicked',
     () => {
       expect(component['ellipses']).toEqual([]);
-      expect(component['currentEllipseIndex']).toEqual(-1);
       expect(component['onDrag']).toBeFalsy();
       const event = new MouseEvent('mousedown', {
         offsetX: 10,
@@ -83,9 +83,9 @@ describe('EllipseLogicComponent', () => {
       component['initEllipse'](event);
       const pointExpected: Point = { x: event.offsetX, y: event.offsetY };
       expect(component['currentPoint']).not.toEqual(pointExpected);
+      expect(component['initialPoint']).not.toEqual(pointExpected);
       expect(component['ellipses'].length).not.toEqual(1);
       expect(component['onDrag']).toBeFalsy();
-      expect(component['currentEllipseIndex']).toEqual(-1);
   });
 
   it('the listeners should handle key downs', () => {
@@ -110,13 +110,6 @@ describe('EllipseLogicComponent', () => {
     component.ngOnInit();
     expect(component['allListeners'].length).toEqual(5);
   });
-
-  it ('the getPath() should return undifined if the index is out of bound',
-    () => {
-      component['initEllipse'](createClickMouseEvent('mousedown'));
-      // component['currentEllipseIndex'] += 1;
-      expect(component['getEllipse']()).toBeUndefined();
-    });
 
   it('the ellipse css is only defined by the ellipseService'
     + 'and the colorService', () => {
@@ -268,20 +261,17 @@ describe('EllipseLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('mouseUp should call viewTemporaryForm and setOpacity', fakeAsync(() => {
+  it('mouseUp should call viewTemporaryForm and ' +
+    'set style opacity', fakeAsync(() => {
     component['initEllipse'](createClickMouseEvent('mousedown'));
     const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
     spyOn<any>(component, 'getEllipse').and.callThrough();
-    const spy2 = spyOn<any>(
-      component['getEllipse'](),
-      'setOpacity'
-    ).and.callThrough();
     document.dispatchEvent(
       new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
     );
     setTimeout(() => {
       expect(spy1).toHaveBeenCalled();
-      expect(spy2).toHaveBeenCalled();
+      expect(component['style'].opacity).toEqual('1');
     }, 500);
     tick(500);
   }));
@@ -290,34 +280,13 @@ describe('EllipseLogicComponent', () => {
     component['initEllipse'](createClickMouseEvent('mousedown'));
     const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
     spyOn<any>(component, 'getEllipse').and.callThrough();
-    const spy2 = spyOn<any>(
-      component['getEllipse'](),
-      'setOpacity'
-    ).and.callThrough();
     document.dispatchEvent(
       new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
     );
     component['onDrag'] = false;
     setTimeout(() => {
       expect(spy1).toHaveBeenCalled();
-      expect(spy2).toHaveBeenCalled();
-    }, 500);
-    tick(500);
-  }));
-
-  it('if the fill atribute is off, the opacity is null', fakeAsync(() => {
-    component['initEllipse'](createClickMouseEvent('mousedown'));
-    spyOn<any>(component, 'getEllipse').and.callThrough();
-    component['getEllipse']()['filled'] = false;
-    const spy1 = spyOn<any>(
-      component['getEllipse'](),
-      'setOpacity'
-    ).and.callThrough();
-    document.dispatchEvent(
-      new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
-    );
-    setTimeout(() => {
-      expect(spy1).toHaveBeenCalled();
+      expect(component['style'].opacity).toEqual('1');
     }, 500);
     tick(500);
   }));
