@@ -3,7 +3,7 @@ import {TestBed} from '@angular/core/testing';
 import {Point} from '../shape/common/Point';
 import {MathService} from './tool.math-service.service';
 
-fdescribe('MathService', () => {
+describe('MathService', () => {
   let service: MathService;
 
   beforeEach(() => {
