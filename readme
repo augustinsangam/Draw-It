@@ -55,7 +55,9 @@ ABBREVIATIONS {{{
 	- cap = capacity
 	- ctx = context
 	- el = element
+	- err = error
 	- ev = event
+	- ex = exception
 	- idx = index
 	- len = length
 	- msg = message

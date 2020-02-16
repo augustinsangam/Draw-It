@@ -1,7 +1,8 @@
 import express from 'express';
+import flatbuffers from 'flatbuffers';
 import inversify from 'inversify';
-import { log } from 'util';
 
+import { Attr, Element } from './data_generated';
 import { Database } from './database';
 import { TYPES } from './types';
 
@@ -11,16 +12,8 @@ class Router {
 
 	constructor(@inversify.inject(TYPES.Database) private readonly db: Database) {
 		this._router = express.Router();
-		db.connect()
-			.then(internalDB => {
-				log(`Successfully connected to “${internalDB.databaseName}”`);
-				//console.log(internalDB.collection('draw'));
-				//mongodb.Binary();
-				//collection.insertOne('yoo');
-				this.router.get('/', this.getHelloWorld());
-				this.router.post('/send', this.postData());
-			})
-			.catch(e => console.error(e));
+		this.router.get('/', this.getHelloWorld());
+		this.router.post('/send', this.postData());
 	}
 
 	get router(): express.Router {
@@ -30,6 +23,10 @@ class Router {
 	private getHelloWorld(): express.RequestHandler {
 		return (_req, res, next): void => {
 			res.send('Hello, world!');
+			console.log(this.db.db?.databaseName);
+			//console.log(internalDB.collection('draw'));
+			//mongodb.Binary();
+			//collection.insertOne('yoo');
 			next();
 		};
 	}

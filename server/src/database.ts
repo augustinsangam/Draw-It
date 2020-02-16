@@ -24,6 +24,10 @@ class Database {
 		await this.client.connect();
 		return (this._db = this.client.db(dbName));
 	}
+
+	close(force?: boolean): Promise<void> {
+		return this.client.close(force);
+	}
 }
 
 export { Database };

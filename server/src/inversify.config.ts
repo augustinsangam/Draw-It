@@ -9,7 +9,10 @@ import { TYPES } from './types';
 
 const myContainer = new inversify.Container();
 myContainer.bind<Application>(TYPES.Application).to(Application);
-myContainer.bind<Database>(TYPES.Database).to(Database);
+myContainer
+	.bind<Database>(TYPES.Database)
+	.to(Database)
+	.inSingletonScope();
 myContainer.bind<Router>(TYPES.Router).to(Router);
 myContainer.bind<Server>(TYPES.Server).to(Server);
 
