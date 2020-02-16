@@ -61,6 +61,12 @@ import {
   LinePanelComponent
 } from './tool/shape/line/line-panel/line-panel.component';
 import {
+  PolygoneLogicComponent
+} from './tool/shape/polygone/polygone-logic/polygone-logic.component';
+import {
+  PolygonePanelComponent
+} from './tool/shape/polygone/polygone-panel/polygone-panel.component';
+import {
   RectangleLogicComponent
 } from './tool/shape/rectangle/rectangle-logic/rectangle-logic.component';
 import {
@@ -91,6 +97,8 @@ import {
     RectanglePanelComponent,
     SidebarComponent,
     SvgComponent,
+    PolygoneLogicComponent,
+    PolygonePanelComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -123,6 +131,8 @@ import {
     PencilPanelComponent,
     RectangleLogicComponent,
     RectanglePanelComponent,
+    PolygoneLogicComponent,
+    PolygonePanelComponent,
   ],
   bootstrap: [
     AppComponent,

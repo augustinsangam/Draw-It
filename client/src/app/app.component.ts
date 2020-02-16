@@ -1,14 +1,28 @@
-import {AfterViewInit, Component, ElementRef, HostListener, ViewChild} from '@angular/core';
-import {MatDialog, MatDialogRef} from '@angular/material';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  ViewChild
+} from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
-import {DocumentationComponent} from './pages/documentation/documentation.component';
-import {HomeComponent} from './pages/home/home.component';
-import {NewDrawComponent} from './pages/new-draw/new-draw.component';
-import {Shortcut, ShortcutCallBack, ShortcutHandlerService} from './shortcut-handler.service';
-import {SvgService} from './svg/svg.service';
-import {ColorService} from './tool/color/color.service';
-import {ToolSelectorService} from './tool/tool-selector/tool-selector.service';
-import {Tool} from './tool/tool.enum';
+import {
+  DocumentationComponent
+} from './pages/documentation/documentation.component';
+import { HomeComponent } from './pages/home/home.component';
+import { NewDrawComponent } from './pages/new-draw/new-draw.component';
+import {
+  Shortcut,
+  ShortcutCallBack,
+  ShortcutHandlerService
+} from './shortcut-handler.service';
+import { SvgService } from './svg/svg.service';
+import { ColorService } from './tool/color/color.service';
+import {
+  ToolSelectorService
+} from './tool/tool-selector/tool-selector.service';
+import { Tool } from './tool/tool.enum';
 
 export interface NewDrawOptions {
   width: number;
@@ -60,7 +74,7 @@ export class AppComponent implements AfterViewInit {
     private readonly toolSelectorService: ToolSelectorService,
     private colorService: ColorService,
     private svgService: SvgService,
-    private shortcutHanler: ShortcutHandlerService,
+    private shortcutHanler: ShortcutHandlerService
   ) {
     this.drawInProgress = false;
     this.drawOption = { height: 0, width: 0, color: '' };
@@ -81,6 +95,9 @@ export class AppComponent implements AfterViewInit {
     this.handlersFunc.set(Shortcut.Digit2, () =>
       this.toolSelectorService.set(Tool.Ellipse)
     );
+    this.handlersFunc.set(Shortcut.Digit3, () =>
+    this.toolSelectorService.set(Tool.Polygone)
+  );
     this.handlersFunc.set(Shortcut.O, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();

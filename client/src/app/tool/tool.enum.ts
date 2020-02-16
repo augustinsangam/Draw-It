@@ -6,6 +6,7 @@ export enum Tool {
   Pencil,
   Rectangle,
   Ellipse,
+  Polygone,
   _Len,
   _None,
 }
