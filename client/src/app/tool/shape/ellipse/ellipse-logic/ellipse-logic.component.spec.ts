@@ -1,4 +1,4 @@
-import { ElementRef, Renderer2 } from '@angular/core';
+import {ElementRef, Renderer2} from '@angular/core';
 import {
   async,
   ComponentFixture,
@@ -6,11 +6,12 @@ import {
   TestBed,
   tick
 } from '@angular/core/testing';
-import { ColorService } from '../../../color/color.service';
-import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
-import { Point } from '../../common/Point';
-import { RectangleService } from '../rectangle.service';
-import { RectangleLogicComponent } from './rectangle-logic.component';
+import {ColorService} from '../../../color/color.service';
+import {ToolLogicDirective} from '../../../tool-logic/tool-logic.directive';
+import {Point} from '../../common/Point';
+import {EllipseService} from '../ellipse.service';
+import {EllipseLogicComponent} from './ellipse-logic.component';
+// import {BackGroundProperties} from '../../common/AbstractShape';
 
 const createClickMouseEvent = (event: string): MouseEvent => {
   return new MouseEvent(event, {
@@ -19,21 +20,21 @@ const createClickMouseEvent = (event: string): MouseEvent => {
     button: 0
   } as MouseEventInit);
 };
-
 // tslint:disable:no-string-literal
-describe('RectangleLogicComponent', () => {
-  let component: RectangleLogicComponent;
-  let fixture: ComponentFixture<RectangleLogicComponent>;
+describe('EllipseLogicComponent', () => {
+  let component: EllipseLogicComponent;
+  let fixture: ComponentFixture<EllipseLogicComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [RectangleLogicComponent, ToolLogicDirective],
-      providers: [Renderer2, ColorService, RectangleService]
-    }).compileComponents();
+      declarations: [EllipseLogicComponent, ToolLogicDirective],
+      providers: [Renderer2, ColorService, EllipseService]
+    })
+    .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(RectangleLogicComponent);
+    fixture = TestBed.createComponent(EllipseLogicComponent);
     component = fixture.componentInstance;
     component.svgElRef = new ElementRef<SVGElement>(
       document.createElementNS('http://www.w3.org/2000/svg', 'svg')
@@ -45,8 +46,8 @@ describe('RectangleLogicComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('mousedown should call the initRectangle function', fakeAsync(() => {
-    const spy1 = spyOn<any>(component, 'initRectangle').and.callThrough();
+  it('mousedown should call the initEllipse function', fakeAsync(() => {
+    const spy1 = spyOn<any>(component, 'initEllipse').and.callThrough();
     component.svgElRef.nativeElement.dispatchEvent(
       createClickMouseEvent('mousedown')
     );
@@ -56,35 +57,35 @@ describe('RectangleLogicComponent', () => {
     tick(500);
   }));
 
-  it('initRectangle should initialise all the atributes ', () => {
-    expect(component['rectangles']).toEqual([]);
+  it('initEllipse should initialise all the atributes ', () => {
+    expect(component['ellipses']).toEqual([]);
     expect(component['onDrag']).toBeFalsy();
     const event = createClickMouseEvent('mousedown');
-    component['initRectangle'](event);
+    component['initEllipse'](event);
     const pointExpected: Point = { x: event.offsetX, y: event.offsetY };
     expect(component['currentPoint']).toEqual(pointExpected);
-    expect(component['rectangles'].length).toEqual(1);
+    expect(component['initialPoint']).toEqual(pointExpected);
+    expect(component['ellipses'].length).toEqual(1);
     expect(component['onDrag']).toBeTruthy();
     expect(component['style']).toBeTruthy();
-    expect(component['mouseDownPoint']).toEqual(pointExpected);
   });
 
-  it('the atributes are not initialised when the wrong button is clicked',
-   () => {
-    expect(component['rectangles']).toEqual([]);
-    expect(component['onDrag']).toBeFalsy();
-    const event = new MouseEvent('mousedown', {
-      offsetX: 10,
-      offsetY: 30,
-      button: 1 // right click.
-    } as MouseEventInit);
-    component['service'].borderOption = false;
-    component['initRectangle'](event);
-    const pointExpected: Point = { x: event.offsetX, y: event.offsetY };
-    expect(component['currentPoint']).not.toEqual(pointExpected);
-    expect(component['mouseDownPoint']).not.toEqual(pointExpected);
-    expect(component['rectangles'].length).not.toEqual(1);
-    expect(component['onDrag']).toBeFalsy();
+  it('the attributes are not initialised when the wrong button is clicked',
+    () => {
+      expect(component['ellipses']).toEqual([]);
+      expect(component['onDrag']).toBeFalsy();
+      const event = new MouseEvent('mousedown', {
+        offsetX: 10,
+        offsetY: 30,
+        button: 1 // right click.
+      } as MouseEventInit);
+      component['service'].borderOption = false;
+      component['initEllipse'](event);
+      const pointExpected: Point = { x: event.offsetX, y: event.offsetY };
+      expect(component['currentPoint']).not.toEqual(pointExpected);
+      expect(component['initialPoint']).not.toEqual(pointExpected);
+      expect(component['ellipses'].length).not.toEqual(1);
+      expect(component['onDrag']).toBeFalsy();
   });
 
   it('the listeners should handle key downs', () => {
@@ -110,17 +111,11 @@ describe('RectangleLogicComponent', () => {
     expect(component['allListeners'].length).toEqual(5);
   });
 
-  it ('the getPath() should return undifined if the index is out of bound',
-  () => {
-        component['initRectangle'](createClickMouseEvent('mousedown'));
-        expect(component['getRectangle']()).toBeUndefined();
-  });
-
-  it('the rectangle css is only defined by the rectangleService'
-   + 'and the colorService', () => {
+  it('the ellipse css is only defined by the ellipseService'
+    + 'and the colorService', () => {
     const event = createClickMouseEvent('mousedown');
-    component['initRectangle'](event);
-    const spy = spyOn<any>(component['getRectangle'](), 'setParameters');
+    component['initEllipse'](event);
+    const spy = spyOn<any>(component['getEllipse'](), 'setParameters');
     component['service'].borderOption = false;
     component['service'].fillOption = true;
     component['colorService'].secondaryColor = 'black';
@@ -131,7 +126,7 @@ describe('RectangleLogicComponent', () => {
       fillColor: 'red',
       filled: true
     };
-    component['initRectangle'](event);
+    component['initEllipse'](event);
     expect(spy).not.toHaveBeenCalledWith(style);
   });
 
@@ -164,15 +159,15 @@ describe('RectangleLogicComponent', () => {
     tick(500);
   }));
 
-  it('viewTemporaryForm should call the function simulateRectangle'
-   + 'on mouseMove', fakeAsync(() => {
-    component['initRectangle'](createClickMouseEvent('mousedown'));
+  it('viewTemporaryForm should call the function simulateEllipse'
+    + 'on mouseMove', fakeAsync(() => {
+    component['initEllipse'](createClickMouseEvent('mousedown'));
     component.svgElRef.nativeElement.dispatchEvent(
       createClickMouseEvent('mousedown')
     );
     const spy = spyOn<any>(
-      component['getRectangle'](),
-      'simulateRectangle'
+      component['getEllipse'](),
+      'simulateEllipse'
     ).and.callThrough();
     component.svgElRef.nativeElement.dispatchEvent(
       createClickMouseEvent('mousemove')
@@ -183,10 +178,10 @@ describe('RectangleLogicComponent', () => {
     tick(500);
   }));
 
-  it('viewTemporaryForm should call the function simulateSquare'
-   + 'when shift is pressed ', fakeAsync(() => {
-    component['initRectangle'](createClickMouseEvent('mousedown'));
-    const spy1 = spyOn<any>(component['getRectangle'](), 'simulateSquare');
+  it('viewTemporaryForm should call the function simulateCircle'
+    + 'when shift is pressed ', fakeAsync(() => {
+    component['initEllipse'](createClickMouseEvent('mousedown'));
+    const spy1 = spyOn<any>(component['getEllipse'](), 'simulateCircle');
     const event: MouseEvent = new MouseEvent('mousemove', {
       offsetX: 10,
       offsetY: 30,
@@ -197,34 +192,34 @@ describe('RectangleLogicComponent', () => {
     expect(spy1).toHaveBeenCalled();
   }));
 
-  it('a pressed shift should call simulateSquare', () => {
-    component['initRectangle'](createClickMouseEvent('mousedown'));
+  it('a pressed shift should call simulateCircle', () => {
+    component['initEllipse'](createClickMouseEvent('mousedown'));
     const event = new KeyboardEvent('window:keydown', {
       code: 'ShiftRight',
       key: 'Shift'
     });
     const spy = spyOn<any>(
-      component['getRectangle'](),
-      'simulateSquare'
+      component['getEllipse'](),
+      'simulateCircle'
     ).and.callThrough();
     component['onKeyDown'](event);
     expect(spy).toHaveBeenCalled();
   });
 
   it('#if it is not on onDrag, keyEvent should not call any function', () => {
-    component['initRectangle'](createClickMouseEvent('mousedown'));
+    component['initEllipse'](createClickMouseEvent('mousedown'));
     const event1 = new KeyboardEvent('window:keydown', {
       code: 'ShiftRight',
       key: 'Shift'
     });
     component['onDrag'] = false;
     const spy1 = spyOn<any>(
-      component['getRectangle'](),
-      'simulateSquare'
+      component['getEllipse'](),
+      'simulateCircle'
     ).and.callThrough();
     const spy2 = spyOn<any>(
-      component['getRectangle'](),
-      'simulateRectangle'
+      component['getEllipse'](),
+      'simulateEllipse'
     ).and.callThrough();
     component['onKeyDown'](event1);
     const event2 = new KeyboardEvent('window:keyup', {});
@@ -234,107 +229,83 @@ describe('RectangleLogicComponent', () => {
   });
 
   it('#if it is not on ShiftKey, keyDown should not call any function', () => {
-    component['initRectangle'](createClickMouseEvent('mousedown'));
+    component['initEllipse'](createClickMouseEvent('mousedown'));
     const event1 = new KeyboardEvent('window:keydown', { code: 'BackSpace' });
     const event2 = new KeyboardEvent('window:keyup', { code: 'BackSpace' });
     component['onDrag'] = true;
     const spy1 = spyOn<any>(
-      component['getRectangle'](),
-      'simulateSquare'
+      component['getEllipse'](),
+      'simulateCircle'
     ).and.callThrough();
     component['onKeyDown'](event1);
     expect(spy1).not.toHaveBeenCalled();
     const spy2 = spyOn<any>(
-      component['getRectangle'](),
-      'simulateRectangle'
+      component['getEllipse'](),
+      'simulateEllipse'
     ).and.callThrough();
     component['onKeyUp'](event2);
     expect(spy2).not.toHaveBeenCalled();
   });
 
-  it('#onKeyUp should call simulateRectangle', () => {
-    component['initRectangle'](createClickMouseEvent('mousedown'));
+  it('#onKeyUp should call simulateEllipse', () => {
+    component['initEllipse'](createClickMouseEvent('mousedown'));
     const event = new KeyboardEvent('window:keyup', {
       code: 'ShiftRight',
       key: 'Shift'
     });
     const spy = spyOn<any>(
-      component['getRectangle'](),
-      'simulateRectangle'
+      component['getEllipse'](),
+      'simulateEllipse'
     ).and.callThrough();
     component['onKeyUp'](event);
     expect(spy).toHaveBeenCalled();
   });
 
-  it('mouseUp should call viewTemporaryForm and setOpacity', fakeAsync(() => {
-    component['initRectangle'](createClickMouseEvent('mousedown'));
+  it('mouseUp should call viewTemporaryForm and ' +
+    'set style opacity', fakeAsync(() => {
+    component['initEllipse'](createClickMouseEvent('mousedown'));
     const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
-    spyOn<any>(component, 'getRectangle').and.callThrough();
-    const spy2 = spyOn<any>(
-      component['getRectangle'](),
-      'setOpacity'
-    ).and.callThrough();
+    spyOn<any>(component, 'getEllipse').and.callThrough();
     document.dispatchEvent(
       new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
     );
     setTimeout(() => {
       expect(spy1).toHaveBeenCalled();
-      expect(spy2).toHaveBeenCalled();
+      expect(component['style'].opacity).toEqual('1');
     }, 500);
     tick(500);
   }));
 
   it('mouseUp should not do anything if its not on drag', fakeAsync(() => {
-    component['initRectangle'](createClickMouseEvent('mousedown'));
+    component['initEllipse'](createClickMouseEvent('mousedown'));
     const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
-    spyOn<any>(component, 'getRectangle').and.callThrough();
-    const spy2 = spyOn<any>(
-      component['getRectangle'](),
-      'setOpacity'
-    ).and.callThrough();
+    spyOn<any>(component, 'getEllipse').and.callThrough();
     document.dispatchEvent(
       new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
     );
     component['onDrag'] = false;
     setTimeout(() => {
       expect(spy1).toHaveBeenCalled();
-      expect(spy2).toHaveBeenCalled();
+      expect(component['style'].opacity).toEqual('1');
     }, 500);
     tick(500);
   }));
 
-  it('if the fill atribute is off, the opacity is null', fakeAsync(() => {
-    component['initRectangle'](createClickMouseEvent('mousedown'));
-    spyOn<any>(component, 'getRectangle').and.callThrough();
-    const spy1 = spyOn<any>(
-      component['getRectangle'](),
-      'setOpacity'
-    ).and.callThrough();
-    document.dispatchEvent(
-      new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
-    );
-    setTimeout(() => {
-      expect(spy1).toHaveBeenCalled();
-    }, 500);
-    tick(500);
-  }));
-
-  it('#onKeyUp should call simulateRectangle', () => {
-    component['initRectangle'](createClickMouseEvent('mousedown'));
+  it('#onKeyUp should call simulateEllipse', () => {
+    component['initEllipse'](createClickMouseEvent('mousedown'));
     const event = new KeyboardEvent('window:keyup', {
       code: 'ShiftRight',
       key: 'Shift'
     });
     const spy = spyOn<any>(
-      component['getRectangle'](),
-      'simulateRectangle'
+      component['getEllipse'](),
+      'simulateEllipse'
     ).and.callThrough();
     component['onKeyUp'](event);
     expect(spy).toHaveBeenCalled();
   });
 
-  it(
-    'ngOnDestroy should set "called" to true ' +
+  it('ngOnDestroy should set "called" to true ' +
     '(= call every listener´s functions)',
     () => {
       let called = false;
@@ -343,4 +314,5 @@ describe('RectangleLogicComponent', () => {
       expect(called).toBeTruthy();
     }
   );
+
 });
