@@ -115,7 +115,7 @@ describe('RectangleLogicComponent', () => {
         component['initRectangle'](createClickMouseEvent('mousedown'));
         component['currentRectangleIndex'] += 1;
         expect(component['getRectangle']()).toBeUndefined();
-      });
+  });
 
   it('the rectangle css is only defined by the rectangleService'
    + 'and the colorService', () => {
