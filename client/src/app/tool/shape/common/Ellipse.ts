@@ -1,21 +1,18 @@
 import {ElementRef, Renderer2} from '@angular/core';
 import {MathService} from '../../mathematics/tool.math-service.service';
+import {AbstractShape} from './AbstractShape';
 import {Point} from './Point';
 
-const SEMIOPACITY = '0.5';
-export class Ellipse {
-  private filled: boolean;
-  private initialPoint: Point;
-  private style: Style;
+export class Ellipse extends AbstractShape {
 
   constructor(
     initialPoint: Point,
-    private renderer: Renderer2,
-    private element: ElementRef,
+    protected renderer: Renderer2,
+    // TODO element sprivate ?
+    public element: ElementRef,
     private mathService: MathService
   ) {
-    this.filled = true;
-    this.initialPoint = initialPoint;
+    super(renderer, element);
   }
 
   insertEllipseInSVG(center: Point, radius: Radius) {
@@ -33,26 +30,25 @@ export class Ellipse {
     );
   }
 
-  simulateEllipse(oppositePoint: Point): void {
+  simulateEllipse(initialPoint: Point, oppositePoint: Point): void {
     const radius = this.mathService.getEllipseRadius(
-      this.initialPoint,
+      initialPoint,
       oppositePoint
     );
     const center = this.mathService.getEllipseCenter(
-      this.initialPoint,
+      initialPoint,
       oppositePoint
     );
     this.insertEllipseInSVG(center, radius);
-    this.setOpacity(SEMIOPACITY);
   }
 
-  simulateCircle(oppositePoint: Point): void {
+  simulateCircle(initialPoint: Point, oppositePoint: Point): void {
     const radius = this.mathService.getEllipseRadius(
-      this.initialPoint,
+      initialPoint,
       oppositePoint
     );
     const center = this.mathService.getEllipseCenter(
-      this.initialPoint,
+      initialPoint,
       oppositePoint
     );
     this.insertEllipseInSVG(
@@ -61,37 +57,10 @@ export class Ellipse {
         rx: Math.min(radius.rx, radius.ry),
         ry: Math.min(radius.rx, radius.ry)
     });
-    this.setOpacity(SEMIOPACITY);
   }
-
-  setParameters(style: Style): void {
-    this.style = style;
-    const styleAttr = `fill:${this.style.fillColor};`
-                    + `stroke:${this.style.borderColor};`
-                    + `stroke-width:${this.style.borderWidth};`;
-    this.renderer.setAttribute(this.element, 'style', styleAttr);
-    this.filled = style.filled;
-  }
-
-  setOpacity(opacityPercent: string): void {
-    if (this.filled) {
-      this.renderer.setAttribute(this.element, 'fill-opacity', opacityPercent);
-    } else {
-      this.renderer.setAttribute(this.element, 'fill-opacity', '0.0');
-    }
-    this.renderer.setAttribute(this.element, 'stroke-opacity', opacityPercent);
-  }
-
 }
 
 export interface Radius {
   ry: number
   rx: number,
-}
-
-interface Style {
-  borderWidth: string,
-  borderColor: string,
-  fillColor: string,
-  filled: boolean
 }

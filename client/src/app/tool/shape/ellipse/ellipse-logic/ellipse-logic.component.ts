@@ -2,10 +2,16 @@ import {Component, OnDestroy, Renderer2} from '@angular/core';
 import {ColorService} from '../../../color/color.service';
 import {MathService} from '../../../mathematics/tool.math-service.service';
 import {ToolLogicDirective} from '../../../tool-logic/tool-logic.directive';
+import {
+  BackGroundProperties,
+  StrokeProperties, Style
+} from '../../common/AbstractShape';
 import {Ellipse} from '../../common/Ellipse';
 import {Point} from '../../common/Point';
 import {EllipseService} from '../ellipse.service';
 
+const SEMIOPACITY = '0.5';
+const FULLOPACITY = '1';
 enum ClickType {
   CLICKGAUCHE = 0,
 }
@@ -19,9 +25,10 @@ export class EllipseLogicComponent extends ToolLogicDirective
   implements OnDestroy {
 
   private ellipses: Ellipse[] = [];
-  private currentEllipseIndex = -1;
   private onDrag = false;
   private currentPoint: Point;
+  private initialPoint: Point;
+  private style: Style;
   private allListeners: (() => void)[] = [];
 
   constructor(
@@ -49,7 +56,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
       (mouseEv: MouseEvent) => {
         if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
           this.viewTemporaryForm(mouseEv);
-          this.getEllipse().setOpacity('1.0');
+          this.style.opacity = FULLOPACITY;
           this.onDrag = false;
         }
       }
@@ -94,7 +101,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
   private onKeyDown(keyEv: KeyboardEvent): void {
     if (this.onDrag) {
       if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
-        this.getEllipse().simulateCircle(this.currentPoint);
+        this.getEllipse().simulateCircle(this.initialPoint, this.currentPoint);
       }
     }
   }
@@ -102,13 +109,13 @@ export class EllipseLogicComponent extends ToolLogicDirective
   private onKeyUp(keyEv: KeyboardEvent): void {
     if (this.onDrag) {
       if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
-        this.getEllipse().simulateEllipse(this.currentPoint);
+        this.getEllipse().simulateEllipse(this.initialPoint, this.currentPoint);
       }
     }
   }
 
   private getEllipse(): Ellipse {
-    return this.ellipses[this.currentEllipseIndex];
+    return this.ellipses[this.ellipses.length - 1];
   }
 
   private initEllipse(mouseEv: MouseEvent): void {
@@ -116,30 +123,48 @@ export class EllipseLogicComponent extends ToolLogicDirective
       this.currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
       const ellipse = this.renderer.createElement('ellipse', this.svgNS);
       this.renderer.appendChild(this.svgElRef.nativeElement, ellipse);
-      this.ellipses[++this.currentEllipseIndex] = new Ellipse(
+      this.ellipses.push(new Ellipse(
         this.currentPoint,
         this.renderer,
         ellipse,
         this.mathService
-      );
-      this.getEllipse().setParameters({
-        borderWidth: this.service.borderOption ?
-          this.service.thickness.toString()
-          : '0',
-        borderColor: this.colorService.secondaryColor,
-        fillColor: this.colorService.primaryColor,
-        filled: this.service.fillOption
-      });
+      ));
+      this.setEllipseProperties();
       this.onDrag = true;
+      this.initialPoint = this.currentPoint = {
+        x: mouseEv.offsetX, y: mouseEv.offsetY
+      }
     }
   }
 
   private viewTemporaryForm(mouseEv: MouseEvent): void {
     if (mouseEv.shiftKey) {
-      this.getEllipse().simulateCircle(this.currentPoint);
+      this.getEllipse().simulateCircle(this.initialPoint, this.currentPoint);
     } else {
-      this.getEllipse().simulateEllipse(this.currentPoint);
+      this.getEllipse().simulateEllipse(this.initialPoint, this.currentPoint);
     }
+  }
+
+  private setEllipseProperties(): void {
+    this.style = {
+      strokeWidth : this.service.thickness.toString(),
+      fillColor : this.colorService.primaryColor,
+      strokeColor : this.colorService.secondaryColor,
+      opacity : SEMIOPACITY
+    };
+    this.getEllipse().setCss(this.style);
+
+    const backgroundProperties = this.service.fillOption ?
+      BackGroundProperties.Filled :
+      BackGroundProperties.None;
+
+    const strokeProperties = this.service.borderOption ?
+      StrokeProperties.Filled :
+      StrokeProperties.None;
+
+    this.getEllipse().setParameters(
+      backgroundProperties,
+      strokeProperties);
   }
 
 }

@@ -9,8 +9,8 @@ import { Point } from '../../common/Point';
 import {Rectangle} from '../../common/Rectangle';
 import { RectangleService } from '../rectangle.service';
 
-const SEMIOPACITY = '0.5'
-const FULLOPACITY = '1'
+const SEMIOPACITY = '0.5';
+const FULLOPACITY = '1';
 enum ClickType {
   CLICKGAUCHE,
 }

@@ -114,7 +114,7 @@ describe('EllipseLogicComponent', () => {
   it ('the getPath() should return undifined if the index is out of bound',
     () => {
       component['initEllipse'](createClickMouseEvent('mousedown'));
-      component['currentEllipseIndex'] += 1;
+      // component['currentEllipseIndex'] += 1;
       expect(component['getEllipse']()).toBeUndefined();
     });
 
@@ -336,8 +336,7 @@ describe('EllipseLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it(
-    'ngOnDestroy should set "called" to true ' +
+  it('ngOnDestroy should set "called" to true ' +
     '(= call every listener´s functions)',
     () => {
       let called = false;
