@@ -3,12 +3,12 @@ import { MathService } from '../../mathematics/tool.math-service.service';
 import {AbstractShape} from './AbstractShape'
 import { Point } from './Point';
 
-// Class tested in ../Rectangle/rectangle-logic.component.spec.ts
-export class Rectangle extends AbstractShape {
+// Class tested in ../Polygone/polygone-logic.component.spec.ts
+export class Polygone extends AbstractShape {
 
   constructor(
     protected renderer: Renderer2,
-    protected element: ElementRef,
+    public element: ElementRef,
     private mathService: MathService
   ) {
       super(renderer, element);
@@ -22,32 +22,8 @@ export class Rectangle extends AbstractShape {
     this.renderer.setAttribute(this.element, 'points', atribute);
   }
 
-  dragRectangle(mouseDownPoint: Point, mouseMovePoint: Point): void {
-    const dimensions = this.mathService.getRectangleSize(
-      mouseDownPoint,
-      mouseMovePoint
-    );
-    const transformedPoint = this.mathService.getRectangleUpLeftCorner(
-      mouseDownPoint,
-      mouseMovePoint
-    );
-    this.insertPolygoneInSVG();
-  }
-
-  dragSquare(mouseDownPoint: Point, mouseMovePoint: Point): void {
-    const transformedPoint = this.mathService.transformRectangleToSquare(
-      mouseDownPoint,
-      mouseMovePoint
-    );
-    const finalPoint = this.mathService.getRectangleUpLeftCorner(
-      mouseDownPoint,
-      transformedPoint
-    );
-    const squareDimension = this.mathService.getRectangleSize(
-      mouseDownPoint,
-      transformedPoint
-    );
-    this.insertRectangleInSVG(finalPoint, squareDimension);
+  drawPolygonFromRectangle(mouseDownPoint: Point, oppositePoint: Point): void {
+    this.mathService.getRectangleSize(mouseDownPoint, oppositePoint);
   }
 
 }

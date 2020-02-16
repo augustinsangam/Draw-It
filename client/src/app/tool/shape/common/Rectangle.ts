@@ -4,11 +4,11 @@ import {AbstractShape} from './AbstractShape'
 import { Point } from './Point';
 
 // Class tested in ../Rectangle/rectangle-logic.component.spec.ts
-export class Rectangle extends AbstractShape{
+export class Rectangle extends AbstractShape {
 
   constructor(
     protected renderer: Renderer2,
-    protected element: ElementRef,
+    public element: ElementRef,
     private mathService: MathService
   ) {
       super(renderer, element);
@@ -56,11 +56,9 @@ export class Rectangle extends AbstractShape{
     );
     this.insertRectangleInSVG(finalPoint, squareDimension);
   }
-
 }
 
 export interface Dimension {
   width: number,
   height: number
 }
-

@@ -24,7 +24,6 @@ enum ClickType {
 export class RectangleLogicComponent extends ToolLogicDirective
   implements OnDestroy {
   private rectangles: Rectangle[] = [];
-  private currentRectangleIndex = -1;
   private onDrag = false;
   private currentPoint: Point;
   private mouseDownPoint: Point;
@@ -119,16 +118,16 @@ export class RectangleLogicComponent extends ToolLogicDirective
   }
 
   private getRectangle(): Rectangle {
-    return this.rectangles[this.currentRectangleIndex];
+    return this.rectangles[this.rectangles.length - 1];
   }
 
   private initRectangle(mouseEv: MouseEvent): void {
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
-      const polynome = this.renderer.createElement('polynome', this.svgNS);
-      this.renderer.appendChild(this.svgElRef.nativeElement, polynome);
+      const rectangle = this.renderer.createElement('rect', this.svgNS);
+      this.renderer.appendChild(this.svgElRef.nativeElement, rectangle);
       this.rectangles.push(new Rectangle(
         this.renderer,
-        polynome,
+        rectangle,
         this.mathService
       ));
       this.setRectangleProperties();

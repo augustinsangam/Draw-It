@@ -21,7 +21,7 @@ enum ClickType {
 })
 export class PolygoneLogicComponent extends ToolLogicDirective
 implements OnDestroy {
-  private polygones: Polygone[];
+  private polygones: Polygone [];
   private mouseDownPoint: Point;
   private onDrag: boolean;
   private style: Style;
@@ -39,23 +39,16 @@ implements OnDestroy {
     this.allListeners = [];
     this.polygones = [];
 
-    const rectangle = this.renderer.createElement('rect', this.svgNS);
-    this.renderer.appendChild(this.svgElRef.nativeElement, rectangle);
-
-    this.visualisationRectangle = new Rectangle(
-      this.renderer,
-      rectangle,
-      this.mathService);
-    this.visualisationRectangle.setParameters(
-      BackGroundProperties.None, StrokeProperties.Dashed);
     }
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnInit() {
+
     const onMouseDown = this.renderer.listen(
       this.svgElRef.nativeElement,
       'mousedown',
       (mouseEv: MouseEvent) => {
         this.initPolygone(mouseEv);
+        this.initRectangle(mouseEv);
       }
     );
 
@@ -64,8 +57,9 @@ implements OnDestroy {
       'mousemove',
       (mouseEv: MouseEvent) => {
         if (this.onDrag) {
-          let currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
-          this.
+          const currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
+          this.visualisationRectangle.dragRectangle(
+            this.mouseDownPoint, currentPoint);
         }
       }
     );
@@ -77,11 +71,13 @@ implements OnDestroy {
         const validClick = mouseEv.button === ClickType.CLICKGAUCHE;
         if (validClick && this.onDrag ) {
           this.onDrag = false;
-
           this.style.opacity = FULLOPACITY;
           this.getPolygone().setCss(this.style);
-          this.viewTemporaryForm(mouseEv);
-          }
+          this.renderer.removeChild(
+            this.renderer.parentNode(this.visualisationRectangle.element),
+            this.visualisationRectangle.element)
+        }
+
       }
     );
 
@@ -96,16 +92,38 @@ implements OnDestroy {
     this.allListeners.forEach(listenner => listenner());
   }
 
-  private getPolygone(): Rectangle {
+  private getPolygone(): Polygone {
     return this.polygones[this.polygones.length - 1];
   }
 
   private initPolygone(mouseEv: MouseEvent): void {
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
-      this.setPolygoneProperties();
       this.onDrag = true;
-      this.mouseDownPoint = this.currentPoint = {
-         x: mouseEv.offsetX, y: mouseEv.offsetY };
+      this.mouseDownPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY };
+
+      const polygon = this.renderer.createElement('polygon', this.svgNS);
+      this.renderer.appendChild(this.svgElRef.nativeElement, polygon);
+
+      this.polygones.push(new Polygone(
+        this.renderer,
+        polygon,
+        this.mathService));
+      }
+    this.setPolygoneProperties();
+  }
+
+  private initRectangle(mouseEv: MouseEvent): void {
+    if (mouseEv.button === ClickType.CLICKGAUCHE) {
+    const rectangle = this.renderer.createElement('rect', this.svgNS);
+    this.renderer.appendChild(this.svgElRef.nativeElement, rectangle);
+
+    this.visualisationRectangle = new Rectangle(
+      this.renderer,
+      rectangle,
+      this.mathService);
+
+    this.visualisationRectangle.setParameters(
+      BackGroundProperties.None, StrokeProperties.Dashed);
     }
   }
 

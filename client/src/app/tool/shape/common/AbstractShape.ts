@@ -1,5 +1,4 @@
 import { ElementRef, Renderer2 } from '@angular/core';
-import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 
 export abstract class AbstractShape {
 
@@ -7,7 +6,7 @@ export abstract class AbstractShape {
     protected strokeProperties: StrokeProperties;
     constructor(
         protected renderer: Renderer2,
-        protected element: ElementRef,
+        public element: ElementRef,
     ) {
         this.backgoundProperties = BackGroundProperties.Filled;
         this.strokeProperties = StrokeProperties.Filled;
@@ -19,6 +18,7 @@ export abstract class AbstractShape {
             this.renderer.setAttribute(this.element, 'stroke', 'none');
         } else if (stroke === StrokeProperties.Dashed) {
             this.renderer.setAttribute(this.element, 'stroke-dasharray', '5,5');
+            this.renderer.setAttribute(this.element, 'stroke', 'black');
         }
         if (background === BackGroundProperties.None) {
             this.renderer.setAttribute(this.element, 'fill', 'none');
@@ -29,13 +29,15 @@ export abstract class AbstractShape {
 
     setCss(style: Style): void {
         if (this.backgoundProperties === BackGroundProperties.Filled) {
-            this.renderer.setAttribute(this.element, 'fill-opacity', style.opacity);
+            this.renderer.setAttribute(
+                this.element, 'fill-opacity', style.opacity);
             this.renderer.setAttribute(this.element, 'fill', style.fillColor);
         }
         if (this.strokeProperties !== StrokeProperties.None) {
             this.renderer.setAttribute(
             this.element, 'stroke-width', style.strokeWidth);
-            this.renderer.setAttribute(this.element, 'stroke', style.strokeColor);
+            this.renderer.setAttribute(
+                this.element, 'stroke', style.strokeColor);
         }
     }
 }
