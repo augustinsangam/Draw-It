@@ -2,11 +2,11 @@ import { Component, OnDestroy, Renderer2 } from '@angular/core';
 import { ColorService } from '../../../color/color.service';
 import { MathService } from '../../../mathematics/tool.math-service.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
-import { Point } from '../../common/Point';
 import { BackGroundProperties,
-         Rectangle,
          StrokeProperties,
-         Style } from '../../common/Rectangle';
+         Style } from '../../common/AbstractShape';
+import { Point } from '../../common/Point';
+import {Rectangle} from '../../common/Rectangle';
 import { RectangleService } from '../rectangle.service';
 
 const SEMIOPACITY = '0.5'
@@ -46,7 +46,6 @@ export class RectangleLogicComponent extends ToolLogicDirective
       this.svgElRef.nativeElement,
       'mousedown',
       (mouseEv: MouseEvent) => {
-        this.mouseDownPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
         this.initRectangle(mouseEv);
       }
     );
@@ -66,20 +65,10 @@ export class RectangleLogicComponent extends ToolLogicDirective
       'document',
       'mouseup',
       (mouseEv: MouseEvent) => {
-        if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
+        const validClick = mouseEv.button === ClickType.CLICKGAUCHE;
+        if (validClick && this.onDrag ) {
           this.onDrag = false;
 
-          const backgroundProperties = this.service.fillOption ?
-          BackGroundProperties.Filled :
-          BackGroundProperties.None;
-
-          const strokeProperties = this.service.borderOption ?
-          StrokeProperties.Filled :
-          StrokeProperties.None;
-
-          this.getRectangle().setParameters(
-            backgroundProperties,
-            strokeProperties);
           this.style.opacity = FULLOPACITY;
           this.getRectangle().setCss(this.style);
           this.viewTemporaryForm(mouseEv);
@@ -149,9 +138,23 @@ export class RectangleLogicComponent extends ToolLogicDirective
         strokeColor : this.colorService.secondaryColor,
         opacity : SEMIOPACITY
       };
-      this.rectangles[this.currentRectangleIndex].setCss(this.style);
-      console.log(this.service.thickness)
+      this.getRectangle().setCss(this.style);
+
+      const backgroundProperties = this.service.fillOption ?
+      BackGroundProperties.Filled :
+      BackGroundProperties.None;
+
+      const strokeProperties = this.service.borderOption ?
+      StrokeProperties.Filled :
+      StrokeProperties.None;
+
+      this.getRectangle().setParameters(
+        backgroundProperties,
+        strokeProperties);
+
       this.onDrag = true;
+      this.mouseDownPoint = this.currentPoint = {
+         x: mouseEv.offsetX, y: mouseEv.offsetY };
     }
   }
 

@@ -1,19 +1,17 @@
 import { ElementRef, Renderer2 } from '@angular/core';
 import { MathService } from '../../mathematics/tool.math-service.service';
+import {AbstractShape} from './AbstractShape'
 import { Point } from './Point';
 
 // Class tested in ../Rectangle/rectangle-logic.component.spec.ts
-export class Rectangle {
-  private backgoundProperties: BackGroundProperties;
-  private strokeProperties: StrokeProperties;
+export class Rectangle extends AbstractShape{
 
   constructor(
     private renderer: Renderer2,
     private element: ElementRef,
     private mathService: MathService
   ) {
-      this.backgoundProperties = BackGroundProperties.Filled;
-      this.strokeProperties = StrokeProperties.Filled;
+      super(renderer, element);
     }
 
   insertRectangleInSVG(upLeftCorner: Point, dimension: Dimension): void {
@@ -59,29 +57,6 @@ export class Rectangle {
     this.insertRectangleInSVG(finalPoint, squareDimension);
   }
 
-  setParameters(background: BackGroundProperties, stroke: StrokeProperties)
-  : void {
-
-    if (stroke === StrokeProperties.None) {
-      this.renderer.setAttribute(this.element, 'fill', 'none');
-    } else if (stroke === StrokeProperties.Dashed) {
-        this.renderer.setAttribute(this.element, 'stroke-dasharray', '5,5');
-    }
-    this.backgoundProperties = background;
-    this.strokeProperties = stroke;
-  }
-
-  setCss(style: Style): void {
-    if (this.backgoundProperties === BackGroundProperties.Filled) {
-      this.renderer.setAttribute(this.element, 'fill-opacity', style.opacity);
-      this.renderer.setAttribute(this.element, 'fill', style.fillColor);
-    }
-    if (this.strokeProperties !== StrokeProperties.None) {
-      this.renderer.setAttribute(
-        this.element, 'stroke-width', style.strokeWidth);
-      this.renderer.setAttribute(this.element, 'stroke', style.strokeColor);
-    }
-  }
 }
 
 export interface Dimension {
@@ -89,18 +64,3 @@ export interface Dimension {
   height: number
 }
 
-export interface Style {
-  strokeWidth: string,
-  strokeColor: string,
-  fillColor: string,
-  opacity: string // from 0 to one
-}
-export enum BackGroundProperties {
-  Filled,
-  None
-}
-export enum StrokeProperties {
-  Filled,
-  Dashed,
-  None
-}
