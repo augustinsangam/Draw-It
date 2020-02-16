@@ -1,3 +1,9 @@
+table Draw {
+	id: uint;
+	svg: Element;
+	colors: [string]; // :12 >1.11.0
+}
+
 table Element {
 	name: string;
 	attrs: [Attr];

@@ -3,6 +3,139 @@
 /**
  * @constructor
  */
+export class Draw {
+  bb: flatbuffers.ByteBuffer|null = null;
+
+  bb_pos:number = 0;
+/**
+ * @param number i
+ * @param flatbuffers.ByteBuffer bb
+ * @returns Draw
+ */
+__init(i:number, bb:flatbuffers.ByteBuffer):Draw {
+  this.bb_pos = i;
+  this.bb = bb;
+  return this;
+};
+
+/**
+ * @param flatbuffers.ByteBuffer bb
+ * @param Draw= obj
+ * @returns Draw
+ */
+static getRoot(bb:flatbuffers.ByteBuffer, obj?:Draw):Draw {
+  return (obj || new Draw).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+};
+
+/**
+ * @returns number
+ */
+id():number {
+  var offset = this.bb!.__offset(this.bb_pos, 4);
+  return offset ? this.bb!.readUint32(this.bb_pos + offset) : 0;
+};
+
+/**
+ * @param Element= obj
+ * @returns Element|null
+ */
+svg(obj?:Element):Element|null {
+  var offset = this.bb!.__offset(this.bb_pos, 6);
+  return offset ? (obj || new Element).__init(this.bb!.__indirect(this.bb_pos + offset), this.bb!) : null;
+};
+
+/**
+ * @param number index
+ * @param flatbuffers.Encoding= optionalEncoding
+ * @returns string|Uint8Array
+ */
+colors(index: number):string
+colors(index: number,optionalEncoding:flatbuffers.Encoding):string|Uint8Array
+colors(index: number,optionalEncoding?:any):string|Uint8Array|null {
+  var offset = this.bb!.__offset(this.bb_pos, 8);
+  return offset ? this.bb!.__string(this.bb!.__vector(this.bb_pos + offset) + index * 4, optionalEncoding) : null;
+};
+
+/**
+ * @returns number
+ */
+colorsLength():number {
+  var offset = this.bb!.__offset(this.bb_pos, 8);
+  return offset ? this.bb!.__vector_len(this.bb_pos + offset) : 0;
+};
+
+/**
+ * @param flatbuffers.Builder builder
+ */
+static start(builder:flatbuffers.Builder) {
+  builder.startObject(3);
+};
+
+/**
+ * @param flatbuffers.Builder builder
+ * @param number id
+ */
+static addId(builder:flatbuffers.Builder, id:number) {
+  builder.addFieldInt32(0, id, 0);
+};
+
+/**
+ * @param flatbuffers.Builder builder
+ * @param flatbuffers.Offset svgOffset
+ */
+static addSvg(builder:flatbuffers.Builder, svgOffset:flatbuffers.Offset) {
+  builder.addFieldOffset(1, svgOffset, 0);
+};
+
+/**
+ * @param flatbuffers.Builder builder
+ * @param flatbuffers.Offset colorsOffset
+ */
+static addColors(builder:flatbuffers.Builder, colorsOffset:flatbuffers.Offset) {
+  builder.addFieldOffset(2, colorsOffset, 0);
+};
+
+/**
+ * @param flatbuffers.Builder builder
+ * @param Array.<flatbuffers.Offset> data
+ * @returns flatbuffers.Offset
+ */
+static createColorsVector(builder:flatbuffers.Builder, data:flatbuffers.Offset[]):flatbuffers.Offset {
+  builder.startVector(4, data.length, 4);
+  for (var i = data.length - 1; i >= 0; i--) {
+    builder.addOffset(data[i]);
+  }
+  return builder.endVector();
+};
+
+/**
+ * @param flatbuffers.Builder builder
+ * @param number numElems
+ */
+static startColorsVector(builder:flatbuffers.Builder, numElems:number) {
+  builder.startVector(4, numElems, 4);
+};
+
+/**
+ * @param flatbuffers.Builder builder
+ * @returns flatbuffers.Offset
+ */
+static end(builder:flatbuffers.Builder):flatbuffers.Offset {
+  var offset = builder.endObject();
+  return offset;
+};
+
+static create(builder:flatbuffers.Builder, id:number, svgOffset:flatbuffers.Offset, colorsOffset:flatbuffers.Offset):flatbuffers.Offset {
+  Draw.start(builder);
+  Draw.addId(builder, id);
+  Draw.addSvg(builder, svgOffset);
+  Draw.addColors(builder, colorsOffset);
+  return Draw.end(builder);
+}
+}
+/**
+ * @constructor
+ */
 export class Element {
   bb: flatbuffers.ByteBuffer|null = null;
 
