@@ -84,8 +84,6 @@ export class Ellipse {
 
 }
 
-// TODO maybe move it to somewhere else, it is exported because needed
-//  in tool.math-service.service.ts
 export interface Radius {
   ry: number
   rx: number,

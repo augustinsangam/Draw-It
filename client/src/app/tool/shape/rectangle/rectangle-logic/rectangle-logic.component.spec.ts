@@ -19,6 +19,7 @@ const createClickMouseEvent = (event: string): MouseEvent => {
     button: 0
   } as MouseEventInit);
 };
+
 // tslint:disable:no-string-literal
 describe('RectangleLogicComponent', () => {
   let component: RectangleLogicComponent;
