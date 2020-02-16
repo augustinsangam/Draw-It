@@ -3,8 +3,5 @@
     "source.fixAll": false,
     "source.fixAll.eslint": true
   },
-  "eslint.format.enable": true,
-  "files.exclude": {
-    "node_modules/": true
-  }
+  "eslint.format.enable": true
 }
