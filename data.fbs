@@ -1,5 +1,7 @@
 table Draw {
-	id: uint;
+	id: uint16;
+	name: string;
+	tags: [string];
 	svg: Element;
 	colors: [string]; // :12 >1.11.0
 }
@@ -14,3 +16,10 @@ table Attr {
 	k: string;
 	v: string;
 }
+
+//struct Color {
+//	r: uint8;
+//	g: uint8;
+//	b: uint8;
+//	a: uint8;
+//}
