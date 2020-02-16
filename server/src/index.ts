@@ -12,16 +12,13 @@ const s = myContainer.get<Server>(TYPES.Server);
 s.launch();
 process.on('SIGINT', () => s.close(() => log('Server closed')));
 
-//const db = new MongoClient();
-// useUnifiedTopology: true
-mongodb.MongoClient.connect('mongodb://[::1]', function(err, client) {
-  console.log(err);
-  console.log("Connected successfully to server");
-
-  const db = client.db('log2990');
-
-  client.close();
-});
+/*
+let xhr = new XMLHttpRequest();
+xhr.open('POST', 'http://[::1]:8080/send', true);
+xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+let enc = new TextEncoder();
+xhr.send(enc.encode('hello world'));
+*/
 
 interface AttrT {
 	k: string;
@@ -159,6 +156,7 @@ b.finish(end);
 
 const encoded = b.dataBuffer();
 const serialized = serialize(encoded);
+console.log(serialized.length);
 const deserialized = deserialize(serialized);
 const decoded = decode(deserialized);
 

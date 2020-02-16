@@ -3,6 +3,6 @@
 coverage/
 lib/
 node_modules/
+src/secrets.json
 package-lock.json
-private.json
 tsconfig.tsbuildinfo

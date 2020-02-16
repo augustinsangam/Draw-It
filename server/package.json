@@ -12,7 +12,7 @@
     "test": "node --es-module-specifier-resolution=node node_modules/.bin/mocha",
     "coverage": "c8 npm t",
     "lint": "eslint --fix --max-warnings=0 --ext=.js,.ts src/",
-    "flatc": "flatc --ts --short-names -o=src/ ../data.fbs",
+    "flatc": "flatc --ts --short-names -o src/ ../data.fbs",
     "db": "mongod --dbpath=\"${HOME}/.cache\" --ipv6 --bind_ip=::1"
   },
   "nodemonConfig": {

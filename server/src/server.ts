@@ -19,6 +19,7 @@ class Server {
 	) {
 		this.srv = createServer();
 		this.srv.on('request', this.app.callback());
+		// TODO: ws
 	}
 
 	launch(): void {
