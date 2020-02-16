@@ -39,6 +39,26 @@ export class MathService {
     }
   }
 
+  getRectangleSize(initialPoint: Point, oppositePoint: Point): Dimension {
+    const x = Math.abs(oppositePoint.x - initialPoint.x);
+    const y = Math.abs(oppositePoint.y - initialPoint.y);
+    return { height: y, width: x };
+  }
+
+  // transform a rectangle to a square
+  // return the point diagonally opposite to the initial point
+
+  transformRectangleToSquare(initialPoint: Point, oppositePoint: Point): Point {
+    let deltaX = oppositePoint.x - initialPoint.x;
+    let deltaY = oppositePoint.y - initialPoint.y;
+    const min = Math.min(Math.abs(deltaY), Math.abs(deltaX));
+    if (min === Math.abs(deltaY)) {
+      deltaX = Math.sign(deltaX) * min;
+    } else {
+      deltaY = Math.sign(deltaY) * min;
+    }
+    return { x: deltaX + initialPoint.x, y: deltaY + initialPoint.y };
+  }
   getRectangleUpLeftCorner(initialPoint: Point, oppositePoint: Point): Point {
     const deltaX = oppositePoint.x - initialPoint.x;
     const deltaY = oppositePoint.y - initialPoint.y;
@@ -74,25 +94,5 @@ export class MathService {
       x: initialPoint.x + initToCenterv.x,
       y: initialPoint.y + initToCenterv.y
     };
-  }
-
-  getRectangleSize(initialPoint: Point, oppositePoint: Point): Dimension {
-    const x = Math.abs(oppositePoint.x - initialPoint.x);
-    const y = Math.abs(oppositePoint.y - initialPoint.y);
-    return { height: y, width: x };
-  }
-
-  // transform a rectangle to a square
-  // return the point diagonally opposite to the initial point
-  transformRectangleToSquare(initialPoint: Point, oppositePoint: Point): Point {
-    let deltaX = oppositePoint.x - initialPoint.x;
-    let deltaY = oppositePoint.y - initialPoint.y;
-    const min = Math.min(Math.abs(deltaY), Math.abs(deltaX));
-    if (min === Math.abs(deltaY)) {
-      deltaX = Math.sign(deltaX) * min;
-    } else {
-      deltaY = Math.sign(deltaY) * min;
-    }
-    return { x: deltaX + initialPoint.x, y: deltaY + initialPoint.y };
   }
 }

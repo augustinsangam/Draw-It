@@ -40,7 +40,6 @@ export class RectangleLogicComponent extends ToolLogicDirective
       'mousedown',
       (mouseEv: MouseEvent) => {
         this.initRectangle(mouseEv);
-        console.log('onMouseDown');
       }
   );
 

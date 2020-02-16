@@ -16,7 +16,6 @@ export class Ellipse {
   ) {
     this.filled = true;
     this.initialPoint = initialPoint;
-    console.log('ellipse constructor');
   }
 
   insertEllipseInSVG(center: Point, radius: Radius) {
@@ -56,7 +55,12 @@ export class Ellipse {
       this.initialPoint,
       oppositePoint
     );
-    this.insertEllipseInSVG(center, radius);
+    this.insertEllipseInSVG(
+      center,
+      {
+        rx: Math.min(radius.rx, radius.ry),
+        ry: Math.min(radius.rx, radius.ry)
+    });
     this.setOpacity(SEMIOPACITY);
   }
 
@@ -73,7 +77,7 @@ export class Ellipse {
     if (this.filled) {
       this.renderer.setAttribute(this.element, 'fill-opacity', opacityPercent);
     } else {
-      this.renderer.setAttribute(this.element, 'fill', 'none');
+      this.renderer.setAttribute(this.element, 'fill-opacity', '0.0');
     }
     this.renderer.setAttribute(this.element, 'stroke-opacity', opacityPercent);
   }

@@ -1,6 +1,14 @@
-import {AfterViewChecked, Component, ElementRef, ViewChild} from '@angular/core';
+import {
+  AfterViewChecked,
+  Component,
+  ElementRef,
+  ViewChild
+} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {MatSlideToggle, MatSlideToggleChange} from '@angular/material/slide-toggle';
+import {
+  MatSlideToggle,
+  MatSlideToggleChange
+} from '@angular/material/slide-toggle';
 import {MatSlider} from '@angular/material/slider';
 import {ToolPanelDirective} from '../../../tool-panel/tool-panel.directive';
 import {EllipseService} from '../ellipse.service';
@@ -45,11 +53,11 @@ export class EllipsePanelComponent
   ngAfterViewChecked(): void {
     this.fillOptionRef.change.subscribe(($event: MatSlideToggleChange) => {
       this.service.fillOption = ($event.checked);
-      if ($event.checked) {
+      if (!$event.checked) {
         this.borderOptionRef.disabled = true;
         this.ellipseForm.controls.borderOption.disable();
       } else {
-        this.borderOptionRef.disabled = true;
+        this.borderOptionRef.disabled = false;
         this.ellipseForm.controls.borderOption.enable();
       }
     });
