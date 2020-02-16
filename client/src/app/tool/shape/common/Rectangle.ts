@@ -3,20 +3,17 @@ import { MathService } from '../../mathematics/tool.math-service.service';
 import { Point } from './Point';
 
 // Class tested in ../Rectangle/rectangle-logic.component.spec.ts
-const SEMIOPACITY = '0.5';
 export class Rectangle {
-  private filled: boolean;
-  private initialPoint: Point;
-  private style: Style;
+  private backgoundProperties: BackGroundProperties;
+  private strokeProperties: StrokeProperties;
 
   constructor(
-    initialPoint: Point,
     private renderer: Renderer2,
     private element: ElementRef,
     private mathService: MathService
   ) {
-    this.filled = true;
-    this.initialPoint = initialPoint;
+      this.backgoundProperties = BackGroundProperties.Filled;
+      this.strokeProperties = StrokeProperties.Filled;
     }
 
   insertRectangleInSVG(upLeftCorner: Point, dimension: Dimension): void {
@@ -34,52 +31,56 @@ export class Rectangle {
     );
   }
 
-  simulateRectangle(oppositePoint: Point): void {
+  dragRectangle(mouseDownPoint: Point, mouseMovePoint: Point): void {
     const dimensions = this.mathService.getRectangleSize(
-      this.initialPoint,
-      oppositePoint
+      mouseDownPoint,
+      mouseMovePoint
     );
     const transformedPoint = this.mathService.getRectangleUpLeftCorner(
-      this.initialPoint,
-      oppositePoint
+      mouseDownPoint,
+      mouseMovePoint
     );
     this.insertRectangleInSVG(transformedPoint, dimensions);
-    this.setOpacity(SEMIOPACITY);
   }
 
-  simulateSquare(oppositePoint: Point): void {
+  dragSquare(mouseDownPoint: Point, mouseMovePoint: Point): void {
     const transformedPoint = this.mathService.transformRectangleToSquare(
-      this.initialPoint,
-      oppositePoint
+      mouseDownPoint,
+      mouseMovePoint
     );
     const finalPoint = this.mathService.getRectangleUpLeftCorner(
-      this.initialPoint,
+      mouseDownPoint,
       transformedPoint
     );
     const squareDimension = this.mathService.getRectangleSize(
-      this.initialPoint,
+      mouseDownPoint,
       transformedPoint
     );
     this.insertRectangleInSVG(finalPoint, squareDimension);
-    this.setOpacity(SEMIOPACITY);
   }
 
-  setParameters(style: Style): void {
-    this.style = style;
-    const styleAtr = `fill:${this.style.fillColor};`
-                   + `stroke:${this.style.borderColor};`
-                   + `stroke-width:${this.style.borderWidth}`;
-    this.renderer.setAttribute(this.element, 'style', styleAtr);
-    this.filled = style.filled;
-  }
+  setParameters(background: BackGroundProperties, stroke: StrokeProperties)
+  : void {
 
-  setOpacity(opacityPourcent: string): void {
-    if (this.filled) {
-      this.renderer.setAttribute(this.element, 'fill-opacity', opacityPourcent);
-    } else {
-      this.renderer.setAttribute(this.element, 'fill-opacity', '0.0');
+    if (stroke === StrokeProperties.None) {
+      this.renderer.setAttribute(this.element, 'fill', 'none');
+    } else if (stroke === StrokeProperties.Dashed) {
+        this.renderer.setAttribute(this.element, 'stroke-dasharray', '5,5');
     }
-    this.renderer.setAttribute(this.element, 'stroke-opacity', opacityPourcent);
+    this.backgoundProperties = background;
+    this.strokeProperties = stroke;
+  }
+
+  setCss(style: Style): void {
+    if (this.backgoundProperties === BackGroundProperties.Filled) {
+      this.renderer.setAttribute(this.element, 'fill-opacity', style.opacity);
+      this.renderer.setAttribute(this.element, 'fill', style.fillColor);
+    }
+    if (this.strokeProperties !== StrokeProperties.None) {
+      this.renderer.setAttribute(
+        this.element, 'stroke-width', style.strokeWidth);
+      this.renderer.setAttribute(this.element, 'stroke', style.strokeColor);
+    }
   }
 }
 
@@ -88,9 +89,18 @@ export interface Dimension {
   height: number
 }
 
-interface Style {
-  borderWidth: string,
-  borderColor: string,
+export interface Style {
+  strokeWidth: string,
+  strokeColor: string,
   fillColor: string,
-  filled: boolean
+  opacity: string // from 0 to one
+}
+export enum BackGroundProperties {
+  Filled,
+  None
+}
+export enum StrokeProperties {
+  Filled,
+  Dashed,
+  None
 }
