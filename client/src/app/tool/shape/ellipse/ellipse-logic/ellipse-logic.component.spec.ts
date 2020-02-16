@@ -20,7 +20,7 @@ const createClickMouseEvent = (event: string): MouseEvent => {
   } as MouseEventInit);
 };
 // tslint:disable:no-string-literal
-fdescribe('EllipseLogicComponent', () => {
+describe('EllipseLogicComponent', () => {
   let component: EllipseLogicComponent;
   let fixture: ComponentFixture<EllipseLogicComponent>;
 
