@@ -2,11 +2,15 @@ import { Component, OnDestroy, Renderer2 } from '@angular/core';
 import { ColorService } from '../../../color/color.service';
 import { MathService } from '../../../mathematics/tool.math-service.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
+import { BackGroundProperties,
+         StrokeProperties,
+         Style } from '../../common/AbstractShape';
 import { Point } from '../../common/Point';
-import {Polygone} from '../../common/Polygone'
-import {Rectangle} from '../../common/Rectangle'
+import {Polygone} from '../../common/Polygone';
+import {Rectangle} from '../../common/Rectangle';
 import { PolygoneService } from '../polygone.service';
-
+const SEMIOPACITY = '0.5';
+const FULLOPACITY = '1';
 enum ClickType {
   CLICKGAUCHE,
   CLICKDROIT
@@ -18,9 +22,9 @@ enum ClickType {
 export class PolygoneLogicComponent extends ToolLogicDirective
 implements OnDestroy {
   private polygones: Polygone[];
-  private currentPolygoneIndex;
-  private onDrag;
-  private currentPoint: Point;
+  private mouseDownPoint: Point;
+  private onDrag: boolean;
+  private style: Style;
   private visualisationRectangle: Rectangle;
   private allListeners: (() => void)[];
 
@@ -33,7 +37,6 @@ implements OnDestroy {
     super();
     this.onDrag = false;
     this.allListeners = [];
-    this.currentPolygoneIndex = -1;
     this.polygones = [];
 
     const rectangle = this.renderer.createElement('rect', this.svgNS);
@@ -42,9 +45,10 @@ implements OnDestroy {
     this.visualisationRectangle = new Rectangle(
       this.renderer,
       rectangle,
-      this.mathService
-    );
-  }
+      this.mathService);
+    this.visualisationRectangle.setParameters(
+      BackGroundProperties.None, StrokeProperties.Dashed);
+    }
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnInit() {
     const onMouseDown = this.renderer.listen(
@@ -60,8 +64,8 @@ implements OnDestroy {
       'mousemove',
       (mouseEv: MouseEvent) => {
         if (this.onDrag) {
-          this.currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
-          this.viewTemporaryForm();
+          let currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
+          this.
         }
       }
     );
@@ -70,11 +74,14 @@ implements OnDestroy {
       'document',
       'mouseup',
       (mouseEv: MouseEvent) => {
-        if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
+        const validClick = mouseEv.button === ClickType.CLICKGAUCHE;
+        if (validClick && this.onDrag ) {
           this.onDrag = false;
-          this.viewTemporaryForm();
-          this.getPolygone().setOpacity('1.0');
-        }
+
+          this.style.opacity = FULLOPACITY;
+          this.getPolygone().setCss(this.style);
+          this.viewTemporaryForm(mouseEv);
+          }
       }
     );
 
@@ -89,41 +96,38 @@ implements OnDestroy {
     this.allListeners.forEach(listenner => listenner());
   }
 
-  private getPolygone(): Polygone {
-    return this.polygones[this.currentPolygoneIndex];
+  private getPolygone(): Rectangle {
+    return this.polygones[this.polygones.length - 1];
   }
 
   private initPolygone(mouseEv: MouseEvent): void {
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
-
-      this.style = {
-        strokeWidth : this.service.thickness.toString(),
-        fillColor : this.colorService.primaryColor,
-        strokeColor : this.colorService.secondaryColor,
-        opacity : SEMIOPACITY
-      };
-      this.getRectangle().setCss(this.style);
-
-      const backgroundProperties = this.service.fillOption ?
-      BackGroundProperties.Filled :
-      BackGroundProperties.None;
-
-      const strokeProperties = this.service.borderOption ?
-      StrokeProperties.Filled :
-      StrokeProperties.None;
-
-      this.getRectangle().setParameters(
-        backgroundProperties,
-        strokeProperties);
-
+      this.setPolygoneProperties();
       this.onDrag = true;
       this.mouseDownPoint = this.currentPoint = {
          x: mouseEv.offsetX, y: mouseEv.offsetY };
     }
   }
 
-  private viewTemporaryForm(): void {
-    this.visualisationRectangle.simulateRectangle(this.currentPoint);
-  }
+  private setPolygoneProperties() {
+    this.style = {
+      strokeWidth : this.service.thickness.toString(),
+      fillColor : this.colorService.primaryColor,
+      strokeColor : this.colorService.secondaryColor,
+      opacity : SEMIOPACITY
+    };
+    this.getPolygone().setCss(this.style);
 
+    const backgroundProperties = this.service.fillOption ?
+    BackGroundProperties.Filled :
+    BackGroundProperties.None;
+
+    const strokeProperties = this.service.borderOption ?
+    StrokeProperties.Filled :
+    StrokeProperties.None;
+
+    this.getPolygone().setParameters(
+      backgroundProperties,
+      strokeProperties);
+  }
 }

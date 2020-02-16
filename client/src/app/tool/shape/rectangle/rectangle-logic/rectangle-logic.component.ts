@@ -124,34 +124,14 @@ export class RectangleLogicComponent extends ToolLogicDirective
 
   private initRectangle(mouseEv: MouseEvent): void {
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
-      const rectangle = this.renderer.createElement('rect', this.svgNS);
-      this.renderer.appendChild(this.svgElRef.nativeElement, rectangle);
-      this.rectangles[++this.currentRectangleIndex] = new Rectangle(
+      const polynome = this.renderer.createElement('polynome', this.svgNS);
+      this.renderer.appendChild(this.svgElRef.nativeElement, polynome);
+      this.rectangles.push(new Rectangle(
         this.renderer,
-        rectangle,
+        polynome,
         this.mathService
-      );
-
-      this.style = {
-        strokeWidth : this.service.thickness.toString(),
-        fillColor : this.colorService.primaryColor,
-        strokeColor : this.colorService.secondaryColor,
-        opacity : SEMIOPACITY
-      };
-      this.getRectangle().setCss(this.style);
-
-      const backgroundProperties = this.service.fillOption ?
-      BackGroundProperties.Filled :
-      BackGroundProperties.None;
-
-      const strokeProperties = this.service.borderOption ?
-      StrokeProperties.Filled :
-      StrokeProperties.None;
-
-      this.getRectangle().setParameters(
-        backgroundProperties,
-        strokeProperties);
-
+      ));
+      this.setRectangleProperties();
       this.onDrag = true;
       this.mouseDownPoint = this.currentPoint = {
          x: mouseEv.offsetX, y: mouseEv.offsetY };
@@ -164,4 +144,26 @@ export class RectangleLogicComponent extends ToolLogicDirective
       this.getRectangle().dragRectangle(
         this. mouseDownPoint, this.currentPoint);
     }
+
+  private setRectangleProperties(): void {
+    this.style = {
+      strokeWidth : this.service.thickness.toString(),
+      fillColor : this.colorService.primaryColor,
+      strokeColor : this.colorService.secondaryColor,
+      opacity : SEMIOPACITY
+    };
+    this.getRectangle().setCss(this.style);
+
+    const backgroundProperties = this.service.fillOption ?
+    BackGroundProperties.Filled :
+    BackGroundProperties.None;
+
+    const strokeProperties = this.service.borderOption ?
+    StrokeProperties.Filled :
+    StrokeProperties.None;
+
+    this.getRectangle().setParameters(
+      backgroundProperties,
+      strokeProperties);
   }
+}

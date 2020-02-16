@@ -7,8 +7,8 @@ import { Point } from './Point';
 export class Rectangle extends AbstractShape{
 
   constructor(
-    private renderer: Renderer2,
-    private element: ElementRef,
+    protected renderer: Renderer2,
+    protected element: ElementRef,
     private mathService: MathService
   ) {
       super(renderer, element);
