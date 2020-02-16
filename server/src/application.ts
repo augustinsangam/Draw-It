@@ -16,6 +16,7 @@ class Application {
 			log(`\x1b[0;32m${req.httpVersion}\x1b[0m`);
 			next();
 		});
+		this.app.use(express.raw());
 		// Router must be the last middleware
 		this.app.use(router.router);
 	}

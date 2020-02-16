@@ -6,10 +6,21 @@ SERVER {{{
 	When developing on the backend, start the server with ‘npm start’ and watch
 	for code changes with ‘npm run watch’. Then open your browser at the address
 	displayed on the console.
+
+	- npm run db
+	- npm run watch
+	- npm start
+
 	- npm i nodemon
 	- npm i -D typescript eslint @typescript-eslint/parser
 	  @typescript-eslint/eslint-plugin prettier eslint-config-prettier
 	  eslint-plugin-prettier
+}}}
+
+DATABASE {{{
+	- mongo --ipv6 --host=::1
+	- use log2990
+	- db.createUser({ user: "foo", pwd: "bar", roles: [{ db: "log2990", role: "readWrite" }], mechanisms: ["SCRAM-SHA-256"] })
 }}}
 
 NAMING {{{
@@ -44,7 +55,9 @@ ABBREVIATIONS {{{
 	- cap = capacity
 	- ctx = context
 	- el = element
+	- err = error
 	- ev = event
+	- ex = exception
 	- idx = index
 	- len = length
 	- msg = message
