@@ -74,7 +74,7 @@ export class AppComponent implements AfterViewInit {
     private readonly toolSelectorService: ToolSelectorService,
     private colorService: ColorService,
     private svgService: SvgService,
-    private shortcutHanler: ShortcutHandlerService,
+    private shortcutHanler: ShortcutHandlerService
   ) {
     this.drawInProgress = false;
     this.drawOption = { height: 0, width: 0, color: '' };
@@ -92,6 +92,12 @@ export class AppComponent implements AfterViewInit {
     this.handlersFunc.set(Shortcut.Digit1, () =>
       this.toolSelectorService.set(Tool.Rectangle)
     );
+    this.handlersFunc.set(Shortcut.Digit2, () =>
+      this.toolSelectorService.set(Tool.Ellipse)
+    );
+    this.handlersFunc.set(Shortcut.Digit3, () =>
+    this.toolSelectorService.set(Tool.Polygone)
+  );
     this.handlersFunc.set(Shortcut.O, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
@@ -99,7 +105,14 @@ export class AppComponent implements AfterViewInit {
       }
     });
 
-    [Shortcut.C, Shortcut.L, Shortcut.W, Shortcut.Digit1, Shortcut.O].forEach(
+    [
+      Shortcut.C,
+      Shortcut.L,
+      Shortcut.W,
+      Shortcut.Digit1,
+      Shortcut.Digit2,
+      Shortcut.O
+    ].forEach(
       shortcut => {
         this.shortcutHanler.set(
           shortcut,

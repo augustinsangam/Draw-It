@@ -12,17 +12,17 @@ import {
 } from '@angular/material';
 
 import { ToolPanelDirective } from '../../../tool-panel/tool-panel.directive';
-import { RectangleService } from '../rectangle.service';
+import { PolygoneService } from '../polygone.service';
 
 @Component({
-  selector: 'app-rectangle-panel',
-  templateUrl: './rectangle-panel.component.html',
-  styleUrls: ['./rectangle-panel.component.scss']
+  selector: 'app-polygone-panel',
+  templateUrl: './polygone-panel.component.html',
+  styleUrls: ['./polygone-panel.component.scss']
 })
-export class RectanglePanelComponent
+export class PolygonePanelComponent
   extends ToolPanelDirective implements AfterViewChecked {
 
-  private rectangleForm: FormGroup;
+  private polygoneForm: FormGroup;
 
   @ViewChild('fillOptionRef', {
     static: false,
@@ -40,10 +40,10 @@ export class RectanglePanelComponent
   }) private thicknessSlider: MatSlider;
 
   constructor(elementRef: ElementRef<HTMLElement>,
-              private readonly service: RectangleService,
+              private readonly service: PolygoneService,
               private readonly formBuilder: FormBuilder) {
     super(elementRef);
-    this.rectangleForm = this.formBuilder.group({
+    this.polygoneForm = this.formBuilder.group({
       thicknessFormField: [this.service.thickness, []],
       borderOption: [this.service.borderOption, []],
       thicknessSlider: [this.service.thickness, []],
@@ -51,15 +51,15 @@ export class RectanglePanelComponent
     });
   }
 
-  ngAfterViewChecked(): void {
+  ngAfterViewChecked() {
     this.fillOptionRef.change.subscribe(($event: MatSlideToggleChange) => {
       this.service.fillOption = ($event.checked);
       if (!$event.checked) {
         this.borderOptionRef.disabled = true;
-        this.rectangleForm.controls.borderOption.disable();
+        this.polygoneForm.controls.borderOption.disable();
       } else {
         this.borderOptionRef.disabled = false;
-        this.rectangleForm.controls.borderOption.enable();
+        this.polygoneForm.controls.borderOption.enable();
       }
     });
 
@@ -67,16 +67,16 @@ export class RectanglePanelComponent
       this.service.borderOption = $event.checked;
       if (!$event.checked) {
         this.fillOptionRef.disabled = true;
-        this.rectangleForm.controls.fillOption.disable();
+        this.polygoneForm.controls.fillOption.disable();
       } else {
         this.fillOptionRef.disabled = false;
-        this.rectangleForm.controls.fillOption.enable();
+        this.polygoneForm.controls.fillOption.enable();
       }
     });
   }
 
   protected onThicknessChange(): void {
-    this.rectangleForm.patchValue({
+    this.polygoneForm.patchValue({
       thicknessFormField: this.thicknessSlider.value
     });
     this.service.thickness = this.thicknessSlider.value as number;
