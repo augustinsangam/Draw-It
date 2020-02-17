@@ -1,4 +1,4 @@
-import { ElementRef, Renderer2 } from '@angular/core';
+import {Renderer2 } from '@angular/core';
 
 export abstract class AbstractShape {
 
