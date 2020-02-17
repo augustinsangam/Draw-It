@@ -66,10 +66,14 @@ export class CommunicationService {
     this.fbb.finish(draw);
   }
 
+  getAll() {
+
+  }
+
   post() {
     const encoded = this.fbb.dataBuffer();
     const serialized = CommunicationService.serialize(encoded);
-    this.xhr.open('POST', this.host + '/draw', true);``
+    this.xhr.open('POST', this.host + '/draw', true);
     this.xhr.setRequestHeader('Content-Type', 'application/octet-stream');
     const promise = new Promise<number>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
@@ -86,7 +90,23 @@ export class CommunicationService {
     return promise;
   }
 
-  put() {
-
+  put(id: number) {
+    const encoded = this.fbb.dataBuffer();
+    const serialized = CommunicationService.serialize(encoded);
+    this.xhr.open('PUT', `${this.host}/draw/${id}`, true);
+    this.xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+    const promise = new Promise<number>((resolve, reject) => {
+      this.xhr.onreadystatechange = () => {
+        if (this.xhr.readyState === 4) {
+          if (this.xhr.status === StatusCode.CREATED) {
+            resolve(Number(this.xhr.response));
+          } else {
+            reject(this.xhr.responseText);
+          }
+        }
+      }
+    });
+    this.xhr.send(serialized);
+    return promise;
   }
 }
