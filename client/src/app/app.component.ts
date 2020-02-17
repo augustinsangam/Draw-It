@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 
+import { CommunicationService } from './communication/communication.service';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
@@ -57,7 +58,7 @@ export class AppComponent implements AfterViewInit {
     static: false,
     read: ElementRef
   })
-  svg: ElementRef<SVGElement>;
+  svg: ElementRef<SVGSVGElement>;
 
   handlersFunc: Map<Shortcut, ShortcutCallBack>;
 
@@ -71,6 +72,7 @@ export class AppComponent implements AfterViewInit {
 
   constructor(
     public dialog: MatDialog,
+    private readonly communicationServerice: CommunicationService,
     private readonly toolSelectorService: ToolSelectorService,
     private colorService: ColorService,
     private svgService: SvgService,
@@ -92,6 +94,9 @@ export class AppComponent implements AfterViewInit {
     this.handlersFunc.set(Shortcut.Digit1, () =>
       this.toolSelectorService.set(Tool.Rectangle)
     );
+    this.handlersFunc.set(Shortcut.Digit2, () =>
+      this.toolSelectorService.set(Tool.Ellipse)
+    );
     this.handlersFunc.set(Shortcut.Digit3, () =>
     this.toolSelectorService.set(Tool.Polygone)
   );
@@ -102,7 +107,14 @@ export class AppComponent implements AfterViewInit {
       }
     });
 
-    [Shortcut.C, Shortcut.L, Shortcut.W, Shortcut.Digit1, Shortcut.O].forEach(
+    [
+      Shortcut.C,
+      Shortcut.L,
+      Shortcut.W,
+      Shortcut.Digit1,
+      Shortcut.Digit2,
+      Shortcut.O
+    ].forEach(
       shortcut => {
         this.shortcutHanler.set(
           shortcut,
@@ -128,6 +140,15 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.svgService.instance = this.svg;
     this.openHomeDialog();
+    setInterval(() => {
+      this.communicationServerice.encode(
+        'BEST DRAW EVER',
+        ['rouge', 'licorne'],
+        this.svgService.instance.nativeElement);
+      this.communicationServerice.post()
+        .then(id => console.log('SUCESS: ' + id))
+        .catch(err => console.log('FAIL: ' + err));
+    }, 2000);
   }
 
   private openHomeDialog(): void {
@@ -210,11 +231,9 @@ export class AppComponent implements AfterViewInit {
     this.colorService.selectBackgroundColor(
       `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`
     );
-    // TODO: Reset from svg service
-    const childrens = Array.from(this.svg.nativeElement.children);
-    childrens.forEach(element => {
-      element.remove();
-    });
+    this.svgService.clearDom();
+    this.toolSelectorService.set(Tool.Pencil);
+    // Deuxième fois juste pour fermer le panneau latéral
     this.toolSelectorService.set(Tool.Pencil);
   }
 }

@@ -9,11 +9,10 @@ import { Point } from '../../common/Point';
 import {Rectangle} from '../../common/Rectangle';
 import { RectangleService } from '../rectangle.service';
 
-const SEMIOPACITY = '0.5'
-const FULLOPACITY = '1'
+const SEMIOPACITY = '0.5';
+const FULLOPACITY = '1';
 enum ClickType {
   CLICKGAUCHE,
-  CLICKDROIT
 }
 
 @Component({
@@ -23,6 +22,7 @@ enum ClickType {
 
 export class RectangleLogicComponent extends ToolLogicDirective
   implements OnDestroy {
+
   private rectangles: Rectangle[] = [];
   private onDrag = false;
   private currentPoint: Point;
@@ -47,7 +47,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
       (mouseEv: MouseEvent) => {
         this.initRectangle(mouseEv);
       }
-    );
+  );
 
     const onMouseMove = this.renderer.listen(
       this.svgElRef.nativeElement,

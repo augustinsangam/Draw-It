@@ -29,6 +29,7 @@ import {
 import {
   ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
+import {EllipsePanelComponent} from '../tool/shape/ellipse/ellipse-panel/ellipse-panel.component';
 
 @Component({
   selector: 'app-panel',
@@ -57,6 +58,7 @@ export class PanelComponent implements OnInit {
     this.components[Tool.Line] = LinePanelComponent;
     this.components[Tool.Pencil] = PencilPanelComponent;
     this.components[Tool.Rectangle] = RectanglePanelComponent;
+    this.components[Tool.Ellipse] = EllipsePanelComponent;
     this.components[Tool.Polygone] = PolygonePanelComponent;
     this.childWidth = 0;
     // Panel is collapsed by default

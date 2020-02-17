@@ -5,10 +5,17 @@ import { ElementRef, Injectable } from '@angular/core';
 })
 export class SvgService {
 
-  instance: ElementRef<SVGElement>;
+  instance: ElementRef<SVGSVGElement>;
 
   changeBackgroundColor(color: string) {
     this.instance.nativeElement.style.backgroundColor = color;
+  }
+
+  clearDom(): void {
+    const childrens = Array.from(this.instance.nativeElement.children);
+    childrens.forEach(element => {
+      element.remove();
+    });
   }
 
 }

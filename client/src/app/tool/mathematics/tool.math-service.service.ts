@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 
+import {Radius} from '../shape/common/Ellipse';
 import { Point } from '../shape/common/Point';
 import { Dimension } from '../shape/common/Rectangle';
 
@@ -39,22 +40,6 @@ export class MathService {
       } else {
         return { x: mousePosition.x, y: lastPoint.y - deltaX };
       }
-    }
-  }
-
-  getRectangleUpLeftCorner(initialPoint: Point, oppositePoint: Point): Point {
-    const deltaX = oppositePoint.x - initialPoint.x;
-    const deltaY = oppositePoint.y - initialPoint.y;
-    if (deltaX > 0 && deltaY < 0) {
-      return { x: initialPoint.x, y: initialPoint.y + deltaY };
-    }
-    if (deltaX < 0 && deltaY < 0) {
-      return { x: initialPoint.x + deltaX, y: initialPoint.y + deltaY };
-    }
-    if (deltaX < 0 && deltaY > 0) {
-      return { x: initialPoint.x + deltaX, y: initialPoint.y };
-    } else {
-      return initialPoint;
     }
   }
 
@@ -125,14 +110,69 @@ export class MathService {
     // this.putCornersInRectangle(upLeftCorner, dimension, points);
     return points;
   }
-
-  getGravityCentre(points: Point []): Point {
-    let x = 0;
-    let y = 0;
-    for (const point of points) {
-      x += point.x;
-      y += point.y;
+  getRectangleUpLeftCorner(initialPoint: Point, oppositePoint: Point): Point {
+    const deltaX = oppositePoint.x - initialPoint.x;
+    const deltaY = oppositePoint.y - initialPoint.y;
+    if (deltaX > 0 && deltaY < 0) {
+      return { x: initialPoint.x, y: initialPoint.y + deltaY };
     }
-    return {x: x / points.length, y: y / points.length}
+    if (deltaX < 0 && deltaY < 0) {
+      return { x: initialPoint.x + deltaX, y: initialPoint.y + deltaY };
+    }
+    if (deltaX < 0 && deltaY > 0) {
+      return { x: initialPoint.x + deltaX, y: initialPoint.y };
+    } else {
+      return initialPoint;
+    }
+  }
+
+  getEllipseRadius(initialPoint: Point, oppositePoint: Point): Radius {
+    const rectDims = this.getRectangleSize(initialPoint, oppositePoint);
+    return {
+      rx: rectDims.width / 2,
+      ry: rectDims.height / 2
+    }
+  }
+
+  getEllipseCenter(initialPoint: Point, oppositePoint: Point): Point {
+    const initToCenterv: Point = {
+      x: 0.5 * (oppositePoint.x - initialPoint.x),
+      y: 0.5 * (oppositePoint.y - initialPoint.y)
+    };
+
+    return {
+      x: initialPoint.x + initToCenterv.x,
+      y: initialPoint.y + initToCenterv.y
+    };
+  }
+
+  getCircleCenter(initialPoint: Point, oppositePoint: Point): Point {
+    const initToCenterv: Point = {
+      x: 0.5 * (oppositePoint.x - initialPoint.x),
+      y: 0.5 * (oppositePoint.y - initialPoint.y)
+    };
+
+    // initToCenterv unit vector
+    const initToCenterUv: Point = {
+      x: initToCenterv.x / Math.sqrt(
+        Math.pow(initToCenterv.x, 2) + Math.pow(initToCenterv.y, 2)
+      ),
+      y: initToCenterv.y / Math.sqrt
+      (Math.pow(initToCenterv.x, 2) + Math.pow(initToCenterv.y, 2)
+      ),
+    };
+
+    const ellipseRadius = this.getEllipseRadius(initialPoint, oppositePoint);
+    const circleRadius = {
+      rx: Math.min(ellipseRadius.rx, ellipseRadius.ry),
+      ry: Math.min(ellipseRadius.rx, ellipseRadius.ry)
+    };
+
+    // circle center coords = circleRadius * initToCenterv unit vector +
+    // initialPoint
+    return {
+      x: (circleRadius.rx * initToCenterUv.x) + initialPoint.x,
+      y: (circleRadius.ry * initToCenterUv.y) + initialPoint.y
+    };
   }
 }

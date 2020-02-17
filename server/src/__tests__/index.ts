@@ -1,4 +1,4 @@
-import chai from 'chai';
+/*import chai from 'chai';
 
 import { Warrior } from '../interfaces';
 import { myContainer } from '../inversify.config';
@@ -15,4 +15,4 @@ describe('all', () => {
 	it('should hit', () => {
 		chai.expect(ninja.sneak()).eql('hit!');
 	});
-});
+});*/

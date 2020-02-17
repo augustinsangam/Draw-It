@@ -49,6 +49,12 @@ import {
   PencilPanelComponent
 } from './tool/drawing-instruments/pencil/pencil-panel/pencil-panel.component';
 import {
+  EllipseLogicComponent
+} from './tool/shape/ellipse/ellipse-logic/ellipse-logic.component';
+import {
+  EllipsePanelComponent
+} from './tool/shape/ellipse/ellipse-panel/ellipse-panel.component';
+import {
   LineLogicComponent
 } from './tool/shape/line/line-logic/line-logic.component';
 import {
@@ -77,6 +83,8 @@ import {
     ColorPickerItemComponent,
     ConfirmationDialogComponent,
     DocumentationComponent,
+    EllipseLogicComponent,
+    EllipsePanelComponent,
     HomeComponent,
     LineLogicComponent,
     LinePanelComponent,
@@ -113,6 +121,8 @@ import {
     PaletteDialogComponent,
     ConfirmationDialogComponent,
     DocumentationComponent,
+    EllipseLogicComponent,
+    EllipsePanelComponent,
     LineLogicComponent,
     LinePanelComponent,
     HomeComponent,
