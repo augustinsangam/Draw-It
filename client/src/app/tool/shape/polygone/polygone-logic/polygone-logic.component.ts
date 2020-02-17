@@ -24,6 +24,7 @@ implements OnDestroy {
   private polygones: Polygone [];
   private mouseDownPoint: Point;
   private onDrag: boolean;
+  private polygonePoints: Point [];
   private style: Style;
   private visualisationRectangle: Rectangle;
   private allListeners: (() => void)[];
@@ -111,7 +112,7 @@ implements OnDestroy {
       this.polygones.push(new Polygone(
         this.renderer,
         polygon,
-        this.mathService, 7));
+        this.mathService, 12));
       }
     this.setPolygoneProperties();
   }

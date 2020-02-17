@@ -81,19 +81,19 @@ export class MathService {
     sides: number): Point [] {
     const minSide = Math.min(dimension.width, dimension.height);
 
-    const points: Point [] = []
     const initialPoint: Point = {x: 0, y: 0};
     let angle = 0;
-    const sideLength = minSide / 2;
+    const sideLength = Math.PI * minSide / sides;
+    const points: Point [] = []
     if (upLeftCorner.x < mouseDownPoint.x) {
-      initialPoint.x = mouseDownPoint.x - sideLength * (3 / 2);
+      initialPoint.x = mouseDownPoint.x - minSide / 2 - sideLength / 2;
     } else {
-      initialPoint.x = mouseDownPoint.x + sideLength * (1 / 2)
+      initialPoint.x = mouseDownPoint.x + minSide / 2 - sideLength / 2;
     }
     if (upLeftCorner.y === mouseDownPoint.y) {
       initialPoint.y = mouseDownPoint.y + minSide;
     } else {
-      initialPoint.y = upLeftCorner.y + dimension.height;
+      initialPoint.y = mouseDownPoint.y;
     }
     points.push(initialPoint)
     let i = 1;
@@ -102,11 +102,23 @@ export class MathService {
     const lastPoint = {x: 0, y: 0};
     lastPoint.x = points[i - 1].x + sideLength * Math.cos(angle);
     lastPoint.y = points[i - 1].y - sideLength * Math.sin(angle);
-    console.log(lastPoint, 'dedaaaaaaans')
     points.push({ x : lastPoint.x, y: lastPoint.y});
     angle += (Math.PI * 2) / sides;
     i += 1;
-  }
+    }
     return points;
   }
+
+  cornersAreInRectangle(upLeftCorner: Point,
+                        dimension: Dimension, points: Point []): boolean {
+    for (const point of points) {
+      if (point.x > upLeftCorner.x+ dimension.width || point.x < upLeftCorner.x){
+        return false;
+      }
+      if (point.y > upLeftCorner.y+ dimension.height || point.y < upLeftCorner.y){
+        return false;
+      }
+    }
+    return true;
+    }
 }
