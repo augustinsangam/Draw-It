@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 
+import { CommunicationService } from './communication/communication.service';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
@@ -71,11 +72,15 @@ export class AppComponent implements AfterViewInit {
 
   constructor(
     public dialog: MatDialog,
+    communicationServerice: CommunicationService,
     private readonly toolSelectorService: ToolSelectorService,
     private colorService: ColorService,
     private svgService: SvgService,
     private shortcutHanler: ShortcutHandlerService
   ) {
+    setInterval(() => {
+      communicationServerice.ping();
+    }, 2000);
     this.drawInProgress = false;
     this.drawOption = { height: 0, width: 0, color: '' };
 
