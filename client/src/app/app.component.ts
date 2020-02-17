@@ -143,7 +143,11 @@ export class AppComponent implements AfterViewInit {
     this.svgService.instance = this.svg;
     this.openHomeDialog();
     setInterval(() => {
-      this.communicationServerice.post(this.svgService.instance.nativeElement)
+      this.communicationServerice.encode(
+        'BEST DRAW EVER',
+        ['rouge', 'licorne'],
+        this.svgService.instance.nativeElement);
+      this.communicationServerice.post()
         .then(id => console.log('SUCESS: ' + id))
         .catch(err => console.log('FAIL: ' + err));
     }, 2000);

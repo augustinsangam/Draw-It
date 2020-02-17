@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import { flatbuffers } from 'flatbuffers';
 
-import { Attr as AttrT, Draw as DrawT, Element as ElementT } from './data_generated';
+import {
+  Attr as AttrT,
+  Draw as DrawT,
+  Element as ElementT,
+} from './data_generated';
 
 enum StatusCode {
   CREATED = 201,
@@ -14,10 +18,12 @@ enum StatusCode {
   providedIn: 'root'
 })
 export class CommunicationService {
+  private readonly host: string;
   private readonly xhr: XMLHttpRequest;
   private readonly fbb: flatbuffers.Builder;
 
   constructor() {
+    this.host = 'http://[::1]:8080';
     this.xhr = new XMLHttpRequest();
     this.fbb = new flatbuffers.Builder();
   }
@@ -42,17 +48,28 @@ export class CommunicationService {
     return ElementT.create(this.fbb, name, attrs, children);
   }
 
-  post(el: Element) {
-    const svg = this.encodeElementRecursively(el);
-    const name = this.fbb.createString('SUPER');
+  private encodeTags(tags: string[]) {
+    const tagsOffsets = tags.map(tag => this.fbb.createString(tag));
+    return DrawT.createTagsVector(this.fbb, tagsOffsets);
+  }
+
+  encode(drawName: string, drawTags: string[], drawSvg: SVGSVGElement) {
+    this.fbb.clear();
+    const svg = this.encodeElementRecursively(drawSvg);
+    const tags = this.encodeTags(drawTags);
+    const name = this.fbb.createString(drawName);
     DrawT.start(this.fbb);
     DrawT.addSvg(this.fbb, svg);
+    DrawT.addTags(this.fbb, tags);
     DrawT.addName(this.fbb, name);
     const draw = DrawT.end(this.fbb);
     this.fbb.finish(draw);
+  }
+
+  post() {
     const encoded = this.fbb.dataBuffer();
     const serialized = CommunicationService.serialize(encoded);
-    this.xhr.open('POST', 'http://[::1]:8080/draw', true);
+    this.xhr.open('POST', this.host + '/draw', true);``
     this.xhr.setRequestHeader('Content-Type', 'application/octet-stream');
     const promise = new Promise<number>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
@@ -66,7 +83,10 @@ export class CommunicationService {
       }
     });
     this.xhr.send(serialized);
-    this.fbb.clear();
     return promise;
+  }
+
+  put() {
+
   }
 }
