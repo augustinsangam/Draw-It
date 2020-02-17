@@ -16,6 +16,12 @@ import {
   PencilPanelComponent
 } from '../tool/drawing-instruments/pencil/pencil-panel/pencil-panel.component';
 import {
+  PipettePanelComponent
+} from '../tool/pipette/pipette-panel/pipette-panel.component';
+import {
+  EllipsePanelComponent
+} from '../tool/shape/ellipse/ellipse-panel/ellipse-panel.component';
+import {
   LinePanelComponent
 } from '../tool/shape/line/line-panel/line-panel.component';
 import {
@@ -29,7 +35,6 @@ import {
 import {
   ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
-import {EllipsePanelComponent} from '../tool/shape/ellipse/ellipse-panel/ellipse-panel.component';
 
 @Component({
   selector: 'app-panel',
@@ -60,6 +65,7 @@ export class PanelComponent implements OnInit {
     this.components[Tool.Rectangle] = RectanglePanelComponent;
     this.components[Tool.Ellipse] = EllipsePanelComponent;
     this.components[Tool.Polygone] = PolygonePanelComponent;
+    this.components[Tool.Pipette] = PipettePanelComponent;
     this.childWidth = 0;
     // Panel is collapsed by default
     this.hostWidth = 0;

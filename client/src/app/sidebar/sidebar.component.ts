@@ -21,17 +21,17 @@ export class SidebarComponent implements AfterViewInit {
   @ViewChild('line', {
     static: false,
   })
-  protected lineElRef: ElementRef<HTMLElement>
+  protected lineElRef: ElementRef<HTMLElement>;
 
   @ViewChild('rectangle', {
     static: false,
   })
-  protected rectangleElRef: ElementRef<HTMLElement>
+  protected rectangleElRef: ElementRef<HTMLElement>;
 
   @ViewChild('polygone', {
     static: false,
   })
-  protected polygoneElRef: ElementRef<HTMLElement>
+  protected polygoneElRef: ElementRef<HTMLElement>;
 
   @ViewChild('pencil', {
     static: false,
@@ -47,6 +47,11 @@ export class SidebarComponent implements AfterViewInit {
     static: false
   })
   protected ellipseElRef: ElementRef<HTMLElement>;
+
+  @ViewChild('pipette', {
+    static: false
+  })
+  protected pipetteElRef: ElementRef<HTMLElement>;
 
   @Output() protected documentationEv: EventEmitter<null>;
 
@@ -66,6 +71,7 @@ export class SidebarComponent implements AfterViewInit {
     this.toolToElRef[Tool.Rectangle] = this.rectangleElRef;
     this.toolToElRef[Tool.Ellipse] = this.ellipseElRef;
     this.toolToElRef[Tool.Polygone] = this.polygoneElRef;
+    this.toolToElRef[Tool.Pipette] = this.pipetteElRef;
     this.toolSelectorService.onChange(
       (tool, old) => this.setTool(tool, old));
   }
@@ -104,5 +110,9 @@ export class SidebarComponent implements AfterViewInit {
 
   protected selectEllipse(): void {
     this.toolSelectorService.set(Tool.Ellipse);
+  }
+
+  protected selectPipette(): void {
+    this.toolSelectorService.set(Tool.Pipette);
   }
 }
