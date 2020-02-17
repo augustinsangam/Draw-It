@@ -10,7 +10,7 @@ import {
 })
 export abstract class ToolLogicDirective implements OnInit {
   // Must be public
-  @Input() svgElRef: ElementRef<SVGElement>;
+  @Input() svgElRef: ElementRef<SVGSVGElement>;
   // must be public
   readonly svgNS: string;
 

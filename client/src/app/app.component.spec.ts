@@ -1,46 +1,23 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {  Overlay } from '@angular/cdk/overlay';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
-  MatDialog,
-  MatDialogModule
-} from '@angular/material';
-import {
-  BrowserDynamicTestingModule
-} from '@angular/platform-browser-dynamic/testing';
-import {
-  BrowserAnimationsModule
-} from '@angular/platform-browser/animations';
-import { AppComponent, NewDrawOptions } from './app.component';
-import { MaterialModule } from './material.module';
-import {
-  DocumentationComponent
-} from './pages/documentation/documentation.component';
-import { HomeComponent } from './pages/home/home.component';
-import { NewDrawComponent } from './pages/new-draw/new-draw.component';
-import { PanelComponent } from './panel/panel.component';
-import {
-  Shortcut, ShortcutCallBack, ShortcutHandlerService
-} from './shortcut-handler.service';
-import { SidebarComponent } from './sidebar/sidebar.component';
-import {
-  ColorPanelComponent
-} from './tool/color/color-panel/color-panel.component';
-import {
-  ColorPickerContentComponent
-// tslint:disable-next-line: max-line-length
-} from './tool/color/color-panel/color-picker-content/color-picker-content.component';
-import {
-  ColorPickerItemComponent
-} from './tool/color/color-panel/color-picker-item/color-picker-item.component';
-import {
-  PencilPanelComponent
-} from './tool/drawing-instruments/pencil/pencil-panel/pencil-panel.component';
-import {
-  ToolSelectorService
-} from './tool/tool-selector/tool-selector.service';
+import {Overlay} from '@angular/cdk/overlay';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialog, MatDialogModule} from '@angular/material';
+import {BrowserDynamicTestingModule} from '@angular/platform-browser-dynamic/testing';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {AppComponent, NewDrawOptions} from './app.component';
+import {MaterialModule} from './material.module';
+import {DocumentationComponent} from './pages/documentation/documentation.component';
+import {HomeComponent} from './pages/home/home.component';
+import {NewDrawComponent} from './pages/new-draw/new-draw.component';
+import {PanelComponent} from './panel/panel.component';
+import {Shortcut, ShortcutCallBack, ShortcutHandlerService} from './shortcut-handler.service';
+import {SidebarComponent} from './sidebar/sidebar.component';
+import {ColorPanelComponent} from './tool/color/color-panel/color-panel.component';
+import {ColorPickerContentComponent} from './tool/color/color-panel/color-picker-content/color-picker-content.component';
+import {ColorPickerItemComponent} from './tool/color/color-panel/color-picker-item/color-picker-item.component';
+import {PencilPanelComponent} from './tool/drawing-instruments/pencil/pencil-panel/pencil-panel.component';
+import {ToolSelectorService} from './tool/tool-selector/tool-selector.service';
 
 // tslint:disable: no-string-literal
 describe('AppComponent', () => {
@@ -256,14 +233,15 @@ describe('AppComponent', () => {
     expect(component['drawInProgress']).toBeTruthy();
   });
 
-  it('#Handlers works for C, L, W and digit 1', () => {
+  it('#Handlers works for C, L, W, digit 1 and digit 2', () => {
     const spy = spyOn(component['toolSelectorService'], 'set');
     (component['handlersFunc'].get(Shortcut.C) as ShortcutCallBack)();
     (component['handlersFunc'].get(Shortcut.L) as ShortcutCallBack)();
     (component['handlersFunc'].get(Shortcut.W) as ShortcutCallBack)();
     (component['handlersFunc'].get(Shortcut.Digit1) as ShortcutCallBack)();
-    expect(spy).toHaveBeenCalledTimes(4);
-  })
+    (component['handlersFunc'].get(Shortcut.Digit2) as ShortcutCallBack)();
+    expect(spy).toHaveBeenCalledTimes(5);
+  });
 
   it('#Handler works for digit O', () => {
     const spy = spyOn<any>(component, 'openNewDrawDialog');

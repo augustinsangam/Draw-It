@@ -50,11 +50,23 @@ import {
   PencilPanelComponent
 } from './tool/drawing-instruments/pencil/pencil-panel/pencil-panel.component';
 import {
+  EllipseLogicComponent
+} from './tool/shape/ellipse/ellipse-logic/ellipse-logic.component';
+import {
+  EllipsePanelComponent
+} from './tool/shape/ellipse/ellipse-panel/ellipse-panel.component';
+import {
   LineLogicComponent
 } from './tool/shape/line/line-logic/line-logic.component';
 import {
   LinePanelComponent
 } from './tool/shape/line/line-panel/line-panel.component';
+import {
+  PolygoneLogicComponent
+} from './tool/shape/polygone/polygone-logic/polygone-logic.component';
+import {
+  PolygonePanelComponent
+} from './tool/shape/polygone/polygone-panel/polygone-panel.component';
 import {
   RectangleLogicComponent
 } from './tool/shape/rectangle/rectangle-logic/rectangle-logic.component';
@@ -72,6 +84,9 @@ import {
     ColorPickerItemComponent,
     ConfirmationDialogComponent,
     DocumentationComponent,
+    EllipseLogicComponent,
+    EllipsePanelComponent,
+    GaleryComponent,
     HomeComponent,
     LineLogicComponent,
     LinePanelComponent,
@@ -80,11 +95,12 @@ import {
     PaletteDialogComponent,
     PencilLogicComponent,
     PencilPanelComponent,
+    PolygoneLogicComponent,
+    PolygonePanelComponent,
     RectangleLogicComponent,
     RectanglePanelComponent,
     SidebarComponent,
     SvgComponent,
-    GaleryComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -107,13 +123,17 @@ import {
     PaletteDialogComponent,
     ConfirmationDialogComponent,
     DocumentationComponent,
+    EllipseLogicComponent,
+    EllipsePanelComponent,
     GaleryComponent,
+    HomeComponent,
     LineLogicComponent,
     LinePanelComponent,
-    HomeComponent,
     NewDrawComponent,
     PencilLogicComponent,
     PencilPanelComponent,
+    PolygoneLogicComponent,
+    PolygonePanelComponent,
     RectangleLogicComponent,
     RectanglePanelComponent,
   ],

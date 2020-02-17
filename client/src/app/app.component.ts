@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 
+import { CommunicationService } from './communication/communication.service';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
@@ -59,7 +60,7 @@ export class AppComponent implements AfterViewInit {
     static: false,
     read: ElementRef
   })
-  svg: ElementRef<SVGElement>;
+  svg: ElementRef<SVGSVGElement>;
 
   handlersFunc: Map<Shortcut, ShortcutCallBack>;
 
@@ -73,10 +74,11 @@ export class AppComponent implements AfterViewInit {
 
   constructor(
     public dialog: MatDialog,
+    private readonly communicationServerice: CommunicationService,
     private readonly toolSelectorService: ToolSelectorService,
     private colorService: ColorService,
     private svgService: SvgService,
-    private shortcutHanler: ShortcutHandlerService,
+    private shortcutHanler: ShortcutHandlerService
   ) {
     this.drawInProgress = false;
     this.drawOption = { height: 0, width: 0, color: '' };
@@ -94,6 +96,12 @@ export class AppComponent implements AfterViewInit {
     this.handlersFunc.set(Shortcut.Digit1, () =>
       this.toolSelectorService.set(Tool.Rectangle)
     );
+    this.handlersFunc.set(Shortcut.Digit2, () =>
+      this.toolSelectorService.set(Tool.Ellipse)
+    );
+    this.handlersFunc.set(Shortcut.Digit3, () =>
+    this.toolSelectorService.set(Tool.Polygone)
+  );
     this.handlersFunc.set(Shortcut.O, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
@@ -101,7 +109,14 @@ export class AppComponent implements AfterViewInit {
       }
     });
 
-    [Shortcut.C, Shortcut.L, Shortcut.W, Shortcut.Digit1, Shortcut.O].forEach(
+    [
+      Shortcut.C,
+      Shortcut.L,
+      Shortcut.W,
+      Shortcut.Digit1,
+      Shortcut.Digit2,
+      Shortcut.O
+    ].forEach(
       shortcut => {
         this.shortcutHanler.set(
           shortcut,
@@ -127,6 +142,11 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.svgService.instance = this.svg;
     this.openHomeDialog();
+    setInterval(() => {
+      this.communicationServerice.post(this.svgService.instance.nativeElement)
+        .then(id => console.log('SUCESS: ' + id))
+        .catch(err => console.log('FAIL: ' + err));
+    }, 2000);
   }
 
   private openHomeDialog(): void {

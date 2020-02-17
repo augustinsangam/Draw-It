@@ -19,6 +19,9 @@ import {
   LineLogicComponent
 } from '../tool/shape/line/line-logic/line-logic.component';
 import {
+  PolygoneLogicComponent
+} from '../tool/shape/polygone/polygone-logic/polygone-logic.component';
+import {
   RectangleLogicComponent
 } from '../tool/shape/rectangle/rectangle-logic/rectangle-logic.component';
 import {
@@ -26,6 +29,7 @@ import {
 import {
   ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
+import {EllipseLogicComponent} from '../tool/shape/ellipse/ellipse-logic/ellipse-logic.component';
 
 @Component({
   selector: '[app-svg]',
@@ -41,7 +45,7 @@ export class SvgComponent implements OnInit {
   private readonly components: Type<ToolLogicDirective>[];
 
   constructor(
-    private readonly elementRef: ElementRef<SVGElement>,
+    private readonly elementRef: ElementRef<SVGSVGElement>,
     private readonly componentFactoryResolver: ComponentFactoryResolver,
     private readonly toolSelectorService: ToolSelectorService
   ) {
@@ -50,6 +54,8 @@ export class SvgComponent implements OnInit {
     this.components[Tool.Line] = LineLogicComponent;
     this.components[Tool.Pencil] = PencilLogicComponent;
     this.components[Tool.Rectangle] = RectangleLogicComponent;
+    this.components[Tool.Ellipse] = EllipseLogicComponent;
+    this.components[Tool.Polygone] = PolygoneLogicComponent;
   }
 
   private setToolHandler = (tool: Tool) => this.setTool(tool);

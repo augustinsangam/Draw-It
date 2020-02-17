@@ -1,13 +1,13 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { Point } from '../shape/common/Point';
-import { MathService } from './tool.math-service.service';
+import {Point} from '../shape/common/Point';
+import {MathService} from './tool.math-service.service';
 
 describe('MathService', () => {
   let service: MathService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({})
+    TestBed.configureTestingModule({});
     service = TestBed.get(MathService);
   });
 
@@ -19,11 +19,9 @@ describe('MathService', () => {
     const point1: Point = {
       x: 42,
       y: 42,
-    }
+    };
 
-    const point2 = point1;
-
-    const result = service.distanceIsLessThan3Pixel(point1, point2);
+    const result = service.distanceIsLessThan3Pixel(point1, point1);
 
     expect(result).toBeTruthy();
   });
@@ -32,12 +30,12 @@ describe('MathService', () => {
     const point1: Point = {
       x: 42,
       y: 42,
-    }
+    };
 
     const point2: Point = {
       x: 40,
       y: 40,
-    }
+    };
 
     const result = service.distanceIsLessThan3Pixel(point1, point2);
 
@@ -48,12 +46,12 @@ describe('MathService', () => {
     const point1: Point = {
       x: 42,
       y: 42,
-    }
+    };
 
     const point2: Point = {
       x: 39,
       y: 39,
-    }
+    };
 
     const result = service.distanceIsLessThan3Pixel(point1, point2);
 
@@ -65,12 +63,12 @@ describe('MathService', () => {
     const point1: Point = {
       x: 42,
       y: 42,
-    }
+    };
 
     const point2: Point = {
       x: 69,
       y: 69,
-    }
+    };
 
     const result = service.distanceIsLessThan3Pixel(point1, point2);
 
@@ -83,12 +81,12 @@ describe('MathService', () => {
     const point1: Point = {
       x: -1,
       y: -1,
-    }
+    };
 
     const point2: Point = {
       x: 1,
       y: 1,
-    }
+    };
 
     const result = service.distanceIsLessThan3Pixel(point1, point2);
 
@@ -100,12 +98,12 @@ describe('MathService', () => {
     const mousePosition: Point = {
       x: 3,
       y: 1,
-    }
+    };
 
     const lastpoint: Point = {
       x: 0,
       y: 0,
-    }
+    };
 
     const result = service.findAlignedSegmentPoint(mousePosition, lastpoint);
 
@@ -117,12 +115,12 @@ describe('MathService', () => {
     const mousePosition: Point = {
       x: 1,
       y: 3,
-    }
+    };
 
     const lastpoint: Point = {
       x: 0,
       y: 0,
-    }
+    };
 
     const result = service.findAlignedSegmentPoint(mousePosition, lastpoint);
 
@@ -134,12 +132,12 @@ describe('MathService', () => {
     const mousePosition: Point = {
       x: 3,
       y: 4,
-    }
+    };
 
     const lastpoint: Point = {
       x: 0,
       y: 0,
-    }
+    };
 
     const result = service.findAlignedSegmentPoint(mousePosition, lastpoint);
 
@@ -151,12 +149,12 @@ describe('MathService', () => {
     const mousePosition: Point = {
       x: -3,
       y: 4,
-    }
+    };
 
     const lastpoint: Point = {
       x: 0,
       y: 0,
-    }
+    };
 
     const result = service.findAlignedSegmentPoint(mousePosition, lastpoint);
 
@@ -168,12 +166,12 @@ describe('MathService', () => {
     const initPoint: Point = {
       x: 0,
       y: 0,
-    }
+    };
 
     const oppositePoint: Point = {
       x: 69,
       y: -42,
-    }
+    };
 
     const result = service.getRectangleUpLeftCorner(initPoint, oppositePoint);
 
@@ -185,12 +183,12 @@ describe('MathService', () => {
     const initPoint: Point = {
       x: 0,
       y: 0,
-    }
+    };
 
     const oppositePoint: Point = {
       x: -69,
       y: -42,
-    }
+    };
 
     const result = service.getRectangleUpLeftCorner(initPoint, oppositePoint);
 
@@ -202,12 +200,12 @@ describe('MathService', () => {
     const initPoint: Point = {
       x: 0,
       y: 0,
-    }
+    };
 
     const oppositePoint: Point = {
       x: -69,
       y: 42,
-    }
+    };
 
     const result = service.getRectangleUpLeftCorner(initPoint, oppositePoint);
 
@@ -219,12 +217,12 @@ describe('MathService', () => {
     const initPoint: Point = {
       x: 0,
       y: 0,
-    }
+    };
 
     const oppositePoint: Point = {
       x: 69,
       y: 42,
-    }
+    };
 
     const result = service.getRectangleUpLeftCorner(initPoint, oppositePoint);
 
@@ -236,12 +234,12 @@ describe('MathService', () => {
     const initialPoint: Point = {
       x: 0,
       y: 0,
-    }
+    };
 
     const oppositePoint: Point = {
       x: -69,
       y: -42,
-    }
+    };
 
     const result = service.getRectangleSize(initialPoint, oppositePoint);
 
@@ -253,12 +251,12 @@ describe('MathService', () => {
     const initialPoint: Point = {
       x: 0,
       y: 0,
-    }
+    };
 
     const oppositePoint: Point = {
       x: 69,
       y: 42,
-    }
+    };
 
     const result = service.getRectangleSize(initialPoint, oppositePoint);
 
@@ -270,12 +268,12 @@ describe('MathService', () => {
     const initialPoint: Point = {
       x: 0,
       y: 0,
-    }
+    };
 
     const oppositePoint: Point = {
       x: 69,
       y: 42,
-    }
+    };
 
     const result = service.transformRectangleToSquare
                    (initialPoint, oppositePoint);
@@ -287,16 +285,63 @@ describe('MathService', () => {
     const initialPoint: Point = {
       x: 0,
       y: 0,
-    }
+    };
 
     const oppositePoint: Point = {
       x: 42,
       y: 69,
-    }
+    };
 
     const result = service.transformRectangleToSquare
                    (initialPoint, oppositePoint);
 
     expect(result).toEqual({x: 42, y: 42});
   });
+
+  it('#getEllipseRadius should return half of the' +
+    'getRectangleSize returned values', () => {
+    const initialPoint: Point = {
+      x: 0,
+      y: 0,
+    };
+
+    const oppositePoint: Point = {
+      x: 42,
+      y: 69,
+    };
+
+    const dimensions = service.getRectangleSize(initialPoint, oppositePoint);
+
+    expect(
+      service.getEllipseRadius(initialPoint, oppositePoint)
+    ).toEqual(
+      {
+        rx: dimensions.width / 2,
+        ry: dimensions.height / 2
+      }
+    );
+  });
+
+  it('#getEllipseCenter should return the coordinates ' +
+    'of the center of the ellipse', () => {
+    const initialPoint: Point = {
+      x: 1,
+      y: 5,
+    };
+
+    const oppositePoint: Point = {
+      x: 6,
+      y: 0,
+    };
+
+    expect(
+      service.getEllipseCenter(initialPoint, oppositePoint)
+    ).toEqual(
+      {
+        x: 3.5,
+        y: 2.5
+      }
+    )
+  });
+
 });
