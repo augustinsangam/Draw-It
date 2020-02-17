@@ -4,10 +4,11 @@ import { Point } from '../shape/common/Point';
 import { Dimension } from '../shape/common/Rectangle';
 
 const MINIMALDISTANCE = 3;
-const MULTIPLICATEURX: number [] = [0, 0, 1.0, 1.415, 1.04, 1.0, 1.0, 1.08, 1.0, 1.01, 0, 1.03]
+const MULTIPLICATEURX: number [] = [0, 0, 1.0, 1.415, 1.05, 1.0, 1.0, 1.08, 1.0, 1.01, 0, 1.03]
 const MULTIPLICATEURY: number [] = [0, 0, 1.0, 1.415, 1.1, 1.0, 1.0, 1.08, 1.0, 1.01, 0, 1.03]
 const DECALAGEX: number [] =       [0, 0, 1.0, 1.0, 1.05, 1.0, 1.0, 1.0, 1.0, 1.0, 0, 1.0]
 const DECALAGEY: number [] = [0, 0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0, 1.0]
+const PHASETRANSITION: boolean [] = [false, false, false, false, true, false, false, false, false, false, false, false,]
 @Injectable({
   providedIn: 'root'
 })
@@ -88,11 +89,15 @@ export class MathService {
     let angle = 0;
     let rayon = 0;
     let decalage = 1.0;
-    if (minSide === dimension.width) {
+    if (dimension.width === minSide) {
       rayon = minSide * MULTIPLICATEURX [sides - 1] ;
     } else {
-      rayon = minSide * MULTIPLICATEURY [sides - 1] ;
-      decalage = DECALAGEX [sides - 1] * (dimension.width / dimension.height) ;
+      if ((dimension.width / dimension.height <= 1.04) && PHASETRANSITION [sides - 1]) {
+        rayon = minSide * MULTIPLICATEURX [sides - 1]
+      } else {
+        rayon = minSide * (MULTIPLICATEURY [sides - 1]);
+      }
+      decalage = ((DECALAGEX [sides - 1])) ;
     }
     const sideLength = rayon * Math.sin(Math.PI / sides);
     const points: Point [] = []
