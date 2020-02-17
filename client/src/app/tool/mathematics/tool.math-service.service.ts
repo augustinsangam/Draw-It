@@ -82,16 +82,16 @@ export class MathService {
     const minSide = Math.min(dimension.width, dimension.height);
 
     const initialPoint: Point = {x: 0, y: 0};
-    let angle = 0;
-    const sideLength = Math.PI * minSide / sides;
+    let angle = Math.PI / sides;
+    const sideLength = minSide * Math.sin(Math.PI / sides)
     const points: Point [] = []
     if (upLeftCorner.x < mouseDownPoint.x) {
-      initialPoint.x = mouseDownPoint.x - minSide / 2 - sideLength / 2;
+      initialPoint.x = mouseDownPoint.x - minSide / 2;
     } else {
-      initialPoint.x = mouseDownPoint.x + minSide / 2 - sideLength / 2;
+      initialPoint.x = mouseDownPoint.x + minSide / 2;
     }
     if (upLeftCorner.y === mouseDownPoint.y) {
-      initialPoint.y = mouseDownPoint.y + minSide;
+      initialPoint.y = upLeftCorner.y + minSide;
     } else {
       initialPoint.y = mouseDownPoint.y;
     }
@@ -106,19 +106,17 @@ export class MathService {
     angle += (Math.PI * 2) / sides;
     i += 1;
     }
+    // this.putCornersInRectangle(upLeftCorner, dimension, points);
     return points;
   }
 
-  cornersAreInRectangle(upLeftCorner: Point,
-                        dimension: Dimension, points: Point []): boolean {
+  getGravityCentre(points: Point []): Point {
+    let x = 0;
+    let y = 0;
     for (const point of points) {
-      if (point.x > upLeftCorner.x+ dimension.width || point.x < upLeftCorner.x){
-        return false;
-      }
-      if (point.y > upLeftCorner.y+ dimension.height || point.y < upLeftCorner.y){
-        return false;
-      }
+      x += point.x;
+      y += point.y;
     }
-    return true;
-    }
+    return {x: x / points.length, y: y / points.length}
+  }
 }
