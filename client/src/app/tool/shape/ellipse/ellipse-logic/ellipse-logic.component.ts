@@ -8,6 +8,7 @@ import {
 } from '../../common/AbstractShape';
 import {Ellipse} from '../../common/Ellipse';
 import {Point} from '../../common/Point';
+import {Rectangle} from '../../common/Rectangle';
 import {EllipseService} from '../ellipse.service';
 
 const SEMIOPACITY = '0.5';
@@ -30,6 +31,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
   private initialPoint: Point;
   private style: Style;
   private allListeners: (() => void)[] = [];
+  private rectVisu: Rectangle;
 
   constructor(
     private readonly service: EllipseService,
@@ -47,6 +49,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
       'mousedown',
       (mouseEv: MouseEvent) => {
         this.initEllipse(mouseEv);
+        this.initRectangleVisu(mouseEv);
       }
     );
 
@@ -58,6 +61,9 @@ export class EllipseLogicComponent extends ToolLogicDirective
           this.viewTemporaryForm(mouseEv);
           this.style.opacity = FULLOPACITY;
           this.onDrag = false;
+          this.renderer.removeChild(
+            this.renderer.parentNode(this.rectVisu.element),
+            this.rectVisu.element)
         }
       }
     );
@@ -69,6 +75,9 @@ export class EllipseLogicComponent extends ToolLogicDirective
         if (this.onDrag) {
           this.currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
           this.viewTemporaryForm(mouseEv);
+          this.rectVisu.dragRectangle(
+            this.initialPoint, this.currentPoint);
+
         }
       }
     );
@@ -134,6 +143,21 @@ export class EllipseLogicComponent extends ToolLogicDirective
       this.initialPoint = this.currentPoint = {
         x: mouseEv.offsetX, y: mouseEv.offsetY
       }
+    }
+  }
+
+  private initRectangleVisu(mouseEv: MouseEvent): void {
+    if (mouseEv.button === ClickType.CLICKGAUCHE) {
+      const rectangle = this.renderer.createElement('rect', this.svgNS);
+      this.renderer.appendChild(this.svgElRef.nativeElement, rectangle);
+
+      this.rectVisu = new Rectangle(
+        this.renderer,
+        rectangle,
+        this.mathService);
+
+      this.rectVisu.setParameters(
+        BackGroundProperties.None, StrokeProperties.Dashed);
     }
   }
 

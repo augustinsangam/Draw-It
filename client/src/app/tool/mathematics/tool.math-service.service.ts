@@ -131,32 +131,14 @@ export class MathService {
   }
 
   getCircleCenter(initialPoint: Point, oppositePoint: Point): Point {
-    const initToCenterv: Point = {
-      x: 0.5 * (oppositePoint.x - initialPoint.x),
-      y: 0.5 * (oppositePoint.y - initialPoint.y)
-    };
+    const xSign = Math.sign(oppositePoint.x - initialPoint.x);
+    const ySign = Math.sign(oppositePoint.y - initialPoint.y);
 
-    // initToCenterv unit vector
-    const initToCenterUv: Point = {
-      x: initToCenterv.x / Math.sqrt(
-        Math.pow(initToCenterv.x, 2) + Math.pow(initToCenterv.y, 2)
-      ),
-      y: initToCenterv.y / Math.sqrt
-      (Math.pow(initToCenterv.x, 2) + Math.pow(initToCenterv.y, 2)
-      ),
-    };
-
-    const ellipseRadius = this.getEllipseRadius(initialPoint, oppositePoint);
-    const circleRadius = {
-      rx: Math.min(ellipseRadius.rx, ellipseRadius.ry),
-      ry: Math.min(ellipseRadius.rx, ellipseRadius.ry)
-    };
-
-    // circle center coords = circleRadius * initToCenterv unit vector +
-    // initialPoint
+    const re = this.getRectangleSize(initialPoint, oppositePoint);
+    const m = Math.min(re.width, re.height);
     return {
-      x: (circleRadius.rx * initToCenterUv.x) + initialPoint.x,
-      y: (circleRadius.ry * initToCenterUv.y) + initialPoint.y
-    };
+      x: initialPoint.x + xSign * (m * 0.5),
+      y: initialPoint.y + ySign * (m * 0.5)
+    }
   }
 }
