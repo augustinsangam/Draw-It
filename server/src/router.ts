@@ -1,10 +1,9 @@
 import express from 'express';
 import flatbuffers from 'flatbuffers';
 import inversify from 'inversify';
-import mongodb from 'mongodb';
 import { log } from 'util';
 
-import { Attr, Element } from './data_generated';
+import { Element } from './data_generated';
 import { Database } from './database';
 import { TYPES } from './types';
 
@@ -28,6 +27,32 @@ class Router {
 		this.router.put('/draw/:id', this.putData());
 	}
 
+	private static deserialize(
+		data: ArrayBuffer,
+	): flatbuffers.flatbuffers.ByteBuffer {
+		return new flatbuffers.flatbuffers.ByteBuffer(new Uint8Array(data));
+	}
+
+	private static decode(fbbb: flatbuffers.flatbuffers.ByteBuffer): Element {
+		return Element.getRoot(fbbb);
+	}
+
+	private static disp(el: Element): void {
+		console.log(el.name());
+		const attrsLen = el.attrsLength();
+		for (let i = 0; i < attrsLen; i++) {
+			const attr = el.attrs(i);
+			console.log(`- ${attr?.k()}: ${attr?.v()}`);
+		}
+		const childrenLen = el.childrenLength();
+		for (let i = 0; i < childrenLen; i++) {
+			const child = el.children(i);
+			if (!!child) {
+				Router.disp(child);
+			}
+		}
+	}
+
 	get router(): express.Router {
 		return this._router;
 	}
@@ -44,8 +69,11 @@ class Router {
 	private postData(): express.RequestHandler {
 		return (req, res, next): void => {
 			//console.log(internalDB.collection('draw'));
-			const binary = new mongodb.Binary(req.body);
-			console.log(`${binary.length()} bytes received`);
+			const deserialized = Router.deserialize(req.body);
+			const decoded = Router.decode(deserialized);
+			Router.disp(decoded);
+			//const binary = new mongodb.Binary(req.body);
+			//console.log(`${binary.length()} bytes received`);
 			//collection.insertOne('yoo');
 			res.status(StatusCode.CREATED).send('42');
 			next();

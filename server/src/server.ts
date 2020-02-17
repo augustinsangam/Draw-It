@@ -38,13 +38,14 @@ class Server {
 	}
 
 	async close(): Promise<void> {
-		setTimeout(
+		const timer = setTimeout(
 			() => this.openedSockets.forEach(socket => socket.destroy()),
 			3000,
 		);
 		// github.com/nodejs/node/blob/master/doc/api/util.md#utilpromisifyoriginal
 		const closePromise = promisify(this.srv.close).bind(this.srv);
 		await closePromise();
+		clearTimeout(timer);
 		return this.db.close();
 	}
 }
