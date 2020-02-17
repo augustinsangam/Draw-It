@@ -6,7 +6,7 @@ export abstract class AbstractShape {
     protected strokeProperties: StrokeProperties;
     constructor(
         protected renderer: Renderer2,
-        public element: ElementRef,
+        public element: SVGElement,
     ) {
         this.backgoundProperties = BackGroundProperties.Filled;
         this.strokeProperties = StrokeProperties.Filled;
