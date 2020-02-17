@@ -128,4 +128,10 @@ describe('SidebarComponent', () => {
     component['selectBrush']();
     expect(spy).toHaveBeenCalled();
   });
+
+  it('selectEllipse devrait appelesr ToolSelectorService.set', () => {
+    const spy = spyOn(component['toolSelectorService'], 'set');
+    component['selectEllipse']();
+    expect(spy).toHaveBeenCalled();
+  });
 });

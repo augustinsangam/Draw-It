@@ -5,7 +5,7 @@ import { ElementRef, EventEmitter, Injectable } from '@angular/core';
 })
 export class SvgService {
 
-  instance: ElementRef<SVGElement>;
+  instance: ElementRef<SVGSVGElement>;
   selectAllElements: EventEmitter<null>;
 
   constructor() {

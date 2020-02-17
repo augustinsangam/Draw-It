@@ -25,5 +25,10 @@
             "allow-leading-underscore"
           ]
         }
+    },
+    "linterOptions": {
+        "exclude": [
+          "**/*_generated.[jt]s"
+        ]
     }
 }

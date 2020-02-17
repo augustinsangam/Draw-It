@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 
+import {Radius} from '../shape/common/Ellipse';
 import { Point } from '../shape/common/Point';
 import { Dimension } from '../shape/common/Rectangle';
 
@@ -38,22 +39,6 @@ export class MathService {
     }
   }
 
-  getRectangleUpLeftCorner(initialPoint: Point, oppositePoint: Point): Point {
-    const deltaX = oppositePoint.x - initialPoint.x;
-    const deltaY = oppositePoint.y - initialPoint.y;
-    if (deltaX > 0 && deltaY < 0) {
-      return { x: initialPoint.x, y: initialPoint.y + deltaY };
-    }
-    if (deltaX < 0 && deltaY < 0) {
-      return { x: initialPoint.x + deltaX, y: initialPoint.y + deltaY };
-    }
-    if (deltaX < 0 && deltaY > 0) {
-      return { x: initialPoint.x + deltaX, y: initialPoint.y };
-    } else {
-      return initialPoint;
-    }
-  }
-
   getRectangleSize(initialPoint: Point, oppositePoint: Point): Dimension {
     const x = Math.abs(oppositePoint.x - initialPoint.x);
     const y = Math.abs(oppositePoint.y - initialPoint.y);
@@ -72,5 +57,88 @@ export class MathService {
       deltaY = Math.sign(deltaY) * min;
     }
     return { x: deltaX + initialPoint.x, y: deltaY + initialPoint.y };
+  }
+
+  getPolynomeCornersFromRectangle(
+    mouseDownPoint: Point,
+    upLeftCorner: Point,
+    dimension: Dimension,
+    sides: number): Point [] {
+    const minSide = Math.min(dimension.width, dimension.height);
+
+    const points: Point [] = []
+    const initialPoint: Point = {x: 0, y: 0};
+    let angle = 0;
+    const sideLength = minSide / 2;
+    if (upLeftCorner.x < mouseDownPoint.x) {
+      initialPoint.x = mouseDownPoint.x - sideLength * (3 / 2);
+    } else {
+      initialPoint.x = mouseDownPoint.x + sideLength * (1 / 2)
+    }
+    if (upLeftCorner.y === mouseDownPoint.y) {
+      initialPoint.y = mouseDownPoint.y + minSide;
+    } else {
+      initialPoint.y = upLeftCorner.y + dimension.height;
+    }
+    points.push(initialPoint)
+    let i = 1;
+
+    while (i < sides) {
+    const lastPoint = {x: 0, y: 0};
+    lastPoint.x = points[i - 1].x + sideLength * Math.cos(angle);
+    lastPoint.y = points[i - 1].y - sideLength * Math.sin(angle);
+    console.log(lastPoint, 'dedaaaaaaans')
+    points.push({ x : lastPoint.x, y: lastPoint.y});
+    angle += (Math.PI * 2) / sides;
+    i += 1;
+  }
+    return points;
+  }
+  getRectangleUpLeftCorner(initialPoint: Point, oppositePoint: Point): Point {
+    const deltaX = oppositePoint.x - initialPoint.x;
+    const deltaY = oppositePoint.y - initialPoint.y;
+    if (deltaX > 0 && deltaY < 0) {
+      return { x: initialPoint.x, y: initialPoint.y + deltaY };
+    }
+    if (deltaX < 0 && deltaY < 0) {
+      return { x: initialPoint.x + deltaX, y: initialPoint.y + deltaY };
+    }
+    if (deltaX < 0 && deltaY > 0) {
+      return { x: initialPoint.x + deltaX, y: initialPoint.y };
+    } else {
+      return initialPoint;
+    }
+  }
+
+  getEllipseRadius(initialPoint: Point, oppositePoint: Point): Radius {
+    const rectDims = this.getRectangleSize(initialPoint, oppositePoint);
+    return {
+      rx: rectDims.width / 2,
+      ry: rectDims.height / 2
+    }
+  }
+
+  getEllipseCenter(initialPoint: Point, oppositePoint: Point): Point {
+    const initToCenterv: Point = {
+      x: 0.5 * (oppositePoint.x - initialPoint.x),
+      y: 0.5 * (oppositePoint.y - initialPoint.y)
+    };
+
+    return {
+      x: initialPoint.x + initToCenterv.x,
+      y: initialPoint.y + initToCenterv.y
+    };
+  }
+
+  getCircleCenter(initialPoint: Point, oppositePoint: Point): Point {
+    const xSign = Math.sign(oppositePoint.x - initialPoint.x);
+    const ySign = Math.sign(oppositePoint.y - initialPoint.y);
+
+    const re = this.getRectangleSize(initialPoint, oppositePoint);
+    const m = Math.min(re.width, re.height);
+    return {
+      x: initialPoint.x + xSign * (m * 0.5),
+      y: initialPoint.y + ySign * (m * 0.5)
+    }
   }
 }

@@ -1,22 +1,17 @@
 import { ElementRef, Renderer2 } from '@angular/core';
 import { MathService } from '../../mathematics/tool.math-service.service';
+import {AbstractShape} from './AbstractShape'
 import { Point } from './Point';
 
 // Class tested in ../Rectangle/rectangle-logic.component.spec.ts
-const SEMIOPACITY = '0.5';
-export class Rectangle {
-  private filled: boolean;
-  private initialPoint: Point;
-  private style: Style;
+export class Rectangle extends AbstractShape {
 
   constructor(
-    initialPoint: Point,
-    private renderer: Renderer2,
-    private element: ElementRef,
+    protected renderer: Renderer2,
+    public element: ElementRef,
     private mathService: MathService
   ) {
-    this.filled = true;
-    this.initialPoint = initialPoint;
+      super(renderer, element);
     }
 
   insertRectangleInSVG(upLeftCorner: Point, dimension: Dimension): void {
@@ -34,63 +29,36 @@ export class Rectangle {
     );
   }
 
-  simulateRectangle(oppositePoint: Point): void {
+  dragRectangle(mouseDownPoint: Point, mouseMovePoint: Point): void {
     const dimensions = this.mathService.getRectangleSize(
-      this.initialPoint,
-      oppositePoint
+      mouseDownPoint,
+      mouseMovePoint
     );
     const transformedPoint = this.mathService.getRectangleUpLeftCorner(
-      this.initialPoint,
-      oppositePoint
+      mouseDownPoint,
+      mouseMovePoint
     );
     this.insertRectangleInSVG(transformedPoint, dimensions);
-    this.setOpacity(SEMIOPACITY);
   }
 
-  simulateSquare(oppositePoint: Point): void {
+  dragSquare(mouseDownPoint: Point, mouseMovePoint: Point): void {
     const transformedPoint = this.mathService.transformRectangleToSquare(
-      this.initialPoint,
-      oppositePoint
+      mouseDownPoint,
+      mouseMovePoint
     );
     const finalPoint = this.mathService.getRectangleUpLeftCorner(
-      this.initialPoint,
+      mouseDownPoint,
       transformedPoint
     );
     const squareDimension = this.mathService.getRectangleSize(
-      this.initialPoint,
+      mouseDownPoint,
       transformedPoint
     );
     this.insertRectangleInSVG(finalPoint, squareDimension);
-    this.setOpacity(SEMIOPACITY);
-  }
-
-  setParameters(style: Style): void {
-    this.style = style;
-    const styleAtr = `fill:${this.style.fillColor};`
-                   + `stroke:${this.style.borderColor};`
-                   + `stroke-width:${this.style.borderWidth}`;
-    this.renderer.setAttribute(this.element, 'style', styleAtr);
-    this.filled = style.filled;
-  }
-
-  setOpacity(opacityPourcent: string): void {
-    if (this.filled) {
-      this.renderer.setAttribute(this.element, 'fill-opacity', opacityPourcent);
-    } else {
-      this.renderer.setAttribute(this.element, 'fill-opacity', '0.0');
-    }
-    this.renderer.setAttribute(this.element, 'stroke-opacity', opacityPourcent);
   }
 }
 
 export interface Dimension {
   width: number,
   height: number
-}
-
-interface Style {
-  borderWidth: string,
-  borderColor: string,
-  fillColor: string,
-  filled: boolean
 }
