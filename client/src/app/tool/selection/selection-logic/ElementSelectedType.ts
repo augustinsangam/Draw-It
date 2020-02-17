@@ -1,0 +1,10 @@
+
+export enum ElementSelectedType {
+  NOTHING,
+  LEFT_CIRCLE,
+  TOP_CIRCLE,
+  RIGHT_CIRCLE,
+  BOTTOM_CIRCLE,
+  SELECTION_RECTANGLE,
+  DRAW_ELEMENT
+}

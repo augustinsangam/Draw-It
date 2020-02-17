@@ -32,13 +32,11 @@ export class Zone {
   }
 
   deepTestPass(element: SVGGeometryElement, point: SVGPoint): boolean {
-    for (let i = this.left; i <= this.right; i += 3) {
-      for (let j = this.top; j <= this.bottom; j += 3) {
-        point.x = i;
-        point.y = j;
-        const inFill = element.isPointInFill(point);
-        const inStroke = element.isPointInStroke(point);
-        if (inFill || inStroke) {
+    for (let x = this.left; x <= this.right; x += 3) {
+      for (let y = this.top; y <= this.bottom; y += 3) {
+        point.x = x;
+        point.y = y;
+        if (element.isPointInStroke(point)) {
           return true;
         }
       }

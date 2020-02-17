@@ -2,6 +2,6 @@ import { Point } from './Point';
 
 export interface SelectionReturn {
   empty: boolean;
-  selectedElements: SVGElement[];
+  selectedElements: Set<SVGElement>;
   points: [Point, Point];
 }
