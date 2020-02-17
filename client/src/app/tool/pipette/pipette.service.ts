@@ -1,9 +1,15 @@
 import { Injectable } from '@angular/core';
+import {ToolService} from '../tool.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PipetteService {
+export class PipetteService extends ToolService  {
 
-  constructor() { }
+  currentColor: string
+
+  constructor() {
+    super();
+    this.currentColor = '#ffffff';
+  }
 }

@@ -23,6 +23,7 @@
     "@angular/router": "~8.2.14",
     "@types/marked": "^0.7.2",
     "hammerjs": "^2.0.8",
+    "html2canvas": "^1.0.0-rc.5",
     "marked": "^0.8.0",
     "material-community-components": "^5.0.1",
     "prettier": "^1.19.1",

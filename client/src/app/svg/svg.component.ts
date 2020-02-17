@@ -16,6 +16,12 @@ import {
   PencilLogicComponent
 } from '../tool/drawing-instruments/pencil/pencil-logic/pencil-logic.component';
 import {
+  PipetteLogicComponent
+} from '../tool/pipette/pipette-logic/pipette-logic.component';
+import {
+  EllipseLogicComponent
+} from '../tool/shape/ellipse/ellipse-logic/ellipse-logic.component';
+import {
   LineLogicComponent
 } from '../tool/shape/line/line-logic/line-logic.component';
 import {
@@ -29,7 +35,6 @@ import {
 import {
   ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
-import {EllipseLogicComponent} from '../tool/shape/ellipse/ellipse-logic/ellipse-logic.component';
 
 @Component({
   selector: '[app-svg]',
@@ -56,6 +61,7 @@ export class SvgComponent implements OnInit {
     this.components[Tool.Rectangle] = RectangleLogicComponent;
     this.components[Tool.Ellipse] = EllipseLogicComponent;
     this.components[Tool.Polygone] = PolygoneLogicComponent;
+    this.components[Tool.Pipette] = PipetteLogicComponent;
   }
 
   private setToolHandler = (tool: Tool) => this.setTool(tool);

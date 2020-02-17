@@ -1,15 +1,37 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  AfterViewChecked,
+  Component,
+  ElementRef,
+  ViewChild
+} from '@angular/core';
+import {ToolPanelDirective} from '../../tool-panel/tool-panel.directive';
 
 @Component({
   selector: 'app-pipette-panel',
   templateUrl: './pipette-panel.component.html',
   styleUrls: ['./pipette-panel.component.scss']
 })
-export class PipettePanelComponent implements OnInit {
+export class PipettePanelComponent
+  extends ToolPanelDirective implements AfterViewChecked {
 
-  constructor() { }
+  @ViewChild('pipetteSVG', {
+    static: false,
+  }) protected pipetteEl: ElementRef<HTMLElement>;
 
-  ngOnInit() {
+  currentColor: string;
+
+  constructor(elementRef: ElementRef<HTMLElement>,
+              // private readonly service:
+  ) {
+    super(elementRef);
+    this.currentColor = '#ffff00';
+  }
+
+  ngAfterViewChecked(): void {
+    setTimeout(() =>
+    this.currentColor = '#ffffff',
+      1000
+    )
   }
 
 }
