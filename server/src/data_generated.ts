@@ -3,6 +3,102 @@
 /**
  * @constructor
  */
+export class Draws {
+  bb: flatbuffers.ByteBuffer|null = null;
+
+  bb_pos:number = 0;
+/**
+ * @param number i
+ * @param flatbuffers.ByteBuffer bb
+ * @returns Draws
+ */
+__init(i:number, bb:flatbuffers.ByteBuffer):Draws {
+  this.bb_pos = i;
+  this.bb = bb;
+  return this;
+};
+
+/**
+ * @param flatbuffers.ByteBuffer bb
+ * @param Draws= obj
+ * @returns Draws
+ */
+static getRoot(bb:flatbuffers.ByteBuffer, obj?:Draws):Draws {
+  return (obj || new Draws).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+};
+
+/**
+ * @param number index
+ * @param Draw= obj
+ * @returns Draw
+ */
+draws(index: number, obj?:Draw):Draw|null {
+  var offset = this.bb!.__offset(this.bb_pos, 4);
+  return offset ? (obj || new Draw).__init(this.bb!.__indirect(this.bb!.__vector(this.bb_pos + offset) + index * 4), this.bb!) : null;
+};
+
+/**
+ * @returns number
+ */
+drawsLength():number {
+  var offset = this.bb!.__offset(this.bb_pos, 4);
+  return offset ? this.bb!.__vector_len(this.bb_pos + offset) : 0;
+};
+
+/**
+ * @param flatbuffers.Builder builder
+ */
+static start(builder:flatbuffers.Builder) {
+  builder.startObject(1);
+};
+
+/**
+ * @param flatbuffers.Builder builder
+ * @param flatbuffers.Offset drawsOffset
+ */
+static addDraws(builder:flatbuffers.Builder, drawsOffset:flatbuffers.Offset) {
+  builder.addFieldOffset(0, drawsOffset, 0);
+};
+
+/**
+ * @param flatbuffers.Builder builder
+ * @param Array.<flatbuffers.Offset> data
+ * @returns flatbuffers.Offset
+ */
+static createDrawsVector(builder:flatbuffers.Builder, data:flatbuffers.Offset[]):flatbuffers.Offset {
+  builder.startVector(4, data.length, 4);
+  for (var i = data.length - 1; i >= 0; i--) {
+    builder.addOffset(data[i]);
+  }
+  return builder.endVector();
+};
+
+/**
+ * @param flatbuffers.Builder builder
+ * @param number numElems
+ */
+static startDrawsVector(builder:flatbuffers.Builder, numElems:number) {
+  builder.startVector(4, numElems, 4);
+};
+
+/**
+ * @param flatbuffers.Builder builder
+ * @returns flatbuffers.Offset
+ */
+static end(builder:flatbuffers.Builder):flatbuffers.Offset {
+  var offset = builder.endObject();
+  return offset;
+};
+
+static create(builder:flatbuffers.Builder, drawsOffset:flatbuffers.Offset):flatbuffers.Offset {
+  Draws.start(builder);
+  Draws.addDraws(builder, drawsOffset);
+  return Draws.end(builder);
+}
+}
+/**
+ * @constructor
+ */
 export class Draw {
   bb: flatbuffers.ByteBuffer|null = null;
 

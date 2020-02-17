@@ -1,3 +1,7 @@
+table Draws {
+	draws: [Draw];
+}
+
 table Draw {
 	id: uint16;
 	name: string;
