@@ -58,7 +58,7 @@ export class AppComponent implements AfterViewInit {
     static: false,
     read: ElementRef
   })
-  svg: ElementRef<SVGElement>;
+  svg: ElementRef<SVGSVGElement>;
 
   handlersFunc: Map<Shortcut, ShortcutCallBack>;
 
@@ -72,15 +72,12 @@ export class AppComponent implements AfterViewInit {
 
   constructor(
     public dialog: MatDialog,
-    communicationServerice: CommunicationService,
+    private readonly communicationServerice: CommunicationService,
     private readonly toolSelectorService: ToolSelectorService,
     private colorService: ColorService,
     private svgService: SvgService,
     private shortcutHanler: ShortcutHandlerService
   ) {
-    setInterval(() => {
-      communicationServerice.ping();
-    }, 2000);
     this.drawInProgress = false;
     this.drawOption = { height: 0, width: 0, color: '' };
 
@@ -143,6 +140,11 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.svgService.instance = this.svg;
     this.openHomeDialog();
+    setInterval(() => {
+      this.communicationServerice.ping(this.svgService.instance.nativeElement)
+        .then(() => console.log('SUCESS'))
+        .catch(() => console.log('FAIL'));
+    }, 2000);
   }
 
   private openHomeDialog(): void {

@@ -1,89 +1,7 @@
 import { Injectable } from '@angular/core';
 import { flatbuffers } from 'flatbuffers';
 
-import { Attr, Element } from './data_generated';
-
-interface AttrT {
-  k: string;
-  v: string;
-}
-interface ElementT {
-  name: string;
-  attrs: AttrT[];
-  children?: ElementT[];
-}
-const data = {
-  name: 'Mother',
-  attrs: [
-    {
-      k: 'damn',
-      v: 'wow',
-    },
-    {
-      k: 'trop',
-      v: 'fresh',
-    },
-  ],
-  children: [
-    {
-      name: 'Alice',
-      attrs: [
-        {
-          k: 'size',
-          v: '1.8m',
-        },
-        {
-          k: 'weight',
-          v: '55kg',
-        },
-        {
-          k: 'strength',
-          v: 'none',
-        },
-      ],
-      children: [
-        {
-          name: 'Seb',
-          attrs: [
-            {
-              k: 'foo',
-              v: 'bar',
-            },
-          ],
-        },
-        {
-          name: 'Kev',
-          attrs: [
-            {
-              k: 'hello',
-              v: 'world',
-            },
-          ],
-          children: [
-            {
-              name: 'Khalid',
-              attrs: [
-                {
-                  k: 'weight',
-                  v: '42k',
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      name: 'Bob',
-      attrs: [
-        {
-          k: 'smart',
-          v: 'yes',
-        },
-      ],
-    },
-  ],
-};
+import { Attr as AttrT, Element as ElementT } from './data_generated';
 
 enum StatusCode {
   CREATED = 201,
@@ -109,27 +27,24 @@ export class CommunicationService {
     return fbbb.bytes().subarray(fbbb.position(), fbbb.capacity());
   }
 
-  private encode(el: ElementT): flatbuffers.Offset {
-    const childrenList = new Array<number>();
-    if (!!el.children) {
-      for (const child of el.children) {
-        childrenList.push(this.encode(child));
-      }
-    }
-    const children = Element.createChildrenVector(this.fbb, childrenList);
-    const attrsList = new Array<number>();
-    for (const attr of el.attrs) {
-      const k = this.fbb.createString(attr.k);
-      const v = this.fbb.createString(attr.v);
-      attrsList.push(Attr.create(this.fbb, k, v));
-    }
-    const attrs = Element.createAttrsVector(this.fbb, attrsList);
-    const name = this.fbb.createString(el.name);
-    return Element.create(this.fbb, name, attrs, children);
+  // FIXME: HTMLElement => dom.Element
+  private encode(el: Element): flatbuffers.Offset {
+    const childrenList =  Array.from(el.childNodes)
+      .filter(node => node.nodeType == 1)
+      .map(node => node as Element)
+      .map(el => this.encode(el));
+    const children = ElementT.createChildrenVector(this.fbb, childrenList);
+    const attrsList = Array.from(el.attributes)
+      .map(attr => AttrT.create(
+        this.fbb, this.fbb.createString(attr.name),
+        this.fbb.createString(attr.value)))
+    const attrs = ElementT.createAttrsVector(this.fbb, attrsList);
+    const name = this.fbb.createString(el.tagName);
+    return ElementT.create(this.fbb, name, attrs, children);
   }
 
-  ping() {
-    const end = this.encode(data);
+  ping(el: Element) {
+    const end = this.encode(el);
     this.fbb.finish(end);
     const encoded = this.fbb.dataBuffer();
     const serialized = CommunicationService.serialize(encoded);
