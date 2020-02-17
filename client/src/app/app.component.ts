@@ -141,9 +141,9 @@ export class AppComponent implements AfterViewInit {
     this.svgService.instance = this.svg;
     this.openHomeDialog();
     setInterval(() => {
-      this.communicationServerice.ping(this.svgService.instance.nativeElement)
-        .then(() => console.log('SUCESS'))
-        .catch(() => console.log('FAIL'));
+      this.communicationServerice.post(this.svgService.instance.nativeElement)
+        .then(id => console.log('SUCESS: ' + id))
+        .catch(err => console.log('FAIL: ' + err));
     }, 2000);
   }
 

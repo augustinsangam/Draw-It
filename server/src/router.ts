@@ -3,7 +3,7 @@ import flatbuffers from 'flatbuffers';
 import inversify from 'inversify';
 import { log } from 'util';
 
-import { Element } from './data_generated';
+import { Draw, Element } from './data_generated';
 import { Database } from './database';
 import { TYPES } from './types';
 
@@ -11,6 +11,8 @@ enum StatusCode {
 	CREATED = 201,
 	ACCEPTED,
 	NO_CONTENT = 204,
+	NOT_ACCEPTABLE = 406,
+	IM_A_TEAPOT = 418,
 }
 
 @inversify.injectable()
@@ -19,12 +21,15 @@ class Router {
 
 	constructor(@inversify.inject(TYPES.Database) private readonly db: Database) {
 		this._router = express.Router();
-		this.router.get('/ping', (_req, res) =>
-			res.sendStatus(StatusCode.NO_CONTENT),
-		);
 		this.router.get('/', this.getHelloWorld());
 		this.router.post('/draw', this.postData());
 		this.router.put('/draw/:id', this.putData());
+		this.router.get('/ping', (_req, res) =>
+			res.sendStatus(StatusCode.NO_CONTENT),
+		);
+		this.router.get('/brew-coffee', (_req, res) =>
+			res.sendStatus(StatusCode.IM_A_TEAPOT),
+		);
 	}
 
 	private static deserialize(
@@ -33,8 +38,8 @@ class Router {
 		return new flatbuffers.flatbuffers.ByteBuffer(new Uint8Array(data));
 	}
 
-	private static decode(fbbb: flatbuffers.flatbuffers.ByteBuffer): Element {
-		return Element.getRoot(fbbb);
+	private static decode(fbbb: flatbuffers.flatbuffers.ByteBuffer): Draw {
+		return Draw.getRoot(fbbb);
 	}
 
 	private static disp(el: Element): void {
@@ -71,7 +76,14 @@ class Router {
 			//console.log(internalDB.collection('draw'));
 			const deserialized = Router.deserialize(req.body);
 			const decoded = Router.decode(deserialized);
-			Router.disp(decoded);
+			const name = decoded.name();
+			if (!!name) {
+				console.log('Name is ' + name);
+			}
+			const svg = decoded.svg();
+			if (!!svg) {
+				Router.disp(svg);
+			}
 			//const binary = new mongodb.Binary(req.body);
 			//console.log(`${binary.length()} bytes received`);
 			//collection.insertOne('yoo');
