@@ -106,14 +106,30 @@ export class AppComponent implements AfterViewInit {
         this.openNewDrawDialog();
       }
     });
+    this.handlersFunc.set(Shortcut.A, (event: KeyboardEvent) => {
+      if (!!event && event.ctrlKey) {
+        event.preventDefault();
+        this.toolSelectorService.set(Tool.Selection);
+        // Une deuxième fois pour s'asssurer que le panel
+        // reste dans l'état dans lequel il était
+        this.toolSelectorService.set(Tool.Selection);
+        this.svgService.selectAllElements.emit(null);
+      }
+    });
+
+    this.handlersFunc.set(Shortcut.S, (event: KeyboardEvent) =>
+      this.toolSelectorService.set(Tool.Selection)
+    );
 
     [
+      Shortcut.A,
       Shortcut.C,
       Shortcut.L,
       Shortcut.W,
       Shortcut.Digit1,
       Shortcut.Digit2,
-      Shortcut.O
+      Shortcut.O,
+      Shortcut.S
     ].forEach(
       shortcut => {
         this.shortcutHanler.set(
