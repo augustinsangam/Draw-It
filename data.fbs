@@ -1,5 +1,7 @@
 table Draw {
-	id: uint;
+	id: uint16;
+	name: string;
+	tags: [string];
 	svg: Element;
 	colors: [string]; // :12 >1.11.0
 }
@@ -14,3 +16,17 @@ table Attr {
 	k: string;
 	v: string;
 }
+
+// blog.misterblue.com/programming/notes/Javascript-and-Flatbuffers.html
+//struct ColorRGBA {
+//	r: uint8;
+//	g: uint8;
+//	b: uint8;
+//	a: uint8;
+//}
+//struct ColorHSL {
+//	h: uint16; // [0, 360]
+//	s: uint8;  // [0, 100]
+//	l: uint8;  // [0, 100]
+//}
+//struct ColorHSV {}

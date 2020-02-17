@@ -35,7 +35,7 @@ describe('RectangleLogicComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(RectangleLogicComponent);
     component = fixture.componentInstance;
-    component.svgElRef = new ElementRef<SVGElement>(
+    component.svgElRef = new ElementRef<SVGSVGElement>(
       document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     );
     fixture.detectChanges();
