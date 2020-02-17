@@ -1,5 +1,3 @@
-// import { OnInit } from '@angular/core';
-
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {FormControl} from '@angular/forms';
@@ -8,6 +6,7 @@ import {MatAutocomplete,
 import {MatChipInputEvent} from '@angular/material/chips';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
+import { CommunicationService } from 'src/app/communication/communication.service';
 
 /**
  * @title Chips Autocomplete
@@ -39,14 +38,15 @@ export class GaleryComponent {
   constructor() {
     this.filteredTags = this.tagCtrl.valueChanges.pipe(
         startWith(null),
-        map((tag: string | null) => tag ? this._filter(tag) : this.allTags.slice()));
+        map((tag: string | null) =>
+        tag ? this._filter(tag) : this.allTags.slice()));
   }
 
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
 
-    // Add our tag
+    // Add our tagngOnInit
     if ((value || '').trim()) {
       this.tags.push(value.trim());
     }
@@ -78,23 +78,10 @@ export class GaleryComponent {
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.allTags.filter(tag => tag.toLowerCase().indexOf(filterValue) === 0);
+    return this.allTags.filter(
+        tag => tag.toLowerCase().indexOf(filterValue) === 0
+      );
   }
 
+  
 }
-
-/*
-@Component({
-  selector: 'app-galery',
-  templateUrl: './galery.component.html',
-  styleUrls: ['./galery.component.scss']
-})
-export class GaleryComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-}
-*/
