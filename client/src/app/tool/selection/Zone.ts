@@ -32,10 +32,18 @@ export class Zone {
   }
 
   deepTestPass(element: SVGGeometryElement, point: SVGPoint): boolean {
+    const transform = element.getAttribute('transform') as string;
+    const result  = /translate\(\s*([^\s,)]+)[ ,]([^\s,)]+)/.exec(transform);
+    let offsetX = 0;
+    let offsetY = 0;
+    if (result !== null) {
+      offsetX -= parseInt(result[1], 10);
+      offsetY -= parseInt(result[2], 10);
+    }
     for (let x = this.left; x <= this.right; x += 3) {
       for (let y = this.top; y <= this.bottom; y += 3) {
-        point.x = x;
-        point.y = y;
+        point.x = x + offsetX;
+        point.y = y + offsetY;
         if (element.isPointInStroke(point)) {
           return true;
         }

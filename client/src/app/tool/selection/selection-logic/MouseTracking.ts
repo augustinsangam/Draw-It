@@ -6,5 +6,6 @@ export interface MouseTracking {
   currentPoint: Point;
   endPoint: Point;
   mouseIsDown: boolean;
-  selectedElement: ElementSelectedType
+  selectedElement: ElementSelectedType;
+  onDrag: boolean;
 }

@@ -35,41 +35,59 @@ export class SelectionLogicComponent
   }
 
   private handlers = {
-    click: ($event: MouseEvent) => {
-      const type = this.elementSelectedType($event.target as SVGElement);
-      if (type === ElementSelectedType.DRAW_ELEMENT
-        && this.mouse.startPoint.equals(this.mouse.endPoint)) {
-        this.createBoudingRectangle($event.target as SVGElement);
-      } else {
-        this.deleteRectangle();
-        if (!this.mouse.startPoint.equals(this.mouse.endPoint)) {
-          const [startPoint, endPoint] = this.orderPoint(
-            this.mouse.startPoint, this.mouse.endPoint
-          );
-          this.applyMultipleSelection(startPoint, endPoint);
-        }
-      }
-    },
 
     mousedown: ($event: MouseEvent) => {
       this.mouse.startPoint = new Point($event.offsetX, $event.offsetY);
+      this.mouse.currentPoint = new Point($event.offsetX, $event.offsetY);
       this.mouse.mouseIsDown = true;
       this.mouse.selectedElement = this.elementSelectedType(
-                                $event.target as SVGElement);
+        $event.target as SVGElement
+      );
+      this.mouse.onDrag =
+        this.isInTheSelectionZone($event.offsetX, $event.offsetY);
     },
 
     mousemouve: ($event: MouseEvent) => {
       if (this.mouse.mouseIsDown) {
-        this.mouse.currentPoint = new Point($event.offsetX, $event.offsetY);
-        this.drawRectangle(this.mouse.startPoint, this.mouse.currentPoint);
-
+        if (this.mouse.onDrag) {
+          const offsetX = $event.offsetX - this.mouse.currentPoint.x;
+          const offsetY = $event.offsetY - this.mouse.currentPoint.y;
+          this.mouse.currentPoint = new Point($event.offsetX, $event.offsetY);
+          this.translateAll(offsetX, offsetY);
+        } else {
+          this.mouse.currentPoint = new Point($event.offsetX, $event.offsetY);
+          this.drawRectangle(this.mouse.startPoint, this.mouse.currentPoint);
+        }
       }
     },
 
     mouseup: ($event: MouseEvent) => {
       this.mouse.endPoint = new Point($event.offsetX, $event.offsetY);
       this.mouse.mouseIsDown = false;
+      if (!this.mouse.onDrag) {
+        // S'il s'agit d'un vrai déplacement
+        if (!this.mouse.startPoint.equals(this.mouse.endPoint)) {
+          const [startPoint, endPoint] = this.orderPoint(
+            this.mouse.startPoint, this.mouse.endPoint
+          );
+          this.deleteRectangle();
+          this.applyMultipleSelection(startPoint, endPoint);
+        }
+      }
+    },
+
+    click: ($event: MouseEvent) => {
+      const type = this.elementSelectedType($event.target as SVGElement);
+      // On s'assure d'avoir un vrai click
+      if (this.mouse.startPoint.equals(this.mouse.endPoint)) {
+        if (type === ElementSelectedType.DRAW_ELEMENT) {
+          this.createBoudingRectangle($event.target as SVGElement);
+        } else if (type === ElementSelectedType.NOTHING) {
+          this.deleteRectangle();
+        }
+      }
     }
+
   }
 
   // tslint:disable-next-line: use-lifecycle-interface
@@ -78,7 +96,8 @@ export class SelectionLogicComponent
     this.mouse = {
       startPoint: fakePoint, currentPoint: fakePoint,
       endPoint: fakePoint, mouseIsDown: false,
-      selectedElement: ElementSelectedType.NOTHING
+      selectedElement: ElementSelectedType.NOTHING,
+      onDrag: false
     };
 
     this.renderer.setStyle(this.svgElRef.nativeElement, 'cursor', 'default');
@@ -105,8 +124,8 @@ export class SelectionLogicComponent
     const subscription = this.svgService.selectAllElements.subscribe(() => {
       const [startPoint, endPoint] = this.orderPoint(
         new Point(0, 0),
-        new Point(this.svgService.instance.nativeElement.scrollWidth,
-          this.svgService.instance.nativeElement.scrollHeight)
+        new Point(this.svgService.instance.nativeElement.clientWidth,
+          this.svgService.instance.nativeElement.clientHeight)
       );
       this.applyMultipleSelection(startPoint, endPoint);
     });
@@ -127,7 +146,6 @@ export class SelectionLogicComponent
   private createBoudingRectangle(element: SVGElement): void {
     this.selectedElements.clear();
     this.selectedElements.add(element);
-    console.log(this.selectedElements);
     const edgePoints = new SingleSelection(element, this.getSvgOffset())
       .getPoints();
     this.drawRectangle(edgePoints[0], edgePoints[1]);
@@ -149,7 +167,6 @@ export class SelectionLogicComponent
       (this.svgElRef.nativeElement as SVGSVGElement).createSVGPoint());
     const selection = multipleSelection.getSelection();
     this.selectedElements = selection.selectedElements;
-    console.log(this.selectedElements);
     if (!selection.empty) {
       this.drawRectangle(selection.points[0], selection.points[1]);
       this.drawCircles(selection.points[0], selection.points[1]);
@@ -164,6 +181,7 @@ export class SelectionLogicComponent
   }
 
   private drawRectangle(p1: Point, p2: Point) {
+    this.deleteRectangle();
     const rec = this.rectangle.nativeElement;
     const [startPoint, endPoint] = this.orderPoint(p1, p2);
     rec.setAttribute('x', startPoint.x.toString());
@@ -172,7 +190,7 @@ export class SelectionLogicComponent
     rec.setAttribute('height', (endPoint.y - startPoint.y).toString());
     rec.setAttribute('fill', 'none');
     rec.setAttribute('stroke', 'rgba(128, 128, 128, 0.7)');
-    rec.setAttribute('stroke-width', '5');
+    rec.setAttribute('stroke-width', '2');
     rec.setAttribute('stroke-dasharray', '10 5');
   }
 
@@ -202,11 +220,12 @@ export class SelectionLogicComponent
   private deleteRectangle(): void {
     this.rectangle.nativeElement.setAttribute('width', '0');
     this.rectangle.nativeElement.setAttribute('height', '0');
+    this.rectangle.nativeElement.setAttribute('transform', 'translate(0,0)');
     this.circles.forEach(element => {
       this.setCircle(new Point(0, 0),
       element.nativeElement, '0', 'rgba(255, 255, 255, 0.0)');
+      element.nativeElement.setAttribute('transform', 'translate(0,0)');
     });
-    this.selectedElements.clear();
   }
 
   getSvgOffset(): Offset {
@@ -236,11 +255,54 @@ export class SelectionLogicComponent
     }
   }
 
+  private isInTheSelectionZone(x: number, y: number): boolean {
+    const point = (this.svgElRef.nativeElement as SVGSVGElement)
+                      .createSVGPoint();
+    const transform =
+      this.rectangle.nativeElement.getAttribute('transform') as string;
+    const result  = /translate\(\s*([^\s,)]+)[ ,]([^\s,)]+)/.exec(transform);
+    let offsetX = 0;
+    let offsetY = 0;
+    if (result !== null) {
+      offsetX -= parseInt(result[1], 10);
+      offsetY -= parseInt(result[2], 10);
+    }
+    point.x = x + offsetX;
+    point.y = y + offsetY;
+    return (this.rectangle.nativeElement as SVGGeometryElement)
+            .isPointInFill(point);
+  }
+
+  translate(element: SVGElement, x: number, y: number): void {
+    const transform = element.getAttribute('transform') as string;
+    const result  = /translate\(\s*([^\s,)]+)[ ,]([^\s,)]+)/.exec(transform);
+    let offsetX = x;
+    let offsetY = y;
+    if (!!result) {
+      offsetX += parseInt(result[1], 10);
+      offsetY += parseInt(result[2], 10);
+    }
+    element.setAttribute('transform', `translate(${offsetX},${offsetY})`);
+  }
+
+  translateAll(x: number, y: number) {
+    this.selectedElements.forEach(element => {
+      this.translate(element, x, y);
+    });
+    this.translate(this.rectangle.nativeElement, x, y);
+    this.circles.forEach(
+      (circle) => this.translate(circle.nativeElement, x, y)
+    );
+  }
+
   ngOnDestroy() {
     this.allListenners.forEach(end => end());
     this.allSubscriptions.forEach(sub => sub.unsubscribe());
     this.renderer.removeChild(this.svgElRef.nativeElement,
       this.rectangle.nativeElement);
+    this.circles.forEach((circle) => this.renderer.removeChild(
+      this.svgElRef.nativeElement, circle.nativeElement)
+    );
   }
 
 }

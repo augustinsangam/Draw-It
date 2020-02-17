@@ -21,7 +21,7 @@ export abstract class Selection {
     const offsetIncrement = this.getOffsetIncrement(element);
     const endPoint = new Point(
       startingPoint.x + (domRectangle.width + thikness + offsetIncrement.left),
-      startingPoint.y + (domRectangle.height + thikness + + offsetIncrement.top)
+      startingPoint.y + (domRectangle.height + thikness + offsetIncrement.top)
     );
     return new Zone(startingPoint.x, endPoint.x, startingPoint.y, endPoint.y);
   }
