@@ -80,6 +80,10 @@ class Router {
 			if (!!name) {
 				console.log('Name is ' + name);
 			}
+			const tagsLen = decoded.tagsLength();
+			for (let i = 0; i < tagsLen; i++) {
+				console.log(`Tag #${i}: ${decoded.tags(i)}`);
+			}
 			const svg = decoded.svg();
 			if (!!svg) {
 				Router.disp(svg);
