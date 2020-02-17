@@ -50,7 +50,7 @@ export class SvgComponent implements OnInit {
   private readonly components: Type<ToolLogicDirective>[];
 
   constructor(
-    private readonly elementRef: ElementRef<SVGElement>,
+    private readonly elementRef: ElementRef<SVGSVGElement>,
     private readonly componentFactoryResolver: ComponentFactoryResolver,
     private readonly toolSelectorService: ToolSelectorService
   ) {

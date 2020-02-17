@@ -10,7 +10,7 @@ describe('SvgService', () => {
 
   beforeEach(() => {
     service = TestBed.get(SvgService);
-    service.instance = new ElementRef<SVGElement>(
+    service.instance = new ElementRef<SVGSVGElement>(
       document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     );
   });

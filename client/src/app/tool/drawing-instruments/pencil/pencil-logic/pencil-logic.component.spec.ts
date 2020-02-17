@@ -30,7 +30,7 @@ describe('PencilLogicComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PencilLogicComponent);
     component = fixture.componentInstance;
-    component.svgElRef = new ElementRef<SVGElement>(
+    component.svgElRef = new ElementRef<SVGSVGElement>(
       document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     );
     mouseEvLeft = new MouseEvent('mousedown', {

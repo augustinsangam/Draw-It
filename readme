@@ -64,6 +64,7 @@ ABBREVIATIONS {{{
 	- opt = optinal
 	- pos = position
 	- sz = size
+	- val = value
 }}}
 
 KEYWORDS {{{

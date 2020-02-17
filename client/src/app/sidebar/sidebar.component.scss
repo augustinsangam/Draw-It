@@ -3,7 +3,17 @@
 :host {
   display: flex;
   flex-direction: column;
-  background-color: #20262E;
+  background-color: #2f3136;
+}
+
+nav {
+  flex-grow: 1;
+  overflow-y: auto;
+  background-color: #202225;
+}
+
+nav::-webkit-scrollbar {
+  display: none;
 }
 
 a {
@@ -12,22 +22,18 @@ a {
   padding: 22px;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+nav a {
   transition: .3s filter;
-}
-
-a:last-child {
-  cursor: help;
-  background-color: #FF0;
-}
-
-a:not(.colored) {
   filter: grayscale(100%);
 }
 
-a:not(.colored):hover, a.selected {
+nav a:hover, nav a.selected {
   filter: grayscale(0) drop-shadow(0 0 5px #FFF);
 }
 
-span {
-  flex-grow: 1;
+a[title='Aide'] {
+  cursor: help;
+  background-color: #FF0;
 }
