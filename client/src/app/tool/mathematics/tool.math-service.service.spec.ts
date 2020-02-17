@@ -344,4 +344,26 @@ describe('MathService', () => {
     )
   });
 
+  it('#getCircleCenter should return ' +
+    'the center of the circle', () => {
+    const initialPoint: Point = {
+      x: 1,
+      y: 5,
+    };
+
+    const oppositePoint: Point = {
+      x: 8,
+      y: 0,
+    };
+
+    const circleCenter = service.getCircleCenter(initialPoint, oppositePoint);
+    expect(
+      Math.sqrt(
+        Math.pow(circleCenter.x, 2) + Math.pow(circleCenter.y, 2)
+      ) - Math.sqrt(
+        Math.pow(3.034, 2) + Math.pow(3.547, 2)
+      )
+    ).toBeLessThan(0.001)
+  })
+
 });

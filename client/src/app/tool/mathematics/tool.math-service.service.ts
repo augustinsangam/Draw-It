@@ -112,7 +112,6 @@ export class MathService {
 
   getEllipseRadius(initialPoint: Point, oppositePoint: Point): Radius {
     const rectDims = this.getRectangleSize(initialPoint, oppositePoint);
-    // case ++
     return {
       rx: rectDims.width / 2,
       ry: rectDims.height / 2
@@ -128,6 +127,36 @@ export class MathService {
     return {
       x: initialPoint.x + initToCenterv.x,
       y: initialPoint.y + initToCenterv.y
+    };
+  }
+
+  getCircleCenter(initialPoint: Point, oppositePoint: Point): Point {
+    const initToCenterv: Point = {
+      x: 0.5 * (oppositePoint.x - initialPoint.x),
+      y: 0.5 * (oppositePoint.y - initialPoint.y)
+    };
+
+    // initToCenterv unit vector
+    const initToCenterUv: Point = {
+      x: initToCenterv.x / Math.sqrt(
+        Math.pow(initToCenterv.x, 2) + Math.pow(initToCenterv.y, 2)
+      ),
+      y: initToCenterv.y / Math.sqrt
+      (Math.pow(initToCenterv.x, 2) + Math.pow(initToCenterv.y, 2)
+      ),
+    };
+
+    const ellipseRadius = this.getEllipseRadius(initialPoint, oppositePoint);
+    const circleRadius = {
+      rx: Math.min(ellipseRadius.rx, ellipseRadius.ry),
+      ry: Math.min(ellipseRadius.rx, ellipseRadius.ry)
+    };
+
+    // circle center coords = circleRadius * initToCenterv unit vector +
+    // initialPoint
+    return {
+      x: (circleRadius.rx * initToCenterUv.x) + initialPoint.x,
+      y: (circleRadius.ry * initToCenterUv.y) + initialPoint.y
     };
   }
 }
