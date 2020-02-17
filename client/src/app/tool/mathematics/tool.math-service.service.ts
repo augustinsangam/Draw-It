@@ -4,7 +4,10 @@ import { Point } from '../shape/common/Point';
 import { Dimension } from '../shape/common/Rectangle';
 
 const MINIMALDISTANCE = 3;
-const MULTIPLICATEUR: number [] = [0, 0, 1.0, 1.415, 1.04, 1.0, 1.0, 1.08, 1.0, 1.01, 0, 1.03]
+const MULTIPLICATEURX: number [] = [0, 0, 1.0, 1.415, 1.04, 1.0, 1.0, 1.08, 1.0, 1.01, 0, 1.03]
+const MULTIPLICATEURY: number [] = [0, 0, 1.0, 1.415, 1.1, 1.0, 1.0, 1.08, 1.0, 1.01, 0, 1.03]
+const DECALAGEX: number [] =       [0, 0, 1.0, 1.0, 1.05, 1.0, 1.0, 1.0, 1.0, 1.0, 0, 1.0]
+const DECALAGEY: number [] = [0, 0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0, 1.0]
 @Injectable({
   providedIn: 'root'
 })
@@ -81,31 +84,22 @@ export class MathService {
     sides: number): Point [] {
     const minSide = Math.min(dimension.width, dimension.height);
 
-    // const initialPoint: Point = {x: 0, y: 0};
-    // let angle = Math.PI / sides;
-    // const sideLength = minSide * Math.sin(Math.PI / sides)
-    // const points: Point [] = []
-    // if (upLeftCorner.x < mouseDownPoint.x) {
-    //   initialPoint.x = mouseDownPoint.x - minSide / 2;
-    // } else {
-    //   initialPoint.x = mouseDownPoint.x + minSide / 2;
-    // }
-    // if (upLeftCorner.y === mouseDownPoint.y) {
-    //   initialPoint.y = upLeftCorner.y + minSide;
-    // } else {
-    //   initialPoint.y = mouseDownPoint.y;
-    // }
     const initialPoint: Point = {x: 0, y: 0};
     let angle = 0;
-    let sideLength = minSide * Math.sin(Math.PI / sides);
-    //const rayon = minSide + (sideLength * Math.sin(2 * Math.PI / sides))
-    const rayon = minSide * MULTIPLICATEUR [sides - 1] ;
-    sideLength = rayon * Math.sin(Math.PI / sides);
+    let rayon = 0;
+    let decalage = 1.0;
+    if (minSide === dimension.width) {
+      rayon = minSide * MULTIPLICATEURX [sides - 1] ;
+    } else {
+      rayon = minSide * MULTIPLICATEURY [sides - 1] ;
+      decalage = DECALAGEX [sides - 1] * (dimension.width / dimension.height) ;
+    }
+    const sideLength = rayon * Math.sin(Math.PI / sides);
     const points: Point [] = []
     if (upLeftCorner.x < mouseDownPoint.x) {
-      initialPoint.x = mouseDownPoint.x - minSide / 2 - sideLength / 2;
+      initialPoint.x = mouseDownPoint.x - minSide * decalage / 2 - sideLength / 2;
     } else {
-      initialPoint.x = mouseDownPoint.x + minSide / 2 - sideLength / 2;
+      initialPoint.x = mouseDownPoint.x + minSide * decalage / 2 - sideLength / 2;
     }
     if (upLeftCorner.y === mouseDownPoint.y) {
       initialPoint.y = upLeftCorner.y + minSide;
