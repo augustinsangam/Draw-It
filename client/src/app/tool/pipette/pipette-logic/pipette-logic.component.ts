@@ -27,7 +27,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
 
   ngOnInit(): void {
 
-    html2canvas(this.svgElRef.nativeElement as unknown as HTMLElement).then(
+    html2canvas(document.body).then(
       value => { this.image = value.getContext('2d') }
     );
 
@@ -64,8 +64,8 @@ export class PipetteLogicComponent extends ToolLogicDirective
   private onMouseMove(mouseEv: MouseEvent): void {
     if (this.image != null) {
       const pixel = this.image.getImageData(
-        mouseEv.offsetX,
-        mouseEv.offsetY,
+        mouseEv.clientX,
+        mouseEv.clientY,
         1,
         1
       ).data;
