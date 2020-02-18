@@ -8,6 +8,8 @@ export enum Shortcut {
   Digit2 = 'Digit2',
   Digit3 = 'Digit3',
   O = 'KeyO',
+  A = 'KeyA',
+  S = 'KeyS'
 }
 
 export type ShortcutCallBack = (event?: KeyboardEvent) => void;

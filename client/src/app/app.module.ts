@@ -49,6 +49,18 @@ import {
   PencilPanelComponent
 } from './tool/drawing-instruments/pencil/pencil-panel/pencil-panel.component';
 import {
+  EraserLogicComponent
+} from './tool/eraser/eraser-logic/eraser-logic.component';
+import {
+  EraserPanelComponent
+} from './tool/eraser/eraser-panel/eraser-panel.component';
+import {
+  SelectionLogicComponent
+} from './tool/selection/selection-logic/selection-logic.component';
+import {
+  SelectionPanelComponent
+} from './tool/selection/selection-panel/selection-panel.component';
+import {
   EllipseLogicComponent
 } from './tool/shape/ellipse/ellipse-logic/ellipse-logic.component';
 import {
@@ -85,6 +97,8 @@ import {
     DocumentationComponent,
     EllipseLogicComponent,
     EllipsePanelComponent,
+    EraserPanelComponent,
+    EraserLogicComponent,
     HomeComponent,
     LineLogicComponent,
     LinePanelComponent,
@@ -97,6 +111,8 @@ import {
     RectanglePanelComponent,
     SidebarComponent,
     SvgComponent,
+    SelectionPanelComponent,
+    SelectionLogicComponent,
     PolygoneLogicComponent,
     PolygonePanelComponent,
   ],
@@ -118,6 +134,8 @@ import {
     BrushLogicComponent,
     BrushPanelComponent,
     ColorPanelComponent,
+    EraserLogicComponent,
+    EraserPanelComponent,
     PaletteDialogComponent,
     ConfirmationDialogComponent,
     DocumentationComponent,
@@ -129,10 +147,12 @@ import {
     NewDrawComponent,
     PencilLogicComponent,
     PencilPanelComponent,
-    RectangleLogicComponent,
-    RectanglePanelComponent,
     PolygoneLogicComponent,
     PolygonePanelComponent,
+    RectangleLogicComponent,
+    RectanglePanelComponent,
+    SelectionLogicComponent,
+    SelectionPanelComponent,
   ],
   bootstrap: [
     AppComponent,

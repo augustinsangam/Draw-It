@@ -18,6 +18,7 @@ import { Tool } from '../tool/tool.enum';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements AfterViewInit {
+
   @ViewChild('line', {
     static: false,
   })
@@ -48,6 +49,16 @@ export class SidebarComponent implements AfterViewInit {
   })
   protected ellipseElRef: ElementRef<HTMLElement>;
 
+  @ViewChild('eraser', {
+    static: false,
+  })
+  protected eraserElRef: ElementRef<HTMLElement>
+
+  @ViewChild('selection', {
+    static: false,
+  })
+  protected selectionElRef: ElementRef<HTMLElement>
+
   @Output() protected documentationEv: EventEmitter<null>;
 
   private toolToElRef: ElementRef<HTMLElement>[];
@@ -61,9 +72,11 @@ export class SidebarComponent implements AfterViewInit {
   // Must be pubilc
   ngAfterViewInit() {
     this.toolToElRef[Tool.Brush] = this.brushElRef;
+    this.toolToElRef[Tool.Eraser] = this.eraserElRef;
     this.toolToElRef[Tool.Line] = this.lineElRef;
     this.toolToElRef[Tool.Pencil] = this.pencilElRef;
     this.toolToElRef[Tool.Rectangle] = this.rectangleElRef;
+    this.toolToElRef[Tool.Selection] = this.selectionElRef;
     this.toolToElRef[Tool.Ellipse] = this.ellipseElRef;
     this.toolToElRef[Tool.Polygone] = this.polygoneElRef;
     this.toolSelectorService.onChange(
@@ -86,6 +99,10 @@ export class SidebarComponent implements AfterViewInit {
     this.toolSelectorService.set(Tool.Line);
   }
 
+  protected selectEraser(): void {
+    this.toolSelectorService.set(Tool.Eraser);
+  }
+
   protected selectRectangle(): void {
     this.toolSelectorService.set(Tool.Rectangle);
   }
@@ -100,6 +117,10 @@ export class SidebarComponent implements AfterViewInit {
 
   protected selectBrush(): void {
     this.toolSelectorService.set(Tool.Brush);
+  }
+
+  protected selectSelection(): void {
+    this.toolSelectorService.set(Tool.Selection);
   }
 
   protected selectEllipse(): void {
