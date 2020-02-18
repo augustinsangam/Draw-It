@@ -1,15 +1,10 @@
 <h1>Pipette</h1>
-  <svg width="280" height="280" #pipetteSVG *ngIf="!checkIfEasterEgg()">
-    <rect
-      height="160"
-      [ngStyle]="{'fill':this.service.currentColor, 'stroke-width':3, 'stroke':'rgb(0,0,0)'}"
-      width="160"
-      transform="translate(60 60)">
-    </rect>
+  <svg width="320" height="280" #pipetteSVG>
+    <circle cx="160"
+            cy="150"
+            r="100"
+            [ngStyle]="{'fill': this.pipService.currentColor, 'stroke-width': 3, 'stroke': 'rgb(0, 0, 0)'}">
+    </circle>
   </svg>
-  <img src="src/assets/bob.jpg" title="LUL" alt="bob.jpg" style="display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%"
-  *ngIf="checkIfEasterEgg()">
+<p class="mat-caption" align="center" style="font-size: 150%">{{this.getHex()}}</p>
 <app-color-panel></app-color-panel>

@@ -6,6 +6,7 @@ import {
   } from '@angular/core';
 import {ToolPanelDirective} from '../../tool-panel/tool-panel.directive';
 import {PipetteService} from '../pipette.service';
+import {ColorService} from '../../color/color.service';
 
 @Component({
   selector: 'app-pipette-panel',
@@ -20,17 +21,18 @@ export class PipettePanelComponent
   }) protected pipetteEl: ElementRef<HTMLElement>;
 
   constructor(elementRef: ElementRef<HTMLElement>,
-              private readonly service: PipetteService
+              private readonly pipService: PipetteService,
+              private readonly colorService: ColorService
   ) {
     super(elementRef);
-    this.service.currentColor = '#ffff00';
-  }
-
-  checkIfEasterEgg(): boolean {
-    return this.service.currentColor === 'rgba(42,42,42,1)'
+    this.pipService.currentColor = 'rgba(0,0,0,0)';
   }
 
   ngAfterViewChecked(): void {
+  }
+
+  protected getHex(): string {
+    return this.colorService.hexFormRgba(this.pipService.currentColor);
   }
 
 }
