@@ -3,8 +3,7 @@ import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
 
 @Component({
   selector: 'app-selection-panel',
-  templateUrl: './selection-panel.component.html',
-  styleUrls: ['./selection-panel.component.scss']
+  template: '',
 })
 export class SelectionPanelComponent extends ToolPanelDirective {
 

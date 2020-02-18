@@ -31,11 +31,7 @@ export abstract class SelectionLogicBase
     this.initialiseRectangles();
     this.initialiseCircles();
     const subscription = this.svgService.selectAllElements.subscribe(() => {
-      const [startPoint, endPoint] = this.orderPoint(new Point(0, 0),
-        new Point(this.svgService.instance.nativeElement.clientWidth,
-          this.svgService.instance.nativeElement.clientHeight)
-      );
-      this.applyMultipleSelection(startPoint, endPoint);
+      this.applyMultipleSelection();
     });
     this.allListenners.push(() => subscription.unsubscribe());
     this.renderer.setStyle(this.svgElRef.nativeElement, 'cursor', 'default');
@@ -58,15 +54,15 @@ export abstract class SelectionLogicBase
     this.applyInversion(inversion.selectedElements);
   }
 
-  protected applyMultipleSelection(startPoint: Point, endPoint: Point,
-                                   elements?: Set<SVGElement>) {
+  protected applyMultipleSelection(startPoint?: Point, endPoint?: Point,
+                                   elements?: Set<SVGElement>): void {
     const selection = this.getMultipleSelection(startPoint, endPoint, elements);
     this.selectedElements = selection.selectedElements;
     this.drawVisualisation(selection.points[0], selection.points[1]);
     this.drawCircles(selection.points[0], selection.points[1]);
   }
 
-  private getMultipleSelection( startPoint: Point, endPoint: Point,
+  private getMultipleSelection( startPoint?: Point, endPoint?: Point,
                                 elements?: Set<SVGElement>)
   : SelectionReturn {
     if (elements === undefined) {
@@ -78,9 +74,11 @@ export abstract class SelectionLogicBase
     }
     const multipleSelection = new MultipleSelection(
       elements,
-      startPoint, endPoint,
       this.getSvgOffset(),
-      (this.svgElRef.nativeElement as SVGSVGElement).createSVGPoint());
+      (this.svgElRef.nativeElement as SVGSVGElement).createSVGPoint(),
+      startPoint, endPoint
+    );
+
     return multipleSelection.getSelection();
   }
 
@@ -94,12 +92,6 @@ export abstract class SelectionLogicBase
         elementsToInvert.add(element);
       }
     });
-    if (startPoint === undefined || endPoint === undefined) {
-      [startPoint, endPoint] = this.orderPoint(new Point(0, 0),
-          new Point(this.svgService.instance.nativeElement.clientWidth,
-            this.svgService.instance.nativeElement.clientHeight)
-      );
-    }
     this.applyMultipleSelection(startPoint, endPoint, elementsToInvert);
   }
 
@@ -110,7 +102,7 @@ export abstract class SelectionLogicBase
     ];
   }
 
-  protected drawSelection(p1: Point, p2: Point) {
+  protected drawSelection(p1: Point, p2: Point): void {
     this.deleteSelection();
     const rec = this.rectangles.selection;
     const [startPoint, endPoint] = this.orderPoint(p1, p2);
@@ -124,7 +116,7 @@ export abstract class SelectionLogicBase
     rec.setAttribute('stroke-dasharray', '10 5');
   }
 
-  private drawVisualisation(p1: Point, p2: Point) {
+  private drawVisualisation(p1: Point, p2: Point): void {
     this.deleteVisualisation();
     const rec = this.rectangles.visualisation;
     const [startPoint, endPoint] = this.orderPoint(p1, p2);
@@ -138,7 +130,7 @@ export abstract class SelectionLogicBase
     rec.setAttribute('stroke-dasharray', '10 5');
   }
 
-  protected drawInversion(p1: Point, p2: Point) {
+  protected drawInversion(p1: Point, p2: Point): void {
     this.deleteInversion();
     const rec = this.rectangles.inversion;
     const [startPoint, endPoint] = this.orderPoint(p1, p2);
@@ -235,7 +227,7 @@ export abstract class SelectionLogicBase
           .isPointInFill(point);
   }
 
-  translateAll(x: number, y: number) {
+  translateAll(x: number, y: number): void {
     this.selectedElements.forEach(element => {
       this.translate(element, x, y);
     });
@@ -273,7 +265,7 @@ export abstract class SelectionLogicBase
     return true;
   }
 
-  private initialiseCircles() {
+  private initialiseCircles(): void {
     this.circles = [];
     [0, 1, 2, 3].forEach((index) => {
       const circle = this.renderer.createElement('circle', this.svgNS);
