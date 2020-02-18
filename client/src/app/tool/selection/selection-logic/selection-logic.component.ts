@@ -1,4 +1,4 @@
-import { Component, Renderer2, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 import { SvgService } from 'src/app/svg/svg.service';
 import { Point } from '../Point';
 import { ElementSelectedType } from './ElementSelectedType';

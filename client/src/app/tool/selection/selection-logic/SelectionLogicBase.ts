@@ -1,4 +1,4 @@
-import { ElementRef, OnDestroy, Renderer2 } from '@angular/core';
+import { OnDestroy, Renderer2 } from '@angular/core';
 import { SvgService } from 'src/app/svg/svg.service';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { MultipleSelection } from '../MultipleSelection';
@@ -12,7 +12,7 @@ import { MouseTracking } from './MouseTracking';
 export abstract class SelectionLogicBase
       extends ToolLogicDirective implements OnDestroy {
 
-  protected circles: ElementRef<SVGElement>[];
+  protected circles: SVGElement[];
   protected allListenners: (() => void)[];
   protected selectedElements: Set<SVGElement>;
   protected selectedElementsFreezed: Set<SVGElement>;
@@ -98,7 +98,7 @@ export abstract class SelectionLogicBase
       [startPoint, endPoint] = this.orderPoint(new Point(0, 0),
           new Point(this.svgService.instance.nativeElement.clientWidth,
             this.svgService.instance.nativeElement.clientHeight)
-        );
+      );
     }
     this.applyMultipleSelection(startPoint, endPoint, elementsToInvert);
   }
@@ -112,7 +112,7 @@ export abstract class SelectionLogicBase
 
   protected drawSelection(p1: Point, p2: Point) {
     this.deleteSelection();
-    const rec = this.rectangles.selection.nativeElement;
+    const rec = this.rectangles.selection;
     const [startPoint, endPoint] = this.orderPoint(p1, p2);
     rec.setAttribute('x', startPoint.x.toString());
     rec.setAttribute('y', startPoint.y.toString());
@@ -126,7 +126,7 @@ export abstract class SelectionLogicBase
 
   private drawVisualisation(p1: Point, p2: Point) {
     this.deleteVisualisation();
-    const rec = this.rectangles.visualisation.nativeElement;
+    const rec = this.rectangles.visualisation;
     const [startPoint, endPoint] = this.orderPoint(p1, p2);
     rec.setAttribute('x', startPoint.x.toString());
     rec.setAttribute('y', startPoint.y.toString());
@@ -140,7 +140,7 @@ export abstract class SelectionLogicBase
 
   protected drawInversion(p1: Point, p2: Point) {
     this.deleteInversion();
-    const rec = this.rectangles.inversion.nativeElement;
+    const rec = this.rectangles.inversion;
     const [startPoint, endPoint] = this.orderPoint(p1, p2);
     rec.setAttribute('x', startPoint.x.toString());
     rec.setAttribute('y', startPoint.y.toString());
@@ -158,13 +158,13 @@ export abstract class SelectionLogicBase
       (startPoint.x + endPoint.x) / 2,
       (startPoint.y + endPoint.y) / 2);
     this.setCircle(new Point(startPoint.x, centerPoint.y),
-      this.circles[0].nativeElement, '8', 'rgba(128, 128, 255, 1)');
+      this.circles[0], '8', 'rgba(128, 128, 255, 1)');
     this.setCircle(new Point(centerPoint.x, startPoint.y),
-      this.circles[1].nativeElement, '8', 'rgba(128, 128, 255, 1)');
+      this.circles[1], '8', 'rgba(128, 128, 255, 1)');
     this.setCircle(new Point(endPoint.x, centerPoint.y),
-      this.circles[2].nativeElement, '8', 'rgba(128, 128, 255, 1)');
+      this.circles[2], '8', 'rgba(128, 128, 255, 1)');
     this.setCircle(new Point(centerPoint.x, endPoint.y),
-      this.circles[3].nativeElement, '8', 'rgba(128, 128, 255, 1)');
+      this.circles[3], '8', 'rgba(128, 128, 255, 1)');
   }
 
   private setCircle(center: Point, circle: SVGElement,
@@ -176,49 +176,49 @@ export abstract class SelectionLogicBase
   }
 
   protected deleteVisualisation(): void {
-    this.rectangles.visualisation.nativeElement.setAttribute('width', '0');
-    this.rectangles.visualisation.nativeElement.setAttribute('height', '0');
-    this.rectangles.visualisation.nativeElement.setAttribute( 'transform',
+    this.rectangles.visualisation.setAttribute('width', '0');
+    this.rectangles.visualisation.setAttribute('height', '0');
+    this.rectangles.visualisation.setAttribute( 'transform',
                                                           'translate(0,0)');
     this.circles.forEach(element => {
       this.setCircle(new Point(0, 0),
-      element.nativeElement, '0', 'rgba(255, 255, 255, 0.0)');
-      element.nativeElement.setAttribute('transform', 'translate(0,0)');
+      element, '0', 'rgba(255, 255, 255, 0.0)');
+      element.setAttribute('transform', 'translate(0,0)');
     });
   }
 
   protected deleteSelection(): void {
-    this.rectangles.selection.nativeElement.setAttribute('width', '0');
-    this.rectangles.selection.nativeElement.setAttribute('height', '0');
-    this.rectangles.selection.nativeElement.setAttribute( 'transform',
+    this.rectangles.selection.setAttribute('width', '0');
+    this.rectangles.selection.setAttribute('height', '0');
+    this.rectangles.selection.setAttribute( 'transform',
                                                           'translate(0,0)');
   }
 
   protected deleteInversion(): void {
-    this.rectangles.inversion.nativeElement.setAttribute('width', '0');
-    this.rectangles.inversion.nativeElement.setAttribute('height', '0');
-    this.rectangles.inversion.nativeElement.setAttribute( 'transform',
+    this.rectangles.inversion.setAttribute('width', '0');
+    this.rectangles.inversion.setAttribute('height', '0');
+    this.rectangles.inversion.setAttribute( 'transform',
                                                           'translate(0,0)');
   }
 
   protected elementSelectedType(element: SVGElement)
     : ElementSelectedType {
     switch (element) {
-      case this.circles[0].nativeElement:
+      case this.circles[0]:
         return ElementSelectedType.LEFT_CIRCLE;
-      case this.circles[1].nativeElement:
+      case this.circles[1]:
         return ElementSelectedType.TOP_CIRCLE;
-      case this.circles[2].nativeElement:
+      case this.circles[2]:
         return ElementSelectedType.RIGHT_CIRCLE;
-      case this.circles[3].nativeElement:
+      case this.circles[3]:
         return ElementSelectedType.BOTTOM_CIRCLE;
       case this.svgElRef.nativeElement:
         return ElementSelectedType.NOTHING;
-      case this.rectangles.selection.nativeElement:
+      case this.rectangles.selection:
         return ElementSelectedType.SELECTION_RECTANGLE;
-      case this.rectangles.selection.nativeElement:
+      case this.rectangles.selection:
         return ElementSelectedType.INVERSION_RECTANGLE;
-      case this.rectangles.visualisation.nativeElement:
+      case this.rectangles.visualisation:
         return ElementSelectedType.VISUALISATION_RECTANGLE;
       default:
         return ElementSelectedType.DRAW_ELEMENT;
@@ -229,9 +229,9 @@ export abstract class SelectionLogicBase
   : boolean {
     const point = this.svgElRef.nativeElement.createSVGPoint();
     const [dx, dy] =
-      this.getTransformTranslate(this.rectangles.visualisation.nativeElement);
+      this.getTransformTranslate(this.rectangles.visualisation);
     [point.x, point.y] = [x - dx, y - dy];
-    return (this.rectangles.visualisation.nativeElement as SVGGeometryElement)
+    return (this.rectangles.visualisation as SVGGeometryElement)
           .isPointInFill(point);
   }
 
@@ -239,10 +239,8 @@ export abstract class SelectionLogicBase
     this.selectedElements.forEach(element => {
       this.translate(element, x, y);
     });
-    this.translate(this.rectangles.visualisation.nativeElement, x, y);
-    this.circles.forEach(
-      (circle) => this.translate(circle.nativeElement, x, y)
-    );
+    this.translate(this.rectangles.visualisation, x, y);
+    this.circles.forEach((circle) => this.translate(circle, x, y));
   }
 
   translate(element: SVGElement, x: number, y: number): void {
@@ -281,7 +279,7 @@ export abstract class SelectionLogicBase
       const circle = this.renderer.createElement('circle', this.svgNS);
       const resizeType = index % 2 === 0 ? 'col-resize' : 'ns-resize';
       this.renderer.setStyle(circle, 'cursor', resizeType);
-      this.circles.push(new ElementRef(circle));
+      this.circles.push(circle);
       this.renderer.appendChild(this.svgElRef.nativeElement, circle);
     });
   }
@@ -304,30 +302,26 @@ export abstract class SelectionLogicBase
 
   private initialiseRectangles(): void {
     this.rectangles = {
-      selection:
-        new ElementRef(this.renderer.createElement('rect', this.svgNS)),
-      inversion:
-        new ElementRef(this.renderer.createElement('rect', this.svgNS)),
-      visualisation:
-        new ElementRef(this.renderer.createElement('rect', this.svgNS))
+      selection: this.renderer.createElement('rect', this.svgNS),
+      inversion: this.renderer.createElement('rect', this.svgNS),
+      visualisation: this.renderer.createElement('rect', this.svgNS)
     };
     [this.rectangles.selection, this.rectangles.inversion,
-      this.rectangles.visualisation].forEach((elRef: ElementRef) => {
-        this.renderer.appendChild(this.svgElRef.nativeElement,
-          elRef.nativeElement);
-      });
+    this.rectangles.visualisation].forEach((element: SVGElement) => {
+        this.renderer.appendChild(this.svgElRef.nativeElement, element);
+    });
   }
 
   ngOnDestroy() {
     this.allListenners.forEach(end => end());
     this.renderer.removeChild(this.svgElRef.nativeElement,
-      this.rectangles.selection.nativeElement);
+      this.rectangles.selection);
     this.renderer.removeChild(this.svgElRef.nativeElement,
-        this.rectangles.inversion.nativeElement);
+        this.rectangles.inversion);
     this.renderer.removeChild(this.svgElRef.nativeElement,
-        this.rectangles.visualisation.nativeElement);
+        this.rectangles.visualisation);
     this.circles.forEach((circle) => this.renderer.removeChild(
-      this.svgElRef.nativeElement, circle.nativeElement)
+      this.svgElRef.nativeElement, circle)
     );
   }
 
@@ -341,7 +335,7 @@ interface Mouse {
 }
 
 interface SelectionRectangles {
-  selection: ElementRef<SVGElement>,
-  inversion: ElementRef<SVGElement>,
-  visualisation: ElementRef<SVGElement>
+  selection: SVGElement,
+  inversion: SVGElement,
+  visualisation: SVGElement
 }
