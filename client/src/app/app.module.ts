@@ -61,6 +61,12 @@ import {
   SelectionPanelComponent
 } from './tool/selection/selection-panel/selection-panel.component';
 import {
+  PipetteLogicComponent
+} from './tool/pipette/pipette-logic/pipette-logic.component';
+import {
+  PipettePanelComponent
+} from './tool/pipette/pipette-panel/pipette-panel.component';
+import {
   EllipseLogicComponent
 } from './tool/shape/ellipse/ellipse-logic/ellipse-logic.component';
 import {
@@ -115,6 +121,8 @@ import {
     SelectionLogicComponent,
     PolygoneLogicComponent,
     PolygonePanelComponent,
+    PipetteLogicComponent,
+    PipettePanelComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -147,6 +155,10 @@ import {
     NewDrawComponent,
     PencilLogicComponent,
     PencilPanelComponent,
+    PipetteLogicComponent,
+    PipettePanelComponent,
+    RectangleLogicComponent,
+    RectanglePanelComponent,
     PolygoneLogicComponent,
     PolygonePanelComponent,
     RectangleLogicComponent,

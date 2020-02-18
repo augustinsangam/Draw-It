@@ -10,6 +10,27 @@ import {
 } from '@angular/core';
 
 import {
+  BrushPanelComponent
+} from '../tool/drawing-instruments/brush/brush-panel/brush-panel.component';
+import {
+  PencilPanelComponent
+} from '../tool/drawing-instruments/pencil/pencil-panel/pencil-panel.component';
+import {
+  PipettePanelComponent
+} from '../tool/pipette/pipette-panel/pipette-panel.component';
+import {
+  EllipsePanelComponent
+} from '../tool/shape/ellipse/ellipse-panel/ellipse-panel.component';
+import {
+  LinePanelComponent
+} from '../tool/shape/line/line-panel/line-panel.component';
+import {
+  PolygonePanelComponent
+} from '../tool/shape/polygone/polygone-panel/polygone-panel.component';
+import {
+  RectanglePanelComponent
+} from '../tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
+import {
   ToolPanelDirective } from '../tool/tool-panel/tool-panel.directive';
 import {
   ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
@@ -43,6 +64,14 @@ export class PanelComponent implements OnInit {
     for ( const entry of Tools.TOOL_MANAGER ) {
       this.components[entry[0]] = entry[1][0];
     }
+    this.components = new Array(Tool._Len);
+    this.components[Tool.Brush] = BrushPanelComponent;
+    this.components[Tool.Line] = LinePanelComponent;
+    this.components[Tool.Pencil] = PencilPanelComponent;
+    this.components[Tool.Rectangle] = RectanglePanelComponent;
+    this.components[Tool.Ellipse] = EllipsePanelComponent;
+    this.components[Tool.Polygone] = PolygonePanelComponent;
+    this.components[Tool.Pipette] = PipettePanelComponent;
     this.childWidth = 0;
     // Panel is collapsed by default
     this.hostWidth = 0;
