@@ -3,6 +3,7 @@ import html2canvas from 'html2canvas';
 import {ColorService} from '../../color/color.service';
 import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
 import {PipetteService} from '../pipette.service';
+import { ScreenService } from 'src/app/pages/new-draw/sreen-service/screen.service';
 
 @Component({
   selector: 'app-pipette-logic',
@@ -15,27 +16,34 @@ export class PipetteLogicComponent extends ToolLogicDirective
   implements OnDestroy {
 
   private allListeners: (() => void)[] = [];
-  private image: CanvasRenderingContext2D | null;
+  private image: CanvasRenderingContext2D;
   private backgroundColorOnInit: string;
 
   constructor(
     private readonly service: PipetteService,
     private readonly renderer: Renderer2,
     private readonly colorService: ColorService,
+    private readonly scrennService: ScreenService
   ) {
     super();
+    this.scrennService.size.subscribe(() => {
+      this.ngOnInit();
+      console.log('Je suis apppele')
+    });
   }
 
   ngOnInit(): void {
     this.svgElRef.nativeElement.style.cursor = 'wait';
 
     html2canvas(this.svgElRef.nativeElement as unknown as HTMLElement).then(
-      value => { this.image = value.getContext('2d') }
+      (value) => {
+        this.image = value.getContext('2d') as CanvasRenderingContext2D;
+      }
     );
 
     const onMouseClick = this.renderer.listen(
       this.svgElRef.nativeElement,
-      'mouseclick',
+      'click',
       (mouseEv: MouseEvent) => this.onMouseClick(mouseEv)
     );
 
@@ -60,6 +68,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
   }
 
   private onMouseClick(mouseEv: MouseEvent): void {
+    console.log('Je suis clicke')
     if (mouseEv.button === 0) {
       this.colorService.selectPrimaryColor(this.service.currentColor);
     } else if (mouseEv.button === 1) {
