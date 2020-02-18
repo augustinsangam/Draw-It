@@ -86,6 +86,7 @@ export class MathService {
         decalageY = ((DECALAGEY [sides - 1])) ;
         if (sides === 3) {
           decalageX = ratio * FACTEURTRANSITION [sides - 1];
+          rayon = minSide * MULTIPLICATEURX [sides - 1] * ratio;
         }
       } else {
         rayon = minSide * (MULTIPLICATEURY [sides - 1]);
