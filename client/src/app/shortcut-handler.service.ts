@@ -9,7 +9,7 @@ export enum Shortcut {
   Digit3 = 'Digit3',
   O = 'KeyO',
   A = 'KeyA',
-  S = 'KeyS'
+  S = 'KeyS',
   I = 'KeyI'
 }
 

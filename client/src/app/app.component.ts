@@ -127,8 +127,9 @@ export class AppComponent implements AfterViewInit {
       Shortcut.W,
       Shortcut.Digit1,
       Shortcut.Digit2,
+      Shortcut.Digit3,
       Shortcut.O,
-      Shortcut.I
+      Shortcut.I,
       Shortcut.S
     ].forEach(
       shortcut => {
