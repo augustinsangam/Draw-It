@@ -5,6 +5,7 @@ import {
   ViewChild
 } from '@angular/core';
 import {ToolPanelDirective} from '../../tool-panel/tool-panel.directive';
+import {PipetteService} from '../pipette.service';
 
 @Component({
   selector: 'app-pipette-panel',
@@ -18,20 +19,15 @@ export class PipettePanelComponent
     static: false,
   }) protected pipetteEl: ElementRef<HTMLElement>;
 
-  currentColor: string;
-
   constructor(elementRef: ElementRef<HTMLElement>,
-              // private readonly service:
+              private readonly service: PipetteService
   ) {
     super(elementRef);
-    this.currentColor = '#ffff00';
+    this.service.currentColor = '#ffff00';
   }
 
   ngAfterViewChecked(): void {
-    setTimeout(() =>
-    this.currentColor = '#ffffff',
-      1000
-    )
+
   }
 
 }
