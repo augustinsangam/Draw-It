@@ -12,6 +12,12 @@ import {
   PencilPanelComponent
 } from './drawing-instruments/pencil/pencil-panel/pencil-panel.component';
 import {
+  SelectionLogicComponent
+} from './selection/selection-logic/selection-logic.component';
+import {
+  SelectionPanelComponent
+} from './selection/selection-panel/selection-panel.component';
+import {
   EllipseLogicComponent
 } from './shape/ellipse/ellipse-logic/ellipse-logic.component';
 import {
@@ -50,3 +56,5 @@ TOOL_MANAGER.set(Tool.Rectangle,
 TOOL_MANAGER.set(Tool.Ellipse, [EllipsePanelComponent, EllipseLogicComponent]);
 TOOL_MANAGER.set(Tool.Polygone,
                 [PolygonePanelComponent, PolygoneLogicComponent]);
+TOOL_MANAGER.set(Tool.Selection,
+                  [SelectionPanelComponent, SelectionLogicComponent]);

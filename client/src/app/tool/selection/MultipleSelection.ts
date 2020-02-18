@@ -9,7 +9,7 @@ export class MultipleSelection extends Selection {
   private compareZone: Zone;
   private selectedElements: Set<SVGElement>;
 
-  constructor(elements: SVGElement[],
+  constructor(elements: Set<SVGElement>,
               p1: Point, p2: Point, svgOffset: Offset,
               private point: SVGPoint) {
     super(svgOffset);
@@ -29,7 +29,7 @@ export class MultipleSelection extends Selection {
     }
   }
 
-  private findSelectedElements( elements: SVGElement[]): void {
+  private findSelectedElements( elements: Set<SVGElement>): void {
     elements.forEach(element => {
       if (element instanceof SVGElement) {
         const elementZone = this.getZone(element);

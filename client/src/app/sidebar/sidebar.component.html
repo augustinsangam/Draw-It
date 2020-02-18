@@ -1,6 +1,8 @@
 <nav>
-  <a title="Selection" #selection (click)="selectSelection($event)"
+  <a title="Selection [S]" #selection (click)="selectSelection($event)"
     style="background-image:url(/assets/sidebar-icons/selection.png)"></a>
+  <a title="Crayon [C]" #pencil (click)="selectPencil($event)"
+    style="background-image:url(/assets/sidebar-icons/gimp-tool-pencil.png)"></a>
   <a title="Ligne [L]" #line (click)="selectLine($event)"
     style="background-image:url(/assets/sidebar-icons/line.png)"></a>
   <a title="Rectangle [1]" #rectangle (click)="selectRectangle($event)"
@@ -9,8 +11,6 @@
     style="background-image:url(assets/sidebar-icons/ellipse.png)"></a>
   <a title="Polygone [3]" #polygone (click)="selectPolygone($event)"
     style="background-image:url(/assets/sidebar-icons/polygone.png)"></a>
-  <a title="Crayon [C]" #pencil (click)="selectPencil($event)"
-    style="background-image:url(/assets/sidebar-icons/gimp-tool-pencil.png)"></a>
   <a title="Pinceau [W]" #brush (click)="selectBrush($event)"
     style="background-image:url(/assets/sidebar-icons/gimp-tool-paintbrush.png)"></a>
 </nav>
