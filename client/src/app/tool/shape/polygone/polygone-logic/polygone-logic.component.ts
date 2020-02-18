@@ -109,7 +109,7 @@ implements OnDestroy {
       this.polygones.push(new Polygone(
         this.renderer,
         polygon,
-        this.mathService, this.svgElRef, 6));
+        this.mathService, this.svgElRef, 3));
       }
     this.setPolygoneProperties();
   }

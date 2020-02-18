@@ -5,11 +5,11 @@ import { Point } from '../shape/common/Point';
 import { Dimension } from '../shape/common/Rectangle';
 
 const MINIMALDISTANCE = 3;
-const MULTIPLICATEURX: number [] = [0, 0, 1.0, 1.415, 1.05, 1.00, 1.0, 1.08, 1.01, 1.042, 0, 1.03]
-const MULTIPLICATEURY: number [] = [0, 0, 1.0, 1.415, 1.1, 1.155, 1.0, 1.08, 1.027, 1.2, 0, 1.03]
-const DECALAGEX: number [] =       [0, 0, 1.0, 1.0, 1.045, 1.15, 1.0, 1.0, 1.0, 1.0, 0, 1.0]
-const DECALAGEY: number [] = [0, 0, 1.0, 1.0, 0.97, 0.88, 1.0, 1.0, 1.0, 1.0, 0, 1.0]
-const RATIOTRANSITION: number[] = [0, 0, 1.0, 1.0, 1.04, 1.15, 1.0, 1.0, 1.04, 1.0, 1.0, 1.0]
+const MULTIPLICATEURX: number [] = [0, 0, 1.15, 1.415, 1.05, 1.00, 1.015, 1.08, 1.01, 1.0, 1.01, 1.03]
+const MULTIPLICATEURY: number [] = [0, 0, 1.32, 1.415, 1.1, 1.155, 1.05, 1.08, 1.027, 1.05, 1.02, 1.03]
+const DECALAGEX: number [] =       [0, 0, 1.15, 1.0, 1.045, 1.15, 1.025, 1.0, 1.0, 1.15, 1.02, 1.0]
+const DECALAGEY: number [] = [0, 0, 1.0, 1.0, 0.97, 0.88, 1.0, 1.0, 1.0, 0.95, 1.0, 1.0]
+const RATIOTRANSITION: number[] = [0, 0, 1.15, 1.0, 1.04, 1.15, 1.06, 1.0, 1.04, 1.15, 1.06, 1.0]
 @Injectable({
   providedIn: 'root'
 })
@@ -79,9 +79,11 @@ export class MathService {
       rayon = minSide * MULTIPLICATEURX [sides - 1] ;
       decalageY = ((DECALAGEY [sides - 1])) ;
     } else {
-      if (dimension.width / dimension.height <= RATIOTRANSITION [sides - 1]) {
-        rayon = minSide * MULTIPLICATEURX [sides - 1]
+      const ratio = dimension.width / dimension.height;
+      if ( ratio <= RATIOTRANSITION [sides - 1]) {
+        rayon = minSide * MULTIPLICATEURX [sides - 1] * ratio
         decalageY = ((DECALAGEY [sides - 1])) ;
+        decalageX = ratio;
       } else {
         rayon = minSide * (MULTIPLICATEURY [sides - 1]);
         decalageX = ((DECALAGEX [sides - 1])) ;
