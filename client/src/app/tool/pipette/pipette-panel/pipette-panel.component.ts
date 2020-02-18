@@ -2,8 +2,8 @@ import {
   AfterViewChecked,
   Component,
   ElementRef,
-  ViewChild
-} from '@angular/core';
+  ViewChild,
+  } from '@angular/core';
 import {ToolPanelDirective} from '../../tool-panel/tool-panel.directive';
 import {PipetteService} from '../pipette.service';
 
@@ -26,8 +26,11 @@ export class PipettePanelComponent
     this.service.currentColor = '#ffff00';
   }
 
-  ngAfterViewChecked(): void {
+  checkIfEasterEgg(): boolean {
+    return this.service.currentColor === 'rgba(42,42,42,1)'
+  }
 
+  ngAfterViewChecked(): void {
   }
 
 }
