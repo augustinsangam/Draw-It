@@ -5,12 +5,22 @@ import {MatAutocomplete,
    MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {Observable} from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
-import { CommunicationService } from 'src/app/communication/communication.service';
+import { map, startWith, filter} from 'rxjs/operators';
+import {
+    CommunicationService
+  } from 'src/app/communication/communication.service';
+import { Draws } from 'src/app/communication/data_generated';
 
 /**
  * @title Chips Autocomplete
  */
+
+export interface GaleryDraw {
+  name: string;
+  id: number;
+  tags: string[];
+}
+
 @Component({
   selector: 'app-galery',
   templateUrl: './galery.component.html',
@@ -25,28 +35,41 @@ export class GaleryComponent {
   filteredTags: Observable<string[]>;
   tags: string[] = ['Lemon'];
   allTags: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
+  galeryDrawTable: GaleryDraw[];
 
   @ViewChild('tagInput', {
     static: true,
     read: ElementRef
-  }) tagInput: ElementRef<HTMLInputElement>;
+  })
+  tagInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto', {
     static: true,
     read: MatAutocomplete
-  }) matAutocomplete: MatAutocomplete;
+  })
+  matAutocomplete: MatAutocomplete;
 
-  constructor() {
+  constructor(private communicationService: CommunicationService) {
     this.filteredTags = this.tagCtrl.valueChanges.pipe(
         startWith(null),
-        map((tag: string | null) =>
-        tag ? this._filter(tag) : this.allTags.slice()));
+        // filter((tag: string | null) => !!tag && this.tags.indexOf(tag) == 0).
+        map(tag => tag ? this._filter(tag) : this._filter2()));
+
+    const draws: Draws = communicationService.;
+    const drawsLenght = draws.drawsLength();
+    for (let i = 0; i < drawsLenght; i++) {
+      const name = draws.draws(i)?.name;
+      let newGaleryDraw: GaleryDraw = {
+        name: name;
+      };
+    }
+    
   }
 
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
 
-    // Add our tagngOnInit
+    // Add our tag
     if ((value || '').trim()) {
       this.tags.push(value.trim());
     }
@@ -55,8 +78,6 @@ export class GaleryComponent {
     if (input) {
       input.value = '';
     }
-
-    console.log(value);
 
     this.tagCtrl.setValue(null);
   }
@@ -78,10 +99,11 @@ export class GaleryComponent {
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.allTags.filter(
-        tag => tag.toLowerCase().indexOf(filterValue) === 0
-      );
+    return this.allTags.filter(tag => tag.toLowerCase().indexOf(filterValue) === 0);
   }
 
-  
+  private _filter2() {
+    const value = this.tags;
+    return this.allTags.filter(tag => value.indexOf(tag) !== 0);
+  }
 }
