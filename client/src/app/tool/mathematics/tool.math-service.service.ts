@@ -5,11 +5,11 @@ import { Point } from '../shape/common/Point';
 import { Dimension } from '../shape/common/Rectangle';
 
 const MINIMALDISTANCE = 3;
-const MULTIPLICATEURX: number [] = [0, 0, 1.0, 1.415, 1.05, 1.0, 1.0, 1.08, 1.0, 1.01, 0, 1.03]
-const MULTIPLICATEURY: number [] = [0, 0, 1.0, 1.415, 1.1, 1.0, 1.0, 1.08, 1.0, 1.01, 0, 1.03]
-const DECALAGEX: number [] =       [0, 0, 1.0, 1.0, 1.05, 1.0, 1.0, 1.0, 1.0, 1.0, 0, 1.0]
-const DECALAGEY: number [] = [0, 0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0, 1.0]
-const PHASETRANSITION: boolean [] = [false, false, false, false, true, false, false, false, false, false, false, false,]
+const MULTIPLICATEURX: number [] = [0, 0, 1.0, 1.415, 1.05, 1.00, 1.0, 1.08, 1.01, 1.042, 0, 1.03]
+const MULTIPLICATEURY: number [] = [0, 0, 1.0, 1.415, 1.1, 1.155, 1.0, 1.08, 1.027, 1.2, 0, 1.03]
+const DECALAGEX: number [] =       [0, 0, 1.0, 1.0, 1.045, 1.15, 1.0, 1.0, 1.0, 1.0, 0, 1.0]
+const DECALAGEY: number [] = [0, 0, 1.0, 1.0, 0.97, 0.88, 1.0, 1.0, 1.0, 1.0, 0, 1.0]
+const RATIOTRANSITION: number[] = [0, 0, 1.0, 1.0, 1.04, 1.15, 1.0, 1.0, 1.04, 1.0, 1.0, 1.0]
 @Injectable({
   providedIn: 'root'
 })
@@ -73,26 +73,29 @@ export class MathService {
     const initialPoint: Point = {x: 0, y: 0};
     let angle = 0;
     let rayon = 0;
-    let decalage = 1.0;
+    let decalageX = 1.0;
+    let decalageY = 1.0;
     if (dimension.width === minSide) {
       rayon = minSide * MULTIPLICATEURX [sides - 1] ;
+      decalageY = ((DECALAGEY [sides - 1])) ;
     } else {
-      if ((dimension.width / dimension.height <= 1.04) && PHASETRANSITION [sides - 1]) {
+      if (dimension.width / dimension.height <= RATIOTRANSITION [sides - 1]) {
         rayon = minSide * MULTIPLICATEURX [sides - 1]
+        decalageY = ((DECALAGEY [sides - 1])) ;
       } else {
         rayon = minSide * (MULTIPLICATEURY [sides - 1]);
+        decalageX = ((DECALAGEX [sides - 1])) ;
       }
-      decalage = ((DECALAGEX [sides - 1])) ;
     }
     const sideLength = rayon * Math.sin(Math.PI / sides);
     const points: Point [] = []
     if (upLeftCorner.x < mouseDownPoint.x) {
-      initialPoint.x = mouseDownPoint.x - minSide * decalage / 2 - sideLength / 2;
+      initialPoint.x = mouseDownPoint.x - minSide * decalageX / 2 - sideLength / 2;
     } else {
-      initialPoint.x = mouseDownPoint.x + minSide * decalage / 2 - sideLength / 2;
+      initialPoint.x = mouseDownPoint.x + minSide * decalageX / 2 - sideLength / 2;
     }
     if (upLeftCorner.y === mouseDownPoint.y) {
-      initialPoint.y = upLeftCorner.y + minSide;
+      initialPoint.y = upLeftCorner.y + minSide * decalageY;
     } else {
       initialPoint.y = mouseDownPoint.y;
     }
