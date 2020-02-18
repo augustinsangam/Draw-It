@@ -157,6 +157,12 @@ class Router {
 		return drawingsColl?.find({name : `${nameToSearch}`}).toArray();
 		
 	}
+
+	private findElementById(id: string): Promise<any[]> | undefined{
+		const drawingsColl = this.db.db?.collection('drawings');
+		return drawingsColl?.find({_id : `${id}`}).toArray();
+		
+	}
 }
 
 export { Router };
