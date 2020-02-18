@@ -16,6 +16,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
 
   private allListeners: (() => void)[] = [];
   private image: CanvasRenderingContext2D | null;
+  private backgroundColorOnInit: string;
 
   constructor(
     private readonly service: PipetteService,
@@ -46,7 +47,9 @@ export class PipetteLogicComponent extends ToolLogicDirective
     this.allListeners = [
       onMouseClick,
       onMouseMove
-    ]
+    ];
+
+    this.backgroundColorOnInit = this.colorService.backgroundColor;
   }
 
   ngOnDestroy(): void {
@@ -62,6 +65,10 @@ export class PipetteLogicComponent extends ToolLogicDirective
   }
 
   private onMouseMove(mouseEv: MouseEvent): void {
+    if (this.colorService.backgroundColor !== this.backgroundColorOnInit) {
+      this.ngOnInit()
+    }
+
     if (this.image != null) {
       const pixel = this.image.getImageData(
         mouseEv.offsetX,
