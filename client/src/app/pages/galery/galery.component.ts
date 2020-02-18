@@ -59,29 +59,42 @@ export class GaleryComponent {
       const drawsLenght = draws.drawsLength();
       for (let i = 0; i < drawsLenght; i++) {
         // const name = draws.draws(i).name;
-        const drawsTagsLenght = draws.draws(i)?.tagsLength();
-        const tempTagsTable: string[] = [];
-        if (!!drawsTagsLenght) {
-          for (let j = 0; j < drawsTagsLenght; j++) {
-            const tag = draws.draws(i)?.tags(j);
+        if (!!draws.draws(i)) {
+          let drawsTagsLenght: number;
+          const drawTagsTable: string[] = [];
 
-            if (!!tag) {
-              tempTagsTable.push(tag);
-              if (this.allTags.indexOf(tag) === -1) {
-                this.allTags.push(tag);
+          if (!!draws.draws(i).tagsLength()) {
+            drawsTagsLenght = draws.draws(i).tagsLength();
+
+            for (let j = 0; j < drawsTagsLenght; j++) {
+              let tag: string;
+
+              if (!!draws.draws(i).tags(j)) {
+                tag = draws.draws(i).tags(j);
+
+                drawTagsTable.push(tag);
+
+                if (this.allTags.indexOf(tag) === -1) {
+                  this.allTags.push(tag);
+                }
               }
             }
+          }
 
+          if (!!draws.draws(i).name() &&
+              !!draws.draws(i).id()) {
+            const newName = draws.draws(i).name();
+            const newId = draws.draws(i).id();
+
+            const newGaleryDraw: GaleryDraw = {
+              name: newName,
+              id: newId,
+              tags: drawTagsTable,
+            };
+
+            this.galeryDrawTable.push(newGaleryDraw);
           }
         }
-
-        const newGaleryDraw: GaleryDraw = {
-          name: draws.draws(i)?.name(),
-          id: draws.draws(i)?.id(),
-          tags: tempTagsTable,
-        };
-
-        this.galeryDrawTable.push(newGaleryDraw);
       }
     });
   }
