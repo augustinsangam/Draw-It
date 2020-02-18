@@ -8,6 +8,7 @@ import {
 import { MatDialog, MatDialogRef } from '@angular/material';
 
 import { CommunicationService } from './communication/communication.service';
+import { Draws as DrawsT } from './communication/data_generated';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
@@ -141,13 +142,19 @@ export class AppComponent implements AfterViewInit {
     this.svgService.instance = this.svg;
     this.openHomeDialog();
     setInterval(() => {
-      this.communicationServerice.encode(
+      this.communicationServerice.getAll()
+        .then(fbbb => {
+          const draws = DrawsT.getRoot(fbbb);
+          console.log(draws.drawsLength());
+        })
+        .catch(() => console.log('OOPS'));
+      /*this.communicationServerice.encode(
         'BEST DRAW EVER',
         ['rouge', 'licorne'],
         this.svgService.instance.nativeElement);
       this.communicationServerice.post()
         .then(id => console.log('SUCESS: ' + id))
-        .catch(err => console.log('FAIL: ' + err));
+        .catch(err => console.log('FAIL: ' + err));*/
     }, 2000);
   }
 

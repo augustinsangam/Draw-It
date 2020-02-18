@@ -8,7 +8,8 @@ import {
 } from './data_generated';
 
 enum StatusCode {
-  CREATED = 201,
+  OK = 200,
+  CREATED,
   ACCEPTED,
 }
 
@@ -31,6 +32,12 @@ export class CommunicationService {
   private static serialize(fbbb: flatbuffers.ByteBuffer): Uint8Array {
     return fbbb.bytes().subarray(fbbb.position(), fbbb.capacity());
   }
+
+	private static deserialize(
+		data: ArrayBuffer,
+	): flatbuffers.ByteBuffer {
+		return new flatbuffers.ByteBuffer(new Uint8Array(data));
+	}
 
   private encodeElementRecursively(el: Element): flatbuffers.Offset {
     const childrenList =  Array.from(el.childNodes)
@@ -67,7 +74,21 @@ export class CommunicationService {
   }
 
   getAll() {
-
+    this.xhr.open('GET', this.host + '/draw', true);
+    this.xhr.responseType = 'arraybuffer';
+    const promise = new Promise<flatbuffers.ByteBuffer>((resolve, reject) => {
+      this.xhr.onreadystatechange = () => {
+        if (this.xhr.readyState === 4) {
+          if (this.xhr.status === StatusCode.OK) {
+            resolve(CommunicationService.deserialize(this.xhr.response));
+          } else {
+            reject(this.xhr.responseText);
+          }
+        }
+      }
+    });
+    this.xhr.send();
+    return promise;
   }
 
   post() {
