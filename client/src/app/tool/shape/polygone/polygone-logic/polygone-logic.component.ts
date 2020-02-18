@@ -38,7 +38,6 @@ implements OnDestroy {
     this.onDrag = false;
     this.allListeners = [];
     this.polygones = [];
-
     }
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnInit() {
@@ -60,7 +59,6 @@ implements OnDestroy {
           const currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
           this.visualisationRectangle.dragRectangle(
             this.mouseDownPoint, currentPoint);
-          console.log(currentPoint.x, currentPoint.y, 'weshh')
 
           this.getPolygone().drawPolygonFromRectangle(
             this.mouseDownPoint, currentPoint);
@@ -111,7 +109,7 @@ implements OnDestroy {
       this.polygones.push(new Polygone(
         this.renderer,
         polygon,
-        this.mathService, 7));
+        this.mathService, this.svgElRef, this.service.sides));
       }
     this.setPolygoneProperties();
   }

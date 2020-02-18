@@ -55,6 +55,12 @@ import {
   EraserPanelComponent
 } from './tool/eraser/eraser-panel/eraser-panel.component';
 import {
+  PipetteLogicComponent
+} from './tool/pipette/pipette-logic/pipette-logic.component';
+import {
+  PipettePanelComponent
+} from './tool/pipette/pipette-panel/pipette-panel.component';
+import {
   SelectionLogicComponent
 } from './tool/selection/selection-logic/selection-logic.component';
 import {
@@ -115,6 +121,8 @@ import {
     SelectionLogicComponent,
     PolygoneLogicComponent,
     PolygonePanelComponent,
+    PipetteLogicComponent,
+    PipettePanelComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -147,6 +155,10 @@ import {
     NewDrawComponent,
     PencilLogicComponent,
     PencilPanelComponent,
+    PipetteLogicComponent,
+    PipettePanelComponent,
+    RectangleLogicComponent,
+    RectanglePanelComponent,
     PolygoneLogicComponent,
     PolygonePanelComponent,
     RectangleLogicComponent,

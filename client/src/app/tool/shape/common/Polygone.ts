@@ -8,8 +8,9 @@ export class Polygone extends AbstractShape {
 
   constructor(
     protected renderer: Renderer2,
-    public element: ElementRef,
+    public element: SVGElement,
     private mathService: MathService,
+    private svgElRef: ElementRef,
     private sides: number
   ) {
       super(renderer, element);
@@ -33,10 +34,24 @@ export class Polygone extends AbstractShape {
       oppositePoint
     );
     const points: Point [] = this.mathService.getPolynomeCornersFromRectangle(
-     mouseDownPoint, upLeftCorner, dimensions, this.sides);
+      mouseDownPoint, upLeftCorner, dimensions, this.sides);
 
-    console.log(points, 'yeeeeeeeeeeeeeeeeeeeeeee')
     this.insertPolygonInSVG(points);
+    console.log(this.svgElRef);
+    // const gravityCentre = this.mathService.getGravityCentre(points);
+    // const minSquare = Math.min(dimensions.height, dimensions .width);
+    // const deltaX = points[0].x - gravityCentre.x;
+    // const deltaY = points[0].y - gravityCentre.y;
+    // this.element.setAttribute('transform', `translate(${deltaX},${deltaY})`);
+    // const boundingRect = this.element.getBoundingClientRect();
+    // const maxForm = Math.max(boundingRect.height, boundingRect.width);
+    // const coefK = minSquare / maxForm;
+    // const coef = maxForm / minSquare;
+    // this.element.setAttribute('transform', `scale(${coef},${coef})`);
+    // this.element.setAttribute('transform', `scale(${2},${2})`);
+     // const left = boundingRect.left - 44;
+     // this.element.setAttribute(
+     // `transform', `rotate(36, ${left + boundingRect.width /2 },${boundingRect.top + boundingRect.height /2})`)
   }
 
 }

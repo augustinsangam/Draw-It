@@ -8,8 +8,6 @@ import { SelectionReturn } from '../SelectionReturn';
 import { SingleSelection } from '../SingleSelection';
 import { ElementSelectedType } from './ElementSelectedType';
 import { MouseTracking } from './MouseTracking';
-import { Rectangle } from '../../shape/common/Rectangle';
-import { MathService } from '../../mathematics/tool.math-service.service';
 
 export abstract class SelectionLogicBase
       extends ToolLogicDirective implements OnDestroy {
@@ -21,8 +19,7 @@ export abstract class SelectionLogicBase
   protected mouse: Mouse;
   protected rectangles: SelectionRectangles
 
-  constructor(protected renderer: Renderer2, protected svgService: SvgService,
-              private mathService: MathService) {
+  constructor(protected renderer: Renderer2, protected svgService: SvgService) {
     super();
     this.allListenners = [];
     this.selectedElements = new Set();

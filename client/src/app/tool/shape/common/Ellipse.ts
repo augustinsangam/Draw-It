@@ -1,4 +1,4 @@
-import {ElementRef, Renderer2} from '@angular/core';
+import {Renderer2} from '@angular/core';
 import {MathService} from '../../mathematics/tool.math-service.service';
 import {AbstractShape} from './AbstractShape';
 import {Point} from './Point';
@@ -9,7 +9,7 @@ export class Ellipse extends AbstractShape {
     initialPoint: Point,
     protected renderer: Renderer2,
     // TODO element sprivate ?
-    public element: ElementRef,
+    public element: SVGElement,
     private mathService: MathService
   ) {
     super(renderer, element);

@@ -11,6 +11,8 @@ import {
 import {
   PencilPanelComponent
 } from './drawing-instruments/pencil/pencil-panel/pencil-panel.component';
+import { PipetteLogicComponent } from './pipette/pipette-logic/pipette-logic.component';
+import { PipettePanelComponent } from './pipette/pipette-panel/pipette-panel.component';
 import {
   SelectionLogicComponent
 } from './selection/selection-logic/selection-logic.component';
@@ -58,3 +60,5 @@ TOOL_MANAGER.set(Tool.Polygone,
                 [PolygonePanelComponent, PolygoneLogicComponent]);
 TOOL_MANAGER.set(Tool.Selection,
                   [SelectionPanelComponent, SelectionLogicComponent]);
+TOOL_MANAGER.set(Tool.Pipette,
+                 [PipettePanelComponent, PipetteLogicComponent]);
