@@ -27,6 +27,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
   }
 
   ngOnInit(): void {
+    this.svgElRef.nativeElement.style.cursor = 'wait';
 
     html2canvas(this.svgElRef.nativeElement as unknown as HTMLElement).then(
       value => { this.image = value.getContext('2d') }
@@ -50,6 +51,8 @@ export class PipetteLogicComponent extends ToolLogicDirective
     ];
 
     this.backgroundColorOnInit = this.colorService.backgroundColor;
+    this.svgElRef.nativeElement.style.cursor = 'crosshair';
+
   }
 
   ngOnDestroy(): void {
