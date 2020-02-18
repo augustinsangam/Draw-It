@@ -10,6 +10,15 @@
     </mat-slide-toggle>
     Contour
   </p>
+  <div class="sides">
+    <mat-slider min=1 max=12 step=1 (input)="onSideChange()" (change)="onSideChange()"
+      #sidesSlider>
+    </mat-slider>
+    <mat-form-field>
+      <input matInput formControlName="sidesFormField" readonly />
+      <span matSuffix>px</span>
+    </mat-form-field>
+  </div>
   <div class="thickness" *ngIf="this.service.borderOption">
     <mat-slider min=1 max=100 step=1 (input)="onThicknessChange()" (change)="onThicknessChange()"
       #thicknessSlider>
