@@ -10,27 +10,6 @@ import {
 } from '@angular/core';
 
 import {
-  BrushLogicComponent
-} from '../tool/drawing-instruments/brush/brush-logic/brush-logic.component';
-import {
-  PencilLogicComponent
-} from '../tool/drawing-instruments/pencil/pencil-logic/pencil-logic.component';
-import {
-  PipetteLogicComponent
-} from '../tool/pipette/pipette-logic/pipette-logic.component';
-import {
-  EllipseLogicComponent
-} from '../tool/shape/ellipse/ellipse-logic/ellipse-logic.component';
-import {
-  LineLogicComponent
-} from '../tool/shape/line/line-logic/line-logic.component';
-import {
-  PolygoneLogicComponent
-} from '../tool/shape/polygone/polygone-logic/polygone-logic.component';
-import {
-  RectangleLogicComponent
-} from '../tool/shape/rectangle/rectangle-logic/rectangle-logic.component';
-import {
   ToolLogicDirective } from '../tool/tool-logic/tool-logic.directive';
 import {
   ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
