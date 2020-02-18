@@ -133,7 +133,7 @@ class Router {
 	}
 
 	// Pour la mise à jour apres suppression
-	private deleteData(): express.RequestHandler{
+	deleteData(): express.RequestHandler{
 		return (req, res, next): void => {
 			const drawingsColl = this.db.db?.collection('drawings');
 			drawingsColl?.remove({_id: `${req.params.id}`});
@@ -152,15 +152,21 @@ class Router {
 		return sequenceDocument?.then(a => a.value.sequenceValue);
 	}
 
-	private findElementByName(nameToSearch: string): Promise<any[]> | undefined{
+	findElementByName(nameToSearch: string): Promise<any[]> | undefined{
 		const drawingsColl = this.db.db?.collection('drawings');
 		return drawingsColl?.find({name : `${nameToSearch}`}).toArray();
 		
 	}
 
-	private findElementById(id: string): Promise<any[]> | undefined{
+	findElementById(id: string): Promise<Draw[]> | undefined{
 		const drawingsColl = this.db.db?.collection('drawings');
 		return drawingsColl?.find({_id : `${id}`}).toArray();
+		
+	}
+
+	getAll(): Promise<Draw[]> | undefined{
+		const drawingsColl = this.db.db?.collection('drawings');
+		return drawingsColl?.find({}).toArray();
 		
 	}
 }
