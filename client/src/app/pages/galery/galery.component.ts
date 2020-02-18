@@ -5,20 +5,20 @@ import {MatAutocomplete,
    MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {Observable} from 'rxjs';
-import { map, startWith, filter} from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 import {
     CommunicationService
   } from 'src/app/communication/communication.service';
-import { Draws } from 'src/app/communication/data_generated';
+import { Draws as DrawsT } from 'src/app/communication/data_generated';
 
 /**
  * @title Chips Autocomplete
  */
 
 export interface GaleryDraw {
-  name: string;
-  id: number;
-  tags: string[];
+  name: string | null | undefined;
+  id: number | null | undefined;
+  tags: string[] | null | undefined;
 }
 
 @Component({
@@ -54,15 +54,36 @@ export class GaleryComponent {
         // filter((tag: string | null) => !!tag && this.tags.indexOf(tag) == 0).
         map(tag => tag ? this._filter(tag) : this._filter2()));
 
-    const draws: Draws = communicationService.;
-    const drawsLenght = draws.drawsLength();
-    for (let i = 0; i < drawsLenght; i++) {
-      const name = draws.draws(i)?.name;
-      let newGaleryDraw: GaleryDraw = {
-        name: name;
-      };
-    }
-    
+    this.communicationService.getAll().then(fbbb => {
+      const draws = DrawsT.getRoot(fbbb);
+      const drawsLenght = draws.drawsLength();
+      for (let i = 0; i < drawsLenght; i++) {
+        // const name = draws.draws(i).name;
+        const drawsTagsLenght = draws.draws(i)?.tagsLength();
+        const tempTagsTable: string[] = [];
+        if (!!drawsTagsLenght) {
+          for (let j = 0; j < drawsTagsLenght; j++) {
+            const tag = draws.draws(i)?.tags(j);
+
+            if (!!tag) {
+              tempTagsTable.push(tag);
+              if (this.allTags.indexOf(tag) === -1) {
+                this.allTags.push(tag);
+              }
+            }
+
+          }
+        }
+
+        const newGaleryDraw: GaleryDraw = {
+          name: draws.draws(i)?.name(),
+          id: draws.draws(i)?.id(),
+          tags: tempTagsTable,
+        };
+
+        this.galeryDrawTable.push(newGaleryDraw);
+      }
+    });
   }
 
   add(event: MatChipInputEvent): void {
@@ -104,6 +125,6 @@ export class GaleryComponent {
 
   private _filter2() {
     const value = this.tags;
-    return this.allTags.filter(tag => value.indexOf(tag) !== 0);
+    return this.allTags.filter(tag => value.indexOf(tag) !== -1);
   }
 }
