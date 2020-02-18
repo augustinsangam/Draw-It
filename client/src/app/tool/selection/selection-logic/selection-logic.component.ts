@@ -23,10 +23,12 @@ export class SelectionLogicComponent
     selection: ElementRef<SVGElement>,
     inversion: ElementRef<SVGElement>
   }
-  private actualRectangle: ElementRef<SVGElement>;
+  private visualisationRectangle: ElementRef<SVGElement>
   private circles: ElementRef<SVGElement>[];
   private allListenners: (() => void)[];
   private selectedElements: Set<SVGElement>;
+  private lastestInvertedElements: Set<SVGElement>;
+  private selectedElementsFreezed: Set<SVGElement>;
   private mouse: {
     left: MouseTracking,
     right: MouseTracking
@@ -44,10 +46,9 @@ export class SelectionLogicComponent
         if ($event.button === 0) {
           this.mouse.left.startPoint =
             new Point($event.offsetX, $event.offsetY);
-          this.mouse.left.currentPoint = new Point( $event.offsetX,
-                                                    $event.offsetY);
+          this.mouse.left.currentPoint =
+            new Point($event.offsetX, $event.offsetY);
           this.mouse.left.mouseIsDown = true;
-          this.actualRectangle = this.rectangles.selection;
           this.mouse.left.selectedElement = this.elementSelectedType(
             $event.target as SVGElement
           );
@@ -68,6 +69,13 @@ export class SelectionLogicComponent
                                                       $event.offsetY);
             this.drawSelection( this.mouse.left.startPoint,
                                 this.mouse.left.currentPoint);
+            if (!this.mouse.left.startPoint.equals(this.mouse.left.endPoint)) {
+              const [startPoint, currentPoint] = this.orderPoint(
+                this.mouse.left.startPoint, this.mouse.left.currentPoint
+              );
+              this.deleteVisualisation();
+              this.applyMultipleSelection(startPoint, currentPoint);
+            }
           }
         }
       }],
@@ -75,16 +83,7 @@ export class SelectionLogicComponent
         if ($event.button === 0) {
           this.mouse.left.endPoint = new Point($event.offsetX, $event.offsetY);
           this.mouse.left.mouseIsDown = false;
-          if (!this.mouse.left.onDrag) {
-            // S'il s'agit d'un vrai déplacement
-            if (!this.mouse.left.startPoint.equals(this.mouse.left.endPoint)) {
-              const [startPoint, endPoint] = this.orderPoint(
-                this.mouse.left.startPoint, this.mouse.left.endPoint
-              );
-              this.deleteSelection();
-              this.applyMultipleSelection(startPoint, endPoint);
-            }
-          }
+          this.deleteSelection();
         }
       }],
       ['click', ($event: MouseEvent) => {
@@ -95,7 +94,7 @@ export class SelectionLogicComponent
             if (type === ElementSelectedType.DRAW_ELEMENT) {
               this.applySingleSelection($event.target as SVGElement);
             } else if (type === ElementSelectedType.NOTHING) {
-              this.deleteSelection();
+              this.deleteVisualisation();
               this.selectedElements.clear();
             }
           }
@@ -110,33 +109,29 @@ export class SelectionLogicComponent
           this.mouse.right.currentPoint =
             new Point($event.offsetX, $event.offsetY);
           this.mouse.right.mouseIsDown = true;
-          this.actualRectangle = this.rectangles.inversion;
           this.mouse.right.selectedElement = this.elementSelectedType(
             $event.target as SVGElement
-          );
+            );
+          this.selectedElementsFreezed = new Set(this.selectedElements);
         }
       }],
       ['mousemove', ($event: MouseEvent) => {
         if (this.mouse.right.mouseIsDown) {
-          if (this.mouse.right.mouseIsDown) {
-              this.mouse.right.currentPoint =
-                new Point($event.offsetX, $event.offsetY);
-              this.drawInversion( this.mouse.right.startPoint,
-                                  this.mouse.right.currentPoint);
-          }
+          this.mouse.right.currentPoint =
+            new Point($event.offsetX, $event.offsetY);
+          this.drawInversion(this.mouse.right.startPoint,
+            this.mouse.right.currentPoint);
+          const [startPoint, currentPoint] = this.orderPoint(
+            this.mouse.right.startPoint, this.mouse.right.currentPoint
+          );
+          this.applyMultipleInversion(startPoint, currentPoint);
         }
       }],
       ['mouseup', ($event: MouseEvent) => {
         if ($event.button === 2) {
           this.mouse.right.endPoint = new Point($event.offsetX, $event.offsetY);
           this.mouse.right.mouseIsDown = false;
-          if (!this.mouse.right.startPoint.equals(this.mouse.right.endPoint)) {
-            const [startPoint, endPoint] = this.orderPoint(
-              this.mouse.right.startPoint, this.mouse.right.endPoint
-            );
-            this.deleteInversion();
-            this.applyMultipleInversion(startPoint, endPoint);
-          }
+          this.deleteInversion();
         }
       }],
       ['contextmenu', ($event: MouseEvent) => {
@@ -183,6 +178,8 @@ export class SelectionLogicComponent
       });
     });
 
+    this.lastestInvertedElements = new Set();
+
     this.rectangles = {
       selection:
         new ElementRef(this.renderer.createElement('rect', this.svgNS)),
@@ -190,10 +187,15 @@ export class SelectionLogicComponent
         new ElementRef(this.renderer.createElement('rect', this.svgNS))
     };
 
+    this.visualisationRectangle =
+      new ElementRef(this.renderer.createElement('rect', this.svgNS));
+
     this.renderer.appendChild(this.svgElRef.nativeElement,
       this.rectangles.selection.nativeElement);
     this.renderer.appendChild(this.svgElRef.nativeElement,
         this.rectangles.inversion.nativeElement);
+    this.renderer.appendChild(this.svgElRef.nativeElement,
+        this.visualisationRectangle.nativeElement);
 
     this.circles = [];
     [0, 1, 2, 3].forEach((index) => {
@@ -218,7 +220,7 @@ export class SelectionLogicComponent
     this.selectedElements.clear();
     this.selectedElements.add(element);
     const points = new SingleSelection(element, this.getSvgOffset()).points();
-    this.drawSelection(points[0], points[1]);
+    this.drawVisualisation(points[0], points[1]);
     this.drawCircles(points[0], points[1]);
   }
 
@@ -229,13 +231,18 @@ export class SelectionLogicComponent
   private applyMultipleInversion(startPoint: Point, endPoint: Point) {
     const inversion = this.getMultipleSelection(startPoint, endPoint);
     this.applyInversion(inversion.selectedElements);
+    // if (!this.setEquals(this.lastestInvertedElements,
+    //   inversion.selectedElements)) {
+    //     this.lastestInvertedElements = inversion.selectedElements;
+    //     this.applyInversion(inversion.selectedElements);
+    // }
   }
 
   private applyMultipleSelection(startPoint: Point, endPoint: Point,
                                  elements?: Set<SVGElement>) {
     const selection = this.getMultipleSelection(startPoint, endPoint, elements);
     this.selectedElements = selection.selectedElements;
-    this.drawSelection(selection.points[0], selection.points[1]);
+    this.drawVisualisation(selection.points[0], selection.points[1]);
     this.drawCircles(selection.points[0], selection.points[1]);
   }
 
@@ -247,7 +254,7 @@ export class SelectionLogicComponent
         this.svgElRef.nativeElement.children
         ) as SVGElement[];
       // On enlève les deux rectangles et les les 4 points
-      elements = new Set<SVGElement>(allElements.slice(0, -6));
+      elements = new Set<SVGElement>(allElements.slice(0, -7));
     }
     const multipleSelection = new MultipleSelection(
       elements,
@@ -259,14 +266,12 @@ export class SelectionLogicComponent
 
   private applyInversion( elements: Set<SVGElement>,
                           startPoint?: Point, endPoint?: Point): void {
-    const elementsToSelect = new Set<SVGElement>(this.selectedElements);
+    const elementsToInvert = new Set<SVGElement>(this.selectedElementsFreezed);
     elements.forEach((element: SVGElement) => {
-      if (this.selectedElements.has(element)) {
-        elementsToSelect.delete(element);
-        console.log('On enlève de la selection');
+      if (this.selectedElementsFreezed.has(element)) {
+        elementsToInvert.delete(element);
       } else {
-        elementsToSelect.add(element);
-        console.log('On ajoute dans la selection');
+        elementsToInvert.add(element);
       }
     });
     if (startPoint === undefined || endPoint === undefined) {
@@ -275,7 +280,7 @@ export class SelectionLogicComponent
             this.svgService.instance.nativeElement.clientHeight)
         );
     }
-    this.applyMultipleSelection(startPoint, endPoint, elementsToSelect);
+    this.applyMultipleSelection(startPoint, endPoint, elementsToInvert);
   }
 
   private orderPoint(p1: Point, p2: Point): [Point, Point] {
@@ -294,7 +299,21 @@ export class SelectionLogicComponent
     rec.setAttribute('width', (endPoint.x - startPoint.x).toString());
     rec.setAttribute('height', (endPoint.y - startPoint.y).toString());
     rec.setAttribute('fill', 'none');
-    rec.setAttribute('stroke', 'rgba(128, 128, 128, 0.7)');
+    rec.setAttribute('stroke', 'rgba(0, 0, 255, 0.7)');
+    rec.setAttribute('stroke-width', '2');
+    rec.setAttribute('stroke-dasharray', '10 5');
+  }
+
+  private drawVisualisation(p1: Point, p2: Point) {
+    this.deleteVisualisation();
+    const rec = this.visualisationRectangle.nativeElement;
+    const [startPoint, endPoint] = this.orderPoint(p1, p2);
+    rec.setAttribute('x', startPoint.x.toString());
+    rec.setAttribute('y', startPoint.y.toString());
+    rec.setAttribute('width', (endPoint.x - startPoint.x).toString());
+    rec.setAttribute('height', (endPoint.y - startPoint.y).toString());
+    rec.setAttribute('fill', 'none');
+    rec.setAttribute('stroke', 'rgba(0, 255, 0, 0.7)');
     rec.setAttribute('stroke-width', '2');
     rec.setAttribute('stroke-dasharray', '10 5');
   }
@@ -336,16 +355,23 @@ export class SelectionLogicComponent
     this.renderer.setAttribute(circle, 'fill' , color);
   }
 
-  private deleteSelection(): void {
-    this.rectangles.selection.nativeElement.setAttribute('width', '0');
-    this.rectangles.selection.nativeElement.setAttribute('height', '0');
-    this.rectangles.selection.nativeElement.setAttribute( 'transform',
+  private deleteVisualisation(): void {
+    this.visualisationRectangle.nativeElement.setAttribute('width', '0');
+    this.visualisationRectangle.nativeElement.setAttribute('height', '0');
+    this.visualisationRectangle.nativeElement.setAttribute( 'transform',
                                                           'translate(0,0)');
     this.circles.forEach(element => {
       this.setCircle(new Point(0, 0),
       element.nativeElement, '0', 'rgba(255, 255, 255, 0.0)');
       element.nativeElement.setAttribute('transform', 'translate(0,0)');
     });
+  }
+
+  private deleteSelection(): void {
+    this.rectangles.selection.nativeElement.setAttribute('width', '0');
+    this.rectangles.selection.nativeElement.setAttribute('height', '0');
+    this.rectangles.selection.nativeElement.setAttribute( 'transform',
+                                                          'translate(0,0)');
   }
 
   private deleteInversion(): void {
@@ -372,6 +398,8 @@ export class SelectionLogicComponent
         return ElementSelectedType.SELECTION_RECTANGLE;
       case this.rectangles.selection.nativeElement:
         return ElementSelectedType.INVERSION_RECTANGLE;
+      case this.visualisationRectangle.nativeElement:
+        return ElementSelectedType.VISUALISATION_RECTANGLE;
       default:
         return ElementSelectedType.DRAW_ELEMENT;
     }
@@ -381,9 +409,9 @@ export class SelectionLogicComponent
   : boolean {
     const point = this.svgElRef.nativeElement.createSVGPoint();
     const [dx, dy] =
-      this.getTransformTranslate(this.actualRectangle.nativeElement);
+      this.getTransformTranslate(this.visualisationRectangle.nativeElement);
     [point.x, point.y] = [x - dx, y - dy];
-    return (this.actualRectangle.nativeElement as SVGGeometryElement)
+    return (this.visualisationRectangle.nativeElement as SVGGeometryElement)
           .isPointInFill(point);
   }
 
@@ -391,7 +419,7 @@ export class SelectionLogicComponent
     this.selectedElements.forEach(element => {
       this.translate(element, x, y);
     });
-    this.translate(this.rectangles.selection.nativeElement, x, y);
+    this.translate(this.visualisationRectangle.nativeElement, x, y);
     this.circles.forEach(
       (circle) => this.translate(circle.nativeElement, x, y)
     );
@@ -415,12 +443,26 @@ export class SelectionLogicComponent
     return { top: svgBoundingRect.top, left: svgBoundingRect.left };
   }
 
+  setEquals(set1: Set<SVGElement>, set2: Set<SVGElement>): boolean {
+    if (set1.size !== set2.size) {
+      return false;
+    }
+    for (const entry of set1) {
+      if (!set2.has(entry)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   ngOnDestroy() {
     this.allListenners.forEach(end => end());
     this.renderer.removeChild(this.svgElRef.nativeElement,
       this.rectangles.selection.nativeElement);
     this.renderer.removeChild(this.svgElRef.nativeElement,
         this.rectangles.inversion.nativeElement);
+    this.renderer.removeChild(this.svgElRef.nativeElement,
+        this.visualisationRectangle.nativeElement);
     this.circles.forEach((circle) => this.renderer.removeChild(
       this.svgElRef.nativeElement, circle.nativeElement)
     );
