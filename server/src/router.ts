@@ -108,11 +108,6 @@ class Router {
 				next();
 			});
 
-			// test find
-			// console.log(" Test du find");
-			// this.findElementByName('BEST DRAW EVER');
-			// console.log(" fin du testtttttttttttttttt");
-
 		};
 	}
 
@@ -155,6 +150,12 @@ class Router {
 		);
 
 		return sequenceDocument?.then(a => a.value.sequenceValue);
+	}
+
+	private findElementByName(nameToSearch: string): Promise<any[]> | undefined{
+		const drawingsColl = this.db.db?.collection('drawings');
+		return drawingsColl?.find({name : `${nameToSearch}`}).toArray();
+		
 	}
 }
 
