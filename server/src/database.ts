@@ -22,7 +22,17 @@ class Database {
 
 	async connect(dbName?: string): Promise<mongodb.Db> {
 		await this.client.connect();
-		return (this._db = this.client.db(dbName));
+		this._db = this.client.db(dbName);
+		const counterCollection = this._db.collection('counter');
+		await counterCollection?.count().then(count => {
+			if (count == 0) {
+				counterCollection.insert({
+					_id: 'productid',
+					sequenceValue: 0,
+				});
+			}
+		});
+		return this._db;
 	}
 
 	close(force?: boolean): Promise<void> {

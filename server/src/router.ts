@@ -1,6 +1,7 @@
 import express from 'express';
 import flatbuffers from 'flatbuffers';
 import inversify from 'inversify';
+import mongodb from 'mongodb';
 import { log } from 'util';
 
 import { Draw, Element } from './data_generated';
@@ -88,9 +89,23 @@ class Router {
 			if (!!svg) {
 				Router.disp(svg);
 			}
-			//const binary = new mongodb.Binary(req.body);
+			const binary = new mongodb.Binary(req.body);
 			//console.log(`${binary.length()} bytes received`);
 			//collection.insertOne('yoo');
+
+
+			this.getNExtId()?.then(count => {
+				const drawingsColl = this.db.db?.collection('drawings');
+				console.log(count);
+				const elementConcret = {
+					_id : `${count}`,
+					name: `${name}`,
+					tags: `${decoded.tags}`,
+					data: `${binary}`,
+				};
+				drawingsColl?.insertOne(elementConcret);
+			});
+
 			res.status(StatusCode.CREATED).send('42');
 			next();
 		};
@@ -99,10 +114,23 @@ class Router {
 	private putData(): express.RequestHandler {
 		return (req, res, next): void => {
 			log(req.params.id);
+			const deserialized = Router.deserialize(req.body);	// une fonction a faire pour ces deux lignes
+			const decoded = Router.decode(deserialized);
+			const name = decoded.name();
 			res.sendStatus(StatusCode.ACCEPTED);
 			next();
 			// do smthg
 		};
+	}
+
+	private getNExtId(): Promise<number> | undefined {
+		const counterCollection = this.db.db?.collection('counter');
+		const sequenceDocument = counterCollection?.findOneAndUpdate(
+			{ _id: 'productid' },
+			{ $inc: { sequenceValue: 1 } },
+		);
+
+		return sequenceDocument?.then(a => a.value.sequenceValue);
 	}
 }
 
