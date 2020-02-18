@@ -8,6 +8,8 @@ import { SelectionReturn } from '../SelectionReturn';
 import { SingleSelection } from '../SingleSelection';
 import { ElementSelectedType } from './ElementSelectedType';
 import { MouseTracking } from './MouseTracking';
+import { Rectangle } from '../../shape/common/Rectangle';
+import { MathService } from '../../mathematics/tool.math-service.service';
 
 export abstract class SelectionLogicBase
       extends ToolLogicDirective implements OnDestroy {
@@ -19,12 +21,14 @@ export abstract class SelectionLogicBase
   protected mouse: Mouse;
   protected rectangles: SelectionRectangles
 
-  constructor(protected renderer: Renderer2, protected svgService: SvgService) {
+  constructor(protected renderer: Renderer2, protected svgService: SvgService,
+              private mathService: MathService) {
     super();
     this.allListenners = [];
     this.selectedElements = new Set();
   }
 
+  // Bug de Lint ToolLogicDireective hérite de OnInit
   // tslint:disable-next-line: use-lifecycle-interface
   ngOnInit() {
     this.initialiseMouse();
@@ -106,6 +110,7 @@ export abstract class SelectionLogicBase
     this.deleteSelection();
     const rec = this.rectangles.selection;
     const [startPoint, endPoint] = this.orderPoint(p1, p2);
+    // const recObjetc = new Rectangle(this.renderer, new MathService());
     rec.setAttribute('x', startPoint.x.toString());
     rec.setAttribute('y', startPoint.y.toString());
     rec.setAttribute('width', (endPoint.x - startPoint.x).toString());
@@ -306,12 +311,10 @@ export abstract class SelectionLogicBase
 
   ngOnDestroy() {
     this.allListenners.forEach(end => end());
-    this.renderer.removeChild(this.svgElRef.nativeElement,
-      this.rectangles.selection);
-    this.renderer.removeChild(this.svgElRef.nativeElement,
-        this.rectangles.inversion);
-    this.renderer.removeChild(this.svgElRef.nativeElement,
-        this.rectangles.visualisation);
+    [this.rectangles.selection, this.rectangles.inversion,
+    this.rectangles.visualisation].forEach((element: SVGElement) => {
+      this.renderer.removeChild(this.svgElRef.nativeElement, element);
+    });
     this.circles.forEach((circle) => this.renderer.removeChild(
       this.svgElRef.nativeElement, circle)
     );
