@@ -16,6 +16,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
 
   private allListeners: (() => void)[] = [];
   private image: CanvasRenderingContext2D | null;
+  private backgroundColorOnInit: string;
 
   constructor(
     private readonly service: PipetteService,
@@ -26,6 +27,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
   }
 
   ngOnInit(): void {
+    this.svgElRef.nativeElement.style.cursor = 'wait';
 
     html2canvas(document.body).then(
       value => { this.image = value.getContext('2d') }
@@ -46,7 +48,11 @@ export class PipetteLogicComponent extends ToolLogicDirective
     this.allListeners = [
       onMouseClick,
       onMouseMove
-    ]
+    ];
+
+    this.backgroundColorOnInit = this.colorService.backgroundColor;
+    this.svgElRef.nativeElement.style.cursor = 'crosshair';
+
   }
 
   ngOnDestroy(): void {
@@ -62,6 +68,10 @@ export class PipetteLogicComponent extends ToolLogicDirective
   }
 
   private onMouseMove(mouseEv: MouseEvent): void {
+    if (this.colorService.backgroundColor !== this.backgroundColorOnInit) {
+      this.ngOnInit()
+    }
+
     if (this.image != null) {
       const pixel = this.image.getImageData(
         mouseEv.clientX,
