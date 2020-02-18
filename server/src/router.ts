@@ -93,7 +93,7 @@ class Router {
 			//console.log(`${binary.length()} bytes received`);
 			//collection.insertOne('yoo');
 
-
+			
 			this.getNExtId()?.then(count => {
 				const drawingsColl = this.db.db?.collection('drawings');
 				console.log(count);
@@ -104,10 +104,10 @@ class Router {
 					data: `${binary}`,
 				};
 				drawingsColl?.insertOne(elementConcret);
+				res.status(StatusCode.CREATED).send(count);
+				next();
 			});
 
-			res.status(StatusCode.CREATED).send('42');
-			next();
 		};
 	}
 
@@ -116,7 +116,17 @@ class Router {
 			log(req.params.id);
 			const deserialized = Router.deserialize(req.body);	// une fonction a faire pour ces deux lignes
 			const decoded = Router.decode(deserialized);
-			const name = decoded.name();
+			const binary = new mongodb.Binary(req.body);
+			const concretElement = {
+				_id : `${req.params.id}`,
+				name: `${decoded.name()}`,
+				tags: `${decoded.tags}`,
+				data: `${binary}`,
+			};
+			const drawingsColl = this.db.db?.collection('drawings');
+			drawingsColl?.remove({_id: `${req.params.id}`});
+			drawingsColl?.insertOne(concretElement);
+
 			res.sendStatus(StatusCode.ACCEPTED);
 			next();
 			// do smthg
