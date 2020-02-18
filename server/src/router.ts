@@ -99,7 +99,7 @@ class Router {
 				console.log(count);
 				const elementConcret = {
 					_id : `${count}`,
-					name: `${name}`,
+				  	name: `${name}`,
 					tags: `${decoded.tags}`,
 					data: `${binary}`,
 				};
@@ -108,13 +108,18 @@ class Router {
 				next();
 			});
 
+			// test find
+			// console.log(" Test du find");
+			// this.findElementByName('BEST DRAW EVER');
+			// console.log(" fin du testtttttttttttttttt");
+
 		};
 	}
 
 	private putData(): express.RequestHandler {
 		return (req, res, next): void => {
 			log(req.params.id);
-			const deserialized = Router.deserialize(req.body);	// une fonction a faire pour ces deux lignes
+			const deserialized = Router.deserialize(req.body);	// une fonction a faire pour ces lignes
 			const decoded = Router.decode(deserialized);
 			const binary = new mongodb.Binary(req.body);
 			const concretElement = {
@@ -123,13 +128,22 @@ class Router {
 				tags: `${decoded.tags}`,
 				data: `${binary}`,
 			};
-			const drawingsColl = this.db.db?.collection('drawings');
-			drawingsColl?.remove({_id: `${req.params.id}`});
+			const drawingsColl = this.db.db?.collection('drawings'); // Mettre les collections dans le constructeur
+			drawingsColl?.remove({_id: `${req.params.id}`}); // a revoir
 			drawingsColl?.insertOne(concretElement);
 
 			res.sendStatus(StatusCode.ACCEPTED);
 			next();
-			// do smthg
+		};
+	}
+
+	// Pour la mise à jour apres suppression
+	private deleteData(): express.RequestHandler{
+		return (req, res, next): void => {
+			const drawingsColl = this.db.db?.collection('drawings');
+			drawingsColl?.remove({_id: `${req.params.id}`});
+			res.sendStatus(StatusCode.ACCEPTED);
+			next();
 		};
 	}
 
