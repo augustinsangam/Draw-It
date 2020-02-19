@@ -16,6 +16,11 @@ enum StatusCode {
 	IM_A_TEAPOT = 418,
 }
 
+interface Entry {
+	_id: number;
+	data: mongodb.Binary;
+}
+
 @inversify.injectable()
 class Router {
 	private readonly _router: express.Router;
@@ -25,7 +30,8 @@ class Router {
 		this.router.get('/', this.getHelloWorld());
 		this.router.get('/draw', this.getAll());
 		this.router.post('/draw', this.postData());
-		this.router.put('/draw/:id', this.putData());
+		//this.router.put('/draw/:id', this.putData());
+		//this.router.delete('/draw/:id', this.deleteData());
 		this.router.get('/ping', (_req, res) =>
 			res.sendStatus(StatusCode.NO_CONTENT),
 		);
@@ -55,10 +61,11 @@ class Router {
 	}
 
 	private getHelloWorld(): express.RequestHandler {
-		return (_req, res, next): void => {
+		return (_req, res): void => {
 			res.send('Hello, world!');
-			console.log(this.db.db?.databaseName);
-			next();
+			this.getAllSerializedDraws()?.then(arr => {
+				console.log(arr[0].data.buffer);
+			});
 		};
 	}
 
@@ -67,16 +74,28 @@ class Router {
 			const fbb = new flatbuffers.flatbuffers.Builder();
 			const serializedDrawsLen = 1; // TODO: Get from DB
 			const drawBufferOffsets = new Array<number>();
-			for (let i = 0; i < serializedDrawsLen; i++) {
-				const serializedDraw = new Uint8Array(); // TODO: Get from DB
-				const bufOffset = DrawBuffer.createBufVector(fbb, serializedDraw);
-				const drawBuffer = DrawBuffer.create(fbb, 42, bufOffset);
-				drawBufferOffsets.push(drawBuffer);
-			}
-			const drawBuffers = Draws.createDrawBuffersVector(fbb, drawBufferOffsets);
-			const draws = Draws.create(fbb, drawBuffers);
-			fbb.finish(draws);
-			res.send(Buffer.from(fbb.asUint8Array()));
+			this.getAllSerializedDraws()?.then(serializedDraws => {
+				for (let i = serializedDraws.length; i--; ) {
+					const serializedDraw = serializedDraws[i];
+					const bufOffset = DrawBuffer.createBufVector(
+						fbb,
+						serializedDraw.data.buffer,
+					);
+					const drawBuffer = DrawBuffer.create(
+						fbb,
+						serializedDraw._id,
+						bufOffset,
+					);
+					drawBufferOffsets.push(drawBuffer);
+				}
+				const drawBuffers = Draws.createDrawBuffersVector(
+					fbb,
+					drawBufferOffsets,
+				);
+				const draws = Draws.create(fbb, drawBuffers);
+				fbb.finish(draws);
+				res.send(Buffer.from(fbb.asUint8Array()));
+			});
 		};
 	}
 
@@ -91,28 +110,22 @@ class Router {
 			if (!!name) {
 				console.log('Name is ' + name);
 			}
-			const tags = new Array<string>();
 			for (let i = draw.tagsLength(); i--; ) {
-				tags.push(draw.tags(i));
+				console.log(`Tag #${i}: ${draw.tags(i)}`);
 			}
 			const svg = draw.svg();
 			if (!!svg) {
 				Router.disp(svg);
 			}
 			const binary = new mongodb.Binary(req.body);
-
 			this.getNExtId()?.then(count => {
 				const drawingsColl = this.db.db?.collection('drawings');
-				console.log(count);
-				// TODO: no string
-				const elementConcret = {
-					_id: `${count}`,
-					name: `${name}`,
-					tags: `${tags}`,
-					data: `${binary}`,
+				const elementConcret: Entry = {
+					_id: count,
+					data: binary,
 				};
 				drawingsColl?.insertOne(elementConcret);
-				res.status(StatusCode.CREATED).send(count);
+				res.status(StatusCode.CREATED).send(count.toString());
 				next();
 			});
 		};
@@ -144,7 +157,7 @@ class Router {
 	}
 
 	// Pour la mise à jour apres suppression
-	deleteData(): express.RequestHandler {
+	private deleteData(): express.RequestHandler {
 		return (req, res, next): void => {
 			const drawingsColl = this.db.db?.collection('drawings');
 			drawingsColl?.remove({ _id: `${req.params.id}` });
@@ -153,19 +166,22 @@ class Router {
 		};
 	}
 
-	getAllSerializedDraws(): Promise<Uint8Array[]> | undefined {
-		/*const drawingsColl = this.db.db?.collection('drawings');
-		return drawingsColl?.find({}).toArray();*/
-		if (true) {
-			return new Promise<Draw[]>();
-		}
+	private getAllSerializedDraws(): Promise<Entry[]> | undefined {
+		const drawingsColl = this.db.db?.collection('drawings');
+		return drawingsColl?.find().toArray();
 	}
 
 	private getNExtId(): Promise<number> | undefined {
 		const counterCollection = this.db.db?.collection('counter');
 		const sequenceDocument = counterCollection?.findOneAndUpdate(
-			{ _id: 'productid' },
-			{ $inc: { sequenceValue: 1 } },
+			{
+				_id: 'productid',
+			},
+			{
+				$inc: {
+					sequenceValue: 1,
+				},
+			},
 		);
 
 		return sequenceDocument?.then(a => a.value.sequenceValue);

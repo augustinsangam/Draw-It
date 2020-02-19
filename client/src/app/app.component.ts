@@ -6,9 +6,10 @@ import {
   ViewChild
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
+import { flatbuffers } from 'flatbuffers';
 
 import { CommunicationService } from './communication/communication.service';
-import { Draws as DrawsT } from './communication/data_generated';
+import { Draw, Draws } from './communication/data_generated';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
@@ -141,21 +142,32 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.svgService.instance = this.svg;
     this.openHomeDialog();
-    setInterval(() => {
-      /*this.communicationServerice.getAll()
-        .then(fbbb => {
-          const draws = DrawsT.getRoot(fbbb);
-          console.log(draws.drawsLength());
-        })
-        .catch(() => console.log('OOPS'));*/
-      this.communicationServerice.encode(
-        'BEST DRAW EVER',
-        ['rouge', 'licorne'],
-        this.svgService.instance.nativeElement);
-      this.communicationServerice.post()
-        .then(id => console.log('SUCESS: ' + id))
-        .catch(err => console.log('FAIL: ' + err));
-    }, 2000);
+
+    this.communicationServerice.getAll()
+      .then(fbbb => {
+        const draws = Draws.getRoot(fbbb);
+        for (let i = draws.drawBuffersLength(); i--; ) {
+          const draw = draws.drawBuffers(i);
+          if (!!draw) {
+            const id = draw.id();
+            const drawBuffer = draw.bufArray();
+            if (!!drawBuffer) {
+              const fbb = new flatbuffers.ByteBuffer(drawBuffer);
+              const draw = Draw.getRoot(fbb);
+              const name = draw.name();
+              console.log(`#${id}: ${name}`);
+            }
+          }
+        }
+      })
+      .catch(() => console.log('OOPS'));
+    /*this.communicationServerice.encode(
+      'PEACE N LOVE',
+      ['rouge', 'licorne'],
+      this.svgService.instance.nativeElement);
+    this.communicationServerice.post()
+      .then(id => console.log('SUCESS: ' + id))
+      .catch(err => console.log('FAIL: ' + err));*/
   }
 
   private openHomeDialog(): void {

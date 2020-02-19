@@ -108,6 +108,7 @@ export class CommunicationService {
       this.xhr.onreadystatechange = () => {
         if (this.xhr.readyState === 4) {
           if (this.xhr.status === StatusCode.OK) {
+            // response type is ArrayBuffer
             resolve(CommunicationService.deserialize(this.xhr.response));
           } else {
             reject(this.xhr.responseText);
