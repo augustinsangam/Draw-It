@@ -3,11 +3,11 @@ table Draws {
 }
 
 table DrawBuffer {
+	id: uint16;
     buf: [ubyte] (nested_flatbuffer: 'Draw');
 }
 
 table Draw {
-	id: uint16;
 	name: string;
 	tags: [string];
 	svg: Element;

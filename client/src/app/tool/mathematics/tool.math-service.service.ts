@@ -112,7 +112,6 @@ export class MathService {
 
   getEllipseRadius(initialPoint: Point, oppositePoint: Point): Radius {
     const rectDims = this.getRectangleSize(initialPoint, oppositePoint);
-    // case ++
     return {
       rx: rectDims.width / 2,
       ry: rectDims.height / 2
@@ -129,5 +128,17 @@ export class MathService {
       x: initialPoint.x + initToCenterv.x,
       y: initialPoint.y + initToCenterv.y
     };
+  }
+
+  getCircleCenter(initialPoint: Point, oppositePoint: Point): Point {
+    const xSign = Math.sign(oppositePoint.x - initialPoint.x);
+    const ySign = Math.sign(oppositePoint.y - initialPoint.y);
+
+    const re = this.getRectangleSize(initialPoint, oppositePoint);
+    const m = Math.min(re.width, re.height);
+    return {
+      x: initialPoint.x + xSign * (m * 0.5),
+      y: initialPoint.y + ySign * (m * 0.5)
+    }
   }
 }

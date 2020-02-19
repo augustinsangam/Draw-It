@@ -124,11 +124,19 @@ static getRoot(bb:flatbuffers.ByteBuffer, obj?:DrawBuffer):DrawBuffer {
 };
 
 /**
+ * @returns number
+ */
+id():number {
+  var offset = this.bb!.__offset(this.bb_pos, 4);
+  return offset ? this.bb!.readUint16(this.bb_pos + offset) : 0;
+};
+
+/**
  * @param number index
  * @returns number
  */
 buf(index: number):number|null {
-  var offset = this.bb!.__offset(this.bb_pos, 4);
+  var offset = this.bb!.__offset(this.bb_pos, 6);
   return offset ? this.bb!.readUint8(this.bb!.__vector(this.bb_pos + offset) + index) : 0;
 };
 
@@ -136,7 +144,7 @@ buf(index: number):number|null {
  * @returns number
  */
 bufLength():number {
-  var offset = this.bb!.__offset(this.bb_pos, 4);
+  var offset = this.bb!.__offset(this.bb_pos, 6);
   return offset ? this.bb!.__vector_len(this.bb_pos + offset) : 0;
 };
 
@@ -144,7 +152,7 @@ bufLength():number {
  * @returns Uint8Array
  */
 bufArray():Uint8Array|null {
-  var offset = this.bb!.__offset(this.bb_pos, 4);
+  var offset = this.bb!.__offset(this.bb_pos, 6);
   return offset ? new Uint8Array(this.bb!.bytes().buffer, this.bb!.bytes().byteOffset + this.bb!.__vector(this.bb_pos + offset), this.bb!.__vector_len(this.bb_pos + offset)) : null;
 };
 
@@ -152,7 +160,15 @@ bufArray():Uint8Array|null {
  * @param flatbuffers.Builder builder
  */
 static start(builder:flatbuffers.Builder) {
-  builder.startObject(1);
+  builder.startObject(2);
+};
+
+/**
+ * @param flatbuffers.Builder builder
+ * @param number id
+ */
+static addId(builder:flatbuffers.Builder, id:number) {
+  builder.addFieldInt16(0, id, 0);
 };
 
 /**
@@ -160,7 +176,7 @@ static start(builder:flatbuffers.Builder) {
  * @param flatbuffers.Offset bufOffset
  */
 static addBuf(builder:flatbuffers.Builder, bufOffset:flatbuffers.Offset) {
-  builder.addFieldOffset(0, bufOffset, 0);
+  builder.addFieldOffset(1, bufOffset, 0);
 };
 
 /**
@@ -193,8 +209,9 @@ static end(builder:flatbuffers.Builder):flatbuffers.Offset {
   return offset;
 };
 
-static create(builder:flatbuffers.Builder, bufOffset:flatbuffers.Offset):flatbuffers.Offset {
+static create(builder:flatbuffers.Builder, id:number, bufOffset:flatbuffers.Offset):flatbuffers.Offset {
   DrawBuffer.start(builder);
+  DrawBuffer.addId(builder, id);
   DrawBuffer.addBuf(builder, bufOffset);
   return DrawBuffer.end(builder);
 }
@@ -227,21 +244,13 @@ static getRoot(bb:flatbuffers.ByteBuffer, obj?:Draw):Draw {
 };
 
 /**
- * @returns number
- */
-id():number {
-  var offset = this.bb!.__offset(this.bb_pos, 4);
-  return offset ? this.bb!.readUint16(this.bb_pos + offset) : 0;
-};
-
-/**
  * @param flatbuffers.Encoding= optionalEncoding
  * @returns string|Uint8Array|null
  */
 name():string|null
 name(optionalEncoding:flatbuffers.Encoding):string|Uint8Array|null
 name(optionalEncoding?:any):string|Uint8Array|null {
-  var offset = this.bb!.__offset(this.bb_pos, 6);
+  var offset = this.bb!.__offset(this.bb_pos, 4);
   return offset ? this.bb!.__string(this.bb_pos + offset, optionalEncoding) : null;
 };
 
@@ -253,7 +262,7 @@ name(optionalEncoding?:any):string|Uint8Array|null {
 tags(index: number):string
 tags(index: number,optionalEncoding:flatbuffers.Encoding):string|Uint8Array
 tags(index: number,optionalEncoding?:any):string|Uint8Array|null {
-  var offset = this.bb!.__offset(this.bb_pos, 8);
+  var offset = this.bb!.__offset(this.bb_pos, 6);
   return offset ? this.bb!.__string(this.bb!.__vector(this.bb_pos + offset) + index * 4, optionalEncoding) : null;
 };
 
@@ -261,7 +270,7 @@ tags(index: number,optionalEncoding?:any):string|Uint8Array|null {
  * @returns number
  */
 tagsLength():number {
-  var offset = this.bb!.__offset(this.bb_pos, 8);
+  var offset = this.bb!.__offset(this.bb_pos, 6);
   return offset ? this.bb!.__vector_len(this.bb_pos + offset) : 0;
 };
 
@@ -270,7 +279,7 @@ tagsLength():number {
  * @returns Element|null
  */
 svg(obj?:Element):Element|null {
-  var offset = this.bb!.__offset(this.bb_pos, 10);
+  var offset = this.bb!.__offset(this.bb_pos, 8);
   return offset ? (obj || new Element).__init(this.bb!.__indirect(this.bb_pos + offset), this.bb!) : null;
 };
 
@@ -282,7 +291,7 @@ svg(obj?:Element):Element|null {
 colors(index: number):string
 colors(index: number,optionalEncoding:flatbuffers.Encoding):string|Uint8Array
 colors(index: number,optionalEncoding?:any):string|Uint8Array|null {
-  var offset = this.bb!.__offset(this.bb_pos, 12);
+  var offset = this.bb!.__offset(this.bb_pos, 10);
   return offset ? this.bb!.__string(this.bb!.__vector(this.bb_pos + offset) + index * 4, optionalEncoding) : null;
 };
 
@@ -290,7 +299,7 @@ colors(index: number,optionalEncoding?:any):string|Uint8Array|null {
  * @returns number
  */
 colorsLength():number {
-  var offset = this.bb!.__offset(this.bb_pos, 12);
+  var offset = this.bb!.__offset(this.bb_pos, 10);
   return offset ? this.bb!.__vector_len(this.bb_pos + offset) : 0;
 };
 
@@ -298,15 +307,7 @@ colorsLength():number {
  * @param flatbuffers.Builder builder
  */
 static start(builder:flatbuffers.Builder) {
-  builder.startObject(5);
-};
-
-/**
- * @param flatbuffers.Builder builder
- * @param number id
- */
-static addId(builder:flatbuffers.Builder, id:number) {
-  builder.addFieldInt16(0, id, 0);
+  builder.startObject(4);
 };
 
 /**
@@ -314,7 +315,7 @@ static addId(builder:flatbuffers.Builder, id:number) {
  * @param flatbuffers.Offset nameOffset
  */
 static addName(builder:flatbuffers.Builder, nameOffset:flatbuffers.Offset) {
-  builder.addFieldOffset(1, nameOffset, 0);
+  builder.addFieldOffset(0, nameOffset, 0);
 };
 
 /**
@@ -322,7 +323,7 @@ static addName(builder:flatbuffers.Builder, nameOffset:flatbuffers.Offset) {
  * @param flatbuffers.Offset tagsOffset
  */
 static addTags(builder:flatbuffers.Builder, tagsOffset:flatbuffers.Offset) {
-  builder.addFieldOffset(2, tagsOffset, 0);
+  builder.addFieldOffset(1, tagsOffset, 0);
 };
 
 /**
@@ -351,7 +352,7 @@ static startTagsVector(builder:flatbuffers.Builder, numElems:number) {
  * @param flatbuffers.Offset svgOffset
  */
 static addSvg(builder:flatbuffers.Builder, svgOffset:flatbuffers.Offset) {
-  builder.addFieldOffset(3, svgOffset, 0);
+  builder.addFieldOffset(2, svgOffset, 0);
 };
 
 /**
@@ -359,7 +360,7 @@ static addSvg(builder:flatbuffers.Builder, svgOffset:flatbuffers.Offset) {
  * @param flatbuffers.Offset colorsOffset
  */
 static addColors(builder:flatbuffers.Builder, colorsOffset:flatbuffers.Offset) {
-  builder.addFieldOffset(4, colorsOffset, 0);
+  builder.addFieldOffset(3, colorsOffset, 0);
 };
 
 /**
@@ -392,9 +393,8 @@ static end(builder:flatbuffers.Builder):flatbuffers.Offset {
   return offset;
 };
 
-static create(builder:flatbuffers.Builder, id:number, nameOffset:flatbuffers.Offset, tagsOffset:flatbuffers.Offset, svgOffset:flatbuffers.Offset, colorsOffset:flatbuffers.Offset):flatbuffers.Offset {
+static create(builder:flatbuffers.Builder, nameOffset:flatbuffers.Offset, tagsOffset:flatbuffers.Offset, svgOffset:flatbuffers.Offset, colorsOffset:flatbuffers.Offset):flatbuffers.Offset {
   Draw.start(builder);
-  Draw.addId(builder, id);
   Draw.addName(builder, nameOffset);
   Draw.addTags(builder, tagsOffset);
   Draw.addSvg(builder, svgOffset);

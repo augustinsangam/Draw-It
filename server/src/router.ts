@@ -68,9 +68,9 @@ class Router {
 			const serializedDrawsLen = 1; // TODO: Get from DB
 			const drawBufferOffsets = new Array<number>();
 			for (let i = 0; i < serializedDrawsLen; i++) {
-				const serializedDraw = new Uint8Array();
+				const serializedDraw = new Uint8Array(); // TODO: Get from DB
 				const bufOffset = DrawBuffer.createBufVector(fbb, serializedDraw);
-				const drawBuffer = DrawBuffer.create(fbb, bufOffset);
+				const drawBuffer = DrawBuffer.create(fbb, 42, bufOffset);
 				drawBufferOffsets.push(drawBuffer);
 			}
 			const drawBuffers = Draws.createDrawBuffersVector(fbb, drawBufferOffsets);
@@ -86,36 +86,100 @@ class Router {
 			// req.body is a Buffer (which extends Uint8Array)
 			const fbBB = new flatbuffers.flatbuffers.ByteBuffer(req.body);
 			const draw = Draw.getRoot(fbBB);
-			/*
+
 			const name = draw.name();
 			if (!!name) {
 				console.log('Name is ' + name);
 			}
-			const tagsLen = draw.tagsLength();
-			for (let i = 0; i < tagsLen; i++) {
-				console.log(`Tag #${i}: ${draw.tags(i)}`);
+			const tags = new Array<string>();
+			for (let i = draw.tagsLength(); i--; ) {
+				tags.push(draw.tags(i));
 			}
 			const svg = draw.svg();
 			if (!!svg) {
 				Router.disp(svg);
-			}*/
+			}
 			const binary = new mongodb.Binary(req.body);
-			console.log(draw.name());
-			//console.log(`${binary.length()} bytes received`);
-			//collection.insertOne('yoo');
-			res.status(StatusCode.CREATED).send('42');
-			next();
+
+			this.getNExtId()?.then(count => {
+				const drawingsColl = this.db.db?.collection('drawings');
+				console.log(count);
+				// TODO: no string
+				const elementConcret = {
+					_id: `${count}`,
+					name: `${name}`,
+					tags: `${tags}`,
+					data: `${binary}`,
+				};
+				drawingsColl?.insertOne(elementConcret);
+				res.status(StatusCode.CREATED).send(count);
+				next();
+			});
 		};
 	}
 
 	private putData(): express.RequestHandler {
 		return (req, res, next): void => {
 			log(req.params.id);
+			const fbBB = new flatbuffers.flatbuffers.ByteBuffer(req.body);
+			const draw = Draw.getRoot(fbBB);
+			const tags = new Array<string>();
+			for (let i = draw.tagsLength(); i--; ) {
+				tags.push(draw.tags(i));
+			}
+			const binary = new mongodb.Binary(req.body);
+			const concretElement = {
+				_id: `${req.params.id}`,
+				name: `${draw.name()}`,
+				tags: `${tags}`,
+				data: `${binary}`,
+			};
+			const drawingsColl = this.db.db?.collection('drawings'); // Mettre les collections dans le constructeur
+			drawingsColl?.remove({ _id: `${req.params.id}` }); // a revoir
+			drawingsColl?.insertOne(concretElement);
+
 			res.sendStatus(StatusCode.ACCEPTED);
 			next();
-			// do smthg
 		};
 	}
+
+	// Pour la mise à jour apres suppression
+	deleteData(): express.RequestHandler {
+		return (req, res, next): void => {
+			const drawingsColl = this.db.db?.collection('drawings');
+			drawingsColl?.remove({ _id: `${req.params.id}` });
+			res.sendStatus(StatusCode.ACCEPTED);
+			next();
+		};
+	}
+
+	getAllSerializedDraws(): Promise<Uint8Array[]> | undefined {
+		/*const drawingsColl = this.db.db?.collection('drawings');
+		return drawingsColl?.find({}).toArray();*/
+		if (true) {
+			return new Promise<Draw[]>();
+		}
+	}
+
+	private getNExtId(): Promise<number> | undefined {
+		const counterCollection = this.db.db?.collection('counter');
+		const sequenceDocument = counterCollection?.findOneAndUpdate(
+			{ _id: 'productid' },
+			{ $inc: { sequenceValue: 1 } },
+		);
+
+		return sequenceDocument?.then(a => a.value.sequenceValue);
+	}
+
+	/*findElementByName(nameToSearch: string): Promise<any[]> | undefined {
+		const drawingsColl = this.db.db?.collection('drawings');
+		return drawingsColl?.find({ name: `${nameToSearch}` }).toArray();
+	}*/
+
+	/*findElementById(id: string): Promise<Draw[]> | undefined {
+		const drawingsColl = this.db.db?.collection('drawings');
+		return drawingsColl?.find({ _id: `${id}` }).toArray();
+	}*/
 }
 
 export { Router };

@@ -47,7 +47,7 @@ export class Ellipse extends AbstractShape {
       initialPoint,
       oppositePoint
     );
-    const center = this.mathService.getEllipseCenter(
+    const center = this.mathService.getCircleCenter(
       initialPoint,
       oppositePoint
     );
