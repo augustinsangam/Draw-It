@@ -49,7 +49,7 @@ export class AerosolPanelComponent extends ToolPanelDirective {
     this.aerosolForm.patchValue({
       frequencyFormField: this.frequencySlider.value
     });
-    this.service.thickness = this.frequencySlider.value as number;
+    this.service.frequency = this.frequencySlider.value as number;
   }
 
 }
