@@ -1,31 +1,52 @@
 <div class='header'>
-    <h1 class='title'><mat-icon>photo_library</mat-icon> Galerie</h1>
-    <mat-form-field class="example-chip-list">
-      <mat-chip-list #chipList aria-label="Tag selection">
-        <mat-chip
-          *ngFor="let tag of tags"
-          [selectable]="selectable"
-          [removable]="removable"
-          (removed)="remove(tag)">
-          {{tag}}
-          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-        </mat-chip>
-        <input
-          placeholder="New tag..."
-          #tagInput
-          [formControl]="tagCtrl"
-          [matAutocomplete]="auto"
-          [matChipInputFor]="chipList"
-          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-          (matChipInputTokenEnd)="add($event)">
-      </mat-chip-list>
-      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-        <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
-          {{tag}}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>    
+  <h1 class='title'><mat-icon>photo_library</mat-icon> Galerie</h1>
+  <mat-form-field class="example-chip-list">
+    <mat-chip-list #chipList aria-label="Tag selection">
+      <mat-chip
+        *ngFor="let tag of tags"
+        [selectable]="selectable"
+        [removable]="removable"
+        (removed)="remove(tag)">
+        {{tag}}
+        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+      </mat-chip>
+      <input
+        placeholder="New tag..."
+        #tagInput
+        [formControl]="tagCtrl"
+        [matAutocomplete]="auto"
+        [matChipInputFor]="chipList"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (matChipInputTokenEnd)="add($event)">
+    </mat-chip-list>
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+      <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+        {{tag}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field> 
 </div>
 <div class='content'>
+  <mat-grid-list cols='4' rowHeight='300px'>
+    <mat-grid-tile class='tile'
+        *ngFor="let draw of filteredGaleryDrawTable">
+        {{draw.name}}
+        <!-- <svg xmlns={{draw.svg}}>
+        </svg> -->
+        <!-- <img src={{draw.svg}}> -->
 
+        <mat-chip-list selectable="false">
+          <mat-chip
+          *ngFor="let tag of draw.tags">
+            {{tag}}
+          </mat-chip>
+        </mat-chip-list>
+        <button mat-raised-button (click)="loadDraw(draw.id)">
+          Charger
+        </button>
+        <button mat-raised-button (click)="deleteDraw(draw.id)">
+          Supprimer
+        </button>
+    </mat-grid-tile>
+  </mat-grid-list>
 </div>

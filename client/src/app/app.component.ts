@@ -7,8 +7,8 @@ import {
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
 
-import { CommunicationService } from './communication/communication.service';
-import { Draws as DrawsT } from './communication/data_generated';
+// import { CommunicationService } from './communication/communication.service';
+// import { Draws as DrawsT } from './communication/data_generated';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
@@ -75,7 +75,7 @@ export class AppComponent implements AfterViewInit {
 
   constructor(
     public dialog: MatDialog,
-    private readonly communicationServerice: CommunicationService,
+    // private readonly communicationServerice: CommunicationService,
     private readonly toolSelectorService: ToolSelectorService,
     private colorService: ColorService,
     private svgService: SvgService,
@@ -143,21 +143,21 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.svgService.instance = this.svg;
     this.openHomeDialog();
-    setInterval(() => {
-      this.communicationServerice.getAll()
-        .then(fbbb => {
-          const draws = DrawsT.getRoot(fbbb);
-          console.log(draws.drawsLength());
-        })
-        .catch(() => console.log('OOPS'));
-      /*this.communicationServerice.encode(
-        'BEST DRAW EVER',
-        ['rouge', 'licorne'],
-        this.svgService.instance.nativeElement);
-      this.communicationServerice.post()
-        .then(id => console.log('SUCESS: ' + id))
-        .catch(err => console.log('FAIL: ' + err));*/
-    }, 2000);
+    // setInterval(() => {
+    //   this.communicationServerice.getAll()
+    //     .then(fbbb => {
+    //       const draws = DrawsT.getRoot(fbbb);
+    //       console.log(draws.drawsLength());
+    //     })
+    //     .catch(() => console.log('OOPS'));
+    //   /*this.communicationServerice.encode(
+    //     'BEST DRAW EVER',
+    //     ['rouge', 'licorne'],
+    //     this.svgService.instance.nativeElement);
+    //   this.communicationServerice.post()
+    //     .then(id => console.log('SUCESS: ' + id))
+    //     .catch(err => console.log('FAIL: ' + err));*/
+    // }, 2000);
   }
 
   private openHomeDialog(): void {
@@ -238,12 +238,13 @@ export class AppComponent implements AfterViewInit {
     const dialogOptions = {
       width: '115vw',
       height: '100vh',
-      panelClass: 'galery'
+      panelClass: 'galery',
+      data: { drawInProgress: this.drawInProgress },
     };
     this.shortcutHanler.desactivateAll();
     this.dialogRefs.galery = this.dialog.open(
       GaleryComponent,
-      dialogOptions
+      dialogOptions,
     );
     this.dialogRefs.galery.disableClose = false;
     this.dialogRefs.galery.afterClosed().subscribe(() => {

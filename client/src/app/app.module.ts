@@ -13,6 +13,7 @@ import { MaterialModule } from './material.module';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
+import { DeleteConfirmationDialogComponent } from './pages/galery/deleteconfirmation-dialog.component';
 import { GaleryComponent } from './pages/galery/galery.component';
 import {
   HomeComponent
@@ -83,6 +84,7 @@ import {
     ColorPickerContentComponent,
     ColorPickerItemComponent,
     ConfirmationDialogComponent,
+    DeleteConfirmationDialogComponent,
     DocumentationComponent,
     EllipseLogicComponent,
     EllipsePanelComponent,
@@ -122,6 +124,7 @@ import {
     ColorPanelComponent,
     PaletteDialogComponent,
     ConfirmationDialogComponent,
+    DeleteConfirmationDialogComponent,
     DocumentationComponent,
     EllipseLogicComponent,
     EllipsePanelComponent,
