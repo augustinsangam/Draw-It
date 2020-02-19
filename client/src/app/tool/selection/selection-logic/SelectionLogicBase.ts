@@ -9,6 +9,8 @@ import { SingleSelection } from '../SingleSelection';
 import { ElementSelectedType } from './ElementSelectedType';
 import { MouseTracking } from './MouseTracking';
 
+type KeybordPressCallback = ($event: KeyboardEvent) => void;
+
 export abstract class SelectionLogicBase
       extends ToolLogicDirective implements OnDestroy {
 
@@ -18,6 +20,14 @@ export abstract class SelectionLogicBase
   protected selectedElementsFreezed: Set<SVGElement>;
   protected mouse: Mouse;
   protected rectangles: SelectionRectangles
+  protected keyManager: {
+    keyPressed: Set<string>,
+    lastTimeCheck: number,
+    handlers: {
+      mousedown: KeybordPressCallback,
+      mouseup: KeybordPressCallback
+    }
+  }
 
   constructor(protected renderer: Renderer2, protected svgService: SvgService) {
     super();
@@ -36,6 +46,7 @@ export abstract class SelectionLogicBase
     });
     this.allListenners.push(() => subscription.unsubscribe());
     this.renderer.setStyle(this.svgElRef.nativeElement, 'cursor', 'default');
+    this.initialiseKeyManager();
   }
 
   protected applySingleSelection(element: SVGElement): void {
@@ -304,6 +315,37 @@ export abstract class SelectionLogicBase
     this.rectangles.visualisation].forEach((element: SVGElement) => {
         this.renderer.appendChild(this.svgElRef.nativeElement, element);
     });
+  }
+
+  private initialiseKeyManager() {
+    this.keyManager = {
+      keyPressed : new Set(),
+      lastTimeCheck: new Date().getTime(),
+      handlers : {
+        mousedown: ($event: KeyboardEvent) => {
+          if (!this.keyManager.keyPressed.has($event.key)) {
+            this.keyManager.keyPressed.add($event.key);
+          }
+          const actualTime = new Date().getTime();
+          if (actualTime - this.keyManager.lastTimeCheck >= 100) {
+            this.keyManager.lastTimeCheck = actualTime;
+            this.handleKey('ArrowUp', 0, -3);
+            this.handleKey('ArrowDown', 0, 3);
+            this.handleKey('ArrowLeft', -3, 0);
+            this.handleKey('ArrowRight', 3, 0);
+          }
+        },
+        mouseup: ($event: KeyboardEvent) => {
+          this.keyManager.keyPressed.delete($event.key);
+        }
+      }
+    }
+  }
+
+  private handleKey(key: string, dx: number, dy: number) {
+    if (this.keyManager.keyPressed.has(key)) {
+      this.translateAll(dx, dy);
+    }
   }
 
   ngOnDestroy() {

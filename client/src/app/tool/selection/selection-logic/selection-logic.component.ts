@@ -16,7 +16,7 @@ export class SelectionLogicComponent
     super(renderer, svgService);
   }
 
-  private handlers = new Map<string, Map<string, MouseEventCallBack>>([
+  private mouseHandlers = new Map<string, Map<string, MouseEventCallBack>>([
     ['leftButton', new Map<string, MouseEventCallBack>([
       ['mousedown', ($event: MouseEvent) => {
         if ($event.button === 0) {
@@ -132,11 +132,15 @@ export class SelectionLogicComponent
       side[1].forEach((eventName: string) => {
         this.allListenners.push(
           this.renderer.listen(this.svgElRef.nativeElement, eventName,
-            (this.handlers.get(side[0]) as Map<string, MouseEventCallBack>)
+            (this.mouseHandlers.get(side[0]) as Map<string, MouseEventCallBack>)
             .get(eventName) as MouseEventCallBack)
         );
       });
     });
+    this.renderer.listen( document, 'keydown',
+                          this.keyManager.handlers.mousedown);
+    this.renderer.listen(document, 'keyup', this.keyManager.handlers.mouseup);
+
   }
 
 }
