@@ -1,5 +1,9 @@
 table Draws {
-	draws: [Draw];
+	drawBuffers: [DrawBuffer];
+}
+
+table DrawBuffer {
+    buf: [ubyte] (nested_flatbuffer: 'Draw');
 }
 
 table Draw {
@@ -22,6 +26,11 @@ table Attr {
 }
 
 // blog.misterblue.com/programming/notes/Javascript-and-Flatbuffers.html
+//union Color {
+//	ColorHSL,
+//	ColorHSV,
+//	ColorRGBA,
+//}
 //struct ColorRGBA {
 //	r: uint8;
 //	g: uint8;

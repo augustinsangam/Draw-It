@@ -10,9 +10,10 @@ class Database {
 
 	constructor() {
 		// this._db = await mongodb.MongoClient.connect('mongodb://[::1]/log2990', {
-		this.client = new mongodb.MongoClient('mongodb://[::1]/log2990', {
+		this.client = new mongodb.MongoClient('mongodb://127.0.0.1/log2990', {
 			auth: secrets.mongodb.auth,
-			//	useUnifiedTopology: true, DOES NOT WORK WITH IPV6
+			// Next does not work with IPv6
+			useUnifiedTopology: true,
 		});
 	}
 

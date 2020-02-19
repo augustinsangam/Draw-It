@@ -29,18 +29,18 @@ static getRoot(bb:flatbuffers.ByteBuffer, obj?:Draws):Draws {
 
 /**
  * @param number index
- * @param Draw= obj
- * @returns Draw
+ * @param DrawBuffer= obj
+ * @returns DrawBuffer
  */
-draws(index: number, obj?:Draw):Draw|null {
+drawBuffers(index: number, obj?:DrawBuffer):DrawBuffer|null {
   var offset = this.bb!.__offset(this.bb_pos, 4);
-  return offset ? (obj || new Draw).__init(this.bb!.__indirect(this.bb!.__vector(this.bb_pos + offset) + index * 4), this.bb!) : null;
+  return offset ? (obj || new DrawBuffer).__init(this.bb!.__indirect(this.bb!.__vector(this.bb_pos + offset) + index * 4), this.bb!) : null;
 };
 
 /**
  * @returns number
  */
-drawsLength():number {
+drawBuffersLength():number {
   var offset = this.bb!.__offset(this.bb_pos, 4);
   return offset ? this.bb!.__vector_len(this.bb_pos + offset) : 0;
 };
@@ -54,10 +54,10 @@ static start(builder:flatbuffers.Builder) {
 
 /**
  * @param flatbuffers.Builder builder
- * @param flatbuffers.Offset drawsOffset
+ * @param flatbuffers.Offset drawBuffersOffset
  */
-static addDraws(builder:flatbuffers.Builder, drawsOffset:flatbuffers.Offset) {
-  builder.addFieldOffset(0, drawsOffset, 0);
+static addDrawBuffers(builder:flatbuffers.Builder, drawBuffersOffset:flatbuffers.Offset) {
+  builder.addFieldOffset(0, drawBuffersOffset, 0);
 };
 
 /**
@@ -65,7 +65,7 @@ static addDraws(builder:flatbuffers.Builder, drawsOffset:flatbuffers.Offset) {
  * @param Array.<flatbuffers.Offset> data
  * @returns flatbuffers.Offset
  */
-static createDrawsVector(builder:flatbuffers.Builder, data:flatbuffers.Offset[]):flatbuffers.Offset {
+static createDrawBuffersVector(builder:flatbuffers.Builder, data:flatbuffers.Offset[]):flatbuffers.Offset {
   builder.startVector(4, data.length, 4);
   for (var i = data.length - 1; i >= 0; i--) {
     builder.addOffset(data[i]);
@@ -77,7 +77,7 @@ static createDrawsVector(builder:flatbuffers.Builder, data:flatbuffers.Offset[])
  * @param flatbuffers.Builder builder
  * @param number numElems
  */
-static startDrawsVector(builder:flatbuffers.Builder, numElems:number) {
+static startDrawBuffersVector(builder:flatbuffers.Builder, numElems:number) {
   builder.startVector(4, numElems, 4);
 };
 
@@ -90,10 +90,113 @@ static end(builder:flatbuffers.Builder):flatbuffers.Offset {
   return offset;
 };
 
-static create(builder:flatbuffers.Builder, drawsOffset:flatbuffers.Offset):flatbuffers.Offset {
+static create(builder:flatbuffers.Builder, drawBuffersOffset:flatbuffers.Offset):flatbuffers.Offset {
   Draws.start(builder);
-  Draws.addDraws(builder, drawsOffset);
+  Draws.addDrawBuffers(builder, drawBuffersOffset);
   return Draws.end(builder);
+}
+}
+/**
+ * @constructor
+ */
+export class DrawBuffer {
+  bb: flatbuffers.ByteBuffer|null = null;
+
+  bb_pos:number = 0;
+/**
+ * @param number i
+ * @param flatbuffers.ByteBuffer bb
+ * @returns DrawBuffer
+ */
+__init(i:number, bb:flatbuffers.ByteBuffer):DrawBuffer {
+  this.bb_pos = i;
+  this.bb = bb;
+  return this;
+};
+
+/**
+ * @param flatbuffers.ByteBuffer bb
+ * @param DrawBuffer= obj
+ * @returns DrawBuffer
+ */
+static getRoot(bb:flatbuffers.ByteBuffer, obj?:DrawBuffer):DrawBuffer {
+  return (obj || new DrawBuffer).__init(bb.readInt32(bb.position()) + bb.position(), bb);
+};
+
+/**
+ * @param number index
+ * @returns number
+ */
+buf(index: number):number|null {
+  var offset = this.bb!.__offset(this.bb_pos, 4);
+  return offset ? this.bb!.readUint8(this.bb!.__vector(this.bb_pos + offset) + index) : 0;
+};
+
+/**
+ * @returns number
+ */
+bufLength():number {
+  var offset = this.bb!.__offset(this.bb_pos, 4);
+  return offset ? this.bb!.__vector_len(this.bb_pos + offset) : 0;
+};
+
+/**
+ * @returns Uint8Array
+ */
+bufArray():Uint8Array|null {
+  var offset = this.bb!.__offset(this.bb_pos, 4);
+  return offset ? new Uint8Array(this.bb!.bytes().buffer, this.bb!.bytes().byteOffset + this.bb!.__vector(this.bb_pos + offset), this.bb!.__vector_len(this.bb_pos + offset)) : null;
+};
+
+/**
+ * @param flatbuffers.Builder builder
+ */
+static start(builder:flatbuffers.Builder) {
+  builder.startObject(1);
+};
+
+/**
+ * @param flatbuffers.Builder builder
+ * @param flatbuffers.Offset bufOffset
+ */
+static addBuf(builder:flatbuffers.Builder, bufOffset:flatbuffers.Offset) {
+  builder.addFieldOffset(0, bufOffset, 0);
+};
+
+/**
+ * @param flatbuffers.Builder builder
+ * @param Array.<number> data
+ * @returns flatbuffers.Offset
+ */
+static createBufVector(builder:flatbuffers.Builder, data:number[] | Uint8Array):flatbuffers.Offset {
+  builder.startVector(1, data.length, 1);
+  for (var i = data.length - 1; i >= 0; i--) {
+    builder.addInt8(data[i]);
+  }
+  return builder.endVector();
+};
+
+/**
+ * @param flatbuffers.Builder builder
+ * @param number numElems
+ */
+static startBufVector(builder:flatbuffers.Builder, numElems:number) {
+  builder.startVector(1, numElems, 1);
+};
+
+/**
+ * @param flatbuffers.Builder builder
+ * @returns flatbuffers.Offset
+ */
+static end(builder:flatbuffers.Builder):flatbuffers.Offset {
+  var offset = builder.endObject();
+  return offset;
+};
+
+static create(builder:flatbuffers.Builder, bufOffset:flatbuffers.Offset):flatbuffers.Offset {
+  DrawBuffer.start(builder);
+  DrawBuffer.addBuf(builder, bufOffset);
+  return DrawBuffer.end(builder);
 }
 }
 /**

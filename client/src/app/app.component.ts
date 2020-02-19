@@ -142,19 +142,19 @@ export class AppComponent implements AfterViewInit {
     this.svgService.instance = this.svg;
     this.openHomeDialog();
     setInterval(() => {
-      this.communicationServerice.getAll()
+      /*this.communicationServerice.getAll()
         .then(fbbb => {
           const draws = DrawsT.getRoot(fbbb);
           console.log(draws.drawsLength());
         })
-        .catch(() => console.log('OOPS'));
-      /*this.communicationServerice.encode(
+        .catch(() => console.log('OOPS'));*/
+      this.communicationServerice.encode(
         'BEST DRAW EVER',
         ['rouge', 'licorne'],
         this.svgService.instance.nativeElement);
       this.communicationServerice.post()
         .then(id => console.log('SUCESS: ' + id))
-        .catch(err => console.log('FAIL: ' + err));*/
+        .catch(err => console.log('FAIL: ' + err));
     }, 2000);
   }
 

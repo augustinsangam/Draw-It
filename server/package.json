@@ -5,16 +5,18 @@
     "node": ">=13.2.0"
   },
   "scripts": {
-    "start": "nodemon --es-module-specifier-resolution=node",
+    "start": "nodemon --es-module-specifier-resolution=node --unhandled-rejections=strict --require=source-map-support/register",
+    "test": "node --es-module-specifier-resolution=node node_modules/.bin/mocha",
     "clean": "rimraf coverage/ lib/ tsconfig.tsbuildinfo",
     "build": "tsc",
     "watch": "tsc --watch",
-    "test": "node --es-module-specifier-resolution=node node_modules/.bin/mocha",
     "coverage": "c8 npm t",
     "lint": "eslint --fix --max-warnings=0 --ext=.js,.ts src/",
     "flatc": "flatc --ts --short-names -o src/ ../data.fbs",
-    "db": "mongod --ipv6 --bind_ip='[::1]' --dbpath=\"${HOME}/.cache\"",
-    "dbc": "mongo --ipv6 --host='[::1]'"
+    "db": "mongod --bind_ip='127.0.0.1' --dbpath=\"${HOME}/.cache\"",
+    "dbc": "mongo",
+    "db6": "mongod --ipv6 --bind_ip='::1' --dbpath=\"${HOME}/.cache\"",
+    "dbc6": "mongo --ipv6 --host='[::1]'"
   },
   "nodemonConfig": {
     "watch": "lib"
@@ -66,7 +68,8 @@
     "inversify": "^5.0.1",
     "mongodb": "^3.5.3",
     "nodemon": "^2.0.2",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "source-map-support": "^0.5.16"
   },
   "devDependencies": {
     "@types/chai": "^4.2.8",

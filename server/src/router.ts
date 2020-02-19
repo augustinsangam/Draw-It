@@ -4,7 +4,7 @@ import inversify from 'inversify';
 import mongodb from 'mongodb';
 import { log } from 'util';
 
-import { Draw, Draws, Element } from './data_generated';
+import { Draw, DrawBuffer, Draws, Element } from './data_generated';
 import { Database } from './database';
 import { TYPES } from './types';
 
@@ -32,22 +32,6 @@ class Router {
 		this.router.get('/brew-coffee', (_req, res) =>
 			res.sendStatus(StatusCode.IM_A_TEAPOT),
 		);
-	}
-
-	private static serialize(
-		fbbb: flatbuffers.flatbuffers.ByteBuffer,
-	): Uint8Array {
-		return fbbb.bytes().subarray(fbbb.position(), fbbb.capacity());
-	}
-
-	private static deserialize(
-		data: ArrayBuffer,
-	): flatbuffers.flatbuffers.ByteBuffer {
-		return new flatbuffers.flatbuffers.ByteBuffer(new Uint8Array(data));
-	}
-
-	private static decode(fbbb: flatbuffers.flatbuffers.ByteBuffer): Draw {
-		return Draw.getRoot(fbbb);
 	}
 
 	private static disp(el: Element): void {
@@ -79,44 +63,44 @@ class Router {
 	}
 
 	private getAll(): express.RequestHandler {
-		return (req, res): void => {
+		return (_req, res): void => {
 			const fbb = new flatbuffers.flatbuffers.Builder();
-			const name1 = fbb.createString('Draw1');
-			Draw.start(fbb);
-			Draw.addName(fbb, name1);
-			const draw1 = Draw.end(fbb);
-			const name2 = fbb.createString('Draw2');
-			Draw.start(fbb);
-			Draw.addName(fbb, name2);
-			const draw2 = Draw.end(fbb);
-			const draws = Draws.createDrawsVector(fbb, [draw1, draw2]);
-			const end = Draws.create(fbb, draws);
-			fbb.finish(end);
-			const encoded = fbb.dataBuffer();
-			const serialized = Router.serialize(encoded);
-			res.send(new Buffer(serialized));
+			const serializedDrawsLen = 1; // TODO: Get from DB
+			const drawBufferOffsets = new Array<number>();
+			for (let i = 0; i < serializedDrawsLen; i++) {
+				const serializedDraw = new Uint8Array();
+				const bufOffset = DrawBuffer.createBufVector(fbb, serializedDraw);
+				const drawBuffer = DrawBuffer.create(fbb, bufOffset);
+				drawBufferOffsets.push(drawBuffer);
+			}
+			const drawBuffers = Draws.createDrawBuffersVector(fbb, drawBufferOffsets);
+			const draws = Draws.create(fbb, drawBuffers);
+			fbb.finish(draws);
+			res.send(Buffer.from(fbb.asUint8Array()));
 		};
 	}
 
 	// medium.com/@dineshuthakota/how-to-save-file-in-mongodb-usipostDatang-node-js-1a9d09b019c1
 	private postData(): express.RequestHandler {
 		return (req, res, next): void => {
-			//console.log(internalDB.collection('draw'));
-			const deserialized = Router.deserialize(req.body);
-			const decoded = Router.decode(deserialized);
-			const name = decoded.name();
+			// req.body is a Buffer (which extends Uint8Array)
+			const fbBB = new flatbuffers.flatbuffers.ByteBuffer(req.body);
+			const draw = Draw.getRoot(fbBB);
+			/*
+			const name = draw.name();
 			if (!!name) {
 				console.log('Name is ' + name);
 			}
-			const tagsLen = decoded.tagsLength();
+			const tagsLen = draw.tagsLength();
 			for (let i = 0; i < tagsLen; i++) {
-				console.log(`Tag #${i}: ${decoded.tags(i)}`);
+				console.log(`Tag #${i}: ${draw.tags(i)}`);
 			}
-			const svg = decoded.svg();
+			const svg = draw.svg();
 			if (!!svg) {
 				Router.disp(svg);
-			}
+			}*/
 			const binary = new mongodb.Binary(req.body);
+			console.log(draw.name());
 			//console.log(`${binary.length()} bytes received`);
 			//collection.insertOne('yoo');
 			res.status(StatusCode.CREATED).send('42');
