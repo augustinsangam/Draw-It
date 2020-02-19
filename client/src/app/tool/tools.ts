@@ -11,8 +11,18 @@ import {
 import {
   PencilPanelComponent
 } from './drawing-instruments/pencil/pencil-panel/pencil-panel.component';
-import { PipetteLogicComponent } from './pipette/pipette-logic/pipette-logic.component';
-import { PipettePanelComponent } from './pipette/pipette-panel/pipette-panel.component';
+import {
+  EraserLogicComponent
+} from './eraser/eraser-logic/eraser-logic.component';
+import {
+  EraserPanelComponent
+} from './eraser/eraser-panel/eraser-panel.component';
+import {
+  PipetteLogicComponent
+} from './pipette/pipette-logic/pipette-logic.component';
+import {
+  PipettePanelComponent
+} from './pipette/pipette-panel/pipette-panel.component';
 import {
   SelectionLogicComponent
 } from './selection/selection-logic/selection-logic.component';
@@ -62,3 +72,4 @@ TOOL_MANAGER.set(Tool.Selection,
                   [SelectionPanelComponent, SelectionLogicComponent]);
 TOOL_MANAGER.set(Tool.Pipette,
                  [PipettePanelComponent, PipetteLogicComponent]);
+TOOL_MANAGER.set(Tool.Eraser, [EraserPanelComponent, EraserLogicComponent])

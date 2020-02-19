@@ -54,7 +54,7 @@ export class SidebarComponent implements AfterViewInit {
   })
   protected pipetteElRef: ElementRef<HTMLElement>;
 
-  @ViewChild('eraser', {
+  @ViewChild('efface', {
     static: false,
   })
   protected eraserElRef: ElementRef<HTMLElement>
@@ -77,14 +77,14 @@ export class SidebarComponent implements AfterViewInit {
   // Must be pubilc
   ngAfterViewInit() {
     this.toolToElRef[Tool.Brush] = this.brushElRef;
+    this.toolToElRef[Tool.Ellipse] = this.ellipseElRef;
     this.toolToElRef[Tool.Eraser] = this.eraserElRef;
     this.toolToElRef[Tool.Line] = this.lineElRef;
     this.toolToElRef[Tool.Pencil] = this.pencilElRef;
+    this.toolToElRef[Tool.Pipette] = this.pipetteElRef;
+    this.toolToElRef[Tool.Polygone] = this.polygoneElRef;
     this.toolToElRef[Tool.Rectangle] = this.rectangleElRef;
     this.toolToElRef[Tool.Selection] = this.selectionElRef;
-    this.toolToElRef[Tool.Ellipse] = this.ellipseElRef;
-    this.toolToElRef[Tool.Polygone] = this.polygoneElRef;
-    this.toolToElRef[Tool.Pipette] = this.pipetteElRef;
     this.toolSelectorService.onChange(
       (tool, old) => this.setTool(tool, old));
   }

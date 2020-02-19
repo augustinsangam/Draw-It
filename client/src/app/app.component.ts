@@ -100,7 +100,10 @@ export class AppComponent implements AfterViewInit {
     );
     this.handlersFunc.set(Shortcut.I, () =>
       this.toolSelectorService.set(Tool.Pipette)
-  );
+    );
+    this.handlersFunc.set(Shortcut.E, () =>
+      this.toolSelectorService.set(Tool.Eraser)
+    );
     this.handlersFunc.set(Shortcut.O, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
@@ -122,25 +125,12 @@ export class AppComponent implements AfterViewInit {
       this.toolSelectorService.set(Tool.Selection)
     );
 
-    [
-      Shortcut.A,
-      Shortcut.C,
-      Shortcut.L,
-      Shortcut.W,
-      Shortcut.Digit1,
-      Shortcut.Digit2,
-      Shortcut.Digit3,
-      Shortcut.O,
-      Shortcut.I,
-      Shortcut.S
-    ].forEach(
-      shortcut => {
-        this.shortcutHanler.set(
-          shortcut,
-          this.handlersFunc.get(shortcut) as ShortcutCallBack
-        );
-      }
-    );
+    for (const entry of this.handlersFunc) {
+      this.shortcutHanler.set(
+        entry[0],
+        this.handlersFunc.get(entry[0]) as ShortcutCallBack
+      );
+    }
 
     this.dialogRefs = {
       home: (undefined as unknown) as MatDialogRef<HomeComponent>,
