@@ -147,13 +147,13 @@ export class AppComponent implements AfterViewInit {
       .then(fbbb => {
         const draws = Draws.getRoot(fbbb);
         for (let i = draws.drawBuffersLength(); i--; ) {
-          const draw = draws.drawBuffers(i);
-          if (!!draw) {
-            const id = draw.id();
-            const drawBuffer = draw.bufArray();
-            if (!!drawBuffer) {
-              const fbb = new flatbuffers.ByteBuffer(drawBuffer);
-              const draw = Draw.getRoot(fbb);
+          const drawBuffer = draws.drawBuffers(i);
+          if (!!drawBuffer) {
+            const id = drawBuffer.id();
+            const serializedDraw = drawBuffer.bufArray();
+            if (!!serializedDraw) {
+              const drawFbbb = new flatbuffers.ByteBuffer(serializedDraw);
+              const draw = Draw.getRoot(drawFbbb);
               const name = draw.name();
               console.log(`#${id}: ${name}`);
             }
