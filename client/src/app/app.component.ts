@@ -17,7 +17,7 @@ import {
   Shortcut,
   ShortcutCallBack,
   ShortcutHandlerService
-} from './shortcut-handler.service';
+} from './shortcut-handler/shortcut-handler.service';
 import {SvgService} from './svg/svg.service';
 import {ColorService} from './tool/color/color.service';
 import {ToolSelectorService} from './tool/tool-selector/tool-selector.service';
