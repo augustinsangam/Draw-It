@@ -24,17 +24,21 @@ import {Tool} from './tool.enum';
 export const TOOL_MANAGER =
   new Map<Tool, [Type<ToolPanelDirective>, Type<ToolLogicDirective>]>();
 
-TOOL_MANAGER.set(Tool.Brush, [BrushPanelComponent, BrushLogicComponent]);
-TOOL_MANAGER.set(Tool.Line, [LinePanelComponent, LineLogicComponent]);
-TOOL_MANAGER.set(Tool.Pencil, [PencilPanelComponent, PencilLogicComponent]);
+TOOL_MANAGER.set(Tool.Brush,
+  [BrushPanelComponent, BrushLogicComponent]);
+TOOL_MANAGER.set(Tool.Line,
+  [LinePanelComponent, LineLogicComponent]);
+TOOL_MANAGER.set(Tool.Pencil,
+  [PencilPanelComponent, PencilLogicComponent]);
 TOOL_MANAGER.set(Tool.Rectangle,
-                [RectanglePanelComponent, RectangleLogicComponent]);
-TOOL_MANAGER.set(Tool.Ellipse, [EllipsePanelComponent, EllipseLogicComponent]);
+  [RectanglePanelComponent, RectangleLogicComponent]);
+TOOL_MANAGER.set(Tool.Ellipse,
+  [EllipsePanelComponent, EllipseLogicComponent]);
 TOOL_MANAGER.set(Tool.Polygone,
-                [PolygonePanelComponent, PolygoneLogicComponent]);
+  [PolygonePanelComponent, PolygoneLogicComponent]);
 TOOL_MANAGER.set(Tool.Selection,
-                  [SelectionPanelComponent, SelectionLogicComponent]);
+  [SelectionPanelComponent, SelectionLogicComponent]);
 TOOL_MANAGER.set(Tool.Pipette,
-                 [PipettePanelComponent, PipetteLogicComponent]);
+  [PipettePanelComponent, PipetteLogicComponent]);
 TOOL_MANAGER.set(Tool.Aerosol,
-                  [AerosolPanelComponent, AerosolLogicComponent]);
+  [AerosolPanelComponent, AerosolLogicComponent]);

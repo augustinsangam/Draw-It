@@ -37,6 +37,12 @@ import {
   ColorPickerItemComponent
 } from './tool/color/color-panel/color-picker-item/color-picker-item.component';
 import {
+  AerosolLogicComponent
+} from './tool/drawing-instruments/aerosol/aerosol-logic/aerosol-logic.component';
+import {
+  AerosolPanelComponent
+} from './tool/drawing-instruments/aerosol/aerosol-panel/aerosol-panel.component';
+import {
   BrushLogicComponent
 } from './tool/drawing-instruments/brush/brush-logic/brush-logic.component';
 import {
@@ -90,8 +96,6 @@ import {
 import {
   RectanglePanelComponent
 } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
-import { AerosolLogicComponent } from './tool/drawing-instruments/aerosol/aerosol-logic/aerosol-logic.component';
-import { AerosolPanelComponent } from './tool/drawing-instruments/aerosol/aerosol-panel/aerosol-panel.component';
 
 @NgModule({
   declarations: [
@@ -169,6 +173,8 @@ import { AerosolPanelComponent } from './tool/drawing-instruments/aerosol/aeroso
     RectanglePanelComponent,
     SelectionLogicComponent,
     SelectionPanelComponent,
+    AerosolLogicComponent,
+    AerosolPanelComponent,
   ],
   bootstrap: [
     AppComponent,

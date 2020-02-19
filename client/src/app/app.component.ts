@@ -6,11 +6,8 @@ import {
   ViewChild
 } from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material';
-
 // import { CommunicationService } from './communication/communication.service';
-import {
-  DocumentationComponent
-} from './pages/documentation/documentation.component';
+import {DocumentationComponent} from './pages/documentation/documentation.component';
 import {HomeComponent} from './pages/home/home.component';
 import {NewDrawComponent} from './pages/new-draw/new-draw.component';
 import {
@@ -115,6 +112,8 @@ export class AppComponent implements AfterViewInit {
         // reste dans l'état dans lequel il était
         this.toolSelectorService.set(Tool.Selection);
         this.svgService.selectAllElements.emit(null);
+      } else if (!!event && !event.ctrlKey) {
+        this.toolSelectorService.set(Tool.Aerosol)
       }
     });
 
