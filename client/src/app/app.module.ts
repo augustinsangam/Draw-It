@@ -90,6 +90,8 @@ import {
 import {
   RectanglePanelComponent
 } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
+import { AerosolLogicComponent } from './tool/drawing-instruments/aerosol/aerosol-logic/aerosol-logic.component';
+import { AerosolPanelComponent } from './tool/drawing-instruments/aerosol/aerosol-panel/aerosol-panel.component';
 
 @NgModule({
   declarations: [
@@ -123,6 +125,8 @@ import {
     PolygonePanelComponent,
     PipetteLogicComponent,
     PipettePanelComponent,
+    AerosolLogicComponent,
+    AerosolPanelComponent,
   ],
   imports: [
     BrowserAnimationsModule,

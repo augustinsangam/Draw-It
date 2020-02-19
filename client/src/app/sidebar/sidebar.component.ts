@@ -57,12 +57,17 @@ export class SidebarComponent implements AfterViewInit {
   @ViewChild('eraser', {
     static: false,
   })
-  protected eraserElRef: ElementRef<HTMLElement>
+  protected eraserElRef: ElementRef<HTMLElement>;
 
   @ViewChild('selection', {
     static: false,
   })
-  protected selectionElRef: ElementRef<HTMLElement>
+  protected selectionElRef: ElementRef<HTMLElement>;
+
+  @ViewChild('aerosol', {
+    static: false,
+  })
+  protected aerosolElRef: ElementRef<HTMLElement>;
 
   @Output() protected documentationEv: EventEmitter<null>;
 
@@ -85,6 +90,7 @@ export class SidebarComponent implements AfterViewInit {
     this.toolToElRef[Tool.Ellipse] = this.ellipseElRef;
     this.toolToElRef[Tool.Polygone] = this.polygoneElRef;
     this.toolToElRef[Tool.Pipette] = this.pipetteElRef;
+    this.toolToElRef[Tool.Aerosol] = this.aerosolElRef;
     this.toolSelectorService.onChange(
       (tool, old) => this.setTool(tool, old));
   }
@@ -135,5 +141,9 @@ export class SidebarComponent implements AfterViewInit {
 
   protected selectPipette(): void {
     this.toolSelectorService.set(Tool.Pipette);
+  }
+
+  protected selectAerosol(): void {
+    this.toolSelectorService.set(Tool.Aerosol);
   }
 }

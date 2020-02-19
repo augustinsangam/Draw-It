@@ -8,6 +8,7 @@ export enum Tool {
   Rectangle,
   Selection,
   Pipette,
+  Aerosol,
   _Len,
   _None,
 }
