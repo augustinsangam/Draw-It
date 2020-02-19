@@ -35,9 +35,15 @@ export class PipetteLogicComponent extends ToolLogicDirective
       }
     );
 
-    const onMouseClick = this.renderer.listen(
+    const onLeftClick = this.renderer.listen(
       this.svgElRef.nativeElement,
       'click',
+      (mouseEv: MouseEvent) => this.onMouseClick(mouseEv)
+    );
+
+    const onRightClick = this.renderer.listen(
+      this.svgElRef.nativeElement,
+      'contextmenu',
       (mouseEv: MouseEvent) => this.onMouseClick(mouseEv)
     );
 
@@ -48,8 +54,9 @@ export class PipetteLogicComponent extends ToolLogicDirective
     );
 
     this.allListeners = [
-      onMouseClick,
-      onMouseMove
+      onLeftClick,
+      onMouseMove,
+      onRightClick
     ];
 
     this.backgroundColorOnInit = this.colorService.backgroundColor;
@@ -65,6 +72,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
     if (mouseEv.button === 0) {
       this.colorService.selectPrimaryColor(this.service.currentColor);
     } else if (mouseEv.button === 2) {
+      mouseEv.preventDefault();
       this.colorService.selectSecondaryColor(this.service.currentColor);
     }
   }
