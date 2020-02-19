@@ -10,6 +10,6 @@ export class PipetteService extends ToolService  {
 
   constructor() {
     super();
-    this.currentColor = '#ffffff';
+    this.currentColor = 'rgba(255, 255, 255, 0)';
   }
 }

@@ -3,7 +3,6 @@ import html2canvas from 'html2canvas';
 import {ColorService} from '../../color/color.service';
 import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
 import {PipetteService} from '../pipette.service';
-import { ScreenService } from 'src/app/pages/new-draw/sreen-service/screen.service';
 
 @Component({
   selector: 'app-pipette-logic',
@@ -22,14 +21,9 @@ export class PipetteLogicComponent extends ToolLogicDirective
   constructor(
     private readonly service: PipetteService,
     private readonly renderer: Renderer2,
-    private readonly colorService: ColorService,
-    private readonly scrennService: ScreenService
+    private readonly colorService: ColorService
   ) {
     super();
-    this.scrennService.size.subscribe(() => {
-      this.ngOnInit();
-      console.log('Je suis apppele')
-    });
   }
 
   ngOnInit(): void {
@@ -68,10 +62,9 @@ export class PipetteLogicComponent extends ToolLogicDirective
   }
 
   private onMouseClick(mouseEv: MouseEvent): void {
-    console.log('Je suis clicke')
     if (mouseEv.button === 0) {
       this.colorService.selectPrimaryColor(this.service.currentColor);
-    } else if (mouseEv.button === 1) {
+    } else if (mouseEv.button === 2) {
       this.colorService.selectSecondaryColor(this.service.currentColor);
     }
   }
