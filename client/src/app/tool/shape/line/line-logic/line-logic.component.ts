@@ -1,4 +1,5 @@
 import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { MathService } from '../../../mathematics/tool.math-service.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
@@ -22,7 +23,8 @@ export class LineLogicComponent extends ToolLogicDirective
     private readonly service: LineService,
     private readonly renderer: Renderer2,
     private readonly serviceColor: ColorService,
-    private readonly mathService: MathService
+    private readonly mathService: MathService,
+    private readonly undoRedo: UndoRedoService
   ) {
     super();
     this.paths = [];
@@ -111,6 +113,7 @@ export class LineLogicComponent extends ToolLogicDirective
         this.addNewLine(currentPoint);
       }
       this.isNewPath = true;
+      this.undoRedo.addToCommands();
     }
   }
 

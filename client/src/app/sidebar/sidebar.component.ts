@@ -11,6 +11,7 @@ import {
   ToolSelectorService
 } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
+import {UndoRedoService} from '../tool/undo-redo/undo-redo.service'
 
 @Component({
   selector: 'app-sidebar',
@@ -69,7 +70,8 @@ export class SidebarComponent implements AfterViewInit {
   private toolToElRef: ElementRef<HTMLElement>[];
 
   // Must be pubilc
-  constructor(private readonly toolSelectorService: ToolSelectorService) {
+  constructor(private readonly toolSelectorService: ToolSelectorService,
+              private readonly undoRedoService: UndoRedoService) {
     this.documentationEv = new EventEmitter<null>();
     this.toolToElRef = new Array(Tool._Len);
   }
@@ -135,5 +137,11 @@ export class SidebarComponent implements AfterViewInit {
 
   protected selectPipette(): void {
     this.toolSelectorService.set(Tool.Pipette);
+  }
+  undo(): void {
+    this.undoRedoService.undo();
+  }
+  redo(): void {
+    this.undoRedoService.redo();
   }
 }

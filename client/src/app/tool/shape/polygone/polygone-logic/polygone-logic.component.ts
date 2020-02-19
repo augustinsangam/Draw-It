@@ -6,9 +6,10 @@ import { BackGroundProperties,
          StrokeProperties,
          Style } from '../../common/AbstractShape';
 import { Point } from '../../common/Point';
-import {Polygone} from '../../common/Polygone';
-import {Rectangle} from '../../common/Rectangle';
+import { Polygone} from '../../common/Polygone';
+import { Rectangle} from '../../common/Rectangle';
 import { PolygoneService } from '../polygone.service';
+import { UndoRedoService} from '../../../undo-redo/undo-redo.service'
 const SEMIOPACITY = '0.5';
 const FULLOPACITY = '1';
 enum ClickType {
@@ -32,7 +33,8 @@ implements OnDestroy {
     private readonly service: PolygoneService,
     private readonly renderer: Renderer2,
     private readonly colorService: ColorService,
-    private readonly mathService: MathService
+    private readonly mathService: MathService,
+    private readonly undoRedo: UndoRedoService
   ) {
     super();
     this.onDrag = false;
@@ -78,6 +80,7 @@ implements OnDestroy {
           this.renderer.removeChild(
             this.renderer.parentNode(this.visualisationRectangle.element),
             this.visualisationRectangle.element)
+          this.undoRedo.addToCommands();
         }
 
       }
@@ -109,7 +112,7 @@ implements OnDestroy {
       this.polygones.push(new Polygone(
         this.renderer,
         polygon,
-        this.mathService, this.svgElRef, this.service.sides));
+        this.mathService, this.service.sides));
       }
     this.setPolygoneProperties();
   }

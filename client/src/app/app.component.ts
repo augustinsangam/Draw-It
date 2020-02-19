@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material';
 
-import {CommunicationService} from './communication/communication.service';
+//import {CommunicationService} from './communication/communication.service';
 import {DocumentationComponent} from './pages/documentation/documentation.component';
 import {HomeComponent} from './pages/home/home.component';
 import {NewDrawComponent} from './pages/new-draw/new-draw.component';
@@ -20,6 +20,7 @@ import {SvgService} from './svg/svg.service';
 import {ColorService} from './tool/color/color.service';
 import {ToolSelectorService} from './tool/tool-selector/tool-selector.service';
 import {Tool} from './tool/tool.enum';
+import {UndoRedoService} from './tool/undo-redo/undo-redo.service';
 
 export interface NewDrawOptions {
   width: number;
@@ -68,11 +69,12 @@ export class AppComponent implements AfterViewInit {
 
   constructor(
     public dialog: MatDialog,
-    private readonly communicationServerice: CommunicationService,
+   // private readonly communicationServerice: CommunicationService,
     private readonly toolSelectorService: ToolSelectorService,
     private colorService: ColorService,
     private svgService: SvgService,
-    private shortcutHanler: ShortcutHandlerService
+    private shortcutHanler: ShortcutHandlerService,
+    private undoRedo: UndoRedoService,
   ) {
     this.drawInProgress = false;
     this.drawOption = { height: 0, width: 0, color: '' };
@@ -156,16 +158,19 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.svgService.instance = this.svg;
+
     this.openHomeDialog();
-    setInterval(() => {
-      this.communicationServerice.encode(
-        'BEST DRAW EVER',
-        ['rouge', 'licorne'],
-        this.svgService.instance.nativeElement);
-      this.communicationServerice.post()
-        .then(id => console.log('SUCESS: ' + id))
-        .catch(err => console.log('FAIL: ' + err));
-    }, 2000);
+    this.undoRedo.setSVG(this.svgService.instance)
+    this.undoRedo.addToCommands()
+    // setInterval(() => {
+    //   this.communicationServerice.encode(
+    //     'BEST DRAW EVER',
+    //     ['rouge', 'licorne'],
+    //     this.svgService.instance.nativeElement);
+    //   this.communicationServerice.post()
+    //     .then(id => console.log('SUCESS: ' + id))
+    //     .catch(err => console.log('FAIL: ' + err));
+    // }, 2000);
   }
 
   private openHomeDialog(): void {
