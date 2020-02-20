@@ -5,5 +5,10 @@ import { Injectable } from '@angular/core';
 })
 export class EraserService {
 
-  constructor() { }
+  size: number;
+
+  constructor() {
+    this.size = 10;
+  }
+
 }

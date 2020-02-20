@@ -51,7 +51,8 @@ export class Polygone extends AbstractShape {
     // this.element.setAttribute('transform', `scale(${2},${2})`);
      // const left = boundingRect.left - 44;
      // this.element.setAttribute(
-     // `transform', `rotate(36, ${left + boundingRect.width /2 },${boundingRect.top + boundingRect.height /2})`)
+     // `transform', `rotate(36, ${left + boundingRect.width /2 },
+     // ${boundingRect.top + boundingRect.height /2})`)
   }
 
 }

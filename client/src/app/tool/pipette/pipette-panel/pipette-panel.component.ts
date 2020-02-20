@@ -3,9 +3,9 @@ import {
   ElementRef,
   ViewChild,
   } from '@angular/core';
+import {ColorService} from '../../color/color.service';
 import {ToolPanelDirective} from '../../tool-panel/tool-panel.directive';
 import {PipetteService} from '../pipette.service';
-import {ColorService} from '../../color/color.service';
 
 @Component({
   selector: 'app-pipette-panel',

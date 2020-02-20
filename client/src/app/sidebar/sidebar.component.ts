@@ -54,7 +54,7 @@ export class SidebarComponent implements AfterViewInit {
   })
   protected pipetteElRef: ElementRef<HTMLElement>;
 
-  @ViewChild('eraser', {
+  @ViewChild('efface', {
     static: false,
   })
   protected eraserElRef: ElementRef<HTMLElement>;
@@ -69,13 +69,15 @@ export class SidebarComponent implements AfterViewInit {
   })
   protected aerosolElRef: ElementRef<HTMLElement>;
 
-  @Output() protected documentationEv: EventEmitter<null>;
+  @Output() protected documentationEvent: EventEmitter<null>;
+  @Output() protected exportEvent: EventEmitter<null>;
 
   private toolToElRef: ElementRef<HTMLElement>[];
 
   // Must be pubilc
   constructor(private readonly toolSelectorService: ToolSelectorService) {
-    this.documentationEv = new EventEmitter<null>();
+    this.documentationEvent = new EventEmitter<null>();
+    this.exportEvent = new EventEmitter<null>();
     this.toolToElRef = new Array(Tool._Len);
   }
 
@@ -85,11 +87,12 @@ export class SidebarComponent implements AfterViewInit {
     this.toolToElRef[Tool.Eraser] = this.eraserElRef;
     this.toolToElRef[Tool.Line] = this.lineElRef;
     this.toolToElRef[Tool.Pencil] = this.pencilElRef;
+    this.toolToElRef[Tool.Pipette] = this.pipetteElRef;
+    this.toolToElRef[Tool.Polygone] = this.polygoneElRef;
     this.toolToElRef[Tool.Rectangle] = this.rectangleElRef;
     this.toolToElRef[Tool.Selection] = this.selectionElRef;
     this.toolToElRef[Tool.Ellipse] = this.ellipseElRef;
     this.toolToElRef[Tool.Polygone] = this.polygoneElRef;
-    this.toolToElRef[Tool.Pipette] = this.pipetteElRef;
     this.toolToElRef[Tool.Aerosol] = this.aerosolElRef;
     this.toolSelectorService.onChange(
       (tool, old) => this.setTool(tool, old));
