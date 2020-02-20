@@ -7,15 +7,17 @@ import {
 } from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material';
 
-//import {CommunicationService} from './communication/communication.service';
-import {DocumentationComponent} from './pages/documentation/documentation.component';
+// import { CommunicationService } from './communication/communication.service';
+import {
+  DocumentationComponent
+} from './pages/documentation/documentation.component';
 import {HomeComponent} from './pages/home/home.component';
 import {NewDrawComponent} from './pages/new-draw/new-draw.component';
 import {
   Shortcut,
   ShortcutCallBack,
   ShortcutHandlerService
-} from './shortcut-handler.service';
+} from './shortcut-handler/shortcut-handler.service';
 import {SvgService} from './svg/svg.service';
 import {ColorService} from './tool/color/color.service';
 import {ToolSelectorService} from './tool/tool-selector/tool-selector.service';
@@ -69,7 +71,11 @@ export class AppComponent implements AfterViewInit {
 
   constructor(
     public dialog: MatDialog,
+<<<<<<< HEAD
    // private readonly communicationServerice: CommunicationService,
+=======
+    // private readonly communicationServerice: CommunicationService,
+>>>>>>> next
     private readonly toolSelectorService: ToolSelectorService,
     private colorService: ColorService,
     private svgService: SvgService,
@@ -100,7 +106,10 @@ export class AppComponent implements AfterViewInit {
     );
     this.handlersFunc.set(Shortcut.I, () =>
       this.toolSelectorService.set(Tool.Pipette)
-  );
+    );
+    this.handlersFunc.set(Shortcut.E, () =>
+      this.toolSelectorService.set(Tool.Eraser)
+    );
     this.handlersFunc.set(Shortcut.O, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
@@ -135,6 +144,7 @@ export class AppComponent implements AfterViewInit {
       this.toolSelectorService.set(Tool.Selection)
     );
 
+<<<<<<< HEAD
     [
       Shortcut.A,
       Shortcut.C,
@@ -155,6 +165,14 @@ export class AppComponent implements AfterViewInit {
         );
       }
     );
+=======
+    for (const entry of this.handlersFunc) {
+      this.shortcutHanler.set(
+        entry[0],
+        this.handlersFunc.get(entry[0]) as ShortcutCallBack
+      );
+    }
+>>>>>>> next
 
     this.dialogRefs = {
       home: (undefined as unknown) as MatDialogRef<HomeComponent>,
@@ -174,8 +192,11 @@ export class AppComponent implements AfterViewInit {
     this.svgService.instance = this.svg;
 
     this.openHomeDialog();
+<<<<<<< HEAD
     this.undoRedo.setSVG(this.svgService.instance)
     this.undoRedo.addToCommands()
+=======
+>>>>>>> next
     // setInterval(() => {
     //   this.communicationServerice.encode(
     //     'BEST DRAW EVER',

@@ -15,25 +15,35 @@ export class PipetteLogicComponent extends ToolLogicDirective
   implements OnDestroy {
 
   private allListeners: (() => void)[] = [];
-  private image: CanvasRenderingContext2D | null;
+  private image: CanvasRenderingContext2D;
+  private backgroundColorOnInit: string;
 
   constructor(
     private readonly service: PipetteService,
     private readonly renderer: Renderer2,
-    private readonly colorService: ColorService,
+    private readonly colorService: ColorService
   ) {
     super();
   }
 
   ngOnInit(): void {
+    this.svgElRef.nativeElement.style.cursor = 'wait';
 
     html2canvas(this.svgElRef.nativeElement as unknown as HTMLElement).then(
-      value => { this.image = value.getContext('2d') }
+      (value) => {
+        this.image = value.getContext('2d') as CanvasRenderingContext2D;
+      }
     );
 
-    const onMouseClick = this.renderer.listen(
+    const onLeftClick = this.renderer.listen(
       this.svgElRef.nativeElement,
-      'mouseclick',
+      'click',
+      (mouseEv: MouseEvent) => this.onMouseClick(mouseEv)
+    );
+
+    const onRightClick = this.renderer.listen(
+      this.svgElRef.nativeElement,
+      'contextmenu',
       (mouseEv: MouseEvent) => this.onMouseClick(mouseEv)
     );
 
@@ -44,9 +54,14 @@ export class PipetteLogicComponent extends ToolLogicDirective
     );
 
     this.allListeners = [
-      onMouseClick,
-      onMouseMove
-    ]
+      onLeftClick,
+      onMouseMove,
+      onRightClick
+    ];
+
+    this.backgroundColorOnInit = this.colorService.backgroundColor;
+    this.svgElRef.nativeElement.style.cursor = 'crosshair';
+
   }
 
   ngOnDestroy(): void {
@@ -56,12 +71,17 @@ export class PipetteLogicComponent extends ToolLogicDirective
   private onMouseClick(mouseEv: MouseEvent): void {
     if (mouseEv.button === 0) {
       this.colorService.selectPrimaryColor(this.service.currentColor);
-    } else if (mouseEv.button === 1) {
+    } else if (mouseEv.button === 2) {
+      mouseEv.preventDefault();
       this.colorService.selectSecondaryColor(this.service.currentColor);
     }
   }
 
   private onMouseMove(mouseEv: MouseEvent): void {
+    if (this.colorService.backgroundColor !== this.backgroundColorOnInit) {
+      this.ngOnInit()
+    }
+
     if (this.image != null) {
       const pixel = this.image.getImageData(
         mouseEv.offsetX,

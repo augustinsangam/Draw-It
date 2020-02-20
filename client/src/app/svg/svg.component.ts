@@ -10,27 +10,6 @@ import {
 } from '@angular/core';
 
 import {
-  BrushLogicComponent
-} from '../tool/drawing-instruments/brush/brush-logic/brush-logic.component';
-import {
-  PencilLogicComponent
-} from '../tool/drawing-instruments/pencil/pencil-logic/pencil-logic.component';
-import {
-  PipetteLogicComponent
-} from '../tool/pipette/pipette-logic/pipette-logic.component';
-import {
-  EllipseLogicComponent
-} from '../tool/shape/ellipse/ellipse-logic/ellipse-logic.component';
-import {
-  LineLogicComponent
-} from '../tool/shape/line/line-logic/line-logic.component';
-import {
-  PolygoneLogicComponent
-} from '../tool/shape/polygone/polygone-logic/polygone-logic.component';
-import {
-  RectangleLogicComponent
-} from '../tool/shape/rectangle/rectangle-logic/rectangle-logic.component';
-import {
   ToolLogicDirective } from '../tool/tool-logic/tool-logic.directive';
 import {
   ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
@@ -60,14 +39,6 @@ export class SvgComponent implements OnInit {
     for ( const entry of Tools.TOOL_MANAGER ) {
       this.components[entry[0]] = entry[1][1];
     }
-    this.components = new Array(Tool._Len);
-    this.components[Tool.Brush] = BrushLogicComponent;
-    this.components[Tool.Line] = LineLogicComponent;
-    this.components[Tool.Pencil] = PencilLogicComponent;
-    this.components[Tool.Rectangle] = RectangleLogicComponent;
-    this.components[Tool.Ellipse] = EllipseLogicComponent;
-    this.components[Tool.Polygone] = PolygoneLogicComponent;
-    this.components[Tool.Pipette] = PipetteLogicComponent;
   }
 
   private setToolHandler = (tool: Tool) => this.setTool(tool);

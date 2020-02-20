@@ -35,6 +35,5 @@ export class Polygone extends AbstractShape {
     const points: Point [] = this.mathService.getPolynomeCornersFromRectangle(
       mouseDownPoint, upLeftCorner, dimensions, this.sides);
     this.insertPolygonInSVG(points);
-  }
-
+    }
 }

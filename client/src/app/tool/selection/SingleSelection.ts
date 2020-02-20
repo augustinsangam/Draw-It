@@ -9,7 +9,7 @@ export class SingleSelection extends Selection {
     this.zone = this.getZone(element);
   }
 
-  getPoints(): Point[] {
+  points(): Point[] {
     return this.zone.getPoints();
   }
 
