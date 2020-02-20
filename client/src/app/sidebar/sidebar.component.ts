@@ -64,13 +64,15 @@ export class SidebarComponent implements AfterViewInit {
   })
   protected selectionElRef: ElementRef<HTMLElement>
 
-  @Output() protected documentationEv: EventEmitter<null>;
+  @Output() protected documentationEvent: EventEmitter<null>;
+  @Output() protected exportEvent: EventEmitter<null>;
 
   private toolToElRef: ElementRef<HTMLElement>[];
 
   // Must be pubilc
   constructor(private readonly toolSelectorService: ToolSelectorService) {
-    this.documentationEv = new EventEmitter<null>();
+    this.documentationEvent = new EventEmitter<null>();
+    this.exportEvent = new EventEmitter<null>();
     this.toolToElRef = new Array(Tool._Len);
   }
 

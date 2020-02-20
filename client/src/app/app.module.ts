@@ -14,6 +14,9 @@ import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
 import {
+  ExportComponent
+} from './pages/export/export.component';
+import {
   HomeComponent
 } from './pages/home/home.component';
 import {
@@ -123,6 +126,7 @@ import {
     PolygonePanelComponent,
     PipetteLogicComponent,
     PipettePanelComponent,
+    ExportComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -149,6 +153,7 @@ import {
     DocumentationComponent,
     EllipseLogicComponent,
     EllipsePanelComponent,
+    ExportComponent,
     LineLogicComponent,
     LinePanelComponent,
     HomeComponent,

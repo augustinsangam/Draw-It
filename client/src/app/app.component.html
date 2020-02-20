@@ -1,4 +1,5 @@
-<app-sidebar (documentationEv)="openDocumentationDialog(false)"></app-sidebar>
+<app-sidebar (documentationEvent)="openDocumentationDialog(false)"
+              (exportEvent)="openExportDialog()"></app-sidebar>
 <app-panel></app-panel>
 <main id="canvasRef">
   <!-- app-svg is a selector for svg.component.ts -->

@@ -24,6 +24,10 @@ a {
   background-repeat: no-repeat;
 }
 
+a:hover {
+  cursor: pointer;
+}
+
 nav a {
   transition: .3s filter;
   filter: grayscale(100%);

@@ -7,7 +7,7 @@ import { Subject } from 'rxjs';
 })
 export class ScreenService {
   size: Subject<ScreenSize>;
-  readonly sideBarWidth = 44;
+  readonly sideBarWidth = 68;
 
   constructor(private eventManager: EventManager) {
     this.size = new Subject<ScreenSize>();

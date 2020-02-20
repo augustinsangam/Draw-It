@@ -5,23 +5,26 @@ import {
   HostListener,
   ViewChild
 } from '@angular/core';
-import {MatDialog, MatDialogRef} from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 // import { CommunicationService } from './communication/communication.service';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
-import {HomeComponent} from './pages/home/home.component';
-import {NewDrawComponent} from './pages/new-draw/new-draw.component';
+import { ExportComponent } from './pages/export/export.component';
+import { HomeComponent } from './pages/home/home.component';
+import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import {
   Shortcut,
   ShortcutCallBack,
   ShortcutHandlerService
 } from './shortcut-handler/shortcut-handler.service';
-import {SvgService} from './svg/svg.service';
-import {ColorService} from './tool/color/color.service';
-import {ToolSelectorService} from './tool/tool-selector/tool-selector.service';
-import {Tool} from './tool/tool.enum';
+import { SvgService } from './svg/svg.service';
+import { ColorService } from './tool/color/color.service';
+import {
+  ToolSelectorService
+} from './tool/tool-selector/tool-selector.service';
+import { Tool } from './tool/tool.enum';
 
 export interface NewDrawOptions {
   width: number;
@@ -40,6 +43,7 @@ export interface DialogRefs {
   home: MatDialogRef<HomeComponent>;
   newDraw: MatDialogRef<NewDrawComponent>;
   documentation: MatDialogRef<DocumentationComponent>;
+  export: MatDialogRef<ExportComponent>;
 }
 
 @Component({
@@ -114,9 +118,6 @@ export class AppComponent implements AfterViewInit {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
         this.toolSelectorService.set(Tool.Selection);
-        // Une deuxième fois pour s'asssurer que le panel
-        // reste dans l'état dans lequel il était
-        this.toolSelectorService.set(Tool.Selection);
         this.svgService.selectAllElements.emit(null);
       }
     });
@@ -135,9 +136,9 @@ export class AppComponent implements AfterViewInit {
     this.dialogRefs = {
       home: (undefined as unknown) as MatDialogRef<HomeComponent>,
       newDraw: (undefined as unknown) as MatDialogRef<NewDrawComponent>,
-      documentation: (undefined as unknown) as MatDialogRef<
-        DocumentationComponent
-      >
+      documentation: (undefined as unknown) as
+        MatDialogRef<DocumentationComponent>,
+      export: (undefined as unknown) as MatDialogRef<ExportComponent>,
     };
   }
 
@@ -224,6 +225,22 @@ export class AppComponent implements AfterViewInit {
     this.dialogRefs.documentation.afterClosed().subscribe(() => {
       this.shortcutHanler.activateAll();
       this.closeDocumentationDialog(fromHome);
+    });
+  }
+
+  protected openExportDialog() {
+    const dialogOptions = {
+      width: '1000px',
+      height: '90vh'
+    };
+    this.shortcutHanler.desactivateAll();
+    this.dialogRefs.export = this.dialog.open(
+      ExportComponent,
+      dialogOptions
+    );
+    this.dialogRefs.export.disableClose = true;
+    this.dialogRefs.export.afterClosed().subscribe(() => {
+      this.shortcutHanler.activateAll();
     });
   }
 

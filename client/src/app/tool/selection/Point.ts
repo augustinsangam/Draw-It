@@ -5,8 +5,8 @@ export class Point {
 
   constructor(x: number, y: number) {
     // Un point ne peut avoir des coordonnées négatives
-    this.x = Math.max(0, x);
-    this.y = Math.max(0, y);
+    this.x = x
+    this.y = y;
   }
 
   equals(point: Point): boolean {

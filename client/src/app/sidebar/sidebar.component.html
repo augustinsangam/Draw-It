@@ -20,6 +20,7 @@
 </nav>
 
 <a title="Sauvegarder" style="background-image:url(/assets/sidebar-icons/gimp-prefs-import-export.png)"></a>
-<a title="Exporter" style="background-image:url(/assets/sidebar-icons/gimp-prefs-import-export.png)"></a>
+<a title="Exporter"
+  (click)="exportEvent.emit()"><mat-icon>save_alt</mat-icon></a>
 <a title="Aide" style="background-image:url(/assets/sidebar-icons/gimp-prefs-help-system.svg)"
-  (click)="documentationEv.emit()"></a>
+  (click)="documentationEvent.emit()"></a>
