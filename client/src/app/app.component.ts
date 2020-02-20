@@ -107,6 +107,19 @@ export class AppComponent implements AfterViewInit {
         this.openNewDrawDialog();
       }
     });
+    this.handlersFunc.set(Shortcut.Z, (event: KeyboardEvent) => {
+      if (!!event && event.ctrlKey && !event.shiftKey) {
+        console.log('alors')
+        event.preventDefault();
+        this.undoRedo.undo();
+      }
+    });
+    // this.handlersFunc.set(Shortcut.Z, (event: KeyboardEvent) => {
+    //   if (!!event && event.ctrlKey && event.shiftKey) {
+    //     event.preventDefault();
+    //     this.undoRedo.redo();
+    //   }
+    // });
     this.handlersFunc.set(Shortcut.A, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
@@ -132,7 +145,8 @@ export class AppComponent implements AfterViewInit {
       Shortcut.Digit3,
       Shortcut.O,
       Shortcut.I,
-      Shortcut.S
+      Shortcut.S,
+      Shortcut.Z
     ].forEach(
       shortcut => {
         this.shortcutHanler.set(
