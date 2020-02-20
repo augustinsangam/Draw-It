@@ -69,7 +69,6 @@ export class AerosolLogicComponent extends ToolLogicDirective
   }
 
   ngOnDestroy(): void {
-    this.periodicSplashAdder.unsubscribe();
     this.listeners.forEach(listenner => { listenner(); });
   }
 

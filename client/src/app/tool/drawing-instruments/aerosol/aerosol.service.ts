@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {ToolService} from '../../tool.service';
 import {Point} from '../../shape/common/Point';
+import {ToolService} from '../../tool.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,14 +12,14 @@ export class AerosolService extends ToolService {
 
   constructor() {
     super();
-    this.frequency = 250;
-    this.thickness = 30;
+    this.frequency = 50;
+    this.thickness = 45;
   }
 
   generatePoints(p: Point): string {
     let disk = '';
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 25; i++) {
 
       const theta = Math.random() * 2 * Math.PI;
       const r = Math.random() * this.thickness;

@@ -67,7 +67,7 @@ export class AerosolPanelComponent extends ToolPanelDirective {
     if (!!path) {
       let preview = '';
       for (let i = 0; i < this.service.frequency; i++) {
-        preview += this.service.generatePoints({x: 100, y: 100});
+        preview += this.service.generatePoints({x: 150, y: 110});
       }
       path.setAttribute('d', preview);
     }

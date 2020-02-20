@@ -16,7 +16,7 @@
   <br>
   <p>Fréquence du jet</p>
   <div class="frequency">
-    <mat-slider min=1 max=1000 step="10"
+    <mat-slider min=1 max=150 step="1"
                 (input)="onFrequencyChange()"
                 (change)="onFrequencyChange()"
                 formControlName="frequencySlider"
@@ -29,8 +29,9 @@
   </div>
 </form>
 <p>Aperçu pour 1s</p>
-<svg width="250" height="210">
-  <path d="M0,0 200,0 200,200 0,200" [ngStyle]="{'fill': this.colorService.backgroundColor}"></path>
+<svg width="340" height="220">
+  <circle cx="150" cy="110" r="110"
+      [ngStyle]="{'fill': 'rgb(255, 255, 255)', 'stroke-width': '3', 'stroke': 'rgb(0, 0, 0)'}"></circle>
   <path d ='' id ="prevPath" [ngStyle]="{'fill': this.colorService.primaryColor}"></path>
 </svg><hr>
 <app-color-panel></app-color-panel>
