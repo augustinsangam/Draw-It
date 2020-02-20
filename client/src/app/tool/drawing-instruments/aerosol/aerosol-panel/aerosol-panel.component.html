@@ -28,5 +28,9 @@
     </mat-form-field>
   </div>
 </form>
-<hr>
+<p>Aperçu pour 1s</p>
+<svg width="250" height="210">
+  <path d="M0,0 200,0 200,200 0,200" [ngStyle]="{'fill': this.colorService.backgroundColor}"></path>
+  <path d ='' id ="prevPath" [ngStyle]="{'fill': this.colorService.primaryColor}"></path>
+</svg><hr>
 <app-color-panel></app-color-panel>

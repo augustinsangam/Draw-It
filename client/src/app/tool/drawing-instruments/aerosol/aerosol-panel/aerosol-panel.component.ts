@@ -5,6 +5,7 @@ import {
 } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSlider} from '@angular/material/slider';
+import {ColorService} from '../../../color/color.service';
 import {ToolPanelDirective} from '../../../tool-panel/tool-panel.directive';
 import {AerosolService} from '../aerosol.service';
 
@@ -13,6 +14,8 @@ import {AerosolService} from '../aerosol.service';
   templateUrl: './aerosol-panel.component.html',
   styleUrls: ['./aerosol-panel.component.scss']
 })
+
+// tslint:disable:use-lifecycle-interface
 export class AerosolPanelComponent extends ToolPanelDirective {
 
   private aerosolForm: FormGroup;
@@ -28,6 +31,7 @@ export class AerosolPanelComponent extends ToolPanelDirective {
   constructor(
     elementRef: ElementRef<HTMLElement>,
     private readonly service: AerosolService,
+    protected readonly colorService: ColorService,
     private readonly formBuilder: FormBuilder) {
     super(elementRef);
     this.aerosolForm = this.formBuilder.group({
@@ -38,11 +42,16 @@ export class AerosolPanelComponent extends ToolPanelDirective {
     });
   }
 
+  ngOnInit() {
+    this.updateThumbnail()
+  }
+
   protected onThicknessChange(): void {
     this.aerosolForm.patchValue({
       thicknessFormField: this.thicknessSlider.value
     });
     this.service.thickness = this.thicknessSlider.value as number;
+    this.updateThumbnail();
   }
 
   protected onFrequencyChange(): void {
@@ -50,6 +59,18 @@ export class AerosolPanelComponent extends ToolPanelDirective {
       frequencyFormField: this.frequencySlider.value
     });
     this.service.frequency = this.frequencySlider.value as number;
+    this.updateThumbnail();
+  }
+
+  protected updateThumbnail() {
+    const path = document.getElementById('prevPath');
+    if (!!path) {
+      let preview = '';
+      for (let i = 0; i < this.service.frequency; i++) {
+        preview += this.service.generatePoints({x: 100, y: 100});
+      }
+      path.setAttribute('d', preview);
+    }
   }
 
 }
