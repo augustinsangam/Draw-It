@@ -5,12 +5,17 @@ import { ElementRef, Injectable } from '@angular/core';
 })
 export class UndoRedoService {
 
+  // public
+  canUndo: boolean;
+  canRedo: boolean;
   private cmdDone: (ChildNode[])[]
   private cmdUndone: (ChildNode[])[];
   private svgElRef: ElementRef<SVGSVGElement>;
   constructor() {
     this.cmdDone = [];
     this.cmdUndone = [];
+    this.canUndo = false;
+    this.canRedo = true;
   }
 
   setSVG(svgElRef: ElementRef<SVGSVGElement>): void {
@@ -23,11 +28,14 @@ export class UndoRedoService {
   }
 
   undo(): void {
-    //console.log(this.cmdDone.length, 'live')
+
     if (this.cmdDone.length >= 2) {
       const lastCommand = this.cmdDone.pop();
       this.cmdUndone.push(lastCommand as ChildNode[]);
-      this.refresh(this.cmdDone[this.cmdDone.length - 1])
+      this.refresh(this.cmdDone[this.cmdDone.length - 1]);
+      this.canUndo = true;
+    } else {
+      this.canUndo = false;
     }
   }
 
@@ -36,7 +44,10 @@ export class UndoRedoService {
     if (this.cmdUndone.length) {
       const lastCommand = this.cmdUndone.pop();
       this.cmdDone.push(lastCommand as ChildNode[]);
-      this.refresh(this.cmdDone[this.cmdDone.length - 1])
+      this.refresh(this.cmdDone[this.cmdDone.length - 1]);
+      this.canRedo = true;
+    } else {
+      this.canRedo = false;
     }
   }
 

@@ -77,12 +77,9 @@ implements OnDestroy {
           this.onDrag = false;
           this.style.opacity = FULLOPACITY;
           this.getPolygone().setCss(this.style);
-          this.renderer.removeChild(
-            this.renderer.parentNode(this.visualisationRectangle.element),
-            this.visualisationRectangle.element)
+          this.visualisationRectangle.element.remove();
           this.undoRedo.addToCommands();
         }
-
       }
     );
 

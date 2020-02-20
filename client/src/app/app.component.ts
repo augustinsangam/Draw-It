@@ -71,11 +71,7 @@ export class AppComponent implements AfterViewInit {
 
   constructor(
     public dialog: MatDialog,
-<<<<<<< HEAD
    // private readonly communicationServerice: CommunicationService,
-=======
-    // private readonly communicationServerice: CommunicationService,
->>>>>>> next
     private readonly toolSelectorService: ToolSelectorService,
     private colorService: ColorService,
     private svgService: SvgService,
@@ -117,18 +113,16 @@ export class AppComponent implements AfterViewInit {
       }
     });
     this.handlersFunc.set(Shortcut.Z, (event: KeyboardEvent) => {
-      if (!!event && event.ctrlKey && !event.shiftKey) {
-        console.log('alors')
+      if (!!event && event.ctrlKey) {
         event.preventDefault();
-        this.undoRedo.undo();
+        if (event.shiftKey) {
+          this.undoRedo.redo();
+        } else {
+          this.undoRedo.undo();
+        }
       }
     });
-    // this.handlersFunc.set(Shortcut.Z, (event: KeyboardEvent) => {
-    //   if (!!event && event.ctrlKey && event.shiftKey) {
-    //     event.preventDefault();
-    //     this.undoRedo.redo();
-    //   }
-    // });
+
     this.handlersFunc.set(Shortcut.A, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
@@ -144,35 +138,12 @@ export class AppComponent implements AfterViewInit {
       this.toolSelectorService.set(Tool.Selection)
     );
 
-<<<<<<< HEAD
-    [
-      Shortcut.A,
-      Shortcut.C,
-      Shortcut.L,
-      Shortcut.W,
-      Shortcut.Digit1,
-      Shortcut.Digit2,
-      Shortcut.Digit3,
-      Shortcut.O,
-      Shortcut.I,
-      Shortcut.S,
-      Shortcut.Z
-    ].forEach(
-      shortcut => {
-        this.shortcutHanler.set(
-          shortcut,
-          this.handlersFunc.get(shortcut) as ShortcutCallBack
-        );
-      }
-    );
-=======
     for (const entry of this.handlersFunc) {
       this.shortcutHanler.set(
         entry[0],
         this.handlersFunc.get(entry[0]) as ShortcutCallBack
       );
     }
->>>>>>> next
 
     this.dialogRefs = {
       home: (undefined as unknown) as MatDialogRef<HomeComponent>,
@@ -192,11 +163,8 @@ export class AppComponent implements AfterViewInit {
     this.svgService.instance = this.svg;
 
     this.openHomeDialog();
-<<<<<<< HEAD
     this.undoRedo.setSVG(this.svgService.instance)
     this.undoRedo.addToCommands()
-=======
->>>>>>> next
     // setInterval(() => {
     //   this.communicationServerice.encode(
     //     'BEST DRAW EVER',

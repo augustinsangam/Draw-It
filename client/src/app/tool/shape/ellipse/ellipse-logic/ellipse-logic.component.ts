@@ -62,10 +62,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
         if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
           this.viewTemporaryForm(mouseEv);
           this.onDrag = false;
-          this.renderer.removeChild(
-            this.renderer.parentNode(this.rectVisu.element),
-            this.rectVisu.element
-          );
+          this.rectVisu.element.remove();
           this.style.opacity = FULLOPACITY;
           this.getEllipse().setCss(this.style);
           this.undoRedo.addToCommands();
