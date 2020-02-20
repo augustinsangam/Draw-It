@@ -41,9 +41,11 @@ import {
 } from './tool/color/color-panel/color-picker-item/color-picker-item.component';
 import {
   AerosolLogicComponent
+// tslint:disable-next-line: max-line-length
 } from './tool/drawing-instruments/aerosol/aerosol-logic/aerosol-logic.component';
 import {
   AerosolPanelComponent
+// tslint:disable-next-line: max-line-length
 } from './tool/drawing-instruments/aerosol/aerosol-panel/aerosol-panel.component';
 import {
   BrushLogicComponent

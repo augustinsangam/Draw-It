@@ -40,11 +40,14 @@ export class Zone {
       offsetX -= parseInt(result[1], 10);
       offsetY -= parseInt(result[2], 10);
     }
+    const fill = element.getAttribute('fill');
     for (let x = this.left; x <= this.right; x += 3) {
       for (let y = this.top; y <= this.bottom; y += 3) {
         point.x = x + offsetX;
         point.y = y + offsetY;
-        if (element.isPointInStroke(point)) {
+        const pointMatch = element.isPointInStroke(point) ||
+          (fill !== null && fill !== 'none' && element.isPointInFill(point));
+        if (pointMatch) {
           return true;
         }
       }
