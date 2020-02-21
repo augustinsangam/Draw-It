@@ -247,15 +247,23 @@ export class AppComponent implements AfterViewInit {
       dialogOptions,
     );
     this.dialogRefs.galery.disableClose = false;
-    this.dialogRefs.galery.afterClosed().subscribe(() => {
+    this.dialogRefs.galery.afterClosed().subscribe((option) => {
       this.shortcutHanler.activateAll();
-      this.closeGaleryDialog(fromHome);
+      this.closeGaleryDialog(fromHome, option);
     });
   }
 
-  private closeGaleryDialog(fromHome: boolean): void {
+  private closeGaleryDialog(
+      fromHome: boolean,
+      option: SVGSVGElement | undefined): void {
     if (fromHome) {
-      this.openHomeDialog();
+      if (!!option) {
+        this.loadDraw(option);
+      } else {
+        this.openHomeDialog();
+      }
+    } else if (!!option) {
+      this.loadDraw(option);
     }
   }
 
@@ -270,5 +278,25 @@ export class AppComponent implements AfterViewInit {
     this.toolSelectorService.set(Tool.Pencil);
     // Deuxième fois juste pour fermer le panneau latéral
     this.toolSelectorService.set(Tool.Pencil);
+  }
+
+  loadDraw(svg: SVGSVGElement) {
+    this.svgService.instance.nativeElement.innerHTML = '';
+    const svgWidth = svg.getAttribute('width');
+    const svgHeight = svg.getAttribute('height');
+    const svgBackground = svg.getAttribute('style');
+    const svgChildrens = Array.from(svg.childNodes);
+
+    this.svgService.instance.nativeElement.setAttribute(
+      'width', svgWidth as string);
+    this.svgService.instance.nativeElement.setAttribute(
+      'height', svgHeight as string);
+    this.svgService.instance.nativeElement.setAttribute(
+      'style', svgBackground as string);
+
+    for (const child of svgChildrens) {
+      this.svgService.instance.nativeElement.appendChild(child);
+    }
+    this.drawInProgress = true;
   }
 }

@@ -1,7 +1,7 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import {
   AfterViewInit, Component, ElementRef, Inject,
-  Renderer2, ViewChild } from '@angular/core';
+  Optional, Renderer2, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import {
@@ -37,7 +37,7 @@ export interface GaleryDraw {
   id: number | null | undefined;
   tags: string[] | null | undefined;
   // TODO: trouver un type different au possible.
-  image: string;
+  svg: SVGSVGElement;
 }
 
 @Component({
@@ -79,6 +79,7 @@ export class GaleryComponent implements AfterViewInit {
     private communicationService: CommunicationService,
     private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Optional() public dialogRef: MatDialogRef<GaleryComponent>,
     private renderer: Renderer2
   ) {
     this.galeryDrawTable = new Array<GaleryDraw>();
@@ -90,91 +91,38 @@ export class GaleryComponent implements AfterViewInit {
       map(tag => tag ? this._filter(tag) : this._filter2()));
 
     this.communicationService.getAll().then(fbbb => {
-      const draws = DrawsT.getRoot(fbbb);
-      const drawsLenght = draws.drawsLength();
-      for (let i = 0; i < drawsLenght; i++) {
-        // const name = draws.draws(i).name;
-        if (!!draws.draws(i)) {
-          let drawsTagsLenght: number;
-          const drawTagsTable: string[] = [];
-
-          // FIXME: Faire fonctionner avec la regle lint.
-          // tslint:disable: no-non-null-assertion
-          if (!!draws.draws(i)!.tagsLength()) {
-            drawsTagsLenght = draws.draws(i)!.tagsLength();
-
-            for (let j = 0; j < drawsTagsLenght; j++) {
-              let tag: string;
-
-              if (!!draws.draws(i)!.tags(j)) {
-                tag = draws.draws(i)!.tags(j);
-
-                drawTagsTable.push(tag);
-
-                if (this.allTags.indexOf(tag) === -1) {
-                  this.allTags.push(tag);
-                }
-              }
-            }
-          }
-          if (!!draws.draws(i)!.name() &&
-            !!draws.draws(i)!.id()) {
-            const newName = draws.draws(i)!.name();
-            const newId = draws.draws(i)!.id();
-
-            // const newImage = require(
-            //   '../../../assets/galerytemps' + newId + '.png')
-
-            let newImage: any;
-            fetch(encodeURI(
-              '../../../assets/galerytemps/' + newId + '.txt'))
-              .then(res => res.text())
-              .then(text => newImage = text);
-
-            const newGaleryDraw: GaleryDraw = {
-              name: newName,
-              id: newId,
-              tags: drawTagsTable,
-              image: newImage
-            };
-
-            this.galeryDrawTable.push(newGaleryDraw);
-          }
-        }
-      }
+      this.createGaleryDrawsTable(fbbb);
     });
-
+    // TEMPORAIRE
     let newTempsImage: any;
     fetch(encodeURI(
       '../../assets/galerytemps/1.txt'))
       .then(res => res.text())
-      .then(svg => {
+      .then(text => {
         const div = this.renderer.createElement('div') as HTMLElement;
-        this.renderer.setProperty(div, 'innerHTML', svg);
-        // this.renderer.
-        console.log(div);
+        this.renderer.setProperty(div, 'innerHTML', text);
         this.svg = div.children.item(0) as SVGSVGElement;
 
-        newTempsImage = svg;
+        newTempsImage = this.svg;
         const newTempDraw1: GaleryDraw = {
           name: 'test 1',
           id: 0,
           tags: ['Lemon', 'Apple'],
-          image: newTempsImage,
+          svg: newTempsImage,
         }
         this.galeryDrawTable.push(newTempDraw1);
         const newTempDraw2: GaleryDraw = {
           name: 'test 2',
           id: 1,
           tags: ['Lemon', 'Lime'],
-          image: newTempsImage,
+          svg: newTempsImage,
         }
         this.galeryDrawTable.push(newTempDraw2);
         const newTempDraw3: GaleryDraw = {
           name: 'test 3 nom beaucoup trop long sa mere',
           id: 2,
           tags: ['Orange', 'Strawberry', 'truc1', 'truc2', 'truc3'],
-          image: newTempsImage,
+          svg: newTempsImage,
         }
         this.galeryDrawTable.push(newTempDraw3);
         this.filteredGaleryDrawTable = this.galeryDrawTable;
@@ -200,10 +148,60 @@ export class GaleryComponent implements AfterViewInit {
       });
   }
 
-  ngAfterViewInit() {
-    console.log(this.content);
-    console.log(document.querySelectorAll('.photo'));
+  createGaleryDrawsTable(fbbb: flatbuffers.ByteBuffer): void {
+    const draws = DrawsT.getRoot(fbbb);
+    const drawsLenght = draws.drawsLength();
+    for (let i = 0; i < drawsLenght; i++) {
+      // const name = draws.draws(i).name;
+      if (!!draws.draws(i)) {
+        let drawsTagsLenght: number;
+        const drawTagsTable: string[] = [];
+
+        // FIXME: Faire fonctionner avec la regle lint.
+        // tslint:disable: no-non-null-assertion
+        if (!!draws.draws(i)!.tagsLength()) {
+          drawsTagsLenght = draws.draws(i)!.tagsLength();
+
+          for (let j = 0; j < drawsTagsLenght; j++) {
+            let tag: string;
+
+            if (!!draws.draws(i)!.tags(j)) {
+              tag = draws.draws(i)!.tags(j);
+
+              drawTagsTable.push(tag);
+
+              if (this.allTags.indexOf(tag) === -1) {
+                this.allTags.push(tag);
+              }
+            }
+          }
+        }
+        if (!!draws.draws(i)!.name() &&
+          !!draws.draws(i)!.id() &&
+          !!draws.draws(i)!.svg()) {
+
+          const newName = draws.draws(i)!.name();
+          const newId = draws.draws(i)!.id();
+          const newImage = draws.draws(i)!.svg() as SVGSVGElement;
+
+          const newGaleryDraw: GaleryDraw = {
+            name: newName,
+            id: newId,
+            tags: drawTagsTable,
+            svg: newImage
+          };
+
+          this.galeryDrawTable.push(newGaleryDraw);
+        }
+      }
+}
   }
+
+  ngAfterViewInit() {
+    // console.log(this.content);
+    // console.log(document.querySelectorAll('.photo'));
+  }
+
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
@@ -270,7 +268,7 @@ export class GaleryComponent implements AfterViewInit {
   }
 
   private _filter2() {
-    return this.allTags.filter(tag => this.tags.indexOf(tag) === -1);
+    return this.allTags.filter((tag) => this.tags.indexOf(tag) === -1);
   }
 
   protected deleteDraw(id: number) {
@@ -295,7 +293,7 @@ export class GaleryComponent implements AfterViewInit {
       this.dialogRefs.load = this.dialog.open(ConfirmationDialogComponent);
       this.dialogRefs.load.disableClose = true;
       this.dialogRefs.load.afterClosed().subscribe(
-        result => this.loadDrawHandler(result, id));
+        (result) => this.loadDrawHandler(result, id));
     } else {
       this.loadDrawHandler(true, id);
     }
@@ -303,6 +301,13 @@ export class GaleryComponent implements AfterViewInit {
 
   private loadDrawHandler = (result: boolean, id: number) => {
     if (result) {
+      const draw = this.galeryDrawTable.filter((element) => element.id === id);
+      const svg = draw[0].svg;
+      // let svg: SVGSVGElement;
+      // for (const draw of draws) {
+      //   svg = draw.svg;
+      // }
+      this.dialogRef.close(svg);
       // TODO creer le dessin a partir du svg du dessin avec l'id
       console.log('creer dessin ' + id);
     } else {

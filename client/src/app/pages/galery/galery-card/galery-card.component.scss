@@ -8,9 +8,12 @@
     border-radius: 20px;
 }
 
-.card-header {
-    max-height: 36px;
-    overflow-y: hidden;
+
+.mat-card-title {
+    max-width: 268px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .svg-wrapper {
