@@ -74,6 +74,7 @@ import {
 import {
   RectanglePanelComponent
 } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
+import { GaleryCardComponent } from './pages/galery/galery-card/galery-card.component';
 
 @NgModule({
   declarations: [
@@ -103,6 +104,7 @@ import {
     RectanglePanelComponent,
     SidebarComponent,
     SvgComponent,
+    GaleryCardComponent,
   ],
   imports: [
     BrowserAnimationsModule,

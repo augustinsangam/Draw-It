@@ -1,15 +1,19 @@
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {Component, ElementRef, Inject, ViewChild} from '@angular/core';
-import {FormControl} from '@angular/forms';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import {
+  AfterViewInit, Component, ElementRef, Inject,
+  Renderer2, ViewChild } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
-import {MatAutocomplete,
-   MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
-import {MatChipInputEvent} from '@angular/material/chips';
-import {Observable} from 'rxjs';
+import {
+  MatAutocomplete,
+  MatAutocompleteSelectedEvent
+} from '@angular/material/autocomplete';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import {
-    CommunicationService
-  } from 'src/app/communication/communication.service';
+  CommunicationService
+} from 'src/app/communication/communication.service';
 import { Draws as DrawsT } from 'src/app/communication/data_generated';
 import { DialogData } from '../home/home.component';
 import {
@@ -41,18 +45,19 @@ export interface GaleryDraw {
   templateUrl: './galery.component.html',
   styleUrls: ['./galery.component.scss']
 })
-export class GaleryComponent {
+export class GaleryComponent implements AfterViewInit {
   // visible = true;
   selectable = true;
   removable = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
   tagCtrl = new FormControl();
   filteredTags: Observable<string[]>;
-  tags: string[] = ['Lemon'];
-  allTags: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
+  tags: string[]; // = ['Lemon'];
+  allTags: string[]; // = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
   galeryDrawTable: GaleryDraw[];
   filteredGaleryDrawTable: GaleryDraw[];
   private dialogRefs: DialogRefs;
+  svg: SVGSVGElement;
   // private drawInProgress = true;
 
   @ViewChild('tagInput', {
@@ -66,16 +71,23 @@ export class GaleryComponent {
   })
   matAutocomplete: MatAutocomplete;
 
+  @ViewChild('content', {
+    static: false
+  }) content: ElementRef<HTMLElement>;
+
   constructor(
     private communicationService: CommunicationService,
     private dialog: MatDialog,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private renderer: Renderer2
   ) {
     this.galeryDrawTable = new Array<GaleryDraw>();
     this.filteredGaleryDrawTable = new Array<GaleryDraw>();
+    this.allTags = new Array<string>();
+    this.tags = new Array<string>();
     this.filteredTags = this.tagCtrl.valueChanges.pipe(
-        startWith(null),
-        map(tag => tag ? this._filter(tag) : this._filter2()));
+      startWith(null),
+      map(tag => tag ? this._filter(tag) : this._filter2()));
 
     this.communicationService.getAll().then(fbbb => {
       const draws = DrawsT.getRoot(fbbb);
@@ -105,9 +117,8 @@ export class GaleryComponent {
               }
             }
           }
-
           if (!!draws.draws(i)!.name() &&
-              !!draws.draws(i)!.id()) {
+            !!draws.draws(i)!.id()) {
             const newName = draws.draws(i)!.name();
             const newId = draws.draws(i)!.id();
 
@@ -117,8 +128,8 @@ export class GaleryComponent {
             let newImage: any;
             fetch(encodeURI(
               '../../../assets/galerytemps/' + newId + '.txt'))
-            .then(res => res.text())
-            .then(text => newImage = text);
+              .then(res => res.text())
+              .then(text => newImage = text);
 
             const newGaleryDraw: GaleryDraw = {
               name: newName,
@@ -132,45 +143,67 @@ export class GaleryComponent {
         }
       }
     });
+
     let newTempsImage: any;
     fetch(encodeURI(
-      '../../assets/galerytemps/0.txt'))
-    .then(res => res.text())
-    .then(text => {
-      newTempsImage = text
-      const newTempDraw1: GaleryDraw = {
-        name: 'test 1',
-        id: 0,
-        tags: ['Lemon', 'Apple'],
-        image: newTempsImage,
-      }
-      this.galeryDrawTable.push(newTempDraw1);
-      const newTempDraw2: GaleryDraw = {
-        name: 'test 2',
-        id: 1,
-        tags: ['Lemon', 'Lime'],
-        image: newTempsImage,
-      }
-      this.galeryDrawTable.push(newTempDraw2);
-      const newTempDraw3: GaleryDraw = {
-        name: 'test 3',
-        id: 2,
-        tags: ['Orange', 'Strawberry'],
-        image: newTempsImage,
-      }
-      this.galeryDrawTable.push(newTempDraw3);
-      this.filteredGaleryDrawTable = this.galeryDrawTable;
-      this.dialogRefs = {
-        delete: (
-          undefined as unknown
+      '../../assets/galerytemps/1.txt'))
+      .then(res => res.text())
+      .then(svg => {
+        const div = this.renderer.createElement('div') as HTMLElement;
+        this.renderer.setProperty(div, 'innerHTML', svg);
+        // this.renderer.
+        console.log(div);
+        this.svg = div.children.item(0) as SVGSVGElement;
+
+        newTempsImage = svg;
+        const newTempDraw1: GaleryDraw = {
+          name: 'test 1',
+          id: 0,
+          tags: ['Lemon', 'Apple'],
+          image: newTempsImage,
+        }
+        this.galeryDrawTable.push(newTempDraw1);
+        const newTempDraw2: GaleryDraw = {
+          name: 'test 2',
+          id: 1,
+          tags: ['Lemon', 'Lime'],
+          image: newTempsImage,
+        }
+        this.galeryDrawTable.push(newTempDraw2);
+        const newTempDraw3: GaleryDraw = {
+          name: 'test 3 nom beaucoup trop long sa mere',
+          id: 2,
+          tags: ['Orange', 'Strawberry', 'truc1', 'truc2', 'truc3'],
+          image: newTempsImage,
+        }
+        this.galeryDrawTable.push(newTempDraw3);
+        this.filteredGaleryDrawTable = this.galeryDrawTable;
+        this.dialogRefs = {
+          delete: (
+            undefined as unknown
           ) as MatDialogRef<DeleteConfirmationDialogComponent>,
-        load: (undefined as unknown) as MatDialogRef<
-          ConfirmationDialogComponent
-        >
-      };
-  });
+          load: (undefined as unknown) as MatDialogRef<
+            ConfirmationDialogComponent
+          >
+        };
+
+        for (const draw of this.galeryDrawTable) {
+          if (!!draw.tags) {
+            for (const tag of draw.tags) {
+              if (this.allTags.indexOf(tag) === -1) {
+                this.allTags.push(tag);
+              }
+            }
+          }
+        }
+        this.tagCtrl.updateValueAndValidity();
+      });
   }
 
+  ngAfterViewInit() {
+    console.log(this.content);
+    console.log(document.querySelectorAll('.photo'));
+  }
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
@@ -215,18 +248,25 @@ export class GaleryComponent {
         if (!!elem.tags && elem.tags.indexOf(tag) === -1) {
           keep = false;
         }
+        // if (!!elem.tags && elem.tags.indexOf(tag) !== -1) {
+        //   keep = true;
+        //   break;
+        // } else {
+        //   keep = false;
+        // }
       }
       if (keep) {
         this.filteredGaleryDrawTable.push(elem);
       }
     }
+    // console.log(this.filteredGaleryDrawTable.length === 0);
   }
 
   private _filter(value: string): string[] {
     return this.allTags.filter(
       tag => tag.toLowerCase().indexOf(value.toLowerCase()) === 0 &&
-      this.tags.indexOf(tag) === -1
-      );
+        this.tags.indexOf(tag) === -1
+    );
   }
 
   private _filter2() {
@@ -237,13 +277,14 @@ export class GaleryComponent {
     this.dialogRefs.delete = this.dialog.open(
       DeleteConfirmationDialogComponent);
     this.dialogRefs.delete.disableClose = true;
-    this.dialogRefs.delete.afterClosed().subscribe(this.deleteCloseHandler);
+    this.dialogRefs.delete.afterClosed().subscribe(
+      result => this.deleteCloseHandler(result, id));
   }
 
-  private deleteCloseHandler = (result: boolean) => {
+  private deleteCloseHandler = (result: boolean, id: number) => {
     if (result) {
       // TODO call delete on the elem
-      console.log('delete')
+      console.log('delete ' + id);
     } else {
       this.dialogRefs.delete.close();
     }
@@ -253,16 +294,17 @@ export class GaleryComponent {
     if (this.data.drawInProgress) {
       this.dialogRefs.load = this.dialog.open(ConfirmationDialogComponent);
       this.dialogRefs.load.disableClose = true;
-      this.dialogRefs.load.afterClosed().subscribe(this.loadDrawHandler);
+      this.dialogRefs.load.afterClosed().subscribe(
+        result => this.loadDrawHandler(result, id));
     } else {
-      this.loadDrawHandler(true);
+      this.loadDrawHandler(true, id);
     }
   }
 
-  private loadDrawHandler = (result: boolean) => {
+  private loadDrawHandler = (result: boolean, id: number) => {
     if (result) {
       // TODO creer le dessin a partir du svg du dessin avec l'id
-      console.log('creer dessin')
+      console.log('creer dessin ' + id);
     } else {
       this.dialogRefs.load.close();
     }
