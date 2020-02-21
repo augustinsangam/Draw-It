@@ -1,1 +1,29 @@
-<p>grid-panel works!</p>
+<h1>Grille</h1>
+<form [formGroup]="gridForm">
+  <p>Taille des carrés</p>
+  <div class="squareSize">
+    <mat-slider min=5 max=200 step=1
+                (input)="onSquareSizeChange()"
+                (change)="onSquareSizeChange()"
+                formControlName="squareSizeSlider"
+                #squareSizeSlider>
+    </mat-slider>
+    <mat-form-field>
+      <input readonly matInput formControlName="squareSizeFormField" />
+      <span matSuffix>px</span>
+    </mat-form-field>
+  </div>
+  <br>
+  <p>Opacité</p>
+  <div class="opacity">
+    <mat-slider min=0.10 max=1.0 step="0.01"
+                (input)="onOpacityChange()"
+                (change)="onOpacityChange()"
+                formControlName="opacitySlider"
+                #opacitySlider>
+    </mat-slider>
+    <mat-form-field>
+      <input readonly matInput formControlName="opacityFormField" />
+    </mat-form-field>
+  </div>
+</form>

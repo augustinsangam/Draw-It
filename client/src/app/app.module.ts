@@ -220,7 +220,8 @@ import {
     RectanglePanelComponent,
     SelectionLogicComponent,
     SelectionPanelComponent,
-
+    GridLogicComponent,
+    GridPanelComponent
   ],
   bootstrap: [
     AppComponent,
