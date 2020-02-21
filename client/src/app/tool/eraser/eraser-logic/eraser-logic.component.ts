@@ -1,13 +1,25 @@
 import { Component, OnDestroy, Renderer2 } from '@angular/core';
 import { ColorService } from '../../color/color.service';
+import { MathService } from '../../mathematics/tool.math-service.service';
 import { Offset } from '../../selection/Offset';
 import { Point } from '../../selection/Point';
 import { MouseTracking } from '../../selection/selection-logic/MouseTracking';
 import {
   MouseEventCallBack
 } from '../../selection/selection-logic/SelectionLogicBase';
+import {
+  BackGroundProperties, StrokeProperties
+} from '../../shape/common/AbstractShape';
+import { Rectangle } from '../../shape/common/Rectangle';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { EraserService } from '../eraser.service';
+
+const CONSTANTS = {
+  MAX_RED: 150,
+  MIN_GREEN: 100,
+  MIN_BLUE: 100,
+  FACTOR: 50
+}
 
 @Component({
   selector: 'app-eraser-logic',
@@ -30,9 +42,9 @@ export class EraserLogicComponent
     this.allListeners = [];
     const fakePoint = new Point(0, 0);
     this.mouse = {
-        startPoint: fakePoint, currentPoint: fakePoint, endPoint: fakePoint,
-        mouseIsDown: false, selectedElement: ElementSelectedType.NOTHING,
-        onDrag: false
+      startPoint: fakePoint, currentPoint: fakePoint, endPoint: fakePoint,
+      mouseIsDown: false, selectedElement: ElementSelectedType.NOTHING,
+      onDrag: false
     };
     this.markedElements = new Map();
   }
@@ -73,6 +85,7 @@ export class EraserLogicComponent
     }],
     ['mouseleave', () => {
       this.deleteEraser();
+      this.mouse.mouseIsDown = false;
     }]
 
   ]);
@@ -80,12 +93,12 @@ export class EraserLogicComponent
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
     ['mousedown', 'mousemove', 'mouseup', 'click', 'mouseleave']
-    .forEach((event: string) => {
-      this.allListeners.push(
-        this.renderer.listen(this.svgElRef.nativeElement, event,
-          this.handlers.get(event) as MouseEventCallBack)
-      );
-    });
+      .forEach((event: string) => {
+        this.allListeners.push(
+          this.renderer.listen(this.svgElRef.nativeElement, event,
+            this.handlers.get(event) as MouseEventCallBack)
+        );
+      });
     this.renderer.setStyle(this.svgElRef.nativeElement, 'cursor', 'none');
   }
 
@@ -95,16 +108,19 @@ export class EraserLogicComponent
   }
 
   private drawEraser(): void {
-    const rec = this.eraser;
-    const [p1, p2] = this.getCorners();
-    rec.setAttribute('x', p1.x.toString());
-    rec.setAttribute('y', p1.y.toString());
-    rec.setAttribute('width', (p2.x - p1.x).toString());
-    rec.setAttribute('height', (p2.y - p1.y).toString());
-    rec.setAttribute('fill', 'white');
-    rec.setAttribute('stroke', 'rgba(255, 0, 0, 0.7)');
-    rec.setAttribute('stroke-width', '2');
-    this.renderer.appendChild(this.svgElRef.nativeElement, rec);
+    const [startPoint, endPoint] = this.getCorners();
+    const rectangleObject =
+      new Rectangle(this.renderer, this.eraser, new MathService());
+    rectangleObject.setParameters(BackGroundProperties.None,
+      StrokeProperties.Filled);
+    rectangleObject.dragRectangle(startPoint, endPoint);
+    rectangleObject.setCss({
+      strokeWidth: '2',
+      strokeColor: 'rgba(255, 0, 0, 0.7)',
+      fillColor: 'none',
+      opacity: '0'
+    });
+    this.renderer.appendChild(this.svgElRef.nativeElement, this.eraser);
   }
 
   private deleteEraser(): void {
@@ -124,7 +140,6 @@ export class EraserLogicComponent
         }
       }
     }
-
     this.markedElements.clear();
     selectedElements.forEach((element: SVGElement) => {
       if (!!element) {
@@ -133,8 +148,9 @@ export class EraserLogicComponent
         if (stroke !== null && stroke !== 'none') {
           const rgb = this.colorService.rgbFormRgba(stroke);
           // Si on a beaucoup de rouge mais pas trop les autres couleurs
-          if (rgb.r > 150 && rgb.g < 100 && rgb.b < 100 ) {
-            rgb.r = rgb.r - 50;
+          if (rgb.r > CONSTANTS.MAX_RED && rgb.g < CONSTANTS.MIN_GREEN
+            && rgb.b < CONSTANTS.MIN_BLUE) {
+            rgb.r = rgb.r - CONSTANTS.FACTOR;
             strokeModified = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
           }
         }
@@ -147,12 +163,14 @@ export class EraserLogicComponent
 
   private deleteAll(elements: Set<SVGElement>) {
     elements.forEach((element) => {
-      this.renderer.removeChild(this.svgElRef.nativeElement, element);
-    })
+      if (!!element) {
+        this.renderer.removeChild(this.svgElRef.nativeElement, element);
+      }
+    });
   }
 
   private restoreMarkedElements(): void {
-    for (const entry of  this.markedElements) {
+    for (const entry of this.markedElements) {
       entry[0].setAttribute('stroke', entry[1]);
     }
   }
