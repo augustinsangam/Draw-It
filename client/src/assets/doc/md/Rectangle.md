@@ -2,7 +2,7 @@ L’outil **Rectangle** est l’outil de traçage de forme le plus simple, et so
 
 <img src="../../assets/doc/imgs/outilRectangle.png" class="doc-fig" title="Exemple de rectangle" alt="image outil rectangle" width="100%">
 
-Pour commencer à tracer un rectangle, cliquez sur l’icône ![icône outil rectangle](../../assets/rectangle.png), ou appuyez sur la touche **`1`** de votre clavier. Placez votre curseur sur la zone de dessin et effectuez un cliqué-glissé afin de définir les extrémités diagonales de votre rectangle. Pendant que vous pressez le bouton gauche de votre souris, vous pouvez presser la touche `SHIFT` de votre clavier afin de transformer votre rectangle en carré. Relâchez la touche `SHIFT` pour revenir à un rectangle. 
+Pour commencer à tracer un rectangle, cliquez sur l’icône ![icône outil rectangle](../../sidebar-icons/assets/rectangle.png), ou appuyez sur la touche **`1`** de votre clavier. Placez votre curseur sur la zone de dessin et effectuez un cliqué-glissé afin de définir les extrémités diagonales de votre rectangle. Pendant que vous pressez le bouton gauche de votre souris, vous pouvez presser la touche `SHIFT` de votre clavier afin de transformer votre rectangle en carré. Relâchez la touche `SHIFT` pour revenir à un rectangle. 
 
 Plusieurs options sont disponibles dans le panneau de configuration : 
 *   **Remplissage** : active ou désactive le remplissage du rectangle par la couleur primaire.

@@ -4,7 +4,7 @@ La **palette de couleur** permet de choisir les couleurs utilisées par les diff
 
 Vous pouvez choisir une couleur primaire ainsi qu’une couleur secondaire. La couleur primaire sera utilisée pour dessiner, la couleur secondaire sera utilisée pour les contours lorsque l’outil sélectionné présentera cette option.
 
-L’outil couleur peut être accédé en cliquant sur l’icône ![Icône palette de couleurs](../../assets/color-palette.png). Pour choisir une couleur, cliquez dans la palette prévue à cet effet. Vous pouvez ajuster la transparence de la couleur en indiquant une valeur en pourcentages dans le champ `A`.
+L’outil couleur peut être accédé depuis tous les outils. Pour choisir une couleur, cliquez dans la palette prévue à cet effet. Vous pouvez ajuster la transparence de la couleur en indiquant une valeur en pourcentages dans le champ `A`.
 
 Vous pouvez également sélectionner une couleur manuellement en entrant des valeurs `RGB` dans les champs prévus à cet effet. 
 
