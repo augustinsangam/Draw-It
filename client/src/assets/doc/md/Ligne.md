@@ -4,7 +4,9 @@ L’outil **Ligne** permet de tracer un ou plusieurs segments connectés entre e
  
  Vous pouvez également effectuer un simple clic pour déterminer le nouveau point de départ de votre ligne. Vous êtes libres de tracer une ligne de la longueur que vous voulez. Double-cliquez simplement pour terminer la ligne. 
 
-<img src="../../assets/doc/imgs/doc-outilLigne.png" class="doc-fig" title="Exemple d'utilisation de l'outil Ligne" alt="image outil ligne" width="100%">
+<video width="70%" height="70%" class="doc-fig" autoplay loop>
+    <source src="../../assets/ligne_trctd.webm" type="video/webm">
+</video>
 
 En maintenant la touche **`SHIFT`** de votre clavier lors du traçage d’une ligne, vous activez un magnétisme attirant l’aperçu de la ligne selon des angles de 45°.
 
