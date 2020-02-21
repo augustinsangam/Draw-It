@@ -115,8 +115,9 @@ export class EraserLogicComponent
 
   private markElementsInZone(x: number, y: number): Set<SVGElement> {
     const selectedElements = new Set<SVGElement>();
-    for (let i = x; i <= x; i += 3) {
-      for (let j = y; j <= y; j += 3) {
+    const halfSize = this.service.size / 2;
+    for (let i = x - halfSize; i <= x + halfSize; i += 5) {
+      for (let j = y - halfSize; j <= y + halfSize; j += 5) {
         const element = document.elementFromPoint(i, j);
         if (element !== this.svgElRef.nativeElement) {
           selectedElements.add(element as SVGElement);
@@ -126,18 +127,20 @@ export class EraserLogicComponent
 
     this.markedElements.clear();
     selectedElements.forEach((element: SVGElement) => {
-      const stroke = element.getAttribute('stroke');
-      let strokeModified = 'rgba(255, 0, 0, 1)';
-      if (stroke !== null && stroke !== 'none') {
-        const rgb = this.colorService.rgbFormRgba(stroke);
-        // Si on a beaucoup de rouge mais pas trop les autres couleurs
-        if (rgb.r > 150 && rgb.g < 100 && rgb.b < 100 ) {
-          rgb.r = rgb.r - 50;
-          strokeModified = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
+      if (!!element) {
+        const stroke = element.getAttribute('stroke');
+        let strokeModified = 'rgba(255, 0, 0, 1)';
+        if (stroke !== null && stroke !== 'none') {
+          const rgb = this.colorService.rgbFormRgba(stroke);
+          // Si on a beaucoup de rouge mais pas trop les autres couleurs
+          if (rgb.r > 150 && rgb.g < 100 && rgb.b < 100 ) {
+            rgb.r = rgb.r - 50;
+            strokeModified = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
+          }
         }
+        this.markedElements.set(element, stroke as string);
+        element.setAttribute('stroke', strokeModified);
       }
-      this.markedElements.set(element, stroke as string);
-      element.setAttribute('stroke', strokeModified);
     });
     return selectedElements;
   }
