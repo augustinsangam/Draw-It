@@ -58,6 +58,12 @@ export class PipetteLogicComponent extends ToolLogicDirective
       onRightClick
     ];
 
+    this.renderer.setStyle(
+      this.svgElRef.nativeElement,
+      'cursor',
+      'crosshair'
+    );
+
     this.backgroundColorOnInit = this.colorService.backgroundColor;
     this.svgElRef.nativeElement.style.cursor = 'crosshair';
 

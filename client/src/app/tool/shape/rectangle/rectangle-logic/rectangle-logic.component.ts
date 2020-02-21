@@ -94,6 +94,12 @@ export class RectangleLogicComponent extends ToolLogicDirective
       onMouseMove,
       onMouseUp
     ];
+
+    this.renderer.setStyle(
+      this.svgElRef.nativeElement,
+      'cursor',
+      'crosshair'
+    );
   }
 
   ngOnDestroy() {

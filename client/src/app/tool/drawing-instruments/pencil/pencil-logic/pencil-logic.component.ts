@@ -22,6 +22,11 @@ export class PencilLogicComponent extends PencilBrushCommon
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
+    this.renderer.setStyle(
+      this.svgElRef.nativeElement,
+      'cursor',
+      'crosshair'
+    );
   }
 
   // tslint:disable-next-line:use-lifecycle-interface
