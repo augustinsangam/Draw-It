@@ -51,7 +51,7 @@ export class RectanglePanelComponent
     });
   }
 
-  ngAfterViewChecked() {
+  ngAfterViewChecked(): void {
     this.fillOptionRef.change.subscribe(($event: MatSlideToggleChange) => {
       this.service.fillOption = ($event.checked);
       if (!$event.checked) {

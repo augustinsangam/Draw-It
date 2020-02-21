@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +9,7 @@ export class ColorService {
   primaryColor: string;
   secondaryColor: string;
   backgroundColor: string;
+  change: Subject<null>;
 
   constructor() {
     this.recentColors = [
@@ -26,6 +28,7 @@ export class ColorService {
     this.primaryColor = 'rgba(230, 25, 75, 1)';
     this.secondaryColor = 'rgba(240, 50, 230, 1)';
     this.backgroundColor = 'rgba(255, 255, 255, 1)';
+    this.change = new Subject<null>();
   }
 
   promote(index: number) {
@@ -39,11 +42,13 @@ export class ColorService {
     for (let i = 0; i < this.recentColors.length; ++i) {
       if (this.rgbEqual(rgbToMatch, this.rgbFormRgba(this.recentColors[i]))) {
         this.promote(i);
+        this.change.next();
         return;
       }
     }
     this.recentColors.unshift(color);
     this.recentColors.pop();
+    this.change.next();
   }
 
   selectPrimaryColor(color: string) {

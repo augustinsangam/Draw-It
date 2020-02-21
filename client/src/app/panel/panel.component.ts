@@ -10,22 +10,12 @@ import {
 } from '@angular/core';
 
 import {
-  BrushPanelComponent
-} from '../tool/drawing-instruments/brush/brush-panel/brush-panel.component';
-import {
-  PencilPanelComponent
-} from '../tool/drawing-instruments/pencil/pencil-panel/pencil-panel.component';
-import {
-  LinePanelComponent
-} from '../tool/shape/line/line-panel/line-panel.component';
-import {
-  RectanglePanelComponent
-} from '../tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
-import {
   ToolPanelDirective } from '../tool/tool-panel/tool-panel.directive';
 import {
   ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
+
+import * as Tools from '../tool/tools';
 
 @Component({
   selector: 'app-panel',
@@ -49,11 +39,10 @@ export class PanelComponent implements OnInit {
     private readonly componentFactoryResolver: ComponentFactoryResolver,
     private readonly toolSelectorService: ToolSelectorService
   ) {
-    this.components = new Array(Tool._Len);
-    this.components[Tool.Brush] = BrushPanelComponent;
-    this.components[Tool.Line] = LinePanelComponent;
-    this.components[Tool.Pencil] = PencilPanelComponent;
-    this.components[Tool.Rectangle] = RectanglePanelComponent;
+    this.components = new Array(Tool._Len)
+    for ( const entry of Tools.TOOL_MANAGER ) {
+      this.components[entry[0]] = entry[1][0];
+    }
     this.childWidth = 0;
     // Panel is collapsed by default
     this.hostWidth = 0;

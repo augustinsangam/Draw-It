@@ -3,7 +3,7 @@
   <div id="informations">
     <h1>Nouveau dessin</h1>
   </div>
-  <form id="form" [formGroup]="form" (keyup.enter)="onSubmit()">
+  <form id="form" [formGroup]="form">
     <h4>Dimensions</h4>
     <mat-form-field appearance="outline">
       <mat-label>Largeur</mat-label>
@@ -35,7 +35,9 @@
               formControlGroupName="form"
               readonly>
               <span matSuffix>
-                <app-color-picker-item #palette></app-color-picker-item>
+                <a>
+                  <div class="color-preview" #palette></div>
+                </a>
               </span>
               <mat-hint id="colorValid">
                 Utiliser la palette pour changer de couleur
@@ -43,11 +45,7 @@
     </mat-form-field>
     <button mat-raised-button
             color="primary"
-            type="submit"
             (click)="onSubmit()"
-            cdkFocusInitial
-            cdkFocusRegionStart
-            cdkFocusRegionEnd
             [disabled]="form.invalid"
             #button>
             Créer

@@ -1,0 +1,40 @@
+:host {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  background-color: transparent;
+}
+
+main {
+  text-align: center;
+  background-color: transparent;
+}
+
+img {
+  display: block;
+  margin: auto;
+}
+
+button {
+  display: block;
+  margin: 10px;
+  width: 30vh;
+}
+
+.filterOption{
+  margin-bottom: 7px;
+}
+
+.apercu {
+  border: solid 2px blue;
+  height: 350px;
+  width: 350px;
+}
+
+.col {
+  padding: 20px;
+}
+
+mat-form-field {
+  width: 400px;
+}

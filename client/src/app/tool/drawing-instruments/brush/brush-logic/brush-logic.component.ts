@@ -74,6 +74,7 @@ export class BrushLogicComponent extends PencilBrushCommon {
     element.setAttribute(
       'stroke-width', this.brushService.thickness.toString()
     );
+    element.classList.add(this.brushService.texture);
   }
 
   protected onMouseDown(mouseEv: MouseEvent): void {

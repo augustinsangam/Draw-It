@@ -1,0 +1,25 @@
+image: archlinux
+packages:
+- npm
+- firefox
+- ttf-bitstream-vera
+sources:
+- git@gitlab.com:francafrique/log2990.git
+environment:
+  NG_CLI_ANALYTICS: ci
+secrets:
+- b5d2fe28-6f9c-400d-83ae-0b0456aaf90f
+tasks:
+- pre: |
+   cd log2990
+   npm --prefix=client/ ci 2> /dev/null
+   npm --prefix=server/  i 2> /dev/null
+- lint: |
+   cd log2990
+   npm --prefix=client/ run lint
+   npm --prefix=server/ run lint
+- test: |
+   cd log2990
+   npm --prefix=client/ run coverage -- --no-progress --watch=false --browsers=FirefoxHeadless
+   npm --prefix=server/ run build
+   npm --prefix=server/ run coverage

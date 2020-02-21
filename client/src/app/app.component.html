@@ -1,6 +1,7 @@
-<app-sidebar (documentationEv)="openDocumentationDialog(false)"></app-sidebar>
+<app-sidebar (documentationEvent)="openDocumentationDialog(false)"
+              (exportEvent)="openExportDialog()"></app-sidebar>
 <app-panel></app-panel>
-<main>
+<main id="canvasRef">
   <!-- app-svg is a selector for svg.component.ts -->
   <svg #svg app-svg
     tabindex=0
@@ -10,3 +11,4 @@
     >
   </svg>
 </main>
+
