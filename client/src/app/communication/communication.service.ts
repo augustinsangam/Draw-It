@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Renderer2 } from '@angular/core';
 import { flatbuffers } from 'flatbuffers';
 
 import {
@@ -73,6 +73,34 @@ export class CommunicationService {
     this.fbb.finish(draw);
   }
 
+  decodeElementRecursively(el: ElementT, renderer: Renderer2): SVGElement | null {
+    const name = el.name();
+    if (!!name) {
+      const svgEl: SVGElement = renderer.createElement(name, 'http://www.w3.org/2000/svg');
+      const attrsLen = el.attrsLength();
+      for (let i = 0; i < attrsLen; i++) {
+        const attr = el.attrs(i);
+        if (!!attr) {
+          const k = attr.k(), v = attr.v();
+          // v may be empty, so !!v is not suitable
+          if (!!k && v != null) {
+            svgEl.setAttribute(k, v);
+          }
+        }
+      }
+      const childrenLen = el.childrenLength();
+      for (let i = 0; i < childrenLen; i++) {
+        const child = el.children(i);
+        if (!!child) {
+          renderer.appendChild(svgEl,
+            this.decodeElementRecursively(child, renderer));
+        }
+      }
+      return svgEl;
+    }
+    return null;
+  }
+
   getAll() {
     this.xhr.open('GET', this.host + '/draw', true);
     this.xhr.responseType = 'arraybuffer';
@@ -80,6 +108,7 @@ export class CommunicationService {
       this.xhr.onreadystatechange = () => {
         if (this.xhr.readyState === 4) {
           if (this.xhr.status === StatusCode.OK) {
+            // response type is ArrayBuffer
             resolve(CommunicationService.deserialize(this.xhr.response));
           } else {
             reject(this.xhr.responseText);

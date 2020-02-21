@@ -6,9 +6,10 @@ import {
   ViewChild
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
+import { flatbuffers } from 'flatbuffers';
 
-// import { CommunicationService } from './communication/communication.service';
-// import { Draws as DrawsT } from './communication/data_generated';
+import { CommunicationService } from './communication/communication.service';
+import { Draw, Draws } from './communication/data_generated';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
@@ -75,7 +76,7 @@ export class AppComponent implements AfterViewInit {
 
   constructor(
     public dialog: MatDialog,
-    // private readonly communicationServerice: CommunicationService,
+    private readonly communicationServerice: CommunicationService,
     private readonly toolSelectorService: ToolSelectorService,
     private colorService: ColorService,
     private svgService: SvgService,
@@ -143,21 +144,32 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.svgService.instance = this.svg;
     this.openHomeDialog();
-    // setInterval(() => {
-    //   this.communicationServerice.getAll()
-    //     .then(fbbb => {
-    //       const draws = DrawsT.getRoot(fbbb);
-    //       console.log(draws.drawsLength());
-    //     })
-    //     .catch(() => console.log('OOPS'));
-    //   /*this.communicationServerice.encode(
-    //     'BEST DRAW EVER',
-    //     ['rouge', 'licorne'],
-    //     this.svgService.instance.nativeElement);
-    //   this.communicationServerice.post()
-    //     .then(id => console.log('SUCESS: ' + id))
-    //     .catch(err => console.log('FAIL: ' + err));*/
-    // }, 2000);
+
+    this.communicationServerice.getAll()
+      .then(fbbb => {
+        const draws = Draws.getRoot(fbbb);
+        for (let i = draws.drawBuffersLength(); i--; ) {
+          const drawBuffer = draws.drawBuffers(i);
+          if (!!drawBuffer) {
+            const id = drawBuffer.id();
+            const serializedDraw = drawBuffer.bufArray();
+            if (!!serializedDraw) {
+              const drawFbbb = new flatbuffers.ByteBuffer(serializedDraw);
+              const draw = Draw.getRoot(drawFbbb);
+              const name = draw.name();
+              console.log(`#${id}: ${name}`);
+            }
+          }
+        }
+      })
+      .catch(() => console.log('OOPS'));
+    /*this.communicationServerice.encode(
+      'PEACE N LOVE',
+      ['rouge', 'licorne'],
+      this.svgService.instance.nativeElement);
+    this.communicationServerice.post()
+      .then(id => console.log('SUCESS: ' + id))
+      .catch(err => console.log('FAIL: ' + err));*/
   }
 
   private openHomeDialog(): void {

@@ -13,7 +13,7 @@ class Application {
 	constructor(@inversify.inject(TYPES.Router) router: Router) {
 		this.app = express();
 		this.app.use((req, res, next) => {
-			log(`\x1b[0;32m${req.httpVersion}\x1b[0m`);
+			log(`\x1b[0;32m${req.method}\x1b[0m: ${req.url}`);
 			res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
 			res.header('Access-Control-Allow-Methods', 'GET,POST,PUT');
 			res.header('Access-Control-Allow-Headers', 'Content-Type');

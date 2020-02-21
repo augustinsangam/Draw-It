@@ -4,7 +4,7 @@ import inversify from 'inversify';
 import mongodb from 'mongodb';
 import { log } from 'util';
 
-import { Draw, Draws, Element } from './data_generated';
+import { Draw, DrawBuffer, Draws, Element } from './data_generated';
 import { Database } from './database';
 import { TYPES } from './types';
 
@@ -16,6 +16,11 @@ enum StatusCode {
 	IM_A_TEAPOT = 418,
 }
 
+interface Entry {
+	_id: number;
+	data: mongodb.Binary;
+}
+
 @inversify.injectable()
 class Router {
 	private readonly _router: express.Router;
@@ -25,29 +30,14 @@ class Router {
 		this.router.get('/', this.getHelloWorld());
 		this.router.get('/draw', this.getAll());
 		this.router.post('/draw', this.postData());
-		this.router.put('/draw/:id', this.putData());
+		//this.router.put('/draw/:id', this.putData());
+		//this.router.delete('/draw/:id', this.deleteData());
 		this.router.get('/ping', (_req, res) =>
 			res.sendStatus(StatusCode.NO_CONTENT),
 		);
 		this.router.get('/brew-coffee', (_req, res) =>
 			res.sendStatus(StatusCode.IM_A_TEAPOT),
 		);
-	}
-
-	private static serialize(
-		fbbb: flatbuffers.flatbuffers.ByteBuffer,
-	): Uint8Array {
-		return fbbb.bytes().subarray(fbbb.position(), fbbb.capacity());
-	}
-
-	private static deserialize(
-		data: ArrayBuffer,
-	): flatbuffers.flatbuffers.ByteBuffer {
-		return new flatbuffers.flatbuffers.ByteBuffer(new Uint8Array(data));
-	}
-
-	private static decode(fbbb: flatbuffers.flatbuffers.ByteBuffer): Draw {
-		return Draw.getRoot(fbbb);
 	}
 
 	private static disp(el: Element): void {
@@ -71,67 +61,141 @@ class Router {
 	}
 
 	private getHelloWorld(): express.RequestHandler {
-		return (_req, res, next): void => {
+		return (_req, res): void => {
 			res.send('Hello, world!');
-			console.log(this.db.db?.databaseName);
-			next();
+			this.getAllSerializedDraws()?.then(arr => {
+				console.log(arr[0].data.buffer);
+			});
 		};
 	}
 
 	private getAll(): express.RequestHandler {
-		return (req, res): void => {
+		return (_req, res): void => {
 			const fbb = new flatbuffers.flatbuffers.Builder();
-			const name1 = fbb.createString('Draw1');
-			Draw.start(fbb);
-			Draw.addName(fbb, name1);
-			const draw1 = Draw.end(fbb);
-			const name2 = fbb.createString('Draw2');
-			Draw.start(fbb);
-			Draw.addName(fbb, name2);
-			const draw2 = Draw.end(fbb);
-			const draws = Draws.createDrawsVector(fbb, [draw1, draw2]);
-			const end = Draws.create(fbb, draws);
-			fbb.finish(end);
-			const encoded = fbb.dataBuffer();
-			const serialized = Router.serialize(encoded);
-			res.send(new Buffer(serialized));
+			const serializedDrawsLen = 1; // TODO: Get from DB
+			const drawBufferOffsets = new Array<number>();
+			this.getAllSerializedDraws()?.then(serializedDraws => {
+				for (let i = serializedDraws.length; i--; ) {
+					const serializedDraw = serializedDraws[i];
+					const bufOffset = DrawBuffer.createBufVector(
+						fbb,
+						serializedDraw.data.buffer,
+					);
+					const drawBuffer = DrawBuffer.create(
+						fbb,
+						serializedDraw._id,
+						bufOffset,
+					);
+					drawBufferOffsets.push(drawBuffer);
+				}
+				const drawBuffers = Draws.createDrawBuffersVector(
+					fbb,
+					drawBufferOffsets,
+				);
+				const draws = Draws.create(fbb, drawBuffers);
+				fbb.finish(draws);
+				res.send(Buffer.from(fbb.asUint8Array()));
+			});
 		};
 	}
 
 	// medium.com/@dineshuthakota/how-to-save-file-in-mongodb-usipostDatang-node-js-1a9d09b019c1
 	private postData(): express.RequestHandler {
 		return (req, res, next): void => {
-			//console.log(internalDB.collection('draw'));
-			const deserialized = Router.deserialize(req.body);
-			const decoded = Router.decode(deserialized);
-			const name = decoded.name();
+			// req.body is a Buffer (which extends Uint8Array)
+			const fbBB = new flatbuffers.flatbuffers.ByteBuffer(req.body);
+			const draw = Draw.getRoot(fbBB);
+
+			const name = draw.name();
 			if (!!name) {
 				console.log('Name is ' + name);
 			}
-			const tagsLen = decoded.tagsLength();
-			for (let i = 0; i < tagsLen; i++) {
-				console.log(`Tag #${i}: ${decoded.tags(i)}`);
+			for (let i = draw.tagsLength(); i--; ) {
+				console.log(`Tag #${i}: ${draw.tags(i)}`);
 			}
-			const svg = decoded.svg();
+			const svg = draw.svg();
 			if (!!svg) {
 				Router.disp(svg);
 			}
 			const binary = new mongodb.Binary(req.body);
-			//console.log(`${binary.length()} bytes received`);
-			//collection.insertOne('yoo');
-			res.status(StatusCode.CREATED).send('42');
-			next();
+			this.getNExtId()?.then(count => {
+				const drawingsColl = this.db.db?.collection('drawings');
+				const elementConcret: Entry = {
+					_id: count,
+					data: binary,
+				};
+				drawingsColl?.insertOne(elementConcret);
+				res.status(StatusCode.CREATED).send(count.toString());
+				next();
+			});
 		};
 	}
 
 	private putData(): express.RequestHandler {
 		return (req, res, next): void => {
 			log(req.params.id);
+			const fbBB = new flatbuffers.flatbuffers.ByteBuffer(req.body);
+			const draw = Draw.getRoot(fbBB);
+			const tags = new Array<string>();
+			for (let i = draw.tagsLength(); i--; ) {
+				tags.push(draw.tags(i));
+			}
+			const binary = new mongodb.Binary(req.body);
+			const concretElement = {
+				_id: `${req.params.id}`,
+				name: `${draw.name()}`,
+				tags: `${tags}`,
+				data: `${binary}`,
+			};
+			const drawingsColl = this.db.db?.collection('drawings'); // Mettre les collections dans le constructeur
+			drawingsColl?.remove({ _id: `${req.params.id}` }); // a revoir
+			drawingsColl?.insertOne(concretElement);
+
 			res.sendStatus(StatusCode.ACCEPTED);
 			next();
-			// do smthg
 		};
 	}
+
+	// Pour la mise à jour apres suppression
+	private deleteData(): express.RequestHandler {
+		return (req, res, next): void => {
+			const drawingsColl = this.db.db?.collection('drawings');
+			drawingsColl?.remove({ _id: `${req.params.id}` });
+			res.sendStatus(StatusCode.ACCEPTED);
+			next();
+		};
+	}
+
+	private getAllSerializedDraws(): Promise<Entry[]> | undefined {
+		const drawingsColl = this.db.db?.collection('drawings');
+		return drawingsColl?.find().toArray();
+	}
+
+	private getNExtId(): Promise<number> | undefined {
+		const counterCollection = this.db.db?.collection('counter');
+		const sequenceDocument = counterCollection?.findOneAndUpdate(
+			{
+				_id: 'productid',
+			},
+			{
+				$inc: {
+					sequenceValue: 1,
+				},
+			},
+		);
+
+		return sequenceDocument?.then(a => a.value.sequenceValue);
+	}
+
+	/*findElementByName(nameToSearch: string): Promise<any[]> | undefined {
+		const drawingsColl = this.db.db?.collection('drawings');
+		return drawingsColl?.find({ name: `${nameToSearch}` }).toArray();
+	}*/
+
+	/*findElementById(id: string): Promise<Draw[]> | undefined {
+		const drawingsColl = this.db.db?.collection('drawings');
+		return drawingsColl?.find({ _id: `${id}` }).toArray();
+	}*/
 }
 
 export { Router };
