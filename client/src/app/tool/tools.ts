@@ -1,5 +1,11 @@
 import { Type } from '@angular/core';
 import {
+  ApplicatorLogicComponent
+} from './applicator/applicator-logic/applicator-logic.component';
+import {
+  ApplicatorPanelComponent
+} from './applicator/applicator-panel/applicator-panel.component';
+import {
   AerosolLogicComponent
 } from './drawing-instruments/aerosol/aerosol-logic/aerosol-logic.component';
 import {
@@ -66,6 +72,8 @@ import { Tool } from './tool.enum';
 export const TOOL_MANAGER =
   new Map<Tool, [Type<ToolPanelDirective>, Type<ToolLogicDirective>]>();
 
+TOOL_MANAGER.set(Tool.Applicator,
+  [ApplicatorPanelComponent, ApplicatorLogicComponent]);
 TOOL_MANAGER.set(Tool.Brush,
   [BrushPanelComponent, BrushLogicComponent]);
 TOOL_MANAGER.set(Tool.Line,

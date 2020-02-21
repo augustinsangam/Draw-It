@@ -1,4 +1,5 @@
 export enum Tool {
+  Applicator,
   Brush,
   Eraser,
   Ellipse,

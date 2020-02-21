@@ -123,10 +123,11 @@ export class AppComponent implements AfterViewInit {
         this.toolSelectorService.set(Tool.Aerosol)
       }
     });
-
-    this.handlersFunc.set(Shortcut.S, (event: KeyboardEvent) =>
+    this.handlersFunc.set(Shortcut.S, () =>
       this.toolSelectorService.set(Tool.Selection)
     );
+    this.handlersFunc.set(Shortcut.R, () =>
+      this.toolSelectorService.set(Tool.Applicator));
 
     for (const entry of this.handlersFunc) {
       this.shortcutHanler.set(

@@ -19,9 +19,12 @@ nav::-webkit-scrollbar {
 a {
   display: block;
   color: #FFF;
-  padding: 22px;
+  padding-left: 22px;
+  padding-right: 22px;
+  padding-top: 10px;
   background-position: center;
   background-repeat: no-repeat;
+  height: 40px;
 }
 
 a:hover {
@@ -40,4 +43,8 @@ nav a:hover, nav a.selected {
 a[title='Aide'] {
   cursor: help;
   background-color: #FF0;
+}
+
+mat-icon {
+  color: skyblue;;
 }

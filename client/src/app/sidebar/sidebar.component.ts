@@ -69,6 +69,11 @@ export class SidebarComponent implements AfterViewInit {
   })
   protected aerosolElRef: ElementRef<HTMLElement>;
 
+  @ViewChild('applicator', {
+    static: false,
+  })
+  protected applicatorElRef: ElementRef<HTMLElement>;
+
   @Output() protected documentationEvent: EventEmitter<null>;
   @Output() protected exportEvent: EventEmitter<null>;
 
@@ -83,6 +88,7 @@ export class SidebarComponent implements AfterViewInit {
 
   // Must be pubilc
   ngAfterViewInit() {
+    this.toolToElRef[Tool.Applicator] = this.applicatorElRef;
     this.toolToElRef[Tool.Brush] = this.brushElRef;
     this.toolToElRef[Tool.Eraser] = this.eraserElRef;
     this.toolToElRef[Tool.Line] = this.lineElRef;
@@ -148,5 +154,9 @@ export class SidebarComponent implements AfterViewInit {
 
   protected selectAerosol(): void {
     this.toolSelectorService.set(Tool.Aerosol);
+  }
+
+  protected selectApplicator(): void {
+    this.toolSelectorService.set(Tool.Applicator);
   }
 }
