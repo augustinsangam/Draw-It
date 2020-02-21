@@ -159,4 +159,8 @@ export class SidebarComponent implements AfterViewInit {
   protected selectApplicator(): void {
     this.toolSelectorService.set(Tool.Applicator);
   }
+
+  protected selectGrid(): void {
+    this.toolSelectorService.set(Tool.Grid);
+  }
 }

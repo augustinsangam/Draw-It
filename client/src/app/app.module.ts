@@ -92,6 +92,12 @@ import {
   EraserPanelComponent
 } from './tool/eraser/eraser-panel/eraser-panel.component';
 import {
+  GridLogicComponent
+} from './tool/grid/grid-logic/grid-logic.component';
+import {
+  GridPanelComponent
+} from './tool/grid/grid-panel/grid-panel.component';
+import {
   PipetteLogicComponent
 } from './tool/pipette/pipette-logic/pipette-logic.component';
 import {
@@ -165,6 +171,8 @@ import {
     ExportComponent,
     ApplicatorPanelComponent,
     ApplicatorLogicComponent,
+    GridLogicComponent,
+    GridPanelComponent,
   ],
   imports: [
     BrowserAnimationsModule,

@@ -30,6 +30,12 @@ import {
   EraserPanelComponent
 } from './eraser/eraser-panel/eraser-panel.component';
 import {
+  GridLogicComponent
+} from './grid/grid-logic/grid-logic.component';
+import {
+  GridPanelComponent
+} from './grid/grid-panel/grid-panel.component';
+import {
   PipetteLogicComponent
 } from './pipette/pipette-logic/pipette-logic.component';
 import {
@@ -94,3 +100,5 @@ TOOL_MANAGER.set(Tool.Eraser,
   [EraserPanelComponent, EraserLogicComponent]);
 TOOL_MANAGER.set(Tool.Aerosol,
   [AerosolPanelComponent, AerosolLogicComponent]);
+TOOL_MANAGER.set(Tool.Grid,
+  [GridPanelComponent, GridLogicComponent]);
