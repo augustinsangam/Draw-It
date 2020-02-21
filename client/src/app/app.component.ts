@@ -5,7 +5,7 @@ import {
   HostListener,
   ViewChild
 } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import {MatDialog, MatDialogRef} from '@angular/material';
 
 // import { CommunicationService } from './communication/communication.service';
 import {
@@ -119,12 +119,15 @@ export class AppComponent implements AfterViewInit {
         event.preventDefault();
         this.toolSelectorService.set(Tool.Selection);
         this.svgService.selectAllElements.emit(null);
+      } else if (!!event && !event.ctrlKey) {
+        this.toolSelectorService.set(Tool.Aerosol)
       }
     });
-
-    this.handlersFunc.set(Shortcut.S, (event: KeyboardEvent) =>
+    this.handlersFunc.set(Shortcut.S, () =>
       this.toolSelectorService.set(Tool.Selection)
     );
+    this.handlersFunc.set(Shortcut.R, () =>
+      this.toolSelectorService.set(Tool.Applicator));
 
     for (const entry of this.handlersFunc) {
       this.shortcutHanler.set(

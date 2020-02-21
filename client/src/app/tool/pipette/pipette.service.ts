@@ -6,7 +6,7 @@ import {ToolService} from '../tool.service';
 })
 export class PipetteService extends ToolService  {
 
-  currentColor: string
+  currentColor: string;
 
   constructor() {
     super();

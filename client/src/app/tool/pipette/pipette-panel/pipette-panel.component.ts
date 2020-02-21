@@ -1,5 +1,4 @@
 import {
-  AfterViewChecked,
   Component,
   ElementRef,
   ViewChild,
@@ -14,7 +13,7 @@ import {PipetteService} from '../pipette.service';
   styleUrls: ['./pipette-panel.component.scss']
 })
 export class PipettePanelComponent
-  extends ToolPanelDirective implements AfterViewChecked {
+  extends ToolPanelDirective {
 
   @ViewChild('pipetteSVG', {
     static: false,
@@ -26,9 +25,6 @@ export class PipettePanelComponent
   ) {
     super(elementRef);
     this.pipService.currentColor = 'rgba(0,0,0,0)';
-  }
-
-  ngAfterViewChecked(): void {
   }
 
   protected getHex(): string {
