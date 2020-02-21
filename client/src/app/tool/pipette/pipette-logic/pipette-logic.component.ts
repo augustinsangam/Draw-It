@@ -6,8 +6,7 @@ import {PipetteService} from '../pipette.service';
 
 @Component({
   selector: 'app-pipette-logic',
-  templateUrl: './pipette-logic.component.html',
-  styleUrls: ['./pipette-logic.component.scss']
+  template: ''
 })
 
 // tslint:disable:use-lifecycle-interface
