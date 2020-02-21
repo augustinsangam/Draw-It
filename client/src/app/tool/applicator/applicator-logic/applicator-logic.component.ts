@@ -16,19 +16,25 @@ export class ApplicatorLogicComponent extends ToolLogicDirective {
   private handlers = {
     left: ($event: MouseEvent) => {
       if (this.isSvgElement($event.target as SVGElement)) {
-        ($event.target as SVGElement)
-        .setAttribute('stroke', this.colorService.primaryColor);
+        if ($event.target instanceof SVGPathElement) {
+            ($event.target as SVGElement)
+          .setAttribute('stroke', this.colorService.primaryColor);
+        } else {
+          const fill = ($event.target as SVGElement).getAttribute('fill');
+          const isFilled = (fill !== null && fill !== 'none');
+          if (isFilled) {
+            ($event.target as SVGElement)
+            .setAttribute('fill', this.colorService.primaryColor);
+          }
+        }
       }
     },
     right: ($event: MouseEvent) => {
       $event.preventDefault();
-      if (this.isSvgElement($event.target as SVGElement)) {
-        const fill = ($event.target as SVGElement).getAttribute('fill');
-        const isFilled = (fill !== null && fill !== 'none');
-        if (isFilled) {
-          ($event.target as SVGElement)
-          .setAttribute('fill', this.colorService.secondaryColor);
-        }
+      if (this.isSvgElement($event.target as SVGElement)
+        && !($event.target instanceof SVGPathElement)) {
+        ($event.target as SVGElement)
+        .setAttribute('stroke', this.colorService.secondaryColor);
       }
     }
   }
