@@ -21,6 +21,17 @@ export class PencilLogicComponent extends PencilBrushCommon
   ) {
     super();
     this.listeners = [];
+    this.undoRedoService.setPreUndoAction({
+      enabled: true,
+      overrideDefaultBehaviour: false,
+      overrideFunctionDefined: true,
+      overrideFunction: () => {
+        if (this.mouseOnHold) {
+          this.stopDrawing();
+          this.undoRedoService.saveState();
+        }
+      }
+    })
   }
 
   // tslint:disable-next-line use-lifecycle-interface
@@ -73,14 +84,17 @@ export class PencilLogicComponent extends PencilBrushCommon
 
     const mouseUpListen = this.renderer.listen(this.svgStructure.root,
       'mouseup', () => {
-        this.stopDrawing();
-        this.undoRedoService.saveState();
+        if (this.mouseOnHold) {
+          this.stopDrawing();
+          this.undoRedoService.saveState();
+        }
     });
 
     const mouseLeaveListen = this.renderer.listen(this.svgStructure.root,
       'mouseleave', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0 && this.mouseOnHold) {
           this.stopDrawing();
+          this.undoRedoService.saveState();
         }
     });
 

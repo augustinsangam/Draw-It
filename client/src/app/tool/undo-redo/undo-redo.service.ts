@@ -6,22 +6,45 @@ import { SVGStructure } from '../tool-logic/tool-logic.directive';
 })
 export class UndoRedoService {
 
+  private svgStructure: SVGStructure;
   private cmdDone: (ChildNode[])[]
   private cmdUndone: (ChildNode[])[];
-
   private firstCommand: boolean;
 
-  private svgStructure: SVGStructure;
+  private actions: [PreUndoAction, PostUndoAction];
 
   constructor() {
     this.cmdDone = [];
     this.cmdUndone = [];
     this.firstCommand = false;
+    this.resetActions();
   }
 
   intialise(svgStructure: SVGStructure): void {
     this.svgStructure = svgStructure;
     this.saveState();
+  }
+
+  resetActions() {
+    this.actions = [
+      {
+        enabled: false,
+        overrideDefaultBehaviour: false,
+        overrideFunctionDefined: false
+      },
+      {
+        enabled: false,
+        functionDefined: false,
+      }
+    ]
+  }
+
+  setPreUndoAction(action: PreUndoAction) {
+    this.actions[0] = action;
+  }
+
+  setPostUndoAction(action: PostUndoAction) {
+    this.actions[1] = action;
   }
 
   saveState(): void {
@@ -32,6 +55,22 @@ export class UndoRedoService {
   }
 
   undo(): void {
+
+    if (this.actions[0].enabled && this.actions[0].overrideFunctionDefined) {
+      (this.actions[0].overrideFunction as () => void)();
+    }
+
+    if (!this.actions[0].overrideDefaultBehaviour) {
+      this.undoBase();
+    }
+
+    if (this.actions[1].enabled && this.actions[1].functionDefined) {
+      (this.actions[1].function as () => void)();
+    }
+
+  }
+
+  undoBase() {
     if (this.cmdDone.length !== 0) {
       const lastCommand = this.cmdDone.pop();
       this.cmdUndone.push(lastCommand as ChildNode[]);
@@ -49,7 +88,7 @@ export class UndoRedoService {
 
   refresh(node: ChildNode[]): void {
     const childrens = Array.from(this.svgStructure.drawZone.childNodes);
-    const nodeChildrens = Array.from(node);
+    const nodeChildrens = node ? Array.from(node) : [];
     for (const element of childrens) {
       element.remove();
     }
@@ -66,4 +105,17 @@ export class UndoRedoService {
     return this.cmdUndone.length > 0;
   }
 
+}
+
+interface PreUndoAction {
+  enabled: boolean,
+  overrideDefaultBehaviour: boolean,
+  overrideFunctionDefined: boolean
+  overrideFunction?: () => void
+}
+
+interface PostUndoAction {
+  enabled: boolean,
+  functionDefined: boolean,
+  function?: () => void
 }

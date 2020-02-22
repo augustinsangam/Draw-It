@@ -1,11 +1,11 @@
 import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { Point } from 'src/app/tool/selection/Point';
+import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { MathService } from '../../../mathematics/tool.math-service.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
 import { Path } from '../../common/Path';
 import { LineService } from '../line.service';
-import { Point } from 'src/app/tool/selection/Point';
-import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 
 @Component({
   selector: 'app-line-logic',
@@ -30,6 +30,19 @@ export class LineLogicComponent extends ToolLogicDirective
     this.paths = [];
     this.listeners = [];
     this.isNewPath = true;
+    this.undoRedoService.resetActions();
+    this.undoRedoService.setPreUndoAction({
+      enabled: true,
+      overrideDefaultBehaviour: true,
+      overrideFunctionDefined: true,
+      overrideFunction: () => {
+        if (!this.isNewPath) {
+          this.onKeyDown({ code: 'Escape'} as unknown as KeyboardEvent);
+        } else {
+          this.undoRedoService.undoBase();
+        }
+      }
+    })
   }
 
   // tslint:disable-next-line use-lifecycle-interface
@@ -79,7 +92,8 @@ export class LineLogicComponent extends ToolLogicDirective
   }
 
   ngOnDestroy() {
-    this.listeners.forEach(listenner => listenner());
+    this.listeners.forEach(end => end());
+    this.undoRedoService.resetActions();
   }
 
   private onMouseClick(mouseEv: MouseEvent): void {
