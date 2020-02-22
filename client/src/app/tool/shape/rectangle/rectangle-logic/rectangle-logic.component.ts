@@ -42,7 +42,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
     const onMouseDown = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mousedown',
       (mouseEv: MouseEvent) => {
         this.initRectangle(mouseEv);
@@ -50,7 +50,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
   );
 
     const onMouseMove = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mousemove',
       (mouseEv: MouseEvent) => {
         if (this.onDrag) {
@@ -76,13 +76,13 @@ export class RectangleLogicComponent extends ToolLogicDirective
     );
 
     const onKeyDown = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'keydown',
       (keyEv: KeyboardEvent) => this.onKeyDown(keyEv)
     );
 
     const onKeyUp = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'keyup',
       (keyEv: KeyboardEvent) => this.onKeyUp(keyEv)
     );
@@ -124,7 +124,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
   private initRectangle(mouseEv: MouseEvent): void {
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
       const rectangle = this.renderer.createElement('rect', this.svgNS);
-      this.renderer.appendChild(this.svgElRef.nativeElement, rectangle);
+      this.renderer.appendChild(this.svgStructure.drawZone, rectangle);
       this.rectangles.push(new Rectangle(
         this.renderer,
         rectangle,

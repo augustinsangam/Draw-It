@@ -34,19 +34,16 @@ export class SvgComponent implements OnInit, AfterViewInit {
   }) private viewContainerRef: ViewContainerRef;
 
   @ViewChild('drawZone', {
-    static: false,
-    read: SVGGElement
-  }) private drawZone: SVGGElement;
+    static: true,
+  }) private drawZone: ElementRef<SVGGElement>;
 
   @ViewChild('temporaryZone', {
-    static: false,
-    read: SVGGElement
-  }) private temporaryZone: SVGGElement;
+    static: true,
+  }) private temporaryZone: ElementRef<SVGGElement>;
 
   @ViewChild('endZone', {
-    static: false,
-    read: SVGGElement
-  }) private endZone: SVGGElement;
+    static: true,
+  }) private endZone: ElementRef<SVGGElement>;
 
   private svgStructure: SVGStructure;
 
@@ -73,9 +70,9 @@ export class SvgComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.svgStructure = {
       root: this.elementRef.nativeElement,
-      drawZone: this.drawZone,
-      temporaryZone: this.temporaryZone,
-      endZone: this.endZone
+      drawZone: this.drawZone.nativeElement,
+      temporaryZone: this.temporaryZone.nativeElement,
+      endZone: this.endZone.nativeElement
     };
     this.svgService.structure = this.svgStructure;
   }

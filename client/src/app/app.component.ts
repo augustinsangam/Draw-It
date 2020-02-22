@@ -1,9 +1,7 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
   HostListener,
-  ViewChild
 } from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material';
 
@@ -55,12 +53,6 @@ export class AppComponent implements AfterViewInit {
   private dialogRefs: DialogRefs;
   private drawInProgress: boolean;
   protected drawOption: NewDrawOptions;
-
-  @ViewChild('svg', {
-    static: false,
-    read: ElementRef
-  })
-  svg: ElementRef<SVGSVGElement>;
 
   handlersFunc: Map<Shortcut, ShortcutCallBack>;
 
@@ -151,7 +143,6 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.svgService.instance = this.svg;
     this.openHomeDialog();
     // setInterval(() => {
     //   this.communicationServerice.encode(

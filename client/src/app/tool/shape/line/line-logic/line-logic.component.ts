@@ -34,7 +34,7 @@ export class LineLogicComponent extends ToolLogicDirective
   ngOnInit() {
     this.listeners.push(
       this.renderer.listen(
-        this.svgElRef.nativeElement,
+        this.svgStructure.root,
         'click',
         (mouseEv: MouseEvent) => this.onMouseClick(mouseEv)
       )
@@ -42,7 +42,7 @@ export class LineLogicComponent extends ToolLogicDirective
 
     this.listeners.push(
       this.renderer.listen(
-        this.svgElRef.nativeElement,
+        this.svgStructure.root,
         'dblclick',
         (mouseEv: MouseEvent) => this.onMouseDblClick(mouseEv)
       )
@@ -50,7 +50,7 @@ export class LineLogicComponent extends ToolLogicDirective
 
     this.listeners.push(
       this.renderer.listen(
-        this.svgElRef.nativeElement,
+        this.svgStructure.root,
         'mousemove',
         (mouseEv: MouseEvent) => this.onMouseMove(mouseEv)
       )
@@ -58,7 +58,7 @@ export class LineLogicComponent extends ToolLogicDirective
 
     this.listeners.push(
       this.renderer.listen(
-        this.svgElRef.nativeElement,
+        this.svgStructure.root,
         'keydown',
         (keyEv: KeyboardEvent) => this.onKeyDown(keyEv)
       )
@@ -66,7 +66,7 @@ export class LineLogicComponent extends ToolLogicDirective
 
     this.listeners.push(
       this.renderer.listen(
-        this.svgElRef.nativeElement,
+        this.svgStructure.root,
         'keyup',
         (keyEv: KeyboardEvent) => this.onKeyUp(keyEv)
       )
@@ -161,7 +161,7 @@ export class LineLogicComponent extends ToolLogicDirective
 
   private createNewPath(initialPoint: Point): void {
     const path = this.renderer.createElement('path', this.svgNS);
-    this.renderer.appendChild(this.svgElRef.nativeElement, path);
+    this.renderer.appendChild(this.svgStructure.drawZone, path);
     this.paths.push(
       new Path(initialPoint, this.renderer, path, this.service.withJonction)
     );
@@ -173,7 +173,7 @@ export class LineLogicComponent extends ToolLogicDirective
 
   private createJonction(center: Point): void {
     const circle = this.renderer.createElement('circle', this.svgNS);
-    this.renderer.appendChild(this.svgElRef.nativeElement, circle);
+    this.renderer.appendChild(this.svgStructure.drawZone, circle);
     this.getPath().addJonction(
       circle,
       center,

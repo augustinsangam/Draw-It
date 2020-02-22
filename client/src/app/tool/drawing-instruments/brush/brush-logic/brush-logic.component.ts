@@ -28,10 +28,10 @@ export class BrushLogicComponent extends PencilBrushCommon {
       this.renderer.appendChild(svgDefsEl, this.generateFilterThree());
       this.renderer.appendChild(svgDefsEl, this.generateFilterFour());
       this.renderer.appendChild(svgDefsEl, this.generateFilterFive());
-      this.renderer.appendChild(this.svgElRef.nativeElement, svgDefsEl);
+      this.renderer.appendChild(this.svgStructure.endZone, svgDefsEl);
       this.brushService.isFirstLoaded = false;
     }
-    const mouseDownListen = this.renderer.listen(this.svgElRef.nativeElement,
+    const mouseDownListen = this.renderer.listen(this.svgStructure.root,
       'mousedown', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0) {
           this.mouseOnHold = true;
@@ -39,19 +39,19 @@ export class BrushLogicComponent extends PencilBrushCommon {
         }
     });
 
-    const mouseMoveListen = this.renderer.listen(this.svgElRef.nativeElement,
+    const mouseMoveListen = this.renderer.listen(this.svgStructure.root,
       'mousemove', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0 && this.mouseOnHold) {
           this.onMouseMove(mouseEv);
         }
     });
 
-    const mouseUpListen = this.renderer.listen(this.svgElRef.nativeElement,
+    const mouseUpListen = this.renderer.listen(this.svgStructure.root,
       'mouseup', (mouseEv: MouseEvent) => {
         this.stopDrawing();
     });
 
-    const mouseLeaveListen = this.renderer.listen(this.svgElRef.nativeElement,
+    const mouseLeaveListen = this.renderer.listen(this.svgStructure.root,
       'mouseleave', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0 && this.mouseOnHold) {
           this.stopDrawing();
@@ -81,7 +81,7 @@ export class BrushLogicComponent extends PencilBrushCommon {
     this.makeFirstPoint(mouseEv);
     this.svgPath = this.renderer.createElement(this.svgTag, this.svgNS);
     this.configureSvgElement(this.svgPath);
-    this.renderer.appendChild(this.svgElRef.nativeElement, this.svgPath);
+    this.renderer.appendChild(this.svgStructure.drawZone, this.svgPath);
   }
 
   // tslint:disable-next-line:use-lifecycle-interface

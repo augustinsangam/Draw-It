@@ -45,7 +45,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit(): void {
     const onMouseDown = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mousedown',
       (mouseEv: MouseEvent) => {
         this.initEllipse(mouseEv);
@@ -71,7 +71,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
     );
 
     const onMouseMove = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mousemove',
       (mouseEv: MouseEvent) => {
         if (this.onDrag) {
@@ -85,13 +85,13 @@ export class EllipseLogicComponent extends ToolLogicDirective
     );
 
     const onKeyDown = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'keydown',
       (keyEv: KeyboardEvent) => this.onKeyDown(keyEv)
     );
 
     const onKeyUp = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'keyup',
       (keyEv: KeyboardEvent) => this.onKeyUp(keyEv)
     );
@@ -133,7 +133,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
       this.currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
       const ellipse = this.renderer.createElement('ellipse', this.svgNS);
-      this.renderer.appendChild(this.svgElRef.nativeElement, ellipse);
+      this.renderer.appendChild(this.svgStructure.drawZone, ellipse);
       this.ellipses.push(new Ellipse(
         this.currentPoint,
         this.renderer,
@@ -151,7 +151,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
   private initRectangleVisu(mouseEv: MouseEvent): void {
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
       const rectangle = this.renderer.createElement('rect', this.svgNS);
-      this.renderer.appendChild(this.svgElRef.nativeElement, rectangle);
+      this.renderer.appendChild(this.svgStructure.drawZone, rectangle);
 
       this.rectVisu = new Rectangle(
         this.renderer,
