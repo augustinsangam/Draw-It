@@ -2,12 +2,13 @@ import { Component, OnDestroy, Renderer2 } from '@angular/core';
 import { ColorService } from '../../../color/color.service';
 import { MathService } from '../../../mathematics/tool.math-service.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
+import { UndoRedoService} from '../../../undo-redo/undo-redo.service'
 import { BackGroundProperties,
          StrokeProperties,
          Style } from '../../common/AbstractShape';
 import { Point } from '../../common/Point';
-import {Polygone} from '../../common/Polygone';
-import {Rectangle} from '../../common/Rectangle';
+import { Polygone} from '../../common/Polygone';
+import { Rectangle} from '../../common/Rectangle';
 import { PolygoneService } from '../polygone.service';
 const SEMIOPACITY = '0.5';
 const FULLOPACITY = '1';
@@ -32,13 +33,13 @@ implements OnDestroy {
     private readonly service: PolygoneService,
     private readonly renderer: Renderer2,
     private readonly colorService: ColorService,
-    private readonly mathService: MathService
+    private readonly mathService: MathService,
+    private readonly undoRedo: UndoRedoService
   ) {
     super();
     this.onDrag = false;
     this.allListeners = [];
     this.polygones = [];
-
     }
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnInit() {
@@ -60,7 +61,6 @@ implements OnDestroy {
           const currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
           this.visualisationRectangle.dragRectangle(
             this.mouseDownPoint, currentPoint);
-          console.log(currentPoint.x, currentPoint.y, 'weshh')
 
           this.getPolygone().drawPolygonFromRectangle(
             this.mouseDownPoint, currentPoint);
@@ -77,11 +77,9 @@ implements OnDestroy {
           this.onDrag = false;
           this.style.opacity = FULLOPACITY;
           this.getPolygone().setCss(this.style);
-          this.renderer.removeChild(
-            this.renderer.parentNode(this.visualisationRectangle.element),
-            this.visualisationRectangle.element)
+          this.visualisationRectangle.element.remove();
+          this.undoRedo.addToCommands();
         }
-
       }
     );
 
@@ -90,6 +88,12 @@ implements OnDestroy {
       onMouseMove,
       onMouseUp
     ];
+
+    this.renderer.setStyle(
+      this.svgElRef.nativeElement,
+      'cursor',
+      'crosshair'
+    );
   }
 
   ngOnDestroy() {
@@ -111,7 +115,7 @@ implements OnDestroy {
       this.polygones.push(new Polygone(
         this.renderer,
         polygon,
-        this.mathService, 7));
+        this.mathService, this.service.sides));
       }
     this.setPolygoneProperties();
   }

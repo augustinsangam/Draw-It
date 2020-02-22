@@ -2,6 +2,7 @@ import { Component, Renderer2 } from '@angular/core';
 import { ColorService } from '../../../color/color.service';
 import { PencilBrushCommon } from '../../pencil-brush/pencil-brush-common';
 import { BrushService } from '../brush.service';
+import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 
 @Component({
   selector: 'app-brush-logic',
@@ -11,10 +12,11 @@ export class BrushLogicComponent extends PencilBrushCommon {
 
   private listeners: (() => void)[];
 
-  constructor(public renderer: Renderer2,
-              public colorService: ColorService,
-              public brushService: BrushService) {
-    super();
+  constructor(private readonly renderer: Renderer2,
+              private readonly colorService: ColorService,
+              private readonly brushService: BrushService,
+              protected readonly undoRedo: UndoRedoService) {
+    super(undoRedo);
     this.listeners = new Array();
   }
 
@@ -63,6 +65,12 @@ export class BrushLogicComponent extends PencilBrushCommon {
       mouseUpListen,
       mouseLeaveListen
     ];
+
+    this.renderer.setStyle(
+      this.svgElRef.nativeElement,
+      'cursor',
+      'crosshair'
+    );
   }
 
   protected configureSvgElement(element: SVGElement): void {
@@ -74,6 +82,7 @@ export class BrushLogicComponent extends PencilBrushCommon {
     element.setAttribute(
       'stroke-width', this.brushService.thickness.toString()
     );
+    element.classList.add(this.brushService.texture);
   }
 
   protected onMouseDown(mouseEv: MouseEvent): void {

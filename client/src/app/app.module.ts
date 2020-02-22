@@ -1,19 +1,44 @@
-import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule, MatListModule } from '@angular/material';
-import { MatIconModule } from '@angular/material/icon';
-import { BrowserModule } from '@angular/platform-browser';
 import {
-  BrowserAnimationsModule, NoopAnimationsModule
+  CommonModule
+} from '@angular/common';
+import {
+  HttpClientModule
+} from '@angular/common/http';
+import {
+  NgModule
+} from '@angular/core';
+import {
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
+import {
+  MatFormFieldModule,
+  MatListModule
+} from '@angular/material';
+import {
+  MatIconModule
+} from '@angular/material/icon';
+import {
+  BrowserModule
+} from '@angular/platform-browser';
+import {
+  BrowserAnimationsModule,
+  NoopAnimationsModule
 } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { MaterialModule } from './material.module';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
-import { DeleteConfirmationDialogComponent } from './pages/galery/deleteconfirmation-dialog.component';
+import {
+  ExportComponent
+} from './pages/export/export.component';
+import {
+  DeleteConfirmationDialogComponent
+} from './pages/galery/deleteconfirmation-dialog.component';
+import {
+  GaleryCardComponent
+} from './pages/galery/galery-card/galery-card.component';
 import { GaleryComponent } from './pages/galery/galery.component';
 import {
   HomeComponent
@@ -25,9 +50,18 @@ import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import {
   PaletteDialogComponent
 } from './pages/new-draw/palette-dialog.component';
-import { PanelComponent } from './panel/panel.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
-import { SvgComponent } from './svg/svg.component';
+import {
+  PanelComponent } from './panel/panel.component';
+import {
+  SidebarComponent } from './sidebar/sidebar.component';
+import {
+  SvgComponent } from './svg/svg.component';
+import {
+  ApplicatorLogicComponent
+} from './tool/applicator/applicator-logic/applicator-logic.component';
+import {
+  ApplicatorPanelComponent
+} from './tool/applicator/applicator-panel/applicator-panel.component';
 import {
   ColorPanelComponent
 } from './tool/color/color-panel/color-panel.component';
@@ -38,6 +72,14 @@ import {
 import {
   ColorPickerItemComponent
 } from './tool/color/color-panel/color-picker-item/color-picker-item.component';
+import {
+  AerosolLogicComponent
+// tslint:disable-next-line: max-line-length
+} from './tool/drawing-instruments/aerosol/aerosol-logic/aerosol-logic.component';
+import {
+  AerosolPanelComponent
+// tslint:disable-next-line: max-line-length
+} from './tool/drawing-instruments/aerosol/aerosol-panel/aerosol-panel.component';
 import {
   BrushLogicComponent
 } from './tool/drawing-instruments/brush/brush-logic/brush-logic.component';
@@ -50,6 +92,24 @@ import {
 import {
   PencilPanelComponent
 } from './tool/drawing-instruments/pencil/pencil-panel/pencil-panel.component';
+import {
+  EraserLogicComponent
+} from './tool/eraser/eraser-logic/eraser-logic.component';
+import {
+  EraserPanelComponent
+} from './tool/eraser/eraser-panel/eraser-panel.component';
+import {
+  PipetteLogicComponent
+} from './tool/pipette/pipette-logic/pipette-logic.component';
+import {
+  PipettePanelComponent
+} from './tool/pipette/pipette-panel/pipette-panel.component';
+import {
+  SelectionLogicComponent
+} from './tool/selection/selection-logic/selection-logic.component';
+import {
+  SelectionPanelComponent
+} from './tool/selection/selection-panel/selection-panel.component';
 import {
   EllipseLogicComponent
 } from './tool/shape/ellipse/ellipse-logic/ellipse-logic.component';
@@ -74,7 +134,6 @@ import {
 import {
   RectanglePanelComponent
 } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
-import { GaleryCardComponent } from './pages/galery/galery-card/galery-card.component';
 
 @NgModule({
   declarations: [
@@ -90,6 +149,8 @@ import { GaleryCardComponent } from './pages/galery/galery-card/galery-card.comp
     EllipseLogicComponent,
     EllipsePanelComponent,
     GaleryComponent,
+    EraserPanelComponent,
+    EraserLogicComponent,
     HomeComponent,
     LineLogicComponent,
     LinePanelComponent,
@@ -105,6 +166,17 @@ import { GaleryCardComponent } from './pages/galery/galery-card/galery-card.comp
     SidebarComponent,
     SvgComponent,
     GaleryCardComponent,
+    SelectionPanelComponent,
+    SelectionLogicComponent,
+    PolygoneLogicComponent,
+    PolygonePanelComponent,
+    PipetteLogicComponent,
+    PipettePanelComponent,
+    AerosolLogicComponent,
+    AerosolPanelComponent,
+    ExportComponent,
+    ApplicatorPanelComponent,
+    ApplicatorLogicComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -121,9 +193,15 @@ import { GaleryCardComponent } from './pages/galery/galery-card/galery-card.comp
   ],
   providers: [],
   entryComponents: [
+    AerosolLogicComponent,
+    AerosolPanelComponent,
+    ApplicatorLogicComponent,
+    ApplicatorPanelComponent,
     BrushLogicComponent,
     BrushPanelComponent,
     ColorPanelComponent,
+    EraserLogicComponent,
+    EraserPanelComponent,
     PaletteDialogComponent,
     ConfirmationDialogComponent,
     DeleteConfirmationDialogComponent,
@@ -132,15 +210,23 @@ import { GaleryCardComponent } from './pages/galery/galery-card/galery-card.comp
     EllipsePanelComponent,
     GaleryComponent,
     HomeComponent,
+    ExportComponent,
     LineLogicComponent,
     LinePanelComponent,
     NewDrawComponent,
     PencilLogicComponent,
     PencilPanelComponent,
+    PipetteLogicComponent,
+    PipettePanelComponent,
+    RectangleLogicComponent,
+    RectanglePanelComponent,
     PolygoneLogicComponent,
     PolygonePanelComponent,
     RectangleLogicComponent,
     RectanglePanelComponent,
+    SelectionLogicComponent,
+    SelectionPanelComponent,
+
   ],
   bootstrap: [
     AppComponent,

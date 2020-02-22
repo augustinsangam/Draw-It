@@ -20,9 +20,9 @@ export class BrushService extends ToolService {
 
   constructor() {
     super();
-    this.thickness = 10;
+    this.thickness = 20;
     this.isFirstLoaded = true;
-    this.texture = Texture.Texture1;
+    this.texture = Texture.Texture2;
   }
 
 }

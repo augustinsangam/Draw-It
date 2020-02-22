@@ -1,4 +1,4 @@
-import { ElementRef, Renderer2 } from '@angular/core';
+import { Renderer2 } from '@angular/core';
 import { MathService } from '../../mathematics/tool.math-service.service';
 import {AbstractShape} from './AbstractShape'
 import { Point } from './Point';
@@ -8,7 +8,7 @@ export class Rectangle extends AbstractShape {
 
   constructor(
     protected renderer: Renderer2,
-    public element: ElementRef,
+    public element: SVGElement,
     private mathService: MathService
   ) {
       super(renderer, element);

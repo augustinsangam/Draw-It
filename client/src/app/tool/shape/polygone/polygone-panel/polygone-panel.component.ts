@@ -39,6 +39,11 @@ export class PolygonePanelComponent
     read: MatSlider
   }) private thicknessSlider: MatSlider;
 
+  @ViewChild('sidesSlider', {
+    static: false,
+    read: MatSlider
+  }) private sidesSlider: MatSlider;
+
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: PolygoneService,
               private readonly formBuilder: FormBuilder) {
@@ -48,6 +53,8 @@ export class PolygonePanelComponent
       borderOption: [this.service.borderOption, []],
       thicknessSlider: [this.service.thickness, []],
       fillOption: [this.service.fillOption, []],
+      sides: [this.service.sides, []],
+      sidesFormField: [this.service.sides, []],
     });
   }
 
@@ -80,5 +87,12 @@ export class PolygonePanelComponent
       thicknessFormField: this.thicknessSlider.value
     });
     this.service.thickness = this.thicknessSlider.value as number;
+  }
+
+  protected onSidesChange(): void {
+    this.polygoneForm.patchValue({
+      sidesFormField: this.sidesSlider.value
+    });
+    this.service.sides = this.sidesSlider.value as number;
   }
 }

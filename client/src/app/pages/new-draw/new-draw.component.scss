@@ -1,7 +1,7 @@
 :host {
   display: grid;
   place-items: center;
-  height: 100vh;
+  height: 80vh;
   background-color: transparent;
 }
 
@@ -28,4 +28,13 @@ button {
 
 .back-button {
   margin-top: 10px;
+}
+
+.color-preview {
+  width: 50px;
+  background-color: white;
+  border: 2px solid black;
+  height: 23px;
+  vertical-align: middle;
+  cursor: pointer;
 }

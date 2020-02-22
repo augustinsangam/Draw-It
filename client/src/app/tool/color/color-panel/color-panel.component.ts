@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  OnDestroy,
   OnInit,
   QueryList,
   ViewChild,
@@ -9,6 +10,7 @@ import {
 } from '@angular/core';
 import { EventManager } from '@angular/platform-browser';
 
+import { Subscription } from 'rxjs';
 import { SvgService } from 'src/app/svg/svg.service';
 import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
 import { ColorService } from '../color.service';
@@ -31,12 +33,14 @@ export enum ColorOption {
   styleUrls: ['./color-panel.component.scss']
 })
 export class ColorPanelComponent extends ToolPanelDirective
-  implements OnInit, AfterViewInit {
+  implements OnInit, AfterViewInit, OnDestroy {
+
   protected colorOptionEnum: typeof ColorOption = ColorOption;
 
   private colorOption: ColorOption;
   private recentColors: string[];
   private showPalette: boolean;
+  private colorChange: Subscription;
 
   @ViewChild('colorPreviewPrimary', {
     read: ColorPickerItemComponent,
@@ -76,6 +80,11 @@ export class ColorPanelComponent extends ToolPanelDirective
     super(elementRef);
     this.colorOption = ColorOption.Primary;
     this.showPalette = false;
+
+    this.colorChange = this.colorService.change.subscribe(() => {
+      this.ngOnInit();
+      this.ngAfterViewInit();
+    });
   }
 
   ngOnInit() {
@@ -181,4 +190,9 @@ export class ColorPanelComponent extends ToolPanelDirective
       return this.colorService.hexFormRgba(this.colorService.backgroundColor);
     }
   }
+
+  ngOnDestroy(): void {
+    this.colorChange.unsubscribe();
+  }
+
 }

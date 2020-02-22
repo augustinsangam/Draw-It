@@ -5,14 +5,13 @@ import {
   HostListener,
   ViewChild
 } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
-// import { flatbuffers } from 'flatbuffers';
+import {MatDialog, MatDialogRef} from '@angular/material';
 
 // import { CommunicationService } from './communication/communication.service';
-// import { Draw, Draws } from './communication/data_generated';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
+import { ExportComponent } from './pages/export/export.component';
 import { GaleryComponent } from './pages/galery/galery.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
@@ -20,13 +19,12 @@ import {
   Shortcut,
   ShortcutCallBack,
   ShortcutHandlerService
-} from './shortcut-handler.service';
-import { SvgService } from './svg/svg.service';
-import { ColorService } from './tool/color/color.service';
-import {
-  ToolSelectorService
-} from './tool/tool-selector/tool-selector.service';
-import { Tool } from './tool/tool.enum';
+} from './shortcut-handler/shortcut-handler.service';
+import {SvgService} from './svg/svg.service';
+import {ColorService} from './tool/color/color.service';
+import {ToolSelectorService} from './tool/tool-selector/tool-selector.service';
+import {Tool} from './tool/tool.enum';
+import {UndoRedoService} from './tool/undo-redo/undo-redo.service';
 
 export interface NewDrawOptions {
   width: number;
@@ -46,6 +44,7 @@ export interface DialogRefs {
   newDraw: MatDialogRef<NewDrawComponent>;
   documentation: MatDialogRef<DocumentationComponent>;
   galery: MatDialogRef<GaleryComponent>;
+  export: MatDialogRef<ExportComponent>;
 }
 
 @Component({
@@ -76,11 +75,12 @@ export class AppComponent implements AfterViewInit {
 
   constructor(
     public dialog: MatDialog,
-    // private readonly communicationServerice: CommunicationService,
+   // private readonly communicationServerice: CommunicationService,
     private readonly toolSelectorService: ToolSelectorService,
     private colorService: ColorService,
     private svgService: SvgService,
-    private shortcutHanler: ShortcutHandlerService
+    private shortcutHanler: ShortcutHandlerService,
+    private undoRedo: UndoRedoService,
   ) {
     this.drawInProgress = false;
     this.drawOption = { height: 0, width: 0, color: '' };
@@ -102,37 +102,52 @@ export class AppComponent implements AfterViewInit {
       this.toolSelectorService.set(Tool.Ellipse)
     );
     this.handlersFunc.set(Shortcut.Digit3, () =>
-    this.toolSelectorService.set(Tool.Polygone)
-  );
+      this.toolSelectorService.set(Tool.Polygone)
+    );
+    this.handlersFunc.set(Shortcut.I, () =>
+      this.toolSelectorService.set(Tool.Pipette)
+    );
+    this.handlersFunc.set(Shortcut.E, () =>
+      this.toolSelectorService.set(Tool.Eraser)
+    );
     this.handlersFunc.set(Shortcut.O, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
         this.openNewDrawDialog();
       }
     });
-    this.handlersFunc.set(Shortcut.G, (event: KeyboardEvent) => {
+    this.handlersFunc.set(Shortcut.Z, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
-        this.openGaleryDialog(false);
+        if (event.shiftKey) {
+          this.undoRedo.redo();
+        } else {
+          this.undoRedo.undo();
+        }
       }
     });
 
-    [
-      Shortcut.C,
-      Shortcut.L,
-      Shortcut.W,
-      Shortcut.Digit1,
-      Shortcut.Digit2,
-      Shortcut.O,
-      Shortcut.G
-    ].forEach(
-      shortcut => {
-        this.shortcutHanler.set(
-          shortcut,
-          this.handlersFunc.get(shortcut) as ShortcutCallBack
-        );
+    this.handlersFunc.set(Shortcut.A, (event: KeyboardEvent) => {
+      if (!!event && event.ctrlKey) {
+        event.preventDefault();
+        this.toolSelectorService.set(Tool.Selection);
+        this.svgService.selectAllElements.emit(null);
+      } else if (!!event && !event.ctrlKey) {
+        this.toolSelectorService.set(Tool.Aerosol)
       }
+    });
+    this.handlersFunc.set(Shortcut.S, () =>
+      this.toolSelectorService.set(Tool.Selection)
     );
+    this.handlersFunc.set(Shortcut.R, () =>
+      this.toolSelectorService.set(Tool.Applicator));
+
+    for (const entry of this.handlersFunc) {
+      this.shortcutHanler.set(
+        entry[0],
+        this.handlersFunc.get(entry[0]) as ShortcutCallBack
+      );
+    }
 
     this.dialogRefs = {
       home: (undefined as unknown) as MatDialogRef<HomeComponent>,
@@ -140,6 +155,7 @@ export class AppComponent implements AfterViewInit {
       documentation:
           (undefined as unknown) as MatDialogRef<DocumentationComponent>,
       galery: (undefined as unknown) as MatDialogRef<GaleryComponent>,
+      export: (undefined as unknown) as MatDialogRef<ExportComponent>,
     };
   }
 
@@ -150,6 +166,7 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.svgService.instance = this.svg;
+
     this.openHomeDialog();
 
     /*this.communicationServerice.getAll()
@@ -177,6 +194,17 @@ export class AppComponent implements AfterViewInit {
     this.communicationServerice.post()
       .then(id => console.log('SUCESS: ' + id))
       .catch(err => console.log('FAIL: ' + err));*/
+    this.undoRedo.setSVG(this.svgService.instance)
+    this.undoRedo.addToCommands()
+    // setInterval(() => {
+    //   this.communicationServerice.encode(
+    //     'BEST DRAW EVER',
+    //     ['rouge', 'licorne'],
+    //     this.svgService.instance.nativeElement);
+    //   this.communicationServerice.post()
+    //     .then(id => console.log('SUCESS: ' + id))
+    //     .catch(err => console.log('FAIL: ' + err));
+    // }, 2000);
   }
 
   private openHomeDialog(): void {
@@ -244,6 +272,22 @@ export class AppComponent implements AfterViewInit {
     this.dialogRefs.documentation.afterClosed().subscribe(() => {
       this.shortcutHanler.activateAll();
       this.closeDocumentationDialog(fromHome);
+    });
+  }
+
+  protected openExportDialog() {
+    const dialogOptions = {
+      width: '1000px',
+      height: '90vh'
+    };
+    this.shortcutHanler.desactivateAll();
+    this.dialogRefs.export = this.dialog.open(
+      ExportComponent,
+      dialogOptions
+    );
+    this.dialogRefs.export.disableClose = true;
+    this.dialogRefs.export.afterClosed().subscribe(() => {
+      this.shortcutHanler.activateAll();
     });
   }
 

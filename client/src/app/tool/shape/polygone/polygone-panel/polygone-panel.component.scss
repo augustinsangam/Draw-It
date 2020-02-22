@@ -17,8 +17,17 @@
     margin-bottom: 20px;
     margin-left: 65px;
   }
+  .sides{
+    margin-bottom: 20px;
+    margin-left: 20px;
+  }
   
-  mat-slider{
+  #sidesSlider{
+    margin-top: -12px;
+    margin-right: 20px;
+  }
+
+  #thicknessSlider{
     margin-top: -12px;
     float: left;
   }

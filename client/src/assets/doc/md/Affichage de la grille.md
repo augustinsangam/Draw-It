@@ -1,3 +1,7 @@
-DrawIt vous offre la possibilité d’activer ou de désactiver une grille pour faciliter le traçage de formes.
+DrawIt vous offre la possibilité d'afficher une **Grille** pour faciliter la création de dessins. 
 
- Vous pouvez acccéder à la grille //TODO et vous pouvez la désactiver //TODO. Il est possible d’ajuster l’opacité ainsi que la taille des carreaux de la grille.
+Dans le panneau de l'outil grille, vous pouvez ajuster les options suivantes :
+*   **Opacité** : opacité de la grille
+*   **Taille des carreaux** : taille des carreaux de la grille
+
+La grille ne s'affichera pas lors de l'exportation, vous pouvez donc la laisser activée même lorsque vous exportez ou sauvegardez votre dessin.
