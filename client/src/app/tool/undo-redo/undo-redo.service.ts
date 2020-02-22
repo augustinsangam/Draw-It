@@ -6,16 +6,14 @@ import { ElementRef, Injectable } from '@angular/core';
 export class UndoRedoService {
 
   // public
-  canUndo: boolean;
-  canRedo: boolean;
+
   private cmdDone: (ChildNode[])[]
   private cmdUndone: (ChildNode[])[];
+  private firstCommand: boolean;
   private svgElRef: ElementRef<SVGSVGElement>;
   constructor() {
     this.cmdDone = [];
     this.cmdUndone = [];
-    this.canUndo = false;
-    this.canRedo = true;
   }
 
   setSVG(svgElRef: ElementRef<SVGSVGElement>): void {
@@ -25,29 +23,26 @@ export class UndoRedoService {
   addToCommands(): void {
     this.cmdDone.push(Array.from(this.svgElRef.nativeElement.childNodes));
     this.cmdUndone = [];
+    if (this.svgElRef.nativeElement.children.length) {
+      this.firstCommand = true;
+    }
+    console.log(this.svgElRef.nativeElement.children)
   }
 
   undo(): void {
 
-    if (this.cmdDone.length >= 2) {
+    if (this.cmdDone.length) {
       const lastCommand = this.cmdDone.pop();
       this.cmdUndone.push(lastCommand as ChildNode[]);
       this.refresh(this.cmdDone[this.cmdDone.length - 1]);
-      this.canUndo = true;
-    } else {
-      this.canUndo = false;
     }
   }
 
   redo(): void {
-
     if (this.cmdUndone.length) {
       const lastCommand = this.cmdUndone.pop();
       this.cmdDone.push(lastCommand as ChildNode[]);
       this.refresh(this.cmdDone[this.cmdDone.length - 1]);
-      this.canRedo = true;
-    } else {
-      this.canRedo = false;
     }
   }
 
@@ -61,5 +56,17 @@ export class UndoRedoService {
     for (const element of nodeChildrens) {
       this.svgElRef.nativeElement.appendChild(element);
     }
+  }
+
+  canUndo(): boolean {
+    if (!! this.svgElRef) {
+      const notEmpty = this.svgElRef.nativeElement.children.length >= 1;
+      return ( this.firstCommand && notEmpty);
+    }
+    return false;
+  }
+
+  canRedo(): boolean {
+    return (this.cmdUndone.length > 0);
   }
 }

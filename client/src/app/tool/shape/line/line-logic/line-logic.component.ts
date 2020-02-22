@@ -85,7 +85,7 @@ export class LineLogicComponent extends ToolLogicDirective
       this.createNewPath(currentPoint);
       this.currentJonctionOptions = {
         color: this.serviceColor.primaryColor,
-        radius: this.service.radius.toString()
+        radius: this.service.radius
       };
       this.isNewPath = false;
     }
@@ -98,17 +98,19 @@ export class LineLogicComponent extends ToolLogicDirective
   private onMouseDblClick(mouseEv: MouseEvent): void {
     if (!this.isNewPath) {
       let currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
-      this.getPath().removeLastLine(); // cancel the click event
-      this.getPath().removeLastLine();
+      this.removeLine();
+      this.removeLine(); // remove the click event
       const isLessThan3pixels = this.mathService.distanceIsLessThan3Pixel(
         currentPoint,
         this.getPath().datas.points[0]
       );
       if (isLessThan3pixels) {
         this.getPath().closePath();
+
       } else {
         if (mouseEv.shiftKey) {
           currentPoint = this.getPath().getAlignedPoint(currentPoint);
+          console.log('la')
         }
         this.addNewLine(currentPoint);
       }
@@ -142,7 +144,7 @@ export class LineLogicComponent extends ToolLogicDirective
         keyEv.code === 'Backspace' &&
         this.getPath().datas.points.length >= 2
       ) {
-        this.getPath().removeLastLine();
+        this.removeLine();
         this.getPath().simulateNewLine(this.getPath().lastPoint);
       }
       if (shiftIsPressed) {
@@ -175,14 +177,8 @@ export class LineLogicComponent extends ToolLogicDirective
   }
 
   private createJonction(center: Point): void {
-    const circle = this.renderer.createElement('circle', this.svgNS);
-    this.renderer.appendChild(this.svgElRef.nativeElement, circle);
-    this.getPath().addJonction(
-      circle,
-      center,
-      this.currentJonctionOptions.radius,
-      this.currentJonctionOptions.color
-    );
+    this.getPath().addJonction(center,
+      this.currentJonctionOptions.radius);
   }
 
   private addNewLine(currentPoint: Point): void {
@@ -192,12 +188,19 @@ export class LineLogicComponent extends ToolLogicDirective
     }
   }
 
+  private removeLine(): void {
+    this.getPath().removeLastInstruction();
+    if (this.getPath().withJonctions) {
+      this.getPath().removeLastInstruction();
+    }
+  }
+
   private getPath(): Path {
     return this.paths[this.paths.length - 1];
   }
 }
 
 interface JonctionOption {
-  radius: string,
+  radius: number,
   color: string
 }

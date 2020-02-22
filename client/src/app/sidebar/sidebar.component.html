@@ -22,12 +22,18 @@
 <!-- <a *ngIf="item.messageText === {{myVar}}" class="bordered" title="Undo"
 style="background-image:url(/assets/sidebar-icons/undo-24px.svg)"
 (click)="undo()"></a> -->
-<a title="Undo"
-style="background-image:url(/assets/sidebar-icons/undo-24px.svg)"
-(click)="undoRedoService.undo()"></a>
-<a title="Redo"
-style="background-image:url(/assets/sidebar-icons/redo-24px.svg)"
-(click)="undoRedoService.redo()"></a>
+<button mat-raised-button 
+  color="warn" [disabled]="!undoRedoService.canUndo()"
+  (click)="undoRedoService.undo()">
+  <mat-icon>undo</mat-icon>
+</button>
+
+<button mat-raised-button 
+  color="accent" [disabled]="!undoRedoService.canRedo()"
+  (click)="undoRedoService.redo()">
+  <mat-icon>redo</mat-icon>
+</button>
+
 <a title="Sauvegarder" style="background-image:url(/assets/sidebar-icons/gimp-prefs-import-export.png)"></a>
 <a title="Exporter" style="background-image:url(/assets/sidebar-icons/gimp-prefs-import-export.png)"></a>
 <a title="Aide" style="background-image:url(/assets/sidebar-icons/gimp-prefs-help-system.svg)"

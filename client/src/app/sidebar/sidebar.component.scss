@@ -26,7 +26,7 @@ a {
 
 nav a {
   transition: .3s filter;
-  filter: grayscale(100%);
+ // filter: grayscale(100%);
 }
 
 nav a:hover, nav a.selected {
@@ -36,4 +36,11 @@ nav a:hover, nav a.selected {
 a[title='Aide'] {
   cursor: help;
   background-color: #FF0;
+}
+.Activate {
+  color: white;
+}
+
+.Desactivate {
+  color: black;
 }
