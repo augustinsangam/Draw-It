@@ -25,7 +25,7 @@ button {
   margin-bottom: 7px;
 }
 
-.apercu {
+svg {
   border: solid 2px blue;
   height: 350px;
   width: 350px;
@@ -35,6 +35,19 @@ button {
   padding: 20px;
 }
 
+.filters{
+  padding-right: 100px;
+}
+
+.option {
+  display : block;
+  float: left;
+}
+
 mat-form-field {
   width: 400px;
+}
+
+mat-radio-button {
+  margin-bottom: 10px;
 }

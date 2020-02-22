@@ -1,4 +1,4 @@
-import { Component, Optional, Renderer2, OnInit } from '@angular/core';
+import { Component, OnInit, Optional, Renderer2 } from '@angular/core';
 import {
   FormBuilder, FormControl, FormGroup, Validators
 } from '@angular/forms';
@@ -20,6 +20,7 @@ export class ExportComponent implements OnInit {
   img: HTMLImageElement;
   name: string;
   format: string;
+
   ////////////////////
   protected form: FormGroup;
 
@@ -32,6 +33,12 @@ export class ExportComponent implements OnInit {
     FilterChoice.Grey
   ];
 
+  protected formats = [
+    FormatChoice.Svg,
+    FormatChoice.Png,
+    FormatChoice.Jpeg
+  ]
+
   constructor(private formBuilder: FormBuilder,
               @Optional() public dialogRef: MatDialogRef<ExportComponent>,
               private renderer: Renderer2,
@@ -43,7 +50,9 @@ export class ExportComponent implements OnInit {
         return (input.indexOf(' ') === -1 && input !== '') ? null : {
           spaceError: { value: 'No whitespace allowed' }
         };
-      }]]
+      }]],
+      filter: [FilterChoice.None, [Validators.required]],
+      format: [FormatChoice.Png, [Validators.required]]
     });
   }
 
@@ -53,6 +62,8 @@ export class ExportComponent implements OnInit {
 
   protected onConfirm() {
     console.log('On confirme');
+    this.name = (this.form.controls.name.value).toLocaleLowerCase();
+    this.format = (this.form.controls.format.value).toLocaleLowerCase();
     this.exportDrawing();
     this.dialogRef.close();
   }
@@ -63,16 +74,11 @@ export class ExportComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.name = 'test';
-    this.format = 'svg';
     this.innerSVG = this.svgElementService.instance.nativeElement ;
     this.svgDimension = this.innerSVG.getBoundingClientRect() as DOMRect;
-    console.log('taille ' + this.svgDimension.height
-    + ' ' + this.svgDimension.width);
   }
 
   serializeSVG(): string {
-    console.log('serializing');
     return (new XMLSerializer().serializeToString(this.innerSVG));
   }
 
@@ -98,7 +104,7 @@ export class ExportComponent implements OnInit {
   }
 
   downloadFile(canvaRecu: HTMLCanvasElement) {
-
+  
     // ensuite recupérons le canvas dans le navigateur
     const canvas: HTMLCanvasElement = canvaRecu;
 
@@ -181,4 +187,10 @@ enum FilterChoice {
   Inverse = 'Inversion',
   Artifice = 'Artifice',
   Grey = 'Gris épatant'
+}
+
+enum FormatChoice {
+  Svg = 'SVG',
+  Png = 'PNG',
+  Jpeg = 'JPEG'
 }
