@@ -6,7 +6,7 @@
     <mat-card-content>
         <div>
             <mat-chip-list>
-                <mat-chip *ngFor="let tag of tags">
+                <mat-chip *ngFor="let tag of tags" (click)="onClick(tag)">
                     {{tag}}
                 </mat-chip>
             </mat-chip-list>

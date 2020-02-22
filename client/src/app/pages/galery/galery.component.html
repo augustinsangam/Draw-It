@@ -2,27 +2,35 @@
   <h1 class='title'>
     <mat-icon>photo_library</mat-icon> Galerie
   </h1>
-  <mat-form-field class="chip-list">
-    <mat-chip-list #chipList aria-label="Tag selection">
-      <mat-chip *ngFor="let tag of tags" [selectable]="selectable" [removable]="removable" (removed)="remove(tag)">
-        {{tag}}
-        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-      </mat-chip>
-      <input placeholder="New tag..." #tagInput [formControl]="tagCtrl" [matAutocomplete]="auto"
-        [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-        (matChipInputTokenEnd)="add($event)">
-    </mat-chip-list>
-    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-      <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
-        {{tag}}
-      </mat-option>
-    </mat-autocomplete>
-  </mat-form-field>
+  <div class="search-bar">
+    <mat-form-field class="chip-list">
+      <mat-chip-list #chipList aria-label="Tag selection">
+        <mat-chip *ngFor="let tag of tags" [selectable]="selectable" [removable]="removable" (removed)="remove(tag)">
+          {{tag}}
+          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+        </mat-chip>
+        <input placeholder="New tag..." #tagInput [formControl]="tagCtrl" [matAutocomplete]="auto"
+          [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="add($event)">
+      </mat-chip-list>
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+        <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+          {{tag}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <div class="slider">
+      <p class="slider-option">OU</p>
+      <mat-slide-toggle #searchToggleRef>
+        ET
+      </mat-slide-toggle>
+    </div>
+  </div>
 </div>
 <div class='content' #content>
   <app-galery-card *ngFor="let draw of filteredGaleryDrawTable"
-    [name]="draw.name" [id]="draw.id" [tags]="draw.tags" [svg]="svg.cloneNode(true)"
-    (load)="loadDraw($event)" (delete)="deleteDraw($event)">
+    [name]="draw.name" [id]="draw.id" [tags]="draw.tags" [svg]="draw.svg.cloneNode(true)"
+    (load)="loadDraw($event)" (delete)="deleteDraw($event)" (tagClick)="addTag($event)">
   </app-galery-card>
   <div *ngIf="filteredGaleryDrawTable.length === 0">
     <h1 class="alert">Aucun dessin trouvé</h1>

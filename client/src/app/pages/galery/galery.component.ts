@@ -3,7 +3,7 @@ import {
   AfterViewInit, Component, ElementRef, Inject,
   Optional, Renderer2, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSlideToggle, MatSlideToggleChange } from '@angular/material';
 import {
   MatAutocomplete,
   MatAutocompleteSelectedEvent
@@ -14,7 +14,7 @@ import { map, startWith } from 'rxjs/operators';
 import {
   CommunicationService
 } from 'src/app/communication/communication.service';
-import { Draws as DrawsT } from 'src/app/communication/data_generated';
+import { Draw, Draws } from '../../communication/data_generated';
 import { DialogData } from '../home/home.component';
 import {
   ConfirmationDialogComponent
@@ -22,6 +22,8 @@ import {
 import {
   DeleteConfirmationDialogComponent
 } from './deleteconfirmation-dialog.component';
+
+import { flatbuffers } from 'flatbuffers';
 
 /**
  * @title Chips Autocomplete
@@ -46,19 +48,24 @@ export interface GaleryDraw {
   styleUrls: ['./galery.component.scss']
 })
 export class GaleryComponent implements AfterViewInit {
-  // visible = true;
+  // Determine si la recherche se fait avec OU ou ET
+  searchStatementToggle = false;
   selectable = true;
   removable = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
   tagCtrl = new FormControl();
   filteredTags: Observable<string[]>;
-  tags: string[]; // = ['Lemon'];
-  allTags: string[]; // = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
+  tags: string[];
+  allTags: string[];
   galeryDrawTable: GaleryDraw[];
   filteredGaleryDrawTable: GaleryDraw[];
   private dialogRefs: DialogRefs;
   svg: SVGSVGElement;
-  // private drawInProgress = true;
+
+  @ViewChild('searchToggleRef', {
+    static: false,
+    read : MatSlideToggle
+  }) protected searchToggleRef: MatSlideToggle;
 
   @ViewChild('tagInput', {
     static: true,
@@ -94,117 +101,109 @@ export class GaleryComponent implements AfterViewInit {
       this.createGaleryDrawsTable(fbbb);
     });
     // TEMPORAIRE
-    let newTempsImage: any;
-    fetch(encodeURI(
-      '../../assets/galerytemps/1.txt'))
-      .then(res => res.text())
-      .then(text => {
-        const div = this.renderer.createElement('div') as HTMLElement;
-        this.renderer.setProperty(div, 'innerHTML', text);
-        this.svg = div.children.item(0) as SVGSVGElement;
+    // let newTempsImage: any;
+    // fetch(encodeURI(
+    //   '../../assets/galerytemps/1.txt'))
+    //   .then(res => res.text())
+    //   .then(text => {
+    //     const div = this.renderer.createElement('div') as HTMLElement;
+    //     this.renderer.setProperty(div, 'innerHTML', text);
+    //     this.svg = div.children.item(0) as SVGSVGElement;
 
-        newTempsImage = this.svg;
-        const newTempDraw1: GaleryDraw = {
-          name: 'test 1',
-          id: 0,
-          tags: ['Lemon', 'Apple'],
-          svg: newTempsImage,
-        }
-        this.galeryDrawTable.push(newTempDraw1);
-        const newTempDraw2: GaleryDraw = {
-          name: 'test 2',
-          id: 1,
-          tags: ['Lemon', 'Lime'],
-          svg: newTempsImage,
-        }
-        this.galeryDrawTable.push(newTempDraw2);
-        const newTempDraw3: GaleryDraw = {
-          name: 'test 3 nom beaucoup trop long sa mere',
-          id: 2,
-          tags: ['Orange', 'Strawberry', 'truc1', 'truc2', 'truc3'],
-          svg: newTempsImage,
-        }
-        this.galeryDrawTable.push(newTempDraw3);
-        this.filteredGaleryDrawTable = this.galeryDrawTable;
-        this.dialogRefs = {
-          delete: (
-            undefined as unknown
-          ) as MatDialogRef<DeleteConfirmationDialogComponent>,
-          load: (undefined as unknown) as MatDialogRef<
-            ConfirmationDialogComponent
-          >
-        };
+    //     newTempsImage = this.svg;
+    //     const newTempDraw1: GaleryDraw = {
+    //       name: 'test 1',
+    //       id: 0,
+    //       tags: ['Lemon', 'Apple'],
+    //       svg: newTempsImage,
+    //     }
+    //     this.galeryDrawTable.push(newTempDraw1);
+    //     const newTempDraw2: GaleryDraw = {
+    //       name: 'test 2',
+    //       id: 1,
+    //       tags: ['Lemon', 'Lime'],
+    //       svg: newTempsImage,
+    //     }
+    //     this.galeryDrawTable.push(newTempDraw2);
+    //     const newTempDraw3: GaleryDraw = {
+    //       name: 'test 3 nom beaucoup trop long sa mere',
+    //       id: 2,
+    //       tags: ['Orange', 'Strawberry', 'truc1', 'truc2', 'truc3'],
+    //       svg: newTempsImage,
+    //     }
+    //     this.galeryDrawTable.push(newTempDraw3);
+    //     this.filteredGaleryDrawTable = this.galeryDrawTable;
+    //     this.dialogRefs = {
+    //       delete: (
+    //         undefined as unknown
+    //       ) as MatDialogRef<DeleteConfirmationDialogComponent>,
+    //       load: (undefined as unknown) as MatDialogRef<
+    //         ConfirmationDialogComponent
+    //       >
+    //     };
 
-        for (const draw of this.galeryDrawTable) {
-          if (!!draw.tags) {
-            for (const tag of draw.tags) {
-              if (this.allTags.indexOf(tag) === -1) {
-                this.allTags.push(tag);
-              }
-            }
-          }
-        }
-        this.tagCtrl.updateValueAndValidity();
-      });
+    //     for (const draw of this.galeryDrawTable) {
+    //       if (!!draw.tags) {
+    //         for (const tag of draw.tags) {
+    //           if (this.allTags.indexOf(tag) === -1) {
+    //             this.allTags.push(tag);
+    //           }
+    //         }
+    //       }
+    //     }
+    //     this.tagCtrl.updateValueAndValidity();
+    //   });
   }
 
   createGaleryDrawsTable(fbbb: flatbuffers.ByteBuffer): void {
-    const draws = DrawsT.getRoot(fbbb);
-    const drawsLenght = draws.drawsLength();
+    const draws = Draws.getRoot(fbbb);
+    const drawsLenght = draws.drawBuffersLength();
     for (let i = 0; i < drawsLenght; i++) {
-      // const name = draws.draws(i).name;
-      if (!!draws.draws(i)) {
-        let drawsTagsLenght: number;
-        const drawTagsTable: string[] = [];
-
-        // FIXME: Faire fonctionner avec la regle lint.
-        // tslint:disable: no-non-null-assertion
-        if (!!draws.draws(i)!.tagsLength()) {
-          drawsTagsLenght = draws.draws(i)!.tagsLength();
-
-          for (let j = 0; j < drawsTagsLenght; j++) {
-            let tag: string;
-
-            if (!!draws.draws(i)!.tags(j)) {
-              tag = draws.draws(i)!.tags(j);
-
-              drawTagsTable.push(tag);
-
-              if (this.allTags.indexOf(tag) === -1) {
-                this.allTags.push(tag);
-              }
-            }
+      const drawBuffer = draws.drawBuffers(i);
+      if (!!drawBuffer) {
+        const newId = drawBuffer.id();
+        const serializedDraw = drawBuffer.bufArray();
+        if (!!serializedDraw) {
+          const drawFbbb = new flatbuffers.ByteBuffer(serializedDraw);
+          const draw = Draw.getRoot(drawFbbb);
+          const newName = draw.name();
+          const tagArrayLenght = draw.tagsLength();
+          const newTagArray = new Array<string>();
+          const tempsAllTags = new Set<string>();
+          for (let j = 0; j < tagArrayLenght; j++) {
+            const tag = draw.tags(j);
+            newTagArray.push(tag);
+            tempsAllTags.add(tag);
           }
-        }
-        if (!!draws.draws(i)!.name() &&
-          !!draws.draws(i)!.id() &&
-          !!draws.draws(i)!.svg()) {
-
-          const newName = draws.draws(i)!.name();
-          const newId = draws.draws(i)!.id();
-          const newImage = draws.draws(i)!.svg() as SVGSVGElement;
-
-          const newGaleryDraw: GaleryDraw = {
-            name: newName,
-            id: newId,
-            tags: drawTagsTable,
-            svg: newImage
-          };
-
-          this.galeryDrawTable.push(newGaleryDraw);
+          const svgElement = draw.svg();
+          if (!!svgElement) {
+            const newSvg = this.communicationService.decodeElementRecursively(
+              svgElement, this.renderer) as SVGSVGElement;
+            const newGaleryDraw: GaleryDraw = {
+              id: newId,
+              name: newName,
+              svg: newSvg,
+              tags: newTagArray,
+            };
+            this.galeryDrawTable.push(newGaleryDraw);
+          }
+          this.allTags = Array.from(tempsAllTags);
         }
       }
-}
+    }
+    this.filteredGaleryDrawTable = this.galeryDrawTable;
   }
 
   ngAfterViewInit() {
-    // console.log(this.content);
-    // console.log(document.querySelectorAll('.photo'));
+    this.searchToggleRef.change.subscribe(($event: MatSlideToggleChange) =>
+      this.searchStatementToggle = $event.checked);
   }
 
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
+    console.log(input);
+    console.log(value);
 
     // Add our tag
     if ((value || '').trim()) {
@@ -243,15 +242,17 @@ export class GaleryComponent implements AfterViewInit {
     for (const elem of this.galeryDrawTable) {
       let keep = true;
       for (const tag of this.tags) {
-        if (!!elem.tags && elem.tags.indexOf(tag) === -1) {
+        if (!!elem.tags && elem.tags.indexOf(tag) === -1 && 
+          this.searchStatementToggle) {
           keep = false;
         }
-        // if (!!elem.tags && elem.tags.indexOf(tag) !== -1) {
-        //   keep = true;
-        //   break;
-        // } else {
-        //   keep = false;
-        // }
+        if (!!elem.tags && elem.tags.indexOf(tag) !== -1 &&
+          !this.searchStatementToggle) {
+          keep = true;
+          break;
+        } else {
+          keep = false;
+        }
       }
       if (keep) {
         this.filteredGaleryDrawTable.push(elem);
@@ -269,6 +270,12 @@ export class GaleryComponent implements AfterViewInit {
 
   private _filter2() {
     return this.allTags.filter((tag) => this.tags.indexOf(tag) === -1);
+  }
+
+  addTag(tag: string): void {
+    if (this.tags.indexOf(tag) === -1) {
+      this.tags.push(tag);
+    }
   }
 
   protected deleteDraw(id: number) {

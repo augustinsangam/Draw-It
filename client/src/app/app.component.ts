@@ -6,10 +6,10 @@ import {
   ViewChild
 } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material';
-import { flatbuffers } from 'flatbuffers';
+// import { flatbuffers } from 'flatbuffers';
 
-import { CommunicationService } from './communication/communication.service';
-import { Draw, Draws } from './communication/data_generated';
+// import { CommunicationService } from './communication/communication.service';
+// import { Draw, Draws } from './communication/data_generated';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
@@ -76,7 +76,7 @@ export class AppComponent implements AfterViewInit {
 
   constructor(
     public dialog: MatDialog,
-    private readonly communicationServerice: CommunicationService,
+    // private readonly communicationServerice: CommunicationService,
     private readonly toolSelectorService: ToolSelectorService,
     private colorService: ColorService,
     private svgService: SvgService,
@@ -110,6 +110,12 @@ export class AppComponent implements AfterViewInit {
         this.openNewDrawDialog();
       }
     });
+    this.handlersFunc.set(Shortcut.G, (event: KeyboardEvent) => {
+      if (!!event && event.ctrlKey) {
+        event.preventDefault();
+        this.openGaleryDialog(false);
+      }
+    });
 
     [
       Shortcut.C,
@@ -117,7 +123,8 @@ export class AppComponent implements AfterViewInit {
       Shortcut.W,
       Shortcut.Digit1,
       Shortcut.Digit2,
-      Shortcut.O
+      Shortcut.O,
+      Shortcut.G
     ].forEach(
       shortcut => {
         this.shortcutHanler.set(
@@ -145,7 +152,7 @@ export class AppComponent implements AfterViewInit {
     this.svgService.instance = this.svg;
     this.openHomeDialog();
 
-    this.communicationServerice.getAll()
+    /*this.communicationServerice.getAll()
       .then(fbbb => {
         const draws = Draws.getRoot(fbbb);
         for (let i = draws.drawBuffersLength(); i--; ) {
@@ -162,7 +169,7 @@ export class AppComponent implements AfterViewInit {
           }
         }
       })
-      .catch(() => console.log('OOPS'));
+      .catch(() => console.log('OOPS'));*/
     /*this.communicationServerice.encode(
       'PEACE N LOVE',
       ['rouge', 'licorne'],

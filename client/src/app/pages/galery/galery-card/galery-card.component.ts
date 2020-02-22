@@ -17,6 +17,7 @@ export class GaleryCardComponent implements AfterViewInit {
 
   @Output() load: Subject<number>;
   @Output() delete: Subject<number>;
+  @Output() tagClick: Subject<string>;
 
   @ViewChild('svg', {
     static: false,
@@ -26,6 +27,7 @@ export class GaleryCardComponent implements AfterViewInit {
   constructor(private renderer: Renderer2) {
     this.load = new Subject();
     this.delete = new Subject();
+    this.tagClick = new Subject();
   }
 
   ngAfterViewInit() {
@@ -35,8 +37,8 @@ export class GaleryCardComponent implements AfterViewInit {
     let viewPortHeight;
     if (!!svgWidth && !!svgHeight) {
       const factor = Math.max(+svgWidth / 300, +svgHeight / 170);
-      viewPortWidth = +svgWidth / factor;
-      viewPortHeight = +svgHeight / factor;
+      viewPortWidth = Number(svgWidth) / factor;
+      viewPortHeight = Number(svgHeight) / factor;
       this.svg.setAttribute('width', viewPortWidth.toString());
       this.svg.setAttribute('height', viewPortHeight.toString());
     }
@@ -53,4 +55,8 @@ export class GaleryCardComponent implements AfterViewInit {
     this.delete.next(this.id);
   }
 
+  onClick(tag: string) {
+    console.log(tag);
+    this.tagClick.next(tag)
+  }
 }
