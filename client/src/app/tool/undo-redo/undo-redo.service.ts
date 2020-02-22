@@ -26,7 +26,6 @@ export class UndoRedoService {
     if (this.svgElRef.nativeElement.children.length) {
       this.firstCommand = true;
     }
-    console.log(this.svgElRef.nativeElement.children)
   }
 
   undo(): void {

@@ -63,12 +63,18 @@ export class Path {
 
   removeLastInstruction() {
     this.datas.points.pop();
-    const lengthToRemove = String(this.datas.instructions.pop()).length;
-    this.pathAtribute = this.pathAtribute.substr(
-      0,
-      this.pathAtribute.length - lengthToRemove
-    );
-    this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
+    let instructionToRemove = 1;
+    if (this.withJonctions) {
+      instructionToRemove = 2;
+    }
+    for (let index = 0; index < instructionToRemove; index++) {
+      const lengthToRemove = String(this.datas.instructions.pop()).length;
+      this.pathAtribute = this.pathAtribute.substr(
+        0,
+        this.pathAtribute.length - lengthToRemove
+      );
+      this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
+    }
   }
 
   removePath() {

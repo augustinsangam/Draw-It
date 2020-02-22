@@ -110,7 +110,6 @@ export class LineLogicComponent extends ToolLogicDirective
       } else {
         if (mouseEv.shiftKey) {
           currentPoint = this.getPath().getAlignedPoint(currentPoint);
-          console.log('la')
         }
         this.addNewLine(currentPoint);
       }
@@ -149,8 +148,7 @@ export class LineLogicComponent extends ToolLogicDirective
       }
       if (shiftIsPressed) {
         const transformedPoint = this.getPath().getAlignedPoint(
-          this.mousePosition
-        );
+          this.mousePosition);
         this.getPath().simulateNewLine(transformedPoint);
       }
     }
@@ -190,9 +188,6 @@ export class LineLogicComponent extends ToolLogicDirective
 
   private removeLine(): void {
     this.getPath().removeLastInstruction();
-    if (this.getPath().withJonctions) {
-      this.getPath().removeLastInstruction();
-    }
   }
 
   private getPath(): Path {
