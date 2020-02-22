@@ -9,11 +9,11 @@
           {{tag}}
           <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
         </mat-chip>
-        <input placeholder="New tag..." #tagInput [formControl]="tagCtrl" [matAutocomplete]="auto"
+        <input placeholder="Nouvelle étiquette ..." #tagInput [formControl]="tagCtrl" [matAutocomplete]="auto"
           [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
           (matChipInputTokenEnd)="add($event)">
       </mat-chip-list>
-      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+      <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="selected($event)">
         <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
           {{tag}}
         </mat-option>
@@ -28,11 +28,12 @@
   </div>
 </div>
 <div class='content' #content>
+  <mat-spinner *ngIf="galeryDrawTable.length === 0" class="loading-spinner"></mat-spinner>
   <app-galery-card *ngFor="let draw of filteredGaleryDrawTable"
     [name]="draw.name" [id]="draw.id" [tags]="draw.tags" [svg]="draw.svg.cloneNode(true)"
     (load)="loadDraw($event)" (delete)="deleteDraw($event)" (tagClick)="addTag($event)">
   </app-galery-card>
-  <div *ngIf="filteredGaleryDrawTable.length === 0">
+  <div *ngIf="filteredGaleryDrawTable.length === 0 && galeryDrawTable.length !== 0">
     <h1 class="alert">Aucun dessin trouvé</h1>
   </div>
 </div>

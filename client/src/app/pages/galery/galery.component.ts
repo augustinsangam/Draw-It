@@ -39,11 +39,10 @@ export interface DialogRefs {
 }
 
 export interface GaleryDraw {
-  name: string | null | undefined;
-  id: number | null | undefined;
-  tags: string[] | null | undefined;
-  // TODO: trouver un type different au possible.
-  svg: SVGSVGElement;
+  name: string | null,
+  id: number,
+  svg: SVGSVGElement,
+  tags: string[],
 }
 
 @Component({
@@ -74,13 +73,12 @@ export class GaleryComponent implements AfterViewInit {
   @ViewChild('tagInput', {
     static: true,
     read: ElementRef
-  })
-  tagInput: ElementRef<HTMLInputElement>;
+  })protected tagInput: ElementRef<HTMLInputElement>;
+
   @ViewChild('auto', {
     static: true,
     read: MatAutocomplete
-  })
-  matAutocomplete: MatAutocomplete;
+  })protected matAutocomplete: MatAutocomplete;
 
   @ViewChild('content', {
     static: false
@@ -97,76 +95,28 @@ export class GaleryComponent implements AfterViewInit {
     this.filteredGaleryDrawTable = new Array<GaleryDraw>();
     this.allTags = new Array<string>();
     this.tags = new Array<string>();
-    this.filteredTags = this.tagCtrl.valueChanges.pipe(
-      startWith(null),
-      map(tag => tag ? this._filter(tag) : this._filter2()));
+    this.dialogRefs = {
+      delete:
+      (undefined as unknown) as MatDialogRef<DeleteConfirmationDialogComponent>,
+      load: (undefined as unknown) as MatDialogRef<ConfirmationDialogComponent>,
+    }
 
     this.communicationService.getAll().then(fbbb => {
       this.createGaleryDrawsTable(fbbb);
     });
-    // TEMPORAIRE
-    // let newTempsImage: any;
-    // fetch(encodeURI(
-    //   '../../assets/galerytemps/1.txt'))
-    //   .then(res => res.text())
-    //   .then(text => {
-    //     const div = this.renderer.createElement('div') as HTMLElement;
-    //     this.renderer.setProperty(div, 'innerHTML', text);
-    //     this.svg = div.children.item(0) as SVGSVGElement;
-
-    //     newTempsImage = this.svg;
-    //     const newTempDraw1: GaleryDraw = {
-    //       name: 'test 1',
-    //       id: 0,
-    //       tags: ['Lemon', 'Apple'],
-    //       svg: newTempsImage,
-    //     }
-    //     this.galeryDrawTable.push(newTempDraw1);
-    //     const newTempDraw2: GaleryDraw = {
-    //       name: 'test 2',
-    //       id: 1,
-    //       tags: ['Lemon', 'Lime'],
-    //       svg: newTempsImage,
-    //     }
-    //     this.galeryDrawTable.push(newTempDraw2);
-    //     const newTempDraw3: GaleryDraw = {
-    //       name: 'test 3 nom beaucoup trop long sa mere',
-    //       id: 2,
-    //       tags: ['Orange', 'Strawberry', 'truc1', 'truc2', 'truc3'],
-    //       svg: newTempsImage,
-    //     }
-    //     this.galeryDrawTable.push(newTempDraw3);
-    //     this.filteredGaleryDrawTable = this.galeryDrawTable;
-    //     this.dialogRefs = {
-    //       delete: (
-    //         undefined as unknown
-    //       ) as MatDialogRef<DeleteConfirmationDialogComponent>,
-    //       load: (undefined as unknown) as MatDialogRef<
-    //         ConfirmationDialogComponent
-    //       >
-    //     };
-
-    //     for (const draw of this.galeryDrawTable) {
-    //       if (!!draw.tags) {
-    //         for (const tag of draw.tags) {
-    //           if (this.allTags.indexOf(tag) === -1) {
-    //             this.allTags.push(tag);
-    //           }
-    //         }
-    //       }
-    //     }
-    //     this.tagCtrl.updateValueAndValidity();
-    //   });
   }
 
   createGaleryDrawsTable(fbbb: flatbuffers.ByteBuffer): void {
     const draws = Draws.getRoot(fbbb);
     const drawsLenght = draws.drawBuffersLength();
+
     for (let i = 0; i < drawsLenght; i++) {
       const drawBuffer = draws.drawBuffers(i);
+
       if (!!drawBuffer) {
         const newId = drawBuffer.id();
         const serializedDraw = drawBuffer.bufArray();
+
         if (!!serializedDraw) {
           const drawFbbb = new flatbuffers.ByteBuffer(serializedDraw);
           const draw = Draw.getRoot(drawFbbb);
@@ -174,39 +124,50 @@ export class GaleryComponent implements AfterViewInit {
           const tagArrayLenght = draw.tagsLength();
           const newTagArray = new Array<string>();
           const tempsAllTags = new Set<string>();
+
           for (let j = 0; j < tagArrayLenght; j++) {
             const tag = draw.tags(j);
             newTagArray.push(tag);
             tempsAllTags.add(tag);
           }
+
           const svgElement = draw.svg();
+
           if (!!svgElement) {
             const newSvg = this.communicationService.decodeElementRecursively(
               svgElement, this.renderer) as SVGSVGElement;
+
             const newGaleryDraw: GaleryDraw = {
               id: newId,
               name: newName,
               svg: newSvg,
               tags: newTagArray,
             };
+
             this.galeryDrawTable.push(newGaleryDraw);
           }
+
           this.allTags = Array.from(tempsAllTags);
         }
       }
     }
     this.filteredGaleryDrawTable = this.galeryDrawTable;
+    this.tagCtrl.setValue(null);
+    this.tagInput.nativeElement.blur();
   }
 
   ngAfterViewInit() {
     this.searchToggleRef.change.subscribe(($event: MatSlideToggleChange) =>
       this.searchStatementToggle = $event.checked);
+    this.filteredTags = this.tagCtrl.valueChanges.pipe(
+      startWith(null),
+      map(tag => tag ? this._filter(tag) : this._filter2()));
   }
 
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
-
+    console.log(event);
     // Add our tag
     if ((value || '').trim()) {
       this.tags.push(value.trim());
@@ -228,6 +189,7 @@ export class GaleryComponent implements AfterViewInit {
       this.tags.splice(index, 1);
     }
 
+    this.tagCtrl.setValue(null);
     this.filterGaleryTable();
   }
 
@@ -260,7 +222,6 @@ export class GaleryComponent implements AfterViewInit {
         this.filteredGaleryDrawTable.push(elem);
       }
     }
-    // console.log(this.filteredGaleryDrawTable.length === 0);
   }
 
   private _filter(value: string): string[] {
