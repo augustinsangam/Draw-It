@@ -75,7 +75,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
           this.style.opacity = FULLOPACITY;
           this.getRectangle().setCss(this.style);
           this.viewTemporaryForm(mouseEv);
-          this.undoRedo.addToCommands();
+          this.undoRedo.saveState();
           }
       }
     );

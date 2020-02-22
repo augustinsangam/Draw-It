@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {Point} from '../../shape/common/Point';
-import {ToolService} from '../../tool.service';
+import { Point } from '../../selection/Point';
+import { ToolService } from '../../tool.service';
 
 @Injectable({
   providedIn: 'root'

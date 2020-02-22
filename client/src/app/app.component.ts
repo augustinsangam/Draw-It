@@ -2,7 +2,6 @@ import {
   AfterViewInit,
   Component,
   HostListener,
-  ElementRef,
 } from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material';
 
@@ -156,8 +155,6 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.openHomeDialog();
-    this.undoRedo.setSVG(new ElementRef(this.svgService.structure.root));
-    this.undoRedo.addToCommands();
     // setInterval(() => {
     //   this.communicationServerice.encode(
     //     'BEST DRAW EVER',

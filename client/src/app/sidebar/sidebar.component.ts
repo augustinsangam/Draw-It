@@ -11,7 +11,7 @@ import {
   ToolSelectorService
 } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
-import {UndoRedoService} from '../tool/undo-redo/undo-redo.service'
+import { UndoRedoService } from '../tool/undo-redo/undo-redo.service'
 
 @Component({
   selector: 'app-sidebar',
@@ -20,14 +20,10 @@ import {UndoRedoService} from '../tool/undo-redo/undo-redo.service'
 })
 export class SidebarComponent implements AfterViewInit {
 
-  @ViewChild('line', {
-    static: false,
-  })
+  @ViewChild('line', { static: false })
   protected lineElRef: ElementRef<HTMLElement>;
 
-  @ViewChild('rectangle', {
-    static: false,
-  })
+  @ViewChild('rectangle', { static: false })
   protected rectangleElRef: ElementRef<HTMLElement>;
 
   @ViewChild('polygone', {
@@ -82,10 +78,10 @@ export class SidebarComponent implements AfterViewInit {
 
   // Must be pubilc
   constructor(private readonly toolSelectorService: ToolSelectorService,
-              private readonly undoRedoService: UndoRedoService) {
-                this.documentationEvent = new EventEmitter<null>();
-                this.exportEvent = new EventEmitter<null>();
-                this.toolToElRef = new Array(Tool._Len);
+              protected readonly undoRedoService: UndoRedoService) {
+    this.documentationEvent = new EventEmitter<null>();
+    this.exportEvent = new EventEmitter<null>();
+    this.toolToElRef = new Array(Tool._Len);
   }
 
   // Must be pubilc
@@ -152,14 +148,6 @@ export class SidebarComponent implements AfterViewInit {
 
   protected selectPipette(): void {
     this.toolSelectorService.set(Tool.Pipette);
-  }
-
-  protected undo(): void {
-    this.undoRedoService.undo();
-  }
-
-  protected redo(): void {
-    this.undoRedoService.redo();
   }
 
   protected selectAerosol(): void {

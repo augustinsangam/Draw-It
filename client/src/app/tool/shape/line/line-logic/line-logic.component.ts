@@ -3,8 +3,9 @@ import { ColorService } from '../../../color/color.service';
 import { MathService } from '../../../mathematics/tool.math-service.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
 import { Path } from '../../common/Path';
-import { Point } from '../../common/Point';
 import { LineService } from '../line.service';
+import { Point } from 'src/app/tool/selection/Point';
+import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 
 @Component({
   selector: 'app-line-logic',
@@ -23,6 +24,7 @@ export class LineLogicComponent extends ToolLogicDirective
     private readonly renderer: Renderer2,
     private readonly serviceColor: ColorService,
     private readonly mathService: MathService,
+    private readonly undoRedoService: UndoRedoService
   ) {
     super();
     this.paths = [];
@@ -81,8 +83,9 @@ export class LineLogicComponent extends ToolLogicDirective
   }
 
   private onMouseClick(mouseEv: MouseEvent): void {
-    let currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
+    let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
     if (this.isNewPath) {
+      this.undoRedoService.saveState();
       this.createNewPath(currentPoint);
       this.currentJonctionOptions = {
         color: this.serviceColor.primaryColor,
@@ -98,7 +101,7 @@ export class LineLogicComponent extends ToolLogicDirective
 
   private onMouseDblClick(mouseEv: MouseEvent): void {
     if (!this.isNewPath) {
-      let currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
+      let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
       this.removeLine();
       this.removeLine(); // remove the click event
       const isLessThan3pixels = this.mathService.distanceIsLessThan3Pixel(
@@ -120,10 +123,10 @@ export class LineLogicComponent extends ToolLogicDirective
 
   private onMouseMove(mouseEv: MouseEvent): void {
     if (!this.isNewPath) {
-      let point = (this.mousePosition = {
-        x: mouseEv.offsetX,
-        y: mouseEv.offsetY
-      });
+      let point = (this.mousePosition = new Point(
+        mouseEv.offsetX,
+        mouseEv.offsetY
+      ));
       if (mouseEv.shiftKey) {
         point = this.getPath().getAlignedPoint(point);
       }

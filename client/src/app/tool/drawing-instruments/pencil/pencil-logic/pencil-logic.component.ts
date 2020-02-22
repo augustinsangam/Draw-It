@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, Renderer2 } from '@angular/core';
 
+import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { PencilBrushCommon } from '../../pencil-brush/pencil-brush-common';
 import { PencilService } from '../pencil.service';
@@ -15,7 +16,8 @@ export class PencilLogicComponent extends PencilBrushCommon
 
   constructor(private renderer: Renderer2,
               private colorService: ColorService,
-              private pencilService: PencilService
+              private pencilService: PencilService,
+              private undoRedoService: UndoRedoService
   ) {
     super();
     this.listeners = [];
@@ -72,6 +74,7 @@ export class PencilLogicComponent extends PencilBrushCommon
     const mouseUpListen = this.renderer.listen(this.svgStructure.root,
       'mouseup', () => {
         this.stopDrawing();
+        this.undoRedoService.saveState();
     });
 
     const mouseLeaveListen = this.renderer.listen(this.svgStructure.root,

@@ -8,6 +8,7 @@ import {MatSlider} from '@angular/material/slider';
 import {ColorService} from '../../../color/color.service';
 import {ToolPanelDirective} from '../../../tool-panel/tool-panel.directive';
 import {AerosolService} from '../aerosol.service';
+import { Point } from 'src/app/tool/selection/Point';
 
 @Component({
   selector: 'app-aerosol-panel',
@@ -67,7 +68,7 @@ export class AerosolPanelComponent extends ToolPanelDirective {
     if (!!path) {
       let preview = '';
       for (let i = 0; i < this.service.frequency; i++) {
-        preview += this.service.generatePoints({x: 150, y: 110});
+        preview += this.service.generatePoints(new Point(150, 110));
       }
       path.setAttribute('d', preview);
     }

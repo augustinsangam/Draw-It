@@ -1,36 +1,38 @@
-import { ElementRef, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { SVGStructure } from '../tool-logic/tool-logic.directive';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UndoRedoService {
 
-  // public
-
   private cmdDone: (ChildNode[])[]
   private cmdUndone: (ChildNode[])[];
+
   private firstCommand: boolean;
-  private svgElRef: ElementRef<SVGSVGElement>;
+
+  private svgStructure: SVGStructure;
+
   constructor() {
     this.cmdDone = [];
     this.cmdUndone = [];
+    this.firstCommand = false;
   }
 
-  setSVG(svgElRef: ElementRef<SVGSVGElement>): void {
-    this.svgElRef = svgElRef;
+  intialise(svgStructure: SVGStructure): void {
+    this.svgStructure = svgStructure;
+    this.saveState();
   }
 
-  addToCommands(): void {
-    this.cmdDone.push(Array.from(this.svgElRef.nativeElement.childNodes));
+  saveState(): void {
+    const drawZone = this.svgStructure.drawZone;
+    this.cmdDone.push(Array.from(drawZone.childNodes));
     this.cmdUndone = [];
-    if (this.svgElRef.nativeElement.children.length) {
-      this.firstCommand = true;
-    }
+    this.firstCommand = (drawZone.children.length !== 0);
   }
 
   undo(): void {
-
-    if (this.cmdDone.length) {
+    if (this.cmdDone.length !== 0) {
       const lastCommand = this.cmdDone.pop();
       this.cmdUndone.push(lastCommand as ChildNode[]);
       this.refresh(this.cmdDone[this.cmdDone.length - 1]);
@@ -46,26 +48,22 @@ export class UndoRedoService {
   }
 
   refresh(node: ChildNode[]): void {
-    const currentSVGChildrens = Array.from(
-          this.svgElRef.nativeElement.childNodes);
+    const childrens = Array.from(this.svgStructure.drawZone.childNodes);
     const nodeChildrens = Array.from(node);
-    for (const element of currentSVGChildrens) {
+    for (const element of childrens) {
       element.remove();
     }
     for (const element of nodeChildrens) {
-      this.svgElRef.nativeElement.appendChild(element);
+      this.svgStructure.drawZone.appendChild(element);
     }
   }
 
   canUndo(): boolean {
-    if (!! this.svgElRef) {
-      const notEmpty = this.svgElRef.nativeElement.children.length >= 1;
-      return ( this.firstCommand && notEmpty);
-    }
-    return false;
+    return this.firstCommand && this.svgStructure.drawZone.children.length >= 1;
   }
 
   canRedo(): boolean {
-    return (this.cmdUndone.length > 0);
+    return this.cmdUndone.length > 0;
   }
+
 }

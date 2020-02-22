@@ -1,16 +1,16 @@
-import {Component, OnDestroy, Renderer2} from '@angular/core';
+import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { Point } from 'src/app/tool/selection/Point';
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
-import {ColorService} from '../../../color/color.service';
-import {MathService} from '../../../mathematics/tool.math-service.service';
-import {ToolLogicDirective} from '../../../tool-logic/tool-logic.directive';
+import { ColorService } from '../../../color/color.service';
+import { MathService } from '../../../mathematics/tool.math-service.service';
+import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
 import {
   BackGroundProperties,
   StrokeProperties, Style
 } from '../../common/AbstractShape';
-import {Ellipse} from '../../common/Ellipse';
-import {Rectangle} from '../../common/Rectangle';
-import {EllipseService} from '../ellipse.service';
-import { Point } from 'src/app/tool/selection/Point';
+import { Ellipse } from '../../common/Ellipse';
+import { Rectangle } from '../../common/Rectangle';
+import { EllipseService } from '../ellipse.service';
 
 const SEMIOPACITY = '0.5';
 const FULLOPACITY = '1';
@@ -65,7 +65,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
           this.rectVisu.element.remove();
           this.style.opacity = FULLOPACITY;
           this.getEllipse().setCss(this.style);
-          this.undoRedo.addToCommands();
+          this.undoRedo.saveState();
         }
       }
     );

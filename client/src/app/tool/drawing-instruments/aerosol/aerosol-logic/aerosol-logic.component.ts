@@ -1,9 +1,9 @@
 import {Component, OnDestroy, Renderer2} from '@angular/core';
 import {interval, Observable} from 'rxjs';
 import {ColorService} from '../../../color/color.service';
-import {Point} from '../../../shape/common/Point';
 import {ToolLogicDirective} from '../../../tool-logic/tool-logic.directive';
 import {AerosolService} from '../aerosol.service';
+import { Point } from 'src/app/tool/selection/Point';
 
 @Component({
   selector: 'app-aerosol-logic',
@@ -76,7 +76,7 @@ export class AerosolLogicComponent
   }
 
   protected onMouseDown(mouseEv: MouseEvent): void {
-    this.currMousePos = {x: mouseEv.offsetX, y: mouseEv.offsetY};
+    this.currMousePos = new Point(mouseEv.offsetX, mouseEv.offsetY);
 
     this.currentPath = this.renderer.createElement('path', this.svgNS);
     this.currentPath.setAttribute(
@@ -95,7 +95,7 @@ export class AerosolLogicComponent
 
   protected onMouseMove(mouseEv: MouseEvent): void {
     if (this.onDrag) {
-      this.currMousePos = {x: mouseEv.offsetX, y: mouseEv.offsetY};
+      this.currMousePos = new Point(mouseEv.offsetX, mouseEv.offsetY);
     }
   }
 

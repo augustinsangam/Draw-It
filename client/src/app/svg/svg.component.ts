@@ -20,6 +20,7 @@ import { Tool } from '../tool/tool.enum';
 
 import * as Tools from '../tool/tools';
 import { SvgService } from './svg.service';
+import { UndoRedoService } from '../tool/undo-redo/undo-redo.service';
 
 @Component({
   selector: '[app-svg]',
@@ -53,7 +54,8 @@ export class SvgComponent implements OnInit, AfterViewInit {
     private readonly elementRef: ElementRef<SVGSVGElement>,
     private readonly componentFactoryResolver: ComponentFactoryResolver,
     private readonly toolSelectorService: ToolSelectorService,
-    private readonly svgService: SvgService
+    private readonly svgService: SvgService,
+    private readonly undoRedoService: UndoRedoService
   ) {
     this.components = new Array(Tool._Len)
     for ( const entry of Tools.TOOL_MANAGER ) {
@@ -75,6 +77,7 @@ export class SvgComponent implements OnInit, AfterViewInit {
       endZone: this.endZone.nativeElement
     };
     this.svgService.structure = this.svgStructure;
+    this.undoRedoService.intialise(this.svgStructure);
   }
 
   private setTool(tool: Tool): ComponentRef<ToolLogicDirective> {

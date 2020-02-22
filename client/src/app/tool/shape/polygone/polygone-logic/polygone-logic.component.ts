@@ -5,10 +5,10 @@ import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
 import { BackGroundProperties,
          StrokeProperties,
          Style } from '../../common/AbstractShape';
-import { Point } from '../../common/Point';
 import { Polygone} from '../../common/Polygone';
 import { Rectangle} from '../../common/Rectangle';
 import { PolygoneService } from '../polygone.service';
+import { Point } from 'src/app/tool/selection/Point';
 
 const SEMI_OPACITY = '0.5';
 const FULL_OPACITY = '1';
@@ -59,7 +59,7 @@ implements OnDestroy {
       'mousemove',
       (mouseEv: MouseEvent) => {
         if (this.onDrag) {
-          const currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
+          const currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
           this.visualisationRectangle.dragRectangle(
             this.mouseDownPoint, currentPoint);
 
@@ -104,7 +104,7 @@ implements OnDestroy {
   private initPolygone(mouseEv: MouseEvent): void {
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
       this.onDrag = true;
-      this.mouseDownPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY };
+      this.mouseDownPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
 
       const polygon = this.renderer.createElement('polygon', this.svgNS);
       this.renderer.appendChild(this.svgStructure.drawZone, polygon);

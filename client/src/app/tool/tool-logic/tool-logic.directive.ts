@@ -2,7 +2,9 @@ import {
   Directive,
   Input,
   OnInit,
+  Inject,
 } from '@angular/core';
+import { UndoRedoService } from '../undo-redo/undo-redo.service';
 
 export interface SVGStructure {
   root: SVGSVGElement,
@@ -15,12 +17,13 @@ export interface SVGStructure {
   selector: 'app-tool-logic',
 })
 export abstract class ToolLogicDirective implements OnInit {
-  // Must be public
+
   @Input() svgStructure: SVGStructure;
-  // must be public
+
   readonly svgNS: string;
   protected constructor() {
     this.svgNS = 'http://www.w3.org/2000/svg';
+    console.log('ToolLogic');
   }
 
   // github.com/microsoft/TypeScript/issues/22815
