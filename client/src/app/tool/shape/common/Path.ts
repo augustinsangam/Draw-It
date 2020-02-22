@@ -84,12 +84,6 @@ export class Path {
     this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
   }
 
-  closePath() {
-    this.datas.points.push(this.datas.points[0]);
-    const instruction = 'Z';
-    this.addInstruction(instruction);
-  }
-
   setLineCss(strokewidth: string, strokeColor: string) {
     this.renderer.setAttribute(this.element, 'stroke-width', strokewidth);
     this.renderer.setAttribute(this.element, 'stroke', strokeColor);

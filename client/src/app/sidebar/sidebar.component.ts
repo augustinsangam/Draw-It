@@ -153,13 +153,14 @@ export class SidebarComponent implements AfterViewInit {
   protected selectPipette(): void {
     this.toolSelectorService.set(Tool.Pipette);
   }
+
   undo(): void {
     this.undoRedoService.undo();
   }
+
   redo(): void {
     this.undoRedoService.redo();
   }
-    
 
   protected selectAerosol(): void {
     this.toolSelectorService.set(Tool.Aerosol);

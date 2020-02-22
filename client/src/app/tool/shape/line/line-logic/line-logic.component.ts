@@ -106,13 +106,13 @@ export class LineLogicComponent extends ToolLogicDirective
       let currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
       this.removeLine();
       this.removeLine(); // remove the click event
+      const firstPoint = this.getPath().datas.points[0]
       const isLessThan3pixels = this.mathService.distanceIsLessThan3Pixel(
         currentPoint,
-        this.getPath().datas.points[0]
+        firstPoint
       );
       if (isLessThan3pixels) {
-        this.getPath().closePath();
-
+        this.addNewLine(firstPoint);
       } else {
         if (mouseEv.shiftKey) {
           currentPoint = this.getPath().getAlignedPoint(currentPoint);
