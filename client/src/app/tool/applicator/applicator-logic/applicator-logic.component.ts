@@ -47,6 +47,12 @@ export class ApplicatorLogicComponent extends ToolLogicDirective {
 
     this.renderer.listen(this.svgElRef.nativeElement, 'contextmenu',
       this.handlers.right);
+
+    this.renderer.setStyle(
+      this.svgElRef.nativeElement,
+      'cursor',
+      'crosshair'
+    );
   }
 
   private isSvgElement(element: SVGElement): boolean {

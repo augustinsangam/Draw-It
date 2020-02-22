@@ -23,6 +23,21 @@
      style="background-image:url(/assets/sidebar-icons/aerosol.png)"></a>
 </nav>
 
+<!-- <a *ngIf="item.messageText === {{myVar}}" class="bordered" title="Undo"
+style="background-image:url(/assets/sidebar-icons/undo-24px.svg)"
+(click)="undo()"></a> -->
+<button mat-raised-button 
+  color="warn" [disabled]="!undoRedoService.canUndo()"
+  (click)="undoRedoService.undo()">
+  <mat-icon>undo</mat-icon>
+</button>
+
+<button mat-raised-button 
+  color="accent" [disabled]="!undoRedoService.canRedo()"
+  (click)="undoRedoService.redo()">
+  <mat-icon>redo</mat-icon>
+</button>
+
 <a title="Sauvegarder"><mat-icon>save</mat-icon></a>
 <a title="Exporter"
   (click)="exportEvent.emit()"><mat-icon>save_alt</mat-icon></a>

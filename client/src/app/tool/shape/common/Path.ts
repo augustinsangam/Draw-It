@@ -1,14 +1,12 @@
 import { ElementRef, Renderer2 } from '@angular/core';
 import { MathService } from '../../mathematics/tool.math-service.service';
-import { Circle } from './Circle';
 import { Point } from './Point';
 
 // Class tested in ../Line/line-logic.component.spec.ts
 export class Path {
   private pathAtribute = '';
   private mathService = new MathService();
-
-  datas: PathData = { points: [], jonctions: [], instructions: [] };
+  datas: PathData = { points: [], instructions: [] };
   lastPoint: Point;
 
   constructor(
@@ -22,7 +20,6 @@ export class Path {
       'M ' + initialPoint.x.toString() + ' ' + initialPoint.y.toString() + ' ';
 
     this.addInstruction(instruction);
-    this.renderer.setAttribute(this.element, 'fill', 'none');
   }
 
   addLine(point: Point): void {
@@ -38,21 +35,12 @@ export class Path {
     this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
   }
 
-  addJonction(
-    element: ElementRef,
-    point: Point,
-    jonctionRadius: string,
-    jonctionColor: string
-  ) {
-    const jonction = new Circle(
-      point,
-      this.renderer,
-      element,
-      jonctionRadius,
-      jonctionColor
-    );
-
-    this.datas.jonctions.push(jonction);
+  addJonction( center: Point, radius: number) {
+    const instruction = ` M ${center.x},
+    ${center.y} m -${radius} 0 a ${radius},${radius} 0 1,0 ${2 * radius},
+    0 a ${radius},${radius} 0 1,0 -${2 * radius},0 M ${center.x},
+    ${center.y} `;
+    this.addInstruction(instruction);
   }
 
   getAlignedPoint(newPoint: Point): Point {
@@ -73,17 +61,19 @@ export class Path {
     this.renderer.setAttribute(this.element, 'd', temp);
   }
 
-  removeLastLine() {
+  removeLastInstruction() {
     this.datas.points.pop();
-    const lengthToRemove = String(this.datas.instructions.pop()).length;
-    this.pathAtribute = this.pathAtribute.substr(
-      0,
-      this.pathAtribute.length - lengthToRemove
-    );
-    this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
-
-    if (this.withJonctions && this.datas.jonctions.length > 1) {
-      this.removeLastJonction();
+    let instructionToRemove = 1;
+    if (this.withJonctions) {
+      instructionToRemove = 2;
+    }
+    for (let index = 0; index < instructionToRemove; index++) {
+      const lengthToRemove = String(this.datas.instructions.pop()).length;
+      this.pathAtribute = this.pathAtribute.substr(
+        0,
+        this.pathAtribute.length - lengthToRemove
+      );
+      this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
     }
   }
 
@@ -92,18 +82,6 @@ export class Path {
     this.datas.points = [];
     this.datas.instructions = [];
     this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
-
-    while (this.datas.jonctions.length) {
-      this.removeLastJonction();
-    }
-  }
-
-  removeLastJonction() {
-    const lastCircle = this.datas.jonctions.pop();
-    const lastJonction = (lastCircle as Circle).element;
-    this.renderer.removeChild(
-      this.renderer.parentNode(lastJonction),
-      lastJonction)
   }
 
   closePath() {
@@ -115,11 +93,15 @@ export class Path {
   setLineCss(strokewidth: string, strokeColor: string) {
     this.renderer.setAttribute(this.element, 'stroke-width', strokewidth);
     this.renderer.setAttribute(this.element, 'stroke', strokeColor);
+    if (this.withJonctions) {
+      this.renderer.setAttribute(this.element, 'fill', strokeColor);
+    } else {
+      this.renderer.setAttribute(this.element, 'fill', 'none');
+    }
   }
 }
 
 interface PathData {
     points: Point[],
-    jonctions: Circle[],
     instructions: string[],
   }

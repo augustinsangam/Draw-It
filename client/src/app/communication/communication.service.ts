@@ -38,7 +38,6 @@ export class CommunicationService {
       .filter(node => node.nodeType === 1)
       .map(node => node as Element)
       // TODO : Fix Lint
-      // tslint:disable-next-line: no-shadowed-variable
       .map(el => this.encodeElementRecursively(el));
     const children = ElementT.createChildrenVector(this.fbb, childrenList);
     const attrsList = Array.from(el.attributes)

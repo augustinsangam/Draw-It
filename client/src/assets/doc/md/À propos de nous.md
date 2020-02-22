@@ -1,4 +1,4 @@
-<img class="doc-img" src="../../assets/doc/imgs/NOUS.jpg" title="L'équipe" alt="image de l'équipe" width="100%">
+<img class="doc-fig" src="../../assets/doc/imgs/NOUS.jpg" title="L'équipe" alt="image de l'équipe" width="100%">
 
 L'équipe **Françafrique**, de gauche à droite :
 

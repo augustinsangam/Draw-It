@@ -6,8 +6,7 @@ import {PipetteService} from '../pipette.service';
 
 @Component({
   selector: 'app-pipette-logic',
-  templateUrl: './pipette-logic.component.html',
-  styleUrls: ['./pipette-logic.component.scss']
+  template: ''
 })
 
 // tslint:disable:use-lifecycle-interface
@@ -58,6 +57,12 @@ export class PipetteLogicComponent extends ToolLogicDirective
       onMouseMove,
       onRightClick
     ];
+
+    this.renderer.setStyle(
+      this.svgElRef.nativeElement,
+      'cursor',
+      'crosshair'
+    );
 
     this.backgroundColorOnInit = this.colorService.backgroundColor;
     this.svgElRef.nativeElement.style.cursor = 'crosshair';
