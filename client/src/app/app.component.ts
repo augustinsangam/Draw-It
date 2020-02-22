@@ -116,6 +116,12 @@ export class AppComponent implements AfterViewInit {
         this.openNewDrawDialog();
       }
     });
+    this.handlersFunc.set(Shortcut.G, (event: KeyboardEvent) => {
+      if (!!event && event.ctrlKey) {
+        event.preventDefault();
+        this.openGaleryDialog(false);
+      }
+    });
     this.handlersFunc.set(Shortcut.Z, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();

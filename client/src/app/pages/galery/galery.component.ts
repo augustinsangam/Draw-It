@@ -3,7 +3,11 @@ import {
   AfterViewInit, Component, ElementRef, Inject,
   Optional, Renderer2, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSlideToggle, MatSlideToggleChange } from '@angular/material';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog, MatDialogRef,
+  MatSlideToggle,
+  MatSlideToggleChange } from '@angular/material';
 import {
   MatAutocomplete,
   MatAutocompleteSelectedEvent
@@ -202,8 +206,6 @@ export class GaleryComponent implements AfterViewInit {
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
-    console.log(input);
-    console.log(value);
 
     // Add our tag
     if ((value || '').trim()) {
@@ -242,7 +244,7 @@ export class GaleryComponent implements AfterViewInit {
     for (const elem of this.galeryDrawTable) {
       let keep = true;
       for (const tag of this.tags) {
-        if (!!elem.tags && elem.tags.indexOf(tag) === -1 && 
+        if (!!elem.tags && elem.tags.indexOf(tag) === -1 &&
           this.searchStatementToggle) {
           keep = false;
         }
@@ -310,13 +312,7 @@ export class GaleryComponent implements AfterViewInit {
     if (result) {
       const draw = this.galeryDrawTable.filter((element) => element.id === id);
       const svg = draw[0].svg;
-      // let svg: SVGSVGElement;
-      // for (const draw of draws) {
-      //   svg = draw.svg;
-      // }
       this.dialogRef.close(svg);
-      // TODO creer le dessin a partir du svg du dessin avec l'id
-      console.log('creer dessin ' + id);
     } else {
       this.dialogRefs.load.close();
     }
