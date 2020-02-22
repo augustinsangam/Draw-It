@@ -1,4 +1,4 @@
-<img src="/assets/logo.png" alt="POLY DESSIN" />
+<img src="/assets/logo.png" alt="POLY DESSIN" width="10%"/>
 <div class="informations">
   <h1>Exporter un dessin</h1>
 </div>
@@ -31,12 +31,12 @@
 <table>
   <tr>
     <td>
-      <button mat-raised-button color="primary"
-        (click)="onConfirm($event)"
-        [disabled]="form.invalid">Exporter</button>
+      <button mat-raised-button color="warn" (click)="onCancel($event)">Annuler </button>
     </td>
     <td>
-      <button mat-raised-button color="warn" (click)="onCancel($event)">Annuler </button>
+      <button mat-raised-button color="primary"
+              (click)="onConfirm($event)"
+              [disabled]="form.invalid">Exporter</button>
     </td>
   </tr>
 </table>

@@ -1,12 +1,15 @@
 import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { Point } from 'src/app/tool/selection/Point';
+import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { MathService } from '../../../mathematics/tool.math-service.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
-import { BackGroundProperties,
-         StrokeProperties,
-         Style } from '../../common/AbstractShape';
-import { Point } from '../../common/Point';
-import {Rectangle} from '../../common/Rectangle';
+import {
+  BackGroundProperties,
+  StrokeProperties,
+  Style
+} from '../../common/AbstractShape';
+import { Rectangle } from '../../common/Rectangle';
 import { RectangleService } from '../rectangle.service';
 
 const SEMIOPACITY = '0.5';
@@ -34,6 +37,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
     private readonly service: RectangleService,
     private readonly renderer: Renderer2,
     private readonly colorService: ColorService,
+    private readonly undoRedo: UndoRedoService,
     private readonly mathService: MathService
   ) {
     super();
@@ -42,7 +46,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
     const onMouseDown = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mousedown',
       (mouseEv: MouseEvent) => {
         this.initRectangle(mouseEv);
@@ -50,11 +54,11 @@ export class RectangleLogicComponent extends ToolLogicDirective
   );
 
     const onMouseMove = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mousemove',
       (mouseEv: MouseEvent) => {
         if (this.onDrag) {
-          this.currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
+          this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
           this.viewTemporaryForm(mouseEv);
         }
       }
@@ -71,18 +75,19 @@ export class RectangleLogicComponent extends ToolLogicDirective
           this.style.opacity = FULLOPACITY;
           this.getRectangle().setCss(this.style);
           this.viewTemporaryForm(mouseEv);
+          this.undoRedo.saveState();
           }
       }
     );
 
     const onKeyDown = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'keydown',
       (keyEv: KeyboardEvent) => this.onKeyDown(keyEv)
     );
 
     const onKeyUp = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'keyup',
       (keyEv: KeyboardEvent) => this.onKeyUp(keyEv)
     );
@@ -94,6 +99,9 @@ export class RectangleLogicComponent extends ToolLogicDirective
       onMouseMove,
       onMouseUp
     ];
+
+    this.svgStructure.root.style.cursor = 'crosshair';
+
   }
 
   ngOnDestroy() {
@@ -124,7 +132,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
   private initRectangle(mouseEv: MouseEvent): void {
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
       const rectangle = this.renderer.createElement('rect', this.svgNS);
-      this.renderer.appendChild(this.svgElRef.nativeElement, rectangle);
+      this.renderer.appendChild(this.svgStructure.drawZone, rectangle);
       this.rectangles.push(new Rectangle(
         this.renderer,
         rectangle,
@@ -132,8 +140,8 @@ export class RectangleLogicComponent extends ToolLogicDirective
       ));
       this.setRectangleProperties();
       this.onDrag = true;
-      this.mouseDownPoint = this.currentPoint = {
-         x: mouseEv.offsetX, y: mouseEv.offsetY };
+      this.mouseDownPoint = this.currentPoint
+        = new Point(mouseEv.offsetX, mouseEv.offsetY );
     }
   }
 

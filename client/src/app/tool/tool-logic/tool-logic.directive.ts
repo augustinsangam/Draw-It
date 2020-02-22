@@ -1,19 +1,24 @@
 import {
   Directive,
-  ElementRef,
   Input,
-  OnInit,
+  OnInit
 } from '@angular/core';
+
+export interface SVGStructure {
+  root: SVGSVGElement,
+  drawZone: SVGGElement,
+  temporaryZone: SVGGElement,
+  endZone: SVGGElement
+}
 
 @Directive({
   selector: 'app-tool-logic',
 })
 export abstract class ToolLogicDirective implements OnInit {
-  // Must be public
-  @Input() svgElRef: ElementRef<SVGSVGElement>;
-  // must be public
-  readonly svgNS: string;
 
+  @Input() svgStructure: SVGStructure;
+
+  readonly svgNS: string;
   protected constructor() {
     this.svgNS = 'http://www.w3.org/2000/svg';
   }

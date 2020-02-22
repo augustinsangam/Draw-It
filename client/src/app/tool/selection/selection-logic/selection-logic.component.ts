@@ -49,7 +49,6 @@ export class SelectionLogicComponent
               const [startPoint, currentPoint] = this.orderPoint(
                 this.mouse.left.startPoint, this.mouse.left.currentPoint
               );
-              this.deleteVisualisation();
               this.applyMultipleSelection(startPoint, currentPoint);
             }
           }
@@ -65,7 +64,6 @@ export class SelectionLogicComponent
       ['click', ($event: MouseEvent) => {
         if ($event.button === 0) {
           const type = this.elementSelectedType($event.target as SVGElement);
-          // On s'assure d'avoir un vrai click
           if (this.mouse.left.startPoint.equals(this.mouse.left.endPoint)) {
             if (type === ElementSelectedType.DRAW_ELEMENT) {
               this.applySingleSelection($event.target as SVGElement);
@@ -127,7 +125,7 @@ export class SelectionLogicComponent
     .forEach((side: [string, string[]]) => {
       side[1].forEach((eventName: string) => {
         this.allListenners.push(
-          this.renderer.listen(this.svgElRef.nativeElement, eventName,
+          this.renderer.listen(this.svgStructure.root, eventName,
             (this.mouseHandlers.get(side[0]) as Map<string, MouseEventCallBack>)
             .get(eventName) as MouseEventCallBack)
         );

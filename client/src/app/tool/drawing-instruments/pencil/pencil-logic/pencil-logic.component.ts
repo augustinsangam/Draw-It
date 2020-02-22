@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, Renderer2 } from '@angular/core';
 
+import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { PencilBrushCommon } from '../../pencil-brush/pencil-brush-common';
 import { PencilService } from '../pencil.service';
@@ -13,20 +14,34 @@ export class PencilLogicComponent extends PencilBrushCommon
 
   private listeners: (() => void)[];
 
-  constructor(public renderer: Renderer2,
-              public colorService: ColorService,
-              public pencilService: PencilService) {
+  constructor(private renderer: Renderer2,
+              private colorService: ColorService,
+              private pencilService: PencilService,
+              private undoRedoService: UndoRedoService
+  ) {
     super();
-    this.listeners = new Array();
+    this.listeners = [];
+    this.undoRedoService.setPreUndoAction({
+      enabled: true,
+      overrideDefaultBehaviour: false,
+      overrideFunctionDefined: true,
+      overrideFunction: () => {
+        if (this.mouseOnHold) {
+          this.stopDrawing();
+          this.undoRedoService.saveState();
+        }
+      }
+    })
   }
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
+    this.svgStructure.root.style.cursor = 'crosshair';
   }
 
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnDestroy() {
-    this.listeners.forEach(listenner => { listenner(); });
+    this.listeners.forEach(end => { end(); });
   }
 
   protected configureSvgElement(element: SVGElement): void {
@@ -48,11 +63,11 @@ export class PencilLogicComponent extends PencilBrushCommon
     this.makeFirstPoint(mouseEv);
     this.svgPath = this.renderer.createElement(this.svgTag, this.svgNS);
     this.configureSvgElement(this.svgPath);
-    this.renderer.appendChild(this.svgElRef.nativeElement, this.svgPath);
+    this.renderer.appendChild(this.svgStructure.drawZone, this.svgPath);
   }
 
   ngAfterViewInit() {
-    const mouseDownListen = this.renderer.listen(this.svgElRef.nativeElement,
+    const mouseDownListen = this.renderer.listen(this.svgStructure.root,
       'mousedown', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0) {
           this.mouseOnHold = true;
@@ -60,22 +75,26 @@ export class PencilLogicComponent extends PencilBrushCommon
         }
     });
 
-    const mouseMoveListen = this.renderer.listen(this.svgElRef.nativeElement,
+    const mouseMoveListen = this.renderer.listen(this.svgStructure.root,
       'mousemove', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0 && this.mouseOnHold) {
           this.onMouseMove(mouseEv);
         }
     });
 
-    const mouseUpListen = this.renderer.listen(this.svgElRef.nativeElement,
-      'mouseup', (mouseEv: MouseEvent) => {
-        this.stopDrawing();
+    const mouseUpListen = this.renderer.listen(this.svgStructure.root,
+      'mouseup', () => {
+        if (this.mouseOnHold) {
+          this.stopDrawing();
+          this.undoRedoService.saveState();
+        }
     });
 
-    const mouseLeaveListen = this.renderer.listen(this.svgElRef.nativeElement,
+    const mouseLeaveListen = this.renderer.listen(this.svgStructure.root,
       'mouseleave', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0 && this.mouseOnHold) {
           this.stopDrawing();
+          this.undoRedoService.saveState();
         }
     });
 
