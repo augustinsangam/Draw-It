@@ -65,6 +65,12 @@ export class BrushLogicComponent extends PencilBrushCommon {
       mouseUpListen,
       mouseLeaveListen
     ];
+
+    this.renderer.setStyle(
+      this.svgElRef.nativeElement,
+      'cursor',
+      'crosshair'
+    );
   }
 
   protected configureSvgElement(element: SVGElement): void {

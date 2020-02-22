@@ -49,7 +49,6 @@ export class SelectionLogicComponent
               const [startPoint, currentPoint] = this.orderPoint(
                 this.mouse.left.startPoint, this.mouse.left.currentPoint
               );
-              this.deleteVisualisation();
               this.applyMultipleSelection(startPoint, currentPoint);
             }
           }
@@ -112,14 +111,10 @@ export class SelectionLogicComponent
       }],
       ['contextmenu', ($event: MouseEvent) => {
         $event.preventDefault();
-        $event.stopImmediatePropagation();
-        // On s'assure d'avoir un vrai click
-        if (this.mouse.right.startPoint.equals(this.mouse.right.endPoint)) {
-          const type = this.elementSelectedType($event.target as SVGElement);
-          if (type === ElementSelectedType.DRAW_ELEMENT) {
-            this.applySingleInversion($event.target as SVGElement);
-          };
-        }
+        const type = this.elementSelectedType($event.target as SVGElement);
+        if (type === ElementSelectedType.DRAW_ELEMENT) {
+          this.applySingleInversion($event.target as SVGElement);
+        };
       }]
     ])],
   ]);

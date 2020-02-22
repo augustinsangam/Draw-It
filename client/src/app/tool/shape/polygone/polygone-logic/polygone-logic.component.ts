@@ -88,6 +88,12 @@ implements OnDestroy {
       onMouseMove,
       onMouseUp
     ];
+
+    this.renderer.setStyle(
+      this.svgElRef.nativeElement,
+      'cursor',
+      'crosshair'
+    );
   }
 
   ngOnDestroy() {

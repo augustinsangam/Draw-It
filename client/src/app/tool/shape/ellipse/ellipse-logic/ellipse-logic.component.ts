@@ -103,6 +103,12 @@ export class EllipseLogicComponent extends ToolLogicDirective
       onKeyDown,
       onKeyUp
     ];
+
+    this.renderer.setStyle(
+      this.svgElRef.nativeElement,
+      'cursor',
+      'crosshair'
+    );
   }
 
   ngOnDestroy(): void {

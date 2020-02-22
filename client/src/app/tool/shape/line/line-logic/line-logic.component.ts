@@ -73,6 +73,12 @@ export class LineLogicComponent extends ToolLogicDirective
         (keyEv: KeyboardEvent) => this.onKeyUp(keyEv)
       )
     );
+
+    this.renderer.setStyle(
+      this.svgElRef.nativeElement,
+      'cursor',
+      'crosshair'
+    );
   }
 
   ngOnDestroy() {

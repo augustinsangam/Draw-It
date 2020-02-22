@@ -1,18 +1,38 @@
-import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule, MatListModule } from '@angular/material';
-import { MatIconModule } from '@angular/material/icon';
-import { BrowserModule } from '@angular/platform-browser';
 import {
-  BrowserAnimationsModule, NoopAnimationsModule
+  CommonModule
+} from '@angular/common';
+import {
+  HttpClientModule
+} from '@angular/common/http';
+import {
+  NgModule
+} from '@angular/core';
+import {
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
+import {
+  MatFormFieldModule,
+  MatListModule
+} from '@angular/material';
+import {
+  MatIconModule
+} from '@angular/material/icon';
+import {
+  BrowserModule
+} from '@angular/platform-browser';
+import {
+  BrowserAnimationsModule,
+  NoopAnimationsModule
 } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { MaterialModule } from './material.module';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
+import {
+  ExportComponent
+} from './pages/export/export.component';
 import {
   HomeComponent
 } from './pages/home/home.component';
@@ -23,9 +43,18 @@ import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import {
   PaletteDialogComponent
 } from './pages/new-draw/palette-dialog.component';
-import { PanelComponent } from './panel/panel.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
-import { SvgComponent } from './svg/svg.component';
+import {
+  PanelComponent } from './panel/panel.component';
+import {
+  SidebarComponent } from './sidebar/sidebar.component';
+import {
+  SvgComponent } from './svg/svg.component';
+import {
+  ApplicatorLogicComponent
+} from './tool/applicator/applicator-logic/applicator-logic.component';
+import {
+  ApplicatorPanelComponent
+} from './tool/applicator/applicator-panel/applicator-panel.component';
 import {
   ColorPanelComponent
 } from './tool/color/color-panel/color-panel.component';
@@ -36,6 +65,14 @@ import {
 import {
   ColorPickerItemComponent
 } from './tool/color/color-panel/color-picker-item/color-picker-item.component';
+import {
+  AerosolLogicComponent
+// tslint:disable-next-line: max-line-length
+} from './tool/drawing-instruments/aerosol/aerosol-logic/aerosol-logic.component';
+import {
+  AerosolPanelComponent
+// tslint:disable-next-line: max-line-length
+} from './tool/drawing-instruments/aerosol/aerosol-panel/aerosol-panel.component';
 import {
   BrushLogicComponent
 } from './tool/drawing-instruments/brush/brush-logic/brush-logic.component';
@@ -123,6 +160,11 @@ import {
     PolygonePanelComponent,
     PipetteLogicComponent,
     PipettePanelComponent,
+    AerosolLogicComponent,
+    AerosolPanelComponent,
+    ExportComponent,
+    ApplicatorPanelComponent,
+    ApplicatorLogicComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -139,6 +181,10 @@ import {
   ],
   providers: [],
   entryComponents: [
+    AerosolLogicComponent,
+    AerosolPanelComponent,
+    ApplicatorLogicComponent,
+    ApplicatorPanelComponent,
     BrushLogicComponent,
     BrushPanelComponent,
     ColorPanelComponent,
@@ -149,6 +195,7 @@ import {
     DocumentationComponent,
     EllipseLogicComponent,
     EllipsePanelComponent,
+    ExportComponent,
     LineLogicComponent,
     LinePanelComponent,
     HomeComponent,
@@ -165,6 +212,7 @@ import {
     RectanglePanelComponent,
     SelectionLogicComponent,
     SelectionPanelComponent,
+
   ],
   bootstrap: [
     AppComponent,

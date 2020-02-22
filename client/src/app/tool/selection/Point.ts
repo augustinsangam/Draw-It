@@ -5,7 +5,7 @@ export class Point {
 
   constructor(x: number, y: number) {
     // Un point ne peut avoir des coordonnées négatives
-    this.x = x;
+    this.x = x
     this.y = y;
   }
 

@@ -19,9 +19,16 @@ nav::-webkit-scrollbar {
 a {
   display: block;
   color: #FFF;
-  padding: 22px;
+  padding-left: 22px;
+  padding-right: 22px;
+  padding-top: 10px;
   background-position: center;
   background-repeat: no-repeat;
+  height: 40px;
+}
+
+a:hover {
+  cursor: pointer;
 }
 
 nav a {
@@ -43,4 +50,7 @@ a[title='Aide'] {
 
 .Desactivate {
   color: black;
+}
+mat-icon {
+  color: skyblue;;
 }
