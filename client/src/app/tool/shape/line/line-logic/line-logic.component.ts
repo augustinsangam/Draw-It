@@ -22,7 +22,7 @@ export class LineLogicComponent extends ToolLogicDirective
     private readonly service: LineService,
     private readonly renderer: Renderer2,
     private readonly serviceColor: ColorService,
-    private readonly mathService: MathService
+    private readonly mathService: MathService,
   ) {
     super();
     this.paths = [];
@@ -71,6 +71,9 @@ export class LineLogicComponent extends ToolLogicDirective
         (keyEv: KeyboardEvent) => this.onKeyUp(keyEv)
       )
     );
+
+    this.svgStructure.root.style.cursor = 'crosshair';
+
   }
 
   ngOnDestroy() {
@@ -83,7 +86,7 @@ export class LineLogicComponent extends ToolLogicDirective
       this.createNewPath(currentPoint);
       this.currentJonctionOptions = {
         color: this.serviceColor.primaryColor,
-        radius: this.service.radius.toString()
+        radius: this.service.radius
       };
       this.isNewPath = false;
     }
@@ -96,14 +99,15 @@ export class LineLogicComponent extends ToolLogicDirective
   private onMouseDblClick(mouseEv: MouseEvent): void {
     if (!this.isNewPath) {
       let currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
-      this.getPath().removeLastLine(); // cancel the click event
-      this.getPath().removeLastLine();
+      this.removeLine();
+      this.removeLine(); // remove the click event
       const isLessThan3pixels = this.mathService.distanceIsLessThan3Pixel(
         currentPoint,
         this.getPath().datas.points[0]
       );
       if (isLessThan3pixels) {
         this.getPath().closePath();
+
       } else {
         if (mouseEv.shiftKey) {
           currentPoint = this.getPath().getAlignedPoint(currentPoint);
@@ -139,13 +143,12 @@ export class LineLogicComponent extends ToolLogicDirective
         keyEv.code === 'Backspace' &&
         this.getPath().datas.points.length >= 2
       ) {
-        this.getPath().removeLastLine();
+        this.removeLine();
         this.getPath().simulateNewLine(this.getPath().lastPoint);
       }
       if (shiftIsPressed) {
         const transformedPoint = this.getPath().getAlignedPoint(
-          this.mousePosition
-        );
+          this.mousePosition);
         this.getPath().simulateNewLine(transformedPoint);
       }
     }
@@ -172,14 +175,8 @@ export class LineLogicComponent extends ToolLogicDirective
   }
 
   private createJonction(center: Point): void {
-    const circle = this.renderer.createElement('circle', this.svgNS);
-    this.renderer.appendChild(this.svgStructure.drawZone, circle);
-    this.getPath().addJonction(
-      circle,
-      center,
-      this.currentJonctionOptions.radius,
-      this.currentJonctionOptions.color
-    );
+    this.getPath().addJonction(center,
+      this.currentJonctionOptions.radius);
   }
 
   private addNewLine(currentPoint: Point): void {
@@ -189,12 +186,16 @@ export class LineLogicComponent extends ToolLogicDirective
     }
   }
 
+  private removeLine(): void {
+    this.getPath().removeLastInstruction();
+  }
+
   private getPath(): Path {
     return this.paths[this.paths.length - 1];
   }
 }
 
 interface JonctionOption {
-  radius: string,
+  radius: number,
   color: string
 }

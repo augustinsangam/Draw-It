@@ -19,7 +19,6 @@ export abstract class ToolLogicDirective implements OnInit {
   @Input() svgStructure: SVGStructure;
   // must be public
   readonly svgNS: string;
-
   protected constructor() {
     this.svgNS = 'http://www.w3.org/2000/svg';
   }

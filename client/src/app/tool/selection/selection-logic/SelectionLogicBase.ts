@@ -61,8 +61,8 @@ export abstract class SelectionLogicBase
       this.applyMultipleSelection();
     });
     this.allListenners.push(() => subscription.unsubscribe());
-    this.renderer.setStyle(this.svgElRef.nativeElement, 'cursor', 'default');
     this.initialiseKeyManager();
+    this.svgStructure.root.style.cursor = 'default';
   }
 
   protected applySingleSelection(element: SVGElement): void {

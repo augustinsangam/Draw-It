@@ -11,9 +11,9 @@ export class BrushLogicComponent extends PencilBrushCommon {
 
   private listeners: (() => void)[];
 
-  constructor(public renderer: Renderer2,
-              public colorService: ColorService,
-              public brushService: BrushService) {
+  constructor(private readonly renderer: Renderer2,
+              private readonly colorService: ColorService,
+              private readonly brushService: BrushService) {
     super();
     this.listeners = new Array();
   }
@@ -47,7 +47,7 @@ export class BrushLogicComponent extends PencilBrushCommon {
     });
 
     const mouseUpListen = this.renderer.listen(this.svgStructure.root,
-      'mouseup', (mouseEv: MouseEvent) => {
+      'mouseup', () => {
         this.stopDrawing();
     });
 
@@ -63,6 +63,9 @@ export class BrushLogicComponent extends PencilBrushCommon {
       mouseUpListen,
       mouseLeaveListen
     ];
+
+    this.svgStructure.root.style.cursor = 'crosshair';
+
   }
 
   protected configureSvgElement(element: SVGElement): void {
@@ -86,7 +89,7 @@ export class BrushLogicComponent extends PencilBrushCommon {
 
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnDestroy() {
-    this.listeners.forEach(listenner => { listenner(); });
+    this.listeners.forEach(end => { end(); });
   }
 
   protected onMouseMove(mouseEv: MouseEvent): void {

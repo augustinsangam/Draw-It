@@ -13,20 +13,22 @@ export class PencilLogicComponent extends PencilBrushCommon
 
   private listeners: (() => void)[];
 
-  constructor(public renderer: Renderer2,
-              public colorService: ColorService,
-              public pencilService: PencilService) {
+  constructor(private renderer: Renderer2,
+              private colorService: ColorService,
+              private pencilService: PencilService
+  ) {
     super();
-    this.listeners = new Array();
+    this.listeners = [];
   }
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
+    this.svgStructure.root.style.cursor = 'crosshair';
   }
 
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnDestroy() {
-    this.listeners.forEach(listenner => { listenner(); });
+    this.listeners.forEach(end => { end(); });
   }
 
   protected configureSvgElement(element: SVGElement): void {

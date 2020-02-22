@@ -6,8 +6,7 @@ import {PipetteService} from '../pipette.service';
 
 @Component({
   selector: 'app-pipette-logic',
-  templateUrl: './pipette-logic.component.html',
-  styleUrls: ['./pipette-logic.component.scss']
+  template: ''
 })
 
 // tslint:disable:use-lifecycle-interface
@@ -27,28 +26,28 @@ export class PipetteLogicComponent extends ToolLogicDirective
   }
 
   ngOnInit(): void {
-    this.svgElRef.nativeElement.style.cursor = 'wait';
+    this.svgStructure.root.style.cursor = 'wait';
 
-    html2canvas(this.svgElRef.nativeElement as unknown as HTMLElement).then(
+    html2canvas(this.svgStructure.root as unknown as HTMLElement).then(
       (value) => {
         this.image = value.getContext('2d') as CanvasRenderingContext2D;
       }
     );
 
     const onLeftClick = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'click',
       (mouseEv: MouseEvent) => this.onMouseClick(mouseEv)
     );
 
     const onRightClick = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'contextmenu',
       (mouseEv: MouseEvent) => this.onMouseClick(mouseEv)
     );
 
     const onMouseMove = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mousemove',
       (mouseEv: MouseEvent) => this.onMouseMove(mouseEv)
     );
@@ -59,13 +58,15 @@ export class PipetteLogicComponent extends ToolLogicDirective
       onRightClick
     ];
 
+    this.renderer.setStyle(
+      this.svgStructure.root,
+      'cursor',
+      'crosshair'
+    );
+
     this.backgroundColorOnInit = this.colorService.backgroundColor;
-    this.svgElRef.nativeElement.style.cursor = 'crosshair';
+    this.svgStructure.root.style.cursor = 'crosshair';
 
-  }
-
-  ngOnDestroy(): void {
-    this.allListeners.forEach(listener => listener());
   }
 
   private onMouseClick(mouseEv: MouseEvent): void {
@@ -96,6 +97,10 @@ export class PipetteLogicComponent extends ToolLogicDirective
         pixel[3].toString() +
       ')';
     }
+  }
+
+  ngOnDestroy(): void {
+    this.allListeners.forEach(end => end());
   }
 
 }

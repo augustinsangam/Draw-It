@@ -11,6 +11,7 @@ import {
   ToolSelectorService
 } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
+import {UndoRedoService} from '../tool/undo-redo/undo-redo.service'
 
 @Component({
   selector: 'app-sidebar',
@@ -80,14 +81,16 @@ export class SidebarComponent implements AfterViewInit {
   private toolToElRef: ElementRef<HTMLElement>[];
 
   // Must be pubilc
-  constructor(private readonly toolSelectorService: ToolSelectorService) {
-    this.documentationEvent = new EventEmitter<null>();
-    this.exportEvent = new EventEmitter<null>();
-    this.toolToElRef = new Array(Tool._Len);
+  constructor(private readonly toolSelectorService: ToolSelectorService,
+              private readonly undoRedoService: UndoRedoService) {
+                this.documentationEvent = new EventEmitter<null>();
+                this.exportEvent = new EventEmitter<null>();
+                this.toolToElRef = new Array(Tool._Len);
   }
 
   // Must be pubilc
   ngAfterViewInit() {
+    this.toolToElRef[Tool.Aerosol] = this.aerosolElRef;
     this.toolToElRef[Tool.Applicator] = this.applicatorElRef;
     this.toolToElRef[Tool.Brush] = this.brushElRef;
     this.toolToElRef[Tool.Eraser] = this.eraserElRef;
@@ -99,7 +102,6 @@ export class SidebarComponent implements AfterViewInit {
     this.toolToElRef[Tool.Selection] = this.selectionElRef;
     this.toolToElRef[Tool.Ellipse] = this.ellipseElRef;
     this.toolToElRef[Tool.Polygone] = this.polygoneElRef;
-    this.toolToElRef[Tool.Aerosol] = this.aerosolElRef;
     this.toolSelectorService.onChange(
       (tool, old) => this.setTool(tool, old));
   }
@@ -150,6 +152,14 @@ export class SidebarComponent implements AfterViewInit {
 
   protected selectPipette(): void {
     this.toolSelectorService.set(Tool.Pipette);
+  }
+
+  protected undo(): void {
+    this.undoRedoService.undo();
+  }
+
+  protected redo(): void {
+    this.undoRedoService.redo();
   }
 
   protected selectAerosol(): void {

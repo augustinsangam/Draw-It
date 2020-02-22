@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   HostListener,
+  ElementRef,
 } from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material';
 
@@ -17,12 +18,11 @@ import {
   ShortcutCallBack,
   ShortcutHandlerService
 } from './shortcut-handler/shortcut-handler.service';
-import { SvgService } from './svg/svg.service';
-import { ColorService } from './tool/color/color.service';
-import {
-  ToolSelectorService
-} from './tool/tool-selector/tool-selector.service';
-import { Tool } from './tool/tool.enum';
+import {SvgService} from './svg/svg.service';
+import {ColorService} from './tool/color/color.service';
+import {ToolSelectorService} from './tool/tool-selector/tool-selector.service';
+import {Tool} from './tool/tool.enum';
+import {UndoRedoService} from './tool/undo-redo/undo-redo.service';
 
 export interface NewDrawOptions {
   width: number;
@@ -66,11 +66,12 @@ export class AppComponent implements AfterViewInit {
 
   constructor(
     public dialog: MatDialog,
-    // private readonly communicationServerice: CommunicationService,
+   // private readonly communicationServerice: CommunicationService,
     private readonly toolSelectorService: ToolSelectorService,
     private colorService: ColorService,
     private svgService: SvgService,
-    private shortcutHanler: ShortcutHandlerService
+    private shortcutHanler: ShortcutHandlerService,
+    private undoRedo: UndoRedoService,
   ) {
     this.drawInProgress = false;
     this.drawOption = { height: 0, width: 0, color: '' };
@@ -106,6 +107,17 @@ export class AppComponent implements AfterViewInit {
         this.openNewDrawDialog();
       }
     });
+    this.handlersFunc.set(Shortcut.Z, (event: KeyboardEvent) => {
+      if (!!event && event.ctrlKey) {
+        event.preventDefault();
+        if (event.shiftKey) {
+          this.undoRedo.redo();
+        } else {
+          this.undoRedo.undo();
+        }
+      }
+    });
+
     this.handlersFunc.set(Shortcut.A, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
@@ -144,6 +156,8 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.openHomeDialog();
+    this.undoRedo.setSVG(new ElementRef(this.svgService.structure.root));
+    this.undoRedo.addToCommands();
     // setInterval(() => {
     //   this.communicationServerice.encode(
     //     'BEST DRAW EVER',

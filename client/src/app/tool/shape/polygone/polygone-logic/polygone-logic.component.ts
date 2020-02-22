@@ -6,15 +6,18 @@ import { BackGroundProperties,
          StrokeProperties,
          Style } from '../../common/AbstractShape';
 import { Point } from '../../common/Point';
-import {Polygone} from '../../common/Polygone';
-import {Rectangle} from '../../common/Rectangle';
+import { Polygone} from '../../common/Polygone';
+import { Rectangle} from '../../common/Rectangle';
 import { PolygoneService } from '../polygone.service';
-const SEMIOPACITY = '0.5';
-const FULLOPACITY = '1';
+
+const SEMI_OPACITY = '0.5';
+const FULL_OPACITY = '1';
+
 enum ClickType {
   CLICKGAUCHE,
   CLICKDROIT
 }
+
 @Component({
   selector: 'app-polygone-logic',
   template: ''
@@ -32,7 +35,7 @@ implements OnDestroy {
     private readonly service: PolygoneService,
     private readonly renderer: Renderer2,
     private readonly colorService: ColorService,
-    private readonly mathService: MathService
+    private readonly mathService: MathService,
   ) {
     super();
     this.onDrag = false;
@@ -43,7 +46,7 @@ implements OnDestroy {
   ngOnInit() {
 
     const onMouseDown = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mousedown',
       (mouseEv: MouseEvent) => {
         this.initPolygone(mouseEv);
@@ -52,7 +55,7 @@ implements OnDestroy {
     );
 
     const onMouseMove = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mousemove',
       (mouseEv: MouseEvent) => {
         if (this.onDrag) {
@@ -73,13 +76,10 @@ implements OnDestroy {
         const validClick = mouseEv.button === ClickType.CLICKGAUCHE;
         if (validClick && this.onDrag ) {
           this.onDrag = false;
-          this.style.opacity = FULLOPACITY;
+          this.style.opacity = FULL_OPACITY;
           this.getPolygone().setCss(this.style);
-          this.renderer.removeChild(
-            this.renderer.parentNode(this.visualisationRectangle.element),
-            this.visualisationRectangle.element)
+          this.visualisationRectangle.element.remove();
         }
-
       }
     );
 
@@ -88,6 +88,9 @@ implements OnDestroy {
       onMouseMove,
       onMouseUp
     ];
+
+    this.svgStructure.root.style.cursor = 'crosshair';
+
   }
 
   ngOnDestroy() {
@@ -104,12 +107,12 @@ implements OnDestroy {
       this.mouseDownPoint = {x: mouseEv.offsetX, y: mouseEv.offsetY };
 
       const polygon = this.renderer.createElement('polygon', this.svgNS);
-      this.renderer.appendChild(this.svgElRef.nativeElement, polygon);
+      this.renderer.appendChild(this.svgStructure.drawZone, polygon);
 
       this.polygones.push(new Polygone(
         this.renderer,
         polygon,
-        this.mathService, this.svgElRef, this.service.sides));
+        this.mathService, this.service.sides));
       }
     this.setPolygoneProperties();
   }
@@ -117,7 +120,7 @@ implements OnDestroy {
   private initRectangle(mouseEv: MouseEvent): void {
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
     const rectangle = this.renderer.createElement('rect', this.svgNS);
-    this.renderer.appendChild(this.svgElRef.nativeElement, rectangle);
+    this.renderer.appendChild(this.svgStructure.drawZone, rectangle);
 
     this.visualisationRectangle = new Rectangle(
       this.renderer,
@@ -134,7 +137,7 @@ implements OnDestroy {
       strokeWidth : this.service.thickness.toString(),
       fillColor : this.colorService.primaryColor,
       strokeColor : this.colorService.secondaryColor,
-      opacity : SEMIOPACITY
+      opacity : SEMI_OPACITY
     };
     this.getPolygone().setCss(this.style);
 
