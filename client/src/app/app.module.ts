@@ -5,7 +5,7 @@ import {
   HttpClientModule
 } from '@angular/common/http';
 import {
-  NgModule
+  NgModule, NO_ERRORS_SCHEMA
 } from '@angular/core';
 import {
   FormsModule,

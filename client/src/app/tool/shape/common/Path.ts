@@ -1,4 +1,4 @@
-import { ElementRef, Renderer2 } from '@angular/core';
+import { Renderer2 } from '@angular/core';
 import { MathService } from '../../mathematics/tool.math-service.service';
 import { Circle } from './Circle';
 import { Point } from './Point';
@@ -14,7 +14,7 @@ export class Path {
   constructor(
     initialPoint: Point,
     private renderer: Renderer2,
-    private element: ElementRef,
+    private element: SVGElement,
     public withJonctions: boolean
   ) {
     this.datas.points.push(initialPoint);
@@ -39,7 +39,7 @@ export class Path {
   }
 
   addJonction(
-    element: ElementRef,
+    element: SVGElement,
     point: Point,
     jonctionRadius: string,
     jonctionColor: string

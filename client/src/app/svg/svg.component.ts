@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ComponentFactoryResolver,
   ComponentRef,
@@ -10,30 +11,52 @@ import {
 } from '@angular/core';
 
 import {
-  ToolLogicDirective } from '../tool/tool-logic/tool-logic.directive';
+  SVGStructure,
+  ToolLogicDirective
+} from '../tool/tool-logic/tool-logic.directive';
 import {
   ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
 
 import * as Tools from '../tool/tools';
+import { SvgService } from './svg.service';
 
 @Component({
   selector: '[app-svg]',
   templateUrl: './svg.component.html',
   styleUrls: ['./svg.component.scss']
 })
-export class SvgComponent implements OnInit {
+export class SvgComponent implements OnInit, AfterViewInit {
+
   @ViewChild('container', {
     read: ViewContainerRef,
     static: true
-  })
-  private viewContainerRef: ViewContainerRef;
+  }) private viewContainerRef: ViewContainerRef;
+
+  @ViewChild('drawZone', {
+    static: false,
+    read: SVGGElement
+  }) private drawZone: SVGGElement;
+
+  @ViewChild('temporaryZone', {
+    static: false,
+    read: SVGGElement
+  }) private temporaryZone: SVGGElement;
+
+  @ViewChild('endZone', {
+    static: false,
+    read: SVGGElement
+  }) private endZone: SVGGElement;
+
+  private svgStructure: SVGStructure;
+
   private readonly components: Type<ToolLogicDirective>[];
 
   constructor(
     private readonly elementRef: ElementRef<SVGSVGElement>,
     private readonly componentFactoryResolver: ComponentFactoryResolver,
-    private readonly toolSelectorService: ToolSelectorService
+    private readonly toolSelectorService: ToolSelectorService,
+    private readonly svgService: SvgService
   ) {
     this.components = new Array(Tool._Len)
     for ( const entry of Tools.TOOL_MANAGER ) {
@@ -47,6 +70,16 @@ export class SvgComponent implements OnInit {
     this.toolSelectorService.onChange(this.setToolHandler);
   }
 
+  ngAfterViewInit() {
+    this.svgStructure = {
+      root: this.elementRef.nativeElement,
+      drawZone: this.drawZone,
+      temporaryZone: this.temporaryZone,
+      endZone: this.endZone
+    };
+    this.svgService.structure = this.svgStructure;
+  }
+
   private setTool(tool: Tool): ComponentRef<ToolLogicDirective> {
     this.viewContainerRef.clear();
     const component = this.components[tool];
@@ -55,7 +88,7 @@ export class SvgComponent implements OnInit {
     );
     let ref: ComponentRef<ToolLogicDirective>;
     ref = this.viewContainerRef.createComponent(factory);
-    ref.instance.svgElRef = this.elementRef;
+    ref.instance.svgStructure = this.svgStructure;
     ref.changeDetectorRef.detectChanges();
     return ref;
   }

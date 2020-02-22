@@ -100,6 +100,7 @@ export class EraserLogicComponent
         );
       });
     this.renderer.setStyle(this.svgElRef.nativeElement, 'cursor', 'none');
+    this.renderer.appendChild(this.svgElRef.nativeElement, this.eraser);
   }
 
   protected elementSelectedType(element: SVGElement): ElementSelectedType {
@@ -120,7 +121,6 @@ export class EraserLogicComponent
       fillColor: 'none',
       opacity: '0'
     });
-    this.renderer.appendChild(this.svgElRef.nativeElement, this.eraser);
   }
 
   private deleteEraser(): void {

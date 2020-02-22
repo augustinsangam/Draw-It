@@ -1,4 +1,4 @@
-import { ElementRef, OnDestroy, Renderer2 } from '@angular/core';
+import { OnDestroy, Renderer2 } from '@angular/core';
 import { SvgService } from 'src/app/svg/svg.service';
 import { MathService } from '../../mathematics/tool.math-service.service';
 import {
@@ -24,6 +24,8 @@ const COLORS = {
   GREEN: 'rgba(0, 255, 0, 0.7)',
   GRAY: 'rgba(128, 128, 255, 1)'
 }
+
+const TIME_INTERVAL = 100;
 
 export abstract class SelectionLogicBase
       extends ToolLogicDirective implements OnDestroy {
@@ -194,14 +196,18 @@ export abstract class SelectionLogicBase
     // A la construction, tout est fait
     // TODO : Remplacer Elref par un SVGElment
     // tslint:disable-next-line: no-unused-expression
-    new Circle(center, this.renderer,
-      circle as unknown as ElementRef, radius, COLORS.GRAY);
+    new Circle(center, this.renderer, circle, radius, COLORS.GRAY);
   }
 
   protected deleteVisualisation(): void {
     this.resetRectangle(this.rectangles.visualisation);
     this.rectangles.visualisation.setAttribute( 'transform', 'translate(0,0)');
+    this.deleteCircles();
+  }
+
+  private deleteCircles(): void {
     this.circles.forEach(element => {
+      this.renderer.setAttribute(element, 'r', '0');
       this.renderer.removeChild(this.svgElRef.nativeElement, element);
       this.resetTranslate(element);
     });
@@ -210,6 +216,7 @@ export abstract class SelectionLogicBase
   protected deleteSelection(): void {
     this.resetRectangle(this.rectangles.selection);
     this.resetTranslate(this.rectangles.selection);
+    this.deleteCircles();
   }
 
   protected deleteInversion(): void {
@@ -310,7 +317,7 @@ export abstract class SelectionLogicBase
   }
 
   private initialiseMouse(): void {
-    const fakePoint = new Point(0, 0);
+    const fakePoint = new Point(-50, 50);
     this.mouse = {
       left : {
         startPoint: fakePoint, currentPoint: fakePoint, endPoint: fakePoint,
@@ -343,7 +350,7 @@ export abstract class SelectionLogicBase
             this.keyManager.keyPressed.add($event.key);
           }
           const actualTime = new Date().getTime();
-          if (actualTime - this.keyManager.lastTimeCheck >= 100) {
+          if (actualTime - this.keyManager.lastTimeCheck >= TIME_INTERVAL) {
             this.keyManager.lastTimeCheck = actualTime;
             this.handleKey('ArrowUp', 0, -3);
             this.handleKey('ArrowDown', 0, 3);

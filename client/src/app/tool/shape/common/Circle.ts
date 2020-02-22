@@ -1,11 +1,11 @@
-import { ElementRef, Renderer2 } from '@angular/core';
+import { Renderer2 } from '@angular/core';
 
 import { Point } from './Point';
 
 export class Circle {
   constructor(private center: Point,
               private renderer: Renderer2,
-              public element: ElementRef,
+              public element: SVGElement,
               private radius: string,
               private color: string) {
     this.renderer.setAttribute(this.element, 'cx'   , this.center.x.toString());
