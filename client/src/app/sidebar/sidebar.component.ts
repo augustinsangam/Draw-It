@@ -81,16 +81,11 @@ export class SidebarComponent implements AfterViewInit {
   private toolToElRef: ElementRef<HTMLElement>[];
 
   // Must be pubilc
-<<<<<<< HEAD
   constructor(private readonly toolSelectorService: ToolSelectorService,
               private readonly undoRedoService: UndoRedoService) {
-    this.documentationEv = new EventEmitter<null>();
-=======
-  constructor(private readonly toolSelectorService: ToolSelectorService) {
-    this.documentationEvent = new EventEmitter<null>();
-    this.exportEvent = new EventEmitter<null>();
->>>>>>> next
-    this.toolToElRef = new Array(Tool._Len);
+                this.documentationEvent = new EventEmitter<null>();
+                this.exportEvent = new EventEmitter<null>();
+                this.toolToElRef = new Array(Tool._Len);
   }
 
   // Must be pubilc
@@ -158,13 +153,13 @@ export class SidebarComponent implements AfterViewInit {
   protected selectPipette(): void {
     this.toolSelectorService.set(Tool.Pipette);
   }
-<<<<<<< HEAD
   undo(): void {
     this.undoRedoService.undo();
   }
   redo(): void {
     this.undoRedoService.redo();
-=======
+  }
+    
 
   protected selectAerosol(): void {
     this.toolSelectorService.set(Tool.Aerosol);
@@ -172,6 +167,5 @@ export class SidebarComponent implements AfterViewInit {
 
   protected selectApplicator(): void {
     this.toolSelectorService.set(Tool.Applicator);
->>>>>>> next
   }
 }

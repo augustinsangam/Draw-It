@@ -19,20 +19,11 @@ import {
   ShortcutCallBack,
   ShortcutHandlerService
 } from './shortcut-handler/shortcut-handler.service';
-<<<<<<< HEAD
 import {SvgService} from './svg/svg.service';
 import {ColorService} from './tool/color/color.service';
 import {ToolSelectorService} from './tool/tool-selector/tool-selector.service';
 import {Tool} from './tool/tool.enum';
 import {UndoRedoService} from './tool/undo-redo/undo-redo.service';
-=======
-import { SvgService } from './svg/svg.service';
-import { ColorService } from './tool/color/color.service';
-import {
-  ToolSelectorService
-} from './tool/tool-selector/tool-selector.service';
-import { Tool } from './tool/tool.enum';
->>>>>>> next
 
 export interface NewDrawOptions {
   width: number;
