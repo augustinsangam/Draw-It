@@ -88,6 +88,7 @@ export class UndoRedoService {
 
   refresh(node: ChildNode[]): void {
     const childrens = Array.from(this.svgStructure.drawZone.childNodes);
+    // TODO : Nicolas. Look if it make sense
     const nodeChildrens = node ? Array.from(node) : [];
     for (const element of childrens) {
       element.remove();
