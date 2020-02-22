@@ -51,7 +51,6 @@ export abstract class SelectionLogicBase
     this.selectedElements = new Set();
   }
 
-  // Bug de Lint ToolLogicDireective hérite de OnInit
   // tslint:disable-next-line: use-lifecycle-interface
   ngOnInit() {
     this.initialiseMouse();
@@ -95,32 +94,19 @@ export abstract class SelectionLogicBase
   : SelectionReturn {
     if (elements === undefined) {
       const allElements = Array.from(
-        this.svgElRef.nativeElement.children
+        this.svgStructure.drawZone.children
       ) as SVGElement[];
-      // On enlève les trois rectangles et les les 4 points
       elements = new Set<SVGElement>(allElements);
-      elements.delete(this.rectangles.selection);
-      elements.delete(this.rectangles.inversion);
-      elements.delete(this.rectangles.visualisation);
-      [0, 1, 2, 3].forEach((index: number) => {
-        // Ne sera jamais undefined
-        // tslint:disable-next-line: no-non-null-assertion
-        elements!.delete(this.circles[index]);
-      });
-
     }
     const multipleSelection = new MultipleSelection(
-      elements,
-      this.getSvgOffset(),
-      (this.svgElRef.nativeElement as SVGSVGElement).createSVGPoint(),
+      elements, this.getSvgOffset(), this.svgStructure.root.createSVGPoint(),
       startPoint, endPoint
     );
-
     return multipleSelection.getSelection();
   }
 
-  private applyInversion( elements: Set<SVGElement>,
-                          startPoint?: Point, endPoint?: Point): void {
+  private applyInversion(elements: Set<SVGElement>,
+                         startPoint?: Point, endPoint?: Point): void {
     const elementsToInvert = new Set<SVGElement>(this.selectedElementsFreezed);
     elements.forEach((element: SVGElement) => {
       if (this.selectedElementsFreezed.has(element)) {
@@ -173,7 +159,7 @@ export abstract class SelectionLogicBase
     if (dasharray) {
       element.setAttribute('stroke-dasharray', '10 5');
     }
-    this.renderer.appendChild(this.svgElRef.nativeElement, element);
+    this.renderer.appendChild(this.svgStructure.temporaryZone, element);
   }
 
   protected drawCircles(p1: Point, p2: Point): void {
@@ -188,7 +174,8 @@ export abstract class SelectionLogicBase
     this.setCircle(new Point(endPoint.x, centerPoint.y), this.circles[2], '8');
     this.setCircle(new Point(centerPoint.x, endPoint.y), this.circles[3], '8');
     [0, 1, 2, 3].forEach((i) => {
-      this.renderer.appendChild(this.svgElRef.nativeElement, this.circles[i]);
+      this.renderer.appendChild(
+        this.svgStructure.temporaryZone, this.circles[i]);
     });
   }
 
@@ -208,7 +195,7 @@ export abstract class SelectionLogicBase
   private deleteCircles(): void {
     this.circles.forEach(element => {
       this.renderer.setAttribute(element, 'r', '0');
-      this.renderer.removeChild(this.svgElRef.nativeElement, element);
+      this.renderer.removeChild(this.svgStructure.temporaryZone, element);
       this.resetTranslate(element);
     });
   }
@@ -227,7 +214,7 @@ export abstract class SelectionLogicBase
   private resetRectangle(element: SVGElement) {
     element.setAttribute('width', '0');
     element.setAttribute('height', '0');
-    this.renderer.removeChild(this.svgElRef.nativeElement, element);
+    this.renderer.removeChild(this.svgStructure.temporaryZone, element);
   }
 
   private resetTranslate(element: SVGElement) {
@@ -245,7 +232,7 @@ export abstract class SelectionLogicBase
         return ElementSelectedType.RIGHT_CIRCLE;
       case this.circles[3]:
         return ElementSelectedType.BOTTOM_CIRCLE;
-      case this.svgElRef.nativeElement:
+      case this.svgStructure.root:
         return ElementSelectedType.NOTHING;
       case this.rectangles.selection:
         return ElementSelectedType.SELECTION_RECTANGLE;
@@ -260,7 +247,7 @@ export abstract class SelectionLogicBase
 
   protected isInTheSelectionZone(x: number, y: number)
   : boolean {
-    const point = this.svgElRef.nativeElement.createSVGPoint();
+    const point = this.svgStructure.root.createSVGPoint();
     const [dx, dy] =
       this.getTransformTranslate(this.rectangles.visualisation);
     [point.x, point.y] = [x - dx, y - dy];
@@ -290,7 +277,7 @@ export abstract class SelectionLogicBase
   }
 
   getSvgOffset(): Offset {
-    const svgBoundingRect = this.svgElRef.nativeElement.getBoundingClientRect();
+    const svgBoundingRect = this.svgStructure.root.getBoundingClientRect();
     return { top: svgBoundingRect.top, left: svgBoundingRect.left };
   }
 
@@ -375,10 +362,10 @@ export abstract class SelectionLogicBase
     this.allListenners.forEach(end => end());
     [this.rectangles.selection, this.rectangles.inversion,
     this.rectangles.visualisation].forEach((element: SVGElement) => {
-      this.renderer.removeChild(this.svgElRef.nativeElement, element);
+      this.renderer.removeChild(this.svgStructure.temporaryZone, element);
     });
     this.circles.forEach((circle) => this.renderer.removeChild(
-      this.svgElRef.nativeElement, circle)
+      this.svgStructure.temporaryZone, circle)
     );
   }
 

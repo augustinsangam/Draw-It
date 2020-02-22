@@ -57,7 +57,6 @@ export class EraserLogicComponent
       }
     }],
     ['mousemove', ($event: MouseEvent) => {
-      this.deleteEraser();
       this.restoreMarkedElements();
       const selectedElements = this.markElementsInZone($event.x, $event.y);
       this.mouse.currentPoint = new Point($event.offsetX, $event.offsetY);
@@ -65,7 +64,6 @@ export class EraserLogicComponent
         this.deleteAll(selectedElements);
       }
       this.drawEraser();
-
     }],
     ['mouseup', ($event: MouseEvent) => {
       if ($event.button === 0) {
@@ -77,14 +75,12 @@ export class EraserLogicComponent
       if ($event.button === 0) {
         // On s'assure d'avoir un vrai click
         if (this.mouse.startPoint.equals(this.mouse.endPoint)) {
-          this.deleteEraser();
           this.deleteAll(this.markElementsInZone($event.x, $event.y));
-          this.drawEraser();
         }
       }
     }],
     ['mouseleave', () => {
-      this.deleteEraser();
+      this.hideEraser();
       this.mouse.mouseIsDown = false;
     }]
 
@@ -95,16 +91,16 @@ export class EraserLogicComponent
     ['mousedown', 'mousemove', 'mouseup', 'click', 'mouseleave']
       .forEach((event: string) => {
         this.allListeners.push(
-          this.renderer.listen(this.svgElRef.nativeElement, event,
+          this.renderer.listen(this.svgStructure.root, event,
             this.handlers.get(event) as MouseEventCallBack)
         );
       });
-    this.renderer.setStyle(this.svgElRef.nativeElement, 'cursor', 'none');
-    this.renderer.appendChild(this.svgElRef.nativeElement, this.eraser);
+    this.svgStructure.root.style.cursor = 'none';
+    this.renderer.appendChild(this.svgStructure.temporaryZone, this.eraser);
   }
 
   protected elementSelectedType(element: SVGElement): ElementSelectedType {
-    return (element === this.svgElRef.nativeElement) ?
+    return (element === this.svgStructure.root) ?
       ElementSelectedType.NOTHING : ElementSelectedType.DRAW_ELEMENT;
   }
 
@@ -123,10 +119,9 @@ export class EraserLogicComponent
     });
   }
 
-  private deleteEraser(): void {
-    this.eraser.setAttribute('x', '0');
-    this.eraser.setAttribute('y', '0');
-    this.renderer.removeChild(this.svgElRef.nativeElement, this.eraser);
+  private hideEraser(): void {
+    this.eraser.setAttribute('width', '0');
+    this.eraser.setAttribute('height', '0');
   }
 
   private markElementsInZone(x: number, y: number): Set<SVGElement> {
@@ -135,7 +130,7 @@ export class EraserLogicComponent
     for (let i = x - halfSize; i <= x + halfSize; i += 5) {
       for (let j = y - halfSize; j <= y + halfSize; j += 5) {
         const element = document.elementFromPoint(i, j);
-        if (element !== this.svgElRef.nativeElement) {
+        if (element !== this.svgStructure.root && element !== this.eraser) {
           selectedElements.add(element as SVGElement);
         }
       }
@@ -164,7 +159,7 @@ export class EraserLogicComponent
   private deleteAll(elements: Set<SVGElement>) {
     elements.forEach((element) => {
       if (!!element) {
-        this.renderer.removeChild(this.svgElRef.nativeElement, element);
+        this.renderer.removeChild(this.svgStructure.drawZone, element);
       }
     });
   }
@@ -176,7 +171,7 @@ export class EraserLogicComponent
   }
 
   getSvgOffset(): Offset {
-    const svgBoundingRect = this.svgElRef.nativeElement.getBoundingClientRect();
+    const svgBoundingRect = this.svgStructure.root.getBoundingClientRect();
     return { top: svgBoundingRect.top, left: svgBoundingRect.left };
   }
 
@@ -195,8 +190,8 @@ export class EraserLogicComponent
 
   ngOnDestroy() {
     this.allListeners.forEach(end => end());
-    this.renderer.removeChild(this.svgElRef.nativeElement, this.eraser);
-    this.renderer.setStyle(this.svgElRef.nativeElement, 'cursor', 'default');
+    this.renderer.removeChild(this.svgStructure.temporaryZone, this.eraser);
+    this.svgStructure.root.style.cursor = 'default';
   }
 
 }

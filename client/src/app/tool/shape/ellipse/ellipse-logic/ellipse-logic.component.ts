@@ -8,9 +8,9 @@ import {
   StrokeProperties, Style
 } from '../../common/AbstractShape';
 import {Ellipse} from '../../common/Ellipse';
-import {Point} from '../../common/Point';
 import {Rectangle} from '../../common/Rectangle';
 import {EllipseService} from '../ellipse.service';
+import { Point } from 'src/app/tool/selection/Point';
 
 const SEMIOPACITY = '0.5';
 const FULLOPACITY = '1';
@@ -75,7 +75,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
       'mousemove',
       (mouseEv: MouseEvent) => {
         if (this.onDrag) {
-          this.currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
+          this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
           this.viewTemporaryForm(mouseEv);
           this.rectVisu.dragRectangle(
             this.initialPoint, this.currentPoint
@@ -104,11 +104,8 @@ export class EllipseLogicComponent extends ToolLogicDirective
       onKeyUp
     ];
 
-    this.renderer.setStyle(
-      this.svgElRef.nativeElement,
-      'cursor',
-      'crosshair'
-    );
+    this.svgStructure.root.style.cursor = 'crosshair';
+
   }
 
   ngOnDestroy(): void {
@@ -137,7 +134,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
 
   private initEllipse(mouseEv: MouseEvent): void {
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
-      this.currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
+      this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
       const ellipse = this.renderer.createElement('ellipse', this.svgNS);
       this.renderer.appendChild(this.svgStructure.drawZone, ellipse);
       this.ellipses.push(new Ellipse(
@@ -148,9 +145,8 @@ export class EllipseLogicComponent extends ToolLogicDirective
       ));
       this.setEllipseProperties();
       this.onDrag = true;
-      this.initialPoint = this.currentPoint = {
-        x: mouseEv.offsetX, y: mouseEv.offsetY
-      }
+      this.initialPoint = this.currentPoint
+        = new Point( mouseEv.offsetX, mouseEv.offsetY);
     }
   }
 

@@ -1,13 +1,15 @@
 import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { Point } from 'src/app/tool/selection/Point';
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { MathService } from '../../../mathematics/tool.math-service.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
-import { BackGroundProperties,
-         StrokeProperties,
-         Style } from '../../common/AbstractShape';
-import { Point } from '../../common/Point';
-import {Rectangle} from '../../common/Rectangle';
+import {
+  BackGroundProperties,
+  StrokeProperties,
+  Style
+} from '../../common/AbstractShape';
+import { Rectangle } from '../../common/Rectangle';
 import { RectangleService } from '../rectangle.service';
 
 const SEMIOPACITY = '0.5';
@@ -56,7 +58,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
       'mousemove',
       (mouseEv: MouseEvent) => {
         if (this.onDrag) {
-          this.currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
+          this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
           this.viewTemporaryForm(mouseEv);
         }
       }
@@ -98,11 +100,8 @@ export class RectangleLogicComponent extends ToolLogicDirective
       onMouseUp
     ];
 
-    this.renderer.setStyle(
-      this.svgElRef.nativeElement,
-      'cursor',
-      'crosshair'
-    );
+    this.svgStructure.root.style.cursor = 'crosshair';
+
   }
 
   ngOnDestroy() {
@@ -141,8 +140,8 @@ export class RectangleLogicComponent extends ToolLogicDirective
       ));
       this.setRectangleProperties();
       this.onDrag = true;
-      this.mouseDownPoint = this.currentPoint = {
-         x: mouseEv.offsetX, y: mouseEv.offsetY };
+      this.mouseDownPoint = this.currentPoint
+        = new Point(mouseEv.offsetX, mouseEv.offsetY );
     }
   }
 
