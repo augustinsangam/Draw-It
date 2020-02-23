@@ -9,47 +9,67 @@ export class UndoRedoService {
   private svgStructure: SVGStructure;
   private cmdDone: (SVGElement[])[]
   private cmdUndone: (SVGElement[])[];
-  private firstCommand: boolean;
 
-  private actions: [PreUndoAction, PostUndoAction];
+  private actions: {
+    undo: [PreAction, PostAction],
+    redo: [PreAction, PostAction],
+  };
 
   constructor() {
     this.cmdDone = [];
     this.cmdUndone = [];
-    this.firstCommand = true;
     this.resetActions();
   }
 
   intialise(svgStructure: SVGStructure): void {
     this.svgStructure = svgStructure;
-    this.saveState();
   }
 
   resetActions() {
-    this.actions = [
-      {
-        enabled: false,
-        overrideDefaultBehaviour: false,
-        overrideFunctionDefined: false
-      },
-      {
-        enabled: false,
-        functionDefined: false,
-      }
-    ]
+    this.actions = {
+      undo: [
+        {
+          enabled: false,
+          overrideDefaultBehaviour: false,
+          overrideFunctionDefined: false
+        },
+        {
+          enabled: false,
+          functionDefined: false,
+        }
+      ],
+      redo: [
+        {
+          enabled: false,
+          overrideDefaultBehaviour: false,
+          overrideFunctionDefined: false
+        },
+        {
+          enabled: false,
+          functionDefined: false,
+        }
+      ]
+    }
   }
 
-  setPreUndoAction(action: PreUndoAction) {
-    this.actions[0] = action;
+  setPreUndoAction(action: PreAction) {
+    this.actions.undo[0] = action;
   }
 
-  setPostUndoAction(action: PostUndoAction) {
-    this.actions[1] = action;
+  setPostUndoAction(action: PostAction) {
+    this.actions.undo[1] = action;
+  }
+
+  setPreRedoAction(action: PreAction) {
+    this.actions.undo[0] = action;
+  }
+
+  setPostRedoAction(action: PostAction) {
+    this.actions.undo[1] = action;
   }
 
   saveState(): void {
     // TODO : J'ai changé plein de tucs. Tu copiais des référecences Nico
-    this.firstCommand = false;
     const drawZone = this.svgStructure.drawZone;
     const length = drawZone.children.length;
     const toPush = new Array(length);
@@ -58,21 +78,21 @@ export class UndoRedoService {
     }
     this.cmdDone.push(toPush);
     console.log('On sauvegarde');
-    console.log(this);
   }
 
   undo(): void {
 
-    if (this.actions[0].enabled && this.actions[0].overrideFunctionDefined) {
-      (this.actions[0].overrideFunction as () => void)();
+    if (this.actions.undo[0].enabled
+      && this.actions.undo[0].overrideFunctionDefined) {
+      (this.actions.undo[0].overrideFunction as () => void)();
     }
 
-    if (!this.actions[0].overrideDefaultBehaviour) {
+    if (!this.actions.undo[0].overrideDefaultBehaviour) {
       this.undoBase();
     }
 
-    if (this.actions[1].enabled && this.actions[1].functionDefined) {
-      (this.actions[1].function as () => void)();
+    if (this.actions.undo[1].enabled && this.actions.undo[1].functionDefined) {
+      (this.actions.undo[1].function as () => void)();
     }
 
   }
@@ -86,6 +106,21 @@ export class UndoRedoService {
   }
 
   redo(): void {
+    if (this.actions.redo[0].enabled
+      && this.actions.redo[0].overrideFunctionDefined) {
+      (this.actions.redo[0].overrideFunction as () => void)();
+    }
+
+    if (!this.actions.redo[0].overrideDefaultBehaviour) {
+      this.redoBase();
+    }
+
+    if (this.actions.redo[1].enabled && this.actions.redo[1].functionDefined) {
+      (this.actions.redo[1].function as () => void)();
+    }
+  }
+
+  redoBase() {
     if (this.cmdUndone.length) {
       const lastCommand = this.cmdUndone.pop();
       this.cmdDone.push(lastCommand as SVGElement[]);
@@ -106,24 +141,23 @@ export class UndoRedoService {
   }
 
   canUndo(): boolean {
-    return !this.firstCommand &&
-      this.svgStructure.drawZone.children.length >= 1;
+    return this.cmdDone.length !== 0;
   }
 
   canRedo(): boolean {
-    return this.cmdUndone.length > 0;
+    return this.cmdUndone.length !== 0;
   }
 
 }
 
-interface PreUndoAction {
+interface PreAction {
   enabled: boolean,
   overrideDefaultBehaviour: boolean,
   overrideFunctionDefined: boolean
   overrideFunction?: () => void
 }
 
-interface PostUndoAction {
+interface PostAction {
   enabled: boolean,
   functionDefined: boolean,
   function?: () => void

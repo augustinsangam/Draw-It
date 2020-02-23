@@ -24,17 +24,17 @@
 </nav>
 
 <button mat-raised-button
-  color="warn"
-  *ngIf="undoRedoService.canUndo()"
-  (click)="undoRedoService.undo()">
-  <mat-icon>undo</mat-icon>
+  color="accent"
+  *ngIf="canRedo"
+  (click)="undoRedoService.redo()">
+  <mat-icon>redo</mat-icon>
 </button>
 
 <button mat-raised-button
-  color="accent"
-  *ngIf="undoRedoService.canRedo()"
-  (click)="undoRedoService.redo()">
-  <mat-icon>redo</mat-icon>
+  color="warn"
+  *ngIf="canUndo"
+  (click)="undoRedoService.undo()">
+  <mat-icon>undo</mat-icon>
 </button>
 
 <a title="Sauvegarder"><mat-icon>save</mat-icon></a>

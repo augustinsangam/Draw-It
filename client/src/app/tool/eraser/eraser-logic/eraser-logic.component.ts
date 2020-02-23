@@ -12,13 +12,17 @@ import {
 } from '../../shape/common/AbstractShape';
 import { Rectangle } from '../../shape/common/Rectangle';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
+import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { EraserService } from '../eraser.service';
 
 const CONSTANTS = {
   MAX_RED: 150,
   MIN_GREEN: 100,
   MIN_BLUE: 100,
-  FACTOR: 50
+  FACTOR: 50,
+  RED: 'rgba(255, 0, 0, 1)',
+  RED_TRANSPARENT: 'rgba(255, 0, 0, 0.7)',
+  STROKE_WIDTH: '2'
 }
 
 @Component({
@@ -33,10 +37,12 @@ export class EraserLogicComponent
   private eraser: SVGRectElement;
   private allListeners: (() => void)[];
   private markedElements: Map<SVGElement, string>;
+  private elementsDeletedInDrag: boolean;
 
   constructor(private renderer: Renderer2,
               private service: EraserService,
-              private colorService: ColorService) {
+              private colorService: ColorService,
+              private undoRedoService: UndoRedoService) {
     super();
     this.eraser = this.renderer.createElement('rect', this.svgNS);
     this.allListeners = [];
@@ -54,6 +60,7 @@ export class EraserLogicComponent
       if ($event.button === 0) {
         this.mouse.startPoint = new Point($event.offsetX, $event.offsetY);
         this.mouse.mouseIsDown = true;
+        this.elementsDeletedInDrag = false;
       }
     }],
     ['mousemove', ($event: MouseEvent) => {
@@ -62,6 +69,9 @@ export class EraserLogicComponent
       this.mouse.currentPoint = new Point($event.offsetX, $event.offsetY);
       if (this.mouse.mouseIsDown) {
         this.deleteAll(selectedElements);
+        if (selectedElements.size !== 0) {
+          this.elementsDeletedInDrag = true;
+        }
       }
       this.drawEraser();
     }],
@@ -69,19 +79,30 @@ export class EraserLogicComponent
       if ($event.button === 0) {
         this.mouse.mouseIsDown = false;
         this.mouse.endPoint = new Point($event.offsetX, $event.offsetY);
+        if (this.elementsDeletedInDrag) {
+          this.undoRedoService.saveState();
+        }
       }
     }],
     ['click', ($event: MouseEvent) => {
       if ($event.button === 0) {
         // On s'assure d'avoir un vrai click
         if (this.mouse.startPoint.equals(this.mouse.endPoint)) {
-          this.deleteAll(this.markElementsInZone($event.x, $event.y));
+          const marked = this.markElementsInZone($event.x, $event.y);
+          if (marked.size !== 0) {
+            this.deleteAll(marked);
+            this.restoreMarkedElements();
+            this.undoRedoService.saveState();
+          }
         }
       }
     }],
     ['mouseleave', () => {
       this.hideEraser();
       this.mouse.mouseIsDown = false;
+      if (this.elementsDeletedInDrag) {
+        this.undoRedoService.saveState();
+      }
     }]
 
   ]);
@@ -112,8 +133,8 @@ export class EraserLogicComponent
       StrokeProperties.Filled);
     rectangleObject.dragRectangle(startPoint, endPoint);
     rectangleObject.setCss({
-      strokeWidth: '2',
-      strokeColor: 'rgba(255, 0, 0, 0.7)',
+      strokeWidth: CONSTANTS.STROKE_WIDTH,
+      strokeColor: CONSTANTS.RED_TRANSPARENT,
       fillColor: 'none',
       opacity: '0'
     });
@@ -139,7 +160,7 @@ export class EraserLogicComponent
     selectedElements.forEach((element: SVGElement) => {
       if (!!element) {
         const stroke = element.getAttribute('stroke');
-        let strokeModified = 'rgba(255, 0, 0, 1)';
+        let strokeModified = CONSTANTS.RED;
         if (stroke !== null && stroke !== 'none') {
           const rgb = this.colorService.rgbFormRgba(stroke);
           // Si on a beaucoup de rouge mais pas trop les autres couleurs

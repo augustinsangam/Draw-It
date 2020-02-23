@@ -1,5 +1,7 @@
 import {
+  AfterViewChecked,
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -18,7 +20,7 @@ import { UndoRedoService } from '../tool/undo-redo/undo-redo.service'
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent implements AfterViewInit {
+export class SidebarComponent implements AfterViewInit, AfterViewChecked {
 
   @ViewChild('line', { static: false })
   protected lineElRef: ElementRef<HTMLElement>;
@@ -76,9 +78,13 @@ export class SidebarComponent implements AfterViewInit {
 
   private toolToElRef: ElementRef<HTMLElement>[];
 
+  private canUndo: boolean;
+  private canRedo: boolean;
+
   // Must be pubilc
   constructor(private readonly toolSelectorService: ToolSelectorService,
-              protected readonly undoRedoService: UndoRedoService) {
+              protected readonly undoRedoService: UndoRedoService,
+              private changeDetectorRef: ChangeDetectorRef) {
     this.documentationEvent = new EventEmitter<null>();
     this.exportEvent = new EventEmitter<null>();
     this.toolToElRef = new Array(Tool._Len);
@@ -100,6 +106,19 @@ export class SidebarComponent implements AfterViewInit {
     this.toolToElRef[Tool.Polygone] = this.polygoneElRef;
     this.toolSelectorService.onChange(
       (tool, old) => this.setTool(tool, old));
+  }
+
+  ngAfterViewChecked() {
+    const canUndo = this.undoRedoService.canUndo();
+    const canRedo = this.undoRedoService.canRedo();
+    if (canUndo !== this.canUndo) {
+      this.canUndo = canUndo;
+      this.changeDetectorRef.detectChanges();
+    }
+    if (canRedo !== this.canRedo) {
+      this.canRedo = canRedo;
+      this.changeDetectorRef.detectChanges();
+    }
   }
 
   private setTool(tool: Tool, old?: Tool): void {
