@@ -8,6 +8,7 @@ import {
 import { Circle } from '../../shape/common/Circle';
 import { Rectangle } from '../../shape/common/Rectangle';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
+import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { MultipleSelection } from '../MultipleSelection';
 import { Offset } from '../Offset';
 import { Point } from '../Point';
@@ -41,15 +42,23 @@ export abstract class SelectionLogicBase
     keyPressed: Set<string>,
     lastTimeCheck: number,
     handlers: {
-      mousedown: KeyboardPressCallback,
-      mouseup: KeyboardPressCallback
+      keydown: KeyboardPressCallback,
+      keyup: KeyboardPressCallback
     }
   }
 
-  constructor(protected renderer: Renderer2, protected svgService: SvgService) {
+  constructor(protected renderer: Renderer2, protected svgService: SvgService,
+              protected undoRedoService: UndoRedoService) {
     super();
     this.allListenners = [];
     this.selectedElements = new Set();
+    this.undoRedoService.setPostUndoAction({
+      enabled: true,
+      functionDefined: true,
+      function: () => {
+        this.deleteVisualisation();
+      }
+    })
   }
 
   // tslint:disable-next-line: use-lifecycle-interface
@@ -328,7 +337,7 @@ export abstract class SelectionLogicBase
       keyPressed : new Set(),
       lastTimeCheck: new Date().getTime(),
       handlers : {
-        mousedown: ($event: KeyboardEvent) => {
+        keydown: ($event: KeyboardEvent) => {
           if (!this.keyManager.keyPressed.has($event.key)) {
             this.keyManager.keyPressed.add($event.key);
           }
@@ -341,8 +350,19 @@ export abstract class SelectionLogicBase
             this.handleKey('ArrowRight', OFFSET_TRANSLATE, 0);
           }
         },
-        mouseup: ($event: KeyboardEvent) => {
+        keyup: ($event: KeyboardEvent) => {
+          let count = 0;
+          const allArrows = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
+          allArrows.forEach((arrow) => {
+            if (this.keyManager.keyPressed.has(arrow)) {
+              count++;
+            }
+          });
           this.keyManager.keyPressed.delete($event.key);
+          // TODO : Verifier uniquement les touches qui s'appliquent
+          if (count === 1 && allArrows.indexOf($event.key) !== -1) {
+            this.undoRedoService.saveState();
+          }
         }
       }
     }

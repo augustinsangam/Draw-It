@@ -1,5 +1,6 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { SvgService } from 'src/app/svg/svg.service';
+import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { Point } from '../Point';
 import { ElementSelectedType } from './ElementSelectedType';
 import { MouseEventCallBack, SelectionLogicBase } from './selection-logic-base';
@@ -12,8 +13,9 @@ import { MouseEventCallBack, SelectionLogicBase } from './selection-logic-base';
 export class SelectionLogicComponent
         extends SelectionLogicBase implements OnInit {
 
-  constructor(protected renderer: Renderer2, protected svgService: SvgService) {
-    super(renderer, svgService);
+  constructor(protected renderer: Renderer2, protected svgService: SvgService,
+              protected undoRedoService: UndoRedoService) {
+    super(renderer, svgService, undoRedoService);
   }
 
   private mouseHandlers = new Map<string, Map<string, MouseEventCallBack>>([
@@ -56,6 +58,10 @@ export class SelectionLogicComponent
       }],
       ['mouseup', ($event: MouseEvent) => {
         if ($event.button === 0) {
+          if (this.mouse.left.onDrag) {
+            this.undoRedoService.saveState();
+            this.mouse.left.onDrag = false;
+          }
           this.mouse.left.endPoint = new Point($event.offsetX, $event.offsetY);
           this.mouse.left.mouseIsDown = false;
           this.deleteSelection();
@@ -131,8 +137,8 @@ export class SelectionLogicComponent
       });
     });
     this.renderer.listen(document, 'keydown',
-                         this.keyManager.handlers.mousedown);
-    this.renderer.listen(document, 'keyup', this.keyManager.handlers.mouseup);
+                         this.keyManager.handlers.keydown);
+    this.renderer.listen(document, 'keyup', this.keyManager.handlers.keyup);
 
   }
 

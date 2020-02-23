@@ -37,10 +37,14 @@ export class LineLogicComponent extends ToolLogicDirective
       overrideFunctionDefined: true,
       overrideFunction: () => {
         if (!this.isNewPath) {
+          // TODO Nicolas. Exactemment ici
+          // tu dois mettre la logique pour elever
+          // uniquement le trait sans ce cercle
+          this.paths.pop();
+          this.undoRedoService.saveState();
           this.onKeyDown({ code: 'Escape'} as unknown as KeyboardEvent);
-        } else {
-          this.undoRedoService.undoBase();
         }
+        this.undoRedoService.undoBase();
       }
     })
   }
@@ -99,7 +103,6 @@ export class LineLogicComponent extends ToolLogicDirective
   private onMouseClick(mouseEv: MouseEvent): void {
     let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
     if (this.isNewPath) {
-      this.undoRedoService.saveState();
       this.createNewPath(currentPoint);
       this.currentJonctionOptions = {
         color: this.serviceColor.primaryColor,
@@ -132,6 +135,7 @@ export class LineLogicComponent extends ToolLogicDirective
         this.addNewLine(currentPoint);
       }
       this.isNewPath = true;
+      this.undoRedoService.saveState();
     }
   }
 

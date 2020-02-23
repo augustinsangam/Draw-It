@@ -7,8 +7,8 @@ import { SVGStructure } from '../tool-logic/tool-logic.directive';
 export class UndoRedoService {
 
   private svgStructure: SVGStructure;
-  private cmdDone: (ChildNode[])[]
-  private cmdUndone: (ChildNode[])[];
+  private cmdDone: (SVGElement[])[]
+  private cmdUndone: (SVGElement[])[];
   private firstCommand: boolean;
 
   private actions: [PreUndoAction, PostUndoAction];
@@ -16,7 +16,7 @@ export class UndoRedoService {
   constructor() {
     this.cmdDone = [];
     this.cmdUndone = [];
-    this.firstCommand = false;
+    this.firstCommand = true;
     this.resetActions();
   }
 
@@ -48,10 +48,17 @@ export class UndoRedoService {
   }
 
   saveState(): void {
+    // TODO : J'ai changé plein de tucs. Tu copiais des référecences Nico
+    this.firstCommand = false;
     const drawZone = this.svgStructure.drawZone;
-    this.cmdDone.push(Array.from(drawZone.childNodes));
-    this.cmdUndone = [];
-    this.firstCommand = (drawZone.children.length !== 0);
+    const length = drawZone.children.length;
+    const toPush = new Array(length);
+    for (let i = 0; i < length; i++) {
+      toPush[i] = (drawZone.children.item(i) as SVGElement).cloneNode(true);
+    }
+    this.cmdDone.push(toPush);
+    console.log('On sauvegarde');
+    console.log(this);
   }
 
   undo(): void {
@@ -73,7 +80,7 @@ export class UndoRedoService {
   undoBase() {
     if (this.cmdDone.length !== 0) {
       const lastCommand = this.cmdDone.pop();
-      this.cmdUndone.push(lastCommand as ChildNode[]);
+      this.cmdUndone.push(lastCommand as SVGElement[]);
       this.refresh(this.cmdDone[this.cmdDone.length - 1]);
     }
   }
@@ -81,25 +88,26 @@ export class UndoRedoService {
   redo(): void {
     if (this.cmdUndone.length) {
       const lastCommand = this.cmdUndone.pop();
-      this.cmdDone.push(lastCommand as ChildNode[]);
+      this.cmdDone.push(lastCommand as SVGElement[]);
       this.refresh(this.cmdDone[this.cmdDone.length - 1]);
     }
   }
 
   refresh(node: ChildNode[]): void {
-    const childrens = Array.from(this.svgStructure.drawZone.childNodes);
-    // TODO : Nicolas. Look if it make sense
-    const nodeChildrens = node ? Array.from(node) : [];
-    for (const element of childrens) {
+    // TODO : Nicolas. Look if it make sense. J'ai changé des trucs
+    for (const element of Array.from(this.svgStructure.drawZone.childNodes)) {
       element.remove();
     }
+    const nodeChildrens = node ? Array.from(node) : [];
     for (const element of nodeChildrens) {
       this.svgStructure.drawZone.appendChild(element);
     }
+
   }
 
   canUndo(): boolean {
-    return this.firstCommand && this.svgStructure.drawZone.children.length >= 1;
+    return !this.firstCommand &&
+      this.svgStructure.drawZone.children.length >= 1;
   }
 
   canRedo(): boolean {

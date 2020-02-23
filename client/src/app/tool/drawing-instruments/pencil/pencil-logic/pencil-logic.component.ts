@@ -42,6 +42,7 @@ export class PencilLogicComponent extends PencilBrushCommon
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnDestroy() {
     this.listeners.forEach(end => { end(); });
+    this.undoRedoService.resetActions();
   }
 
   protected configureSvgElement(element: SVGElement): void {
