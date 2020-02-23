@@ -10,6 +10,7 @@ export enum Tool {
   Selection,
   Pipette,
   Aerosol,
+  Grid,
   _Len,
   _None,
 }
