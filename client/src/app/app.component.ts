@@ -1,17 +1,10 @@
-import {
-  AfterViewInit,
-  Component,
-  HostListener,
-} from '@angular/core';
+import {AfterViewInit, Component, HostListener,} from '@angular/core';
 import {MatDialog, MatDialogRef} from '@angular/material';
-
 // import { CommunicationService } from './communication/communication.service';
-import {
-  DocumentationComponent
-} from './pages/documentation/documentation.component';
-import { ExportComponent } from './pages/export/export.component';
-import { HomeComponent } from './pages/home/home.component';
-import { NewDrawComponent } from './pages/new-draw/new-draw.component';
+import {DocumentationComponent} from './pages/documentation/documentation.component';
+import {ExportComponent} from './pages/export/export.component';
+import {HomeComponent} from './pages/home/home.component';
+import {NewDrawComponent} from './pages/new-draw/new-draw.component';
 import {
   Shortcut,
   ShortcutCallBack,
@@ -22,6 +15,7 @@ import {ColorService} from './tool/color/color.service';
 import {ToolSelectorService} from './tool/tool-selector/tool-selector.service';
 import {Tool} from './tool/tool.enum';
 import {UndoRedoService} from './tool/undo-redo/undo-redo.service';
+import {GridService} from './tool/grid/grid.service';
 
 export interface NewDrawOptions {
   width: number;
@@ -71,6 +65,7 @@ export class AppComponent implements AfterViewInit {
     private svgService: SvgService,
     private shortcutHanler: ShortcutHandlerService,
     private undoRedo: UndoRedoService,
+    private gridService: GridService,
   ) {
     this.drawInProgress = false;
     this.drawOption = { height: 0, width: 0, color: '' };
@@ -100,6 +95,16 @@ export class AppComponent implements AfterViewInit {
     this.handlersFunc.set(Shortcut.E, () =>
       this.toolSelectorService.set(Tool.Eraser)
     );
+    this.handlersFunc.set(Shortcut.G, () => {
+      this.toolSelectorService.set(Tool.Grid);
+      this.gridService.keyEvHandler('KeyG');
+    });
+    this.handlersFunc.set(Shortcut.plus, () => {
+      this.gridService.keyEvHandler('+');
+    });
+    this.handlersFunc.set(Shortcut.minus, () => {
+      this.gridService.keyEvHandler('-');
+    });
     this.handlersFunc.set(Shortcut.O, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();

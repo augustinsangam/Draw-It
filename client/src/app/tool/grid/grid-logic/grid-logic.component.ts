@@ -1,7 +1,7 @@
 import {Component, OnDestroy, Renderer2} from '@angular/core';
+import {Dimension} from '../../shape/common/Rectangle';
 import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
 import {GridService} from '../grid.service';
-import {Dimension} from '../../shape/common/Rectangle';
 
 @Component({
   selector: 'app-grid-logic',
@@ -38,7 +38,7 @@ implements OnDestroy {
 
     this.grid = path;
     this.handleGrid();
-    this.service.changeDetector.subscribe(() => this.handleGrid());
+    this.service.sliderChanges.subscribe(() => this.handleGrid());
   }
 
   ngOnDestroy(): void {

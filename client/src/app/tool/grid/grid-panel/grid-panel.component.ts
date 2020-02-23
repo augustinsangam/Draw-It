@@ -1,9 +1,13 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  ViewChild
+} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatSlider} from '@angular/material/slider';
 import {ToolPanelDirective} from '../../tool-panel/tool-panel.directive';
 import {GridService} from '../grid.service';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-grid-panel',
@@ -43,12 +47,16 @@ export class GridPanelComponent extends ToolPanelDirective {
     });
   }
 
+  ngOnInit() {
+    this.service.keyboardChanges.subscribe(() => this.handleServChange())
+  }
+
   protected onSquareSizeChange(): void {
     this.gridForm.patchValue({
       squareSizeFormField: this.squareSizeSlider.value
     });
     this.service.squareSize = this.squareSizeSlider.value as number;
-    this.service.changeDetector.next();
+    this.service.sliderChanges.next();
   }
 
   protected onOpacityChange(): void {
@@ -56,7 +64,7 @@ export class GridPanelComponent extends ToolPanelDirective {
       opacityFormField: this.opacitySlider.value
     });
     this.service.opacity = this.opacitySlider.value as number;
-    this.service.changeDetector.next();
+    this.service.sliderChanges.next();
   }
 
   protected onActiveChange(): void {
@@ -64,10 +72,21 @@ export class GridPanelComponent extends ToolPanelDirective {
       activeFormField: this.activeToggleRef.checked
     });
     this.service.active = this.activeToggleRef.checked;
-    this.service.changeDetector.next();
+    this.service.sliderChanges.next();
   }
 
-  ngOnInit() {
+  protected handleServChange() {
+    this.activeToggleRef.checked = this.service.active;
+    this.gridForm.patchValue({
+      activeFormField: this.service.active
+    });
+
+    this.squareSizeSlider.value = this.service.squareSize;
+    this.gridForm.patchValue({
+      squareSizeFormField: this.service.squareSize
+    });
+
+    this.service.sliderChanges.next();
   }
 
 }

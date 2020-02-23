@@ -9,7 +9,7 @@
   <div *ngIf="this.service.active">
     <p>Taille des carrés</p>
     <div class="squareSize">
-      <mat-slider min=5 max=500 step=1
+      <mat-slider min="{{this.service.MIN_SQUARESIZE}}" max="{{this.service.MAX_SQUARESIZE}}" step=1
                   (input)="onSquareSizeChange()"
                   (change)="onSquareSizeChange()"
                   formControlName="squareSizeSlider"
