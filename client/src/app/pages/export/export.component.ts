@@ -28,7 +28,7 @@ export class ExportComponent implements OnInit {
   protected filters = [
     FilterChoice.None,
     FilterChoice.Blur,
-    FilterChoice.BandW,
+    FilterChoice.BlackWhite,
     FilterChoice.Inverse,
     FilterChoice.Artifice,
     FilterChoice.Grey
@@ -44,8 +44,8 @@ export class ExportComponent implements OnInit {
               @Optional() public dialogRef: MatDialogRef<ExportComponent>,
               private renderer: Renderer2,
               private svgElementService: SvgService,
-              // private colorService: ColorService
-              ) {
+    // private colorService: ColorService
+  ) {
     this.form = this.formBuilder.group({
       name: ['', [Validators.required, (control: FormControl) => {
         const input = (control.value as string).trim();
@@ -59,13 +59,13 @@ export class ExportComponent implements OnInit {
   }
 
   protected onOptionChange($change: MatRadioChange) {
-    this.createView();
+    this.createView(String($change.value));
     console.log($change);
   }
 
   protected onConfirm() {
     console.log('On confirme');
-    this.name = (this.form.controls.name.value).toLocaleLowerCase();
+    this.name = this.form.controls.name.value;
     this.format = (this.form.controls.format.value).toLocaleLowerCase();
     this.exportDrawing();
     this.dialogRef.close();
@@ -77,9 +77,9 @@ export class ExportComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.innerSVG = this.svgElementService.instance.nativeElement ;
+    this.innerSVG = this.svgElementService.instance.nativeElement;
     this.svgDimension = this.innerSVG.getBoundingClientRect() as DOMRect;
-    this.createView();
+    this.createView(FilterChoice.None);
   }
 
   serializeSVG(): string {
@@ -108,7 +108,7 @@ export class ExportComponent implements OnInit {
   }
 
   downloadFile(canvaRecu: HTMLCanvasElement) {
-  
+
     // ensuite recupérons le canvas dans le navigateur
     const canvas: HTMLCanvasElement = canvaRecu;
     // création de l'ancre pour le telechargement
@@ -189,17 +189,16 @@ export class ExportComponent implements OnInit {
     return canvas;
   }
 
-  createView() {
+  createView(filterName: string) {
     const picture: SVGImageElement = this.renderer.createElement('image',
-    'http://www.w3.org/2000/svg');
+      'http://www.w3.org/2000/svg');
     const viewZone = document.getElementById('picture-view-zone');
     if (viewZone) {
-      picture.setAttribute('id', 'greyscale');
+      picture.setAttribute('id', 'pictureView');
       picture.setAttribute('width', String(viewZone.getAttribute('width')));
-      picture.setAttribute('heigth', String(viewZone.getAttribute('height')));
-      console.log('taille : ' + String(viewZone.getAttribute('height')));
+      picture.setAttribute('height', String(viewZone.getAttribute('height')));
       picture.setAttribute('href', this.convertSVGToBase64());
-      picture.setAttribute('filter', 'url(#linear)');
+      picture.setAttribute('filter', this.chooseFilter(filterName));
       const child = viewZone.lastElementChild;
       if (child && (child.getAttribute('id') === 'pictureView')) {
         viewZone.removeChild(child);
@@ -207,12 +206,39 @@ export class ExportComponent implements OnInit {
       this.renderer.appendChild(viewZone, picture);
     }
   }
+
+  chooseFilter(filter: string): string {
+    let filterName: string;
+    switch (filter) {
+      case FilterChoice.None:
+        filterName = '';
+        break;
+      case FilterChoice.Blur:
+        filterName = 'url(#saturate)';  // A revoir concordance
+        break;
+      case FilterChoice.BlackWhite:
+        filterName = 'url(#blackWhite)';
+        break;
+      case FilterChoice.Inverse:
+        filterName = 'url(#invertion)';
+        break;
+      case FilterChoice.Artifice: // a modifier
+        filterName = 'url(#sepia)';
+        break;
+      case FilterChoice.Grey:
+        filterName = 'url(#greyscale)';
+        break;
+      default:
+        filterName = '';
+    }
+    return filterName;
+  }
 }
 
 enum FilterChoice {
   None = 'Aucun',
   Blur = 'Flou',
-  BandW = 'Noir et blanc',
+  BlackWhite = 'Noir et blanc',
   Inverse = 'Inversion',
   Artifice = 'Artifice',
   Grey = 'Gris épatant'
