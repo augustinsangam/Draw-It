@@ -16,16 +16,17 @@ import { SingleSelection } from '../SingleSelection';
 import { ElementSelectedType } from './ElementSelectedType';
 import { MouseTracking } from './MouseTracking';
 
-type KeybordPressCallback = ($event: KeyboardEvent) => void;
-
 const COLORS = {
   RED : 'rgba(255, 0, 0, 0.7)',
   BLUE: 'rgba(0, 0, 255, 0.7)',
   GREEN: 'rgba(0, 255, 0, 0.7)',
   GRAY: 'rgba(128, 128, 255, 1)'
 }
-
+const RECTANGLE_STROKE = '2';
+const CIRCLE_RADIUS = '8';
 const TIME_INTERVAL = 100;
+const DASH_ARRAY = '10 5';
+const OFFSET_TRANSLATE = 3;
 
 export abstract class SelectionLogicBase
       extends ToolLogicDirective implements OnDestroy {
@@ -40,8 +41,8 @@ export abstract class SelectionLogicBase
     keyPressed: Set<string>,
     lastTimeCheck: number,
     handlers: {
-      mousedown: KeybordPressCallback,
-      mouseup: KeybordPressCallback
+      mousedown: KeyboardPressCallback,
+      mouseup: KeyboardPressCallback
     }
   }
 
@@ -65,11 +66,9 @@ export abstract class SelectionLogicBase
   }
 
   protected applySingleSelection(element: SVGElement): void {
-    this.selectedElements.clear();
-    this.selectedElements.add(element);
+    this.selectedElements = new Set([element]);
     const points = new SingleSelection(element, this.getSvgOffset()).points();
     this.drawVisualisation(points[0], points[1]);
-    this.drawCircles(points[0], points[1]);
   }
 
   protected applySingleInversion(element: SVGElement) {
@@ -86,7 +85,6 @@ export abstract class SelectionLogicBase
     const selection = this.getMultipleSelection(startPoint, endPoint, elements);
     this.selectedElements = selection.selectedElements;
     this.drawVisualisation(selection.points[0], selection.points[1]);
-    this.drawCircles(selection.points[0], selection.points[1]);
   }
 
   private getMultipleSelection( startPoint?: Point, endPoint?: Point,
@@ -126,19 +124,17 @@ export abstract class SelectionLogicBase
   }
 
   protected drawSelection(p1: Point, p2: Point): void {
-    this.deleteSelection();
     this.drawARectangle(this.rectangles.selection, p1, p2,
       COLORS.BLUE, false);
   }
 
   private drawVisualisation(p1: Point, p2: Point): void {
-    this.deleteVisualisation();
     this.drawARectangle(this.rectangles.visualisation, p1, p2,
       COLORS.GREEN, true);
+    this.drawCircles(p1, p2);
   }
 
   protected drawInversion(p1: Point, p2: Point): void {
-    this.deleteInversion();
     this.drawARectangle(this.rectangles.inversion, p1, p2,
       COLORS.RED, true);
   }
@@ -151,15 +147,14 @@ export abstract class SelectionLogicBase
     rectangleObject.setParameters(BackGroundProperties.None,
       StrokeProperties.Filled);
     rectangleObject.dragRectangle(startPoint, endPoint);
-    rectangleObject.setCss({strokeWidth: '2',
+    rectangleObject.setCss({strokeWidth: RECTANGLE_STROKE,
       strokeColor: color,
       fillColor: 'none',
       opacity: '0'
     });
     if (dasharray) {
-      element.setAttribute('stroke-dasharray', '10 5');
+      element.setAttribute('stroke-dasharray', DASH_ARRAY);
     }
-    this.renderer.appendChild(this.svgStructure.temporaryZone, element);
   }
 
   protected drawCircles(p1: Point, p2: Point): void {
@@ -168,15 +163,13 @@ export abstract class SelectionLogicBase
       (startPoint.x + endPoint.x) / 2,
       (startPoint.y + endPoint.y) / 2);
     this.setCircle(new Point(startPoint.x, centerPoint.y),
-    this.circles[0], '8');
+    this.circles[0], CIRCLE_RADIUS);
     this.setCircle(new Point(centerPoint.x, startPoint.y),
-    this.circles[1], '8');
-    this.setCircle(new Point(endPoint.x, centerPoint.y), this.circles[2], '8');
-    this.setCircle(new Point(centerPoint.x, endPoint.y), this.circles[3], '8');
-    [0, 1, 2, 3].forEach((i) => {
-      this.renderer.appendChild(
-        this.svgStructure.temporaryZone, this.circles[i]);
-    });
+    this.circles[1], CIRCLE_RADIUS);
+    this.setCircle(new Point(endPoint.x, centerPoint.y),
+      this.circles[2], CIRCLE_RADIUS);
+    this.setCircle(new Point(centerPoint.x, endPoint.y),
+    this.circles[3], CIRCLE_RADIUS);
   }
 
   private setCircle(center: Point, circle: SVGElement, radius: string): void {
@@ -188,14 +181,14 @@ export abstract class SelectionLogicBase
 
   protected deleteVisualisation(): void {
     this.resetRectangle(this.rectangles.visualisation);
-    this.rectangles.visualisation.setAttribute( 'transform', 'translate(0,0)');
+    this.resetTranslate(this.rectangles.visualisation);
     this.deleteCircles();
+    this.selectedElements.clear();
   }
 
   private deleteCircles(): void {
     this.circles.forEach(element => {
       this.renderer.setAttribute(element, 'r', '0');
-      this.renderer.removeChild(this.svgStructure.temporaryZone, element);
       this.resetTranslate(element);
     });
   }
@@ -203,7 +196,6 @@ export abstract class SelectionLogicBase
   protected deleteSelection(): void {
     this.resetRectangle(this.rectangles.selection);
     this.resetTranslate(this.rectangles.selection);
-    this.deleteCircles();
   }
 
   protected deleteInversion(): void {
@@ -214,7 +206,6 @@ export abstract class SelectionLogicBase
   private resetRectangle(element: SVGElement) {
     element.setAttribute('width', '0');
     element.setAttribute('height', '0');
-    this.renderer.removeChild(this.svgStructure.temporaryZone, element);
   }
 
   private resetTranslate(element: SVGElement) {
@@ -300,6 +291,7 @@ export abstract class SelectionLogicBase
       const resizeType = index % 2 === 0 ? 'col-resize' : 'ns-resize';
       this.renderer.setStyle(circle, 'cursor', resizeType);
       this.circles.push(circle);
+      this.renderer.appendChild(this.svgStructure.temporaryZone, circle);
     });
   }
 
@@ -325,6 +317,10 @@ export abstract class SelectionLogicBase
       inversion: this.renderer.createElement('rect', this.svgNS),
       visualisation: this.renderer.createElement('rect', this.svgNS)
     };
+    [this.rectangles.selection, this.rectangles.inversion,
+      this.rectangles.visualisation].forEach((rectangle) => {
+        this.renderer.appendChild(this.svgStructure.temporaryZone, rectangle);
+    });
   }
 
   private initialiseKeyManager() {
@@ -339,10 +335,10 @@ export abstract class SelectionLogicBase
           const actualTime = new Date().getTime();
           if (actualTime - this.keyManager.lastTimeCheck >= TIME_INTERVAL) {
             this.keyManager.lastTimeCheck = actualTime;
-            this.handleKey('ArrowUp', 0, -3);
-            this.handleKey('ArrowDown', 0, 3);
-            this.handleKey('ArrowLeft', -3, 0);
-            this.handleKey('ArrowRight', 3, 0);
+            this.handleKey('ArrowUp', 0, -OFFSET_TRANSLATE);
+            this.handleKey('ArrowDown', 0, OFFSET_TRANSLATE);
+            this.handleKey('ArrowLeft', -OFFSET_TRANSLATE, 0);
+            this.handleKey('ArrowRight', OFFSET_TRANSLATE, 0);
           }
         },
         mouseup: ($event: KeyboardEvent) => {
@@ -372,6 +368,8 @@ export abstract class SelectionLogicBase
 }
 
 export type MouseEventCallBack = ($event: MouseEvent) => void;
+
+type KeyboardPressCallback = ($event: KeyboardEvent) => void;
 
 interface Mouse {
   left: MouseTracking,

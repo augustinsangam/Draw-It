@@ -6,7 +6,7 @@ import { Point } from '../../selection/Point';
 import { MouseTracking } from '../../selection/selection-logic/MouseTracking';
 import {
   MouseEventCallBack
-} from '../../selection/selection-logic/SelectionLogicBase';
+} from '../../selection/selection-logic/selection-logic-base';
 import {
   BackGroundProperties, StrokeProperties
 } from '../../shape/common/AbstractShape';
@@ -100,7 +100,7 @@ export class EraserLogicComponent
   }
 
   protected elementSelectedType(element: SVGElement): ElementSelectedType {
-    return (element === this.svgStructure.root) ?
+    return (this.svgStructure.drawZone.contains(element)) ?
       ElementSelectedType.NOTHING : ElementSelectedType.DRAW_ELEMENT;
   }
 

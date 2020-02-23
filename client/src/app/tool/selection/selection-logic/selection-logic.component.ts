@@ -2,7 +2,7 @@ import { Component, OnInit, Renderer2 } from '@angular/core';
 import { SvgService } from 'src/app/svg/svg.service';
 import { Point } from '../Point';
 import { ElementSelectedType } from './ElementSelectedType';
-import { MouseEventCallBack, SelectionLogicBase } from './SelectionLogicBase';
+import { MouseEventCallBack, SelectionLogicBase } from './selection-logic-base';
 
 @Component({
   selector: 'app-selection-logic',
@@ -69,7 +69,6 @@ export class SelectionLogicComponent
               this.applySingleSelection($event.target as SVGElement);
             } else if (type === ElementSelectedType.NOTHING) {
               this.deleteVisualisation();
-              this.selectedElements.clear();
             }
           }
         }
@@ -131,8 +130,8 @@ export class SelectionLogicComponent
         );
       });
     });
-    this.renderer.listen( document, 'keydown',
-                          this.keyManager.handlers.mousedown);
+    this.renderer.listen(document, 'keydown',
+                         this.keyManager.handlers.mousedown);
     this.renderer.listen(document, 'keyup', this.keyManager.handlers.mouseup);
 
   }
