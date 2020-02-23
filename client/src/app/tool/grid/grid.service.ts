@@ -26,30 +26,27 @@ export class GridService extends ToolService {
     this.isCreated = false;
   }
 
-  keyEvHandler(key: string) {
-    if (this.active) {
-      switch (key) {
-        case 'KeyG': {
-          console.log('yo');
-          this.active = !this.active;
-          break;
-        }
-        case '+': {
-          if (this.squareSize < this.MAX_SQUARESIZE) {
-            this.squareSize += 5 - (this.squareSize % 5);
-          }
-          break;
-        }
-        case '-': {
-          if (this.squareSize > this.MIN_SQUARESIZE) {
-            this.squareSize % 5 === 0 ?
-              this.squareSize -= 5 : this.squareSize -= this.squareSize % 5;
-          }
-          break;
-        }
-        default: {break}
+  keyEvHandler(keyCode: string) {
+    switch (keyCode) {
+      case 'KeyG': {
+        this.active = !this.active;
+        break;
       }
-      this.keyboardChanges.next();
+      case 'NumpadAdd': {
+        if (this.active && this.squareSize < this.MAX_SQUARESIZE) {
+          this.squareSize += 5 - (this.squareSize % 5);
+        }
+        break;
+      }
+      case 'NumpadSubtract': {
+        if (this.active && this.squareSize > this.MIN_SQUARESIZE) {
+          this.squareSize % 5 === 0 ?
+            this.squareSize -= 5 : this.squareSize -= this.squareSize % 5;
+        }
+        break;
+      }
+      default: {break}
     }
+    this.keyboardChanges.next(keyCode);
   }
 }

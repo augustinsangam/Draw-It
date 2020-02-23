@@ -39,7 +39,7 @@ export class GridPanelComponent extends ToolPanelDirective {
   ) {
     super(elementRef);
     this.gridForm = this.formBuilder.group({
-      activeFormField: [this.service.active, []],
+      activeToggleForm: [this.service.active, []],
       squareSizeFormField: [this.service.squareSize, [Validators.required]],
       squareSizeSlider: [this.service.squareSize, []],
       opacityFormField: [this.service.opacity, [Validators.required]],
@@ -48,7 +48,9 @@ export class GridPanelComponent extends ToolPanelDirective {
   }
 
   ngOnInit() {
-    this.service.keyboardChanges.subscribe(() => this.handleServiceChange())
+    this.service.keyboardChanges.subscribe((keyCode: string) =>
+      this.handleServiceChange(keyCode)
+    );
   }
 
   protected onSquareSizeChange(): void {
@@ -69,22 +71,25 @@ export class GridPanelComponent extends ToolPanelDirective {
 
   protected onActiveChange(): void {
     this.gridForm.patchValue({
-      activeFormField: this.activeToggleRef.checked
+      activeToggleForm: this.activeToggleRef.checked
     });
     this.service.active = this.activeToggleRef.checked;
     this.service.sliderChanges.next();
   }
 
-  protected handleServiceChange() {
+  protected handleServiceChange(keyCode: string) {
     this.activeToggleRef.checked = this.service.active;
     this.gridForm.patchValue({
-      activeFormField: this.service.active
+      activeToggleForm: this.service.active
     });
 
-    this.squareSizeSlider.value = this.service.squareSize;
-    this.gridForm.patchValue({
-      squareSizeFormField: this.service.squareSize
-    });
+    if ((keyCode === 'NumpadAdd' || keyCode === 'NumpadSubtract')
+      && this.service.active) {
+      this.squareSizeSlider.value = this.service.squareSize;
+      this.gridForm.patchValue({
+        squareSizeFormField: this.service.squareSize
+      });
+    }
 
     this.service.sliderChanges.next();
   }

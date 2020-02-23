@@ -1,4 +1,4 @@
-import {Component, OnDestroy, Renderer2} from '@angular/core';
+import {Component, Renderer2} from '@angular/core';
 import {Dimension} from '../../shape/common/Rectangle';
 import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
 import {GridService} from '../grid.service';
@@ -9,8 +9,7 @@ import {GridService} from '../grid.service';
 })
 
 // tslint:disable:use-lifecycle-interface
-export class GridLogicComponent extends ToolLogicDirective
-  implements OnDestroy {
+export class GridLogicComponent extends ToolLogicDirective {
 
   svgDimensions: Dimension;
   grid: SVGElement;
@@ -43,10 +42,8 @@ export class GridLogicComponent extends ToolLogicDirective
     } else {
       this.grid = document.getElementById('grid') as unknown as SVGElement;
     }
+    // TODO : unsubscribe somewhere ?
     this.service.sliderChanges.subscribe(() => this.handleGrid());
-  }
-
-  ngOnDestroy(): void {
   }
 
   protected handleGrid() {

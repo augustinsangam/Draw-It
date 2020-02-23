@@ -12,10 +12,10 @@ import {
 } from './shortcut-handler/shortcut-handler.service';
 import {SvgService} from './svg/svg.service';
 import {ColorService} from './tool/color/color.service';
+import {GridService} from './tool/grid/grid.service';
 import {ToolSelectorService} from './tool/tool-selector/tool-selector.service';
 import {Tool} from './tool/tool.enum';
 import {UndoRedoService} from './tool/undo-redo/undo-redo.service';
-import {GridService} from './tool/grid/grid.service';
 
 export interface NewDrawOptions {
   width: number;
@@ -96,14 +96,14 @@ export class AppComponent implements AfterViewInit {
       this.toolSelectorService.set(Tool.Eraser)
     );
     this.handlersFunc.set(Shortcut.G, () => {
-      this.toolSelectorService.set(Tool.Grid);
+      // this.toolSelectorService.set(Tool.Grid);
       this.gridService.keyEvHandler('KeyG');
     });
     this.handlersFunc.set(Shortcut.plus, () => {
-      this.gridService.keyEvHandler('+');
+      this.gridService.keyEvHandler('NumpadAdd');
     });
     this.handlersFunc.set(Shortcut.minus, () => {
-      this.gridService.keyEvHandler('-');
+      this.gridService.keyEvHandler('NumpadSubtract');
     });
     this.handlersFunc.set(Shortcut.O, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
