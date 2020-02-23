@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSlider} from '@angular/material/slider';
 import {ToolPanelDirective} from '../../tool-panel/tool-panel.directive';
 import {GridService} from '../grid.service';
+import {MatSlideToggle} from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-grid-panel',
@@ -13,6 +14,11 @@ import {GridService} from '../grid.service';
 export class GridPanelComponent extends ToolPanelDirective {
 
   private gridForm: FormGroup;
+
+  @ViewChild('activeToggle', {
+    static: false,
+    read: MatSlideToggle
+  }) private activeToggleRef: MatSlideToggle;
 
   @ViewChild('squareSizeSlider', {
     static: false,
@@ -29,6 +35,7 @@ export class GridPanelComponent extends ToolPanelDirective {
   ) {
     super(elementRef);
     this.gridForm = this.formBuilder.group({
+      activeFormField: [this.service.active, []],
       squareSizeFormField: [this.service.squareSize, [Validators.required]],
       squareSizeSlider: [this.service.squareSize, []],
       opacityFormField: [this.service.opacity, [Validators.required]],
@@ -41,6 +48,7 @@ export class GridPanelComponent extends ToolPanelDirective {
       squareSizeFormField: this.squareSizeSlider.value
     });
     this.service.squareSize = this.squareSizeSlider.value as number;
+    this.service.changeDetector.next();
   }
 
   protected onOpacityChange(): void {
@@ -48,6 +56,15 @@ export class GridPanelComponent extends ToolPanelDirective {
       opacityFormField: this.opacitySlider.value
     });
     this.service.opacity = this.opacitySlider.value as number;
+    this.service.changeDetector.next();
+  }
+
+  protected onActiveChange(): void {
+    this.gridForm.patchValue({
+      activeFormField: this.activeToggleRef.checked
+    });
+    this.service.active = this.activeToggleRef.checked;
+    this.service.changeDetector.next();
   }
 
   ngOnInit() {
