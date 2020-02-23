@@ -4,6 +4,7 @@ import {
 } from '@angular/forms';
 import { MatDialogRef, MatRadioChange } from '@angular/material';
 import { SvgService } from 'src/app/svg/svg.service';
+// import { ColorService } from 'src/app/tool/color/color.service';
 
 @Component({
   selector: 'app-export',
@@ -42,7 +43,8 @@ export class ExportComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               @Optional() public dialogRef: MatDialogRef<ExportComponent>,
               private renderer: Renderer2,
-              private svgElementService: SvgService
+              private svgElementService: SvgService,
+              // private colorService: ColorService
               ) {
     this.form = this.formBuilder.group({
       name: ['', [Validators.required, (control: FormControl) => {
@@ -85,6 +87,7 @@ export class ExportComponent implements OnInit {
   // Encodage des données binaire comme executable ou image utilité base64
   convertSVGToBase64(): string {
     // entete de base64 pour image
+
     return 'data:image/svg+xml;base64,' + btoa(this.serializeSVG());
   }
 
@@ -107,7 +110,6 @@ export class ExportComponent implements OnInit {
   
     // ensuite recupérons le canvas dans le navigateur
     const canvas: HTMLCanvasElement = canvaRecu;
-
     // création de l'ancre pour le telechargement
     const downloadLink: HTMLAnchorElement = this.renderer.createElement('a');
 
@@ -136,6 +138,14 @@ export class ExportComponent implements OnInit {
   }
 
   exportSVG() {
+    // const backColor: string = this.colorService.backgroundColor;
+    // const rect: SVGRectElement = this.renderer.createElement('rect');
+    // rect.setAttribute('x', '0');
+    // rect.setAttribute('y', '0');
+    // rect.setAttribute('height', String(this.svgDimension.height));
+    // rect.setAttribute('width', String(this.svgDimension.width));
+    // rect.setAttribute('fill', backColor);
+    
     const uri = 'data:image/svg+xml,' + encodeURIComponent(this.serializeSVG());
     const downloadLink: HTMLAnchorElement = this.renderer.createElement('a');
 
