@@ -59,6 +59,7 @@ export class ExportComponent implements OnInit {
   }
 
   protected onOptionChange($change: MatRadioChange) {
+    this.createView();
     console.log($change);
   }
 
@@ -78,6 +79,7 @@ export class ExportComponent implements OnInit {
   ngOnInit() {
     this.innerSVG = this.svgElementService.instance.nativeElement ;
     this.svgDimension = this.innerSVG.getBoundingClientRect() as DOMRect;
+    this.createView();
   }
 
   serializeSVG(): string {
@@ -87,7 +89,6 @@ export class ExportComponent implements OnInit {
   // Encodage des données binaire comme executable ou image utilité base64
   convertSVGToBase64(): string {
     // entete de base64 pour image
-
     return 'data:image/svg+xml;base64,' + btoa(this.serializeSVG());
   }
 
@@ -100,8 +101,8 @@ export class ExportComponent implements OnInit {
 
   encodeImage(): HTMLImageElement {
     const picture: HTMLImageElement = this.renderer.createElement('img');
-    picture.width = 1000;
-    picture.height = 1000;
+    picture.width = this.svgDimension.width;
+    picture.height = this.svgDimension.height;
     picture.src = this.convertSVGToBase64();
     return picture;
   }
@@ -145,7 +146,7 @@ export class ExportComponent implements OnInit {
     // rect.setAttribute('height', String(this.svgDimension.height));
     // rect.setAttribute('width', String(this.svgDimension.width));
     // rect.setAttribute('fill', backColor);
-    
+
     const uri = 'data:image/svg+xml,' + encodeURIComponent(this.serializeSVG());
     const downloadLink: HTMLAnchorElement = this.renderer.createElement('a');
 
@@ -188,6 +189,21 @@ export class ExportComponent implements OnInit {
     return canvas;
   }
 
+  createView() {
+    const picture: SVGImageElement = this.renderer.createElement('image',
+    'http://www.w3.org/2000/svg');
+    const viewZone = document.getElementById('picture-view-zone');
+    if (viewZone) {
+      picture.setAttribute('width', String(viewZone.getAttribute('width')));
+      picture.setAttribute('heigth', String(viewZone.getAttribute('heigth')));
+      picture.setAttribute('href', this.convertSVGToBase64());
+      const child = viewZone.lastElementChild;
+      if (child) {
+        viewZone.removeChild(child);
+      }
+      this.renderer.appendChild(viewZone, picture);
+    }
+  }
 }
 
 enum FilterChoice {
