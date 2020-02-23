@@ -10,7 +10,7 @@ import {GridService} from '../grid.service';
 
 // tslint:disable:use-lifecycle-interface
 export class GridLogicComponent extends ToolLogicDirective
-implements OnDestroy {
+  implements OnDestroy {
 
   svgDimensions: Dimension;
   grid: SVGElement;
@@ -31,13 +31,18 @@ implements OnDestroy {
         height: +height
       }
     }
-    const path = this.renderer.createElement('path', this.svgNS);
-    path.setAttribute('id', 'grid');
-    path.setAttribute('fill', 'none');
-    path.setAttribute('stroke-width', '1');
+    if (!this.service.isCreated) {
+      const path = this.renderer.createElement('path', this.svgNS);
+      path.setAttribute('id', 'grid');
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke-width', '1');
 
-    this.grid = path;
-    this.handleGrid();
+      this.grid = path;
+      this.handleGrid();
+      this.service.isCreated = true;
+    } else {
+      this.grid = document.getElementById('grid') as unknown as SVGElement;
+    }
     this.service.sliderChanges.subscribe(() => this.handleGrid());
   }
 
@@ -45,6 +50,9 @@ implements OnDestroy {
   }
 
   protected handleGrid() {
+    if (this.grid === undefined) {
+      console.log(this.grid)
+    }
     if (this.service.active)  {
       this.grid.setAttribute('d', this.generateGrid());
       this.grid.setAttribute('stroke', 'black');

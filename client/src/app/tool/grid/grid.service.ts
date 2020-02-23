@@ -7,21 +7,23 @@ import {ToolService} from '../tool.service';
 })
 export class GridService extends ToolService {
 
-  readonly MAX_SQUARESIZE = 800;
+  readonly MAX_SQUARESIZE = 400;
   readonly MIN_SQUARESIZE = 5;
   active: boolean;
   opacity: number;
   squareSize: number;
+  isCreated: boolean;
   sliderChanges: Subject<number>;
   keyboardChanges: Subject<any>;
 
   constructor() {
     super();
-    this.squareSize = 200;
+    this.squareSize = 100;
     this.opacity = 0.4;
     this.active = false;
     this.sliderChanges = new Subject<number>();
     this.keyboardChanges = new Subject<any>();
+    this.isCreated = false;
   }
 
   keyEvHandler(key: string) {

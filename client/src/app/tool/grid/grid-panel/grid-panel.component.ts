@@ -48,7 +48,7 @@ export class GridPanelComponent extends ToolPanelDirective {
   }
 
   ngOnInit() {
-    this.service.keyboardChanges.subscribe(() => this.handleServChange())
+    this.service.keyboardChanges.subscribe(() => this.handleServiceChange())
   }
 
   protected onSquareSizeChange(): void {
@@ -75,7 +75,7 @@ export class GridPanelComponent extends ToolPanelDirective {
     this.service.sliderChanges.next();
   }
 
-  protected handleServChange() {
+  protected handleServiceChange() {
     this.activeToggleRef.checked = this.service.active;
     this.gridForm.patchValue({
       activeFormField: this.service.active
