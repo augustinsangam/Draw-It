@@ -194,11 +194,14 @@ export class ExportComponent implements OnInit {
     'http://www.w3.org/2000/svg');
     const viewZone = document.getElementById('picture-view-zone');
     if (viewZone) {
+      picture.setAttribute('id', 'greyscale');
       picture.setAttribute('width', String(viewZone.getAttribute('width')));
-      picture.setAttribute('heigth', String(viewZone.getAttribute('heigth')));
+      picture.setAttribute('heigth', String(viewZone.getAttribute('height')));
+      console.log('taille : ' + String(viewZone.getAttribute('height')));
       picture.setAttribute('href', this.convertSVGToBase64());
+      picture.setAttribute('filter', 'url(#linear)');
       const child = viewZone.lastElementChild;
-      if (child) {
+      if (child && (child.getAttribute('id') === 'pictureView')) {
         viewZone.removeChild(child);
       }
       this.renderer.appendChild(viewZone, picture);
