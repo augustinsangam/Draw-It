@@ -49,7 +49,6 @@ export class SelectionLogicComponent
               const [startPoint, currentPoint] = this.orderPoint(
                 this.mouse.left.startPoint, this.mouse.left.currentPoint
               );
-              this.deleteVisualisation();
               this.applyMultipleSelection(startPoint, currentPoint);
             }
           }

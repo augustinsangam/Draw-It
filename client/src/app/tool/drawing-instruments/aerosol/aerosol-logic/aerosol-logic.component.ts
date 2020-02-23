@@ -65,7 +65,13 @@ export class AerosolLogicComponent extends ToolLogicDirective
       onMouseLeave,
       onMouseUp,
       onMouseMove,
-    ]
+    ];
+
+    this.renderer.setStyle(
+      this.svgElRef.nativeElement,
+      'cursor',
+      'crosshair'
+    );
   }
 
   ngOnDestroy(): void {
