@@ -77,7 +77,7 @@ export class ExportComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.innerSVG = this.svgElementService.instance.nativeElement;
+    this.innerSVG = this.svgElementService.instance.nativeElement
     this.svgDimension = this.innerSVG.getBoundingClientRect() as DOMRect;
     this.createView(FilterChoice.None);
   }
@@ -120,7 +120,8 @@ export class ExportComponent implements OnInit {
     this.innerSVG.appendChild(downloadLink);
 
     // Ajout de l'url du canvas dans href
-    downloadLink.href = (this.format === 'svg') ? this.convertSVGToBase64() : url;
+    downloadLink.href = (this.format === 'svg') ?
+      this.convertSVGToBase64() : url;
 
     // download reprsente le nom de l'image à telecharger
     downloadLink.download = this.name + '.' + this.format;
@@ -166,6 +167,7 @@ export class ExportComponent implements OnInit {
   }
 
   exportDrawing(): HTMLCanvasElement {
+    this.resetInnerSVG();
     const canvas: HTMLCanvasElement = this.configureCanvas();
     if (this.format === 'svg') { // Test juste du if
       this.exportSVG();
@@ -232,6 +234,19 @@ export class ExportComponent implements OnInit {
         filterName = '';
     }
     return filterName;
+  }
+
+  resetInnerSVG() {
+    this.innerSVG = (document.getElementById(
+      'picture-view-zone'
+      ) as unknown as SVGSVGElement);
+    this.innerSVG.setAttribute('width', String(this.svgDimension.width));
+    this.innerSVG.setAttribute('height', String(this.svgDimension.height));
+    const picture = this.innerSVG.getElementById('pictureView');
+    if (picture) {
+      picture.setAttribute('width', String(this.svgDimension.width));
+      picture.setAttribute('height', String(this.svgDimension.height));
+    }
   }
 }
 
