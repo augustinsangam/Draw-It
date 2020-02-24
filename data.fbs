@@ -8,10 +8,13 @@ table DrawBuffer {
 }
 
 table Draw {
-	name: string;
-	tags: [string];
-	svg: Element;
+	color: string;
 	colors: [string]; // :12 >1.11.0
+	height: uint16;
+	name: string;
+	svg: Element;
+	tags: [string];
+	width: uint16;
 }
 
 table Element {
