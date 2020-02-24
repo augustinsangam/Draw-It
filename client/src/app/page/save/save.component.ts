@@ -68,11 +68,13 @@ export class SaveComponent implements OnInit {
   // angular.io/guide/user-input#type-the-event
   // Must be public
   add(keyEv: KeyboardEvent) {
-    // Do not submit
-    keyEv.preventDefault();
     const inputEl = keyEv.target as HTMLInputElement;
-    this.tags.add(inputEl.value);
-    inputEl.value = '';
+    if (inputEl.checkValidity()) {
+      // Do not submit
+      keyEv.preventDefault();
+      this.tags.add(inputEl.value);
+      inputEl.value = '';
+    }
   }
 
   foo() {
