@@ -10,9 +10,10 @@ class Database {
 
 	constructor() {
 		// this._db = await mongodb.MongoClient.connect('mongodb://[::1]/log2990', {
-		this.client = new mongodb.MongoClient('mongodb://[::1]/log2990', {
+		this.client = new mongodb.MongoClient('mongodb://127.0.0.1/log2990', {
 			auth: secrets.mongodb.auth,
-			//	useUnifiedTopology: true, DOES NOT WORK WITH IPV6
+			// Next does not work with IPv6
+			useUnifiedTopology: true,
 		});
 	}
 
@@ -22,7 +23,17 @@ class Database {
 
 	async connect(dbName?: string): Promise<mongodb.Db> {
 		await this.client.connect();
-		return (this._db = this.client.db(dbName));
+		this._db = this.client.db(dbName);
+		const counterCollection = this._db.collection('counter');
+		await counterCollection?.count().then(count => {
+			if (count == 0) {
+				counterCollection.insert({
+					_id: 'productid',
+					sequenceValue: 0,
+				});
+			}
+		});
+		return this._db;
 	}
 
 	close(force?: boolean): Promise<void> {
