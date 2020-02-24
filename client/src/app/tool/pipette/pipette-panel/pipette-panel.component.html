@@ -1,0 +1,11 @@
+<h1>Pipette</h1>
+  <svg width="320" height="280" #pipetteSVG>
+    <circle cx="160"
+            cy="150"
+            r="100"
+            [ngStyle]="{'fill': this.pipService.currentColor, 'stroke-width': 3, 'stroke': 'rgb(0, 0, 0)'}">
+    </circle>
+  </svg>
+<p class="mat-caption" align="center" style="font-size: 150%">{{this.getHex()}}</p>
+<hr>
+<app-color-panel></app-color-panel>

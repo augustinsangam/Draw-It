@@ -17,7 +17,9 @@ import {
 } from '@angular/forms';
 import { MatSliderChange } from '@angular/material';
 import { EventManager } from '@angular/platform-browser';
-import { ShortcutHandlerService } from 'src/app/shortcut-handler.service';
+import {
+  ShortcutHandlerService
+} from 'src/app/shortcut-handler/shortcut-handler.service';
 import { ColorService, RGBColor } from '../../color.service';
 // tslint:disable-next-line: max-line-length
 import { ColorPickerItemComponent } from '../color-picker-item/color-picker-item.component';

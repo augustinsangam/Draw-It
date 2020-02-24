@@ -1,4 +1,4 @@
-import { ElementRef, Renderer2 } from '@angular/core';
+import { Renderer2 } from '@angular/core';
 import { MathService } from '../../mathematics/tool.math-service.service';
 import {AbstractShape} from './AbstractShape'
 import { Point } from './Point';
@@ -8,7 +8,7 @@ export class Polygone extends AbstractShape {
 
   constructor(
     protected renderer: Renderer2,
-    public element: ElementRef,
+    public element: SVGElement,
     private mathService: MathService,
     private sides: number
   ) {
@@ -33,10 +33,7 @@ export class Polygone extends AbstractShape {
       oppositePoint
     );
     const points: Point [] = this.mathService.getPolynomeCornersFromRectangle(
-     mouseDownPoint, upLeftCorner, dimensions, this.sides);
-    
-    console.log(points, 'yeeeeeeeeeeeeeeeeeeeeeee')
+      mouseDownPoint, upLeftCorner, dimensions, this.sides);
     this.insertPolygonInSVG(points);
-  }
-
+    }
 }

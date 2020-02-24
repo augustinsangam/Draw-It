@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, Renderer2 } from '@angular/core';
 
+import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { PencilBrushCommon } from '../../pencil-brush/pencil-brush-common';
 import { PencilService } from '../pencil.service';
@@ -15,13 +16,19 @@ export class PencilLogicComponent extends PencilBrushCommon
 
   constructor(public renderer: Renderer2,
               public colorService: ColorService,
-              public pencilService: PencilService) {
-    super();
+              public pencilService: PencilService,
+              protected readonly undoRedo: UndoRedoService) {
+    super(undoRedo);
     this.listeners = new Array();
   }
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
+    this.renderer.setStyle(
+      this.svgElRef.nativeElement,
+      'cursor',
+      'crosshair'
+    );
   }
 
   // tslint:disable-next-line:use-lifecycle-interface

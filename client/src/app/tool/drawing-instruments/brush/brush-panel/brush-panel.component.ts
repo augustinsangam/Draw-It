@@ -26,11 +26,6 @@ export class BrushPanelComponent extends ToolPanelDirective {
 
   protected textures = [
     {
-      value: Texture.Texture1,
-      name: 'Fractal',
-      src: '/assets/textures/texture1.png'
-    },
-    {
       value: Texture.Texture2,
       name: 'Flou',
       src: '/assets/textures/texture2.png'
@@ -49,7 +44,12 @@ export class BrushPanelComponent extends ToolPanelDirective {
       value: Texture.Texture5,
       name: 'Poussière',
       src: '/assets/textures/texture5.png'
-    }
+    },
+    {
+      value: Texture.Texture1,
+      name: 'Fractal',
+      src: '/assets/textures/texture1.png'
+    },
   ];
 
   constructor(

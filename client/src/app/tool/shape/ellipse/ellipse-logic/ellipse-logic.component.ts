@@ -1,4 +1,5 @@
 import {Component, OnDestroy, Renderer2} from '@angular/core';
+import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import {ColorService} from '../../../color/color.service';
 import {MathService} from '../../../mathematics/tool.math-service.service';
 import {ToolLogicDirective} from '../../../tool-logic/tool-logic.directive';
@@ -37,7 +38,8 @@ export class EllipseLogicComponent extends ToolLogicDirective
     private readonly service: EllipseService,
     private readonly renderer: Renderer2,
     private readonly colorService: ColorService,
-    private readonly mathService: MathService
+    private readonly mathService: MathService,
+    private readonly undoRedo: UndoRedoService
   ) {
     super();
   }
@@ -59,11 +61,11 @@ export class EllipseLogicComponent extends ToolLogicDirective
       (mouseEv: MouseEvent) => {
         if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
           this.viewTemporaryForm(mouseEv);
-          this.style.opacity = FULLOPACITY;
           this.onDrag = false;
-          this.renderer.removeChild(
-            this.renderer.parentNode(this.rectVisu.element),
-            this.rectVisu.element)
+          this.rectVisu.element.remove();
+          this.style.opacity = FULLOPACITY;
+          this.getEllipse().setCss(this.style);
+          this.undoRedo.addToCommands();
         }
       }
     );
@@ -76,8 +78,8 @@ export class EllipseLogicComponent extends ToolLogicDirective
           this.currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
           this.viewTemporaryForm(mouseEv);
           this.rectVisu.dragRectangle(
-            this.initialPoint, this.currentPoint);
-
+            this.initialPoint, this.currentPoint
+          );
         }
       }
     );
@@ -101,6 +103,12 @@ export class EllipseLogicComponent extends ToolLogicDirective
       onKeyDown,
       onKeyUp
     ];
+
+    this.renderer.setStyle(
+      this.svgElRef.nativeElement,
+      'cursor',
+      'crosshair'
+    );
   }
 
   ngOnDestroy(): void {
@@ -154,10 +162,12 @@ export class EllipseLogicComponent extends ToolLogicDirective
       this.rectVisu = new Rectangle(
         this.renderer,
         rectangle,
-        this.mathService);
+        this.mathService
+      );
 
       this.rectVisu.setParameters(
-        BackGroundProperties.None, StrokeProperties.Dashed);
+        BackGroundProperties.None, StrokeProperties.Dashed
+      );
     }
   }
 
@@ -188,7 +198,8 @@ export class EllipseLogicComponent extends ToolLogicDirective
 
     this.getEllipse().setParameters(
       backgroundProperties,
-      strokeProperties);
+      strokeProperties
+    );
   }
 
 }

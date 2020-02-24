@@ -1,4 +1,5 @@
 import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { MathService } from '../../../mathematics/tool.math-service.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
@@ -34,6 +35,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
     private readonly service: RectangleService,
     private readonly renderer: Renderer2,
     private readonly colorService: ColorService,
+    private readonly undoRedo: UndoRedoService,
     private readonly mathService: MathService
   ) {
     super();
@@ -71,6 +73,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
           this.style.opacity = FULLOPACITY;
           this.getRectangle().setCss(this.style);
           this.viewTemporaryForm(mouseEv);
+          this.undoRedo.addToCommands();
           }
       }
     );
@@ -94,6 +97,12 @@ export class RectangleLogicComponent extends ToolLogicDirective
       onMouseMove,
       onMouseUp
     ];
+
+    this.renderer.setStyle(
+      this.svgElRef.nativeElement,
+      'cursor',
+      'crosshair'
+    );
   }
 
   ngOnDestroy() {

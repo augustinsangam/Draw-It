@@ -1,0 +1,42 @@
+<img src="/assets/logo.png" alt="POLY DESSIN" width="10%"/>
+<div class="informations">
+  <h1>Exporter un dessin</h1>
+</div>
+<table>
+  <tr>
+    <td class="col">
+      <form id="form" [formGroup]="form">
+        <h4>Nom du dessin</h4>
+        <mat-form-field appearance="outline">
+          <mat-label>Nom du dessin</mat-label>
+          <input matInput placeholder="Entrer le nom du dessin" formControlName="name">
+          <mat-hint>
+            Le nom du fichier ne doit pas contenir d'espaces
+          </mat-hint>
+        </mat-form-field>
+        <h4>Filtres</h4>
+      </form>
+    <mat-radio-group (change)="onOptionChange($event)">
+        <div *ngFor="let filter of filters" class="filterOption">
+          <mat-radio-button [value]="filter" #radioChoice></mat-radio-button>
+          {{filter}}
+        </div>
+      </mat-radio-group>
+    </td>
+    <td class="col">
+      <div class="apercu"></div>
+    </td>
+  </tr>
+</table>
+<table>
+  <tr>
+    <td>
+      <button mat-raised-button color="warn" (click)="onCancel($event)">Annuler </button>
+    </td>
+    <td>
+      <button mat-raised-button color="primary"
+              (click)="onConfirm($event)"
+              [disabled]="form.invalid">Exporter</button>
+    </td>
+  </tr>
+</table>

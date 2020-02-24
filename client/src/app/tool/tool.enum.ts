@@ -1,12 +1,15 @@
 export enum Tool {
+  Applicator,
   Brush,
-  Color,
   Eraser,
+  Ellipse,
   Line,
   Pencil,
-  Rectangle,
-  Ellipse,
   Polygone,
+  Rectangle,
+  Selection,
+  Pipette,
+  Aerosol,
   _Len,
   _None,
 }

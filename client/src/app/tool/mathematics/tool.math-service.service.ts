@@ -5,6 +5,18 @@ import { Point } from '../shape/common/Point';
 import { Dimension } from '../shape/common/Rectangle';
 
 const MINIMALDISTANCE = 3;
+const MULTIPLICATEURX: number [] =
+  [0, 0, 1.15, 1.415, 1.05, 1.00, 1.015, 1.08, 1.01, 1.0, 1.01, 1.03];
+const MULTIPLICATEURY: number [] =
+  [0, 0, 1.32, 1.415, 1.1, 1.155, 1.05, 1.08, 1.027, 1.05, 1.02, 1.03];
+const DECALAGEX: number [] =
+  [0, 0, 1.15, 1.0, 1.045, 1.15, 1.025, 1.0, 1.0, 1.06, 1.02, 1.0];
+const DECALAGEY: number [] =
+  [0, 0, 1.0, 1.0, 0.97, 0.88, 1.0, 1.0, 1.0, 0.95, 1.0, 1.0];
+const RATIOTRANSITION: number[] =
+  [0, 0, 1.15, 1.0, 1.04, 1.15, 1.08, 1.0, 1.04, 1.06, 1.08, 1.0];
+const FACTEURTRANSITION: number[] =
+  [0, 0, 1.0, 1.0, 1.01, 1.0, 1.02, 1.0, 1.0, 1.0, 1.0, 1.0];
 
 @Injectable({
   providedIn: 'root'
@@ -66,19 +78,49 @@ export class MathService {
     sides: number): Point [] {
     const minSide = Math.min(dimension.width, dimension.height);
 
-    const points: Point [] = []
     const initialPoint: Point = {x: 0, y: 0};
     let angle = 0;
-    const sideLength = minSide / 2;
-    if (upLeftCorner.x < mouseDownPoint.x) {
-      initialPoint.x = mouseDownPoint.x - sideLength * (3 / 2);
+    let rayon = 0;
+    let decalageX = 1.0;
+    let decalageY = 1.0;
+    if (dimension.width === minSide) {
+      rayon = minSide * MULTIPLICATEURX [sides - 1] ;
+      decalageY = ((DECALAGEY [sides - 1])) ;
     } else {
-      initialPoint.x = mouseDownPoint.x + sideLength * (1 / 2)
+      const ratio = dimension.width / dimension.height;
+      if ( ratio <= RATIOTRANSITION [sides - 1]) {
+        rayon =
+          minSide * MULTIPLICATEURX [sides - 1] * FACTEURTRANSITION [sides - 1];
+        decalageY = ((DECALAGEY [sides - 1])) ;
+        if (sides === 3 || sides === 6 || sides === 10) {
+          decalageX = ratio * FACTEURTRANSITION [sides - 1];
+          rayon = minSide * MULTIPLICATEURX [sides - 1] * ratio;
+        }
+        if (sides === 6 ) {
+          decalageY *= (ratio) * FACTEURTRANSITION [sides - 1];
+        }
+        if (sides === 10) {
+          decalageY = FACTEURTRANSITION [sides - 1];
+
+        }
+      } else {
+        rayon = minSide * (MULTIPLICATEURY [sides - 1]);
+        decalageX = ((DECALAGEX [sides - 1])) ;
+      }
+    }
+    const sideLength = rayon * Math.sin(Math.PI / sides);
+    const points: Point [] = []
+    if (upLeftCorner.x < mouseDownPoint.x) {
+      initialPoint.x =
+        mouseDownPoint.x - minSide * decalageX / 2 - sideLength / 2;
+    } else {
+      initialPoint.x =
+        mouseDownPoint.x + minSide * decalageX / 2 - sideLength / 2;
     }
     if (upLeftCorner.y === mouseDownPoint.y) {
-      initialPoint.y = mouseDownPoint.y + minSide;
+      initialPoint.y = upLeftCorner.y + minSide * decalageY;
     } else {
-      initialPoint.y = upLeftCorner.y + dimension.height;
+      initialPoint.y = mouseDownPoint.y;
     }
     points.push(initialPoint)
     let i = 1;
@@ -87,11 +129,11 @@ export class MathService {
     const lastPoint = {x: 0, y: 0};
     lastPoint.x = points[i - 1].x + sideLength * Math.cos(angle);
     lastPoint.y = points[i - 1].y - sideLength * Math.sin(angle);
-    console.log(lastPoint, 'dedaaaaaaans')
     points.push({ x : lastPoint.x, y: lastPoint.y});
     angle += (Math.PI * 2) / sides;
     i += 1;
-  }
+    }
+    // this.putCornersInRectangle(upLeftCorner, dimension, points);
     return points;
   }
   getRectangleUpLeftCorner(initialPoint: Point, oppositePoint: Point): Point {
