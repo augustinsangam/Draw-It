@@ -19,6 +19,11 @@ export class ToolSelectorService {
   }
 
   // Must be public
+  get current() {
+    return this.tool;
+  }
+
+  // Must be public
   set(tool: Tool): void {
     if (this.tool === tool) {
       this.onSameCallbacks.forEach(async (cb) => cb(tool));

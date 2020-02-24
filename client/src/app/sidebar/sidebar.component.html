@@ -24,9 +24,15 @@
     [class.selected]="selection[toolType.Brush]"
     (click)="selectTool(toolType.Brush)"></a>
 </nav>
-<a title="Sauvegarder" style="background-image:url(/assets/icons/save.gif)"
-  (click)="pageEv.emit(pageType.SAVE)"></a>
-<a title="Exporter"    style="background-image:url(/assets/icons/export.png)"
-  (click)="pageEv.emit(pageType.EXPORT)"></a>
-<a title="Aide"        style="background-image:url(/assets/icons/help.svg)"
-  (click)="pageEv.emit(pageType.DOCUMENTATION)"></a>
+<button title="Annuler"
+  [disabled]="!undoRedoService.canUndo()"
+  (click)="undoRedoService.undo()"><mat-icon>undo</mat-icon></button>
+<button title="Refaire"
+  [disabled]="!undoRedoService.canRedo()"
+  (click)="undoRedoService.redo()"><mat-icon>redo</mat-icon></button>
+<button title="Sauvegarder"
+  (click)="pageEv.emit(pageType.SAVE)"><mat-icon>save</mat-icon></button>
+<button title="Exporter"
+  (click)="pageEv.emit(pageType.EXPORT)"><mat-icon>save_alt</mat-icon></button>
+<button title="Aide"
+  (click)="pageEv.emit(pageType.DOCUMENTATION)"><mat-icon>help</mat-icon></button>

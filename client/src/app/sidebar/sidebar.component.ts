@@ -8,6 +8,7 @@ import {
 import { Page } from '../page/page';
 import { ToolSelectorService } from '../tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
+import { UndoRedoService } from '../undo-redo/undo-redo.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -29,6 +30,8 @@ export class SidebarComponent implements AfterViewInit {
 
   constructor(
     private readonly toolSelectorService: ToolSelectorService,
+    // Must be public
+    readonly undoRedoService: UndoRedoService,
   ) {
     this.pageEv = new EventEmitter();
     this.pageType = Page;

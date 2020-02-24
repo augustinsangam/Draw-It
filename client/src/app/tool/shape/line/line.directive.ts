@@ -8,6 +8,7 @@ import {
 
 import { SVG_NS } from '../../../constants/constants';
 import { MathematicsService } from '../../../mathematics/mathematics.service';
+import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import { ColorService } from '../../color/color.service';
 import { ToolDirective } from '../../tool.directive';
 import { Path } from '../common/path';
@@ -24,21 +25,24 @@ interface JonctionOption {
 })
 export class LineDirective extends ToolDirective implements OnDestroy, OnInit {
 
-  private drawZone: SVGGElement;
+  // private drawZone: SVGGElement;
   private paths: Path[];
   private listeners: (() => void)[];
   private isNewPath: boolean;
   private mousePosition: Point;
   private currentJonctionOptions: JonctionOption;
+  private drawZone?: SVGGElement;
 
   constructor(
-    private readonly elementRef: ElementRef<SVGSVGElement>,
+    elementRef: ElementRef<SVGSVGElement>,
     private readonly colorService: ColorService,
     private readonly mathService: MathematicsService,
     private readonly renderer: Renderer2,
     private readonly service: LineService,
+    undoRedoService: UndoRedoService,
   ) {
-    super(elementRef, colorService, mathService, renderer, service);
+    super(elementRef, colorService, mathService, renderer, service,
+      undoRedoService);
     this.paths = [];
     this.listeners = [];
     this.isNewPath = true;
@@ -127,6 +131,7 @@ export class LineDirective extends ToolDirective implements OnDestroy, OnInit {
         this.addNewLine(currentPoint);
       }
       this.isNewPath = true;
+      this.save();
     }
   }
 
@@ -189,7 +194,9 @@ export class LineDirective extends ToolDirective implements OnDestroy, OnInit {
 
   private createJonction(center: Point): void {
     const circle = this.renderer.createElement('circle', SVG_NS);
-    this.renderer.appendChild(this.drawZone, circle);
+    const drawZone = this.elementRef.nativeElement
+      .getElementById('zone') as SVGGElement;
+    this.renderer.appendChild(drawZone, circle);
     this.getPath().addJonction(
       circle,
       center,

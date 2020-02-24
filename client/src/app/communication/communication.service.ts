@@ -89,6 +89,7 @@ export class CommunicationService {
           }
         }
       }
+      this.xhr.onerror = (err) => reject(err);
     });
     this.xhr.send(this.fbb.asUint8Array());
     return promise;
@@ -107,6 +108,7 @@ export class CommunicationService {
           }
         }
       }
+      this.xhr.onerror = (err) => reject(err);
     });
     this.xhr.send(this.fbb.asUint8Array());
     return promise;

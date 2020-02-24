@@ -1,6 +1,8 @@
 DESCRIPTION
 Before commiting changes, format and check the code with ‘npm run lint’, and run
 the tests with ‘npm t’. NO WARNINGS PERMITTED!
+All propreties without initialization in constructor should be marked optional
+and separated by blank line from normal propreties.
 
 SERVER {{{
 	When developing on the backend, start the server with ‘npm start’ and watch

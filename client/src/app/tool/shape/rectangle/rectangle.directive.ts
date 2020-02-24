@@ -8,6 +8,7 @@ import {
 
 import { Mouse, Opacity, SVG_NS } from '../../../constants/constants';
 import { MathematicsService } from '../../../mathematics/mathematics.service';
+import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import { ColorService } from '../../color/color.service';
 import { ToolDirective } from '../../tool.directive';
 import {
@@ -34,14 +35,15 @@ export class RectangleDirective extends ToolDirective
   private style: Style;
 
   constructor(
-    private readonly elementRef: ElementRef<SVGSVGElement>,
+    elementRef: ElementRef<SVGSVGElement>,
     private readonly colorService: ColorService,
     private readonly mathService: MathematicsService,
     private readonly renderer: Renderer2,
     private readonly service: RectangleService,
-    // private readonly undoRedoService: UndoRedoService,
+    undoRedoService: UndoRedoService,
   ) {
-    super(elementRef, colorService, mathService, renderer, service);
+    super(elementRef, colorService, mathService, renderer, service,
+      undoRedoService);
     this.onDrag = false;
     this.rectangles = new Array();
   }
@@ -84,11 +86,10 @@ export class RectangleDirective extends ToolDirective
         const validClick = mouseEv.button === Mouse.LEFT_BTN;
         if (validClick && this.onDrag ) {
           this.onDrag = false;
-
           this.style.opacity = Opacity.FULL.toString();
           this.getRectangle().setCss(this.style);
           this.viewTemporaryForm(mouseEv);
-          // this.undoRedo.addToCommands();
+          this.save();
         }
       }
     );

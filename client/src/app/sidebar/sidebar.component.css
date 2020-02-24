@@ -33,7 +33,21 @@ nav a:hover, nav a.selected {
   filter: grayscale(0) drop-shadow(0 0 5px #FFF);
 }
 
-a[title='Aide'] {
+button {
+  padding: 10px 10px 6px;
+  border: none;
+}
+
+button:not(:last-child) {
+  color: white;
+  background: none;
+}
+
+button:last-child {
   cursor: help;
   background-color: #FF0;
+}
+
+button[disabled] {
+  color: gray;
 }

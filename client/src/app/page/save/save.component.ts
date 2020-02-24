@@ -91,7 +91,7 @@ export class SaveComponent implements OnInit {
           console.log('ok');
           this.dialogRef.close();
         })
-        .catch(() => console.log('err'));
+        .catch((err) => console.log('err ' + err));
     } else {
       this.communicationService.post()
         .then((newID) => {
@@ -99,7 +99,7 @@ export class SaveComponent implements OnInit {
           this.svgElRef.nativeElement.id = newID.toString();
           this.dialogRef.close();
         })
-        .catch(() => console.log('err'));
+        .catch((err) => console.log('err ' + err));
     }
   }
 }

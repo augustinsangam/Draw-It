@@ -6,15 +6,11 @@ import {
   Renderer2,
 } from '@angular/core';
 
+import { UndoRedoAction } from '../constants/constants';
 import { MathematicsService } from '../mathematics/mathematics.service';
+import { UndoRedoService } from '../undo-redo/undo-redo.service';
 import { ColorService } from './color/color.service';
 import { ToolService } from './tool.service';
-
-export interface ToolDrawbox {
-  zone: SVGGElement;
-  temp: SVGGElement;
-  end: SVGGElement;
-}
 
 @Directive({
   selector: '[appTool]',
@@ -23,12 +19,12 @@ export class ToolDirective implements OnDestroy, OnInit {
   // This constructor guarantees the same prototype for all directives
   // This is why we disable tslint
   constructor(
-    _elementRef: ElementRef<SVGSVGElement>,
+    protected readonly elementRef: ElementRef<SVGSVGElement>,
     _colorService: ColorService,
     _mathService: MathematicsService,
     _renderer: Renderer2,
     _service: ToolService,
-  // tslint:disable-next-line: no-empty
+    protected readonly undoRedoService: UndoRedoService,
   ) {}
 
   ngOnDestroy(): void {
@@ -37,5 +33,11 @@ export class ToolDirective implements OnDestroy, OnInit {
 
   ngOnInit(): void {
     console.warn('ngOnInit not implemented!');
+  }
+
+  // Create a snapshot for the SVG:G element
+  protected save() {
+    const drawZone = this.elementRef.nativeElement.getElementById('zone');
+    this.undoRedoService.save(UndoRedoAction.SVG, drawZone.cloneNode(true));
   }
 }

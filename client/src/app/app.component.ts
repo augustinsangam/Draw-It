@@ -27,6 +27,7 @@ import {
 import { SvgComponent } from './svg/svg.component';
 import { ToolSelectorService } from './tool-selector/tool-selector.service';
 import { Tool } from './tool/tool.enum';
+import { UndoRedoService } from './undo-redo/undo-redo.service';
 
 @Component({
   selector: 'app-root',
@@ -44,7 +45,8 @@ export class AppComponent implements AfterViewInit {
 
   private drawInProgress: boolean;
   private readonly pageToDialog: Map<Page, (fromHome?: boolean) => void>;
-  private svgComponentRef?: ComponentRef<SvgComponent>;
+
+  private newDrawComponentRef?: ComponentRef<SvgComponent>;
 
   constructor(
     private readonly componentFactoryResolver: ComponentFactoryResolver,
@@ -52,6 +54,7 @@ export class AppComponent implements AfterViewInit {
     sharedService: SharedService,
     private readonly shortcutHandlerService: ShortcutHandlerService,
     toolSelectorService: ToolSelectorService,
+    undoRedoService: UndoRedoService,
   ) {
     this.drawInProgress = false;
     this.pageToDialog = new Map();
@@ -90,11 +93,7 @@ export class AppComponent implements AfterViewInit {
     shortcutHandlerService.set(Shortcut.Z, (keyEv) => {
       if (keyEv.ctrlKey) {
         keyEv.preventDefault();
-        if (keyEv.shiftKey) {
-          // TODO: this.undoRedo.redo();
-        } else {
-          // TODO: this.undoRedo.undo();
-        }
+        undoRedoService.do(keyEv.shiftKey);
       }
     });
   }
@@ -151,7 +150,7 @@ export class AppComponent implements AfterViewInit {
     const componentRef = this.viewContainerRef
       .createComponent(componentFactory);
     componentRef.instance.config = drawConfig;
-    this.svgComponentRef = componentRef;
+    this.newDrawComponentRef = componentRef;
   }
 
   private openNewDrawDialog(fromHome: boolean): void {
@@ -182,7 +181,7 @@ export class AppComponent implements AfterViewInit {
 
   private openSaveDialog() {
     const dialogConfig = this.dialogConfig();
-    dialogConfig.data = this.svgComponentRef.instance.elementRef;
+    dialogConfig.data = this.newDrawComponentRef.instance.elementRef;
     this.openDialog(SaveComponent, dialogConfig).subscribe(
       () => this.shortcutHandlerService.activateAll());
   }

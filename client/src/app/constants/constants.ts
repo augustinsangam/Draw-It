@@ -6,6 +6,10 @@ enum Mouse {
   RIGHT_BTN,
 }
 
+enum UndoRedoAction {
+  SVG,
+}
+
 enum Opacity {
   SEMI = .5,
   FULL = 1,
@@ -25,4 +29,5 @@ export {
   Mouse,
   Opacity,
   SVG_NS,
+  UndoRedoAction,
 };
