@@ -1,0 +1,64 @@
+<aside>
+  <h1 class="tree-nav-titre"><mat-icon>book</mat-icon>   Guide d'utilisation</h1>
+  <mat-tree [dataSource]="dataSource" [treeControl]="treeControl" class="tree">
+    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+      <button mat-button class="leaf-button" (click)="displayNodeContent(node)">
+        <mat-icon *ngIf="node.label === this.contentToDisplay.title"
+                  >send</mat-icon>
+        <span class="{{node.label === this.contentToDisplay.title ? 'leaf-active-button' : 'leaf-button'}}">
+          {{ node.label }}
+        </span>
+      </button>
+    </mat-tree-node>
+    <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChild">
+      <li>
+        <button mat-button matTreeNodeToggle
+                class="tree-button"
+                [attr.aria-label]="'toggle ' +node.label">
+          <mat-icon class="mat-icon-rtl-mirror">
+            {{ treeControl.isExpanded(node) ? 'expand_more'
+                                            : 'chevron_right' }}
+          </mat-icon>
+          {{ node.label }}
+        </button>
+        <ul [class.tree-invisible]="!treeControl.isExpanded(node)">
+          <ng-container matTreeNodeOutlet></ng-container>
+        </ul>
+      </li>
+    </mat-nested-tree-node>
+  </mat-tree>
+
+  <ng-container class="mat-button-toggle-group">
+    <button mat-button label="Reduce all"
+            class="leaf-button"
+            (click)="treeControl.collapseAll()">
+      <mat-icon>expand_less</mat-icon>Tout réduire
+    </button>
+  </ng-container>
+</aside>
+
+
+<div class="description-wrapper">
+
+  <div class="button-nav-wrapper">
+      <div class="div-button-nav" *ngIf="contentToDisplay.title != 'Bienvenue'">
+          <button mat-raised-button class="button-nav" label="Section précédente"
+              (click)="previous()"
+              [disabled]="isFirstNode()">
+              <mat-icon>arrow_back</mat-icon>Précédent</button>
+          <button mat-raised-button class="button-nav" label="Section suivante"
+              (click)="next()"
+              [disabled]="isLastNode()">
+              Suivant<mat-icon>arrow_forward</mat-icon>
+          </button>
+      </div>
+  </div>
+
+  <div class="description">
+    <div class="description-content">
+        <h1 [innerHTML]="contentToDisplay.title">
+        </h1>
+        <p [innerHTML]="contentToDisplay.body"></p>
+    </div>
+  </div>
+</div>

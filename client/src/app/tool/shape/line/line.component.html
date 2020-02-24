@@ -1,0 +1,24 @@
+<h1>Ligne</h1>
+<form [formGroup]="lineForm">
+  <p>Épaisseur</p>
+  <div class="thickness">
+    <mat-slider min=1 formControlName="thicknessSlider" (input)="onThicknessChange()" (change)="onThicknessChange()"
+      #thicknessSlider>
+    </mat-slider>
+    <span>{{ service.thickness }} px</span>
+  </div>
+  <p>
+    Points de jonction
+    <mat-slide-toggle formControlName="jonctionOption" (change)="onChangeJonctionOption($event)" #slideToggle>
+    </mat-slide-toggle>
+  </p>
+  <div class="juction-preferences" *ngIf="service.withJonction">
+    <p>Diamètre des points</p>
+    <mat-slider min=1 formControlName="radiusSlider" (input)="onRadiusChange()" (change)="onRadiusChange()"
+      #radiusSlider>
+    </mat-slider>
+    <span>{{ service.radius }} px</span>
+  </div>
+</form>
+<hr />
+<app-color></app-color>

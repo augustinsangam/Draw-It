@@ -1,282 +1,197 @@
+import { ComponentType } from '@angular/cdk/portal';
 import {
   AfterViewInit,
   Component,
-  ElementRef,
+  ComponentFactoryResolver,
+  ComponentRef,
   HostListener,
-  ViewChild
+  ViewChild,
+  ViewContainerRef,
 } from '@angular/core';
-import {MatDialog, MatDialogRef} from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
 
-// import { CommunicationService } from './communication/communication.service';
+import { DrawConfig } from './constants/constants';
 import {
   DocumentationComponent
-} from './pages/documentation/documentation.component';
-import { ExportComponent } from './pages/export/export.component';
-import { HomeComponent } from './pages/home/home.component';
-import { NewDrawComponent } from './pages/new-draw/new-draw.component';
+} from './page/documentation/documentation.component';
+import { HomeComponent } from './page/home/home.component';
+import { NewDrawComponent } from './page/new-draw/new-draw.component';
+import { Page } from './page/page';
+import { SaveComponent } from './page/save/save.component';
+import { SharedService } from './shared/shared.service';
 import {
   Shortcut,
-  ShortcutCallBack,
-  ShortcutHandlerService
+  ShortcutHandlerService,
 } from './shortcut-handler/shortcut-handler.service';
-import {SvgService} from './svg/svg.service';
-import {ColorService} from './tool/color/color.service';
-import {ToolSelectorService} from './tool/tool-selector/tool-selector.service';
-import {Tool} from './tool/tool.enum';
-import {UndoRedoService} from './tool/undo-redo/undo-redo.service';
-
-export interface NewDrawOptions {
-  width: number;
-  height: number;
-  color: string;
-}
-
-export enum OverlayPages {
-  Documentation = 'documentation',
-  Home = 'home',
-  Library = 'library',
-  New = 'new'
-}
-
-export interface DialogRefs {
-  home: MatDialogRef<HomeComponent>;
-  newDraw: MatDialogRef<NewDrawComponent>;
-  documentation: MatDialogRef<DocumentationComponent>;
-  export: MatDialogRef<ExportComponent>;
-}
+import { SvgComponent } from './svg/svg.component';
+import { ToolSelectorService } from './tool-selector/tool-selector.service';
+import { Tool } from './tool/tool.enum';
 
 @Component({
   selector: 'app-root',
+  styleUrls: [
+    './app.component.css',
+  ],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements AfterViewInit {
-  private dialogRefs: DialogRefs;
-  private drawInProgress: boolean;
-  protected drawOption: NewDrawOptions;
-
-  @ViewChild('svg', {
-    static: false,
-    read: ElementRef
+  @ViewChild('container', {
+    read: ViewContainerRef,
+    static: true,
   })
-  svg: ElementRef<SVGSVGElement>;
+  private readonly viewContainerRef: ViewContainerRef;
 
-  handlersFunc: Map<Shortcut, ShortcutCallBack>;
-
-  private getCommomDialogOptions = () => {
-    return {
-      width: '650px',
-      height: '90%',
-      data: { drawInProgress: this.drawInProgress }
-    };
-  };
+  private drawInProgress: boolean;
+  private readonly pageToDialog: Map<Page, (fromHome?: boolean) => void>;
+  private svgComponentRef?: ComponentRef<SvgComponent>;
 
   constructor(
-    public dialog: MatDialog,
-   // private readonly communicationServerice: CommunicationService,
-    private readonly toolSelectorService: ToolSelectorService,
-    private colorService: ColorService,
-    private svgService: SvgService,
-    private shortcutHanler: ShortcutHandlerService,
-    private undoRedo: UndoRedoService,
+    private readonly componentFactoryResolver: ComponentFactoryResolver,
+    private readonly dialog: MatDialog,
+    sharedService: SharedService,
+    private readonly shortcutHandlerService: ShortcutHandlerService,
+    toolSelectorService: ToolSelectorService,
   ) {
     this.drawInProgress = false;
-    this.drawOption = { height: 0, width: 0, color: '' };
-
-    this.handlersFunc = new Map();
-    this.handlersFunc.set(Shortcut.C, () =>
-      this.toolSelectorService.set(Tool.Pencil)
-    );
-    this.handlersFunc.set(Shortcut.L, () =>
-      this.toolSelectorService.set(Tool.Line)
-    );
-    this.handlersFunc.set(Shortcut.W, () =>
-      this.toolSelectorService.set(Tool.Brush)
-    );
-    this.handlersFunc.set(Shortcut.Digit1, () =>
-      this.toolSelectorService.set(Tool.Rectangle)
-    );
-    this.handlersFunc.set(Shortcut.Digit2, () =>
-      this.toolSelectorService.set(Tool.Ellipse)
-    );
-    this.handlersFunc.set(Shortcut.Digit3, () =>
-      this.toolSelectorService.set(Tool.Polygone)
-    );
-    this.handlersFunc.set(Shortcut.I, () =>
-      this.toolSelectorService.set(Tool.Pipette)
-    );
-    this.handlersFunc.set(Shortcut.E, () =>
-      this.toolSelectorService.set(Tool.Eraser)
-    );
-    this.handlersFunc.set(Shortcut.O, (event: KeyboardEvent) => {
-      if (!!event && event.ctrlKey) {
-        event.preventDefault();
-        this.openNewDrawDialog();
+    this.pageToDialog = new Map();
+    this.pageToDialog.set(Page.DOCUMENTATION, this.openDocumentationDialog);
+    // this.pages.set(Page.EXPORT, …);
+    // this.pages.set(Page.GALLERY, …);
+    this.pageToDialog.set(Page.HOME, this.openHomeDialog);
+    this.pageToDialog.set(Page.NEW_DRAW, this.openNewDrawDialog);
+    this.pageToDialog.set(Page.SAVE, this.openSaveDialog);
+    for (let tool = Tool._Len; --tool; ) {
+      const shortcut = sharedService.toolShortcuts[tool];
+      if (!!shortcut) {
+        shortcutHandlerService.set(shortcut,
+          () => toolSelectorService.set(tool));
+      }
+    }
+    shortcutHandlerService.set(Shortcut.A, (keyEv) => {
+      toolSelectorService.set(keyEv.ctrlKey ? Tool.Selection : Tool.Aerosol);
+      if (keyEv.ctrlKey) {
+        keyEv.preventDefault();
+        // TODO: this.svgService.selectAllElements.emit(null);
       }
     });
-    this.handlersFunc.set(Shortcut.Z, (event: KeyboardEvent) => {
-      if (!!event && event.ctrlKey) {
-        event.preventDefault();
-        if (event.shiftKey) {
-          this.undoRedo.redo();
+    shortcutHandlerService.set(Shortcut.O, (keyEv) => {
+      if (keyEv.ctrlKey) {
+        keyEv.preventDefault();
+        this.openPage(Page.NEW_DRAW, false);
+      }
+    });
+    shortcutHandlerService.set(Shortcut.S, (keyEv) => {
+      if (keyEv.ctrlKey) {
+        keyEv.preventDefault();
+        this.openPage(Page.SAVE, false);
+      }
+    });
+    shortcutHandlerService.set(Shortcut.Z, (keyEv) => {
+      if (keyEv.ctrlKey) {
+        keyEv.preventDefault();
+        if (keyEv.shiftKey) {
+          // TODO: this.undoRedo.redo();
         } else {
-          this.undoRedo.undo();
+          // TODO: this.undoRedo.undo();
         }
       }
     });
+  }
 
-    this.handlersFunc.set(Shortcut.A, (event: KeyboardEvent) => {
-      if (!!event && event.ctrlKey) {
-        event.preventDefault();
-        this.toolSelectorService.set(Tool.Selection);
-        this.svgService.selectAllElements.emit(null);
-      } else if (!!event && !event.ctrlKey) {
-        this.toolSelectorService.set(Tool.Aerosol)
-      }
-    });
-    this.handlersFunc.set(Shortcut.S, () =>
-      this.toolSelectorService.set(Tool.Selection)
-    );
-    this.handlersFunc.set(Shortcut.R, () =>
-      this.toolSelectorService.set(Tool.Applicator));
+  @HostListener('window:keydown', [
+    '$event',
+  ])
+  keyEvent(keyEv: KeyboardEvent): void {
+    this.shortcutHandlerService.execute(keyEv);
+  }
 
-    for (const entry of this.handlersFunc) {
-      this.shortcutHanler.set(
-        entry[0],
-        this.handlersFunc.get(entry[0]) as ShortcutCallBack
-      );
+  ngAfterViewInit(): void {
+    this.openPage(Page.HOME, true);
+  }
+
+  private dialogConfig(): MatDialogConfig {
+    const dialogConfig = new MatDialogConfig();
+    // Do not focus the first element, but rather the host
+    dialogConfig.autoFocus = false;
+    dialogConfig.height = '90%';
+    // See style.css
+    dialogConfig.panelClass = 'no-padding';
+    dialogConfig.width = '650px';
+    return dialogConfig;
+  }
+
+  private openDialog<T>(dialog: ComponentType<T>, config: MatDialogConfig):
+    Observable<any> {
+    return this.dialog.open(dialog, config).afterClosed();
+  }
+
+  private openHomeDialog(fromHome: boolean): void {
+    if (!fromHome) {
+      this.shortcutHandlerService.activateAll();
+      return;
     }
-
-    this.dialogRefs = {
-      home: (undefined as unknown) as MatDialogRef<HomeComponent>,
-      newDraw: (undefined as unknown) as MatDialogRef<NewDrawComponent>,
-      documentation: (undefined as unknown) as
-        MatDialogRef<DocumentationComponent>,
-      export: (undefined as unknown) as MatDialogRef<ExportComponent>,
+    const dialogConfig = this.dialogConfig();
+    dialogConfig.data = {
+      drawInProgress: this.drawInProgress,
     };
-  }
-
-  @HostListener('window:keydown', ['$event'])
-  keyEvent(event: KeyboardEvent) {
-    this.shortcutHanler.execute(event);
-  }
-
-  ngAfterViewInit() {
-    this.svgService.instance = this.svg;
-
-    this.openHomeDialog();
-    this.undoRedo.setSVG(this.svgService.instance)
-    this.undoRedo.addToCommands()
-    // setInterval(() => {
-    //   this.communicationServerice.encode(
-    //     'BEST DRAW EVER',
-    //     ['rouge', 'licorne'],
-    //     this.svgService.instance.nativeElement);
-    //   this.communicationServerice.post()
-    //     .then(id => console.log('SUCESS: ' + id))
-    //     .catch(err => console.log('FAIL: ' + err));
-    // }, 2000);
-  }
-
-  private openHomeDialog(): void {
-    this.dialogRefs.home = this.dialog.open(
-      HomeComponent,
-      this.getCommomDialogOptions()
+    dialogConfig.disableClose = true;
+    this.openDialog(HomeComponent, dialogConfig).subscribe(
+      (page: Page) => {
+        this.shortcutHandlerService.activateAll();
+        this.openPage(page, true);
+      }
     );
-    this.dialogRefs.home.disableClose = true;
-    this.shortcutHanler.desactivateAll();
-    this.dialogRefs.home.afterClosed().subscribe((result: string) => {
-      this.shortcutHanler.activateAll();
-      this.openSelectedDialog(result);
+  }
+
+  private createNewDraw(drawConfig: DrawConfig): void {
+    this.viewContainerRef.clear();
+    const componentFactory = this.componentFactoryResolver
+      .resolveComponentFactory(SvgComponent);
+    const componentRef = this.viewContainerRef
+      .createComponent(componentFactory);
+    componentRef.instance.config = drawConfig;
+    this.svgComponentRef = componentRef;
+  }
+
+  private openNewDrawDialog(fromHome: boolean): void {
+    const dialogConfig = this.dialogConfig();
+    dialogConfig.data = {
+      drawInProgress: this.drawInProgress,
+    };
+    dialogConfig.disableClose = true;
+    this.openDialog(NewDrawComponent, dialogConfig).subscribe(
+      (config?: DrawConfig) => {
+        this.shortcutHandlerService.activateAll();
+        if (!!config) {
+          this.createNewDraw(config);
+        } else {
+          this.openPage(Page.HOME, fromHome);
+        }
     });
-  }
-
-  private openSelectedDialog(dialog: string): void {
-    switch (dialog) {
-      case OverlayPages.New:
-        this.openNewDrawDialog();
-        break;
-      case OverlayPages.Library:
-        break;
-      case OverlayPages.Documentation:
-        this.openDocumentationDialog(true);
-        break;
-      default:
-        break;
-    }
-  }
-
-  private openNewDrawDialog(): void {
-    this.shortcutHanler.desactivateAll();
-    this.dialogRefs.newDraw = this.dialog.open(
-      NewDrawComponent,
-      this.getCommomDialogOptions()
-    );
-    this.dialogRefs.newDraw.disableClose = true;
-    this.dialogRefs.newDraw.afterClosed().subscribe(resultNewDialog => {
-      this.shortcutHanler.activateAll();
-      this.closeNewDrawDialog(resultNewDialog);
-    });
-  }
-
-  private closeNewDrawDialog(option: string | NewDrawOptions): void {
-    if (option === OverlayPages.Home) {
-      this.openHomeDialog();
-    } else if (option !== null) {
-      this.createNewDraw(option as NewDrawOptions);
-    }
   }
 
   private openDocumentationDialog(fromHome: boolean): void {
-    const dialogOptions = {
-      width: '115vw',
-      height: '100vh',
-      panelClass: 'documentation'
-    };
-    this.shortcutHanler.desactivateAll();
-    this.dialogRefs.documentation = this.dialog.open(
-      DocumentationComponent,
-      dialogOptions
-    );
-    this.dialogRefs.documentation.disableClose = false;
-    this.dialogRefs.documentation.afterClosed().subscribe(() => {
-      this.shortcutHanler.activateAll();
-      this.closeDocumentationDialog(fromHome);
+    const dialogConfig = this.dialogConfig();
+    dialogConfig.height = '90vh';
+    this.openDialog(DocumentationComponent, dialogConfig).subscribe(() => {
+      this.shortcutHandlerService.activateAll();
+      this.openPage(Page.HOME, fromHome);
     });
   }
 
-  protected openExportDialog() {
-    const dialogOptions = {
-      width: '1000px',
-      height: '90vh'
-    };
-    this.shortcutHanler.desactivateAll();
-    this.dialogRefs.export = this.dialog.open(
-      ExportComponent,
-      dialogOptions
-    );
-    this.dialogRefs.export.disableClose = true;
-    this.dialogRefs.export.afterClosed().subscribe(() => {
-      this.shortcutHanler.activateAll();
-    });
+  private openSaveDialog() {
+    const dialogConfig = this.dialogConfig();
+    dialogConfig.data = this.svgComponentRef.instance.elementRef;
+    this.openDialog(SaveComponent, dialogConfig).subscribe(
+      () => this.shortcutHandlerService.activateAll());
   }
 
-  private closeDocumentationDialog(fromHome: boolean): void {
-    if (fromHome) {
-      this.openHomeDialog();
+  // Must be public
+  openPage(page: Page, fromHome: boolean): void {
+    if (this.pageToDialog.has(page)) {
+      this.shortcutHandlerService.desactivateAll();
+      this.pageToDialog.get(page).bind(this)(fromHome);
     }
-  }
-
-  private createNewDraw(option: NewDrawOptions): void {
-    this.drawOption = option;
-    this.drawInProgress = true;
-    const rgb = this.colorService.hexToRgb(option.color);
-    this.colorService.selectBackgroundColor(
-      `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`
-    );
-    this.svgService.clearDom();
-    this.toolSelectorService.set(Tool.Pencil);
-    // Deuxième fois juste pour fermer le panneau latéral
-    this.toolSelectorService.set(Tool.Pencil);
   }
 }

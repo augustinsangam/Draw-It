@@ -1,0 +1,25 @@
+:host {
+  display: grid;
+  place-items: center;
+  height: 100%;
+}
+
+img {
+  display: block;
+  margin: auto;
+}
+
+.info {
+  margin-top: 30px;
+}
+
+.entries {
+  margin-top: 30px;
+}
+
+button {
+  display: block;
+  margin: 15px 0;
+  width: 400px;
+  border-radius: 40px;
+}

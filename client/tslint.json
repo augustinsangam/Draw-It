@@ -16,10 +16,7 @@
         "use-pipe-transform-interface": true,
         "component-class-suffix": true,
         "directive-class-suffix": true,
-        //
-        "arrow-parens": false,
-        "no-empty": false,
-        "max-classes-per-file": false,
+        // "ordered-imports": [true, {"named-imports-order": "lowercase-last"}],
         "variable-name": {
           "options": [
             "allow-leading-underscore"
@@ -28,7 +25,13 @@
     },
     "linterOptions": {
         "exclude": [
-          "**/*_generated.[jt]s"
+          "**/data_generated.ts",
+          "**/e2e/src/app.e2e-spec.ts",
+          "**/e2e/src/app.po.ts",
+          "**/polyfills.ts",
+          "**/src/environments/environment.ts",
+          "**/src/main.ts",
+          "**/src/test.ts"
         ]
     }
 }

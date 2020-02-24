@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
+
 import { ToolService } from '../../tool.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RectangleService extends ToolService {
-
-  fillOption: boolean;
   borderOption: boolean;
+  fillOption: boolean;
   thickness: number;
 
   constructor() {
     super();
-    this.fillOption = true;
     this.borderOption = true;
+    this.fillOption = true;
     this.thickness = 2;
   }
 }

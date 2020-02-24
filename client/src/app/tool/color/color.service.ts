@@ -1,17 +1,23 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+
+export interface RGBColor {
+  r: number;
+  g: number;
+  b: number;
+}
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ColorService {
-  recentColors: string[];
-  primaryColor: string;
-  secondaryColor: string;
   backgroundColor: string;
-  change: Subject<null>;
+  primaryColor: string;
+  recentColors: string[];
+  secondaryColor: string;
 
   constructor() {
+    this.backgroundColor = 'rgba(255, 255, 255, 1)';
+    this.primaryColor = 'rgba(230, 25, 75, 1)';
     this.recentColors = [
       'rgba(230, 25, 75, 1)',
       'rgba(255, 225, 25, 1)',
@@ -24,11 +30,7 @@ export class ColorService {
       'rgba(255, 250, 200, 1)',
       'rgba(128, 0, 0, 1)'
     ];
-
-    this.primaryColor = 'rgba(230, 25, 75, 1)';
     this.secondaryColor = 'rgba(240, 50, 230, 1)';
-    this.backgroundColor = 'rgba(255, 255, 255, 1)';
-    this.change = new Subject<null>();
   }
 
   promote(index: number) {
@@ -42,13 +44,11 @@ export class ColorService {
     for (let i = 0; i < this.recentColors.length; ++i) {
       if (this.rgbEqual(rgbToMatch, this.rgbFormRgba(this.recentColors[i]))) {
         this.promote(i);
-        this.change.next();
         return;
       }
     }
     this.recentColors.unshift(color);
     this.recentColors.pop();
-    this.change.next();
   }
 
   selectPrimaryColor(color: string) {
@@ -109,10 +109,4 @@ export class ColorService {
   private rgbEqual(rgb1: RGBColor, rgb2: RGBColor) {
     return rgb1.r === rgb2.r && rgb1.g === rgb2.g && rgb1.b === rgb2.b;
   }
-}
-
-export interface RGBColor {
-  r: number;
-  g: number;
-  b: number;
 }

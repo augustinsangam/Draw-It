@@ -1,0 +1,10 @@
+:host {
+  display: block;
+  padding: 0 10px;
+  width: 320px; /* min-content */
+  color : white;
+}
+
+hr {
+  border-color: grey;
+}

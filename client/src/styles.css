@@ -1,0 +1,9 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* https://github.com/angular/components/blob/master/guides/customizing-component-styles.md#styling-overlay-components */
+.no-padding .mat-dialog-container {
+  padding: 0;
+}

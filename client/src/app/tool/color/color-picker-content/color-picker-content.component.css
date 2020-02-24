@@ -1,0 +1,91 @@
+#container-content {
+  width : 300px;
+}
+
+#piclker-gradient {
+  height: 256px;
+}
+canvas {
+  float: left;
+  cursor: crosshair;
+}
+
+#right-side {
+  float: left;
+  height: 256px;
+  width : 40px;
+}
+
+mat-slider {
+  height: 256px;
+  background-image: linear-gradient(red, black);
+  width: 44px;
+}
+
+mat-slider ::ng-deep .mat-slider-wrapper ::ng-deep .mat-slider-thumb {
+  background-color : #CFE1F9;
+  border-radius :10px;
+  background-position :center;
+  background-size : cover;
+}
+
+mat-slider ::ng-deep .mat-slider-wrapper ::ng-deep .mat-slider-track-wrapper ::ng-deep .mat-slider-track-background{
+  height: 10px;
+  background-color: transparent;
+}
+
+mat-slider ::ng-deep .mat-slider-wrapper ::ng-deep .mat-slider-track-wrapper ::ng-deep .mat-slider-track-fill{
+  height: 10px;
+  background-color: transparent;
+}
+
+mat-card{
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.rgb {
+  width: 40px;
+  float: left;
+  margin-right: 2px;
+  margin-top: 10px;
+}
+
+#alpha {
+  margin-left: 17px;
+  width: 50px !important;
+}
+
+.hex {
+  width: 70px;
+  float: left;
+  margin-left: 13px;
+  margin-top: 10px;
+}
+
+#hex-rgb-title {
+  margin-bottom: -10px;
+}
+
+#hex-rgb-content {
+  margin-bottom: -5px;
+}
+
+#actual-color{
+  vertical-align: middle;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+#actual-color ::ng-deep button {
+  transform: scale(1.4);
+}
+
+mat-card-title{
+  color: grey;
+  font-size: 10px;
+}
+
+mat-card-content{
+  display: inline-block;
+}

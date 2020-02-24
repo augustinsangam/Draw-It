@@ -1,15 +1,21 @@
 export enum Tool {
+   // implicit zero
+   // “if (tool)” == “if (tool !== Tool._None)”
+   // “if (tool > Tool._None && tool < Tool._Len)”
+   // “for (let tool = Tool._None + 1; tool < Tool._Len; tool++)”
+   // “for (let tool = Tool._Len; --tool; )”
+   // downsize is loosing first case in array
+  _None,
+  Aerosol,
   Applicator,
   Brush,
-  Eraser,
   Ellipse,
+  Eraser,
   Line,
   Pencil,
-  Polygone,
+  Pipette,
+  Polygon,
   Rectangle,
   Selection,
-  Pipette,
-  Aerosol,
   _Len,
-  _None,
 }

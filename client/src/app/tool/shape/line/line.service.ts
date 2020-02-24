@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
+
 import { ToolService } from '../../tool.service';
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LineService extends ToolService {
-
+  radius: number;
   thickness: number;
   withJonction: boolean;
-  radius: number;
 
   constructor() {
     super();
+    this.radius = 2;
     this.thickness = 2;
     this.withJonction = true;
-    this.radius = 2;
   }
 }

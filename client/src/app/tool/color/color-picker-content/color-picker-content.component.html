@@ -1,0 +1,54 @@
+<div id="container-content">
+  <form [formGroup]="colorForm">
+      <div id="piclker-gradient">
+          <canvas height="256px" width="256px" #canvas>
+          </canvas>
+          <div id="right-side">
+              <mat-slider vertical="true" min="0" max="255" (input)="onSlide($event)" formControlName="slider"></mat-slider>
+          </div>
+      </div>
+      <mat-card>
+          <mat-card-title id="hex-rgb-title">HEX OU RGB</mat-card-title>
+          <mat-card-content id="hex-rgb-content">
+              <mat-form-field class="rgb">
+                  <input matInput placeholder="R"
+                          type="number" (input)="onChangeR()"
+                          formControlName="r" #rField
+                          onkeydown="return event.keyCode !== 69 && event.keyCode !== 189">
+              </mat-form-field>
+              <mat-form-field class="rgb">
+                  <input matInput placeholder="G"
+                          type="number" (input)="onChangeG()"
+                          formControlName="g" #gField
+                          onkeydown="return event.keyCode !== 69 && event.keyCode !== 189">
+              </mat-form-field>
+              <mat-form-field class="rgb">
+                  <input matInput placeholder="B" type="number"
+                          (input)="onChangeB()"
+                          formControlName="b" #bField
+                          onkeydown="return event.keyCode !== 69 && event.keyCode !== 189">
+              </mat-form-field>
+              <mat-form-field class="rgb" id="alpha">
+                  <input matInput placeholder="A" type="number" step="5"
+                          (input)="onChangeA()" formControlName="a" #aField
+                          onkeydown="return event.keyCode !== 69 && event.keyCode !== 189">
+                  <span matSuffix>%</span>
+              </mat-form-field>
+              <mat-form-field class="hex">
+                  <input matInput placeholder="HEX" formControlName="hex" (input)="onChangeHex()" #hexField>
+                  <span matPrefix>#</span>
+              </mat-form-field>
+          </mat-card-content>
+          <mat-card-title>COULEURS PRÉDÉFINIES</mat-card-title>
+          <mat-card-content>
+              <app-color-picker-item [color]="color" *ngFor="let color of baseColors"></app-color-picker-item>
+          </mat-card-content>
+          <mat-card-title>CONFIRMATION</mat-card-title>
+          <mat-card-content>
+              COULEUR ACTUELLE
+              <app-color-picker-item id="actual-color" #actualColor></app-color-picker-item>
+              <button mat-button color="primary" (click)="onConfirm()" [disabled]="colorForm.invalid">OK</button>
+          </mat-card-content>
+      </mat-card>
+  </form>
+</div>

@@ -1,0 +1,22 @@
+<img src="/assets/logo.png" alt="POLY DESSIN" />
+<div class="info">
+  <span class="mat-headline">Bienvenue sur DrawIt !</span>
+</div>
+<div class="entries">
+  <ng-container *ngFor="let entry of entries">
+    <button mat-stroked-button *ngIf="entry.visible" class="mat-elevation-z5"
+      [mat-dialog-close]="entry.result">
+      <mat-grid-list cols=5 rowHeight="55px">
+        <mat-grid-tile colspan=1 rowspan=1>
+          <mat-icon>{{ entry.icon }}</mat-icon>
+        </mat-grid-tile>
+        <mat-grid-tile colspan=3 rowspan=1>
+          <span>{{ entry.message }}</span>
+        </mat-grid-tile>
+        <mat-grid-tile colspan=1 rowspan=1>
+          <mat-icon>chevron_right</mat-icon>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </button>
+  </ng-container>
+</div>

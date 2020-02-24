@@ -1,78 +1,77 @@
 import { Injectable } from '@angular/core';
 
 export enum Shortcut {
-  C = 'KeyC',
-  W = 'KeyW',
-  L = 'KeyL',
-  Digit1 = 'Digit1',
-  Digit2 = 'Digit2',
-  Digit3 = 'Digit3',
-  O = 'KeyO',
   A = 'KeyA',
-  S = 'KeyS',
-  I = 'KeyI',
-  Z = 'KeyZ',
+  C = 'KeyC',
   E = 'KeyE',
-  R = 'KeyR'
+  L = 'KeyL',
+  O = 'KeyO',
+  S = 'KeyS',
+  W = 'KeyW',
+  Z = 'KeyZ',
+  _1 = 'Digit1',
+  _2 = 'Digit2',
+  _3 = 'Digit3',
 }
 
-export type ShortcutCallBack = (event?: KeyboardEvent) => void;
+type ShortcutHandlerCallBack = (event: KeyboardEvent) => void;
 
-export interface Handler {
-  handlerFunction: ShortcutCallBack;
+interface ShortcutHandler {
+  handlerFunction: ShortcutHandlerCallBack;
   isActive: boolean;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ShortcutHandlerService {
-
-  private manager: Map<Shortcut, Handler>;
-  private history: (Map<Shortcut, Handler>)[];
+  private readonly history: Map<Shortcut, ShortcutHandler>[];
+  private manager: Map<Shortcut, ShortcutHandler>;
 
   constructor() {
+    this.history = new Array();
     this.manager = new Map();
-    this.history = [];
   }
 
-  execute(event: KeyboardEvent): void {
-    const handler = this.manager.get(event.code as Shortcut);
-
-    if (!!handler && handler.isActive) {
-      handler.handlerFunction(event);
+  execute(keyEv: KeyboardEvent): void {
+    const shortcut = keyEv.code as Shortcut;
+    if (this.manager.has(shortcut)) {
+      const shortcutHandler = this.manager.get(shortcut);
+      if (shortcutHandler.isActive) {
+        shortcutHandler.handlerFunction(keyEv);
+      }
     }
   }
 
   activate(shortcut: Shortcut): void {
-    (this.manager.get(shortcut) as Handler).isActive = true;
+    (this.manager.get(shortcut) as ShortcutHandler).isActive = true;
   }
 
   desactivate(shortcut: Shortcut): void {
-    (this.manager.get(shortcut) as Handler).isActive = false;
+    (this.manager.get(shortcut) as ShortcutHandler).isActive = false;
   }
 
   activateAll(): void {
-    this.manager.forEach(handler => handler.isActive = true);
+    this.manager.forEach((handler) => handler.isActive = true);
   }
 
   desactivateAll(): void {
-    this.manager.forEach(handler => handler.isActive = false);
+    this.manager.forEach((handler) => handler.isActive = false);
   }
 
-  set(shortcut: Shortcut, handler: ShortcutCallBack): void {
+  set(shortcut: Shortcut, handler: ShortcutHandlerCallBack): void {
     this.manager.set(shortcut, {
       handlerFunction: handler,
       isActive: true,
     });
   }
 
-  private clone(manager: Map<Shortcut, Handler>) {
-    const managerClone = new Map<Shortcut, Handler>();
+  private clone(manager: Map<Shortcut, ShortcutHandler>) {
+    const managerClone = new Map<Shortcut, ShortcutHandler>();
     for (const [shortcut, handler] of manager) {
       managerClone.set(shortcut, {
+        handlerFunction: handler.handlerFunction,
         isActive: handler.isActive,
-        handlerFunction: handler.handlerFunction
       });
     }
     return managerClone;
@@ -83,6 +82,6 @@ export class ShortcutHandlerService {
   }
 
   pop() {
-    this.manager = this.history.pop() as Map<Shortcut, Handler>;
+    this.manager = this.history.pop();
   }
 }

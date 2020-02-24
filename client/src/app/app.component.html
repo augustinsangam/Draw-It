@@ -1,14 +1,5 @@
-<app-sidebar (documentationEvent)="openDocumentationDialog(false)"
-              (exportEvent)="openExportDialog()"></app-sidebar>
+<app-sidebar (pageEv)="openPage($event, false)"></app-sidebar>
 <app-panel></app-panel>
-<main id="canvasRef">
-  <!-- app-svg is a selector for svg.component.ts -->
-  <svg #svg app-svg
-    tabindex=0
-    [attr.height.px]="drawOption.height"
-    [attr.width.px]="drawOption.width"
-    [ngStyle]="{backgroundColor:drawOption.color}"
-    >
-  </svg>
+<main>
+  <ng-template #container></ng-template>
 </main>
-

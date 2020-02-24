@@ -1,0 +1,27 @@
+<h1>Rectangle</h1>
+<div>
+  <p>
+    <mat-slide-toggle
+      checked="{{ service.fillOption }}"
+      (change)="onFillToggle($event.checked)">
+    </mat-slide-toggle>
+    Remplissage
+  </p>
+  <p>
+    <mat-slide-toggle
+      checked="{{ service.borderOption }}"
+      (change)="onBorderToggle($event.checked)">
+    </mat-slide-toggle>
+    Contour
+  </p>
+  <div class="thickness" *ngIf="service.borderOption">
+    <mat-slider
+      min=1
+      value="{{ service.thickness }}"
+      (input)="onThicknessChange($event)">
+    </mat-slider>
+    <span>{{ service.thickness }} px</span>
+  </div>
+</div>
+<hr />
+<app-color></app-color>

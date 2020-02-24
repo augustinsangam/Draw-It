@@ -1,0 +1,27 @@
+<!-- stackoverflow.com/a/51507806 -->
+<!-- (keypress.enter) does not work -->
+<svg:svg #preview></svg:svg>
+<br />
+<!-- https://github.com/angular/angular/issues/15531 -->
+<!--input ngModel formnovalidate type="submit" name="cancel" value="Retour" /-->
+<form ngNativeValidate #f="ngForm" (ngSubmit)="submit(f)">
+  <label for="name">Nom du dessin</label>
+  <input ngModel required id="name" name="name"
+    placeholder="foobar"
+    pattern=".{3,21}"
+    title="entre 3 à 21 caractères" />
+  <br />
+  <label for="tag">Étiquette</label>
+  <input id="tag"
+    placeholder="licorne"
+    pattern=".{3,21}"
+    title="entre 3 à 21 caractères"
+    (keydown.enter)="add($event)"/>
+  <ul>
+    <li *ngFor="let tag of tags"
+      (click)="tags.delete(tag)">{{ tag }}</li>
+  </ul>
+  <input type="submit" value="Sauvegarder" />
+  <br />
+  <input type="button" value="Retour" (click)="dialogRef.close()" />
+</form>

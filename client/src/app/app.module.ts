@@ -1,221 +1,96 @@
-import {
-  CommonModule
-} from '@angular/common';
-import {
-  HttpClientModule
-} from '@angular/common/http';
-import {
-  NgModule
-} from '@angular/core';
-import {
-  FormsModule,
-  ReactiveFormsModule
-} from '@angular/forms';
-import {
-  MatFormFieldModule,
-  MatListModule
-} from '@angular/material';
-import {
-  MatIconModule
-} from '@angular/material/icon';
-import {
-  BrowserModule
-} from '@angular/platform-browser';
-import {
-  BrowserAnimationsModule,
-  NoopAnimationsModule
-} from '@angular/platform-browser/animations';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatTreeModule } from '@angular/material/tree';
+import { BrowserModule } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+
 import { AppComponent } from './app.component';
-import { MaterialModule } from './material.module';
 import {
-  DocumentationComponent
-} from './pages/documentation/documentation.component';
+  DocumentationComponent,
+} from './page/documentation/documentation.component';
+import { HomeComponent } from './page/home/home.component';
 import {
-  ExportComponent
-} from './pages/export/export.component';
+  ConfirmationDialogComponent,
+} from './page/new-draw/confirmation-dialog/confirmation-dialog.component';
+import { NewDrawComponent } from './page/new-draw/new-draw.component';
 import {
-  HomeComponent
-} from './pages/home/home.component';
+  PaletteDialogComponent,
+} from './page/new-draw/palette-dialog/palette-dialog.component';
+import { SaveComponent } from './page/save/save.component';
+import { PanelComponent } from './panel/panel.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { SvgComponent } from './svg/svg.component';
 import {
-  ConfirmationDialogComponent
-} from './pages/new-draw/confirmation-dialog.component';
-import { NewDrawComponent } from './pages/new-draw/new-draw.component';
+  ColorPickerContentComponent,
+} from './tool/color/color-picker-content/color-picker-content.component';
 import {
-  PaletteDialogComponent
-} from './pages/new-draw/palette-dialog.component';
-import {
-  PanelComponent } from './panel/panel.component';
-import {
-  SidebarComponent } from './sidebar/sidebar.component';
-import {
-  SvgComponent } from './svg/svg.component';
-import {
-  ApplicatorLogicComponent
-} from './tool/applicator/applicator-logic/applicator-logic.component';
-import {
-  ApplicatorPanelComponent
-} from './tool/applicator/applicator-panel/applicator-panel.component';
-import {
-  ColorPanelComponent
-} from './tool/color/color-panel/color-panel.component';
-import {
-  ColorPickerContentComponent
-// tslint:disable-next-line: max-line-length
-} from './tool/color/color-panel/color-picker-content/color-picker-content.component';
-import {
-  ColorPickerItemComponent
-} from './tool/color/color-panel/color-picker-item/color-picker-item.component';
-import {
-  AerosolLogicComponent
-// tslint:disable-next-line: max-line-length
-} from './tool/drawing-instruments/aerosol/aerosol-logic/aerosol-logic.component';
-import {
-  AerosolPanelComponent
-// tslint:disable-next-line: max-line-length
-} from './tool/drawing-instruments/aerosol/aerosol-panel/aerosol-panel.component';
-import {
-  BrushLogicComponent
-} from './tool/drawing-instruments/brush/brush-logic/brush-logic.component';
-import {
-  BrushPanelComponent
-} from './tool/drawing-instruments/brush/brush-panel/brush-panel.component';
-import {
-  PencilLogicComponent
-} from './tool/drawing-instruments/pencil/pencil-logic/pencil-logic.component';
-import {
-  PencilPanelComponent
-} from './tool/drawing-instruments/pencil/pencil-panel/pencil-panel.component';
-import {
-  EraserLogicComponent
-} from './tool/eraser/eraser-logic/eraser-logic.component';
-import {
-  EraserPanelComponent
-} from './tool/eraser/eraser-panel/eraser-panel.component';
-import {
-  PipetteLogicComponent
-} from './tool/pipette/pipette-logic/pipette-logic.component';
-import {
-  PipettePanelComponent
-} from './tool/pipette/pipette-panel/pipette-panel.component';
-import {
-  SelectionLogicComponent
-} from './tool/selection/selection-logic/selection-logic.component';
-import {
-  SelectionPanelComponent
-} from './tool/selection/selection-panel/selection-panel.component';
-import {
-  EllipseLogicComponent
-} from './tool/shape/ellipse/ellipse-logic/ellipse-logic.component';
-import {
-  EllipsePanelComponent
-} from './tool/shape/ellipse/ellipse-panel/ellipse-panel.component';
-import {
-  LineLogicComponent
-} from './tool/shape/line/line-logic/line-logic.component';
-import {
-  LinePanelComponent
-} from './tool/shape/line/line-panel/line-panel.component';
-import {
-  PolygoneLogicComponent
-} from './tool/shape/polygone/polygone-logic/polygone-logic.component';
-import {
-  PolygonePanelComponent
-} from './tool/shape/polygone/polygone-panel/polygone-panel.component';
-import {
-  RectangleLogicComponent
-} from './tool/shape/rectangle/rectangle-logic/rectangle-logic.component';
-import {
-  RectanglePanelComponent
-} from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
+  ColorPickerItemComponent,
+} from './tool/color/color-picker-item/color-picker-item.component';
+import { ColorComponent } from './tool/color/color.component';
+import { LineComponent } from './tool/shape/line/line.component';
+import { LineDirective } from './tool/shape/line/line.directive';
+import { RectangleComponent } from './tool/shape/rectangle/rectangle.component';
+import { RectangleDirective } from './tool/shape/rectangle/rectangle.directive';
+import { ToolComponent } from './tool/tool.component';
+import { ToolDirective } from './tool/tool.directive';
 
 @NgModule({
+  bootstrap: [
+    AppComponent,
+  ],
   declarations: [
     AppComponent,
-    BrushLogicComponent,
-    BrushPanelComponent,
-    ColorPanelComponent,
-    ColorPickerContentComponent,
-    ColorPickerItemComponent,
-    ConfirmationDialogComponent,
-    DocumentationComponent,
-    EllipseLogicComponent,
-    EllipsePanelComponent,
-    EraserPanelComponent,
-    EraserLogicComponent,
-    HomeComponent,
-    LineLogicComponent,
-    LinePanelComponent,
-    NewDrawComponent,
+    LineComponent,
+    LineDirective,
     PanelComponent,
-    PaletteDialogComponent,
-    PencilLogicComponent,
-    PencilPanelComponent,
-    RectangleLogicComponent,
-    RectanglePanelComponent,
+    RectangleComponent,
+    RectangleDirective,
     SidebarComponent,
     SvgComponent,
-    SelectionPanelComponent,
-    SelectionLogicComponent,
-    PolygoneLogicComponent,
-    PolygonePanelComponent,
-    PipetteLogicComponent,
-    PipettePanelComponent,
-    AerosolLogicComponent,
-    AerosolPanelComponent,
-    ExportComponent,
-    ApplicatorPanelComponent,
-    ApplicatorLogicComponent,
+    ToolComponent,
+    ToolDirective,
+    ColorComponent,
+    ColorPickerContentComponent,
+    ColorPickerItemComponent,
+    HomeComponent,
+    DocumentationComponent,
+    NewDrawComponent,
+    ConfirmationDialogComponent,
+    PaletteDialogComponent,
+    SaveComponent,
+  ],
+  entryComponents: [
+    LineComponent,
+    SvgComponent,
   ],
   imports: [
-    BrowserAnimationsModule,
     BrowserModule,
-    CommonModule,
     FormsModule,
-    HttpClientModule,
-    MaterialModule,
+    MatButtonModule,
+    MatCardModule,
+    MatDialogModule,
     MatFormFieldModule,
+    MatGridListModule,
     MatIconModule,
-    MatListModule,
+    MatInputModule,
+    MatRadioModule,
+    MatSlideToggleModule,
+    MatSliderModule,
+    MatTreeModule,
     NoopAnimationsModule,
     ReactiveFormsModule,
   ],
-  providers: [],
-  entryComponents: [
-    AerosolLogicComponent,
-    AerosolPanelComponent,
-    ApplicatorLogicComponent,
-    ApplicatorPanelComponent,
-    BrushLogicComponent,
-    BrushPanelComponent,
-    ColorPanelComponent,
-    EraserLogicComponent,
-    EraserPanelComponent,
-    PaletteDialogComponent,
-    ConfirmationDialogComponent,
-    DocumentationComponent,
-    EllipseLogicComponent,
-    EllipsePanelComponent,
-    ExportComponent,
-    LineLogicComponent,
-    LinePanelComponent,
-    HomeComponent,
-    NewDrawComponent,
-    PencilLogicComponent,
-    PencilPanelComponent,
-    PipetteLogicComponent,
-    PipettePanelComponent,
-    RectangleLogicComponent,
-    RectanglePanelComponent,
-    PolygoneLogicComponent,
-    PolygonePanelComponent,
-    RectangleLogicComponent,
-    RectanglePanelComponent,
-    SelectionLogicComponent,
-    SelectionPanelComponent,
-
-  ],
-  bootstrap: [
-    AppComponent,
+  providers: [
   ],
 })
 export class AppModule { }

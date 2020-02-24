@@ -1,62 +1,75 @@
 import {
+  AfterViewInit,
   Component,
-  ComponentFactoryResolver,
-  ComponentRef,
   ElementRef,
-  OnInit,
-  Type,
+  Input,
+  OnDestroy,
+  Output,
+  Renderer2,
   ViewChild,
-  ViewContainerRef
 } from '@angular/core';
 
-import {
-  ToolLogicDirective } from '../tool/tool-logic/tool-logic.directive';
-import {
-  ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
+import { DrawConfig } from '../constants/constants';
+import { MathematicsService } from '../mathematics/mathematics.service';
+import { SharedService } from '../shared/shared.service';
+import { ToolSelectorService } from '../tool-selector/tool-selector.service';
+import { ColorService } from '../tool/color/color.service';
+import { ToolDirective } from '../tool/tool.directive';
 import { Tool } from '../tool/tool.enum';
 
-import * as Tools from '../tool/tools';
-
 @Component({
-  selector: '[app-svg]',
-  templateUrl: './svg.component.html',
-  styleUrls: ['./svg.component.scss']
+  selector: 'app-svg',
+  styleUrls: [
+    './svg.component.css',
+  ],
+  templateUrl: './svg.component.svg',
 })
-export class SvgComponent implements OnInit {
+export class SvgComponent implements AfterViewInit, OnDestroy {
+  // Must be public
+  @Input() config: DrawConfig;
+
+  // Cannot be static because it contains elements that must be rendered
+  // Must be public
   @ViewChild('container', {
-    read: ViewContainerRef,
-    static: true
+    static: false,
   })
-  private viewContainerRef: ViewContainerRef;
-  private readonly components: Type<ToolLogicDirective>[];
+  readonly elementRef: ElementRef<SVGSVGElement>;
+
+  private toolDirective?: ToolDirective;
 
   constructor(
-    private readonly elementRef: ElementRef<SVGSVGElement>,
-    private readonly componentFactoryResolver: ComponentFactoryResolver,
-    private readonly toolSelectorService: ToolSelectorService
-  ) {
-    this.components = new Array(Tool._Len)
-    for ( const entry of Tools.TOOL_MANAGER ) {
-      this.components[entry[0]] = entry[1][1];
-    }
+    private readonly renderer: Renderer2,
+    private readonly colorService: ColorService,
+    private readonly mathematicsService: MathematicsService,
+    private readonly sharedService: SharedService,
+    private readonly toolSelectorService: ToolSelectorService,
+  ) {}
+
+  ngAfterViewInit(): void {
+    this.toolSelectorService.onChange((tool) => this.setTool(tool));
+    this.elementRef.nativeElement.style.backgroundColor = this.config.color;
+    this.elementRef.nativeElement.setAttribute(
+      'height', this.config.height.toString());
+    this.elementRef.nativeElement.setAttribute(
+      'width', this.config.width.toString());
   }
 
-  private setToolHandler = (tool: Tool) => this.setTool(tool);
-
-  ngOnInit() {
-    this.toolSelectorService.onChange(this.setToolHandler);
+  ngOnDestroy(): void {
+    this.toolDirective?.ngOnDestroy();
   }
 
-  private setTool(tool: Tool): ComponentRef<ToolLogicDirective> {
-    this.viewContainerRef.clear();
-    const component = this.components[tool];
-    const factory = this.componentFactoryResolver.resolveComponentFactory(
-      component
+  private setTool(tool: Tool): void {
+    this.toolDirective?.ngOnDestroy();
+    const toolDirective = this.sharedService.toolDirectives[tool];
+    const toolService = this.sharedService.toolServices[tool];
+    // Mimic angular directive internal builder
+    this.toolDirective = new toolDirective(
+      this.elementRef,
+      this.colorService,
+      this.mathematicsService,
+      this.renderer,
+      toolService,
     );
-    let ref: ComponentRef<ToolLogicDirective>;
-    ref = this.viewContainerRef.createComponent(factory);
-    ref.instance.svgElRef = this.elementRef;
-    ref.changeDetectorRef.detectChanges();
-    return ref;
+    this.toolDirective.ngOnInit();
   }
 }

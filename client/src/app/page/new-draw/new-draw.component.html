@@ -1,0 +1,55 @@
+<img src="/assets/logo.png" alt="POLY DESSIN" />
+<div id="informations">
+  <h1>Nouveau dessin</h1>
+</div>
+<form id="form" [formGroup]="form" (keyup.enter)="onSubmit()">
+  <h4>Dimensions</h4>
+  <mat-form-field appearance="outline">
+    <mat-label>Largeur</mat-label>
+    <input matInput formControlName="width"
+                    formControlGroupName="form"
+                    type="number"
+                    (input)="onDimensionsChangedByUser()">
+    <span matSuffix>px</span>
+    <mat-hint>
+      Largeur de l’écran: {{ maxWidth }} pixels.
+    </mat-hint>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Hauteur</mat-label>
+    <input matInput formControlName="height"
+                    formControlGroupName="form"
+                    type="number"
+                    (input)="onDimensionsChangedByUser()">
+    <span matSuffix>px</span>
+    <mat-hint>
+      Hauteur de l’écran: {{ maxHeight }} pixels.
+    </mat-hint>
+  </mat-form-field>
+  <h4>Couleur d'arrière plan</h4>
+  <mat-form-field appearance="outline">
+    <mat-label>Couleur</mat-label>
+    <input  matInput
+            formControlName="color"
+            formControlGroupName="form"
+            readonly>
+            <span matSuffix>
+              <app-color-picker-item #palette></app-color-picker-item>
+            </span>
+            <mat-hint id="colorValid">
+              Utiliser la palette pour changer de couleur
+            </mat-hint>
+  </mat-form-field>
+  <button mat-raised-button
+          color="primary"
+          type="submit"
+          (click)="onSubmit()"
+          cdkFocusInitial
+          cdkFocusRegionStart
+          cdkFocusRegionEnd
+          [disabled]="form.invalid"
+          #button>
+          Créer
+  </button>
+</form>
+<button mat-stroked-button (click)="onReturn()" class="back-button">Retour</button>

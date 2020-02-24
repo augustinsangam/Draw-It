@@ -1,0 +1,24 @@
+:host {
+  display: grid;
+  place-items: center;
+  height: 100vh;
+}
+
+img {
+  display: block;
+  margin: auto;
+}
+
+.mat-form-field {
+  display: block;
+  margin: 20px 0 30px;
+}
+
+button {
+  display: block;
+  width: 400px;
+}
+
+.back-button {
+  margin-top: 10px;
+}
