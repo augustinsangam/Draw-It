@@ -1,8 +1,7 @@
 image: archlinux
 packages:
+- chromium
 - npm
-- firefox
-- ttf-bitstream-vera
 sources:
 - git@gitlab.com:francafrique/log2990.git
 environment:
@@ -20,6 +19,6 @@ tasks:
    npm --prefix=server/ run lint
 - test: |
    cd log2990
-   npm --prefix=client/ run coverage -- --no-progress --watch=false --browsers=FirefoxHeadless
+   npm --prefix=client/ run coverage -- --no-progress --watch=false --browsers=ChromiumHeadless
    npm --prefix=server/ run build
    npm --prefix=server/ run coverage
