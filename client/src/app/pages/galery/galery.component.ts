@@ -100,6 +100,9 @@ export class GaleryComponent implements AfterViewInit {
       (undefined as unknown) as MatDialogRef<DeleteConfirmationDialogComponent>,
       load: (undefined as unknown) as MatDialogRef<ConfirmationDialogComponent>,
     }
+    this.filteredTags = this.tagCtrl.valueChanges.pipe(
+      startWith(null),
+      map(tag => tag ? this._filter(tag) : this._filter2()));
 
     this.communicationService.getAll().then(fbbb => {
       this.createGaleryDrawsTable(fbbb);
@@ -109,6 +112,7 @@ export class GaleryComponent implements AfterViewInit {
   createGaleryDrawsTable(fbbb: flatbuffers.ByteBuffer): void {
     const draws = Draws.getRoot(fbbb);
     const drawsLenght = draws.drawBuffersLength();
+    const tempsAllTags = new Set<string>();
 
     for (let i = 0; i < drawsLenght; i++) {
       const drawBuffer = draws.drawBuffers(i);
@@ -123,7 +127,6 @@ export class GaleryComponent implements AfterViewInit {
           const newName = draw.name();
           const tagArrayLenght = draw.tagsLength();
           const newTagArray = new Array<string>();
-          const tempsAllTags = new Set<string>();
 
           for (let j = 0; j < tagArrayLenght; j++) {
             const tag = draw.tags(j);
@@ -146,28 +149,27 @@ export class GaleryComponent implements AfterViewInit {
 
             this.galeryDrawTable.push(newGaleryDraw);
           }
-
-          this.allTags = Array.from(tempsAllTags);
         }
       }
     }
+    this.allTags = Array.from(tempsAllTags);
+    console.log(tempsAllTags);
     this.filteredGaleryDrawTable = this.galeryDrawTable;
     this.tagCtrl.setValue(null);
     this.tagInput.nativeElement.blur();
   }
 
   ngAfterViewInit() {
-    this.searchToggleRef.change.subscribe(($event: MatSlideToggleChange) =>
-      this.searchStatementToggle = $event.checked);
-    this.filteredTags = this.tagCtrl.valueChanges.pipe(
-      startWith(null),
-      map(tag => tag ? this._filter(tag) : this._filter2()));
+    this.searchToggleRef.change.subscribe(($event: MatSlideToggleChange) => {
+      this.searchStatementToggle = $event.checked
+      this.filterGaleryTable()
+    });
   }
 
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
-    console.log(event);
+    console.log('add');
     // Add our tag
     if ((value || '').trim()) {
       this.tags.push(value.trim());
@@ -206,22 +208,25 @@ export class GaleryComponent implements AfterViewInit {
     for (const elem of this.galeryDrawTable) {
       let keep = true;
       for (const tag of this.tags) {
-        if (!!elem.tags && elem.tags.indexOf(tag) === -1 &&
-          this.searchStatementToggle) {
-          keep = false;
-        }
-        if (!!elem.tags && elem.tags.indexOf(tag) !== -1 &&
-          !this.searchStatementToggle) {
-          keep = true;
-          break;
+        if (this.searchStatementToggle) {
+          if (elem.tags.indexOf(tag) === -1) {   // ET
+            keep = false;
+          }
         } else {
-          keep = false;
+          if (elem.tags.indexOf(tag) !== -1) {  // OU
+            keep = true;
+            break;
+          } else {
+            keep = false;
+          }
         }
       }
+      console.log(keep);
       if (keep) {
         this.filteredGaleryDrawTable.push(elem);
       }
     }
+    console.log(this.filteredGaleryDrawTable);
   }
 
   private _filter(value: string): string[] {
@@ -239,6 +244,8 @@ export class GaleryComponent implements AfterViewInit {
     if (this.tags.indexOf(tag) === -1) {
       this.tags.push(tag);
     }
+    this.tagCtrl.setValue(null);
+    this.filterGaleryTable();
   }
 
   protected deleteDraw(id: number) {

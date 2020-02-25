@@ -28,7 +28,7 @@
   </div>
 </div>
 <div class='content' #content>
-  <mat-spinner *ngIf="galeryDrawTable.length === 0" class="loading-spinner"></mat-spinner>
+  <mat-spinner *ngIf="galeryDrawTable.length === 0" class="loading-spinner" color="warn"></mat-spinner>
   <app-galery-card *ngFor="let draw of filteredGaleryDrawTable"
     [name]="draw.name" [id]="draw.id" [tags]="draw.tags" [svg]="draw.svg.cloneNode(true)"
     (load)="loadDraw($event)" (delete)="deleteDraw($event)" (tagClick)="addTag($event)">

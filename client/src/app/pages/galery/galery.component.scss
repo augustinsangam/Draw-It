@@ -46,17 +46,21 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  padding: 30px;
+  padding: 20px;
   min-height: calc(100% - 172px - 60px);
   // background-color: rgb(194, 207, 245);
-  background-image: linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%);
-  background-color: #333;
-  background-position: 0 0, 10px 10px;
-  background-size: 21px 21px;
+  background-color: whitesmoke;
+  // background-image: linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%);
+  // background-color: #333;
+  // background-position: 0 0, 10px 10px;
+  // background-size: 21px 21px;
 }
 
 .loading-spinner {
   align-self: center;
+  margin-left: auto;
+  margin-right: auto;
+  color: #e91e63;
 }
 
 .button-wraper {

@@ -2,7 +2,6 @@ import express from 'express';
 import flatbuffers from 'flatbuffers';
 import inversify from 'inversify';
 import mongodb from 'mongodb';
-import { log } from 'util';
 
 import { Draw, DrawBuffer, Draws, Element } from './data_generated';
 import { Database } from './database';
@@ -30,8 +29,8 @@ class Router {
 		this.router.get('/', this.getHelloWorld());
 		this.router.get('/draw', this.getAll());
 		this.router.post('/draw', this.postData());
-		//this.router.put('/draw/:id', this.putData());
-		//this.router.delete('/draw/:id', this.deleteData());
+		this.router.put('/draw/:id', this.putData());
+		this.router.delete('/draw/:id', this.deleteData());
 		this.router.get('/ping', (_req, res) =>
 			res.sendStatus(StatusCode.NO_CONTENT),
 		);
@@ -72,7 +71,6 @@ class Router {
 	private getAll(): express.RequestHandler {
 		return (_req, res): void => {
 			const fbb = new flatbuffers.flatbuffers.Builder();
-			const serializedDrawsLen = 1; // TODO: Get from DB
 			const drawBufferOffsets = new Array<number>();
 			this.getAllSerializedDraws()?.then(serializedDraws => {
 				for (let i = serializedDraws.length; i--; ) {
@@ -133,36 +131,46 @@ class Router {
 
 	private putData(): express.RequestHandler {
 		return (req, res, next): void => {
-			log(req.params.id);
-			const fbBB = new flatbuffers.flatbuffers.ByteBuffer(req.body);
-			const draw = Draw.getRoot(fbBB);
-			const tags = new Array<string>();
-			for (let i = draw.tagsLength(); i--; ) {
-				tags.push(draw.tags(i));
-			}
+			const id = Number(req.params.id);
 			const binary = new mongodb.Binary(req.body);
-			const concretElement = {
-				_id: `${req.params.id}`,
-				name: `${draw.name()}`,
-				tags: `${tags}`,
-				data: `${binary}`,
-			};
-			const drawingsColl = this.db.db?.collection('drawings'); // Mettre les collections dans le constructeur
-			drawingsColl?.remove({ _id: `${req.params.id}` }); // a revoir
-			drawingsColl?.insertOne(concretElement);
-
-			res.sendStatus(StatusCode.ACCEPTED);
-			next();
+			const drawingsColl = this.db.db?.collection('drawings');
+			drawingsColl
+				?.replaceOne(
+					{
+						_id: id,
+					},
+					{
+						data: binary,
+					},
+				)
+				?.then(() => {
+					res.sendStatus(StatusCode.ACCEPTED);
+					next();
+				})
+				.catch(() => {
+					res.sendStatus(StatusCode.NOT_ACCEPTABLE);
+					next();
+				});
 		};
 	}
 
 	// Pour la mise à jour apres suppression
 	private deleteData(): express.RequestHandler {
 		return (req, res, next): void => {
+			const id = Number(req.params.id);
 			const drawingsColl = this.db.db?.collection('drawings');
-			drawingsColl?.remove({ _id: `${req.params.id}` });
-			res.sendStatus(StatusCode.ACCEPTED);
-			next();
+			drawingsColl
+				?.deleteOne({
+					_id: id,
+				})
+				.then(() => {
+					res.sendStatus(StatusCode.ACCEPTED);
+					next();
+				})
+				.catch(() => {
+					res.sendStatus(StatusCode.NOT_ACCEPTABLE);
+					next();
+				});
 		};
 	}
 
