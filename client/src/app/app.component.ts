@@ -9,6 +9,7 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 
 import { DrawConfig } from './constants/constants';
@@ -46,13 +47,14 @@ export class AppComponent implements AfterViewInit {
   private drawInProgress: boolean;
   private readonly pageToDialog: Map<Page, (fromHome?: boolean) => void>;
 
-  private newDrawComponentRef?: ComponentRef<SvgComponent>;
+  private svgComponentRef?: ComponentRef<SvgComponent>;
 
   constructor(
     private readonly componentFactoryResolver: ComponentFactoryResolver,
     private readonly dialog: MatDialog,
     sharedService: SharedService,
     private readonly shortcutHandlerService: ShortcutHandlerService,
+    private readonly snackBar: MatSnackBar,
     toolSelectorService: ToolSelectorService,
     undoRedoService: UndoRedoService,
   ) {
@@ -150,7 +152,7 @@ export class AppComponent implements AfterViewInit {
     const componentRef = this.viewContainerRef
       .createComponent(componentFactory);
     componentRef.instance.config = drawConfig;
-    this.newDrawComponentRef = componentRef;
+    this.svgComponentRef = componentRef;
   }
 
   private openNewDrawDialog(fromHome: boolean): void {
@@ -179,18 +181,24 @@ export class AppComponent implements AfterViewInit {
     });
   }
 
-  private openSaveDialog() {
+  private openSaveDialog(): void {
     const dialogConfig = this.dialogConfig();
-    dialogConfig.data = this.newDrawComponentRef.instance.elementRef;
+    dialogConfig.data = this.svgComponentRef?.instance.config;
     this.openDialog(SaveComponent, dialogConfig).subscribe(
-      () => this.shortcutHandlerService.activateAll());
+      (err?: string) => {
+        this.shortcutHandlerService.activateAll();
+        this.snackBar.open(err ? err : 'Succès', 'ok', {
+          duration: err ? 3000 : 1000,
+        });
+      });
   }
 
   // Must be public
   openPage(page: Page, fromHome: boolean): void {
-    if (this.pageToDialog.has(page)) {
+    const cb = this.pageToDialog.get(page);
+    if (!!cb) {
       this.shortcutHandlerService.desactivateAll();
-      this.pageToDialog.get(page).bind(this)(fromHome);
+      cb.bind(this)(fromHome);
     }
   }
 }

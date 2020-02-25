@@ -123,7 +123,9 @@ class Router {
 		return (req, res, next): void => {
 			// req.body is a Buffer (which extends Uint8Array)
 			if (!this.verify(req.body)) {
-				res.sendStatus(StatusCode.NOT_ACCEPTABLE);
+				res
+					.status(StatusCode.NOT_ACCEPTABLE)
+					.send('Les données reçues ne sont pas acceptables');
 				next();
 				return;
 			}

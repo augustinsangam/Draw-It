@@ -5,13 +5,14 @@
 <!-- https://github.com/angular/angular/issues/15531 -->
 <!--input ngModel formnovalidate type="submit" name="cancel" value="Retour" /-->
 <form ngNativeValidate #f="ngForm" (ngSubmit)="submit(f)">
-  <label for="name">Nom du dessin</label>
-  <input ngModel required id="name" name="name"
+  <label for="name">Nom du dessin (entre 3 à 21 caractères)</label>
+  <input required id="name" name="name"
     placeholder="foobar"
     pattern=".{3,21}"
-    title="entre 3 à 21 caractères" />
+    title="entre 3 à 21 caractères"
+    [ngModel]="drawConfig.name" />
   <br />
-  <label for="tag">Étiquette</label>
+  <label for="tag">Étiquette (entre 3 à 21 caractères)</label>
   <input id="tag"
     placeholder="licorne"
     pattern=".{3,21}"
@@ -21,7 +22,8 @@
     <li *ngFor="let tag of tags"
       (click)="tags.delete(tag)">{{ tag }}</li>
   </ul>
-  <input type="submit" value="Sauvegarder" />
+  <input type="submit" value="Sauvegarder" [disabled]="saving" />
   <br />
-  <input type="button" value="Retour" (click)="dialogRef.close()" />
+  <input type="button" value="Retour"
+    (click)="dialogRef.close('Opération annulée')" />
 </form>

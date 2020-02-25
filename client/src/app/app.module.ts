@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTreeModule } from '@angular/material/tree';
 import { BrowserModule } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -86,6 +87,7 @@ import { ToolDirective } from './tool/tool.directive';
     MatRadioModule,
     MatSlideToggleModule,
     MatSliderModule,
+    MatSnackBarModule,
     MatTreeModule,
     NoopAnimationsModule,
     ReactiveFormsModule,

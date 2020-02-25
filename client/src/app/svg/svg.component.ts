@@ -2,10 +2,8 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  EventEmitter,
   Input,
   OnDestroy,
-  Output,
   Renderer2,
   ViewChild,
 } from '@angular/core';
@@ -49,15 +47,21 @@ export class SvgComponent implements AfterViewInit, OnDestroy {
   ) {}
 
   ngAfterViewInit(): void {
+    // Load initial state if any
+    if (this.config.gEl) {
+      this.replace(this.config.gEl);
+    } else {
+      this.config.gEl = this.elementRef.nativeElement
+        .getElementById('zone') as SVGGElement;
+    }
+
     // Save initial state
     const drawZone = this.elementRef.nativeElement.getElementById('zone');
     this.undoRedoService.save(UndoRedoAction.SVG, drawZone.cloneNode(true));
 
     this.undoRedoService.set(UndoRedoAction.SVG, (_redo, newChild: Node) => {
       this.toolDirective?.ngOnDestroy();
-      const oldChild = this.elementRef.nativeElement.getElementById('zone');
-      this.elementRef.nativeElement.replaceChild(
-        newChild.cloneNode(true), oldChild);
+      this.replace(newChild.cloneNode(true) as SVGGElement);
       this.toolDirective?.ngOnInit();
     });
 
@@ -72,6 +76,13 @@ export class SvgComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.toolDirective?.ngOnDestroy();
+  }
+
+  private replace(newChild: SVGGElement): void {
+    if (!!this.config.gEl) {
+      this.elementRef.nativeElement.replaceChild(newChild, this.config.gEl);
+      this.config.gEl = newChild;
+    }
   }
 
   private setTool(tool: Tool): void {

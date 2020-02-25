@@ -27,42 +27,38 @@ export class SaveComponent implements OnInit {
   })
   private readonly elementRef: ElementRef<SVGSVGElement>;
 
-  private readonly drawConfig: DrawConfig;
+  // Must be public
+  saving: boolean;
   // Must be public
   readonly tags: Set<string>;
+
+  private gElOffset?: flatbuffers.Offset;
 
   constructor(
     private readonly communicationService: CommunicationService,
     // Must be public
     readonly dialogRef: MatDialogRef<SaveComponent>,
-    private readonly renderer: Renderer2,
+    // Must be public
     @Inject(MAT_DIALOG_DATA)
-    private readonly svgElRef: ElementRef<SVGSVGElement>,
+    readonly drawConfig: DrawConfig,
+    private readonly renderer: Renderer2,
   ) {
-    this.drawConfig = {
-      color: '',
-      height: 0,
-      width: 0,
-    };
-    this.tags = new Set();
+    this.saving = false;
+    this.tags = new Set(drawConfig.tags);
   }
 
   ngOnInit(): void {
-    const svgEl = this.svgElRef.nativeElement;
-    const h = svgEl.getAttribute('height');
-    const w = svgEl.getAttribute('width');
-    const drawZone = svgEl.getElementById('zone');
-
-    const clone = drawZone.cloneNode(true);
-    this.elementRef.nativeElement.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    if (this.drawConfig.gEl == null) {
+      return;
+    }
+    const clone = this.drawConfig.gEl.cloneNode(true);
+    this.elementRef.nativeElement.setAttribute(
+      'viewBox', `0 0 ${this.drawConfig.width} ${this.drawConfig.height}`);
     this.renderer.appendChild(this.elementRef.nativeElement, clone);
 
     this.communicationService.clear();
-    this.drawConfig.color = svgEl.style.backgroundColor;
-    this.drawConfig.height = Number(h);
-    this.drawConfig.width = Number(w);
-    this.drawConfig.offset = this.communicationService
-      .encodeElementRecursively(drawZone);
+    this.gElOffset = this.communicationService
+      .encodeElementRecursively(this.drawConfig.gEl);
   }
 
   // angular.io/guide/user-input#type-the-event
@@ -77,31 +73,26 @@ export class SaveComponent implements OnInit {
     }
   }
 
-  foo() {
-    console.log('foo');
-  }
-
   // Must be public
-  submit(f: NgForm) {
+  submit(f: NgForm): void {
+    if (this.gElOffset == null) {
+      return;
+    }
+    this.saving = true;
     this.drawConfig.name = f.value.name;
     this.drawConfig.tags = Array.from(this.tags);
-    this.communicationService.encode(this.drawConfig);
-    const id = Number(this.svgElRef.nativeElement.id);
-    if (id) {
-      this.communicationService.put(id)
-        .then(() => {
-          console.log('ok');
-          this.dialogRef.close();
-        })
-        .catch((err) => console.log('err ' + err));
+    this.communicationService.encode(this.drawConfig, this.gElOffset);
+    if (this.drawConfig.id) {
+      this.communicationService.put(this.drawConfig.id)
+        .then(() => this.dialogRef.close())
+        .catch((err) => this.dialogRef.close(err));
     } else {
       this.communicationService.post()
         .then((newID) => {
-          console.log('ok');
-          this.svgElRef.nativeElement.id = newID.toString();
+          this.drawConfig.id = newID;
           this.dialogRef.close();
         })
-        .catch((err) => console.log('err ' + err));
+        .catch((err) => this.dialogRef.close(err));
     }
   }
 }

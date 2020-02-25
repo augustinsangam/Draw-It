@@ -19,9 +19,10 @@ interface DrawConfig {
   color: string;
   height: number;
   width: number;
+  id?: number;
   name?: string;
-  offset?: flatbuffers.Offset;
   tags?: string[];
+  gEl?: SVGGElement;
 }
 
 export {

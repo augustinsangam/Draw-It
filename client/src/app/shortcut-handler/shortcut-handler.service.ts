@@ -37,7 +37,7 @@ export class ShortcutHandlerService {
     const shortcut = keyEv.code as Shortcut;
     if (this.manager.has(shortcut)) {
       const shortcutHandler = this.manager.get(shortcut);
-      if (shortcutHandler.isActive) {
+      if (shortcutHandler?.isActive) {
         shortcutHandler.handlerFunction(keyEv);
       }
     }
@@ -82,6 +82,9 @@ export class ShortcutHandlerService {
   }
 
   pop() {
-    this.manager = this.history.pop();
+    const popped = this.history.pop();
+    if (!!popped) {
+      this.manager = popped;
+    }
   }
 }

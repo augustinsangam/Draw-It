@@ -55,6 +55,7 @@ IMPORTS {{{
 ABBREVIATIONS {{{
 	- arg = argument
 	- cap = capacity
+	- cb = callback
 	- ctx = context
 	- el = element
 	- err = error

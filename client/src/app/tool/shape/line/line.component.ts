@@ -58,11 +58,15 @@ export class LineComponent extends ToolComponent {
 
   // Must be public
   onThicknessChange(): void {
-    this.service.thickness = this.thicknessSlider.value;
+    if (!!this.thicknessSlider.value) {
+      this.service.thickness = this.thicknessSlider.value;
+    }
   }
 
   // Must be public
   onRadiusChange(): void {
-    this.service.radius = this.radiusSlider.value;
+    if (!!this.radiusSlider.value) {
+      this.service.radius = this.radiusSlider.value;
+    }
   }
 }

@@ -41,6 +41,8 @@ export class RectangleComponent extends ToolComponent {
 
   // Must be pulic
   onThicknessChange({value}: MatSliderChange): void {
-    this.service.thickness = value;
+    if (!!value) {
+      this.service.thickness = value;
+    }
   }
 }

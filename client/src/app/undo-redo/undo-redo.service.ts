@@ -24,8 +24,9 @@ export class UndoRedoService {
   }
 
   private call(redo: boolean, ctx: UndoRedoContext) {
-    if (this.actionToCb.has(ctx.action)) {
-      this.actionToCb.get(ctx.action)(redo, ctx.data);
+    const cb = this.actionToCb.get(ctx.action);
+    if (!!cb) {
+      cb(redo, ctx.data);
     }
   }
 

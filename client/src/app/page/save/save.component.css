@@ -37,7 +37,7 @@ input:not([type]):focus {
   border-color: rgb(81, 203, 238);
 }
 
-input[value='Sauvegarder'] {
+input[value='Sauvegarder']:not(:disabled) {
   color: white;
   background-color: #3f51b5;
 }

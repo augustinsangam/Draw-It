@@ -25,14 +25,15 @@ import { RectangleService } from './rectangle.service';
 })
 export class RectangleDirective extends ToolDirective
   implements OnDestroy, OnInit {
-
-  private currentPoint: Point;
-  private drawZone: SVGGElement;
-  private listeners?: (() => void)[] = [];
-  private mouseDownPoint: Point;
   private onDrag: boolean;
   private rectangles: Rectangle[];
+
+  // TODO: set as optinal
+  private currentPoint: Point;
+  private drawZone: SVGGElement;
+  private mouseDownPoint: Point;
   private style: Style;
+  private listeners?: (() => void)[] = [];
 
   constructor(
     elementRef: ElementRef<SVGSVGElement>,
@@ -49,7 +50,7 @@ export class RectangleDirective extends ToolDirective
   }
 
   ngOnDestroy() {
-    this.listeners.forEach((listenner) => listenner());
+    this.listeners?.forEach((listenner) => listenner());
   }
 
   ngOnInit() {

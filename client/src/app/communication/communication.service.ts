@@ -60,20 +60,22 @@ export class CommunicationService {
   }
 
   // Must be public
-  encode(config: DrawConfig) {
-    const tags = this.encodeTags(config.tags);
-    const name = this.fbb.createString(config.name);
-    const color = this.fbb.createString(config.color);
-    // TODO: colors
-    DrawT.start(this.fbb);
-    DrawT.addSvg(this.fbb, config.offset);
-    DrawT.addTags(this.fbb, tags);
-    DrawT.addName(this.fbb, name);
-    DrawT.addColor(this.fbb, color);
-    DrawT.addWidth(this.fbb, config.width);
-    DrawT.addHeight(this.fbb, config.height);
-    const draw = DrawT.end(this.fbb);
-    this.fbb.finish(draw);
+  encode(config: DrawConfig, elOffset: flatbuffers.Offset) {
+    if (!!config.tags && !!config.name) {
+      const tags = this.encodeTags(config.tags);
+      const name = this.fbb.createString(config.name);
+      const color = this.fbb.createString(config.color);
+      // TODO: colors
+      DrawT.start(this.fbb);
+      DrawT.addSvg(this.fbb, elOffset);
+      DrawT.addTags(this.fbb, tags);
+      DrawT.addName(this.fbb, name);
+      DrawT.addColor(this.fbb, color);
+      DrawT.addWidth(this.fbb, config.width);
+      DrawT.addHeight(this.fbb, config.height);
+      const draw = DrawT.end(this.fbb);
+      this.fbb.finish(draw);
+    }
   }
 
   post(): Promise<number> {
@@ -84,12 +86,14 @@ export class CommunicationService {
         if (this.xhr.readyState === 4) {
           if (this.xhr.status === StatusCode.CREATED) {
             resolve(Number(this.xhr.response));
-          } else {
+          } else if (this.xhr.status) {
             reject(this.xhr.responseText);
           }
         }
       }
-      this.xhr.onerror = (err) => reject(err);
+      this.xhr.ontimeout = () => reject('Temps de repos dépassé');
+      this.xhr.onerror = () => reject(
+        'Communication impossible avec le serveur');
     });
     this.xhr.send(this.fbb.asUint8Array());
     return promise;
