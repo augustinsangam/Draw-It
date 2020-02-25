@@ -1,3 +1,17 @@
+https://angular.io/guide/testing#cli-generated-tests
+https://stackoverflow.com/a/37680484
+npx ng g c tool
+npx ng g d tool/tool
+npx ng g e tool/tool
+npx ng g c tool/<type>/<name>
+npx ng g d tool/<type>/<name>/<name>
+npx ng g s tool/<type>/<name>/<name>
+
+npm i marked
+npm i -D @types/marked
+
+npx ng t --code-coverage --browsers=Chromium
+
 DESCRIPTION
 Before commiting changes, format and check the code with ‘npm run lint’, and run
 the tests with ‘npm t’. NO WARNINGS PERMITTED!

@@ -15,6 +15,18 @@ enum Opacity {
   FULL = 1,
 }
 
+enum Svg {
+  PATH = 'path',
+}
+
+enum SvgAttr {
+  D = 'd',
+  FILL = 'fill',
+  STROKE = 'stroke',
+  STROKE_LINECAP = 'stroke-linecap',
+  STROKE_WIDTH = 'stroke-width',
+}
+
 interface DrawConfig {
   color: string;
   height: number;
@@ -30,5 +42,7 @@ export {
   Mouse,
   Opacity,
   SVG_NS,
+  Svg,
+  SvgAttr,
   UndoRedoAction,
 };

@@ -28,7 +28,7 @@ export class RectangleDirective extends ToolDirective
   private onDrag: boolean;
   private rectangles: Rectangle[];
 
-  // TODO: set as optinal
+  // TODO: set as optional
   private currentPoint: Point;
   private drawZone: SVGGElement;
   private mouseDownPoint: Point;

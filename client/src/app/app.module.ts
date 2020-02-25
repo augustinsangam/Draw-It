@@ -38,6 +38,8 @@ import {
   ColorPickerItemComponent,
 } from './tool/color/color-picker-item/color-picker-item.component';
 import { ColorComponent } from './tool/color/color.component';
+import { PencilComponent } from './tool/paint/pencil/pencil.component';
+import { PencilDirective } from './tool/paint/pencil/pencil.directive';
 import { LineComponent } from './tool/shape/line/line.component';
 import { LineDirective } from './tool/shape/line/line.directive';
 import { RectangleComponent } from './tool/shape/rectangle/rectangle.component';
@@ -51,24 +53,27 @@ import { ToolDirective } from './tool/tool.directive';
   ],
   declarations: [
     AppComponent,
+    ColorComponent,
+    ColorPickerContentComponent,
+    ColorPickerItemComponent,
+    ConfirmationDialogComponent,
+    DocumentationComponent,
+    HomeComponent,
     LineComponent,
     LineDirective,
+    NewDrawComponent,
+    PaletteDialogComponent,
     PanelComponent,
+    // PencilBrushCommonDirective,
+    PencilComponent,
+    PencilDirective,
     RectangleComponent,
     RectangleDirective,
+    SaveComponent,
     SidebarComponent,
     SvgComponent,
     ToolComponent,
     ToolDirective,
-    ColorComponent,
-    ColorPickerContentComponent,
-    ColorPickerItemComponent,
-    HomeComponent,
-    DocumentationComponent,
-    NewDrawComponent,
-    ConfirmationDialogComponent,
-    PaletteDialogComponent,
-    SaveComponent,
   ],
   entryComponents: [
     LineComponent,
