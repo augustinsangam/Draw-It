@@ -18,8 +18,8 @@ describe('ToolDirective', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        ToolDirective,
         TestComponent,
+        ToolDirective,
       ],
     }).compileComponents();
   }));

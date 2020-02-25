@@ -38,6 +38,8 @@ import {
   ColorPickerItemComponent,
 } from './tool/color/color-picker-item/color-picker-item.component';
 import { ColorComponent } from './tool/color/color.component';
+import { BrushComponent } from './tool/paint/brush/brush.component';
+import { BrushDirective } from './tool/paint/brush/brush.directive';
 import { PencilComponent } from './tool/paint/pencil/pencil.component';
 import { PencilDirective } from './tool/paint/pencil/pencil.directive';
 import { LineComponent } from './tool/shape/line/line.component';
@@ -46,8 +48,6 @@ import { RectangleComponent } from './tool/shape/rectangle/rectangle.component';
 import { RectangleDirective } from './tool/shape/rectangle/rectangle.directive';
 import { ToolComponent } from './tool/tool.component';
 import { ToolDirective } from './tool/tool.directive';
-import { BrushComponent } from './tool/paint/brush/brush.component';
-import { BrushDirective } from './tool/paint/brush/brush.directive';
 
 @NgModule({
   bootstrap: [

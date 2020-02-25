@@ -1,3 +1,5 @@
+// tslint:disable:no-string-literal
+
 import { Component, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
