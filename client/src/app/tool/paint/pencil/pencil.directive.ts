@@ -38,7 +38,6 @@ export class PencilDirective extends PencilBrushCommonDirective
     this.mouseOnHold = false;
     this.stringPath = '';
     this.strokeLineCap = 'round';
-
   }
 
   ngOnDestroy() {

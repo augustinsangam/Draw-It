@@ -1,6 +1,9 @@
 import { Injectable, Type } from '@angular/core';
 
 import { Shortcut } from '../shortcut-handler/shortcut-handler.service';
+import { BrushComponent } from '../tool/paint/brush/brush.component';
+import { BrushDirective } from '../tool/paint/brush/brush.directive';
+import { BrushService } from '../tool/paint/brush/brush.service';
 import { PencilComponent } from '../tool/paint/pencil/pencil.component';
 import { PencilDirective } from '../tool/paint/pencil/pencil.directive';
 import { PencilService } from '../tool/paint/pencil/pencil.service';
@@ -29,6 +32,7 @@ export class SharedService {
   readonly toolShortcuts: Shortcut[];
 
   constructor(
+    brushService: BrushService,
     lineService: LineService,
     pencilService: PencilService,
     rectangleService: RectangleService,
@@ -37,6 +41,11 @@ export class SharedService {
     this.toolDirectives = new Array(Tool._Len);
     this.toolServices = new Array(Tool._Len);
     this.toolShortcuts = new Array(Tool._Len);
+
+    this.toolComponents[Tool.Brush] = BrushComponent;
+    this.toolDirectives[Tool.Brush] = BrushDirective;
+    this.toolServices[Tool.Brush] = brushService;
+    this.toolShortcuts[Tool.Brush] = Shortcut.W;
 
     this.toolComponents[Tool.Line] = LineComponent;
     this.toolDirectives[Tool.Line] = LineDirective;

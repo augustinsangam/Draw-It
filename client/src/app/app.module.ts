@@ -46,6 +46,8 @@ import { RectangleComponent } from './tool/shape/rectangle/rectangle.component';
 import { RectangleDirective } from './tool/shape/rectangle/rectangle.directive';
 import { ToolComponent } from './tool/tool.component';
 import { ToolDirective } from './tool/tool.directive';
+import { BrushComponent } from './tool/paint/brush/brush.component';
+import { BrushDirective } from './tool/paint/brush/brush.directive';
 
 @NgModule({
   bootstrap: [
@@ -74,6 +76,8 @@ import { ToolDirective } from './tool/tool.directive';
     SvgComponent,
     ToolComponent,
     ToolDirective,
+    BrushComponent,
+    BrushDirective,
   ],
   entryComponents: [
     LineComponent,

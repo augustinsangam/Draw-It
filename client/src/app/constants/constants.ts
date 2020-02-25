@@ -27,6 +27,14 @@ enum SvgAttr {
   STROKE_WIDTH = 'stroke-width',
 }
 
+enum Texture {
+  Texture1 = 'filter1',
+  Texture2 = 'filter2',
+  Texture3 = 'filter3',
+  Texture4 = 'filter4',
+  Texture5 = 'filter5'
+};
+
 interface DrawConfig {
   color: string;
   height: number;
@@ -44,5 +52,6 @@ export {
   SVG_NS,
   Svg,
   SvgAttr,
+  Texture,
   UndoRedoAction,
 };

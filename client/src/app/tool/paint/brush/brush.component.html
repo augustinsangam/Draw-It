@@ -1,0 +1,34 @@
+<h1>Pinceau</h1>
+<form [formGroup]="brushForm">
+  <p>Épaisseur</p>
+  <div class="thickness">
+    <mat-slider min=1 max=100 step=1
+      (input)="onThicknessChange()"
+      (change)="onThicknessChange()"
+      formControlName="thicknessSlider"
+      #thicknessSlider>
+    </mat-slider>
+    <mat-form-field>
+      <input readonly matInput formControlName="thicknessFormField" />
+      <span matSuffix>px</span>
+    </mat-form-field>
+  </div>
+  <p class="texture">Textures</p>
+  <table>
+    <mat-radio-group formControlName="textureOption" (change)="onOptionChange($event)">
+      <tr *ngFor="let texture of textures" >
+        <td>
+          <mat-radio-button [value]="texture.value" #radioChoice></mat-radio-button>
+        </td>
+        <td>
+          {{texture.name}}
+        </td>
+        <td>
+          <img [src]="texture.src" [alt]="texture.value" width=120 height=30 />
+        </td>
+      </tr>
+    </mat-radio-group>
+  </table>
+</form>
+<hr>
+<app-color></app-color>
