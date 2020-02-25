@@ -55,6 +55,7 @@ export class LineDirective extends ToolDirective implements OnDestroy, OnInit {
   ngOnInit(): void {
     this.drawZone = this.elementRef.nativeElement
       .getElementById('zone') as SVGGElement;
+    console.log(this.drawZone);
 
     this.listeners.push(
       this.renderer.listen(

@@ -4,7 +4,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { LineDirective } from './line.directive';
 
 @Component({
-  template: '<svg:svg appLine></svg:svg>',
+  template: '<svg appLine><g id="zone"></g></svg>',
 })
 class TestComponent {
   @ViewChild(LineDirective) child: LineDirective;
@@ -33,6 +33,7 @@ describe('LineDirective', () => {
   beforeEach(() => directive = component.child);
 
   it('should create an instance', () => {
+    console.log(directive['elementRef']);
     expect(directive).toBeTruthy();
   });
 });

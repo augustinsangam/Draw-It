@@ -6,6 +6,7 @@ import {
   Renderer2,
 } from '@angular/core';
 
+import { Svg, SVG_NS } from '../../../constants/constants';
 import { MathematicsService } from '../../../mathematics/mathematics.service';
 import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import { ColorService } from '../../color/color.service';
@@ -13,7 +14,6 @@ import {
   PencilBrushCommonDirective,
 } from '../pencil-brush-common/pencil-brush-common.directive';
 import { BrushService } from './brush.service';
-import { Svg, SVG_NS } from 'src/app/constants/constants';
 
 @Directive({
   selector: '[appBrush]',

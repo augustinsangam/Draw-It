@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
 
 import { ToolDirective } from './tool.directive';
 
 @Component({
-  template: '<svg:svg appTool></svg:svg>',
+  template: '<svg appTool><g id="zone"></g></svg>',
 })
-class TestComponent {}
+class TestComponent {
+  @ViewChild(ToolDirective) child: ToolDirective;
+}
 
 describe('ToolDirective', () => {
   let component: TestComponent;
@@ -17,8 +18,8 @@ describe('ToolDirective', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        TestComponent,
         ToolDirective,
+        TestComponent,
       ],
     }).compileComponents();
   }));
@@ -29,10 +30,7 @@ describe('ToolDirective', () => {
     fixture.detectChanges();
   });
 
-  beforeEach(() => {
-    const directiveEl = fixture.debugElement.query(By.directive(ToolDirective));
-    directive = directiveEl.injector.get(ToolDirective);
-  });
+  beforeEach(() => directive = component.child);
 
   it('should create an instance', () => {
     expect(directive).toBeTruthy();
