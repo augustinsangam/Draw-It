@@ -153,7 +153,6 @@ export class GaleryComponent implements AfterViewInit {
       }
     }
     this.allTags = Array.from(tempsAllTags);
-    console.log(tempsAllTags);
     this.filteredGaleryDrawTable = this.galeryDrawTable;
     this.tagCtrl.setValue(null);
     this.tagInput.nativeElement.blur();
@@ -221,12 +220,10 @@ export class GaleryComponent implements AfterViewInit {
           }
         }
       }
-      console.log(keep);
       if (keep) {
         this.filteredGaleryDrawTable.push(elem);
       }
     }
-    console.log(this.filteredGaleryDrawTable);
   }
 
   private _filter(value: string): string[] {
@@ -258,9 +255,8 @@ export class GaleryComponent implements AfterViewInit {
 
   private deleteCloseHandler = (result: boolean, id: number) => {
     if (result) {
-      // TODO call delete on the elem
-      console.log('delete ' + id);
-      this.communicationService.delete(id).then((result) => this.deletePromiseHandler(result, id));
+      this.communicationService.delete(id).then(
+        (promise) => this.deletePromiseHandler(promise, id));
     } else {
       this.dialogRefs.delete.close();
     }
