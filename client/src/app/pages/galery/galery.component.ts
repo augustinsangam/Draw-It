@@ -260,6 +260,7 @@ export class GaleryComponent implements AfterViewInit {
     if (result) {
       // TODO call delete on the elem
       console.log('delete ' + id);
+      this.communicationService.delete(id).then((result) => result ? console.log('deleted') : console.log('error'));
     } else {
       this.dialogRefs.delete.close();
     }
