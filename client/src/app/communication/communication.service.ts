@@ -161,4 +161,22 @@ export class CommunicationService {
     this.xhr.send(serialized);
     return promise;
   }
+
+  delete(id: number): Promise<null> {
+    this.xhr.open('DELETE', `${this.host}/draw/${id}`, true);
+    const promise = new Promise<null>((resolve, reject) => {
+      this.xhr.onreadystatechange = () => {
+        if (this.xhr.readyState === 4) {
+          if (this.xhr.status === StatusCode.ACCEPTED) {
+            resolve();
+          } else {
+            reject(this.xhr.responseText);
+          }
+        }
+      }
+      this.xhr.onerror = (err) => reject(err);
+    });
+    this.xhr.send();
+    return promise;
+  }
 }
