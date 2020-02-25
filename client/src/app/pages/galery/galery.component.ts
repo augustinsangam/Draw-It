@@ -260,9 +260,19 @@ export class GaleryComponent implements AfterViewInit {
     if (result) {
       // TODO call delete on the elem
       console.log('delete ' + id);
-      this.communicationService.delete(id).then((result) => result ? console.log('deleted') : console.log('error'));
+      this.communicationService.delete(id).then((result) => this.deletePromiseHandler(result, id));
     } else {
       this.dialogRefs.delete.close();
+    }
+  }
+
+  private deletePromiseHandler(result: any, id: number): void {
+    if (result) {
+      console.log('ERREUR')
+    } else {
+      const draw = this.galeryDrawTable.filter((element) => element.id === id);
+      this.galeryDrawTable.splice(this.galeryDrawTable.indexOf(draw[0]), 1);
+      this.filterGaleryTable();
     }
   }
 
