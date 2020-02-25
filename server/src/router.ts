@@ -3,7 +3,7 @@ import flatbuffers from 'flatbuffers';
 import inversify from 'inversify';
 import mongodb from 'mongodb';
 
-import { Draw, DrawBuffer, Draws, Element } from './data_generated';
+import { Draw, DrawBuffer, Draws } from './data_generated';
 import { Database } from './database';
 import { TYPES } from './types';
 
@@ -13,6 +13,7 @@ enum StatusCode {
 	NO_CONTENT = 204,
 	NOT_ACCEPTABLE = 406,
 	IM_A_TEAPOT = 418,
+	INTERNAL_SERVER_ERROR = 500,
 }
 
 interface Entry {
@@ -38,7 +39,7 @@ class Router {
 			res.sendStatus(StatusCode.IM_A_TEAPOT),
 		);
 	}
-
+	/*
 	private static disp(el: Element): void {
 		console.log(el.name());
 		const attrsLen = el.attrsLength();
@@ -54,9 +55,29 @@ class Router {
 			}
 		}
 	}
-
+	*/
 	get router(): express.Router {
 		return this._router;
+	}
+
+	private verify(buf: Uint8Array): boolean {
+		const fbBB = new flatbuffers.flatbuffers.ByteBuffer(buf);
+		const draw = Draw.getRoot(fbBB);
+		const name = draw.name();
+		if (name == null || name.length < 3 || name.length > 21) {
+			return false;
+		}
+		for (let i = draw.tagsLength(); i--; ) {
+			const tag = draw.tags(i);
+			if (tag.length < 3 || tag.length > 21) {
+				return false;
+			}
+		}
+		return true;
+		/*const svg = draw.svg();
+		if (!!svg) {
+			Router.disp(svg);
+		}*/
 	}
 
 	private getHelloWorld(): express.RequestHandler {
@@ -101,36 +122,43 @@ class Router {
 	private postData(): express.RequestHandler {
 		return (req, res, next): void => {
 			// req.body is a Buffer (which extends Uint8Array)
-			const fbBB = new flatbuffers.flatbuffers.ByteBuffer(req.body);
-			const draw = Draw.getRoot(fbBB);
-
-			const name = draw.name();
-			if (!!name) {
-				console.log('Name is ' + name);
-			}
-			for (let i = draw.tagsLength(); i--; ) {
-				console.log(`Tag #${i}: ${draw.tags(i)}`);
-			}
-			const svg = draw.svg();
-			if (!!svg) {
-				Router.disp(svg);
+			if (!this.verify(req.body)) {
+				res
+					.status(StatusCode.NOT_ACCEPTABLE)
+					.send('Les données reçues ne sont pas acceptables');
+				next();
+				return;
 			}
 			const binary = new mongodb.Binary(req.body);
-			this.getNExtId()?.then(count => {
-				const drawingsColl = this.db.db?.collection('drawings');
-				const elementConcret: Entry = {
-					_id: count,
-					data: binary,
-				};
-				drawingsColl?.insertOne(elementConcret);
-				res.status(StatusCode.CREATED).send(count.toString());
-				next();
-			});
+			this.getNExtId()
+				?.then(count => {
+					const drawingsColl = this.db.db?.collection('drawings');
+					const elementConcret: Entry = {
+						_id: count,
+						data: binary,
+					};
+					return drawingsColl?.insertOne(elementConcret);
+				})
+				.then(insertRes => {
+					const id = insertRes?.insertedId;
+					res.status(StatusCode.CREATED).send(id.toString());
+					next();
+				})
+				.catch(err => {
+					console.error(err);
+					res.sendStatus(StatusCode.INTERNAL_SERVER_ERROR);
+					next();
+				});
 		};
 	}
 
 	private putData(): express.RequestHandler {
 		return (req, res, next): void => {
+			if (!this.verify(req.body)) {
+				res.sendStatus(StatusCode.NOT_ACCEPTABLE);
+				next();
+				return;
+			}
 			const id = Number(req.params.id);
 			const binary = new mongodb.Binary(req.body);
 			const drawingsColl = this.db.db?.collection('drawings');
@@ -148,13 +176,12 @@ class Router {
 					next();
 				})
 				.catch(() => {
-					res.sendStatus(StatusCode.NOT_ACCEPTABLE);
+					res.sendStatus(StatusCode.INTERNAL_SERVER_ERROR);
 					next();
 				});
 		};
 	}
 
-	// Pour la mise à jour apres suppression
 	private deleteData(): express.RequestHandler {
 		return (req, res, next): void => {
 			const id = Number(req.params.id);
@@ -167,8 +194,9 @@ class Router {
 					res.sendStatus(StatusCode.ACCEPTED);
 					next();
 				})
-				.catch(() => {
-					res.sendStatus(StatusCode.NOT_ACCEPTABLE);
+				.catch(err => {
+					console.error(err);
+					res.sendStatus(StatusCode.INTERNAL_SERVER_ERROR);
 					next();
 				});
 		};
@@ -180,19 +208,19 @@ class Router {
 	}
 
 	private getNExtId(): Promise<number> | undefined {
-		const counterCollection = this.db.db?.collection('counter');
-		const sequenceDocument = counterCollection?.findOneAndUpdate(
-			{
-				_id: 'productid',
-			},
-			{
-				$inc: {
-					sequenceValue: 1,
+		return this.db.db
+			?.collection('counter')
+			?.findOneAndUpdate(
+				{
+					_id: 'productid',
 				},
-			},
-		);
-
-		return sequenceDocument?.then(a => a.value.sequenceValue);
+				{
+					$inc: {
+						sequenceValue: 1,
+					},
+				},
+			)
+			.then(a => a.value.sequenceValue);
 	}
 
 	/*findElementByName(nameToSearch: string): Promise<any[]> | undefined {
