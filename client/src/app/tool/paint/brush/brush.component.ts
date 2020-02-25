@@ -10,7 +10,7 @@ import { BrushService } from './brush.service';
 @Component({
   selector: 'app-brush',
   styleUrls: [
-    './brush.component.css'
+    './brush.component.css',
   ],
   templateUrl: './brush.component.html',
 })

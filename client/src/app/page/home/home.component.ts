@@ -16,7 +16,7 @@ interface DialogData {
 @Component({
   selector: 'app-home',
   styleUrls: [
-    './home.component.css'
+    './home.component.css',
   ],
   templateUrl: './home.component.html',
 })

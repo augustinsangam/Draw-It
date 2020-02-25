@@ -10,7 +10,7 @@ import { ColorService } from '../../../tool/color/color.service';
 @Component({
   selector: 'app-palette-dialog',
   styleUrls: [
-    './palette-dialog.component.css'
+    './palette-dialog.component.css',
   ],
   templateUrl: './palette-dialog.component.html',
 })

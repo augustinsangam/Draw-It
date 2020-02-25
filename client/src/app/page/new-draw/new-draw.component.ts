@@ -48,7 +48,7 @@ interface DialogRefs {
 @Component({
   selector: 'app-new-draw',
   styleUrls: [
-    './new-draw.component.css'
+    './new-draw.component.css',
   ],
   templateUrl: './new-draw.component.html',
 })
