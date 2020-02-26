@@ -22,7 +22,7 @@ export class GridService extends ToolService {
   private readonly renderer: Renderer2;
   private svgDimensions: Dimension;
 
-  constructor(private rendererFactory: RendererFactory2,
+  constructor(rendererFactory: RendererFactory2,
               private svg: SvgService) {
     super();
     this.squareSize = 100;
