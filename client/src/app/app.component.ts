@@ -20,15 +20,11 @@ import { HomeComponent } from './page/home/home.component';
 import { NewDrawComponent } from './page/new-draw/new-draw.component';
 import { Page } from './page/page';
 import { SaveComponent } from './page/save/save.component';
-import { SharedService } from './shared/shared.service';
 import {
   Shortcut,
   ShortcutHandlerService,
 } from './shortcut-handler/shortcut-handler.service';
 import { SvgComponent } from './svg/svg.component';
-import { ToolSelectorService } from './tool-selector/tool-selector.service';
-import { Tool } from './tool/tool.enum';
-import { UndoRedoService } from './undo-redo/undo-redo.service';
 
 @Component({
   selector: 'app-root',
@@ -52,11 +48,8 @@ export class AppComponent implements AfterViewInit {
   constructor(
     private readonly componentFactoryResolver: ComponentFactoryResolver,
     private readonly dialog: MatDialog,
-    sharedService: SharedService,
     private readonly shortcutHandlerService: ShortcutHandlerService,
     private readonly snackBar: MatSnackBar,
-    toolSelectorService: ToolSelectorService,
-    undoRedoService: UndoRedoService,
   ) {
     this.drawInProgress = false;
     this.pageToDialog = new Map();
@@ -66,37 +59,13 @@ export class AppComponent implements AfterViewInit {
     this.pageToDialog.set(Page.HOME, this.openHomeDialog);
     this.pageToDialog.set(Page.NEW_DRAW, this.openNewDrawDialog);
     this.pageToDialog.set(Page.SAVE, this.openSaveDialog);
-    for (let tool = Tool._Len; --tool; ) {
-      const shortcut = sharedService.toolShortcuts[tool];
-      if (!!shortcut) {
-        shortcutHandlerService.set(shortcut,
-          () => toolSelectorService.set(tool));
-      }
-    }
-    shortcutHandlerService.set(Shortcut.A, (keyEv) => {
-      toolSelectorService.set(keyEv.ctrlKey ? Tool.Selection : Tool.Aerosol);
-      if (keyEv.ctrlKey) {
-        keyEv.preventDefault();
-        // TODO: this.svgService.selectAllElements.emit(null);
-      }
+    shortcutHandlerService.set(Shortcut.CTRL_O, (keyEv) => {
+      keyEv.preventDefault();
+      this.openPage(Page.NEW_DRAW, false);
     });
-    shortcutHandlerService.set(Shortcut.O, (keyEv) => {
-      if (keyEv.ctrlKey) {
-        keyEv.preventDefault();
-        this.openPage(Page.NEW_DRAW, false);
-      }
-    });
-    shortcutHandlerService.set(Shortcut.S, (keyEv) => {
-      if (keyEv.ctrlKey) {
-        keyEv.preventDefault();
-        this.openPage(Page.SAVE, false);
-      }
-    });
-    shortcutHandlerService.set(Shortcut.Z, (keyEv) => {
-      if (keyEv.ctrlKey) {
-        keyEv.preventDefault();
-        undoRedoService.do(keyEv.shiftKey);
-      }
+    shortcutHandlerService.set(Shortcut.CTRL_S, (keyEv) => {
+      keyEv.preventDefault();
+      this.openPage(Page.SAVE, false);
     });
   }
 
@@ -104,7 +73,7 @@ export class AppComponent implements AfterViewInit {
     '$event',
   ])
   keyEvent(keyEv: KeyboardEvent): void {
-    this.shortcutHandlerService.execute(keyEv);
+    this.shortcutHandlerService.emit(keyEv);
   }
 
   ngAfterViewInit(): void {
