@@ -27,14 +27,14 @@
 
 <button mat-raised-button
   color="accent"
-  *ngIf="canRedo"
+  [disabled]="!canRedo"
   (click)="undoRedoService.redo()">
   <mat-icon>redo</mat-icon>
 </button>
 
 <button mat-raised-button
   color="warn"
-  *ngIf="canUndo"
+  [disabled]="!canUndo"
   (click)="undoRedoService.undo()">
   <mat-icon>undo</mat-icon>
 </button>
