@@ -10,6 +10,9 @@ export class AerosolService extends ToolService {
   thickness: number;
   frequency: number;
 
+  readonly MAX_FREQUENCY = 200;
+  readonly MIN_FREQUENCY = 1;
+
   constructor() {
     super();
     this.frequency = 50;

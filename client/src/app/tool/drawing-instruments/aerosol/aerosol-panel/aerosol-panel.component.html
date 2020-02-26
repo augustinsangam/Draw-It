@@ -16,7 +16,7 @@
   <br>
   <p>Fréquence du jet</p>
   <div class="frequency">
-    <mat-slider min=1 max=150 step="1"
+    <mat-slider min="{{this.service.MIN_FREQUENCY}}" max="{{this.service.MAX_FREQUENCY}}" step="1"
                 (input)="onFrequencyChange()"
                 (change)="onFrequencyChange()"
                 formControlName="frequencySlider"
