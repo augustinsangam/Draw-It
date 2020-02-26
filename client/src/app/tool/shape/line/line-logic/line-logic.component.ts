@@ -1,10 +1,10 @@
 import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { Point } from 'src/app/tool/selection/Point';
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { MathService } from '../../../mathematics/tool.math-service.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
 import { Path } from '../../common/Path';
-import { Point } from '../../common/Point';
 import { LineService } from '../line.service';
 
 @Component({
@@ -24,19 +24,36 @@ export class LineLogicComponent extends ToolLogicDirective
     private readonly renderer: Renderer2,
     private readonly serviceColor: ColorService,
     private readonly mathService: MathService,
-    private readonly undoRedo: UndoRedoService
+    private readonly undoRedoService: UndoRedoService
   ) {
     super();
     this.paths = [];
     this.listeners = [];
     this.isNewPath = true;
+    this.undoRedoService.resetActions();
+    this.undoRedoService.setPreUndoAction({
+      enabled: true,
+      overrideDefaultBehaviour: true,
+      overrideFunctionDefined: true,
+      overrideFunction: () => {
+        if (!this.isNewPath) {
+          // TODO Nicolas. Exactemment ici
+          // tu dois mettre la logique pour elever
+          // uniquement le trait sans ce cercle
+          this.paths.pop();
+          this.undoRedoService.saveState();
+          this.onKeyDown({ code: 'Escape'} as unknown as KeyboardEvent);
+        }
+        this.undoRedoService.undoBase();
+      }
+    })
   }
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
     this.listeners.push(
       this.renderer.listen(
-        this.svgElRef.nativeElement,
+        this.svgStructure.root,
         'click',
         (mouseEv: MouseEvent) => this.onMouseClick(mouseEv)
       )
@@ -44,7 +61,7 @@ export class LineLogicComponent extends ToolLogicDirective
 
     this.listeners.push(
       this.renderer.listen(
-        this.svgElRef.nativeElement,
+        this.svgStructure.root,
         'dblclick',
         (mouseEv: MouseEvent) => this.onMouseDblClick(mouseEv)
       )
@@ -52,7 +69,7 @@ export class LineLogicComponent extends ToolLogicDirective
 
     this.listeners.push(
       this.renderer.listen(
-        this.svgElRef.nativeElement,
+        this.svgStructure.root,
         'mousemove',
         (mouseEv: MouseEvent) => this.onMouseMove(mouseEv)
       )
@@ -60,7 +77,7 @@ export class LineLogicComponent extends ToolLogicDirective
 
     this.listeners.push(
       this.renderer.listen(
-        this.svgElRef.nativeElement,
+        this.svgStructure.root,
         'keydown',
         (keyEv: KeyboardEvent) => this.onKeyDown(keyEv)
       )
@@ -68,25 +85,23 @@ export class LineLogicComponent extends ToolLogicDirective
 
     this.listeners.push(
       this.renderer.listen(
-        this.svgElRef.nativeElement,
+        this.svgStructure.root,
         'keyup',
         (keyEv: KeyboardEvent) => this.onKeyUp(keyEv)
       )
     );
 
-    this.renderer.setStyle(
-      this.svgElRef.nativeElement,
-      'cursor',
-      'crosshair'
-    );
+    this.svgStructure.root.style.cursor = 'crosshair';
+
   }
 
   ngOnDestroy() {
-    this.listeners.forEach(listenner => listenner());
+    this.listeners.forEach(end => end());
+    this.undoRedoService.resetActions();
   }
 
   private onMouseClick(mouseEv: MouseEvent): void {
-    let currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
+    let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
     if (this.isNewPath) {
       this.createNewPath(currentPoint);
       this.currentJonctionOptions = {
@@ -103,7 +118,7 @@ export class LineLogicComponent extends ToolLogicDirective
 
   private onMouseDblClick(mouseEv: MouseEvent): void {
     if (!this.isNewPath) {
-      let currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
+      let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
       this.removeLine();
       this.removeLine(); // remove the click event
       const firstPoint = this.getPath().datas.points[0]
@@ -120,16 +135,16 @@ export class LineLogicComponent extends ToolLogicDirective
         this.addNewLine(currentPoint);
       }
       this.isNewPath = true;
-      this.undoRedo.addToCommands();
+      this.undoRedoService.saveState();
     }
   }
 
   private onMouseMove(mouseEv: MouseEvent): void {
     if (!this.isNewPath) {
-      let point = (this.mousePosition = {
-        x: mouseEv.offsetX,
-        y: mouseEv.offsetY
-      });
+      let point = (this.mousePosition = new Point(
+        mouseEv.offsetX,
+        mouseEv.offsetY
+      ));
       if (mouseEv.shiftKey) {
         point = this.getPath().getAlignedPoint(point);
       }
@@ -170,7 +185,7 @@ export class LineLogicComponent extends ToolLogicDirective
 
   private createNewPath(initialPoint: Point): void {
     const path = this.renderer.createElement('path', this.svgNS);
-    this.renderer.appendChild(this.svgElRef.nativeElement, path);
+    this.renderer.appendChild(this.svgStructure.drawZone, path);
     this.paths.push(
       new Path(initialPoint, this.renderer, path, this.service.withJonction)
     );

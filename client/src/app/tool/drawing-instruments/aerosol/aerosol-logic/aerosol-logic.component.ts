@@ -1,9 +1,9 @@
 import {Component, OnDestroy, Renderer2} from '@angular/core';
 import {interval, Observable} from 'rxjs';
 import {ColorService} from '../../../color/color.service';
-import {Point} from '../../../shape/common/Point';
 import {ToolLogicDirective} from '../../../tool-logic/tool-logic.directive';
 import {AerosolService} from '../aerosol.service';
+import { Point } from 'src/app/tool/selection/Point';
 
 @Component({
   selector: 'app-aerosol-logic',
@@ -11,8 +11,8 @@ import {AerosolService} from '../aerosol.service';
 })
 
 // tslint:disable:use-lifecycle-interface
-export class AerosolLogicComponent extends ToolLogicDirective
-  implements OnDestroy {
+export class AerosolLogicComponent
+  extends ToolLogicDirective implements OnDestroy {
 
   private listeners: (() => void)[];
   private currentPath: SVGElement;
@@ -37,25 +37,25 @@ export class AerosolLogicComponent extends ToolLogicDirective
 
   ngOnInit(): void {
     const onMouseDown = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mousedown',
       (mouseEv: MouseEvent) => this.onMouseDown(mouseEv)
     );
 
     const onMouseMove = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mousemove',
       (mouseEv: MouseEvent) => this.onMouseMove(mouseEv)
     );
 
     const onMouseUp = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mouseup',
       (mouseEv: MouseEvent) => this.onMouseUp(mouseEv)
     );
 
     const onMouseLeave = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mouseleave',
       (mouseEv: MouseEvent) => this.onMouseUp(mouseEv)
     );
@@ -67,11 +67,8 @@ export class AerosolLogicComponent extends ToolLogicDirective
       onMouseMove,
     ];
 
-    this.renderer.setStyle(
-      this.svgElRef.nativeElement,
-      'cursor',
-      'crosshair'
-    );
+    this.svgStructure.root.style.cursor = 'crosshair';
+
   }
 
   ngOnDestroy(): void {
@@ -79,14 +76,14 @@ export class AerosolLogicComponent extends ToolLogicDirective
   }
 
   protected onMouseDown(mouseEv: MouseEvent): void {
-    this.currMousePos = {x: mouseEv.offsetX, y: mouseEv.offsetY};
+    this.currMousePos = new Point(mouseEv.offsetX, mouseEv.offsetY);
 
     this.currentPath = this.renderer.createElement('path', this.svgNS);
     this.currentPath.setAttribute(
       'fill',
       this.colorService.primaryColor
     );
-    this.renderer.appendChild(this.svgElRef.nativeElement, this.currentPath);
+    this.renderer.appendChild(this.svgStructure.drawZone, this.currentPath);
 
     this.onDrag = true;
 
@@ -98,7 +95,7 @@ export class AerosolLogicComponent extends ToolLogicDirective
 
   protected onMouseMove(mouseEv: MouseEvent): void {
     if (this.onDrag) {
-      this.currMousePos = {x: mouseEv.offsetX, y: mouseEv.offsetY};
+      this.currMousePos = new Point(mouseEv.offsetX, mouseEv.offsetY);
     }
   }
 

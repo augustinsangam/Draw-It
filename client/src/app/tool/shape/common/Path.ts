@@ -1,6 +1,6 @@
-import { ElementRef, Renderer2 } from '@angular/core';
+import { Renderer2 } from '@angular/core';
 import { MathService } from '../../mathematics/tool.math-service.service';
-import { Point } from './Point';
+import { Point } from '../../selection/Point';
 
 // Class tested in ../Line/line-logic.component.spec.ts
 export class Path {
@@ -12,7 +12,7 @@ export class Path {
   constructor(
     initialPoint: Point,
     private renderer: Renderer2,
-    private element: ElementRef,
+    private element: SVGElement,
     public withJonctions: boolean
   ) {
     this.datas.points.push(initialPoint);
@@ -35,7 +35,7 @@ export class Path {
     this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
   }
 
-  addJonction( center: Point, radius: number) {
+  addJonction(center: Point, radius: number) {
     const instruction = ` M ${center.x},
     ${center.y} m -${radius} 0 a ${radius},${radius} 0 1,0 ${2 * radius},
     0 a ${radius},${radius} 0 1,0 -${2 * radius},0 M ${center.x},
@@ -96,6 +96,6 @@ export class Path {
 }
 
 interface PathData {
-    points: Point[],
-    instructions: string[],
-  }
+  points: Point[],
+  instructions: string[],
+}

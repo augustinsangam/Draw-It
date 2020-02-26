@@ -4,7 +4,6 @@ export class Point {
   y: number;
 
   constructor(x: number, y: number) {
-    // Un point ne peut avoir des coordonnées négatives
     this.x = x
     this.y = y;
   }

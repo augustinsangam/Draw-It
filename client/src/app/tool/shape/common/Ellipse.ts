@@ -1,7 +1,7 @@
 import {Renderer2} from '@angular/core';
 import {MathService} from '../../mathematics/tool.math-service.service';
+import { Point } from '../../selection/Point';
 import {AbstractShape} from './AbstractShape';
-import {Point} from './Point';
 
 export class Ellipse extends AbstractShape {
 

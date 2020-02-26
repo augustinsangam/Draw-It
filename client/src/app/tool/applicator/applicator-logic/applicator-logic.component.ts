@@ -1,4 +1,4 @@
-import { Component, Renderer2 } from '@angular/core';
+import { Component, OnDestroy, Renderer2 } from '@angular/core';
 import { ColorService } from '../../color/color.service';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 
@@ -7,10 +7,14 @@ import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
   templateUrl: './applicator-logic.component.html',
   styleUrls: ['./applicator-logic.component.scss']
 })
-export class ApplicatorLogicComponent extends ToolLogicDirective {
+export class ApplicatorLogicComponent
+  extends ToolLogicDirective implements OnDestroy {
+
+  private allListenners: (() => void)[];
 
   constructor(private renderer: Renderer2, private colorService: ColorService) {
     super();
+    this.allListenners = [];
   }
 
   private handlers = {
@@ -39,24 +43,27 @@ export class ApplicatorLogicComponent extends ToolLogicDirective {
     }
   }
 
-  // Bug de lint - Tool Logic directive implémente OnInit
   // tslint:disable-next-line: use-lifecycle-interface
   ngOnInit() {
-    this.renderer.listen(this.svgElRef.nativeElement, 'click',
-      this.handlers.left);
 
-    this.renderer.listen(this.svgElRef.nativeElement, 'contextmenu',
-      this.handlers.right);
-
-    this.renderer.setStyle(
-      this.svgElRef.nativeElement,
-      'cursor',
-      'crosshair'
+    this.allListenners.push(
+      this.renderer.listen(this.svgStructure.root, 'click',
+        this.handlers.left)
     );
+    this.allListenners.push(
+      this.renderer.listen(this.svgStructure.root, 'contextmenu',
+        this.handlers.right)
+    );
+
+    this.svgStructure.root.style.cursor = 'crosshair';
   }
 
   private isSvgElement(element: SVGElement): boolean {
-    return element !== this.svgElRef.nativeElement;
+    return element !== this.svgStructure.root;
+  }
+
+  ngOnDestroy() {
+    this.allListenners.forEach((end) => {end()});
   }
 
 }
