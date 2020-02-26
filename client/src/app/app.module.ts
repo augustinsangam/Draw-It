@@ -54,7 +54,10 @@ import { ToolDirective } from './tool/tool.directive';
     AppComponent,
   ],
   declarations: [
+    // PencilBrushCommonDirective,
     AppComponent,
+    BrushComponent,
+    BrushDirective,
     ColorComponent,
     ColorPickerContentComponent,
     ColorPickerItemComponent,
@@ -66,7 +69,6 @@ import { ToolDirective } from './tool/tool.directive';
     NewDrawComponent,
     PaletteDialogComponent,
     PanelComponent,
-    // PencilBrushCommonDirective,
     PencilComponent,
     PencilDirective,
     RectangleComponent,
@@ -76,8 +78,6 @@ import { ToolDirective } from './tool/tool.directive';
     SvgComponent,
     ToolComponent,
     ToolDirective,
-    BrushComponent,
-    BrushDirective,
   ],
   entryComponents: [
     LineComponent,
