@@ -16,6 +16,6 @@ export class PolygoneService extends ToolService {
     this.fillOption = true;
     this.borderOption = true;
     this.thickness = 2;
-    this.sides = 3;
+    this.sides = 8;
   }
 }

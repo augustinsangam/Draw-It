@@ -1,11 +1,12 @@
-import { ElementRef, EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
+import { SVGStructure } from '../tool/tool-logic/tool-logic.directive';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SvgService {
 
-  instance: ElementRef<SVGSVGElement>;
+  structure: SVGStructure;
   selectAllElements: EventEmitter<null>;
 
   constructor() {
@@ -13,13 +14,15 @@ export class SvgService {
   }
 
   changeBackgroundColor(color: string) {
-    this.instance.nativeElement.style.backgroundColor = color;
+    this.structure.root.style.backgroundColor = color;
   }
 
   clearDom(): void {
-    const childrens = Array.from(this.instance.nativeElement.children);
-    childrens.forEach(element => {
-      element.remove();
+    [this.structure.drawZone, this.structure.temporaryZone,
+      this.structure.endZone].forEach((zone: SVGGElement) => {
+        Array.from(zone.children).forEach((children: SVGElement) => {
+          children.remove();
+        });
     });
   }
 

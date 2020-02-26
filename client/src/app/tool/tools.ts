@@ -1,5 +1,11 @@
 import { Type } from '@angular/core';
 import {
+  ApplicatorLogicComponent
+} from './applicator/applicator-logic/applicator-logic.component';
+import {
+  ApplicatorPanelComponent
+} from './applicator/applicator-panel/applicator-panel.component';
+import {
   AerosolLogicComponent
 } from './drawing-instruments/aerosol/aerosol-logic/aerosol-logic.component';
 import {
@@ -23,6 +29,12 @@ import {
 import {
   EraserPanelComponent
 } from './eraser/eraser-panel/eraser-panel.component';
+import {
+  GridLogicComponent
+} from './grid/grid-logic/grid-logic.component';
+import {
+  GridPanelComponent
+} from './grid/grid-panel/grid-panel.component';
 import {
   PipetteLogicComponent
 } from './pipette/pipette-logic/pipette-logic.component';
@@ -66,6 +78,8 @@ import { Tool } from './tool.enum';
 export const TOOL_MANAGER =
   new Map<Tool, [Type<ToolPanelDirective>, Type<ToolLogicDirective>]>();
 
+TOOL_MANAGER.set(Tool.Applicator,
+  [ApplicatorPanelComponent, ApplicatorLogicComponent]);
 TOOL_MANAGER.set(Tool.Brush,
   [BrushPanelComponent, BrushLogicComponent]);
 TOOL_MANAGER.set(Tool.Line,
@@ -86,3 +100,5 @@ TOOL_MANAGER.set(Tool.Eraser,
   [EraserPanelComponent, EraserLogicComponent]);
 TOOL_MANAGER.set(Tool.Aerosol,
   [AerosolPanelComponent, AerosolLogicComponent]);
+TOOL_MANAGER.set(Tool.Grid,
+  [GridPanelComponent, GridLogicComponent]);

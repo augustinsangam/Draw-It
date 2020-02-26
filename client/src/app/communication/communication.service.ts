@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Renderer2 } from '@angular/core';
 import { flatbuffers } from 'flatbuffers';
 
 import {
@@ -8,7 +8,8 @@ import {
 } from './data_generated';
 
 enum StatusCode {
-  CREATED = 201,
+  OK = 200,
+  CREATED,
   ACCEPTED,
 }
 
@@ -33,12 +34,17 @@ export class CommunicationService {
     return fbbb.bytes().subarray(fbbb.position(), fbbb.capacity());
   }
 
+	private static deserialize(
+		data: ArrayBuffer,
+	): flatbuffers.ByteBuffer {
+		return new flatbuffers.ByteBuffer(new Uint8Array(data));
+	}
+
   private encodeElementRecursively(el: Element): flatbuffers.Offset {
     const childrenList =  Array.from(el.childNodes)
       .filter(node => node.nodeType === 1)
       .map(node => node as Element)
       // TODO : Fix Lint
-      // tslint:disable-next-line: no-shadowed-variable
       .map(el => this.encodeElementRecursively(el));
     const children = ElementT.createChildrenVector(this.fbb, childrenList);
     const attrsList = Array.from(el.attributes)
@@ -69,6 +75,53 @@ export class CommunicationService {
     this.fbb.finish(draw);
   }
 
+  decodeElementRecursively(el: ElementT, renderer: Renderer2): SVGElement | null {
+    const name = el.name();
+    if (!!name) {
+      const svgEl: SVGElement = renderer.createElement(name, 'http://www.w3.org/2000/svg');
+      const attrsLen = el.attrsLength();
+      for (let i = 0; i < attrsLen; i++) {
+        const attr = el.attrs(i);
+        if (!!attr) {
+          const k = attr.k(), v = attr.v();
+          // v may be empty, so !!v is not suitable
+          if (!!k && v != null) {
+            svgEl.setAttribute(k, v);
+          }
+        }
+      }
+      const childrenLen = el.childrenLength();
+      for (let i = 0; i < childrenLen; i++) {
+        const child = el.children(i);
+        if (!!child) {
+          renderer.appendChild(svgEl,
+            this.decodeElementRecursively(child, renderer));
+        }
+      }
+      return svgEl;
+    }
+    return null;
+  }
+
+  getAll() {
+    this.xhr.open('GET', this.host + '/draw', true);
+    this.xhr.responseType = 'arraybuffer';
+    const promise = new Promise<flatbuffers.ByteBuffer>((resolve, reject) => {
+      this.xhr.onreadystatechange = () => {
+        if (this.xhr.readyState === 4) {
+          if (this.xhr.status === StatusCode.OK) {
+            // response type is ArrayBuffer
+            resolve(CommunicationService.deserialize(this.xhr.response));
+          } else {
+            reject(this.xhr.responseText);
+          }
+        }
+      }
+    });
+    this.xhr.send();
+    return promise;
+  }
+
   post() {
     const encoded = this.fbb.dataBuffer();
     const serialized = CommunicationService.serialize(encoded);
@@ -89,7 +142,41 @@ export class CommunicationService {
     return promise;
   }
 
-  put() {
+  put(id: number) {
+    const encoded = this.fbb.dataBuffer();
+    const serialized = CommunicationService.serialize(encoded);
+    this.xhr.open('PUT', `${this.host}/draw/${id}`, true);
+    this.xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+    const promise = new Promise<number>((resolve, reject) => {
+      this.xhr.onreadystatechange = () => {
+        if (this.xhr.readyState === 4) {
+          if (this.xhr.status === StatusCode.CREATED) {
+            resolve(Number(this.xhr.response));
+          } else {
+            reject(this.xhr.responseText);
+          }
+        }
+      }
+    });
+    this.xhr.send(serialized);
+    return promise;
+  }
 
+  delete(id: number): Promise<null> {
+    this.xhr.open('DELETE', `${this.host}/draw/${id}`, true);
+    const promise = new Promise<null>((resolve, reject) => {
+      this.xhr.onreadystatechange = () => {
+        if (this.xhr.readyState === 4) {
+          if (this.xhr.status === StatusCode.ACCEPTED) {
+            resolve();
+          } else {
+            reject(this.xhr.responseText);
+          }
+        }
+      }
+      this.xhr.onerror = (err) => reject(err);
+    });
+    this.xhr.send();
+    return promise;
   }
 }

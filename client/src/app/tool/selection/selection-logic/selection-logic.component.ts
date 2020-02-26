@@ -1,8 +1,9 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { SvgService } from 'src/app/svg/svg.service';
+import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { Point } from '../Point';
 import { ElementSelectedType } from './ElementSelectedType';
-import { MouseEventCallBack, SelectionLogicBase } from './SelectionLogicBase';
+import { MouseEventCallBack, SelectionLogicBase } from './selection-logic-base';
 
 @Component({
   selector: 'app-selection-logic',
@@ -12,8 +13,9 @@ import { MouseEventCallBack, SelectionLogicBase } from './SelectionLogicBase';
 export class SelectionLogicComponent
         extends SelectionLogicBase implements OnInit {
 
-  constructor(protected renderer: Renderer2, protected svgService: SvgService) {
-    super(renderer, svgService);
+  constructor(protected renderer: Renderer2, protected svgService: SvgService,
+              protected undoRedoService: UndoRedoService) {
+    super(renderer, svgService, undoRedoService);
   }
 
   private mouseHandlers = new Map<string, Map<string, MouseEventCallBack>>([
@@ -49,7 +51,6 @@ export class SelectionLogicComponent
               const [startPoint, currentPoint] = this.orderPoint(
                 this.mouse.left.startPoint, this.mouse.left.currentPoint
               );
-              this.deleteVisualisation();
               this.applyMultipleSelection(startPoint, currentPoint);
             }
           }
@@ -57,6 +58,10 @@ export class SelectionLogicComponent
       }],
       ['mouseup', ($event: MouseEvent) => {
         if ($event.button === 0) {
+          if (this.mouse.left.onDrag) {
+            this.undoRedoService.saveState();
+            this.mouse.left.onDrag = false;
+          }
           this.mouse.left.endPoint = new Point($event.offsetX, $event.offsetY);
           this.mouse.left.mouseIsDown = false;
           this.deleteSelection();
@@ -65,13 +70,11 @@ export class SelectionLogicComponent
       ['click', ($event: MouseEvent) => {
         if ($event.button === 0) {
           const type = this.elementSelectedType($event.target as SVGElement);
-          // On s'assure d'avoir un vrai click
           if (this.mouse.left.startPoint.equals(this.mouse.left.endPoint)) {
             if (type === ElementSelectedType.DRAW_ELEMENT) {
               this.applySingleSelection($event.target as SVGElement);
             } else if (type === ElementSelectedType.NOTHING) {
               this.deleteVisualisation();
-              this.selectedElements.clear();
             }
           }
         }
@@ -112,14 +115,10 @@ export class SelectionLogicComponent
       }],
       ['contextmenu', ($event: MouseEvent) => {
         $event.preventDefault();
-        $event.stopImmediatePropagation();
-        // On s'assure d'avoir un vrai click
-        if (this.mouse.right.startPoint.equals(this.mouse.right.endPoint)) {
-          const type = this.elementSelectedType($event.target as SVGElement);
-          if (type === ElementSelectedType.DRAW_ELEMENT) {
-            this.applySingleInversion($event.target as SVGElement);
-          };
-        }
+        const type = this.elementSelectedType($event.target as SVGElement);
+        if (type === ElementSelectedType.DRAW_ELEMENT) {
+          this.applySingleInversion($event.target as SVGElement);
+        };
       }]
     ])],
   ]);
@@ -131,15 +130,15 @@ export class SelectionLogicComponent
     .forEach((side: [string, string[]]) => {
       side[1].forEach((eventName: string) => {
         this.allListenners.push(
-          this.renderer.listen(this.svgElRef.nativeElement, eventName,
+          this.renderer.listen(this.svgStructure.root, eventName,
             (this.mouseHandlers.get(side[0]) as Map<string, MouseEventCallBack>)
             .get(eventName) as MouseEventCallBack)
         );
       });
     });
-    this.renderer.listen( document, 'keydown',
-                          this.keyManager.handlers.mousedown);
-    this.renderer.listen(document, 'keyup', this.keyManager.handlers.mouseup);
+    this.renderer.listen(document, 'keydown',
+                         this.keyManager.handlers.keydown);
+    this.renderer.listen(document, 'keyup', this.keyManager.handlers.keyup);
 
   }
 

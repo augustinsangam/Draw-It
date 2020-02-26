@@ -1,4 +1,5 @@
 export enum Tool {
+  Applicator,
   Brush,
   Eraser,
   Ellipse,
@@ -9,6 +10,7 @@ export enum Tool {
   Selection,
   Pipette,
   Aerosol,
+  Grid,
   _Len,
   _None,
 }

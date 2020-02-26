@@ -1,9 +1,9 @@
 import express from 'express';
 import flatbuffers from 'flatbuffers';
 import inversify from 'inversify';
-import { log } from 'util';
+import mongodb from 'mongodb';
 
-import { Draw, Element } from './data_generated';
+import { Draw, DrawBuffer, Draws } from './data_generated';
 import { Database } from './database';
 import { TYPES } from './types';
 
@@ -13,6 +13,12 @@ enum StatusCode {
 	NO_CONTENT = 204,
 	NOT_ACCEPTABLE = 406,
 	IM_A_TEAPOT = 418,
+	INTERNAL_SERVER_ERROR = 500,
+}
+
+interface Entry {
+	_id: number;
+	data: mongodb.Binary;
 }
 
 @inversify.injectable()
@@ -22,8 +28,10 @@ class Router {
 	constructor(@inversify.inject(TYPES.Database) private readonly db: Database) {
 		this._router = express.Router();
 		this.router.get('/', this.getHelloWorld());
+		this.router.get('/draw', this.getAll());
 		this.router.post('/draw', this.postData());
 		this.router.put('/draw/:id', this.putData());
+		this.router.delete('/draw/:id', this.deleteData());
 		this.router.get('/ping', (_req, res) =>
 			res.sendStatus(StatusCode.NO_CONTENT),
 		);
@@ -31,17 +39,7 @@ class Router {
 			res.sendStatus(StatusCode.IM_A_TEAPOT),
 		);
 	}
-
-	private static deserialize(
-		data: ArrayBuffer,
-	): flatbuffers.flatbuffers.ByteBuffer {
-		return new flatbuffers.flatbuffers.ByteBuffer(new Uint8Array(data));
-	}
-
-	private static decode(fbbb: flatbuffers.flatbuffers.ByteBuffer): Draw {
-		return Draw.getRoot(fbbb);
-	}
-
+	/*
 	private static disp(el: Element): void {
 		console.log(el.name());
 		const attrsLen = el.attrsLength();
@@ -57,53 +55,183 @@ class Router {
 			}
 		}
 	}
-
+	*/
 	get router(): express.Router {
 		return this._router;
 	}
 
+	private verify(buf: Uint8Array): boolean {
+		const fbBB = new flatbuffers.flatbuffers.ByteBuffer(buf);
+		const draw = Draw.getRoot(fbBB);
+		const name = draw.name();
+		if (name == null || name.length < 3 || name.length > 21) {
+			return false;
+		}
+		for (let i = draw.tagsLength(); i--; ) {
+			const tag = draw.tags(i);
+			if (tag.length < 3 || tag.length > 21) {
+				return false;
+			}
+		}
+		return true;
+		/*const svg = draw.svg();
+		if (!!svg) {
+			Router.disp(svg);
+		}*/
+	}
+
 	private getHelloWorld(): express.RequestHandler {
-		return (_req, res, next): void => {
+		return (_req, res): void => {
 			res.send('Hello, world!');
-			console.log(this.db.db?.databaseName);
-			next();
+			this.getAllSerializedDraws()?.then(arr => {
+				console.log(arr[0].data.buffer);
+			});
+		};
+	}
+
+	private getAll(): express.RequestHandler {
+		return (_req, res): void => {
+			const fbb = new flatbuffers.flatbuffers.Builder();
+			const drawBufferOffsets = new Array<number>();
+			this.getAllSerializedDraws()?.then(serializedDraws => {
+				for (let i = serializedDraws.length; i--; ) {
+					const serializedDraw = serializedDraws[i];
+					const bufOffset = DrawBuffer.createBufVector(
+						fbb,
+						serializedDraw.data.buffer,
+					);
+					const drawBuffer = DrawBuffer.create(
+						fbb,
+						serializedDraw._id,
+						bufOffset,
+					);
+					drawBufferOffsets.push(drawBuffer);
+				}
+				const drawBuffers = Draws.createDrawBuffersVector(
+					fbb,
+					drawBufferOffsets,
+				);
+				const draws = Draws.create(fbb, drawBuffers);
+				fbb.finish(draws);
+				res.send(Buffer.from(fbb.asUint8Array()));
+			});
 		};
 	}
 
 	// medium.com/@dineshuthakota/how-to-save-file-in-mongodb-usipostDatang-node-js-1a9d09b019c1
 	private postData(): express.RequestHandler {
 		return (req, res, next): void => {
-			//console.log(internalDB.collection('draw'));
-			const deserialized = Router.deserialize(req.body);
-			const decoded = Router.decode(deserialized);
-			const name = decoded.name();
-			if (!!name) {
-				console.log('Name is ' + name);
+			// req.body is a Buffer (which extends Uint8Array)
+			if (!this.verify(req.body)) {
+				res
+					.status(StatusCode.NOT_ACCEPTABLE)
+					.send('Les données reçues ne sont pas acceptables');
+				next();
+				return;
 			}
-			const tagsLen = decoded.tagsLength();
-			for (let i = 0; i < tagsLen; i++) {
-				console.log(`Tag #${i}: ${decoded.tags(i)}`);
-			}
-			const svg = decoded.svg();
-			if (!!svg) {
-				Router.disp(svg);
-			}
-			//const binary = new mongodb.Binary(req.body);
-			//console.log(`${binary.length()} bytes received`);
-			//collection.insertOne('yoo');
-			res.status(StatusCode.CREATED).send('42');
-			next();
+			const binary = new mongodb.Binary(req.body);
+			this.getNExtId()
+				?.then(count => {
+					const drawingsColl = this.db.db?.collection('drawings');
+					const elementConcret: Entry = {
+						_id: count,
+						data: binary,
+					};
+					return drawingsColl?.insertOne(elementConcret);
+				})
+				.then(insertRes => {
+					const id = insertRes?.insertedId;
+					res.status(StatusCode.CREATED).send(id.toString());
+					next();
+				})
+				.catch(err => {
+					console.error(err);
+					res.sendStatus(StatusCode.INTERNAL_SERVER_ERROR);
+					next();
+				});
 		};
 	}
 
 	private putData(): express.RequestHandler {
 		return (req, res, next): void => {
-			log(req.params.id);
-			res.sendStatus(StatusCode.ACCEPTED);
-			next();
-			// do smthg
+			if (!this.verify(req.body)) {
+				res.sendStatus(StatusCode.NOT_ACCEPTABLE);
+				next();
+				return;
+			}
+			const id = Number(req.params.id);
+			const binary = new mongodb.Binary(req.body);
+			const drawingsColl = this.db.db?.collection('drawings');
+			drawingsColl
+				?.replaceOne(
+					{
+						_id: id,
+					},
+					{
+						data: binary,
+					},
+				)
+				?.then(() => {
+					res.sendStatus(StatusCode.ACCEPTED);
+					next();
+				})
+				.catch(() => {
+					res.sendStatus(StatusCode.INTERNAL_SERVER_ERROR);
+					next();
+				});
 		};
 	}
+
+	private deleteData(): express.RequestHandler {
+		return (req, res, next): void => {
+			const id = Number(req.params.id);
+			const drawingsColl = this.db.db?.collection('drawings');
+			drawingsColl
+				?.deleteOne({
+					_id: id,
+				})
+				.then(() => {
+					res.sendStatus(StatusCode.ACCEPTED);
+					next();
+				})
+				.catch(err => {
+					console.error(err);
+					res.sendStatus(StatusCode.INTERNAL_SERVER_ERROR);
+					next();
+				});
+		};
+	}
+
+	private getAllSerializedDraws(): Promise<Entry[]> | undefined {
+		const drawingsColl = this.db.db?.collection('drawings');
+		return drawingsColl?.find().toArray();
+	}
+
+	private getNExtId(): Promise<number> | undefined {
+		return this.db.db
+			?.collection('counter')
+			?.findOneAndUpdate(
+				{
+					_id: 'productid',
+				},
+				{
+					$inc: {
+						sequenceValue: 1,
+					},
+				},
+			)
+			.then(a => a.value.sequenceValue);
+	}
+
+	/*findElementByName(nameToSearch: string): Promise<any[]> | undefined {
+		const drawingsColl = this.db.db?.collection('drawings');
+		return drawingsColl?.find({ name: `${nameToSearch}` }).toArray();
+	}*/
+
+	/*findElementById(id: string): Promise<Draw[]> | undefined {
+		const drawingsColl = this.db.db?.collection('drawings');
+		return drawingsColl?.find({ _id: `${id}` }).toArray();
+	}*/
 }
 
 export { Router };
