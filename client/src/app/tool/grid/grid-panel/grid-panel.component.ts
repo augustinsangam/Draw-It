@@ -58,7 +58,7 @@ export class GridPanelComponent extends ToolPanelDirective {
       squareSizeFormField: this.squareSizeSlider.value
     });
     this.service.squareSize = this.squareSizeSlider.value as number;
-    this.service.sliderChanges.next();
+    this.service.handleGrid();
   }
 
   protected onOpacityChange(): void {
@@ -66,7 +66,7 @@ export class GridPanelComponent extends ToolPanelDirective {
       opacityFormField: this.opacitySlider.value
     });
     this.service.opacity = this.opacitySlider.value as number;
-    this.service.sliderChanges.next();
+    this.service.handleGrid();
   }
 
   protected onActiveChange(): void {
@@ -74,7 +74,7 @@ export class GridPanelComponent extends ToolPanelDirective {
       activeToggleForm: this.activeToggleRef.checked
     });
     this.service.active = this.activeToggleRef.checked;
-    this.service.sliderChanges.next();
+    this.service.handleGrid();
   }
 
   protected handleServiceChange(keyCode: string) {
@@ -91,7 +91,7 @@ export class GridPanelComponent extends ToolPanelDirective {
       });
     }
 
-    this.service.sliderChanges.next();
+    this.service.handleGrid();
   }
 
 }
