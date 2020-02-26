@@ -29,8 +29,7 @@ class Router {
 		this.router.get('/draw', this.methodGet());
 		this.router.post('/draw', this.methodPost());
 		this.router.put('/draw/:id', this.methodPut());
-		// this.router.delete('/draw/:id', this.methodDelete());
-		this.router.get('/del', this.methodDelete());
+		this.router.delete('/draw/:id', this.methodDelete());
 		this.router.get('/ping', (_req, res) =>
 			res.sendStatus(StatusCode.NO_CONTENT),
 		);
@@ -89,12 +88,11 @@ class Router {
 				res.status(StatusCode.NOT_ACCEPTABLE).send(errMsg);
 				return;
 			}
-			const data = new mongodb.Binary(req.body);
 			try {
 				const _id = await this.db.nextID();
 				await this.db.insert({
 					_id,
-					data,
+					data: new mongodb.Binary(req.body),
 				});
 				res.status(StatusCode.CREATED).send(_id.toString());
 			} catch (err) {
@@ -107,7 +105,6 @@ class Router {
 		return async (req, res, next): Promise<void> => {
 			if (!this.verify(req.body)) {
 				res.sendStatus(StatusCode.NOT_ACCEPTABLE);
-				next();
 				return;
 			}
 			try {
@@ -115,22 +112,21 @@ class Router {
 					_id: Number(req.params.id),
 					data: new mongodb.Binary(req.body),
 				});
-				res.sendStatus(StatusCode.ACCEPTED);
 			} catch (err) {
-				next(err);
+				return next(err);
 			}
+			res.sendStatus(StatusCode.ACCEPTED);
 		};
 	}
 
 	private methodDelete(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
-			const id = Number(req.params.id);
 			try {
-				await this.db.delete(id);
-				res.sendStatus(StatusCode.ACCEPTED);
+				await this.db.delete(Number(req.params.id));
 			} catch (err) {
-				next(err);
+				return next(err);
 			}
+			res.sendStatus(StatusCode.ACCEPTED);
 		};
 	}
 }
