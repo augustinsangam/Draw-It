@@ -1,9 +1,9 @@
 import {Component, OnDestroy, Renderer2} from '@angular/core';
 import {interval, Observable} from 'rxjs';
+import { Point } from 'src/app/tool/selection/Point';
 import {ColorService} from '../../../color/color.service';
 import {ToolLogicDirective} from '../../../tool-logic/tool-logic.directive';
 import {AerosolService} from '../aerosol.service';
-import { Point } from 'src/app/tool/selection/Point';
 
 @Component({
   selector: 'app-aerosol-logic',
@@ -113,5 +113,4 @@ export class AerosolLogicComponent
     );
     this.currentPath.setAttribute('d', this.stringPath);
   }
-
 }

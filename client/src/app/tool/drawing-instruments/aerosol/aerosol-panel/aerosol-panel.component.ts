@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   Renderer2,
@@ -18,7 +19,8 @@ import {AerosolService} from '../aerosol.service';
 })
 
 // tslint:disable:use-lifecycle-interface
-export class AerosolPanelComponent extends ToolPanelDirective {
+export class AerosolPanelComponent extends ToolPanelDirective
+  implements AfterViewInit {
 
   private aerosolForm: FormGroup;
 
@@ -32,7 +34,7 @@ export class AerosolPanelComponent extends ToolPanelDirective {
 
   @ViewChild('prevPath', {
     static: false,
-  }) private prevPathRef: ElementRef<SVGPathElement>
+  }) private prevPathRef: ElementRef<SVGPathElement>;
 
   constructor(
     elementRef: ElementRef<HTMLElement>,
@@ -48,8 +50,8 @@ export class AerosolPanelComponent extends ToolPanelDirective {
       frequencySlider: [this.service.frequency, []],
     });
   }
-
-  ngOnInit() {
+  // TODO fix the panel not opening when using ngAfterViewInit
+  ngAfterViewInit() {
     this.updateThumbnail()
   }
 
@@ -74,7 +76,10 @@ export class AerosolPanelComponent extends ToolPanelDirective {
     for (let i = 0; i < this.service.frequency; i++) {
       preview += this.service.generatePoints(new Point(150, 110));
     }
-    this.renderer.setAttribute(this.prevPathRef.nativeElement, 'd', preview);
+    this.renderer.setAttribute(
+      this.prevPathRef.nativeElement,
+      'd',
+      preview
+    );
   }
-
 }
