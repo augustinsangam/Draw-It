@@ -39,9 +39,24 @@ export class EllipseLogicComponent extends ToolLogicDirective
     private readonly renderer: Renderer2,
     private readonly colorService: ColorService,
     private readonly mathService: MathService,
-    private readonly undoRedo: UndoRedoService
+    private readonly undoRedoService: UndoRedoService
   ) {
     super();
+    this.undoRedoService.resetActions();
+    this.undoRedoService.setPreUndoAction({
+      enabled: true,
+      overrideDefaultBehaviour: false,
+      overrideFunctionDefined: true,
+      overrideFunction: () => {
+        if (this.onDrag) {
+          document.dispatchEvent(
+            new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
+          )
+        }
+        this.undoRedoService.undoBase()
+      }
+    })
+
   }
 
   // tslint:disable-next-line use-lifecycle-interface
@@ -56,18 +71,9 @@ export class EllipseLogicComponent extends ToolLogicDirective
     );
 
     const onMouseUp = this.renderer.listen(
-      'document',
+      this.svgStructure.root,
       'mouseup',
-      (mouseEv: MouseEvent) => {
-        if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
-          this.viewTemporaryForm(mouseEv);
-          this.onDrag = false;
-          this.rectVisu.element.remove();
-          this.style.opacity = FULLOPACITY;
-          this.getEllipse().setCss(this.style);
-          this.undoRedo.saveState();
-        }
-      }
+      (mouseEv: MouseEvent) => this.onMouseUp(mouseEv)
     );
 
     const onMouseMove = this.renderer.listen(
@@ -126,6 +132,19 @@ export class EllipseLogicComponent extends ToolLogicDirective
         this.getEllipse().simulateEllipse(this.initialPoint, this.currentPoint);
       }
     }
+  }
+
+  private onMouseUp(mouseEv: MouseEvent): void {
+    if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
+      console.log('yo')
+      this.viewTemporaryForm(mouseEv);
+      this.onDrag = false;
+      this.rectVisu.element.remove();
+      this.style.opacity = FULLOPACITY;
+      this.getEllipse().setCss(this.style);
+    }
+    this.undoRedoService.saveState()
+  }
   }
 
   private getEllipse(): Ellipse {
