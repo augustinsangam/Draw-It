@@ -8,13 +8,19 @@ export class SvgService {
 
   structure: SVGStructure;
   selectAllElements: EventEmitter<null>;
+  shape: SvgShape;
 
   constructor() {
     this.selectAllElements = new EventEmitter();
+    this.shape = {
+      width: 0,
+      height: 0,
+      color: 'none'
+    }
   }
 
   changeBackgroundColor(color: string) {
-    this.structure.root.style.backgroundColor = color;
+    this.shape.color = color;
   }
 
   clearDom(): void {
@@ -26,4 +32,10 @@ export class SvgService {
     });
   }
 
+}
+
+export interface SvgShape {
+  width: number;
+  height: number;
+  color: string;
 }
