@@ -45,13 +45,15 @@ export class EllipseLogicComponent extends ToolLogicDirective
     this.undoRedoService.resetActions();
     this.undoRedoService.setPreUndoAction({
       enabled: true,
-      overrideDefaultBehaviour: false,
+      overrideDefaultBehaviour: true,
       overrideFunctionDefined: true,
       overrideFunction: () => {
         if (this.onDrag) {
-          document.dispatchEvent(
+          this.onMouseUp(
             new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
-          )
+          );
+          // undoRedoService.saveState() is called in onMouseUp
+          this.getEllipse().element.remove();
         }
         this.undoRedoService.undoBase()
       }
@@ -136,15 +138,12 @@ export class EllipseLogicComponent extends ToolLogicDirective
 
   private onMouseUp(mouseEv: MouseEvent): void {
     if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
-      console.log('yo')
-      this.viewTemporaryForm(mouseEv);
       this.onDrag = false;
       this.rectVisu.element.remove();
       this.style.opacity = FULLOPACITY;
       this.getEllipse().setCss(this.style);
+      this.undoRedoService.saveState()
     }
-    this.undoRedoService.saveState()
-  }
   }
 
   private getEllipse(): Ellipse {
@@ -172,7 +171,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
   private initRectangleVisu(mouseEv: MouseEvent): void {
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
       const rectangle = this.renderer.createElement('rect', this.svgNS);
-      this.renderer.appendChild(this.svgStructure.drawZone, rectangle);
+      this.renderer.appendChild(this.svgStructure.temporaryZone, rectangle);
 
       this.rectVisu = new Rectangle(
         this.renderer,
