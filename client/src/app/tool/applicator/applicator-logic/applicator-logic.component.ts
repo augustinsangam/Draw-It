@@ -1,6 +1,7 @@
 import { Component, OnDestroy, Renderer2 } from '@angular/core';
 import { ColorService } from '../../color/color.service';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
+import {UndoRedoService} from '../../undo-redo/undo-redo.service';
 
 @Component({
   selector: 'app-applicator-logic',
@@ -12,9 +13,12 @@ export class ApplicatorLogicComponent
 
   private allListenners: (() => void)[];
 
-  constructor(private renderer: Renderer2, private colorService: ColorService) {
+  constructor(private renderer: Renderer2,
+              private colorService: ColorService,
+              private readonly undoRedoService: UndoRedoService) {
     super();
     this.allListenners = [];
+    this.undoRedoService.resetActions();
   }
 
   private handlers = {
@@ -23,12 +27,14 @@ export class ApplicatorLogicComponent
         if ($event.target instanceof SVGPathElement) {
             ($event.target as SVGElement)
           .setAttribute('stroke', this.colorService.primaryColor);
+            this.undoRedoService.saveState();
         } else {
           const fill = ($event.target as SVGElement).getAttribute('fill');
           const isFilled = (fill !== null && fill !== 'none');
           if (isFilled) {
             ($event.target as SVGElement)
             .setAttribute('fill', this.colorService.primaryColor);
+            this.undoRedoService.saveState();
           }
         }
       }
@@ -39,9 +45,10 @@ export class ApplicatorLogicComponent
         && !($event.target instanceof SVGPathElement)) {
         ($event.target as SVGElement)
         .setAttribute('stroke', this.colorService.secondaryColor);
+        this.undoRedoService.saveState();
       }
     }
-  }
+  };
 
   // tslint:disable-next-line: use-lifecycle-interface
   ngOnInit() {
@@ -64,6 +71,7 @@ export class ApplicatorLogicComponent
 
   ngOnDestroy() {
     this.allListenners.forEach((end) => {end()});
+    this.undoRedoService.resetActions();
   }
 
 }

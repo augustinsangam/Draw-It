@@ -4,6 +4,7 @@ import { Point } from 'src/app/tool/selection/Point';
 import {ColorService} from '../../../color/color.service';
 import {ToolLogicDirective} from '../../../tool-logic/tool-logic.directive';
 import {AerosolService} from '../aerosol.service';
+import {UndoRedoService} from '../../../undo-redo/undo-redo.service';
 
 @Component({
   selector: 'app-aerosol-logic',
@@ -28,11 +29,24 @@ export class AerosolLogicComponent
     private readonly service: AerosolService,
     private readonly renderer: Renderer2,
     protected readonly colorService: ColorService,
+    private readonly undoRedoService: UndoRedoService
   ) {
     super();
     this.listeners = [];
     this.onDrag = false;
     this.stringPath = '';
+    this.undoRedoService.resetActions();
+    this.undoRedoService.setPreUndoAction({
+      enabled: true,
+      overrideDefaultBehaviour: false,
+      overrideFunctionDefined: true,
+      overrideFunction: () => {
+        if (this.onDrag) {
+          this.onMouseUp();
+          this.currentPath.remove()
+        }
+      }
+    })
   }
 
   ngOnInit(): void {
@@ -51,13 +65,13 @@ export class AerosolLogicComponent
     const onMouseUp = this.renderer.listen(
       this.svgStructure.root,
       'mouseup',
-      (mouseEv: MouseEvent) => this.onMouseUp(mouseEv)
+      () => this.onMouseUp()
     );
 
     const onMouseLeave = this.renderer.listen(
       this.svgStructure.root,
       'mouseleave',
-      (mouseEv: MouseEvent) => this.onMouseUp(mouseEv)
+      () => this.onMouseUp()
     );
 
     this.listeners = [
@@ -73,6 +87,7 @@ export class AerosolLogicComponent
 
   ngOnDestroy(): void {
     this.listeners.forEach(listenner => { listenner(); });
+    this.undoRedoService.resetActions();
   }
 
   protected onMouseDown(mouseEv: MouseEvent): void {
@@ -99,12 +114,13 @@ export class AerosolLogicComponent
     }
   }
 
-  protected onMouseUp(mouseEv: MouseEvent): void {
+  protected onMouseUp(): void {
     if (this.onDrag) {
       this.periodicSplashAdder.unsubscribe();
+      this.onDrag = false;
+      this.stringPath = '';
+      this.undoRedoService.saveState();
     }
-    this.onDrag = false;
-    this.stringPath = '';
   }
 
   private addSplash(): void {

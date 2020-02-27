@@ -1,5 +1,6 @@
 import { Component, Renderer2 } from '@angular/core';
 import { ColorService } from '../../../color/color.service';
+import {UndoRedoService} from '../../../undo-redo/undo-redo.service';
 import { PencilBrushCommon } from '../../pencil-brush/pencil-brush-common';
 import { BrushService } from '../brush.service';
 
@@ -13,9 +14,23 @@ export class BrushLogicComponent extends PencilBrushCommon {
 
   constructor(private readonly renderer: Renderer2,
               private readonly colorService: ColorService,
-              private readonly brushService: BrushService) {
+              private readonly brushService: BrushService,
+              private readonly undoRedoService: UndoRedoService
+  ) {
     super();
-    this.listeners = new Array();
+    this.listeners = [];
+    this.undoRedoService.resetActions();
+    this.undoRedoService.setPreUndoAction({
+      enabled: true,
+      overrideDefaultBehaviour: false,
+      overrideFunctionDefined: true,
+      overrideFunction: () => {
+        if (this.mouseOnHold) {
+          this.stopDrawing();
+          this.undoRedoService.saveState();
+        }
+      }
+    })
   }
 
   // tslint:disable-next-line use-lifecycle-interface
@@ -49,12 +64,14 @@ export class BrushLogicComponent extends PencilBrushCommon {
     const mouseUpListen = this.renderer.listen(this.svgStructure.root,
       'mouseup', () => {
         this.stopDrawing();
-    });
+        this.undoRedoService.saveState();
+      });
 
     const mouseLeaveListen = this.renderer.listen(this.svgStructure.root,
       'mouseleave', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0 && this.mouseOnHold) {
           this.stopDrawing();
+          this.undoRedoService.saveState();
         }
     });
     this.listeners = [
@@ -90,6 +107,7 @@ export class BrushLogicComponent extends PencilBrushCommon {
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnDestroy() {
     this.listeners.forEach(end => { end(); });
+    this.undoRedoService.resetActions();
   }
 
   protected onMouseMove(mouseEv: MouseEvent): void {
