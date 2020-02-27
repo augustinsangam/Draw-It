@@ -29,7 +29,7 @@
   <mat-grid-tile>
     <button mat-raised-button
           color="warn"
-          [disabled]="!canUndo"
+          *ngIf="canUndo"
           (click)="undoRedoService.undo()"
           title="Annuler [CTRL + Z]">
     <mat-icon>undo</mat-icon>
@@ -39,7 +39,7 @@
   <mat-grid-tile>
     <button mat-raised-button
             color="accent"
-            [disabled]="!canRedo"
+            *ngIf="canRedo"
             (click)="undoRedoService.redo()"
             title="Refaire [CTRL + SHIFT + Z]">
       <mat-icon>redo</mat-icon>
