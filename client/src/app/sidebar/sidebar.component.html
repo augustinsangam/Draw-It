@@ -25,19 +25,27 @@
       style="background-image: url(/assets/sidebar-icons/grid.png); width: 24px"></a>
 </nav>
 
-<button mat-raised-button
-  color="accent"
-  [disabled]="!canRedo"
-  (click)="undoRedoService.redo()">
-  <mat-icon>redo</mat-icon>
-</button>
+<mat-grid-list cols="2" rowHeight="30px">
+  <mat-grid-tile>
+    <button mat-raised-button
+          color="warn"
+          [disabled]="!canUndo"
+          (click)="undoRedoService.undo()"
+          title="Annuler [CTRL + Z]">
+    <mat-icon>undo</mat-icon>
+  </button>
 
-<button mat-raised-button
-  color="warn"
-  [disabled]="!canUndo"
-  (click)="undoRedoService.undo()">
-  <mat-icon>undo</mat-icon>
-</button>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <button mat-raised-button
+            color="accent"
+            [disabled]="!canRedo"
+            (click)="undoRedoService.redo()"
+            title="Refaire [CTRL + SHIFT + Z]">
+      <mat-icon>redo</mat-icon>
+    </button>
+  </mat-grid-tile>
+</mat-grid-list>
 
 <a title="Sauvegarder"><mat-icon>save</mat-icon></a>
 <a title="Exporter"

@@ -45,6 +45,7 @@ export class GridService extends ToolService {
       // this.handleGrid();
       this.isCreated = true;
     } else {
+      // TODO change to use a viewChild instead of getElementById()
       this.grid = document.getElementById('grid') as unknown as SVGElement;
     }
 
