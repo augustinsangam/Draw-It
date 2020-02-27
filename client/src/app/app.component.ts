@@ -16,12 +16,11 @@ import { SvgService } from './svg/svg.service';
 })
 export class AppComponent implements AfterViewInit {
 
-  constructor(
-    private dialog: MatDialog,
-    private svgService: SvgService,
-    private shortcutHanler: ShortcutHandlerService,
-    private shortcutManager: ShortcutHandlerManagerService,
-    private overlaService: OverlayService
+  constructor(private dialog: MatDialog,
+              private svgService: SvgService,
+              private shortcutHanler: ShortcutHandlerService,
+              private shortcutManager: ShortcutHandlerManagerService,
+              private overlayService: OverlayService
   ) {
 
   }
@@ -32,8 +31,8 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.overlaService.intialise(this.dialog, this.svgService);
-    this.overlaService.start();
+    this.overlayService.intialise(this.dialog, this.svgService);
+    this.overlayService.start();
     this.shortcutManager.initialiseShortcuts();
   }
 

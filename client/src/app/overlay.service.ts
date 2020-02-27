@@ -92,7 +92,7 @@ export class OverlayService {
     }
   }
 
-  openNewDrawDialog(): void {
+  private openNewDrawDialog(): void {
     this.shortcutHanler.desactivateAll();
     this.dialogRefs.newDraw = this.dialog.open(
       NewDrawComponent,
@@ -113,7 +113,7 @@ export class OverlayService {
     }
   }
 
-  private openDocumentationDialog(fromHome: boolean): void {
+  openDocumentationDialog(fromHome: boolean): void {
     const dialogOptions = {
       width: '115vw',
       height: '100vh',
@@ -131,7 +131,7 @@ export class OverlayService {
     });
   }
 
-  protected openExportDialog() {
+  openExportDialog() {
     const dialogOptions = {
       width: '1000px',
       height: '90vh'
