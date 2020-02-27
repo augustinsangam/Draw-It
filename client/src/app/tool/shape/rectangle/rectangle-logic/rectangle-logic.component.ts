@@ -51,7 +51,6 @@ export class RectangleLogicComponent extends ToolLogicDirective
           this.onMouseUp(
             new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
           );
-          // undoRedoService.saveState() is called in onMouseUp
           this.getRectangle().element.remove();
         }
         this.undoRedoService.undoBase()
@@ -108,11 +107,6 @@ export class RectangleLogicComponent extends ToolLogicDirective
 
     this.svgStructure.root.style.cursor = 'crosshair';
 
-  }
-
-  ngOnDestroy() {
-    this.allListeners.forEach(listenner => listenner());
-    this.undoRedoService.resetActions();
   }
 
   private onKeyDown(keyEv: KeyboardEvent): void {
@@ -190,6 +184,18 @@ export class RectangleLogicComponent extends ToolLogicDirective
 
     this.getRectangle().setParameters(
       backgroundProperties,
-      strokeProperties);
+      strokeProperties
+    );
+  }
+
+  ngOnDestroy() {
+    this.allListeners.forEach(listenner => listenner());
+    this.undoRedoService.resetActions();
+    if (this.onDrag) {
+      this.onMouseUp(
+        new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
+      );
+      this.getRectangle().element.remove();
+    }
   }
 }

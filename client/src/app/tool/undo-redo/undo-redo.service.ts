@@ -27,45 +27,9 @@ export class UndoRedoService {
 
   resetActions() {
     this.actions = {
-      undo: [
-        {
-          enabled: false,
-          overrideDefaultBehaviour: false,
-          overrideFunctionDefined: false
-        },
-        {
-          enabled: false,
-          functionDefined: false,
-        }
-      ],
-      redo: [
-        {
-          enabled: false,
-          overrideDefaultBehaviour: false,
-          overrideFunctionDefined: false
-        },
-        {
-          enabled: false,
-          functionDefined: false,
-        }
-      ]
+      undo: [ this.createDefaultPreAction(), this.createDefaultPostAction() ],
+      redo: [ this.createDefaultPreAction(), this.createDefaultPostAction() ]
     }
-  }
-
-  setPreUndoAction(action: PreAction) {
-    this.actions.undo[0] = action;
-  }
-
-  setPostUndoAction(action: PostAction) {
-    this.actions.undo[1] = action;
-  }
-
-  setPreRedoAction(action: PreAction) {
-    this.actions.undo[0] = action;
-  }
-
-  setPostRedoAction(action: PostAction) {
-    this.actions.undo[1] = action;
   }
 
   saveState(): void {
@@ -77,6 +41,7 @@ export class UndoRedoService {
       toPush[i] = (drawZone.children.item(i) as SVGElement).cloneNode(true);
     }
     this.cmdDone.push(toPush);
+    this.cmdUndone = [];
     console.log('On sauvegarde');
   }
 
@@ -146,6 +111,37 @@ export class UndoRedoService {
 
   canRedo(): boolean {
     return this.cmdUndone.length !== 0;
+  }
+
+  private createDefaultPreAction(): PreAction {
+    return {
+      enabled: false,
+      overrideDefaultBehaviour: false,
+      overrideFunctionDefined: false
+    }
+  }
+
+  private createDefaultPostAction(): PostAction {
+    return {
+      enabled: false,
+      functionDefined: false,
+    }
+  }
+
+  setPreUndoAction(action: PreAction) {
+    this.actions.undo[0] = action;
+  }
+
+  setPostUndoAction(action: PostAction) {
+    this.actions.undo[1] = action;
+  }
+
+  setPreRedoAction(action: PreAction) {
+    this.actions.undo[0] = action;
+  }
+
+  setPostRedoAction(action: PostAction) {
+    this.actions.undo[1] = action;
   }
 
 }

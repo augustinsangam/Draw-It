@@ -1,4 +1,4 @@
-import { Component, Renderer2 } from '@angular/core';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { ColorService } from '../../../color/color.service';
 import {UndoRedoService} from '../../../undo-redo/undo-redo.service';
 import { PencilBrushCommon } from '../../pencil-brush/pencil-brush-common';
@@ -8,7 +8,8 @@ import { BrushService } from '../brush.service';
   selector: 'app-brush-logic',
   template: ''
 })
-export class BrushLogicComponent extends PencilBrushCommon {
+export class BrushLogicComponent extends PencilBrushCommon
+  implements OnInit, OnDestroy {
 
   private listeners: (() => void)[];
 
@@ -33,7 +34,6 @@ export class BrushLogicComponent extends PencilBrushCommon {
     })
   }
 
-  // tslint:disable-next-line use-lifecycle-interface
   ngOnInit(): void {
     if (this.brushService.isFirstLoaded) {
       const svgDefsEl: SVGDefsElement =
@@ -104,10 +104,13 @@ export class BrushLogicComponent extends PencilBrushCommon {
     this.renderer.appendChild(this.svgStructure.drawZone, this.svgPath);
   }
 
-  // tslint:disable-next-line:use-lifecycle-interface
   ngOnDestroy() {
     this.listeners.forEach(end => { end(); });
     this.undoRedoService.resetActions();
+    if (this.mouseOnHold) {
+      this.stopDrawing();
+      this.undoRedoService.saveState();
+    }
   }
 
   protected onMouseMove(mouseEv: MouseEvent): void {

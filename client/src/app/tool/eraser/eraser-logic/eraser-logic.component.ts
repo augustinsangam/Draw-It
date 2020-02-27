@@ -27,8 +27,7 @@ const CONSTANTS = {
 
 @Component({
   selector: 'app-eraser-logic',
-  templateUrl: './eraser-logic.component.html',
-  styleUrls: ['./eraser-logic.component.scss']
+  template: ''
 })
 export class EraserLogicComponent
   extends ToolLogicDirective implements OnDestroy {
@@ -148,8 +147,8 @@ export class EraserLogicComponent
   private markElementsInZone(x: number, y: number): Set<SVGElement> {
     const selectedElements = new Set<SVGElement>();
     const halfSize = this.service.size / 2;
-    for (let i = x - halfSize; i <= x + halfSize; i += 5) {
-      for (let j = y - halfSize; j <= y + halfSize; j += 5) {
+    for (let i = x - halfSize; i <= x + halfSize; i += 3) {
+      for (let j = y - halfSize; j <= y + halfSize; j += 3) {
         const element = document.elementFromPoint(i, j);
         if (this.svgStructure.drawZone.contains(element)
             && element !== this.eraser) {
@@ -213,7 +212,7 @@ export class EraserLogicComponent
   ngOnDestroy() {
     this.allListeners.forEach(end => end());
     this.renderer.removeChild(this.svgStructure.temporaryZone, this.eraser);
-    this.svgStructure.root.style.cursor = 'default';
+    this.renderer.setStyle(this.svgStructure.root, 'cursor', 'default');
   }
 
 }

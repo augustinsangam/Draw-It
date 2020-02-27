@@ -52,7 +52,6 @@ export class EllipseLogicComponent extends ToolLogicDirective
           this.onMouseUp(
             new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
           );
-          // undoRedoService.saveState() is called in onMouseUp
           this.getEllipse().element.remove();
         }
         this.undoRedoService.undoBase()
@@ -114,11 +113,6 @@ export class EllipseLogicComponent extends ToolLogicDirective
 
     this.svgStructure.root.style.cursor = 'crosshair';
 
-  }
-
-  ngOnDestroy(): void {
-    this.allListeners.forEach(listener => listener());
-    this.undoRedoService.resetActions();
   }
 
   private onKeyDown(keyEv: KeyboardEvent): void {
@@ -215,6 +209,17 @@ export class EllipseLogicComponent extends ToolLogicDirective
       backgroundProperties,
       strokeProperties
     );
+  }
+
+  ngOnDestroy(): void {
+    this.allListeners.forEach(listener => listener());
+    this.undoRedoService.resetActions();
+    if (this.onDrag) {
+      this.onMouseUp(
+        new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
+      );
+      this.getEllipse().element.remove();
+    }
   }
 
 }

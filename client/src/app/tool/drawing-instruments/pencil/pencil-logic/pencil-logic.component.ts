@@ -1,4 +1,6 @@
-import { AfterViewInit, Component, Renderer2 } from '@angular/core';
+import {
+  AfterViewInit, Component, OnDestroy, OnInit, Renderer2
+} from '@angular/core';
 
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
@@ -10,7 +12,7 @@ import { PencilService } from '../pencil.service';
   template: ''
 })
 export class PencilLogicComponent extends PencilBrushCommon
-  implements AfterViewInit {
+  implements OnInit, AfterViewInit, OnDestroy {
 
   private listeners: (() => void)[];
 
@@ -34,15 +36,8 @@ export class PencilLogicComponent extends PencilBrushCommon
     })
   }
 
-  // tslint:disable-next-line use-lifecycle-interface
   ngOnInit() {
     this.svgStructure.root.style.cursor = 'crosshair';
-  }
-
-  // tslint:disable-next-line:use-lifecycle-interface
-  ngOnDestroy() {
-    this.listeners.forEach(end => { end(); });
-    this.undoRedoService.resetActions();
   }
 
   protected configureSvgElement(element: SVGElement): void {
@@ -99,10 +94,16 @@ export class PencilLogicComponent extends PencilBrushCommon
         }
     });
 
-    this.listeners = [mouseDownListen,
-      mouseMoveListen,
-      mouseUpListen,
-      mouseLeaveListen
-    ];
+    this.listeners = [mouseDownListen, mouseMoveListen,
+      mouseUpListen, mouseLeaveListen];
+  }
+
+  ngOnDestroy() {
+    this.listeners.forEach(end => { end(); });
+    this.undoRedoService.resetActions();
+    if (this.mouseOnHold) {
+      this.stopDrawing();
+      this.undoRedoService.saveState();
+    }
   }
 }

@@ -98,6 +98,14 @@ export class LineLogicComponent extends ToolLogicDirective
   ngOnDestroy() {
     this.listeners.forEach(end => end());
     this.undoRedoService.resetActions();
+    if (!this.isNewPath) {
+      // TODO Nicolas. Exactemment ici
+      // tu dois mettre la logique pour elever
+      // uniquement le trait sans ce cercle
+      this.paths.pop();
+      this.undoRedoService.saveState();
+      this.onKeyDown({ code: 'Escape'} as unknown as KeyboardEvent);
+    }
   }
 
   private onMouseClick(mouseEv: MouseEvent): void {
