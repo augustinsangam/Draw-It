@@ -131,4 +131,4 @@ class Router {
 	}
 }
 
-export { Router };
+export { Entry, Router };
