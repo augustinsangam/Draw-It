@@ -14,7 +14,7 @@ import {GridService} from '../grid.service';
   templateUrl: './grid-panel.component.html',
   styleUrls: ['./grid-panel.component.scss']
 })
-// tslint:disable:use-lifecycle-interface
+
 export class GridPanelComponent extends ToolPanelDirective {
 
   private gridForm: FormGroup;
@@ -47,12 +47,6 @@ export class GridPanelComponent extends ToolPanelDirective {
     });
   }
 
-  ngOnInit() {
-    this.service.keyboardChanges.subscribe((keyCode: string) =>
-      this.handleServiceChange(keyCode)
-    );
-  }
-
   protected onSquareSizeChange(): void {
     this.gridForm.patchValue({
       squareSizeFormField: this.squareSizeSlider.value
@@ -74,23 +68,6 @@ export class GridPanelComponent extends ToolPanelDirective {
       activeToggleForm: this.activeToggleRef.checked
     });
     this.service.active = this.activeToggleRef.checked;
-    this.service.handleGrid();
-  }
-
-  protected handleServiceChange(keyCode: string) {
-    this.activeToggleRef.checked = this.service.active;
-    this.gridForm.patchValue({
-      activeToggleForm: this.service.active
-    });
-
-    if ((keyCode === 'NumpadAdd' || keyCode === 'NumpadSubtract')
-      && this.service.active) {
-      this.squareSizeSlider.value = this.service.squareSize;
-      this.gridForm.patchValue({
-        squareSizeFormField: this.service.squareSize
-      });
-    }
-
     this.service.handleGrid();
   }
 

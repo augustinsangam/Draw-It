@@ -20,10 +20,8 @@ export class AppComponent implements AfterViewInit {
               private svgService: SvgService,
               private shortcutHanler: ShortcutHandlerService,
               private shortcutManager: ShortcutHandlerManagerService,
-              private overlayService: OverlayService
-  ) {
-
-  }
+              private overlayService: OverlayService,
+  ) { }
 
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {

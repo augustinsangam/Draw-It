@@ -50,8 +50,10 @@ export class AerosolPanelComponent extends ToolPanelDirective
       frequencySlider: [this.service.frequency, []],
     });
   }
+
   // TODO fix the panel not opening when using ngAfterViewInit
   ngAfterViewInit() {
+    super.ngAfterViewInit();
     this.updateThumbnail()
   }
 

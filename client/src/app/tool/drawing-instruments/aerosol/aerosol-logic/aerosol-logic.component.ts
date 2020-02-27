@@ -1,10 +1,10 @@
-import {Component, OnDestroy, Renderer2} from '@angular/core';
-import {interval, Observable} from 'rxjs';
+import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { interval, Observable } from 'rxjs';
 import { Point } from 'src/app/tool/selection/Point';
-import {ColorService} from '../../../color/color.service';
-import {ToolLogicDirective} from '../../../tool-logic/tool-logic.directive';
-import {AerosolService} from '../aerosol.service';
-import {UndoRedoService} from '../../../undo-redo/undo-redo.service';
+import { ColorService } from '../../../color/color.service';
+import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
+import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
+import { AerosolService } from '../aerosol.service';
 
 @Component({
   selector: 'app-aerosol-logic',

@@ -52,6 +52,28 @@ export class EraserLogicComponent
       onDrag: false
     };
     this.markedElements = new Map();
+    this.undoRedoService.resetActions();
+    const preAction = {
+      enabled: true,
+      overrideDefaultBehaviour: false,
+      overrideFunctionDefined: true,
+      overrideFunction: () => {
+        this.restoreMarkedElements();
+      }
+    };
+    const postAction = {
+      enabled: true,
+      functionDefined: true,
+      function: () => {
+        this.markElementsInZone(this.mouse.currentPoint.x,
+          this.mouse.currentPoint.y);
+      }
+    };
+
+    this.undoRedoService.setPreUndoAction(preAction)
+    this.undoRedoService.setPreRedoAction(preAction)
+    this.undoRedoService.setPostRedoAction(postAction)
+    this.undoRedoService.setPostRedoAction(postAction)
   }
 
   private handlers = new Map<string, MouseEventCallBack>([
@@ -90,7 +112,6 @@ export class EraserLogicComponent
           const marked = this.markElementsInZone($event.x, $event.y);
           if (marked.size !== 0) {
             this.deleteAll(marked);
-            this.restoreMarkedElements();
             this.undoRedoService.saveState();
           }
         }
@@ -213,6 +234,7 @@ export class EraserLogicComponent
     this.allListeners.forEach(end => end());
     this.renderer.removeChild(this.svgStructure.temporaryZone, this.eraser);
     this.renderer.setStyle(this.svgStructure.root, 'cursor', 'default');
+    this.undoRedoService.resetActions();
   }
 
 }

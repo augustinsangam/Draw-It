@@ -16,8 +16,8 @@ export enum Shortcut {
   R = 'KeyR',
   G = 'KeyG',
   // TODO : change the keycodes to {+} and {-} key
-  plus = 'NumpadAdd',
-  minus = 'NumpadSubtract',
+  plus = 'KeyP',
+  minus = 'KeyM',
 }
 
 export type ShortcutCallBack = (event?: KeyboardEvent) => void;

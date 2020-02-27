@@ -2,14 +2,14 @@
 <form [formGroup]="gridForm">
   <p>
     Activée
-    <mat-slide-toggle (change)="onActiveChange()" formControlName="activeToggleForm" #activeToggle>
+    <mat-slide-toggle [checked]="service.active" (change)="onActiveChange()" formControlName="activeToggleForm" #activeToggle>
     </mat-slide-toggle>
   </p>
   <br>
-  <div *ngIf="this.service.active">
+  <div *ngIf="service.active">
     <p>Taille des carrés</p>
     <div class="squareSize">
-      <mat-slider min="{{this.service.MIN_SQUARESIZE}}" max="{{this.service.MAX_SQUARESIZE}}" step=1
+      <mat-slider min="{{service.MIN_SQUARESIZE}}" max="{{service.MAX_SQUARESIZE}}" step=1
                   (input)="onSquareSizeChange()"
                   (change)="onSquareSizeChange()"
                   formControlName="squareSizeSlider"

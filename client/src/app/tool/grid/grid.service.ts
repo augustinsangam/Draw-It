@@ -1,7 +1,6 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
-import { Subject } from 'rxjs';
 import { SvgService } from 'src/app/svg/svg.service';
-import {Dimension} from '../shape/common/Rectangle';
+import { Dimension } from '../shape/common/Rectangle';
 import { ToolService } from '../tool.service';
 
 @Injectable({
@@ -15,40 +14,19 @@ export class GridService extends ToolService {
   active: boolean;
   opacity: number;
   squareSize: number;
-  isCreated: boolean;
   grid: SVGElement;
 
-  keyboardChanges: Subject<any>;
   private readonly renderer: Renderer2;
   private svgDimensions: Dimension;
 
   constructor(rendererFactory: RendererFactory2,
-              private svg: SvgService) {
+              private svg: SvgService
+  ) {
     super();
     this.squareSize = 100;
     this.opacity = 0.4;
     this.active = false;
-    this.keyboardChanges = new Subject<any>();
-    this.isCreated = false;
     this.renderer = rendererFactory.createRenderer(null, null);
-    if (!this.isCreated) {
-      const path = this.renderer.createElement(
-        'path',
-        // TODO : use the svgNS of ToolLogicDirective if possible
-        'http://www.w3.org/2000/svg'
-      );
-      path.setAttribute('id', 'grid');
-      path.setAttribute('fill', 'none');
-      path.setAttribute('stroke-width', '1');
-
-      this.grid = path;
-      // this.handleGrid();
-      this.isCreated = true;
-    } else {
-      // TODO change to use a viewChild instead of getElementById()
-      this.grid = document.getElementById('grid') as unknown as SVGElement;
-    }
-
   }
 
   keyEvHandler(keyCode: string) {
@@ -72,7 +50,7 @@ export class GridService extends ToolService {
       }
       default: { break }
     }
-    this.keyboardChanges.next(keyCode);
+    this.handleGrid();
   }
 
   handleGrid() {
@@ -86,13 +64,26 @@ export class GridService extends ToolService {
         }
       }
     }
-    if (this.active)  {
+
+    if (!!this.grid) {
+      this.grid.remove();
+    }
+
+    if (this.active) {
+      const path = this.renderer.createElement(
+        'path',
+        this.svg.structure.root.namespaceURI
+      );
+      path.setAttribute('id', 'grid');
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke-width', '1');
+
+      this.grid = path;
+
       this.grid.setAttribute('d', this.generateGrid());
       this.grid.setAttribute('stroke', 'black');
       this.grid.setAttribute('opacity', this.opacity.toString());
       this.renderer.appendChild(this.svg.structure.endZone, this.grid);
-    } else {
-      this.grid.setAttribute('d', '');
     }
   }
 
@@ -101,13 +92,13 @@ export class GridService extends ToolService {
 
     // lignes verticales
     for (let i = 0; i < this.svgDimensions.width;
-         i += this.squareSize) {
+      i += this.squareSize) {
       stringPath += ' M ' + i.toString() + ',0'
         + ' L' + i.toString() + ',' + this.svgDimensions.height
     }
     // lignes horizontales
     for (let i = 0; i < this.svgDimensions.height;
-         i += this.squareSize) {
+      i += this.squareSize) {
       stringPath += ' M 0' + ',' + i.toString()
         + ' L ' + this.svgDimensions.width + ',' + i.toString()
     }
