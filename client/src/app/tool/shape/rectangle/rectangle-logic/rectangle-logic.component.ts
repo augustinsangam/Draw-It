@@ -37,10 +37,26 @@ export class RectangleLogicComponent extends ToolLogicDirective
     private readonly service: RectangleService,
     private readonly renderer: Renderer2,
     private readonly colorService: ColorService,
-    private readonly undoRedo: UndoRedoService,
+    private readonly undoRedoService: UndoRedoService,
     private readonly mathService: MathService
   ) {
     super();
+    this.undoRedoService.resetActions();
+    this.undoRedoService.setPreUndoAction({
+      enabled: true,
+      overrideDefaultBehaviour: true,
+      overrideFunctionDefined: true,
+      overrideFunction: () => {
+        if (this.onDrag) {
+          this.onMouseUp(
+            new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
+          );
+          // undoRedoService.saveState() is called in onMouseUp
+          this.getRectangle().element.remove();
+        }
+        this.undoRedoService.undoBase()
+      }
+    })
   }
 
   // tslint:disable-next-line use-lifecycle-interface
@@ -67,17 +83,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
     const onMouseUp = this.renderer.listen(
       'document',
       'mouseup',
-      (mouseEv: MouseEvent) => {
-        const validClick = mouseEv.button === ClickType.CLICKGAUCHE;
-        if (validClick && this.onDrag ) {
-          this.onDrag = false;
-
-          this.style.opacity = FULLOPACITY;
-          this.getRectangle().setCss(this.style);
-          this.viewTemporaryForm(mouseEv);
-          this.undoRedo.saveState();
-          }
-      }
+      (mouseEv: MouseEvent) => this.onMouseUp(mouseEv)
     );
 
     const onKeyDown = this.renderer.listen(
@@ -106,6 +112,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
 
   ngOnDestroy() {
     this.allListeners.forEach(listenner => listenner());
+    this.undoRedoService.resetActions();
   }
 
   private onKeyDown(keyEv: KeyboardEvent): void {
@@ -122,6 +129,18 @@ export class RectangleLogicComponent extends ToolLogicDirective
         this.getRectangle().dragRectangle(
           this.mouseDownPoint, this.currentPoint);
       }
+    }
+  }
+
+  private onMouseUp(mouseEv: MouseEvent): void {
+    const validClick = mouseEv.button === ClickType.CLICKGAUCHE;
+    if (validClick && this.onDrag ) {
+      this.onDrag = false;
+
+      this.style.opacity = FULLOPACITY;
+      this.getRectangle().setCss(this.style);
+      this.undoRedoService.saveState();
+      this.viewTemporaryForm(mouseEv);
     }
   }
 

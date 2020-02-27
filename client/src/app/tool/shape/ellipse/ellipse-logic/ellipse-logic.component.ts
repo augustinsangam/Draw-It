@@ -118,6 +118,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
 
   ngOnDestroy(): void {
     this.allListeners.forEach(listener => listener());
+    this.undoRedoService.resetActions();
   }
 
   private onKeyDown(keyEv: KeyboardEvent): void {

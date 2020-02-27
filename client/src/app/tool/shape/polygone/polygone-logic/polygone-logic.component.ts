@@ -9,13 +9,13 @@ import { Polygone} from '../../common/Polygone';
 import { Rectangle} from '../../common/Rectangle';
 import { PolygoneService } from '../polygone.service';
 import { Point } from 'src/app/tool/selection/Point';
+import {UndoRedoService} from '../../../undo-redo/undo-redo.service';
 
 const SEMI_OPACITY = '0.5';
 const FULL_OPACITY = '1';
 
 enum ClickType {
   CLICKGAUCHE,
-  CLICKDROIT
 }
 
 @Component({
@@ -36,11 +36,28 @@ implements OnDestroy {
     private readonly renderer: Renderer2,
     private readonly colorService: ColorService,
     private readonly mathService: MathService,
+    private readonly undoRedoService: UndoRedoService
   ) {
     super();
     this.onDrag = false;
     this.allListeners = [];
     this.polygones = [];
+    this.undoRedoService.resetActions();
+    this.undoRedoService.setPreUndoAction({
+      enabled: true,
+      overrideDefaultBehaviour: true,
+      overrideFunctionDefined: true,
+      overrideFunction: () => {
+        if (this.onDrag) {
+          this.onMouseUp(
+            new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
+          );
+          // undoRedoService.saveState() is called in onMouseUp
+          this.getPolygone().element.remove();
+        }
+        this.undoRedoService.undoBase()
+      }
+    })
     }
   // tslint:disable-next-line:use-lifecycle-interface
   ngOnInit() {
@@ -72,15 +89,7 @@ implements OnDestroy {
     const onMouseUp = this.renderer.listen(
       'document',
       'mouseup',
-      (mouseEv: MouseEvent) => {
-        const validClick = mouseEv.button === ClickType.CLICKGAUCHE;
-        if (validClick && this.onDrag ) {
-          this.onDrag = false;
-          this.style.opacity = FULL_OPACITY;
-          this.getPolygone().setCss(this.style);
-          this.visualisationRectangle.element.remove();
-        }
-      }
+      (mouseEv: MouseEvent) => this.onMouseUp(mouseEv)
     );
 
     this.allListeners = [
@@ -95,10 +104,22 @@ implements OnDestroy {
 
   ngOnDestroy() {
     this.allListeners.forEach(listenner => listenner());
+    this.undoRedoService.resetActions();
   }
 
   private getPolygone(): Polygone {
     return this.polygones[this.polygones.length - 1];
+  }
+
+  private onMouseUp(mouseEv: MouseEvent): void {
+    const validClick = mouseEv.button === ClickType.CLICKGAUCHE;
+    if (validClick && this.onDrag ) {
+      this.onDrag = false;
+      this.style.opacity = FULL_OPACITY;
+      this.getPolygone().setCss(this.style);
+      this.visualisationRectangle.element.remove();
+      this.undoRedoService.saveState();
+    }
   }
 
   private initPolygone(mouseEv: MouseEvent): void {
@@ -119,16 +140,18 @@ implements OnDestroy {
 
   private initRectangle(mouseEv: MouseEvent): void {
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
-    const rectangle = this.renderer.createElement('rect', this.svgNS);
-    this.renderer.appendChild(this.svgStructure.drawZone, rectangle);
+      const rectangle = this.renderer.createElement('rect', this.svgNS);
+      this.renderer.appendChild(this.svgStructure.drawZone, rectangle);
 
-    this.visualisationRectangle = new Rectangle(
-      this.renderer,
-      rectangle,
-      this.mathService);
+      this.visualisationRectangle = new Rectangle(
+        this.renderer,
+        rectangle,
+        this.mathService
+      );
 
-    this.visualisationRectangle.setParameters(
-      BackGroundProperties.None, StrokeProperties.Dashed);
+      this.visualisationRectangle.setParameters(
+        BackGroundProperties.None, StrokeProperties.Dashed
+      );
     }
   }
 
