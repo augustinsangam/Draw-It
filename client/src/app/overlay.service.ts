@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
@@ -15,6 +15,7 @@ import {
   ToolSelectorService
 } from './tool/tool-selector/tool-selector.service';
 import { Tool } from './tool/tool.enum';
+import { SaveComponent } from './pages/save/save.component';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,8 @@ export class OverlayService {
 
   constructor(private shortcutHanler: ShortcutHandlerService,
               private colorService: ColorService,
-              private toolSelectorService: ToolSelectorService
+              private toolSelectorService: ToolSelectorService,
+              private readonly snackBar: MatSnackBar,
   ) {
 
     this.shortcutHanler.set(Shortcut.O, (event: KeyboardEvent) => {
@@ -56,6 +58,7 @@ export class OverlayService {
       documentation: (undefined as unknown) as
         MatDialogRef<DocumentationComponent>,
       export: (undefined as unknown) as MatDialogRef<ExportComponent>,
+      save: (undefined as unknown) as MatDialogRef<SaveComponent>,
     };
     this.svgService = svgService;
   }
@@ -147,6 +150,25 @@ export class OverlayService {
     });
   }
 
+  openSaveDialog() {
+    const dialogOptions = {
+      width: '1000px',
+      height: '90vh'
+    };
+    this.shortcutHanler.desactivateAll();
+    this.dialogRefs.save = this.dialog.open(
+      SaveComponent,
+      dialogOptions
+    );
+    this.dialogRefs.save.disableClose = true;
+    this.dialogRefs.save.afterClosed().subscribe((err?: string) => {
+      this.shortcutHanler.activateAll();
+      this.snackBar.open(err ? err : 'Succès', 'ok', {
+        duration: err ? 3000 : 1000,
+      });
+    });
+  }
+
   private closeDocumentationDialog(fromHome: boolean): void {
     if (fromHome) {
       this.openHomeDialog();
@@ -186,4 +208,5 @@ interface DialogRefs {
   newDraw: MatDialogRef<NewDrawComponent>,
   documentation: MatDialogRef<DocumentationComponent>,
   export: MatDialogRef<ExportComponent>,
+  save: MatDialogRef<SaveComponent>,
 }

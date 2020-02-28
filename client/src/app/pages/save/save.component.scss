@@ -1,0 +1,62 @@
+:host {
+  display: block;
+  width: 400px;
+  margin: 15px auto;
+}
+
+svg {
+  display: block;
+  border: 1px solid rgba(0, 0, 0, .3);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  padding: 12px 20px;
+  outline: none;
+}
+
+input[type] {
+  border: none;
+  border-radius: 5px;
+}
+
+input:not([type]) {
+  transition: .6s border-color;
+  border: 1px solid rgba(0, 0, 0, .3);
+}
+
+input:not([type]):hover {
+  border-color: rgba(0, 0, 0, .8);
+}
+
+input:not([type]):focus {
+  border-color: rgb(81, 203, 238);
+}
+
+input[value='Sauvegarder']:not(:disabled) {
+  color: white;
+  background-color: #3f51b5;
+}
+
+ul {
+  padding: 0;
+}
+
+li {
+  display: inline-block;
+  margin: 5px;
+  padding: 5px 10px;
+  background-color: #e0e0e0;
+  border-radius: 15px;
+  transition: .4s all;
+  cursor: pointer;
+}
+
+li:hover {
+  color: white;
+  background-color: rgb(244, 67, 54);
+}

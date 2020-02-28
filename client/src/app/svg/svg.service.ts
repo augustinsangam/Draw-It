@@ -10,7 +10,14 @@ export class SvgService {
   selectAllElements: EventEmitter<null>;
   shape: SvgShape;
 
+  id: number;
+  name: string;
+  tags: string[];
+
   constructor() {
+    this.id = 0;
+    this.name = '';
+    this.tags = [];
     this.selectAllElements = new EventEmitter();
     this.shape = {
       width: 0,
