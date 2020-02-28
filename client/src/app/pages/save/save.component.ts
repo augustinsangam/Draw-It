@@ -21,14 +21,14 @@ export class SaveComponent implements OnInit {
   protected tags: string[] = ['Mes dessins'];
   readonly separatorKeysCodes: number[];
   private gElOffset?: flatbuffers.Offset;
-  private saving: boolean;
+  // private saving: boolean;
 
   constructor(private formBuilder: FormBuilder,
               private svgService: SvgService,
               private renderer: Renderer2,
               private communicationService: CommunicationService,
               @Optional() private dialogRef: MatDialogRef<SaveComponent>) {
-    this.saving = false;
+    // this.saving = false;
     this.addOnBlur = true;
     this.separatorKeysCodes = [ENTER, COMMA];
     this.form = this.formBuilder.group({
@@ -69,7 +69,7 @@ export class SaveComponent implements OnInit {
     if (this.gElOffset == null) {
       return;
     }
-    this.saving = true;
+    // this.saving = true;
     this.svgService.name = this.form.controls.name.value;
     this.svgService.tags = Array.from(this.tags);
     this.communicationService.encode(
