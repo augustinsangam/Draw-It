@@ -77,7 +77,7 @@ export class ExportComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.innerSVG = this.svgElementService.instance.nativeElement
+    this.innerSVG = this.svgElementService.structure.root;
     this.svgDimension = this.innerSVG.getBoundingClientRect() as DOMRect;
     this.createView(FilterChoice.None);
   }

@@ -1,4 +1,4 @@
-import { ElementRef, OnDestroy, Renderer2 } from '@angular/core';
+import { OnDestroy, Renderer2 } from '@angular/core';
 import { SvgService } from 'src/app/svg/svg.service';
 import { MathService } from '../../mathematics/tool.math-service.service';
 import {
@@ -8,6 +8,7 @@ import {
 import { Circle } from '../../shape/common/Circle';
 import { Rectangle } from '../../shape/common/Rectangle';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
+import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { MultipleSelection } from '../MultipleSelection';
 import { Offset } from '../Offset';
 import { Point } from '../Point';
@@ -16,14 +17,17 @@ import { SingleSelection } from '../SingleSelection';
 import { ElementSelectedType } from './ElementSelectedType';
 import { MouseTracking } from './MouseTracking';
 
-type KeybordPressCallback = ($event: KeyboardEvent) => void;
-
 const COLORS = {
   RED : 'rgba(255, 0, 0, 0.7)',
   BLUE: 'rgba(0, 0, 255, 0.7)',
   GREEN: 'rgba(0, 255, 0, 0.7)',
   GRAY: 'rgba(128, 128, 255, 1)'
 }
+const RECTANGLE_STROKE = '2';
+const CIRCLE_RADIUS = '8';
+const TIME_INTERVAL = 100;
+const DASH_ARRAY = '10 5';
+const OFFSET_TRANSLATE = 3;
 
 export abstract class SelectionLogicBase
       extends ToolLogicDirective implements OnDestroy {
@@ -38,18 +42,25 @@ export abstract class SelectionLogicBase
     keyPressed: Set<string>,
     lastTimeCheck: number,
     handlers: {
-      mousedown: KeybordPressCallback,
-      mouseup: KeybordPressCallback
+      keydown: KeyboardPressCallback,
+      keyup: KeyboardPressCallback
     }
   }
 
-  constructor(protected renderer: Renderer2, protected svgService: SvgService) {
+  constructor(protected renderer: Renderer2, protected svgService: SvgService,
+              protected undoRedoService: UndoRedoService) {
     super();
     this.allListenners = [];
     this.selectedElements = new Set();
+    this.undoRedoService.setPostUndoAction({
+      enabled: true,
+      functionDefined: true,
+      function: () => {
+        this.deleteVisualisation();
+      }
+    })
   }
 
-  // Bug de Lint ToolLogicDireective hérite de OnInit
   // tslint:disable-next-line: use-lifecycle-interface
   ngOnInit() {
     this.initialiseMouse();
@@ -59,16 +70,14 @@ export abstract class SelectionLogicBase
       this.applyMultipleSelection();
     });
     this.allListenners.push(() => subscription.unsubscribe());
-    this.renderer.setStyle(this.svgElRef.nativeElement, 'cursor', 'default');
     this.initialiseKeyManager();
+    this.svgStructure.root.style.cursor = 'default';
   }
 
   protected applySingleSelection(element: SVGElement): void {
-    this.selectedElements.clear();
-    this.selectedElements.add(element);
+    this.selectedElements = new Set([element]);
     const points = new SingleSelection(element, this.getSvgOffset()).points();
     this.drawVisualisation(points[0], points[1]);
-    this.drawCircles(points[0], points[1]);
   }
 
   protected applySingleInversion(element: SVGElement) {
@@ -85,7 +94,6 @@ export abstract class SelectionLogicBase
     const selection = this.getMultipleSelection(startPoint, endPoint, elements);
     this.selectedElements = selection.selectedElements;
     this.drawVisualisation(selection.points[0], selection.points[1]);
-    this.drawCircles(selection.points[0], selection.points[1]);
   }
 
   private getMultipleSelection( startPoint?: Point, endPoint?: Point,
@@ -93,32 +101,19 @@ export abstract class SelectionLogicBase
   : SelectionReturn {
     if (elements === undefined) {
       const allElements = Array.from(
-        this.svgElRef.nativeElement.children
+        this.svgStructure.drawZone.children
       ) as SVGElement[];
-      // On enlève les trois rectangles et les les 4 points
       elements = new Set<SVGElement>(allElements);
-      elements.delete(this.rectangles.selection);
-      elements.delete(this.rectangles.inversion);
-      elements.delete(this.rectangles.visualisation);
-      [0, 1, 2, 3].forEach((index: number) => {
-        // Ne sera jamais undefined
-        // tslint:disable-next-line: no-non-null-assertion
-        elements!.delete(this.circles[index]);
-      });
-
     }
     const multipleSelection = new MultipleSelection(
-      elements,
-      this.getSvgOffset(),
-      (this.svgElRef.nativeElement as SVGSVGElement).createSVGPoint(),
+      elements, this.getSvgOffset(), this.svgStructure.root.createSVGPoint(),
       startPoint, endPoint
     );
-
     return multipleSelection.getSelection();
   }
 
-  private applyInversion( elements: Set<SVGElement>,
-                          startPoint?: Point, endPoint?: Point): void {
+  private applyInversion(elements: Set<SVGElement>,
+                         startPoint?: Point, endPoint?: Point): void {
     const elementsToInvert = new Set<SVGElement>(this.selectedElementsFreezed);
     elements.forEach((element: SVGElement) => {
       if (this.selectedElementsFreezed.has(element)) {
@@ -138,19 +133,17 @@ export abstract class SelectionLogicBase
   }
 
   protected drawSelection(p1: Point, p2: Point): void {
-    this.deleteSelection();
     this.drawARectangle(this.rectangles.selection, p1, p2,
       COLORS.BLUE, false);
   }
 
   private drawVisualisation(p1: Point, p2: Point): void {
-    this.deleteVisualisation();
     this.drawARectangle(this.rectangles.visualisation, p1, p2,
       COLORS.GREEN, true);
+    this.drawCircles(p1, p2);
   }
 
   protected drawInversion(p1: Point, p2: Point): void {
-    this.deleteInversion();
     this.drawARectangle(this.rectangles.inversion, p1, p2,
       COLORS.RED, true);
   }
@@ -163,15 +156,14 @@ export abstract class SelectionLogicBase
     rectangleObject.setParameters(BackGroundProperties.None,
       StrokeProperties.Filled);
     rectangleObject.dragRectangle(startPoint, endPoint);
-    rectangleObject.setCss({strokeWidth: '2',
+    rectangleObject.setCss({strokeWidth: RECTANGLE_STROKE,
       strokeColor: color,
       fillColor: 'none',
       opacity: '0'
     });
     if (dasharray) {
-      element.setAttribute('stroke-dasharray', '10 5');
+      element.setAttribute('stroke-dasharray', DASH_ARRAY);
     }
-    this.renderer.appendChild(this.svgElRef.nativeElement, element);
   }
 
   protected drawCircles(p1: Point, p2: Point): void {
@@ -180,29 +172,32 @@ export abstract class SelectionLogicBase
       (startPoint.x + endPoint.x) / 2,
       (startPoint.y + endPoint.y) / 2);
     this.setCircle(new Point(startPoint.x, centerPoint.y),
-    this.circles[0], '8');
+    this.circles[0], CIRCLE_RADIUS);
     this.setCircle(new Point(centerPoint.x, startPoint.y),
-    this.circles[1], '8');
-    this.setCircle(new Point(endPoint.x, centerPoint.y), this.circles[2], '8');
-    this.setCircle(new Point(centerPoint.x, endPoint.y), this.circles[3], '8');
-    [0, 1, 2, 3].forEach((i) => {
-      this.renderer.appendChild(this.svgElRef.nativeElement, this.circles[i]);
-    });
+    this.circles[1], CIRCLE_RADIUS);
+    this.setCircle(new Point(endPoint.x, centerPoint.y),
+      this.circles[2], CIRCLE_RADIUS);
+    this.setCircle(new Point(centerPoint.x, endPoint.y),
+    this.circles[3], CIRCLE_RADIUS);
   }
 
   private setCircle(center: Point, circle: SVGElement, radius: string): void {
     // A la construction, tout est fait
     // TODO : Remplacer Elref par un SVGElment
     // tslint:disable-next-line: no-unused-expression
-    new Circle(center, this.renderer,
-      circle as unknown as ElementRef, radius, COLORS.GRAY);
+    new Circle(center, this.renderer, circle, radius, COLORS.GRAY);
   }
 
   protected deleteVisualisation(): void {
     this.resetRectangle(this.rectangles.visualisation);
-    this.rectangles.visualisation.setAttribute( 'transform', 'translate(0,0)');
+    this.resetTranslate(this.rectangles.visualisation);
+    this.deleteCircles();
+    this.selectedElements.clear();
+  }
+
+  private deleteCircles(): void {
     this.circles.forEach(element => {
-      this.renderer.removeChild(this.svgElRef.nativeElement, element);
+      this.renderer.setAttribute(element, 'r', '0');
       this.resetTranslate(element);
     });
   }
@@ -220,7 +215,6 @@ export abstract class SelectionLogicBase
   private resetRectangle(element: SVGElement) {
     element.setAttribute('width', '0');
     element.setAttribute('height', '0');
-    this.renderer.removeChild(this.svgElRef.nativeElement, element);
   }
 
   private resetTranslate(element: SVGElement) {
@@ -238,7 +232,7 @@ export abstract class SelectionLogicBase
         return ElementSelectedType.RIGHT_CIRCLE;
       case this.circles[3]:
         return ElementSelectedType.BOTTOM_CIRCLE;
-      case this.svgElRef.nativeElement:
+      case this.svgStructure.root:
         return ElementSelectedType.NOTHING;
       case this.rectangles.selection:
         return ElementSelectedType.SELECTION_RECTANGLE;
@@ -253,7 +247,7 @@ export abstract class SelectionLogicBase
 
   protected isInTheSelectionZone(x: number, y: number)
   : boolean {
-    const point = this.svgElRef.nativeElement.createSVGPoint();
+    const point = this.svgStructure.root.createSVGPoint();
     const [dx, dy] =
       this.getTransformTranslate(this.rectangles.visualisation);
     [point.x, point.y] = [x - dx, y - dy];
@@ -283,7 +277,7 @@ export abstract class SelectionLogicBase
   }
 
   getSvgOffset(): Offset {
-    const svgBoundingRect = this.svgElRef.nativeElement.getBoundingClientRect();
+    const svgBoundingRect = this.svgStructure.root.getBoundingClientRect();
     return { top: svgBoundingRect.top, left: svgBoundingRect.left };
   }
 
@@ -306,11 +300,12 @@ export abstract class SelectionLogicBase
       const resizeType = index % 2 === 0 ? 'col-resize' : 'ns-resize';
       this.renderer.setStyle(circle, 'cursor', resizeType);
       this.circles.push(circle);
+      this.renderer.appendChild(this.svgStructure.temporaryZone, circle);
     });
   }
 
   private initialiseMouse(): void {
-    const fakePoint = new Point(0, 0);
+    const fakePoint = new Point(-50, 50);
     this.mouse = {
       left : {
         startPoint: fakePoint, currentPoint: fakePoint, endPoint: fakePoint,
@@ -331,6 +326,10 @@ export abstract class SelectionLogicBase
       inversion: this.renderer.createElement('rect', this.svgNS),
       visualisation: this.renderer.createElement('rect', this.svgNS)
     };
+    [this.rectangles.selection, this.rectangles.inversion,
+      this.rectangles.visualisation].forEach((rectangle) => {
+        this.renderer.appendChild(this.svgStructure.temporaryZone, rectangle);
+    });
   }
 
   private initialiseKeyManager() {
@@ -338,21 +337,32 @@ export abstract class SelectionLogicBase
       keyPressed : new Set(),
       lastTimeCheck: new Date().getTime(),
       handlers : {
-        mousedown: ($event: KeyboardEvent) => {
+        keydown: ($event: KeyboardEvent) => {
           if (!this.keyManager.keyPressed.has($event.key)) {
             this.keyManager.keyPressed.add($event.key);
           }
           const actualTime = new Date().getTime();
-          if (actualTime - this.keyManager.lastTimeCheck >= 100) {
+          if (actualTime - this.keyManager.lastTimeCheck >= TIME_INTERVAL) {
             this.keyManager.lastTimeCheck = actualTime;
-            this.handleKey('ArrowUp', 0, -3);
-            this.handleKey('ArrowDown', 0, 3);
-            this.handleKey('ArrowLeft', -3, 0);
-            this.handleKey('ArrowRight', 3, 0);
+            this.handleKey('ArrowUp', 0, -OFFSET_TRANSLATE);
+            this.handleKey('ArrowDown', 0, OFFSET_TRANSLATE);
+            this.handleKey('ArrowLeft', -OFFSET_TRANSLATE, 0);
+            this.handleKey('ArrowRight', OFFSET_TRANSLATE, 0);
           }
         },
-        mouseup: ($event: KeyboardEvent) => {
+        keyup: ($event: KeyboardEvent) => {
+          let count = 0;
+          const allArrows = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight']
+          allArrows.forEach((arrow) => {
+            if (this.keyManager.keyPressed.has(arrow)) {
+              count++;
+            }
+          });
           this.keyManager.keyPressed.delete($event.key);
+          // TODO : Verifier uniquement les touches qui s'appliquent
+          if (count === 1 && allArrows.indexOf($event.key) !== -1) {
+            this.undoRedoService.saveState();
+          }
         }
       }
     }
@@ -368,16 +378,18 @@ export abstract class SelectionLogicBase
     this.allListenners.forEach(end => end());
     [this.rectangles.selection, this.rectangles.inversion,
     this.rectangles.visualisation].forEach((element: SVGElement) => {
-      this.renderer.removeChild(this.svgElRef.nativeElement, element);
+      this.renderer.removeChild(this.svgStructure.temporaryZone, element);
     });
     this.circles.forEach((circle) => this.renderer.removeChild(
-      this.svgElRef.nativeElement, circle)
+      this.svgStructure.temporaryZone, circle)
     );
   }
 
 }
 
 export type MouseEventCallBack = ($event: MouseEvent) => void;
+
+type KeyboardPressCallback = ($event: KeyboardEvent) => void;
 
 interface Mouse {
   left: MouseTracking,

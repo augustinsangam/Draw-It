@@ -1,16 +1,24 @@
-import { Component, Renderer2 } from '@angular/core';
+import { Component, OnDestroy, Renderer2 } from '@angular/core';
 import { ColorService } from '../../color/color.service';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
+import {UndoRedoService} from '../../undo-redo/undo-redo.service';
 
 @Component({
   selector: 'app-applicator-logic',
   templateUrl: './applicator-logic.component.html',
   styleUrls: ['./applicator-logic.component.scss']
 })
-export class ApplicatorLogicComponent extends ToolLogicDirective {
+export class ApplicatorLogicComponent
+  extends ToolLogicDirective implements OnDestroy {
 
-  constructor(private renderer: Renderer2, private colorService: ColorService) {
+  private allListenners: (() => void)[];
+
+  constructor(private renderer: Renderer2,
+              private colorService: ColorService,
+              private readonly undoRedoService: UndoRedoService) {
     super();
+    this.allListenners = [];
+    this.undoRedoService.resetActions();
   }
 
   private handlers = {
@@ -19,12 +27,14 @@ export class ApplicatorLogicComponent extends ToolLogicDirective {
         if ($event.target instanceof SVGPathElement) {
             ($event.target as SVGElement)
           .setAttribute('stroke', this.colorService.primaryColor);
+            this.undoRedoService.saveState();
         } else {
           const fill = ($event.target as SVGElement).getAttribute('fill');
           const isFilled = (fill !== null && fill !== 'none');
           if (isFilled) {
             ($event.target as SVGElement)
             .setAttribute('fill', this.colorService.primaryColor);
+            this.undoRedoService.saveState();
           }
         }
       }
@@ -35,28 +45,33 @@ export class ApplicatorLogicComponent extends ToolLogicDirective {
         && !($event.target instanceof SVGPathElement)) {
         ($event.target as SVGElement)
         .setAttribute('stroke', this.colorService.secondaryColor);
+        this.undoRedoService.saveState();
       }
     }
-  }
+  };
 
-  // Bug de lint - Tool Logic directive implémente OnInit
   // tslint:disable-next-line: use-lifecycle-interface
   ngOnInit() {
-    this.renderer.listen(this.svgElRef.nativeElement, 'click',
-      this.handlers.left);
 
-    this.renderer.listen(this.svgElRef.nativeElement, 'contextmenu',
-      this.handlers.right);
-
-    this.renderer.setStyle(
-      this.svgElRef.nativeElement,
-      'cursor',
-      'crosshair'
+    this.allListenners.push(
+      this.renderer.listen(this.svgStructure.root, 'click',
+        this.handlers.left)
     );
+    this.allListenners.push(
+      this.renderer.listen(this.svgStructure.root, 'contextmenu',
+        this.handlers.right)
+    );
+
+    this.svgStructure.root.style.cursor = 'crosshair';
   }
 
   private isSvgElement(element: SVGElement): boolean {
-    return element !== this.svgElRef.nativeElement;
+    return element !== this.svgStructure.root;
+  }
+
+  ngOnDestroy() {
+    this.allListenners.forEach((end) => {end()});
+    this.undoRedoService.resetActions();
   }
 
 }

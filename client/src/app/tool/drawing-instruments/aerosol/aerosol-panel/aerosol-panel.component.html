@@ -2,7 +2,7 @@
 <form [formGroup]="aerosolForm">
   <p>Épaisseur</p>
   <div class="thickness">
-    <mat-slider min=1 max=100 step=1
+    <mat-slider min="{{this.service.MIN_THICKNESS}}" max="{{this.service.MAX_THICKNESS}}" step=1
                 (input)="onThicknessChange()"
                 (change)="onThicknessChange()"
                 formControlName="thicknessSlider"
@@ -16,7 +16,7 @@
   <br>
   <p>Fréquence du jet</p>
   <div class="frequency">
-    <mat-slider min=1 max=150 step="1"
+    <mat-slider min="{{this.service.MIN_FREQUENCY}}" max="{{this.service.MAX_FREQUENCY}}" step="1"
                 (input)="onFrequencyChange()"
                 (change)="onFrequencyChange()"
                 formControlName="frequencySlider"
@@ -32,7 +32,10 @@
 <svg width="340" height="220">
   <circle cx="150" cy="110" r="110"
       [ngStyle]="{'fill': 'rgb(255, 255, 255)', 'stroke-width': '3', 'stroke': 'rgb(0, 0, 0)'}"></circle>
-  <path d ='' id ="prevPath" [ngStyle]="{'fill': this.colorService.primaryColor}"></path>
+  <path d =''
+        [ngStyle]="{'fill': this.colorService.primaryColor}"
+        #prevPath >
+  </path>
 </svg>
 <hr>
 <app-color-panel></app-color-panel>

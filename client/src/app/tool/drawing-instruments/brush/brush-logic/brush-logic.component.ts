@@ -1,26 +1,39 @@
-import { Component, Renderer2 } from '@angular/core';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { ColorService } from '../../../color/color.service';
+import {UndoRedoService} from '../../../undo-redo/undo-redo.service';
 import { PencilBrushCommon } from '../../pencil-brush/pencil-brush-common';
 import { BrushService } from '../brush.service';
-import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 
 @Component({
   selector: 'app-brush-logic',
   template: ''
 })
-export class BrushLogicComponent extends PencilBrushCommon {
+export class BrushLogicComponent extends PencilBrushCommon
+  implements OnInit, OnDestroy {
 
   private listeners: (() => void)[];
 
   constructor(private readonly renderer: Renderer2,
               private readonly colorService: ColorService,
               private readonly brushService: BrushService,
-              protected readonly undoRedo: UndoRedoService) {
-    super(undoRedo);
-    this.listeners = new Array();
+              private readonly undoRedoService: UndoRedoService
+  ) {
+    super();
+    this.listeners = [];
+    this.undoRedoService.resetActions();
+    this.undoRedoService.setPreUndoAction({
+      enabled: true,
+      overrideDefaultBehaviour: false,
+      overrideFunctionDefined: true,
+      overrideFunction: () => {
+        if (this.mouseOnHold) {
+          this.stopDrawing();
+          this.undoRedoService.saveState();
+        }
+      }
+    })
   }
 
-  // tslint:disable-next-line use-lifecycle-interface
   ngOnInit(): void {
     if (this.brushService.isFirstLoaded) {
       const svgDefsEl: SVGDefsElement =
@@ -30,10 +43,10 @@ export class BrushLogicComponent extends PencilBrushCommon {
       this.renderer.appendChild(svgDefsEl, this.generateFilterThree());
       this.renderer.appendChild(svgDefsEl, this.generateFilterFour());
       this.renderer.appendChild(svgDefsEl, this.generateFilterFive());
-      this.renderer.appendChild(this.svgElRef.nativeElement, svgDefsEl);
+      this.renderer.appendChild(this.svgStructure.endZone, svgDefsEl);
       this.brushService.isFirstLoaded = false;
     }
-    const mouseDownListen = this.renderer.listen(this.svgElRef.nativeElement,
+    const mouseDownListen = this.renderer.listen(this.svgStructure.root,
       'mousedown', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0) {
           this.mouseOnHold = true;
@@ -41,22 +54,24 @@ export class BrushLogicComponent extends PencilBrushCommon {
         }
     });
 
-    const mouseMoveListen = this.renderer.listen(this.svgElRef.nativeElement,
+    const mouseMoveListen = this.renderer.listen(this.svgStructure.root,
       'mousemove', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0 && this.mouseOnHold) {
           this.onMouseMove(mouseEv);
         }
     });
 
-    const mouseUpListen = this.renderer.listen(this.svgElRef.nativeElement,
-      'mouseup', (mouseEv: MouseEvent) => {
+    const mouseUpListen = this.renderer.listen(this.svgStructure.root,
+      'mouseup', () => {
         this.stopDrawing();
-    });
+        this.undoRedoService.saveState();
+      });
 
-    const mouseLeaveListen = this.renderer.listen(this.svgElRef.nativeElement,
+    const mouseLeaveListen = this.renderer.listen(this.svgStructure.root,
       'mouseleave', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0 && this.mouseOnHold) {
           this.stopDrawing();
+          this.undoRedoService.saveState();
         }
     });
     this.listeners = [
@@ -66,11 +81,8 @@ export class BrushLogicComponent extends PencilBrushCommon {
       mouseLeaveListen
     ];
 
-    this.renderer.setStyle(
-      this.svgElRef.nativeElement,
-      'cursor',
-      'crosshair'
-    );
+    this.svgStructure.root.style.cursor = 'crosshair';
+
   }
 
   protected configureSvgElement(element: SVGElement): void {
@@ -89,12 +101,16 @@ export class BrushLogicComponent extends PencilBrushCommon {
     this.makeFirstPoint(mouseEv);
     this.svgPath = this.renderer.createElement(this.svgTag, this.svgNS);
     this.configureSvgElement(this.svgPath);
-    this.renderer.appendChild(this.svgElRef.nativeElement, this.svgPath);
+    this.renderer.appendChild(this.svgStructure.drawZone, this.svgPath);
   }
 
-  // tslint:disable-next-line:use-lifecycle-interface
   ngOnDestroy() {
-    this.listeners.forEach(listenner => { listenner(); });
+    this.listeners.forEach(end => { end(); });
+    this.undoRedoService.resetActions();
+    if (this.mouseOnHold) {
+      this.stopDrawing();
+      this.undoRedoService.saveState();
+    }
   }
 
   protected onMouseMove(mouseEv: MouseEvent): void {

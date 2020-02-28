@@ -1,5 +1,4 @@
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
-import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 
 export abstract class PencilBrushCommon extends ToolLogicDirective {
   svgTag: string;
@@ -8,7 +7,7 @@ export abstract class PencilBrushCommon extends ToolLogicDirective {
   svgPath: SVGPathElement;
   strokeLineCap: string;
 
-  constructor(protected readonly undoRedo: UndoRedoService) {
+  constructor() {
     super();
     this.svgTag = 'path';
     this.stringPath = '';
@@ -37,6 +36,5 @@ export abstract class PencilBrushCommon extends ToolLogicDirective {
   protected stopDrawing(): void {
     this.mouseOnHold = false;
     this.stringPath = '';
-    this.undoRedo.addToCommands();
   }
 }

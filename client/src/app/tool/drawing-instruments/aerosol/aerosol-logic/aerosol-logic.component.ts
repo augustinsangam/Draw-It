@@ -1,9 +1,10 @@
-import {Component, OnDestroy, Renderer2} from '@angular/core';
-import {interval, Observable} from 'rxjs';
-import {ColorService} from '../../../color/color.service';
-import {Point} from '../../../shape/common/Point';
-import {ToolLogicDirective} from '../../../tool-logic/tool-logic.directive';
-import {AerosolService} from '../aerosol.service';
+import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { interval, Observable } from 'rxjs';
+import { Point } from 'src/app/tool/selection/Point';
+import { ColorService } from '../../../color/color.service';
+import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
+import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
+import { AerosolService } from '../aerosol.service';
 
 @Component({
   selector: 'app-aerosol-logic',
@@ -11,8 +12,8 @@ import {AerosolService} from '../aerosol.service';
 })
 
 // tslint:disable:use-lifecycle-interface
-export class AerosolLogicComponent extends ToolLogicDirective
-  implements OnDestroy {
+export class AerosolLogicComponent
+  extends ToolLogicDirective implements OnDestroy {
 
   private listeners: (() => void)[];
   private currentPath: SVGElement;
@@ -28,36 +29,49 @@ export class AerosolLogicComponent extends ToolLogicDirective
     private readonly service: AerosolService,
     private readonly renderer: Renderer2,
     protected readonly colorService: ColorService,
+    private readonly undoRedoService: UndoRedoService
   ) {
     super();
     this.listeners = [];
     this.onDrag = false;
     this.stringPath = '';
+    this.undoRedoService.resetActions();
+    this.undoRedoService.setPreUndoAction({
+      enabled: true,
+      overrideDefaultBehaviour: false,
+      overrideFunctionDefined: true,
+      overrideFunction: () => {
+        if (this.onDrag) {
+          this.onMouseUp();
+          this.currentPath.remove()
+        }
+      }
+    })
   }
 
   ngOnInit(): void {
     const onMouseDown = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mousedown',
       (mouseEv: MouseEvent) => this.onMouseDown(mouseEv)
     );
 
     const onMouseMove = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mousemove',
       (mouseEv: MouseEvent) => this.onMouseMove(mouseEv)
     );
 
     const onMouseUp = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mouseup',
-      (mouseEv: MouseEvent) => this.onMouseUp(mouseEv)
+      () => this.onMouseUp()
     );
 
     const onMouseLeave = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mouseleave',
-      (mouseEv: MouseEvent) => this.onMouseUp(mouseEv)
+      () => this.onMouseUp()
     );
 
     this.listeners = [
@@ -67,26 +81,24 @@ export class AerosolLogicComponent extends ToolLogicDirective
       onMouseMove,
     ];
 
-    this.renderer.setStyle(
-      this.svgElRef.nativeElement,
-      'cursor',
-      'crosshair'
-    );
+    this.svgStructure.root.style.cursor = 'crosshair';
+
   }
 
   ngOnDestroy(): void {
     this.listeners.forEach(listenner => { listenner(); });
+    this.undoRedoService.resetActions();
   }
 
   protected onMouseDown(mouseEv: MouseEvent): void {
-    this.currMousePos = {x: mouseEv.offsetX, y: mouseEv.offsetY};
+    this.currMousePos = new Point(mouseEv.offsetX, mouseEv.offsetY);
 
     this.currentPath = this.renderer.createElement('path', this.svgNS);
     this.currentPath.setAttribute(
       'fill',
       this.colorService.primaryColor
     );
-    this.renderer.appendChild(this.svgElRef.nativeElement, this.currentPath);
+    this.renderer.appendChild(this.svgStructure.drawZone, this.currentPath);
 
     this.onDrag = true;
 
@@ -98,16 +110,17 @@ export class AerosolLogicComponent extends ToolLogicDirective
 
   protected onMouseMove(mouseEv: MouseEvent): void {
     if (this.onDrag) {
-      this.currMousePos = {x: mouseEv.offsetX, y: mouseEv.offsetY};
+      this.currMousePos = new Point(mouseEv.offsetX, mouseEv.offsetY);
     }
   }
 
-  protected onMouseUp(mouseEv: MouseEvent): void {
+  protected onMouseUp(): void {
     if (this.onDrag) {
       this.periodicSplashAdder.unsubscribe();
+      this.onDrag = false;
+      this.stringPath = '';
+      this.undoRedoService.saveState();
     }
-    this.onDrag = false;
-    this.stringPath = '';
   }
 
   private addSplash(): void {
@@ -116,5 +129,4 @@ export class AerosolLogicComponent extends ToolLogicDirective
     );
     this.currentPath.setAttribute('d', this.stringPath);
   }
-
 }

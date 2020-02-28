@@ -1,0 +1,39 @@
+<h1>Grille</h1>
+<form [formGroup]="gridForm">
+  <p>
+    Activée
+    <mat-slide-toggle [checked]="service.active" (change)="onActiveChange()" formControlName="activeToggleForm" #activeToggle>
+    </mat-slide-toggle>
+  </p>
+  <br>
+  <div *ngIf="service.active">
+    <p>Taille des carrés</p>
+    <div class="squareSize">
+      <mat-slider min="{{service.MIN_SQUARESIZE}}" max="{{service.MAX_SQUARESIZE}}" step=1
+                  (input)="onSquareSizeChange()"
+                  (change)="onSquareSizeChange()"
+                  formControlName="squareSizeSlider"
+                  #squareSizeSlider>
+      </mat-slider>
+      <mat-form-field>
+        <input readonly matInput formControlName="squareSizeFormField" />
+        <span matSuffix>px</span>
+      </mat-form-field>
+    </div>
+    <br>
+    <p>Opacité</p>
+    <div class="opacity">
+      <mat-slider min=0.10 max=1.0 step="0.01"
+                  (input)="onOpacityChange()"
+                  (change)="onOpacityChange()"
+                  formControlName="opacitySlider"
+                  #opacitySlider>
+      </mat-slider>
+      <mat-form-field>
+        <input readonly matInput formControlName="opacityFormField" />
+      </mat-form-field>
+    </div>
+  </div>
+</form>
+<hr>
+<app-color-panel></app-color-panel>

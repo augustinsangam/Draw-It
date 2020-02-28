@@ -1,6 +1,6 @@
 import {TestBed} from '@angular/core/testing';
 
-import {Point} from '../shape/common/Point';
+import {Point} from '../selection/Point';
 import {MathService} from './tool.math-service.service';
 
 describe('MathService', () => {
@@ -16,10 +16,7 @@ describe('MathService', () => {
   });
 
   it('#distanceIsLessThan3Pixel should return true if distance is 0', () => {
-    const point1: Point = {
-      x: 42,
-      y: 42,
-    };
+    const point1 = new Point(42, 42);
 
     const result = service.distanceIsLessThan3Pixel(point1, point1);
 
@@ -27,15 +24,9 @@ describe('MathService', () => {
   });
 
   it('#distanceIsLessThan3Pixel should return true if distance is 0', () => {
-    const point1: Point = {
-      x: 42,
-      y: 42,
-    };
+    const point1 = new Point(42, 42);
 
-    const point2: Point = {
-      x: 40,
-      y: 40,
-    };
+    const point2 = new Point(40, 40);
 
     const result = service.distanceIsLessThan3Pixel(point1, point2);
 
@@ -43,15 +34,9 @@ describe('MathService', () => {
   });
 
   it('#distanceIsLessThan3Pixel should return true if distance is 3', () => {
-    const point1: Point = {
-      x: 42,
-      y: 42,
-    };
+    const point1 = new Point(42, 42);
 
-    const point2: Point = {
-      x: 39,
-      y: 39,
-    };
+    const point2 = new Point(39, 39);
 
     const result = service.distanceIsLessThan3Pixel(point1, point2);
 
@@ -60,15 +45,9 @@ describe('MathService', () => {
 
   it('#distanceIsLessThan3Pixel should return false if distance is more than 3'
   , () => {
-    const point1: Point = {
-      x: 42,
-      y: 42,
-    };
+    const point1 = new Point(42, 42);
 
-    const point2: Point = {
-      x: 69,
-      y: 69,
-    };
+    const point2 = new Point(69, 69);
 
     const result = service.distanceIsLessThan3Pixel(point1, point2);
 
@@ -78,15 +57,9 @@ describe('MathService', () => {
   it('#distanceIsLessThan3Pixel should return true'
   + 'if distance less than 3(with negatives)',
    () => {
-    const point1: Point = {
-      x: -1,
-      y: -1,
-    };
+    const point1 = new Point(-1, -1);
 
-    const point2: Point = {
-      x: 1,
-      y: 1,
-    };
+    const point2 = new Point(1, 1);
 
     const result = service.distanceIsLessThan3Pixel(point1, point2);
 
@@ -95,15 +68,9 @@ describe('MathService', () => {
 
   it('#findAlignedSegmentPoint should return'
    + 'mousePosition.x and lastPoint.y', () => {
-    const mousePosition: Point = {
-      x: 3,
-      y: 1,
-    };
+    const mousePosition = new Point(3, 1);
 
-    const lastpoint: Point = {
-      x: 0,
-      y: 0,
-    };
+    const lastpoint = new Point(0, 0);
 
     const result = service.findAlignedSegmentPoint(mousePosition, lastpoint);
 
@@ -112,15 +79,9 @@ describe('MathService', () => {
 
   it('#findAlignedSegmentPoint should return lastPoint.x'
   +  'and mousePosition.y', () => {
-    const mousePosition: Point = {
-      x: 1,
-      y: 3,
-    };
+    const mousePosition = new Point(1, 3);
 
-    const lastpoint: Point = {
-      x: 0,
-      y: 0,
-    };
+    const lastpoint = new Point(0, 0);
 
     const result = service.findAlignedSegmentPoint(mousePosition, lastpoint);
 
@@ -129,15 +90,9 @@ describe('MathService', () => {
 
   it('#findAlignedSegmentPoint should return mousePosition.x'
    + 'and lastpoint.y + deltaX', () => {
-    const mousePosition: Point = {
-      x: 3,
-      y: 4,
-    };
+    const mousePosition = new Point(3, 4);
 
-    const lastpoint: Point = {
-      x: 0,
-      y: 0,
-    };
+    const lastpoint = new Point(0, 0);
 
     const result = service.findAlignedSegmentPoint(mousePosition, lastpoint);
 
@@ -146,15 +101,9 @@ describe('MathService', () => {
 
   it('#findAlignedSegmentPoint should return mousePosition.x'
    + 'and lastpoint.y + deltaX', () => {
-    const mousePosition: Point = {
-      x: -3,
-      y: 4,
-    };
+    const mousePosition = new Point(-3, 4);
 
-    const lastpoint: Point = {
-      x: 0,
-      y: 0,
-    };
+    const lastpoint = new Point(0, 0);
 
     const result = service.findAlignedSegmentPoint(mousePosition, lastpoint);
 
@@ -163,15 +112,9 @@ describe('MathService', () => {
 
   it('#getRectangleUpLeftCorner should return initialPoint.x'
   + 'and initialPoint.y + deltaY', () => {
-    const initPoint: Point = {
-      x: 0,
-      y: 0,
-    };
+    const initPoint = new Point(0, 0);
 
-    const oppositePoint: Point = {
-      x: 69,
-      y: -42,
-    };
+    const oppositePoint = new Point(69, -42);
 
     const result = service.getRectangleUpLeftCorner(initPoint, oppositePoint);
 
@@ -180,15 +123,9 @@ describe('MathService', () => {
 
   it('#getRectangleUpLeftCorner should return initialPoint.x + deltaX'
    + 'and initialPoint.y + deltaY', () => {
-    const initPoint: Point = {
-      x: 0,
-      y: 0,
-    };
+    const initPoint = new Point(0, 0);
 
-    const oppositePoint: Point = {
-      x: -69,
-      y: -42,
-    };
+    const oppositePoint = new Point(-69,  -42);
 
     const result = service.getRectangleUpLeftCorner(initPoint, oppositePoint);
 
@@ -197,15 +134,9 @@ describe('MathService', () => {
 
   it('#getRectangleUpLeftCorner should return '
    + 'initialPoint.x +deltaX and initialPoint.y', () => {
-    const initPoint: Point = {
-      x: 0,
-      y: 0,
-    };
+    const initPoint = new Point(0, 0);
 
-    const oppositePoint: Point = {
-      x: -69,
-      y: 42,
-    };
+    const oppositePoint = new Point(-69, 42);
 
     const result = service.getRectangleUpLeftCorner(initPoint, oppositePoint);
 
@@ -214,15 +145,9 @@ describe('MathService', () => {
 
   it('#getRectangleUpLeftCorner should return initialPoint.x'
    + 'and initialPoint.y', () => {
-    const initPoint: Point = {
-      x: 0,
-      y: 0,
-    };
+    const initPoint = new Point(0, 0);
 
-    const oppositePoint: Point = {
-      x: 69,
-      y: 42,
-    };
+    const oppositePoint = new Point(69, 42);
 
     const result = service.getRectangleUpLeftCorner(initPoint, oppositePoint);
 
@@ -231,15 +156,9 @@ describe('MathService', () => {
 
   it('#getRectangleSize should return the width and the height' +
   'of the rectangle(neg param)', () => {
-    const initialPoint: Point = {
-      x: 0,
-      y: 0,
-    };
+    const initialPoint = new Point(0, 0);
 
-    const oppositePoint: Point = {
-      x: -69,
-      y: -42,
-    };
+    const oppositePoint = new Point(-69,  -42);
 
     const result = service.getRectangleSize(initialPoint, oppositePoint);
 
@@ -248,15 +167,9 @@ describe('MathService', () => {
 
   it('#getRectangleSize should return the width and the height'
     + 'of the rectangle(pos param)', () => {
-    const initialPoint: Point = {
-      x: 0,
-      y: 0,
-    };
+    const initialPoint = new Point(0, 0);
 
-    const oppositePoint: Point = {
-      x: 69,
-      y: 42,
-    };
+    const oppositePoint = new Point(69, 42);
 
     const result = service.getRectangleSize(initialPoint, oppositePoint);
 
@@ -265,15 +178,9 @@ describe('MathService', () => {
 
   it('#transformRectangleToSquare should return initialPoin.x + deltaX'
    + 'and initialPoin.y + deltaY', () => {
-    const initialPoint: Point = {
-      x: 0,
-      y: 0,
-    };
+    const initialPoint = new Point(0, 0);
 
-    const oppositePoint: Point = {
-      x: 69,
-      y: 42,
-    };
+    const oppositePoint = new Point(69, 42);
 
     const result = service.transformRectangleToSquare
                    (initialPoint, oppositePoint);
@@ -282,15 +189,9 @@ describe('MathService', () => {
   });
   it('#transformRectangleToSquare should return initialPoin.x + deltaX'
    + 'and initialPoin.y + deltaY', () => {
-    const initialPoint: Point = {
-      x: 0,
-      y: 0,
-    };
+    const initialPoint = new Point(0, 0);
 
-    const oppositePoint: Point = {
-      x: 42,
-      y: 69,
-    };
+    const oppositePoint = new Point(42, 69);
 
     const result = service.transformRectangleToSquare
                    (initialPoint, oppositePoint);
@@ -300,15 +201,9 @@ describe('MathService', () => {
 
   it('#getEllipseRadius should return half of the' +
     'getRectangleSize returned values', () => {
-    const initialPoint: Point = {
-      x: 0,
-      y: 0,
-    };
+    const initialPoint = new Point(0, 0);
 
-    const oppositePoint: Point = {
-      x: 42,
-      y: 69,
-    };
+    const oppositePoint = new Point(42, 69);
 
     const dimensions = service.getRectangleSize(initialPoint, oppositePoint);
 
@@ -324,15 +219,9 @@ describe('MathService', () => {
 
   it('#getEllipseCenter should return the coordinates ' +
     'of the center of the ellipse', () => {
-    const initialPoint: Point = {
-      x: 1,
-      y: 5,
-    };
+    const initialPoint = new Point(1, 5);
 
-    const oppositePoint: Point = {
-      x: 6,
-      y: 0,
-    };
+    const oppositePoint = new Point(6, 0);
 
     expect(
       service.getEllipseCenter(initialPoint, oppositePoint)
@@ -346,15 +235,9 @@ describe('MathService', () => {
 
   it('#getCircleCenter should return ' +
     'the center of the circle', () => {
-    const initialPoint: Point = {
-      x: 1,
-      y: 5,
-    };
+    const initialPoint = new Point(1, 5);
 
-    const oppositePoint: Point = {
-      x: 8,
-      y: 0,
-    };
+    const oppositePoint = new Point(8, 0);
 
     const circleCenter = service.getCircleCenter(initialPoint, oppositePoint);
     expect(

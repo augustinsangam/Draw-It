@@ -1,16 +1,16 @@
-import {Component, OnDestroy, Renderer2} from '@angular/core';
+import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { Point } from 'src/app/tool/selection/Point';
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
-import {ColorService} from '../../../color/color.service';
-import {MathService} from '../../../mathematics/tool.math-service.service';
-import {ToolLogicDirective} from '../../../tool-logic/tool-logic.directive';
+import { ColorService } from '../../../color/color.service';
+import { MathService } from '../../../mathematics/tool.math-service.service';
+import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
 import {
   BackGroundProperties,
   StrokeProperties, Style
 } from '../../common/AbstractShape';
-import {Ellipse} from '../../common/Ellipse';
-import {Point} from '../../common/Point';
-import {Rectangle} from '../../common/Rectangle';
-import {EllipseService} from '../ellipse.service';
+import { Ellipse } from '../../common/Ellipse';
+import { Rectangle } from '../../common/Rectangle';
+import { EllipseService } from '../ellipse.service';
 
 const SEMIOPACITY = '0.5';
 const FULLOPACITY = '1';
@@ -39,15 +39,31 @@ export class EllipseLogicComponent extends ToolLogicDirective
     private readonly renderer: Renderer2,
     private readonly colorService: ColorService,
     private readonly mathService: MathService,
-    private readonly undoRedo: UndoRedoService
+    private readonly undoRedoService: UndoRedoService
   ) {
     super();
+    this.undoRedoService.resetActions();
+    this.undoRedoService.setPreUndoAction({
+      enabled: true,
+      overrideDefaultBehaviour: true,
+      overrideFunctionDefined: true,
+      overrideFunction: () => {
+        if (this.onDrag) {
+          this.onMouseUp(
+            new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
+          );
+          this.getEllipse().element.remove();
+        }
+        this.undoRedoService.undoBase()
+      }
+    })
+
   }
 
   // tslint:disable-next-line use-lifecycle-interface
   ngOnInit(): void {
     const onMouseDown = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mousedown',
       (mouseEv: MouseEvent) => {
         this.initEllipse(mouseEv);
@@ -56,26 +72,17 @@ export class EllipseLogicComponent extends ToolLogicDirective
     );
 
     const onMouseUp = this.renderer.listen(
-      'document',
+      this.svgStructure.root,
       'mouseup',
-      (mouseEv: MouseEvent) => {
-        if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
-          this.viewTemporaryForm(mouseEv);
-          this.onDrag = false;
-          this.rectVisu.element.remove();
-          this.style.opacity = FULLOPACITY;
-          this.getEllipse().setCss(this.style);
-          this.undoRedo.addToCommands();
-        }
-      }
+      (mouseEv: MouseEvent) => this.onMouseUp(mouseEv)
     );
 
     const onMouseMove = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'mousemove',
       (mouseEv: MouseEvent) => {
         if (this.onDrag) {
-          this.currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
+          this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
           this.viewTemporaryForm(mouseEv);
           this.rectVisu.dragRectangle(
             this.initialPoint, this.currentPoint
@@ -85,13 +92,13 @@ export class EllipseLogicComponent extends ToolLogicDirective
     );
 
     const onKeyDown = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'keydown',
       (keyEv: KeyboardEvent) => this.onKeyDown(keyEv)
     );
 
     const onKeyUp = this.renderer.listen(
-      this.svgElRef.nativeElement,
+      this.svgStructure.root,
       'keyup',
       (keyEv: KeyboardEvent) => this.onKeyUp(keyEv)
     );
@@ -104,15 +111,8 @@ export class EllipseLogicComponent extends ToolLogicDirective
       onKeyUp
     ];
 
-    this.renderer.setStyle(
-      this.svgElRef.nativeElement,
-      'cursor',
-      'crosshair'
-    );
-  }
+    this.svgStructure.root.style.cursor = 'crosshair';
 
-  ngOnDestroy(): void {
-    this.allListeners.forEach(listener => listener());
   }
 
   private onKeyDown(keyEv: KeyboardEvent): void {
@@ -131,15 +131,25 @@ export class EllipseLogicComponent extends ToolLogicDirective
     }
   }
 
+  private onMouseUp(mouseEv: MouseEvent): void {
+    if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
+      this.onDrag = false;
+      this.rectVisu.element.remove();
+      this.style.opacity = FULLOPACITY;
+      this.getEllipse().setCss(this.style);
+      this.undoRedoService.saveState()
+    }
+  }
+
   private getEllipse(): Ellipse {
     return this.ellipses[this.ellipses.length - 1];
   }
 
   private initEllipse(mouseEv: MouseEvent): void {
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
-      this.currentPoint = { x: mouseEv.offsetX, y: mouseEv.offsetY };
+      this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
       const ellipse = this.renderer.createElement('ellipse', this.svgNS);
-      this.renderer.appendChild(this.svgElRef.nativeElement, ellipse);
+      this.renderer.appendChild(this.svgStructure.drawZone, ellipse);
       this.ellipses.push(new Ellipse(
         this.currentPoint,
         this.renderer,
@@ -148,16 +158,15 @@ export class EllipseLogicComponent extends ToolLogicDirective
       ));
       this.setEllipseProperties();
       this.onDrag = true;
-      this.initialPoint = this.currentPoint = {
-        x: mouseEv.offsetX, y: mouseEv.offsetY
-      }
+      this.initialPoint = this.currentPoint
+        = new Point( mouseEv.offsetX, mouseEv.offsetY);
     }
   }
 
   private initRectangleVisu(mouseEv: MouseEvent): void {
     if (mouseEv.button === ClickType.CLICKGAUCHE) {
       const rectangle = this.renderer.createElement('rect', this.svgNS);
-      this.renderer.appendChild(this.svgElRef.nativeElement, rectangle);
+      this.renderer.appendChild(this.svgStructure.temporaryZone, rectangle);
 
       this.rectVisu = new Rectangle(
         this.renderer,
@@ -200,6 +209,17 @@ export class EllipseLogicComponent extends ToolLogicDirective
       backgroundProperties,
       strokeProperties
     );
+  }
+
+  ngOnDestroy(): void {
+    this.allListeners.forEach(listener => listener());
+    this.undoRedoService.resetActions();
+    if (this.onDrag) {
+      this.onMouseUp(
+        new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
+      );
+      this.getEllipse().element.remove();
+    }
   }
 
 }

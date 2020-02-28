@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import {Radius} from '../shape/common/Ellipse';
-import { Point } from '../shape/common/Point';
+import { Point } from '../selection/Point';
+import { Radius } from '../shape/common/Ellipse';
 import { Dimension } from '../shape/common/Rectangle';
 
 const MINIMALDISTANCE = 3;
@@ -38,17 +38,15 @@ export class MathService {
     const deltaY = mousePosition.y - lastPoint.y;
     const angleAxeX = Math.atan(deltaY / deltaX);
     if (Math.abs(angleAxeX) < Math.PI / 8) {
-      return { x: mousePosition.x, y: lastPoint.y };
+      return new Point(mousePosition.x, lastPoint.y);
     }
     if (Math.abs(angleAxeX) > (Math.PI * 3) / 8) {
-      return { x: lastPoint.x, y: mousePosition.y };
-    } else {
-      if (deltaY * deltaX > 0) {
-        return { x: mousePosition.x, y: lastPoint.y + deltaX };
-      } else {
-        return { x: mousePosition.x, y: lastPoint.y - deltaX };
-      }
+      return new Point(lastPoint.x, mousePosition.y);
     }
+    if (deltaY * deltaX > 0) {
+      return new Point(mousePosition.x, lastPoint.y + deltaX);
+    }
+    return new Point(mousePosition.x, lastPoint.y - deltaX);
   }
 
   getRectangleSize(initialPoint: Point, oppositePoint: Point): Dimension {
@@ -68,7 +66,7 @@ export class MathService {
     } else {
       deltaY = Math.sign(deltaY) * min;
     }
-    return { x: deltaX + initialPoint.x, y: deltaY + initialPoint.y };
+    return new Point(deltaX + initialPoint.x, deltaY + initialPoint.y);
   }
 
   getPolynomeCornersFromRectangle(
@@ -78,7 +76,7 @@ export class MathService {
     sides: number): Point [] {
     const minSide = Math.min(dimension.width, dimension.height);
 
-    const initialPoint: Point = {x: 0, y: 0};
+    const initialPoint = new Point(0, 0);
     let angle = 0;
     let rayon = 0;
     let decalageX = 1.0;
@@ -129,7 +127,7 @@ export class MathService {
     const lastPoint = {x: 0, y: 0};
     lastPoint.x = points[i - 1].x + sideLength * Math.cos(angle);
     lastPoint.y = points[i - 1].y - sideLength * Math.sin(angle);
-    points.push({ x : lastPoint.x, y: lastPoint.y});
+    points.push(new Point(lastPoint.x, lastPoint.y));
     angle += (Math.PI * 2) / sides;
     i += 1;
     }
@@ -140,16 +138,15 @@ export class MathService {
     const deltaX = oppositePoint.x - initialPoint.x;
     const deltaY = oppositePoint.y - initialPoint.y;
     if (deltaX > 0 && deltaY < 0) {
-      return { x: initialPoint.x, y: initialPoint.y + deltaY };
+      return new Point(initialPoint.x, initialPoint.y + deltaY);
     }
     if (deltaX < 0 && deltaY < 0) {
-      return { x: initialPoint.x + deltaX, y: initialPoint.y + deltaY };
+      return new Point(initialPoint.x + deltaX, initialPoint.y + deltaY);
     }
     if (deltaX < 0 && deltaY > 0) {
-      return { x: initialPoint.x + deltaX, y: initialPoint.y };
-    } else {
-      return initialPoint;
+      return new Point(initialPoint.x + deltaX, initialPoint.y);
     }
+    return initialPoint;
   }
 
   getEllipseRadius(initialPoint: Point, oppositePoint: Point): Radius {
@@ -161,15 +158,15 @@ export class MathService {
   }
 
   getEllipseCenter(initialPoint: Point, oppositePoint: Point): Point {
-    const initToCenterv: Point = {
-      x: 0.5 * (oppositePoint.x - initialPoint.x),
-      y: 0.5 * (oppositePoint.y - initialPoint.y)
-    };
+    const initToCenterv = new Point(
+      0.5 * (oppositePoint.x - initialPoint.x),
+      0.5 * (oppositePoint.y - initialPoint.y)
+    );
 
-    return {
-      x: initialPoint.x + initToCenterv.x,
-      y: initialPoint.y + initToCenterv.y
-    };
+    return new Point(
+      initialPoint.x + initToCenterv.x,
+      initialPoint.y + initToCenterv.y
+    );
   }
 
   getCircleCenter(initialPoint: Point, oppositePoint: Point): Point {
@@ -178,9 +175,9 @@ export class MathService {
 
     const re = this.getRectangleSize(initialPoint, oppositePoint);
     const m = Math.min(re.width, re.height);
-    return {
-      x: initialPoint.x + xSign * (m * 0.5),
-      y: initialPoint.y + ySign * (m * 0.5)
-    }
+    return new Point(
+      initialPoint.x + xSign * (m * 0.5),
+      initialPoint.y + ySign * (m * 0.5)
+    )
   }
 }

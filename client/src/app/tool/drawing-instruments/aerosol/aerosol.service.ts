@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import {Point} from '../../shape/common/Point';
-import {ToolService} from '../../tool.service';
+import { Point } from '../../selection/Point';
+import { ToolService } from '../../tool.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,10 +10,15 @@ export class AerosolService extends ToolService {
   thickness: number;
   frequency: number;
 
+  readonly MAX_FREQUENCY = 400;
+  readonly MIN_FREQUENCY = 1;
+  readonly MAX_THICKNESS = 100;
+  readonly MIN_THICKNESS = 10;
+
   constructor() {
     super();
-    this.frequency = 50;
-    this.thickness = 45;
+    this.frequency = 100;
+    this.thickness = 30;
   }
 
   generatePoints(p: Point): string {
