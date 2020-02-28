@@ -1,6 +1,7 @@
 .idea/
 .vscode/
 coverage/
+dump/
 lib/
 node_modules/
 src/secrets.json

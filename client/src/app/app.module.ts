@@ -34,6 +34,13 @@ import {
   ExportComponent
 } from './pages/export/export.component';
 import {
+  DeleteConfirmationDialogComponent
+} from './pages/galery/deleteconfirmation-dialog.component';
+import {
+  GaleryCardComponent
+} from './pages/galery/galery-card/galery-card.component';
+import { GaleryComponent } from './pages/galery/galery.component';
+import {
   HomeComponent
 } from './pages/home/home.component';
 import {
@@ -133,6 +140,7 @@ import {
 import {
   RectanglePanelComponent
 } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
+import { SaveComponent } from './pages/save/save.component';
 
 @NgModule({
   declarations: [
@@ -143,9 +151,11 @@ import {
     ColorPickerContentComponent,
     ColorPickerItemComponent,
     ConfirmationDialogComponent,
+    DeleteConfirmationDialogComponent,
     DocumentationComponent,
     EllipseLogicComponent,
     EllipsePanelComponent,
+    GaleryComponent,
     EraserPanelComponent,
     EraserLogicComponent,
     HomeComponent,
@@ -156,10 +166,13 @@ import {
     PaletteDialogComponent,
     PencilLogicComponent,
     PencilPanelComponent,
+    PolygoneLogicComponent,
+    PolygonePanelComponent,
     RectangleLogicComponent,
     RectanglePanelComponent,
     SidebarComponent,
     SvgComponent,
+    GaleryCardComponent,
     SelectionPanelComponent,
     SelectionLogicComponent,
     PolygoneLogicComponent,
@@ -173,6 +186,7 @@ import {
     ApplicatorLogicComponent,
     GridLogicComponent,
     GridPanelComponent,
+    SaveComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -200,13 +214,15 @@ import {
     EraserPanelComponent,
     PaletteDialogComponent,
     ConfirmationDialogComponent,
+    DeleteConfirmationDialogComponent,
     DocumentationComponent,
     EllipseLogicComponent,
     EllipsePanelComponent,
+    GaleryComponent,
+    HomeComponent,
     ExportComponent,
     LineLogicComponent,
     LinePanelComponent,
-    HomeComponent,
     NewDrawComponent,
     PencilLogicComponent,
     PencilPanelComponent,
@@ -221,7 +237,8 @@ import {
     SelectionLogicComponent,
     SelectionPanelComponent,
     GridLogicComponent,
-    GridPanelComponent
+    GridPanelComponent,
+    SaveComponent,
   ],
   bootstrap: [
     AppComponent,

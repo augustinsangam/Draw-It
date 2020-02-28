@@ -39,7 +39,7 @@ export class PanelComponent implements OnInit {
     private readonly componentFactoryResolver: ComponentFactoryResolver,
     private readonly toolSelectorService: ToolSelectorService
   ) {
-    this.components = new Array(Tool._Len)
+    this.components = new Array(Tool._Len);
     for ( const entry of Tools.TOOL_MANAGER ) {
       this.components[entry[0]] = entry[1][0];
     }

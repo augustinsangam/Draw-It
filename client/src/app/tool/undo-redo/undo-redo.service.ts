@@ -7,7 +7,7 @@ import { SVGStructure } from '../tool-logic/tool-logic.directive';
 export class UndoRedoService {
 
   private svgStructure: SVGStructure;
-  private cmdDone: (SVGElement[])[]
+  private cmdDone: (SVGElement[])[];
   private cmdUndone: (SVGElement[])[];
 
   private actions: {
@@ -25,11 +25,16 @@ export class UndoRedoService {
     this.svgStructure = svgStructure;
   }
 
-  resetActions() {
+  resetActions(): void {
     this.actions = {
       undo: [ this.createDefaultPreAction(), this.createDefaultPostAction() ],
       redo: [ this.createDefaultPreAction(), this.createDefaultPostAction() ]
-    }
+    };
+  }
+
+  clearUndoRedo(): void {
+    this.cmdDone = [];
+    this.cmdUndone = [];
   }
 
   saveState(): void {
@@ -55,8 +60,7 @@ export class UndoRedoService {
     if (!this.actions.undo[0].overrideDefaultBehaviour) {
       this.undoBase();
     }
-
-    if (this.actions.undo[1].enabled && this.actions.undo[1].functionDefined) {
+    if (this.actions.undo[1].functionDefined) {
       (this.actions.undo[1].function as () => void)();
     }
 
@@ -80,7 +84,7 @@ export class UndoRedoService {
       this.redoBase();
     }
 
-    if (this.actions.redo[1].enabled && this.actions.redo[1].functionDefined) {
+    if (this.actions.redo[1].functionDefined) {
       (this.actions.redo[1].function as () => void)();
     }
   }
@@ -123,7 +127,6 @@ export class UndoRedoService {
 
   private createDefaultPostAction(): PostAction {
     return {
-      enabled: false,
       functionDefined: false,
     }
   }
@@ -137,24 +140,23 @@ export class UndoRedoService {
   }
 
   setPreRedoAction(action: PreAction) {
-    this.actions.undo[0] = action;
+    this.actions.redo[0] = action;
   }
 
   setPostRedoAction(action: PostAction) {
-    this.actions.undo[1] = action;
+    this.actions.redo[1] = action;
   }
 
 }
 
-interface PreAction {
+export interface PreAction {
   enabled: boolean,
   overrideDefaultBehaviour: boolean,
   overrideFunctionDefined: boolean
   overrideFunction?: () => void
 }
 
-interface PostAction {
-  enabled: boolean,
+export interface PostAction {
   functionDefined: boolean,
   function?: () => void
 }
