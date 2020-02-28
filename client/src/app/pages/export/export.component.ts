@@ -1,9 +1,10 @@
-import { Component, OnInit, Optional, Renderer2 } from '@angular/core';
+import { Component, ElementRef, OnInit,
+  Optional, Renderer2, ViewChild } from '@angular/core';
 import {
   FormBuilder, FormControl, FormGroup, Validators
 } from '@angular/forms';
 import { MatDialogRef, MatRadioChange } from '@angular/material';
-import { SvgService } from 'src/app/svg/svg.service';
+import { SvgService, SvgShape } from 'src/app/svg/svg.service';
 // import { ColorService } from 'src/app/tool/color/color.service';
 
 @Component({
@@ -13,9 +14,12 @@ import { SvgService } from 'src/app/svg/svg.service';
 })
 export class ExportComponent implements OnInit {
 
+  @ViewChild('svgView', { static: false })
+  protected svgView: ElementRef<SVGSVGElement>;
   /////////////////////
   innerSVG: SVGSVGElement;
-  svgDimension: DOMRect | ClientRect;
+  // svgShape: DOMRect | ClientRect;
+  svgShape: SvgShape;
   downloadLink: HTMLAnchorElement;
   canvasDownload: HTMLCanvasElement;
   img: HTMLImageElement;
@@ -43,8 +47,7 @@ export class ExportComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               @Optional() public dialogRef: MatDialogRef<ExportComponent>,
               private renderer: Renderer2,
-              private svgElementService: SvgService,
-    // private colorService: ColorService
+              private svgService: SvgService,
   ) {
     this.form = this.formBuilder.group({
       name: ['', [Validators.required, (control: FormControl) => {
@@ -77,8 +80,18 @@ export class ExportComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.innerSVG = this.svgElementService.structure.root;
-    this.svgDimension = this.innerSVG.getBoundingClientRect() as DOMRect;
+    this.svgShape = this.svgService.shape;
+    this.innerSVG = this.renderer.createElement(
+      'svg', 'http://www.w3.org/2000/svg');
+    this.renderer.appendChild(this.innerSVG, this.generateBackground());
+    Array.from(this.svgService.structure.drawZone.children)
+    .forEach((element: SVGElement) => {
+      this.renderer.appendChild(this.innerSVG, element.cloneNode(true))});
+    this.innerSVG.setAttribute('width', this.svgShape.width.toString());
+    this.innerSVG.setAttribute('height', this.svgShape.height.toString());
+  }
+
+  ngAfterViewInit() {
     this.createView(FilterChoice.None);
   }
 
@@ -99,77 +112,54 @@ export class ExportComponent implements OnInit {
     });
   }
 
-  encodeImage(): HTMLImageElement {
-    const picture: HTMLImageElement = this.renderer.createElement('img');
-    picture.width = this.svgDimension.width;
-    picture.height = this.svgDimension.height;
-    picture.src = this.convertSVGToBase64();
+  encodeImage(): SVGImageElement {
+    // const picture: HTMLImageElement = this.renderer.createElement('img');
+    // picture.width = this.svgShape.width;
+    // picture.height = this.svgShape.height;
+    // picture.src = this.convertSVGToBase64();
+    // return picture;
+    const picture: SVGImageElement = this.renderer.createElement(
+      'img', 'http://www.w3.org/2000/svg' );
+    picture.setAttribute('width', this.svgShape.width.toString());
+    picture.setAttribute('height', this.svgShape.height.toString());
+    picture.setAttribute('href', this.convertSVGToBase64());
     return picture;
   }
 
   downloadFile(canvaRecu: HTMLCanvasElement) {
-
-    // ensuite recupérons le canvas dans le navigateur
     const canvas: HTMLCanvasElement = canvaRecu;
-    // création de l'ancre pour le telechargement
     const downloadLink: HTMLAnchorElement = this.renderer.createElement('a');
-
-    // recuperons l'url du canvas par defaut c'est png
     const url = canvas.toDataURL('image/' + this.format);
-    // l'ajout et la suppression ne sont pas obligé pour chrome
     this.innerSVG.appendChild(downloadLink);
-
-    // Ajout de l'url du canvas dans href
     downloadLink.href = (this.format === 'svg') ?
       this.convertSVGToBase64() : url;
-
-    // download reprsente le nom de l'image à telecharger
     downloadLink.download = this.name + '.' + this.format;
-
-    // simulation du click
     downloadLink.click();
-
     this.innerSVG.removeChild(downloadLink);
   }
 
   configureCanvas(): HTMLCanvasElement {
     const canvas: HTMLCanvasElement = this.renderer.createElement('canvas');
-    canvas.height = this.svgDimension.height;
-    canvas.width = this.svgDimension.width;
+    canvas.height = this.svgShape.height;
+    canvas.width = this.svgShape.width;
     return canvas;
   }
 
   exportSVG() {
-    // const backColor: string = this.colorService.backgroundColor;
-    // const rect: SVGRectElement = this.renderer.createElement('rect');
-    // rect.setAttribute('x', '0');
-    // rect.setAttribute('y', '0');
-    // rect.setAttribute('height', String(this.svgDimension.height));
-    // rect.setAttribute('width', String(this.svgDimension.width));
-    // rect.setAttribute('fill', backColor);
 
     const uri = 'data:image/svg+xml,' + encodeURIComponent(this.serializeSVG());
     const downloadLink: HTMLAnchorElement = this.renderer.createElement('a');
-
-    // l'ajout et la suppression ne sont pas obligé pour chrome
     this.innerSVG.appendChild(downloadLink);
-
-    // Ajout de l'url du canvas dans href
     downloadLink.href = uri;
-
-    // download reprsente le nom de l'image à telecharger
     downloadLink.download = this.name + '.' + this.format;
-
-    // simulation du click
     downloadLink.click();
-
     this.innerSVG.removeChild(downloadLink);
   }
 
   exportDrawing(): HTMLCanvasElement {
     this.resetInnerSVG();
     const canvas: HTMLCanvasElement = this.configureCanvas();
-    if (this.format === 'svg') { // Test juste du if
+    if (this.format === 'svg') {
       this.exportSVG();
     } else {
 
@@ -194,12 +184,27 @@ export class ExportComponent implements OnInit {
   createView(filterName: string) {
     const picture: SVGImageElement = this.renderer.createElement('image',
       'http://www.w3.org/2000/svg');
-    const viewZone = document.getElementById('picture-view-zone');
+    // const viewZone = document.getElementById('picture-view-zone');
+    const viewZone = this.svgView.nativeElement;
     if (viewZone) {
+      const viewZoneHeigth = Number(viewZone.getAttribute('height'));
+      const viewZoneWidth = Number(viewZone.getAttribute('width'));
+
+      const factor = Math.max(this.svgShape.height / viewZoneHeigth,
+        this.svgShape.width / viewZoneWidth);
+      console.log('heigth ' + this.svgShape.height + ' / ' + viewZoneHeigth);
+      console.log('resultat ' + this.svgShape.height / viewZoneHeigth);
+      console.log('width ' + this.svgShape.width + ' / ' + viewZoneWidth);
+      console.log('resultat ' + this.svgShape.width / viewZoneWidth);
+      console.log('factor ' + factor);
+
+      const pictureHeigth = this.svgShape.height / factor;
+      const pictureWidth = this.svgShape.width / factor;
+
       picture.setAttribute('id', 'pictureView');
-      picture.setAttribute('width', String(viewZone.getAttribute('width')));
-      picture.setAttribute('height', String(viewZone.getAttribute('height')));
       picture.setAttribute('href', this.convertSVGToBase64());
+      picture.setAttribute('width', pictureWidth.toString());
+      picture.setAttribute('height', pictureHeigth.toString());
       picture.setAttribute('filter', this.chooseFilter(filterName));
       const child = viewZone.lastElementChild;
       if (child && (child.getAttribute('id') === 'pictureView')) {
@@ -237,16 +242,35 @@ export class ExportComponent implements OnInit {
   }
 
   resetInnerSVG() {
-    this.innerSVG = (document.getElementById(
-      'picture-view-zone'
-      ) as unknown as SVGSVGElement);
-    this.innerSVG.setAttribute('width', String(this.svgDimension.width));
-    this.innerSVG.setAttribute('height', String(this.svgDimension.height));
+    // this.innerSVG = (document.getElementById(
+    //   'picture-view-zone'
+    //   ) as unknown as SVGSVGElement);
+    // this.innerSVG = this.svgView.nativeElement ;
+    Array.from(this.svgView.nativeElement.children).forEach(
+      (element: SVGElement) => {
+      this.renderer.appendChild(this.innerSVG, element.cloneNode(true))});
+    this.innerSVG.setAttribute('width', String(this.svgShape.width));
+    this.innerSVG.setAttribute('height', String(this.svgShape.height));
+    console.log('ele ' + this.svgShape.width + ' ' + this.svgShape.height );
     const picture = this.innerSVG.getElementById('pictureView');
     if (picture) {
-      picture.setAttribute('width', String(this.svgDimension.width));
-      picture.setAttribute('height', String(this.svgDimension.height));
+      picture.setAttribute('width', String(this.svgShape.width));
+      picture.setAttribute('height', String(this.svgShape.height));
+      console.log('pict ' + picture.getAttribute('href'));
+      console.log('icicici');
     }
+    console.log('fin reset');
+  }
+
+  generateBackground(): SVGRectElement {
+    const rect: SVGRectElement = this.renderer.createElement(
+      'rect', 'http://www.w3.org/2000/svg');
+    rect.setAttribute('x', '0');
+    rect.setAttribute('y', '0');
+    rect.setAttribute('height', String(this.svgShape.height));
+    rect.setAttribute('width', String(this.svgShape.width));
+    rect.setAttribute('fill', this.svgShape.color);
+    return rect;
   }
 }
 
