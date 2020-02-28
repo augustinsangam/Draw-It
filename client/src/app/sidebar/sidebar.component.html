@@ -47,7 +47,8 @@
   </mat-grid-tile>
 </mat-grid-list>
 
-<a title="Sauvegarder"><mat-icon>save</mat-icon></a>
+<a title="Sauvegarder"
+  (click)="saveEvent.emit()"><mat-icon>save</mat-icon></a>
 <a title="Exporter"
   (click)="exportEvent.emit()"><mat-icon>save_alt</mat-icon></a>
 <a title="Aide" style="background-image:url(/assets/sidebar-icons/gimp-prefs-help-system.svg)"

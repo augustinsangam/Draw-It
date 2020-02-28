@@ -133,6 +133,7 @@ import {
 import {
   RectanglePanelComponent
 } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
+import { SaveComponent } from './pages/save/save.component';
 
 @NgModule({
   declarations: [
@@ -173,6 +174,7 @@ import {
     ApplicatorLogicComponent,
     GridLogicComponent,
     GridPanelComponent,
+    SaveComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -221,7 +223,8 @@ import {
     SelectionLogicComponent,
     SelectionPanelComponent,
     GridLogicComponent,
-    GridPanelComponent
+    GridPanelComponent,
+    SaveComponent,
   ],
   bootstrap: [
     AppComponent,

@@ -80,6 +80,7 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
 
   @Output() protected documentationEvent: EventEmitter<null>;
   @Output() protected exportEvent: EventEmitter<null>;
+  @Output() protected saveEvent: EventEmitter<null>;
 
   private toolToElRef: ElementRef<HTMLElement>[];
 
@@ -92,6 +93,7 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
               private changeDetectorRef: ChangeDetectorRef) {
     this.documentationEvent = new EventEmitter<null>();
     this.exportEvent = new EventEmitter<null>();
+    this.saveEvent = new EventEmitter<null>();
     this.toolToElRef = new Array(Tool._Len);
   }
 

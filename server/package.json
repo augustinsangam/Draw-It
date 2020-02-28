@@ -5,17 +5,19 @@
     "node": ">=13.2.0"
   },
   "scripts": {
-    "start": "nodemon --es-module-specifier-resolution=node --unhandled-rejections=strict --require=source-map-support/register",
-    "test": "node --es-module-specifier-resolution=node node_modules/.bin/mocha",
     "clean": "rimraf coverage/ lib/ tsconfig.tsbuildinfo",
+    "start": "nodemon --es-module-specifier-resolution=node --unhandled-rejections=strict --require=source-map-support/register",
     "build": "tsc",
-    "watch": "tsc --watch",
+    "build:watch": "tsc --watch",
+    "test": "node --es-module-specifier-resolution=node node_modules/.bin/mocha",
+    "test:watch": "npm start node_modules/.bin/mocha",
     "coverage": "c8 npm t",
-    "lint": "eslint --fix --max-warnings=0 --ext=.js,.ts src/",
+    "lint": "tslint --project .",
+    "eslint": "eslint --fix --max-warnings=0 --ext=.js,.ts src/",
     "flatc": "flatc --ts --short-names -o src/ ../data.fbs",
-    "db": "mongod --bind_ip='127.0.0.1' --dbpath=\"${HOME}/.cache\"",
+    "db": "mongod --bind_ip='127.0.0.1' --dbpath=\"${HOME}/.cache/db\"",
     "dbc": "mongo",
-    "db6": "mongod --ipv6 --bind_ip='::1' --dbpath=\"${HOME}/.cache\"",
+    "db6": "mongod --ipv6 --bind_ip='::1' --dbpath=\"${HOME}/.cache/db\"",
     "dbc6": "mongo --ipv6 --host='[::1]'"
   },
   "nodemonConfig": {
@@ -33,6 +35,9 @@
       "**/*_generated.[jt]s"
     ],
     "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "simple-import-sort"
+    ],
     "extends": [
       "plugin:@typescript-eslint/recommended",
       "prettier/@typescript-eslint",
@@ -43,6 +48,21 @@
       "sourceType": "module"
     },
     "rules": {
+      "eqeqeq": [
+        1,
+        "always",
+        {
+          "null": "ignore"
+        }
+      ],
+      "quotes": [
+        1,
+        "single",
+        {
+          "allowTemplateLiterals": false
+        }
+      ],
+      "simple-import-sort/sort": 1,
       "@typescript-eslint/explicit-member-accessibility": [
         1,
         {
@@ -66,6 +86,7 @@
     "express": "^4.17.1",
     "flatbuffers": "^1.11.0",
     "inversify": "^5.0.1",
+    "loglevel": "^1.6.7",
     "mongodb": "^3.5.3",
     "nodemon": "^2.0.2",
     "reflect-metadata": "^0.1.13",
@@ -77,6 +98,7 @@
     "@types/flatbuffers": "^1.10.0",
     "@types/mocha": "^7.0.1",
     "@types/mongodb": "^3.3.16",
+    "@types/sinon": "^7.5.2",
     "@typescript-eslint/eslint-plugin": "^2.17.0",
     "@typescript-eslint/parser": "^2.17.0",
     "c8": "^7.0.1",
@@ -84,9 +106,12 @@
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-simple-import-sort": "^5.0.1",
     "mocha": "7.0.0-esm1",
     "prettier": "^1.19.1",
     "rimraf": "^3.0.1",
+    "sinon": "^9.0.0",
+    "tslint": "^6.0.0",
     "typescript": "^3.7.5"
   }
 }

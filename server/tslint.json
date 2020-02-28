@@ -1,0 +1,13 @@
+{
+    "extends": "../common/tslint.json",
+    "rulesDirectory": [],
+    "defaultSeverity": "error",
+    "rules": {
+      "arrow-parens": false
+    },
+    "linterOptions": {
+      "exclude": [
+        "**/*_generated.[jt]s"
+      ]
+  }
+}
