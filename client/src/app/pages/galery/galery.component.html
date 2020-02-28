@@ -28,7 +28,7 @@
   </mat-card-title>
 
   <mat-card-content #cardContent>
-    <div class="centered" #images>
+    <div class="centered">
       <mat-spinner *ngIf="galeryDrawTable.length === 0" class="loading-spinner" color="warn"></mat-spinner>
       <app-galery-card *ngFor="let draw of filteredGaleryDrawTable" [name]="draw.name" [id]="draw.id" [tags]="draw.tags"
         [svg]="draw.svg.cloneNode(true)" (load)="loadDraw($event)" (delete)="deleteDraw($event)"

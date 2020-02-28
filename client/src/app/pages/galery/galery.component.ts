@@ -81,10 +81,6 @@ export class GaleryComponent implements AfterViewInit {
     read: MatAutocomplete
   })protected matAutocomplete: MatAutocomplete;
 
-  @ViewChild('images', {
-    static: false
-  }) private images: ElementRef<HTMLElement>;
-
   @ViewChild('cardContent', {
     static: false
   }) private cardContent: ElementRef<HTMLElement>;

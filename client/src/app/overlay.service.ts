@@ -4,6 +4,7 @@ import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
 import { ExportComponent } from './pages/export/export.component';
+import { GaleryComponent } from './pages/galery/galery.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import {
@@ -56,6 +57,7 @@ export class OverlayService {
       documentation: (undefined as unknown) as
         MatDialogRef<DocumentationComponent>,
       export: (undefined as unknown) as MatDialogRef<ExportComponent>,
+      galery: (undefined as unknown) as MatDialogRef<GaleryComponent>,
     };
     this.svgService = svgService;
   }
@@ -83,6 +85,7 @@ export class OverlayService {
         this.openNewDrawDialog();
         break;
       case OverlayPages.Library:
+        this.openGaleryDialog(true);
         break;
       case OverlayPages.Documentation:
         this.openDocumentationDialog(true);
@@ -153,9 +156,42 @@ export class OverlayService {
     }
   }
 
-  private createNewDraw(option: SvgShape): void {
-    this.svgService.shape = option;
-    const rgb = this.colorService.hexToRgb(option.color);
+  private openGaleryDialog(fromHome: boolean): void {
+    const dialogOptions = {
+      width: '115vw',
+      height: '100vh',
+      panelClass: 'galery',
+      data: { drawInProgress: true },
+    };
+    this.shortcutHanler.desactivateAll();
+    this.dialogRefs.galery = this.dialog.open(
+      GaleryComponent,
+      dialogOptions,
+    );
+    this.dialogRefs.galery.disableClose = false;
+    this.dialogRefs.galery.afterClosed().subscribe((option) => {
+      this.shortcutHanler.activateAll();
+      this.closeGaleryDialog(fromHome, option);
+    });
+  }
+
+  private closeGaleryDialog(
+      fromHome: boolean,
+      option: SVGSVGElement | undefined): void {
+    if (fromHome) {
+      if (!!option) {
+        this.loadDraw(option);
+      } else {
+        this.openHomeDialog();
+      }
+    } else if (!!option) {
+      this.loadDraw(option);
+    }
+  }
+
+  private createNewDraw(shape: SvgShape): void {
+    this.svgService.shape = shape;
+    const rgb = this.colorService.hexToRgb(shape.color);
     this.colorService.selectBackgroundColor(
       `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`
     );
@@ -163,6 +199,28 @@ export class OverlayService {
     this.toolSelectorService.set(Tool.Pencil);
     // Deuxième fois juste pour fermer le panneau latéral
     this.toolSelectorService.set(Tool.Pencil);
+  }
+
+  private loadDraw(svg: SVGSVGElement) {
+    // this.svgService.clearDom();
+    // const svgWidth = svg.getAttribute('width');
+    // const svgHeight = svg.getAttribute('height');
+    // const svgBackground = svg.getAttribute('style');
+    // const svgChildrens = Array.from(svg.childNodes);
+
+    // this.svgService.shape =
+
+    // this.svgService.instance.nativeElement.setAttribute(
+    //   'width', svgWidth as string);
+    // this.svgService.instance.nativeElement.setAttribute(
+    //   'height', svgHeight as string);
+    // this.svgService.instance.nativeElement.setAttribute(
+    //   'style', svgBackground as string);
+
+    // for (const child of svgChildrens) {
+    //   this.svgService.instance.nativeElement.appendChild(child);
+    // }
+    // this.drawInProgress = true;
   }
 
   private getCommomDialogOptions() {
@@ -186,4 +244,5 @@ interface DialogRefs {
   newDraw: MatDialogRef<NewDrawComponent>,
   documentation: MatDialogRef<DocumentationComponent>,
   export: MatDialogRef<ExportComponent>,
+  galery: MatDialogRef<GaleryComponent>,
 }
