@@ -72,6 +72,7 @@ export class SaveComponent implements OnInit {
       this.svgService.shape.width,
       this.svgService.shape.height,
       this.gElOffset);
+    console.log(this.svgService.id);
     if (this.svgService.id) {
       this.communicationService.put(this.svgService.id)
         .then(() => this.dialogRef.close())
