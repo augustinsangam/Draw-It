@@ -85,6 +85,7 @@ class Router {
 			}
 			try {
 				const _id = await this.db.nextID();
+				console.log(_id);
 				await this.db.insert({
 					_id,
 					data: new mongodb.Binary(req.body),
@@ -98,8 +99,9 @@ class Router {
 
 	private methodPut(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
-			if (!this.verify(req.body)) {
-				res.sendStatus(StatusCode.NOT_ACCEPTABLE);
+			const errMsg = this.verify(req.body);
+			if (!!errMsg) {
+				res.status(StatusCode.NOT_ACCEPTABLE).send(errMsg);
 				return;
 			}
 			try {
