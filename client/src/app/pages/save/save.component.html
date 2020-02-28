@@ -1,29 +1,37 @@
-<!-- stackoverflow.com/a/51507806 -->
-<!-- (keypress.enter) does not work -->
 <svg:svg #preview></svg:svg>
-<br />
-<!-- https://github.com/angular/angular/issues/15531 -->
-<!--input ngModel formnovalidate type="submit" name="cancel" value="Retour" /-->
-<form ngNativeValidate #f="ngForm" (ngSubmit)="submit(f)">
-  <label for="name">Nom du dessin (entre 3 à 21 caractères)</label>
-  <input required id="name" name="name"
-    placeholder="foobar"
-    pattern=".{3,21}"
-    title="entre 3 à 21 caractères"
-    [ngModel]="svgService.name" />
-  <br />
-  <label for="tag">Étiquette (entre 3 à 21 caractères)</label>
-  <input id="tag"
-    placeholder="licorne"
-    pattern=".{3,21}"
-    title="entre 3 à 21 caractères"
-    (keydown.enter)="add($event)"/>
-  <ul>
-    <li *ngFor="let tag of tags"
-      (click)="tags.delete(tag)">{{ tag }}</li>
-  </ul>
-  <input type="submit" value="Sauvegarder" [disabled]="saving" />
-  <br />
-  <input type="button" value="Retour"
-    (click)="dialogRef.close('Opération annulée')" />
+
+<form id="form" [formGroup]="form">
+  <mat-form-field appearance="outline">
+    <mat-label>Nom du dessin</mat-label>
+    <input matInput formControlName="name">
+    <mat-hint>
+      Le nom doit être en 3 et 21 caractères.
+    </mat-hint>
+  </mat-form-field>
+  <mat-form-field class="chip-list">
+    <mat-chip-list #chipList>
+      <mat-chip *ngFor="let tag of tags" [removable]="true" (removed)="remove(tag)">
+        {{tag}}
+        <mat-icon matChipRemove>cancel</mat-icon>
+      </mat-chip>
+      <input placeholder="Nouveau tag..."
+             [matChipInputFor]="chipList"
+             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+             [matChipInputAddOnBlur]="addOnBlur"
+             (matChipInputTokenEnd)="add($event)">
+    </mat-chip-list>
+  </mat-form-field>
+  <button mat-raised-button
+            color="warn"
+            (click)="onCancel()"
+            #cancelButton>
+            Annuler
+  </button>
+  <button mat-raised-button
+          color="primary"
+          (click)="onSubmit()"
+          [disabled]="form.invalid"
+          #submitButton>
+          Créer
+  </button>
 </form>
