@@ -3,7 +3,7 @@ import {
   FormBuilder, FormControl, FormGroup, Validators
 } from '@angular/forms';
 import { MatDialogRef, MatRadioChange } from '@angular/material';
-import { SvgService } from 'src/app/svg/svg.service';
+import { SvgService, SvgShape } from 'src/app/svg/svg.service';
 // import { ColorService } from 'src/app/tool/color/color.service';
 
 @Component({
@@ -15,7 +15,8 @@ export class ExportComponent implements OnInit {
 
   /////////////////////
   innerSVG: SVGSVGElement;
-  svgDimension: DOMRect | ClientRect;
+  // svgShape: DOMRect | ClientRect;
+  svgShape: SvgShape;
   downloadLink: HTMLAnchorElement;
   canvasDownload: HTMLCanvasElement;
   img: HTMLImageElement;
@@ -77,10 +78,11 @@ export class ExportComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.svgShape = this.svgElementService.shape;
     this.innerSVG = this.svgElementService.structure.root;
     // const drawing = this.svgElementService.structure.root;
     // this.innerSVG = drawing.cloneNode(true) as SVGSVGElement;
-    this.svgDimension = this.innerSVG.getBoundingClientRect() as DOMRect;
+    // this. = this.innerSVG.getBoundingClientRect() as DOMRect;
     this.createView(FilterChoice.None);
   }
 
@@ -103,8 +105,8 @@ export class ExportComponent implements OnInit {
 
   encodeImage(): HTMLImageElement {
     const picture: HTMLImageElement = this.renderer.createElement('img');
-    picture.width = this.svgDimension.width;
-    picture.height = this.svgDimension.height;
+    picture.width = this.svgShape.width;
+    picture.height = this.svgShape.height;
     picture.src = this.convertSVGToBase64();
     return picture;
   }
@@ -136,8 +138,8 @@ export class ExportComponent implements OnInit {
 
   configureCanvas(): HTMLCanvasElement {
     const canvas: HTMLCanvasElement = this.renderer.createElement('canvas');
-    canvas.height = this.svgDimension.height;
-    canvas.width = this.svgDimension.width;
+    canvas.height = this.svgShape.height;
+    canvas.width = this.svgShape.width;
     return canvas;
   }
 
@@ -146,8 +148,8 @@ export class ExportComponent implements OnInit {
     // const rect: SVGRectElement = this.renderer.createElement('rect');
     // rect.setAttribute('x', '0');
     // rect.setAttribute('y', '0');
-    // rect.setAttribute('height', String(this.svgDimension.height));
-    // rect.setAttribute('width', String(this.svgDimension.width));
+    // rect.setAttribute('height', String(this.svgShape.height));
+    // rect.setAttribute('width', String(this.svgShape.width));
     // rect.setAttribute('fill', backColor);
 
     const uri = 'data:image/svg+xml,' + encodeURIComponent(this.serializeSVG());
@@ -201,22 +203,23 @@ export class ExportComponent implements OnInit {
       const viewZoneHeigth = Number(viewZone.getAttribute('height'));
       const viewZoneWidth = Number(viewZone.getAttribute('width'));
 
-      const factor = Math.max((this.svgDimension.height / viewZoneHeigth), (this.svgDimension.width / viewZoneWidth));
-      console.log('heigth ' + this.svgDimension.height + ' / ' + viewZoneHeigth);
-      console.log('resultat ' + this.svgDimension.height / viewZoneHeigth);
-      console.log('width ' + this.svgDimension.width + ' / ' + viewZoneWidth);
-      console.log('resultat ' + this.svgDimension.width / viewZoneWidth);
+      const factor = Math.max(this.svgShape.height / viewZoneHeigth,
+        this.svgShape.width / viewZoneWidth);
+      console.log('heigth ' + this.svgShape.height + ' / ' + viewZoneHeigth);
+      console.log('resultat ' + this.svgShape.height / viewZoneHeigth);
+      console.log('width ' + this.svgShape.width + ' / ' + viewZoneWidth);
+      console.log('resultat ' + this.svgShape.width / viewZoneWidth);
       console.log('factor ' + factor);
 
-      const pictureHeigth = this.svgDimension.height / factor;
-      const pictureWidth = this.svgDimension.width / factor;
+      const pictureHeigth = this.svgShape.height / factor;
+      const pictureWidth = this.svgShape.width / factor;
 
       // this.innerSVG.setAttribute('width', pictureWidth.toString());
       // this.innerSVG.setAttribute('height', pictureHeigth.toString());
-      // const factor = Math.max( viewZoneHeigth / this.svgDimension.height,
-      //   viewZoneWidth / this.svgDimension.height);
-      // const pictureHeigth = this.svgDimension.height * factor;
-      // const pictureWidth = this.svgDimension.width * factor;
+      // const factor = Math.max( viewZoneHeigth / this.svgShape.height,
+      //   viewZoneWidth / this.svgShape.height);
+      // const pictureHeigth = this.svgShape.height * factor;
+      // const pictureWidth = this.svgShape.width * factor;
 
       picture.setAttribute('id', 'pictureView');
       picture.setAttribute('href', this.convertSVGToBase64());
@@ -259,15 +262,15 @@ export class ExportComponent implements OnInit {
   }
 
   resetInnerSVG() {
-    this.innerSVG = (document.getElementById(
-      'picture-view-zone'
-      ) as unknown as SVGSVGElement);
-    this.innerSVG.setAttribute('width', String(this.svgDimension.width));
-    this.innerSVG.setAttribute('height', String(this.svgDimension.height));
+    // this.innerSVG = (document.getElementById(
+    //   'picture-view-zone'
+    //   ) as unknown as SVGSVGElement);
+    this.innerSVG.setAttribute('width', String(this.svgShape.width));
+    this.innerSVG.setAttribute('height', String(this.svgShape.height));
     const picture = this.innerSVG.getElementById('pictureView');
     if (picture) {
-      picture.setAttribute('width', String(this.svgDimension.width));
-      picture.setAttribute('height', String(this.svgDimension.height));
+      picture.setAttribute('width', String(this.svgShape.width));
+      picture.setAttribute('height', String(this.svgShape.height));
     }
     console.log('fin reset');
   }
