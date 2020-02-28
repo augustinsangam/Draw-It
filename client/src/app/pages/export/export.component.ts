@@ -78,6 +78,8 @@ export class ExportComponent implements OnInit {
 
   ngOnInit() {
     this.innerSVG = this.svgElementService.structure.root;
+    // const drawing = this.svgElementService.structure.root;
+    // this.innerSVG = drawing.cloneNode(true) as SVGSVGElement;
     this.svgDimension = this.innerSVG.getBoundingClientRect() as DOMRect;
     this.createView(FilterChoice.None);
   }
@@ -196,10 +198,30 @@ export class ExportComponent implements OnInit {
       'http://www.w3.org/2000/svg');
     const viewZone = document.getElementById('picture-view-zone');
     if (viewZone) {
+      const viewZoneHeigth = Number(viewZone.getAttribute('height'));
+      const viewZoneWidth = Number(viewZone.getAttribute('width'));
+
+      const factor = Math.max((this.svgDimension.height / viewZoneHeigth), (this.svgDimension.width / viewZoneWidth));
+      console.log('heigth ' + this.svgDimension.height + ' / ' + viewZoneHeigth);
+      console.log('resultat ' + this.svgDimension.height / viewZoneHeigth);
+      console.log('width ' + this.svgDimension.width + ' / ' + viewZoneWidth);
+      console.log('resultat ' + this.svgDimension.width / viewZoneWidth);
+      console.log('factor ' + factor);
+
+      const pictureHeigth = this.svgDimension.height / factor;
+      const pictureWidth = this.svgDimension.width / factor;
+
+      // this.innerSVG.setAttribute('width', pictureWidth.toString());
+      // this.innerSVG.setAttribute('height', pictureHeigth.toString());
+      // const factor = Math.max( viewZoneHeigth / this.svgDimension.height,
+      //   viewZoneWidth / this.svgDimension.height);
+      // const pictureHeigth = this.svgDimension.height * factor;
+      // const pictureWidth = this.svgDimension.width * factor;
+
       picture.setAttribute('id', 'pictureView');
-      picture.setAttribute('width', String(viewZone.getAttribute('width')));
-      picture.setAttribute('height', String(viewZone.getAttribute('height')));
       picture.setAttribute('href', this.convertSVGToBase64());
+      picture.setAttribute('width', pictureWidth.toString());
+      picture.setAttribute('height', pictureHeigth.toString());
       picture.setAttribute('filter', this.chooseFilter(filterName));
       const child = viewZone.lastElementChild;
       if (child && (child.getAttribute('id') === 'pictureView')) {
@@ -247,6 +269,7 @@ export class ExportComponent implements OnInit {
       picture.setAttribute('width', String(this.svgDimension.width));
       picture.setAttribute('height', String(this.svgDimension.height));
     }
+    console.log('fin reset');
   }
 }
 
