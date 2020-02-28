@@ -32,7 +32,7 @@ export class GaleryCardComponent implements AfterViewInit {
     this.tagClick = new Subject();
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     let viewPortWidth;
     let viewPortHeight;
     if (!!this.width && !!this.height) {
@@ -44,20 +44,19 @@ export class GaleryCardComponent implements AfterViewInit {
     }
     this.svgRef.nativeElement.setAttribute('viewBox',
       [0, 0, this.width, this.height].join(' '));
+    this.svgRef.nativeElement.style.backgroundColor = this.color;
     this.renderer.appendChild(this.svgRef.nativeElement, this.svg);
-    console.log(this.svg);
   }
 
-  onLoad() {
+  onLoad(): void {
     this.load.next(this.id);
   }
 
-  onDelete() {
+  onDelete(): void {
     this.delete.next(this.id);
   }
 
-  onClick(tag: string) {
-    console.log(tag);
+  onClick(tag: string): void {
     this.tagClick.next(tag);
   }
 }
