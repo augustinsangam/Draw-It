@@ -15,9 +15,9 @@
     "lint": "tslint --project .",
     "eslint": "eslint --fix --max-warnings=0 --ext=.js,.ts src/",
     "flatc": "flatc --ts --short-names -o src/ ../data.fbs",
-    "db": "mongod --bind_ip='127.0.0.1' --dbpath=\"${HOME}/.cache\"",
+    "db": "mongod --bind_ip='127.0.0.1' --dbpath=\"${HOME}/.cache/db\"",
     "dbc": "mongo",
-    "db6": "mongod --ipv6 --bind_ip='::1' --dbpath=\"${HOME}/.cache\"",
+    "db6": "mongod --ipv6 --bind_ip='::1' --dbpath=\"${HOME}/.cache/db\"",
     "dbc6": "mongo --ipv6 --host='[::1]'"
   },
   "nodemonConfig": {

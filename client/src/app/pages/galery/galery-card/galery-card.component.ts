@@ -11,9 +11,12 @@ import { Subject } from 'rxjs';
 export class GaleryCardComponent implements AfterViewInit {
 
   @Input() name: string;
-  @Input() svg: SVGSVGElement;
+  @Input() svg: SVGGElement;
   @Input() tags: string[];
   @Input() id: number;
+  @Input() height: number;
+  @Input() width: number;
+  @Input() color: string;
 
   @Output() load: Subject<number>;
   @Output() delete: Subject<number>;
@@ -21,7 +24,6 @@ export class GaleryCardComponent implements AfterViewInit {
 
   @ViewChild('svg', {
     static: false,
-    read: ElementRef
   }) svgRef: ElementRef<HTMLElement>;
 
   constructor(private renderer: Renderer2) {
@@ -31,20 +33,19 @@ export class GaleryCardComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    const svgWidth = this.svg.getAttribute('width');
-    const svgHeight = this.svg.getAttribute('height');
     let viewPortWidth;
     let viewPortHeight;
-    if (!!svgWidth && !!svgHeight) {
-      const factor = Math.max(+svgWidth / 300, +svgHeight / 170);
-      viewPortWidth = Number(svgWidth) / factor;
-      viewPortHeight = Number(svgHeight) / factor;
-      this.svg.setAttribute('width', viewPortWidth.toString());
-      this.svg.setAttribute('height', viewPortHeight.toString());
+    if (!!this.width && !!this.height) {
+      const factor = Math.max(+this.width / 300, +this.height / 170);
+      viewPortWidth = Number(this.width) / factor;
+      viewPortHeight = Number(this.height) / factor;
+      this.svgRef.nativeElement.setAttribute('width', viewPortWidth.toString());
+      this.svgRef.nativeElement.setAttribute('height', viewPortHeight.toString());
     }
-    this.svg.setAttribute('viewBox',
-      [0, 0, svgWidth, svgHeight].join(' '));
+    this.svgRef.nativeElement.setAttribute('viewBox',
+      [0, 0, this.width, this.height].join(' '));
     this.renderer.appendChild(this.svgRef.nativeElement, this.svg);
+    console.log(this.svg);
   }
 
   onLoad() {
@@ -57,6 +58,6 @@ export class GaleryCardComponent implements AfterViewInit {
 
   onClick(tag: string) {
     console.log(tag);
-    this.tagClick.next(tag)
+    this.tagClick.next(tag);
   }
 }

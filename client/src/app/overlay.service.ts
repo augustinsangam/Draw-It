@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
@@ -7,6 +7,7 @@ import { ExportComponent } from './pages/export/export.component';
 import { GaleryComponent, GaleryDraw } from './pages/galery/galery.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
+import { SaveComponent } from './pages/save/save.component';
 import {
   Shortcut, ShortcutHandlerService
 } from './shortcut-handler/shortcut-handler.service';
@@ -28,7 +29,8 @@ export class OverlayService {
 
   constructor(private shortcutHanler: ShortcutHandlerService,
               private colorService: ColorService,
-              private toolSelectorService: ToolSelectorService
+              private toolSelectorService: ToolSelectorService,
+              private readonly snackBar: MatSnackBar,
   ) {
 
     this.shortcutHanler.set(Shortcut.O, (event: KeyboardEvent) => {
@@ -44,7 +46,7 @@ export class OverlayService {
         this.toolSelectorService.set(Tool.Selection);
         this.svgService.selectAllElements.emit(null);
       } else if (!!event && !event.ctrlKey) {
-        this.toolSelectorService.set(Tool.Aerosol)
+        this.toolSelectorService.set(Tool.Aerosol);
       }
     });
   }
@@ -58,6 +60,7 @@ export class OverlayService {
         MatDialogRef<DocumentationComponent>,
       export: (undefined as unknown) as MatDialogRef<ExportComponent>,
       galery: (undefined as unknown) as MatDialogRef<GaleryComponent>,
+      save: (undefined as unknown) as MatDialogRef<SaveComponent>,
     };
     this.svgService = svgService;
   }
@@ -151,6 +154,25 @@ export class OverlayService {
 
   }
 
+  openSaveDialog() {
+    const dialogOptions = {
+      width: '1000px',
+      height: '90vh'
+    };
+    this.shortcutHanler.desactivateAll();
+    this.dialogRefs.save = this.dialog.open(
+      SaveComponent,
+      dialogOptions
+    );
+    this.dialogRefs.save.disableClose = true;
+    this.dialogRefs.save.afterClosed().subscribe((err?: string) => {
+      this.shortcutHanler.activateAll();
+      this.snackBar.open(err ? err : 'Succès', 'ok', {
+        duration: err ? 3000 : 1000,
+      });
+    });
+  }
+
   private closeDocumentationDialog(fromHome: boolean): void {
     if (fromHome) {
       this.openHomeDialog();
@@ -178,7 +200,7 @@ export class OverlayService {
 
   private closeGaleryDialog(
       fromHome: boolean,
-      option: SVGSVGElement | undefined): void {
+      option: GaleryDraw | undefined): void {
     if (fromHome) {
       if (!!option) {
         this.loadDraw(option);
@@ -231,9 +253,10 @@ enum OverlayPages {
 }
 
 interface DialogRefs {
-  home: MatDialogRef<HomeComponent>,
-  newDraw: MatDialogRef<NewDrawComponent>,
-  documentation: MatDialogRef<DocumentationComponent>,
-  export: MatDialogRef<ExportComponent>,
-  galery: MatDialogRef<GaleryComponent>,
+  home: MatDialogRef<HomeComponent>;
+  newDraw: MatDialogRef<NewDrawComponent>;
+  documentation: MatDialogRef<DocumentationComponent>;
+  export: MatDialogRef<ExportComponent>;
+  galery: MatDialogRef<GaleryComponent>;
+  save: MatDialogRef<SaveComponent>;
 }

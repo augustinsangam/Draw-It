@@ -20,7 +20,7 @@ SERVER {{{
 }}}
 
 DATABASE {{{
-	- mongo --ipv6 --host=::1
+	- npm run dbc
 	- use log2990
 	- db.createUser({ user: "foo", pwd: "bar", roles: [{ db: "log2990", role: "readWrite" }], mechanisms: ["SCRAM-SHA-256"] })
 }}}

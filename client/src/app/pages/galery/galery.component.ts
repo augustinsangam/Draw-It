@@ -178,7 +178,7 @@ export class GaleryComponent implements AfterViewInit {
     this.screenService.size.subscribe(() => this.ajustImagesWidth());
   }
 
-  private ajustImagesWidth(): void {
+  protected ajustImagesWidth(): void {
     const contentWidth = this.cardContent.nativeElement.clientWidth;
     this.renderer.setStyle(this.cardContent.nativeElement, 'padding-left',
       `${(contentWidth % 332) / 2}px`);

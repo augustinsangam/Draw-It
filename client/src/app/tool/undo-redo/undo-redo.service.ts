@@ -7,7 +7,7 @@ import { SVGStructure } from '../tool-logic/tool-logic.directive';
 export class UndoRedoService {
 
   private svgStructure: SVGStructure;
-  private cmdDone: (SVGElement[])[]
+  private cmdDone: (SVGElement[])[];
   private cmdUndone: (SVGElement[])[];
 
   private actions: {
@@ -25,11 +25,16 @@ export class UndoRedoService {
     this.svgStructure = svgStructure;
   }
 
-  resetActions() {
+  resetActions(): void {
     this.actions = {
       undo: [ this.createDefaultPreAction(), this.createDefaultPostAction() ],
       redo: [ this.createDefaultPreAction(), this.createDefaultPostAction() ]
-    }
+    };
+  }
+
+  clearUndoRedo(): void {
+    this.cmdDone = [];
+    this.cmdUndone = [];
   }
 
   saveState(): void {

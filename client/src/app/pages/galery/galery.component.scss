@@ -1,9 +1,16 @@
+.card {
+  background-color: whitesmoke;
+  padding: 16px;
+  height: calc(100% - 32px);
+}
+
 mat-card-title {
   background-color: whitesmoke;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  height: 172px;
+  height: 180px;
+  background-color: whitesmoke;
 }
 
 .chip-list {
@@ -37,8 +44,10 @@ mat-card-title {
 mat-card-content {
   display: flex;
   justify-content: center;
-  height: calc(100% - 172px - 60px);
+  height: calc(100% - 188px);
+  // height: 100%;
   overflow-y: auto;
+  background-color: whitesmoke;
 }
 
 .centered {

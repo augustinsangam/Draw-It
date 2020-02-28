@@ -1,12 +1,12 @@
 .card {
     width: 300px;
+    height: 350px;
     margin: 5px;
     background-color: #e3e3e9;
     display: flex;
     flex-direction: column;
     border-radius: 2px;
 }
-
 
 .mat-card-title {
     max-width: 268px;
@@ -16,11 +16,10 @@
 }
 
 .svg-wrapper {
-    // width: 300px;
-    // height: 170px;
+    width: 300px;
+    height: 170px;
     display: flex;
     flex-direction: row;
-    // justify-content: center;
     margin-bottom: 10px;
 }
 

@@ -4,9 +4,9 @@ import mongodb from 'mongodb';
 import sinon from 'sinon';
 
 import { Draw, Draws } from '../data_generated';
-import { Database } from '../database';
+import { Database, Entry } from '../database';
 import { myContainer } from '../inversify.config';
-import { Entry, Router } from '../router';
+import { Router } from '../router';
 import { TYPES } from '../types';
 
 describe('all', () => {

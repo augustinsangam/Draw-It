@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card class="card">
   <mat-card-title>
     <h1 class='title'>
       <mat-icon>photo_library</mat-icon> Galerie
@@ -21,7 +21,7 @@
         </mat-autocomplete>
       </mat-form-field>
       <span>OU</span>
-      <mat-slide-toggle #searchToggleRef></mat-slide-toggle>
+      <mat-slide-toggle #searchToggleRef (click)="ajustImagesWidth()"></mat-slide-toggle>
       <span>ET</span>
     </div>
   </mat-card-title>
@@ -30,7 +30,8 @@
       <!-- <mat-spinner *ngIf="galeryDrawTable.length === 0" class="loading-spinner" color="warn"></mat-spinner> -->
       <h2 *ngIf="galeryDrawTable.length === 0" class="loading-spinner" color="warn">Chargement ... </h2>
       <app-galery-card *ngFor="let draw of filteredGaleryDrawTable" [name]="draw.name" [id]="draw.id" [tags]="draw.tags"
-        [svg]="draw.svg.cloneNode(true)" (load)="loadDraw($event)" (delete)="deleteDraw($event)"
+        [color]="draw.backgroundColor" [height]="draw.height" [width]="draw.width" 
+        [svg]="draw.svg" (load)="loadDraw($event)" (delete)="deleteDraw($event)"
         (tagClick)="addTag($event)">
       </app-galery-card>
       <div *ngIf="filteredGaleryDrawTable.length === 0 && galeryDrawTable.length !== 0">
