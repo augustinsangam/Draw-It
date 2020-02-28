@@ -19,7 +19,12 @@ class Application {
 			res.header('Access-Control-Allow-Headers', 'Content-Type');
 			next();
 		});
-		this.app.use(express.raw());
+		// expressjs.com/en/api.html#express.raw
+		this.app.use(
+			express.raw({
+				limit: '10mb',
+			}),
+		);
 		// Router must be the last middleware
 		this.app.use(router.router);
 	}
