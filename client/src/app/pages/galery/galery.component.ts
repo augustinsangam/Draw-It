@@ -28,6 +28,7 @@ import {
 } from './deleteconfirmation-dialog.component';
 
 import { flatbuffers } from 'flatbuffers';
+import { ScreenService } from '../new-draw/sreen-service/screen.service';
 
 /**
  * @title Chips Autocomplete
@@ -71,25 +72,30 @@ export class GaleryComponent implements AfterViewInit {
   }) protected searchToggleRef: MatSlideToggle;
 
   @ViewChild('tagInput', {
-    static: true,
+    static: false,
     read: ElementRef
   })protected tagInput: ElementRef<HTMLInputElement>;
 
   @ViewChild('auto', {
-    static: true,
+    static: false,
     read: MatAutocomplete
   })protected matAutocomplete: MatAutocomplete;
 
-  @ViewChild('content', {
+  @ViewChild('images', {
     static: false
-  }) content: ElementRef<HTMLElement>;
+  }) private images: ElementRef<HTMLElement>;
+
+  @ViewChild('cardContent', {
+    static: false
+  }) private cardContent: ElementRef<HTMLElement>;
 
   constructor(
     private communicationService: CommunicationService,
     private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     @Optional() public dialogRef: MatDialogRef<GaleryComponent>,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private screenService: ScreenService
   ) {
     this.galeryDrawTable = new Array<GaleryDraw>();
     this.filteredGaleryDrawTable = new Array<GaleryDraw>();
@@ -156,6 +162,7 @@ export class GaleryComponent implements AfterViewInit {
     this.filteredGaleryDrawTable = this.galeryDrawTable;
     this.tagCtrl.setValue(null);
     this.tagInput.nativeElement.blur();
+    this.ajustImagesWidth();
   }
 
   ngAfterViewInit() {
@@ -163,6 +170,13 @@ export class GaleryComponent implements AfterViewInit {
       this.searchStatementToggle = $event.checked
       this.filterGaleryTable()
     });
+    this.screenService.size.subscribe(() => this.ajustImagesWidth());
+  }
+
+  private ajustImagesWidth(): void {
+    const contentWidth = this.cardContent.nativeElement.clientWidth;
+    this.renderer.setStyle(this.cardContent.nativeElement, 'padding-left',
+      `${(contentWidth % 332) / 2}px`);
   }
 
   add(event: MatChipInputEvent): void {

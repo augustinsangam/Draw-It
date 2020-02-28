@@ -1,4 +1,4 @@
-.header {
+mat-card-title {
   background-color: whitesmoke;
   display: flex;
   flex-direction: column;
@@ -29,31 +29,24 @@
 .slider {
   padding-left: 15px;
   padding-right: 15px;
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
+  float: left;
   border: 3px solid #2F3136;
-  // background-color: #2F3136;
   border-radius: 25px;
 }
 
-.slider-option {
-  margin-right: 8px;
+mat-card-content {
+  display: flex;
+  justify-content: center;
+  height: calc(100% - 172px - 60px);
+  overflow-y: auto;
 }
 
-.content {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  padding: 20px;
-  min-height: calc(100% - 172px - 60px);
-  // background-color: rgb(194, 207, 245);
+.centered {
   background-color: whitesmoke;
-  // background-image: linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%);
-  // background-color: #333;
-  // background-position: 0 0, 10px 10px;
-  // background-size: 21px 21px;
+}
+
+app-galery-card {
+  float: left;
 }
 
 .loading-spinner {
@@ -82,4 +75,8 @@ img{
 
 .alert {
   color: rgb(148, 28, 28);
+}
+
+mat-slide-toggle {
+  margin: 0px 20px 0px;
 }

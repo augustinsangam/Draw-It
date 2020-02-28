@@ -1,8 +1,7 @@
 .card {
     width: 300px;
-    height: 330px;
     margin: 5px;
-    background-color: #39394d;
+    background-color: #e3e3e9;
     display: flex;
     flex-direction: column;
     border-radius: 2px;
@@ -17,11 +16,11 @@
 }
 
 .svg-wrapper {
-    width: 300px;
-    height: 170px;
+    // width: 300px;
+    // height: 170px;
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    // justify-content: center;
     margin-bottom: 10px;
 }
 
@@ -36,6 +35,7 @@
 
 .mat-chip {
     flex: 0 0 auto;
+    background-color: rgb(219, 215, 215);
 }
 
 .action-Button {
