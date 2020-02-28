@@ -1,5 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { SVGStructure } from '../tool/tool-logic/tool-logic.directive';
+import {UndoRedoService} from '../tool/undo-redo/undo-redo.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,16 +11,17 @@ export class SvgService {
   selectAllElements: EventEmitter<null>;
   shape: SvgShape;
 
-  constructor() {
+  constructor(private readonly undoRedoService: UndoRedoService,
+  ) {
     this.selectAllElements = new EventEmitter();
     this.shape = {
       width: 0,
       height: 0,
       color: 'none'
-    }
+    };
   }
 
-  changeBackgroundColor(color: string) {
+  changeBackgroundColor(color: string): void {
     this.shape.color = color;
   }
 
@@ -30,6 +32,7 @@ export class SvgService {
           children.remove();
         });
     });
+    this.undoRedoService.clearUndoRedo();
   }
 
 }
