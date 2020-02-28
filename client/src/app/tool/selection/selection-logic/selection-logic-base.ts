@@ -53,7 +53,6 @@ export abstract class SelectionLogicBase
     this.allListenners = [];
     this.selectedElements = new Set();
     this.undoRedoService.setPostUndoAction({
-      enabled: true,
       functionDefined: true,
       function: () => {
         this.deleteVisualisation();
@@ -75,6 +74,7 @@ export abstract class SelectionLogicBase
   }
 
   protected applySingleSelection(element: SVGElement): void {
+    this.deleteVisualisation();
     this.selectedElements = new Set([element]);
     const points = new SingleSelection(element, this.getSvgOffset()).points();
     this.drawVisualisation(points[0], points[1]);
@@ -91,6 +91,7 @@ export abstract class SelectionLogicBase
 
   protected applyMultipleSelection(startPoint?: Point, endPoint?: Point,
                                    elements?: Set<SVGElement>): void {
+    this.deleteVisualisation();
     const selection = this.getMultipleSelection(startPoint, endPoint, elements);
     this.selectedElements = selection.selectedElements;
     this.drawVisualisation(selection.points[0], selection.points[1]);
