@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+
 import inversify from 'inversify';
 
 import { Application } from './application';
