@@ -40,7 +40,7 @@ export class LineLogicComponent extends ToolLogicDirective
           // TODO Nicolas. Exactemment ici
           // tu dois mettre la logique pour elever
           // uniquement le trait sans ce cercle
-          this.paths.pop();
+          this.getPath().removeLastInstruction();
           this.undoRedoService.saveState();
           this.onKeyDown({ code: 'Escape'} as unknown as KeyboardEvent);
         }

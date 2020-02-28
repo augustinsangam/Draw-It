@@ -12,7 +12,7 @@ import {
 } from '../../shape/common/AbstractShape';
 import { Rectangle } from '../../shape/common/Rectangle';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
-import { UndoRedoService } from '../../undo-redo/undo-redo.service';
+import { PostAction, UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { EraserService } from '../eraser.service';
 
 const CONSTANTS = {
@@ -37,6 +37,7 @@ export class EraserLogicComponent
   private allListeners: (() => void)[];
   private markedElements: Map<SVGElement, string>;
   private elementsDeletedInDrag: boolean;
+  private lastestMousePosition: Point;
 
   constructor(private renderer: Renderer2,
               private service: EraserService,
@@ -53,27 +54,15 @@ export class EraserLogicComponent
     };
     this.markedElements = new Map();
     this.undoRedoService.resetActions();
-    const preAction = {
-      enabled: true,
-      overrideDefaultBehaviour: false,
-      overrideFunctionDefined: true,
-      overrideFunction: () => {
-        this.restoreMarkedElements();
-      }
-    };
-    const postAction = {
-      enabled: true,
+    const postAction: PostAction = {
       functionDefined: true,
       function: () => {
-        this.markElementsInZone(this.mouse.currentPoint.x,
-          this.mouse.currentPoint.y);
+        this.markElementsInZone(this.lastestMousePosition.x,
+          this.lastestMousePosition.y);
       }
     };
-
-    this.undoRedoService.setPreUndoAction(preAction)
-    this.undoRedoService.setPreRedoAction(preAction)
-    this.undoRedoService.setPostRedoAction(postAction)
-    this.undoRedoService.setPostRedoAction(postAction)
+    this.undoRedoService.setPostUndoAction(postAction);
+    this.undoRedoService.setPostRedoAction(postAction);
   }
 
   private handlers = new Map<string, MouseEventCallBack>([
@@ -88,6 +77,7 @@ export class EraserLogicComponent
       this.restoreMarkedElements();
       const selectedElements = this.markElementsInZone($event.x, $event.y);
       this.mouse.currentPoint = new Point($event.offsetX, $event.offsetY);
+      this.lastestMousePosition = new Point($event.x, $event.y);
       if (this.mouse.mouseIsDown) {
         this.deleteAll(selectedElements);
         if (selectedElements.size !== 0) {
@@ -101,6 +91,7 @@ export class EraserLogicComponent
         this.mouse.mouseIsDown = false;
         this.mouse.endPoint = new Point($event.offsetX, $event.offsetY);
         if (this.elementsDeletedInDrag) {
+          this.restoreMarkedElements();
           this.undoRedoService.saveState();
         }
       }
@@ -109,6 +100,7 @@ export class EraserLogicComponent
       if ($event.button === 0) {
         // On s'assure d'avoir un vrai click
         if (this.mouse.startPoint.equals(this.mouse.endPoint)) {
+          this.restoreMarkedElements();
           const marked = this.markElementsInZone($event.x, $event.y);
           if (marked.size !== 0) {
             this.deleteAll(marked);
@@ -119,12 +111,12 @@ export class EraserLogicComponent
     }],
     ['mouseleave', () => {
       this.hideEraser();
+      this.restoreMarkedElements();
       this.mouse.mouseIsDown = false;
       if (this.elementsDeletedInDrag) {
         this.undoRedoService.saveState();
       }
     }]
-
   ]);
 
   // tslint:disable-next-line use-lifecycle-interface
@@ -190,15 +182,16 @@ export class EraserLogicComponent
             rgb.r = rgb.r - CONSTANTS.FACTOR;
             strokeModified = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
           }
+          this.markedElements.set(element, stroke as string);
+          element.setAttribute('stroke', strokeModified);
         }
-        this.markedElements.set(element, stroke as string);
-        element.setAttribute('stroke', strokeModified);
       }
     });
     return selectedElements;
   }
 
   private deleteAll(elements: Set<SVGElement>) {
+    this.restoreMarkedElements();
     elements.forEach((element) => {
       if (!!element) {
         this.renderer.removeChild(this.svgStructure.drawZone, element);
@@ -210,6 +203,7 @@ export class EraserLogicComponent
     for (const entry of this.markedElements) {
       entry[0].setAttribute('stroke', entry[1]);
     }
+    this.markedElements.clear();
   }
 
   getSvgOffset(): Offset {

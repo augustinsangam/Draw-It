@@ -58,10 +58,11 @@ export class SelectionLogicComponent
       }],
       ['mouseup', ($event: MouseEvent) => {
         if ($event.button === 0) {
-          if (this.mouse.left.onDrag) {
+          if (this.mouse.left.onDrag &&
+            !this.mouse.left.startPoint.equals(this.mouse.left.currentPoint)) {
             this.undoRedoService.saveState();
-            this.mouse.left.onDrag = false;
           }
+          this.mouse.left.onDrag = false;
           this.mouse.left.endPoint = new Point($event.offsetX, $event.offsetY);
           this.mouse.left.mouseIsDown = false;
           this.deleteSelection();
