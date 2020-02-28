@@ -4,7 +4,7 @@ import inversify from 'inversify';
 import mongodb from 'mongodb';
 
 import { Draw, DrawBuffer, Draws } from './data_generated';
-import { Database } from './database';
+import { Database, Entry } from './database';
 import { TYPES } from './types';
 
 enum StatusCode {
@@ -13,11 +13,6 @@ enum StatusCode {
 	NO_CONTENT = 204,
 	NOT_ACCEPTABLE = 406,
 	IM_A_TEAPOT = 418,
-}
-
-interface Entry {
-	_id: number;
-	data: mongodb.Binary;
 }
 
 @inversify.injectable()
@@ -60,13 +55,13 @@ class Router {
 
 	private methodGet(): express.RequestHandler {
 		return async (_req, res, next): Promise<void> => {
-			const fbb = new flatbuffers.flatbuffers.Builder();
 			let entries: Entry[];
 			try {
 				entries = await this.db.all();
 			} catch (err) {
 				return next(err);
 			}
+			const fbb = new flatbuffers.flatbuffers.Builder();
 			const drawBufferOffsets = entries.map(entry => {
 				const bufOffset = DrawBuffer.createBufVector(fbb, entry.data.buffer);
 				return DrawBuffer.create(fbb, entry._id, bufOffset);
@@ -131,4 +126,4 @@ class Router {
 	}
 }
 
-export { Entry, Router };
+export { Router };

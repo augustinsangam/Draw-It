@@ -3,7 +3,7 @@ import flatbuffers from 'flatbuffers';
 import mongodb from 'mongodb';
 import sinon from 'sinon';
 
-import { Draw } from '../data_generated';
+import { Draw, Draws } from '../data_generated';
 import { Database } from '../database';
 import { myContainer } from '../inversify.config';
 import { Entry, Router } from '../router';
@@ -78,20 +78,38 @@ describe('all', () => {
 		stub.restore();
 	});
 
-	it.only('should returns entries inside methodGet', () => {
+	it.only('should returns entries inside methodGet', async () => {
 		const db = myContainer.get<Database>(TYPES.Database);
 		const stub = sinon.stub(db, 'all');
+		const fbb1 = new flatbuffers.flatbuffers.Builder();
+		const nameOffset = fbb1.createString('correct name');
+		const tag = 'correct tag';
+		const tagOffset = fbb1.createString(tag);
+		const tagsOffset = Draw.createTagsVector(fbb1, [tagOffset]);
+		Draw.start(fbb1);
+		Draw.addName(fbb1, nameOffset);
+		Draw.addTags(fbb1, tagsOffset);
+		fbb1.finish(Draw.end(fbb1));
 		const entries: Entry[] = [
 			{
-				_id: 0,
-				data: new mongodb.Binary(new Buffer(new Uint8Array())),
+				_id: 42,
+				data: new mongodb.Binary(new Buffer(fbb1.asUint8Array())),
 			},
 		];
 		stub.returns(new Promise(r => r(entries)));
 		const router = myContainer.get<Router>(TYPES.Router);
 		const reqHandler = router['methodGet']();
 		const cb = sinon.spy();
-		reqHandler({} as any, {} as any, cb);
-		chai.expect(cb.notCalled);
+		// TODO: create mock
+		const mock = sinon.mock();
+		await reqHandler({} as any, mock as any, cb);
+		// Buffer returned from res.send(…)
+		const bufObj = new Buffer(new Uint8Array());
+		const fbb2 = new flatbuffers.flatbuffers.ByteBuffer(bufObj);
+		const draws = Draws.getRoot(fbb2);
+		chai.expect(draws.drawBuffersLength()).to.equal(1);
+		const drawBuffer = draws.drawBuffers(0);
+		chai.expect(drawBuffer).to.not.be.null;
+		chai.expect(drawBuffer?.id()).to.equal(42);
 	});
 });
