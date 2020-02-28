@@ -16,10 +16,10 @@ export class SvgService {
       width: 0,
       height: 0,
       color: 'none'
-    }
+    };
   }
 
-  changeBackgroundColor(color: string) {
+  changeBackgroundColor(color: string): void {
     this.shape.color = color;
   }
 

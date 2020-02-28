@@ -1,13 +1,15 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import {
   AfterViewInit, Component, ElementRef, Inject,
-  Optional, Renderer2, ViewChild } from '@angular/core';
+  Optional, Renderer2, ViewChild
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import {
   MAT_DIALOG_DATA,
   MatDialog, MatDialogRef,
   MatSlideToggle,
-  MatSlideToggleChange } from '@angular/material';
+  MatSlideToggleChange
+} from '@angular/material';
 import {
   MatAutocomplete,
   MatAutocompleteSelectedEvent
@@ -35,15 +37,18 @@ import { ScreenService } from '../new-draw/sreen-service/screen.service';
  */
 
 export interface DialogRefs {
-  delete: MatDialogRef<DeleteConfirmationDialogComponent>,
-  load: MatDialogRef<ConfirmationDialogComponent>,
+  delete: MatDialogRef<DeleteConfirmationDialogComponent>;
+  load: MatDialogRef<ConfirmationDialogComponent>;
 }
 
 export interface GaleryDraw {
-  name: string | null,
-  id: number,
-  svg: SVGSVGElement,
-  tags: string[],
+  name: string | null;
+  id: number;
+  svg: SVGGElement;
+  tags: string[];
+  height: number;
+  width: number;
+  backgroundColor: string;
 }
 
 @Component({
@@ -68,18 +73,18 @@ export class GaleryComponent implements AfterViewInit {
 
   @ViewChild('searchToggleRef', {
     static: false,
-    read : MatSlideToggle
+    read: MatSlideToggle
   }) protected searchToggleRef: MatSlideToggle;
 
   @ViewChild('tagInput', {
     static: false,
     read: ElementRef
-  })protected tagInput: ElementRef<HTMLInputElement>;
+  }) protected tagInput: ElementRef<HTMLInputElement>;
 
   @ViewChild('auto', {
     static: false,
     read: MatAutocomplete
-  })protected matAutocomplete: MatAutocomplete;
+  }) protected matAutocomplete: MatAutocomplete;
 
   @ViewChild('cardContent', {
     static: false
@@ -93,15 +98,16 @@ export class GaleryComponent implements AfterViewInit {
     private renderer: Renderer2,
     private screenService: ScreenService
   ) {
+
     this.galeryDrawTable = new Array<GaleryDraw>();
     this.filteredGaleryDrawTable = new Array<GaleryDraw>();
     this.allTags = new Array<string>();
     this.tags = new Array<string>();
     this.dialogRefs = {
       delete:
-      (undefined as unknown) as MatDialogRef<DeleteConfirmationDialogComponent>,
+        (undefined as unknown) as MatDialogRef<DeleteConfirmationDialogComponent>,
       load: (undefined as unknown) as MatDialogRef<ConfirmationDialogComponent>,
-    }
+    };
     this.filteredTags = this.tagCtrl.valueChanges.pipe(
       startWith(null),
       map(tag => tag ? this._filter(tag) : this._filter2()));
@@ -140,13 +146,16 @@ export class GaleryComponent implements AfterViewInit {
 
           if (!!svgElement) {
             const newSvg = this.communicationService.decodeElementRecursively(
-              svgElement, this.renderer) as SVGSVGElement;
+              svgElement, this.renderer) as SVGGElement;
 
             const newGaleryDraw: GaleryDraw = {
               id: newId,
               name: newName,
               svg: newSvg,
               tags: newTagArray,
+              height: draw.height(),
+              width: draw.width(),
+              backgroundColor: draw.color() as string
             };
 
             this.galeryDrawTable.push(newGaleryDraw);
@@ -163,8 +172,8 @@ export class GaleryComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.searchToggleRef.change.subscribe(($event: MatSlideToggleChange) => {
-      this.searchStatementToggle = $event.checked
-      this.filterGaleryTable()
+      this.searchStatementToggle = $event.checked;
+      this.filterGaleryTable();
     });
     this.screenService.size.subscribe(() => this.ajustImagesWidth());
   }
@@ -274,7 +283,7 @@ export class GaleryComponent implements AfterViewInit {
 
   private deletePromiseHandler(result: any, id: number): void {
     if (result) {
-      console.log('ERREUR')
+      console.log('ERREUR');
     } else {
       const draw = this.galeryDrawTable.filter((element) => element.id === id);
       this.galeryDrawTable.splice(this.galeryDrawTable.indexOf(draw[0]), 1);
@@ -296,8 +305,7 @@ export class GaleryComponent implements AfterViewInit {
   private loadDrawHandler = (result: boolean, id: number) => {
     if (result) {
       const draw = this.galeryDrawTable.filter((element) => element.id === id);
-      const svg = draw[0].svg;
-      this.dialogRef.close(svg);
+      this.dialogRef.close(draw[0]);
     } else {
       this.dialogRefs.load.close();
     }

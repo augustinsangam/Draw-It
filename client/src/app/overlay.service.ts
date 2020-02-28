@@ -4,7 +4,7 @@ import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
 import { ExportComponent } from './pages/export/export.component';
-import { GaleryComponent } from './pages/galery/galery.component';
+import { GaleryComponent, GaleryDraw } from './pages/galery/galery.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import {
@@ -49,7 +49,7 @@ export class OverlayService {
     });
   }
 
-  intialise(dialog: MatDialog, svgService: SvgService) {
+  intialise(dialog: MatDialog, svgService: SvgService): void {
     this.dialog = dialog;
     this.dialogRefs = {
       home: (undefined as unknown) as MatDialogRef<HomeComponent>,
@@ -62,7 +62,7 @@ export class OverlayService {
     this.svgService = svgService;
   }
 
-  start() {
+  start(): void {
     this.openHomeDialog();
   }
 
@@ -134,7 +134,7 @@ export class OverlayService {
     });
   }
 
-  openExportDialog() {
+  openExportDialog(): void {
     const dialogOptions = {
       width: '1000px',
       height: '90vh'
@@ -148,6 +148,7 @@ export class OverlayService {
     this.dialogRefs.export.afterClosed().subscribe(() => {
       this.shortcutHanler.activateAll();
     });
+
   }
 
   private closeDocumentationDialog(fromHome: boolean): void {
@@ -156,7 +157,7 @@ export class OverlayService {
     }
   }
 
-  private openGaleryDialog(fromHome: boolean): void {
+  openGaleryDialog(fromHome: boolean): void {
     const dialogOptions = {
       width: '115vw',
       height: '100vh',
@@ -201,26 +202,16 @@ export class OverlayService {
     this.toolSelectorService.set(Tool.Pencil);
   }
 
-  private loadDraw(svg: SVGSVGElement) {
-    // this.svgService.clearDom();
-    // const svgWidth = svg.getAttribute('width');
-    // const svgHeight = svg.getAttribute('height');
-    // const svgBackground = svg.getAttribute('style');
-    // const svgChildrens = Array.from(svg.childNodes);
-
-    // this.svgService.shape =
-
-    // this.svgService.instance.nativeElement.setAttribute(
-    //   'width', svgWidth as string);
-    // this.svgService.instance.nativeElement.setAttribute(
-    //   'height', svgHeight as string);
-    // this.svgService.instance.nativeElement.setAttribute(
-    //   'style', svgBackground as string);
-
-    // for (const child of svgChildrens) {
-    //   this.svgService.instance.nativeElement.appendChild(child);
-    // }
-    // this.drawInProgress = true;
+  private loadDraw(draw: GaleryDraw): void {
+    this.svgService.clearDom();
+    this.svgService.shape = {
+      height: draw.height,
+      width: draw.width,
+      color: draw.backgroundColor
+    };
+    Array.from(draw.svg.children).forEach((element: SVGGElement) => {
+      this.svgService.structure.drawZone.appendChild(element);
+    });
   }
 
   private getCommomDialogOptions() {
