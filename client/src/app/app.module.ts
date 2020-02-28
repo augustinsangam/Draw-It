@@ -34,6 +34,13 @@ import {
   ExportComponent
 } from './pages/export/export.component';
 import {
+  DeleteConfirmationDialogComponent
+} from './pages/galery/deleteconfirmation-dialog.component';
+import {
+  GaleryCardComponent
+} from './pages/galery/galery-card/galery-card.component';
+import { GaleryComponent } from './pages/galery/galery.component';
+import {
   HomeComponent
 } from './pages/home/home.component';
 import {
@@ -144,9 +151,11 @@ import { SaveComponent } from './pages/save/save.component';
     ColorPickerContentComponent,
     ColorPickerItemComponent,
     ConfirmationDialogComponent,
+    DeleteConfirmationDialogComponent,
     DocumentationComponent,
     EllipseLogicComponent,
     EllipsePanelComponent,
+    GaleryComponent,
     EraserPanelComponent,
     EraserLogicComponent,
     HomeComponent,
@@ -157,10 +166,13 @@ import { SaveComponent } from './pages/save/save.component';
     PaletteDialogComponent,
     PencilLogicComponent,
     PencilPanelComponent,
+    PolygoneLogicComponent,
+    PolygonePanelComponent,
     RectangleLogicComponent,
     RectanglePanelComponent,
     SidebarComponent,
     SvgComponent,
+    GaleryCardComponent,
     SelectionPanelComponent,
     SelectionLogicComponent,
     PolygoneLogicComponent,
@@ -202,13 +214,15 @@ import { SaveComponent } from './pages/save/save.component';
     EraserPanelComponent,
     PaletteDialogComponent,
     ConfirmationDialogComponent,
+    DeleteConfirmationDialogComponent,
     DocumentationComponent,
     EllipseLogicComponent,
     EllipsePanelComponent,
+    GaleryComponent,
+    HomeComponent,
     ExportComponent,
     LineLogicComponent,
     LinePanelComponent,
-    HomeComponent,
     NewDrawComponent,
     PencilLogicComponent,
     PencilPanelComponent,

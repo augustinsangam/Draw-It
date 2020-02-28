@@ -10,6 +10,7 @@ import {
   ShortcutCallBack,
   ShortcutHandlerService
 } from './shortcut-handler.service';
+import { OverlayService } from '../overlay.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,8 @@ export class ShortcutHandlerManagerService {
     private readonly toolSelectorService: ToolSelectorService,
     private shortcutHanler: ShortcutHandlerService,
     private gridService: GridService,
-    private undoRedoService: UndoRedoService
+    private undoRedoService: UndoRedoService,
+    private overlayService: OverlayService,
   ) {
   }
 
@@ -53,8 +55,13 @@ export class ShortcutHandlerManagerService {
     this.handlersFunc.set(Shortcut.E, () =>
       this.toolSelectorService.set(Tool.Eraser)
     );
-    this.handlersFunc.set(Shortcut.G, () => {
-      this.gridService.keyEvHandler('KeyG');
+    this.handlersFunc.set(Shortcut.G, (event: KeyboardEvent) => {
+      if (!!event && event.ctrlKey) {
+        event.preventDefault();
+        this.overlayService.openGaleryDialog(false);
+      } else {
+        this.gridService.keyEvHandler('KeyG');
+      }
     });
     this.handlersFunc.set(Shortcut.plus, () => {
       this.gridService.keyEvHandler('NumpadAdd');
