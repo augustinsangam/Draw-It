@@ -122,7 +122,7 @@ export class GaleryComponent implements AfterViewInit {
     const drawsLenght = draws.drawBuffersLength();
     const tempsAllTags = new Set<string>();
 
-    for (let i = 0; i < drawsLenght; i++) {
+    for (let i = drawsLenght; i--; ) {
       const drawBuffer = draws.drawBuffers(i);
 
       if (!!drawBuffer) {
@@ -179,15 +179,14 @@ export class GaleryComponent implements AfterViewInit {
   }
 
   protected ajustImagesWidth(): void {
-    const contentWidth = this.cardContent.nativeElement.clientWidth;
+    const contentWidth = this.cardContent.nativeElement.clientWidth - 20;
     this.renderer.setStyle(this.cardContent.nativeElement, 'padding-left',
-      `${(contentWidth % 332) / 2}px`);
+      `${(contentWidth % 340) / 2}px`);
   }
 
   add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
-    console.log('add');
     // Add our tag
     if ((value || '').trim()) {
       this.tags.push(value.trim());
