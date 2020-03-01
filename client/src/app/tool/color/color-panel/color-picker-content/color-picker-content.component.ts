@@ -21,8 +21,18 @@ import {
   ShortcutHandlerService
 } from 'src/app/shortcut-handler/shortcut-handler.service';
 import { ColorService, RGBColor } from '../../color.service';
-// tslint:disable-next-line: max-line-length
-import { ColorPickerItemComponent } from '../color-picker-item/color-picker-item.component';
+import {
+  ColorPickerItemComponent
+} from '../color-picker-item/color-picker-item.component';
+
+const CONSTANTS = {
+  RGB_MAX : 255,
+  RGB_MIN : 0,
+  ALPHA_MIN : 0,
+  ALPHA_MAX : 100,
+  COLOR_WIDTH : 8,
+  TRAKER_WIDTH : 7
+};
 
 @Component({
   selector: 'app-color-picker-content',
@@ -60,24 +70,21 @@ export class ColorPickerContentComponent implements AfterViewInit {
   private context: CanvasRenderingContext2D;
   private colorForm: FormGroup;
 
-  private focusHandlers = {
-    in : () => {
-      this.shortcutHandler.push();
-      this.shortcutHandler.desactivateAll();
-    },
-    out : () => this.shortcutHandler.pop()
-  }
+  private focusHandlers: {
+    in: () => void,
+    out: () => void
+  };
 
-  static ValidatorHex(formControl: AbstractControl) {
+  static ValidatorHex(formControl: AbstractControl): null | {valid: boolean} {
     return (/^[0-9A-F]{6}$/i.test(formControl.value)) ? null : {
       valid: true,
-    }
+    };
   }
 
-  static ValidatorInteger(formControl: AbstractControl) {
+  static ValidatorInteger(formControl: AbstractControl): null | {valid: boolean} {
     return (Number.isInteger(formControl.value)) ? null : {
       valid: true,
-    }
+    };
   }
 
   constructor(
@@ -119,9 +126,16 @@ export class ColorPickerContentComponent implements AfterViewInit {
       '#FF6699'
     ];
     this.colorChange = new EventEmitter();
+    this.focusHandlers = {
+      in : () => {
+        this.shortcutHandler.push();
+        this.shortcutHandler.desactivateAll();
+      },
+      out : () => this.shortcutHandler.pop()
+    };
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.initialiseStartingColor();
 
     this.baseColorsCircles
@@ -195,15 +209,17 @@ export class ColorPickerContentComponent implements AfterViewInit {
   }
 
   private buildCanvas(redValue: number): void {
-    const allPixels = this.context.createImageData(256, 256);
+    const rgbMax = CONSTANTS.RGB_MAX;
+    const allPixels = this.context.createImageData(rgbMax + 1, rgbMax + 1);
     let i = 0;
-    for (let g = 0; g < 256; ++g) {
-      for (let b = 0; b < 256; ++b) {
+    for (let g = 0; g <= rgbMax; ++g) {
+      for (let b = 0; b <= rgbMax; ++b) {
         allPixels.data[i] = redValue;
         allPixels.data[i + 1] = g;
         allPixels.data[i + 2] = b;
-        allPixels.data[i + 3] = 255; // Alpha stay the max value.
-        i += 4;
+        // TODO : Ask the chargé de lab
+        allPixels.data[i + 2 + 2] = rgbMax; // Alpha stay the max value.
+        i += 2 + 2;
       }
     }
     this.context.putImageData(allPixels, 0, 0);
@@ -234,27 +250,27 @@ export class ColorPickerContentComponent implements AfterViewInit {
   }
 
   protected onChangeR(): void {
-    this.checkValidity('r', 0, 255);
+    this.checkValidity('r', CONSTANTS.RGB_MIN, CONSTANTS.RGB_MAX);
     this.placeSlider(this.colorForm.controls.r.value);
     this.reDrawTracker();
     this.updateHex();
   }
 
   protected onChangeG(): void {
-    this.checkValidity('g', 0, 255);
+    this.checkValidity('g', CONSTANTS.RGB_MIN, CONSTANTS.RGB_MAX);
     this.reDrawTracker();
     this.updateHex();
   }
 
   protected onChangeB(): void {
-    this.checkValidity('b', 0, 255);
+    this.checkValidity('b', CONSTANTS.RGB_MIN, CONSTANTS.RGB_MAX);
     this.reDrawTracker(); // On aurait pu combiner ces deux actions
     this.updateHex();     // pour en faire une fonction. Mais ce ne
                           // serait pas intutif de comprendre le code.
   }
 
   protected onChangeA(): void {
-    this.checkValidity('a', 0, 100);
+    this.checkValidity('a', CONSTANTS.ALPHA_MIN, CONSTANTS.ALPHA_MAX);
     this.actualColor.updateColor(this.getActualRgba());
   }
 
@@ -275,7 +291,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
 
   private drawTracker(blue: number, green: number): void {
     this.context.beginPath();
-    this.context.arc(blue, green, 7, 0, 2 * Math.PI);
+    this.context.arc(blue, green, CONSTANTS.TRAKER_WIDTH, 0, 2 * Math.PI);
     this.context.stroke();
     this.actualColor.updateColor(this.getActualRgba());
   }
@@ -302,7 +318,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
       `rgba(${this.colorForm.controls.r.value}, ` +
       `${this.colorForm.controls.g.value}, ` +
       `${this.colorForm.controls.b.value}, ` +
-      `${this.colorForm.controls.a.value / 100})`
+      `${this.colorForm.controls.a.value / CONSTANTS.ALPHA_MAX})`
     );
   }
 

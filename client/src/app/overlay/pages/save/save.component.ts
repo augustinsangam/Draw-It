@@ -70,24 +70,24 @@ export class SaveComponent implements OnInit {
       return;
     }
     // this.saving = true;
-    this.svgService.name = this.form.controls.name.value;
-    this.svgService.tags = Array.from(this.tags);
+    this.svgService.header.name = this.form.controls.name.value;
+    this.svgService.header.tags = Array.from(this.tags);
     this.communicationService.encode(
-      this.svgService.name,
-      this.svgService.tags,
+      this.svgService.header.name,
+      this.svgService.header.tags,
       this.svgService.shape.color,
       this.svgService.shape.width,
       this.svgService.shape.height,
       this.gElOffset);
-    console.log(this.svgService.id);
-    if (this.svgService.id) {
-      this.communicationService.put(this.svgService.id)
+    console.log(this.svgService.header.id);
+    if (this.svgService.header.id) {
+      this.communicationService.put(this.svgService.header.id)
         .then(() => this.dialogRef.close())
         .catch((err) => this.dialogRef.close(err));
     } else {
       this.communicationService.post()
         .then((newID) => {
-          this.svgService.id = newID;
+          this.svgService.header.id = newID;
           this.dialogRef.close();
         })
         .catch((err) => this.dialogRef.close(err));

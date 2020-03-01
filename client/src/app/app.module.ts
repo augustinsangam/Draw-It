@@ -29,27 +29,27 @@ import { AppComponent } from './app.component';
 import { MaterialModule } from './material.module';
 import {
   DocumentationComponent
-} from './pages/documentation/documentation.component';
+} from './overlay/pages/documentation/documentation.component';
 import {
   ExportComponent
-} from './pages/export/export.component';
+} from './overlay/pages/export/export.component';
 import {
   DeleteConfirmationDialogComponent
-} from './pages/galery/deleteconfirmation-dialog.component';
+} from './overlay/pages/galery/deleteconfirmation-dialog.component';
 import {
   GaleryCardComponent
-} from './pages/galery/galery-card/galery-card.component';
-import { GaleryComponent } from './pages/galery/galery.component';
+} from './overlay/pages/galery/galery-card/galery-card.component';
+import { GaleryComponent } from './overlay/pages/galery/galery.component';
 import {
   HomeComponent
-} from './pages/home/home.component';
+} from './overlay/pages/home/home.component';
 import {
   ConfirmationDialogComponent
-} from './pages/new-draw/confirmation-dialog.component';
-import { NewDrawComponent } from './pages/new-draw/new-draw.component';
+} from './overlay/pages/new-draw/confirmation-dialog.component';
+import { NewDrawComponent } from './overlay/pages/new-draw/new-draw.component';
 import {
   PaletteDialogComponent
-} from './pages/new-draw/palette-dialog.component';
+} from './overlay/pages/new-draw/palette-dialog.component';
 import {
   PanelComponent } from './panel/panel.component';
 import {
@@ -140,7 +140,7 @@ import {
 import {
   RectanglePanelComponent
 } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
-import { SaveComponent } from './pages/save/save.component';
+import { SaveComponent } from './overlay/pages/save/save.component';
 
 @NgModule({
   declarations: [

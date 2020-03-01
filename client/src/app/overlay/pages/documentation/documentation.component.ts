@@ -4,7 +4,7 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 
 import marked from 'marked';
 
-import docs from '../../../assets/docs.json';
+import docs from '../../../../assets/docs.json';
 
 export interface Node {
   label: string;
@@ -76,17 +76,13 @@ export class DocumentationComponent {
     return this.currentNodeIndex + 1 === this.leafNodeArray.length;
   }
 
-  // not private because only called in the html => "
-  // next() is declared but its value is never read" warning
-  previous(): void {
+  protected previous(): void {
     if (!this.isFirstNode()) {
       this.displayNodeContent(this.leafNodeArray[this.currentNodeIndex - 1]);
     }
   }
 
-  // not private because only called in the html =>
-  // "next() is declared but its value is never read" warning
-  next(): void {
+  protected next(): void {
     if (!this.isLastNode()) {
       this.displayNodeContent(this.leafNodeArray[this.currentNodeIndex + 1]);
     }

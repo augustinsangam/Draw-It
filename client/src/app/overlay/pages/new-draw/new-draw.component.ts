@@ -18,6 +18,7 @@ import {
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { Subscription } from 'rxjs';
 
+import { OverlayPages } from 'src/app/overlay/overlay-pages';
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 import { PaletteDialogComponent } from './palette-dialog.component';
 import { ScreenService, ScreenSize } from './sreen-service/screen.service';
@@ -31,6 +32,12 @@ export interface DialogRefs {
   confirm: MatDialogRef<ConfirmationDialogComponent>;
 }
 
+const CONSTANTS = {
+  START_COLOR : '#FFFFFF',
+  MIN_DIMENSION: 1,
+  MAX_DIMENSION: 10000
+};
+
 @Component({
   selector: 'app-new-draw',
   templateUrl: './new-draw.component.html',
@@ -42,7 +49,7 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   private maxWidth: number;
   private maxHeight: number;
   private screenSize: Subscription;
-  private userChangeSizeMannually = false;
+  private userChangeSizeMannually: boolean;
   private dialogRefs: DialogRefs;
 
   @ViewChild('palette', {
@@ -56,11 +63,8 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   })
   private button: ElementRef;
 
-  static validatorInteger(formControl: AbstractControl) {
-    if (Number.isInteger(formControl.value)) {
-      return null;
-    }
-    return {
+  static validatorInteger(formControl: AbstractControl): null | { valid: boolean } {
+    return Number.isInteger(formControl.value) ? null : {
       valid: true
     };
   }
@@ -70,10 +74,11 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
     private screenService: ScreenService,
     private renderer: Renderer2,
     private dialog: MatDialog,
-    @Optional() public dialogRef: MatDialogRef<NewDrawComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    @Optional() private dialogRef: MatDialogRef<NewDrawComponent>,
+    @Inject(MAT_DIALOG_DATA) private data: DialogData
   ) {
-    this.startColor = '#FFFFFF';
+    this.startColor = CONSTANTS.START_COLOR;
+    this.userChangeSizeMannually = false;
     const screenSize: ScreenSize = this.screenService.getCurrentSize();
     this.maxWidth = screenSize.width;
     this.maxHeight = screenSize.height;
@@ -82,8 +87,8 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
         '',
         [
           Validators.required,
-          Validators.min(1),
-          Validators.max(1000000),
+          Validators.min(CONSTANTS.MIN_DIMENSION),
+          Validators.max(CONSTANTS.MAX_DIMENSION),
           NewDrawComponent.validatorInteger
         ]
       ],
@@ -91,8 +96,8 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
         '',
         [
           Validators.required,
-          Validators.min(1),
-          Validators.max(1000000),
+          Validators.min(CONSTANTS.MIN_DIMENSION),
+          Validators.max(CONSTANTS.MAX_DIMENSION),
           NewDrawComponent.validatorInteger
         ]
       ],
@@ -100,13 +105,12 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
     });
     this.dialogRefs = {
       palette: (undefined as unknown) as MatDialogRef<PaletteDialogComponent>,
-      confirm: (undefined as unknown) as MatDialogRef<
-        ConfirmationDialogComponent
-      >
+      confirm: (undefined as unknown) as
+        MatDialogRef<ConfirmationDialogComponent>
     };
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const screenSize = this.screenService.getCurrentSize();
     this.updateFormSize(screenSize);
     this.screenSize = this.screenService.size.subscribe(screenSizeParam =>
@@ -114,11 +118,11 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.screenSize.unsubscribe();
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     // Simuler l'asynchronisité
     setTimeout(() => {
       this.form.patchValue({ color: this.startColor });
@@ -136,7 +140,7 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private paletteCloseHandler = (colorPicked: string | undefined): void => {
     this.closePaletteDialog(colorPicked);
-  };
+  }
 
   private closePaletteDialog(colorPicked: string | undefined): void {
     if (colorPicked !== undefined) {
@@ -174,17 +178,17 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private onSubmitHandler = (result: boolean): void => {
     this.closeDialog(result);
-  };
+  }
 
   private closeDialog(result: boolean): void {
     if (result) {
       this.dialogRef.close(this.form.value);
     } else {
-      this.dialogRef.close('home');
+      this.dialogRef.close(OverlayPages.Home as string);
     }
   }
 
   protected onReturn(): void {
-    this.dialogRef.close('home');
+    this.dialogRef.close(OverlayPages.Home as string);
   }
 }

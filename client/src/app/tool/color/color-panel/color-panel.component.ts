@@ -87,11 +87,11 @@ export class ColorPanelComponent extends ToolPanelDirective
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.recentColors = this.colorService.recentColors;
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     super.ngAfterViewInit();
     this.updatePreviewColors();
     this.colorsItemsArray = this.colorsItems.toArray().slice(3);
@@ -105,7 +105,7 @@ export class ColorPanelComponent extends ToolPanelDirective
       this.eventManager.addEventListener(
         this.colorsItemsArray[i].button.nativeElement,
         'click',
-        ($event: MouseEvent) => {
+        () => {
           this.colorPreviewPrimary.updateColor(this.colorsItemsArray[i].color);
           this.colorService.primaryColor = this.colorsItemsArray[i].color;
           if (this.colorPalette) {
@@ -184,11 +184,11 @@ export class ColorPanelComponent extends ToolPanelDirective
   protected getStartColor(): string {
     if (this.colorOption === ColorOption.Primary) {
       return this.colorService.hexFormRgba(this.colorService.primaryColor);
-    } else if (this.colorOption === ColorOption.Secondary) {
-      return this.colorService.hexFormRgba(this.colorService.secondaryColor);
-    } else {
-      return this.colorService.hexFormRgba(this.colorService.backgroundColor);
     }
+    if (this.colorOption === ColorOption.Secondary) {
+      return this.colorService.hexFormRgba(this.colorService.secondaryColor);
+    }
+    return this.colorService.hexFormRgba(this.colorService.backgroundColor);
   }
 
   ngOnDestroy(): void {

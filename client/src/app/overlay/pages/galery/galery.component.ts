@@ -20,7 +20,7 @@ import { map, startWith } from 'rxjs/operators';
 import {
   CommunicationService
 } from 'src/app/communication/communication.service';
-import { Draw, Draws } from '../../communication/data_generated';
+import { Draw, Draws } from '../../../communication/data_generated';
 import { DialogData } from '../home/home.component';
 import {
   ConfirmationDialogComponent
@@ -170,7 +170,7 @@ export class GaleryComponent implements AfterViewInit {
     this.ajustImagesWidth();
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.searchToggleRef.change.subscribe(($event: MatSlideToggleChange) => {
       this.searchStatementToggle = $event.checked;
       this.filterGaleryTable();

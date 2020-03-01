@@ -1,5 +1,15 @@
 import { Injectable } from '@angular/core';
-import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef, MatSnackBar } from '@angular/material';
+import {
+  Shortcut, ShortcutHandlerService
+} from '../shortcut-handler/shortcut-handler.service';
+import { SvgService, SvgShape } from '../svg/svg.service';
+import { ColorService } from '../tool/color/color.service';
+import {
+  ToolSelectorService
+} from '../tool/tool-selector/tool-selector.service';
+import { Tool } from '../tool/tool.enum';
+import { OverlayPages } from './overlay-pages';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
@@ -8,15 +18,11 @@ import { GaleryComponent, GaleryDraw } from './pages/galery/galery.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { SaveComponent } from './pages/save/save.component';
-import {
-  Shortcut, ShortcutHandlerService
-} from './shortcut-handler/shortcut-handler.service';
-import { SvgService, SvgShape } from './svg/svg.service';
-import { ColorService } from './tool/color/color.service';
-import {
-  ToolSelectorService
-} from './tool/tool-selector/tool-selector.service';
-import { Tool } from './tool/tool.enum';
+
+const CONSTANTS = {
+  SUCCES_DURATION : 2000,
+  FAILURE_DURATION : 2000,
+};
 
 @Injectable({
   providedIn: 'root'
@@ -69,12 +75,12 @@ export class OverlayService {
     this.openHomeDialog();
   }
 
-  private openHomeDialog(): void {
+  private openHomeDialog(closable: boolean = false): void {
     this.dialogRefs.home = this.dialog.open(
       HomeComponent,
       this.getCommomDialogOptions()
     );
-    this.dialogRefs.home.disableClose = true;
+    this.dialogRefs.home.disableClose = !closable;
     this.shortcutHanler.desactivateAll();
     this.dialogRefs.home.afterClosed().subscribe((result: string) => {
       this.shortcutHanler.activateAll();
@@ -120,7 +126,7 @@ export class OverlayService {
   }
 
   openDocumentationDialog(fromHome: boolean): void {
-    const dialogOptions = {
+    const dialogOptions: MatDialogConfig = {
       width: '115vw',
       height: '100vh',
       panelClass: 'documentation'
@@ -154,21 +160,18 @@ export class OverlayService {
 
   }
 
-  openSaveDialog() {
+  openSaveDialog(): void {
     const dialogOptions = {
       width: '1000px',
       height: '90vh'
     };
     this.shortcutHanler.desactivateAll();
-    this.dialogRefs.save = this.dialog.open(
-      SaveComponent,
-      dialogOptions
-    );
+    this.dialogRefs.save = this.dialog.open(SaveComponent, dialogOptions);
     this.dialogRefs.save.disableClose = true;
-    this.dialogRefs.save.afterClosed().subscribe((err?: string) => {
+    this.dialogRefs.save.afterClosed().subscribe((error?: string) => {
       this.shortcutHanler.activateAll();
-      this.snackBar.open(err ? err : 'Succès', 'ok', {
-        duration: err ? 3000 : 1000,
+      this.snackBar.open(error ? error : 'Succès', 'Ok', {
+        duration: error ? CONSTANTS.SUCCES_DURATION : CONSTANTS.FAILURE_DURATION,
       });
     });
   }
@@ -180,11 +183,11 @@ export class OverlayService {
   }
 
   openGaleryDialog(fromHome: boolean): void {
-    const dialogOptions = {
+    const dialogOptions: MatDialogConfig = {
       width: '115vw',
       height: '100vh',
       panelClass: 'galery',
-      data: { drawInProgress: true },
+      data: { drawInProgress: this.svgService.drawInProgress },
     };
     this.shortcutHanler.desactivateAll();
     this.dialogRefs.galery = this.dialog.open(
@@ -236,20 +239,13 @@ export class OverlayService {
     });
   }
 
-  private getCommomDialogOptions() {
+  private getCommomDialogOptions(): MatDialogConfig {
     return {
       width: '650px',
       height: '90%',
-      data: { drawInProgress: false }
+      data: { drawInProgress: this.svgService.drawInProgress }
     };
   }
-}
-
-enum OverlayPages {
-  Documentation = 'documentation',
-  Home = 'home',
-  Library = 'library',
-  New = 'new'
 }
 
 interface DialogRefs {
