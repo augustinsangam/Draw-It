@@ -42,7 +42,7 @@ export class ExportComponent implements OnInit {
     FormatChoice.Svg,
     FormatChoice.Png,
     FormatChoice.Jpeg
-  ]
+  ];
 
   constructor(private formBuilder: FormBuilder,
               @Optional() public dialogRef: MatDialogRef<ExportComponent>,
@@ -61,12 +61,12 @@ export class ExportComponent implements OnInit {
     });
   }
 
-  protected onOptionChange($change: MatRadioChange) {
+  protected onOptionChange($change: MatRadioChange): void {
     this.createView(String($change.value));
     console.log($change);
   }
 
-  protected onConfirm() {
+  protected onConfirm(): void {
     console.log('On confirme');
     this.name = this.form.controls.name.value;
     this.format = (this.form.controls.format.value).toLocaleLowerCase();
@@ -74,24 +74,24 @@ export class ExportComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  protected onCancel() {
+  protected onCancel(): void {
     console.log('On cancel');
     this.dialogRef.close();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.svgShape = this.svgService.shape;
     this.innerSVG = this.renderer.createElement(
       'svg', 'http://www.w3.org/2000/svg');
     this.renderer.appendChild(this.innerSVG, this.generateBackground());
     Array.from(this.svgService.structure.drawZone.children)
     .forEach((element: SVGElement) => {
-      this.renderer.appendChild(this.innerSVG, element.cloneNode(true))});
+      this.renderer.appendChild(this.innerSVG, element.cloneNode(true)); });
     this.innerSVG.setAttribute('width', this.svgShape.width.toString());
     this.innerSVG.setAttribute('height', this.svgShape.height.toString());
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.createView(FilterChoice.None);
   }
 
@@ -126,7 +126,7 @@ export class ExportComponent implements OnInit {
     return picture;
   }
 
-  downloadFile(canvaRecu: HTMLCanvasElement) {
+  downloadFile(canvaRecu: HTMLCanvasElement): void {
     const canvas: HTMLCanvasElement = canvaRecu;
     const downloadLink: HTMLAnchorElement = this.renderer.createElement('a');
     const url = canvas.toDataURL('image/' + this.format);
@@ -145,7 +145,7 @@ export class ExportComponent implements OnInit {
     return canvas;
   }
 
-  exportSVG() {
+  exportSVG(): void {
 
     const uri = 'data:image/svg+xml,' + encodeURIComponent(this.serializeSVG());
     const downloadLink: HTMLAnchorElement = this.renderer.createElement('a');
@@ -175,13 +175,13 @@ export class ExportComponent implements OnInit {
           this.downloadFile(canvas);
           URL.revokeObjectURL(url);
         }
-      }
+      };
       img.src = url;
     }
     return canvas;
   }
 
-  createView(filterName: string) {
+  createView(filterName: string): void {
     const picture: SVGImageElement = this.renderer.createElement('image',
       'http://www.w3.org/2000/svg');
     // const viewZone = document.getElementById('picture-view-zone');
@@ -241,14 +241,15 @@ export class ExportComponent implements OnInit {
     return filterName;
   }
 
-  resetInnerSVG() {
-    // this.innerSVG = (document.getElementById(
-    //   'picture-view-zone'
-    //   ) as unknown as SVGSVGElement);
-    // this.innerSVG = this.svgView.nativeElement ;
+  resetInnerSVG(): void {
     Array.from(this.svgView.nativeElement.children).forEach(
       (element: SVGElement) => {
-      this.renderer.appendChild(this.innerSVG, element.cloneNode(true))});
+        console.log( 'il y a ' + element);
+        this.renderer.appendChild(this.innerSVG, element.cloneNode(true)); });
+    Array.from(this.innerSVG.children).forEach(
+      (element: SVGElement) => {
+        console.log( 'il y a ' + element);
+        element.setAttribute('filter', this.chooseFilter(this.form.controls.filter.value.toString())); });
     this.innerSVG.setAttribute('width', String(this.svgShape.width));
     this.innerSVG.setAttribute('height', String(this.svgShape.height));
     console.log('ele ' + this.svgShape.width + ' ' + this.svgShape.height );
@@ -256,6 +257,8 @@ export class ExportComponent implements OnInit {
     if (picture) {
       picture.setAttribute('width', String(this.svgShape.width));
       picture.setAttribute('height', String(this.svgShape.height));
+      picture.setAttribute('filter', this.chooseFilter(this.form.controls.filter.value.toString()));
+      console.log('filter est : ' + picture.getAttribute('filter'));
       console.log('pict ' + picture.getAttribute('href'));
       console.log('icicici');
     }
