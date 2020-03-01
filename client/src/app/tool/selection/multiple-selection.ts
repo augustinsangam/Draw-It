@@ -1,8 +1,8 @@
-import { Offset } from './Offset';
-import { Point } from './Point';
-import { Selection } from './Selection'
-import { SelectionReturn } from './SelectionReturn';
-import { Zone } from './Zone';
+import { Offset } from './offset';
+import { Point } from './point';
+import { Selection } from './selection';
+import { SelectionReturn } from './selection-return';
+import { Zone } from './zone';
 
 export class MultipleSelection extends Selection {
 
@@ -16,7 +16,7 @@ export class MultipleSelection extends Selection {
       this.selectAll(elements);
     } else {
       this.selectedElements = new Set();
-      this.compareZone = new Zone(p1.x, p2.x, p1.y, p2.y)
+      this.compareZone = new Zone(p1.x, p2.x, p1.y, p2.y);
       this.findSelectedElements(elements);
     }
   }
@@ -29,7 +29,7 @@ export class MultipleSelection extends Selection {
         new Point(0, 0),
         new Point(0, 0)
       ]
-    }
+    };
   }
 
   private findSelectedElements( elements: Set<SVGElement>): void {
@@ -56,7 +56,7 @@ export class MultipleSelection extends Selection {
     elements.forEach(element => {
       if (element instanceof SVGElement) {
         if (!!this.zone) {
-          this.zone = this.zone.union(this.getZone(element))
+          this.zone = this.zone.union(this.getZone(element));
         } else {
           this.zone = this.getZone(element);
         }

@@ -1,5 +1,5 @@
-import { Component, OnDestroy, Renderer2 } from '@angular/core';
-import { Point } from 'src/app/tool/selection/Point';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { Point } from 'src/app/tool/selection/point';
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { MathService } from '../../../mathematics/tool.math-service.service';
@@ -7,9 +7,9 @@ import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
 import {
   BackGroundProperties,
   StrokeProperties, Style
-} from '../../common/AbstractShape';
-import { Ellipse } from '../../common/Ellipse';
-import { Rectangle } from '../../common/Rectangle';
+} from '../../common/abstract-shape';
+import { Ellipse } from '../../common/ellipse';
+import { Rectangle } from '../../common/rectangle';
 import { EllipseService } from '../ellipse.service';
 
 const SEMIOPACITY = '0.5';
@@ -24,10 +24,10 @@ enum ClickType {
 })
 
 export class EllipseLogicComponent extends ToolLogicDirective
-  implements OnDestroy {
+  implements OnInit, OnDestroy {
 
   private ellipses: Ellipse[] = [];
-  private onDrag = false;
+  private onDrag: boolean;
   private currentPoint: Point;
   private initialPoint: Point;
   private style: Style;
@@ -42,6 +42,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
     private readonly undoRedoService: UndoRedoService
   ) {
     super();
+    this.onDrag = false;
     this.undoRedoService.resetActions();
     this.undoRedoService.setPreUndoAction({
       enabled: true,
@@ -54,13 +55,12 @@ export class EllipseLogicComponent extends ToolLogicDirective
           );
           this.getEllipse().element.remove();
         }
-        this.undoRedoService.undoBase()
+        this.undoRedoService.undoBase();
       }
-    })
+    });
 
   }
 
-  // tslint:disable-next-line use-lifecycle-interface
   ngOnInit(): void {
     const onMouseDown = this.renderer.listen(
       this.svgStructure.root,
@@ -137,7 +137,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
       this.rectVisu.element.remove();
       this.style.opacity = FULLOPACITY;
       this.getEllipse().setCss(this.style);
-      this.undoRedoService.saveState()
+      this.undoRedoService.saveState();
     }
   }
 

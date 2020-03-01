@@ -1,4 +1,4 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
 import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
 
 @Component({
@@ -6,15 +6,13 @@ import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
   templateUrl: './selection-panel.component.html',
   styleUrls: ['./selection-panel.component.scss']
 })
-export class SelectionPanelComponent extends ToolPanelDirective {
+export class SelectionPanelComponent extends ToolPanelDirective
+  implements OnInit {
 
   constructor(elementRef: ElementRef<HTMLElement>) {
       super(elementRef);
   }
 
-  // tslint:disable-next-line: use-lifecycle-interface
-  ngOnInit() {
-
-  }
+  ngOnInit(): void { }
 
 }

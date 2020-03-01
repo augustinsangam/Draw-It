@@ -1,7 +1,7 @@
 import {Renderer2} from '@angular/core';
 import {MathService} from '../../mathematics/tool.math-service.service';
-import { Point } from '../../selection/Point';
-import {AbstractShape} from './AbstractShape';
+import { Point } from '../../selection/point';
+import {AbstractShape} from './abstract-shape';
 
 export class Ellipse extends AbstractShape {
 
@@ -15,7 +15,7 @@ export class Ellipse extends AbstractShape {
     super(renderer, element);
   }
 
-  insertEllipseInSVG(center: Point, radius: Radius) {
+  insertEllipseInSVG(center: Point, radius: Radius): void {
     this.renderer.setAttribute(this.element, 'cx', (center.x).toString());
     this.renderer.setAttribute(this.element, 'cy', (center.y).toString());
     this.renderer.setAttribute(
@@ -61,6 +61,6 @@ export class Ellipse extends AbstractShape {
 }
 
 export interface Radius {
-  ry: number
-  rx: number,
+  ry: number;
+  rx: number;
 }

@@ -1,4 +1,6 @@
-import { Point } from './Point';
+import { Point } from './point';
+
+const PIXEL_INCREMENT = 3;
 
 export class Zone {
 
@@ -41,8 +43,8 @@ export class Zone {
       offsetY -= parseInt(result[2], 10);
     }
     const fill = element.getAttribute('fill');
-    for (let x = this.left; x <= this.right; x += 3) {
-      for (let y = this.top; y <= this.bottom; y += 3) {
+    for (let x = this.left; x <= this.right; x += PIXEL_INCREMENT) {
+      for (let y = this.top; y <= this.bottom; y += PIXEL_INCREMENT) {
         point.x = x + offsetX;
         point.y = y + offsetY;
         const pointMatch = element.isPointInStroke(point) ||

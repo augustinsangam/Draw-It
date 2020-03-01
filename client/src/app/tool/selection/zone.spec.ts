@@ -1,5 +1,6 @@
-import { Zone } from './Zone';
+import { Zone } from './zone';
 
+// tslint:disable: no-magic-numbers
 fdescribe('Zone', () => {
   let instance: Zone;
   beforeEach(() => {

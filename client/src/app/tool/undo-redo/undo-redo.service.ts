@@ -38,7 +38,6 @@ export class UndoRedoService {
   }
 
   saveState(): void {
-    // TODO : J'ai changé plein de tucs. Tu copiais des référecences Nico
     const drawZone = this.svgStructure.drawZone;
     const length = drawZone.children.length;
     const toPush = new Array(length);
@@ -66,7 +65,7 @@ export class UndoRedoService {
 
   }
 
-  undoBase() {
+  undoBase(): void {
     if (this.cmdDone.length !== 0) {
       const lastCommand = this.cmdDone.pop();
       this.cmdUndone.push(lastCommand as SVGElement[]);
@@ -89,7 +88,7 @@ export class UndoRedoService {
     }
   }
 
-  redoBase() {
+  redoBase(): void {
     if (this.cmdUndone.length) {
       const lastCommand = this.cmdUndone.pop();
       this.cmdDone.push(lastCommand as SVGElement[]);
@@ -98,7 +97,6 @@ export class UndoRedoService {
   }
 
   refresh(node: ChildNode[]): void {
-    // TODO : Nicolas. Look if it make sense. J'ai changé des trucs
     for (const element of Array.from(this.svgStructure.drawZone.childNodes)) {
       element.remove();
     }
@@ -122,41 +120,41 @@ export class UndoRedoService {
       enabled: false,
       overrideDefaultBehaviour: false,
       overrideFunctionDefined: false
-    }
+    };
   }
 
   private createDefaultPostAction(): PostAction {
     return {
       functionDefined: false,
-    }
+    };
   }
 
-  setPreUndoAction(action: PreAction) {
+  setPreUndoAction(action: PreAction): void {
     this.actions.undo[0] = action;
   }
 
-  setPostUndoAction(action: PostAction) {
+  setPostUndoAction(action: PostAction): void {
     this.actions.undo[1] = action;
   }
 
-  setPreRedoAction(action: PreAction) {
+  setPreRedoAction(action: PreAction): void {
     this.actions.redo[0] = action;
   }
 
-  setPostRedoAction(action: PostAction) {
+  setPostRedoAction(action: PostAction): void {
     this.actions.redo[1] = action;
   }
 
 }
 
 export interface PreAction {
-  enabled: boolean,
-  overrideDefaultBehaviour: boolean,
-  overrideFunctionDefined: boolean
-  overrideFunction?: () => void
+  enabled: boolean;
+  overrideDefaultBehaviour: boolean;
+  overrideFunctionDefined: boolean;
+  overrideFunction?: () => void;
 }
 
 export interface PostAction {
-  functionDefined: boolean,
-  function?: () => void
+  functionDefined: boolean;
+  function?: () => void;
 }

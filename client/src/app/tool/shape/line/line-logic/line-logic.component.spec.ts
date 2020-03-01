@@ -1,12 +1,12 @@
-// tslint:disable:no-string-literal
 
 import { ElementRef } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {Circle} from '../../common/Circle'
-import { Path } from '../../common/Path';
+import { Circle } from '../../common/circle';
+import { Path } from '../../common/path';
 import { Point } from '../../common/Point';
 import { LineLogicComponent } from './line-logic.component';
 
+// tslint:disable:no-string-literal
 describe('LineLogicComponent', () => {
   let component: LineLogicComponent;
   let fixture: ComponentFixture<LineLogicComponent>;

@@ -1,12 +1,12 @@
 import { Renderer2 } from '@angular/core';
 import { MathService } from '../../mathematics/tool.math-service.service';
-import { Point } from '../../selection/Point';
+import { Point } from '../../selection/point';
 
 // Class tested in ../Line/line-logic.component.spec.ts
 export class Path {
-  private pathAtribute = '';
-  private mathService = new MathService();
-  datas: PathData = { points: [], instructions: [] };
+  private pathAtribute: string;
+  private mathService: MathService;
+  datas: PathData;
   lastPoint: Point;
 
   constructor(
@@ -15,6 +15,9 @@ export class Path {
     private element: SVGElement,
     public withJonctions: boolean
   ) {
+    this.pathAtribute = '';
+    this.mathService = new MathService();
+    this.datas = { points: [], instructions: [] };
     this.datas.points.push(initialPoint);
     const instruction =
       'M ' + initialPoint.x.toString() + ' ' + initialPoint.y.toString() + ' ';
@@ -35,7 +38,7 @@ export class Path {
     this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
   }
 
-  addJonction(center: Point, radius: number) {
+  addJonction(center: Point, radius: number): void {
     const instruction = ` M ${center.x},
     ${center.y} m -${radius} 0 a ${radius},${radius} 0 1,0 ${2 * radius},
     0 a ${radius},${radius} 0 1,0 -${2 * radius},0 M ${center.x},
@@ -61,7 +64,7 @@ export class Path {
     this.renderer.setAttribute(this.element, 'd', temp);
   }
 
-  removeLastInstruction() {
+  removeLastInstruction(): void {
     this.datas.points.pop();
     let instructionToRemove = 1;
     if (this.withJonctions) {
@@ -77,14 +80,14 @@ export class Path {
     }
   }
 
-  removePath() {
+  removePath(): void {
     this.pathAtribute = '';
     this.datas.points = [];
     this.datas.instructions = [];
     this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
   }
 
-  setLineCss(strokewidth: string, strokeColor: string) {
+  setLineCss(strokewidth: string, strokeColor: string): void {
     this.renderer.setAttribute(this.element, 'stroke-width', strokewidth);
     this.renderer.setAttribute(this.element, 'stroke', strokeColor);
     if (this.withJonctions) {
@@ -96,6 +99,6 @@ export class Path {
 }
 
 interface PathData {
-  points: Point[],
-  instructions: string[],
+  points: Point[];
+  instructions: string[];
 }

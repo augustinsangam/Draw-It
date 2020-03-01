@@ -33,10 +33,10 @@ export class PencilLogicComponent extends PencilBrushCommon
           this.undoRedoService.saveState();
         }
       }
-    })
+    });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.svgStructure.root.style.cursor = 'crosshair';
   }
 
@@ -62,7 +62,7 @@ export class PencilLogicComponent extends PencilBrushCommon
     this.renderer.appendChild(this.svgStructure.drawZone, this.svgPath);
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     const mouseDownListen = this.renderer.listen(this.svgStructure.root,
       'mousedown', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0) {
@@ -98,7 +98,7 @@ export class PencilLogicComponent extends PencilBrushCommon
       mouseUpListen, mouseLeaveListen];
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.listeners.forEach(end => { end(); });
     this.undoRedoService.resetActions();
     if (this.mouseOnHold) {

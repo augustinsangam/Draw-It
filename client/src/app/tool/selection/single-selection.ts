@@ -1,6 +1,6 @@
-import { Offset } from './Offset';
-import { Point } from './Point';
-import { Selection } from './Selection'
+import { Offset } from './offset';
+import { Point } from './point';
+import { Selection } from './selection';
 
 export class SingleSelection extends Selection {
 

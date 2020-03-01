@@ -1,10 +1,10 @@
-import { Component, OnDestroy, Renderer2 } from '@angular/core';
-import { Point } from 'src/app/tool/selection/Point';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { Point } from 'src/app/tool/selection/point';
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { MathService } from '../../../mathematics/tool.math-service.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
-import { Path } from '../../common/Path';
+import { Path } from '../../common/path';
 import { LineService } from '../line.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { LineService } from '../line.service';
   template: ''
 })
 export class LineLogicComponent extends ToolLogicDirective
-  implements OnDestroy {
+  implements OnInit, OnDestroy {
   private paths: Path[];
   private listeners: (() => void)[];
   private isNewPath: boolean;
@@ -46,11 +46,10 @@ export class LineLogicComponent extends ToolLogicDirective
         }
         this.undoRedoService.undoBase();
       }
-    })
+    });
   }
 
-  // tslint:disable-next-line use-lifecycle-interface
-  ngOnInit() {
+  ngOnInit(): void {
     this.listeners.push(
       this.renderer.listen(
         this.svgStructure.root,
@@ -95,7 +94,7 @@ export class LineLogicComponent extends ToolLogicDirective
 
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.listeners.forEach(end => end());
     this.undoRedoService.resetActions();
     if (!this.isNewPath) {
@@ -129,7 +128,7 @@ export class LineLogicComponent extends ToolLogicDirective
       let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
       this.removeLine();
       this.removeLine(); // remove the click event
-      const firstPoint = this.getPath().datas.points[0]
+      const firstPoint = this.getPath().datas.points[0];
       const isLessThan3pixels = this.mathService.distanceIsLessThan3Pixel(
         currentPoint,
         firstPoint
@@ -225,6 +224,6 @@ export class LineLogicComponent extends ToolLogicDirective
 }
 
 interface JonctionOption {
-  radius: number,
-  color: string
+  radius: number;
+  color: string;
 }

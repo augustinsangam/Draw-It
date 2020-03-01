@@ -1,3 +1,3 @@
 export interface IEnvironment {
-    production: boolean;
+  production: boolean;
 }

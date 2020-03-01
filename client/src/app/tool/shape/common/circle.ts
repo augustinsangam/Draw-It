@@ -1,5 +1,5 @@
 import { Renderer2 } from '@angular/core';
-import { Point } from '../../selection/Point';
+import { Point } from '../../selection/point';
 
 export class Circle {
   constructor(private center: Point,

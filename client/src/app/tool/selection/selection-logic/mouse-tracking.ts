@@ -1,5 +1,5 @@
-import { Point } from '../Point';
-import { ElementSelectedType } from './ElementSelectedType';
+import { Point } from '../point';
+import { ElementSelectedType } from './element-selected-type';
 
 export interface MouseTracking {
   startPoint: Point;

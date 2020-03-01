@@ -1,6 +1,6 @@
-import { Offset } from './Offset';
-import { Point } from './Point';
-import { Zone } from './Zone';
+import { Offset } from './offset';
+import { Point } from './point';
+import { Zone } from './zone';
 
 export abstract class Selection {
 
@@ -47,7 +47,7 @@ export abstract class Selection {
     } : {
       left: 0,
       top: 0
-    }
+    };
   }
 
 }

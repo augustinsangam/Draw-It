@@ -1,7 +1,7 @@
 import { Renderer2 } from '@angular/core';
 import { MathService } from '../../mathematics/tool.math-service.service';
-import { Point } from '../../selection/Point';
-import { AbstractShape } from './AbstractShape'
+import { Point } from '../../selection/point';
+import { AbstractShape } from './abstract-shape';
 
 // Class tested in ../Polygone/polygone-logic.component.spec.ts
 export class Polygone extends AbstractShape {
