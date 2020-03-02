@@ -2,13 +2,13 @@ import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { ColorService } from '../../color/color.service';
 import { MathService } from '../../mathematics/tool.math-service.service';
 import { Offset } from '../../selection/offset';
-import { Point } from '../../selection/point';
 import { BasicSelectionType } from '../../selection/selection-logic/element-selected-type';
 import { MouseTracking } from '../../selection/selection-logic/mouse-tracking';
 import * as Util from '../../selection/selection-logic/selection-logic-util';
 import {
   BackGroundProperties, StrokeProperties
 } from '../../shape/common/abstract-shape';
+import { Point } from '../../shape/common/point';
 import { Rectangle } from '../../shape/common/rectangle';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { PostAction, UndoRedoService } from '../../undo-redo/undo-redo.service';

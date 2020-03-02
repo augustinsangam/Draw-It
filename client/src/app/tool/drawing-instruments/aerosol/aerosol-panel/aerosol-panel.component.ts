@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSlider} from '@angular/material/slider';
-import { Point } from 'src/app/tool/selection/point';
+import { Point } from 'src/app/tool/shape/common/point';
 import {ColorService} from '../../../color/color.service';
 import {ToolPanelDirective} from '../../../tool-panel/tool-panel.directive';
 import {AerosolService} from '../aerosol.service';

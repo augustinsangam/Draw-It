@@ -14,6 +14,7 @@ import {
 } from '@angular/material';
 import { DialogData, HomeComponent } from './home.component';
 
+// tslint:disable: no-string-literal
 describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
@@ -81,23 +82,23 @@ describe('HomeComponent', () => {
   });
 
   it('#constructor should set option[3].canDisplay to true', () => {
-    component.options = options;
+    component['options'] = options;
 
     const dialogRef = component.dialogRef;
     const data: DialogData = { drawInProgress: true };
     component = new HomeComponent(dialogRef, data);
 
-    expect(component.options[3].canDisplay).toBe(true);
+    expect(component['options'][options.length - 1].canDisplay).toBe(true);
   });
 
   it('#constructor should set option[3].canDisplay to false', () => {
-    component.options = options;
+    component['options'] = options;
 
     const dialogRef = component.dialogRef;
     const data: DialogData = { drawInProgress: false };
 
     component = new HomeComponent(dialogRef, data);
 
-    expect(component.options[3].canDisplay).toBe(false);
+    expect(component['options'][options.length - 1].canDisplay).toBe(false);
   });
 });

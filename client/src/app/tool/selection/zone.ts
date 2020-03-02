@@ -1,4 +1,4 @@
-import { Point } from './point';
+import { Point } from '../shape/common/point';
 
 const PIXEL_INCREMENT = 3;
 

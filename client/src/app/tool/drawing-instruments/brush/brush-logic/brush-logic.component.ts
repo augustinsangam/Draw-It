@@ -43,7 +43,7 @@ export class BrushLogicComponent extends PencilBrushCommon
       this.renderer.appendChild(svgDefsEl, this.generateFilterThree());
       this.renderer.appendChild(svgDefsEl, this.generateFilterFour());
       this.renderer.appendChild(svgDefsEl, this.generateFilterFive());
-      this.renderer.appendChild(this.svgStructure.drawZone, svgDefsEl);
+      this.renderer.appendChild(this.svgStructure.defsZone, svgDefsEl);
       this.brushService.isFirstLoaded = false;
     }
     const mouseDownListen = this.renderer.listen(this.svgStructure.root,

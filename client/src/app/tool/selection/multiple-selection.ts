@@ -1,5 +1,5 @@
+import { Point } from '../shape/common/point';
 import { Offset } from './offset';
-import { Point } from './point';
 import { Selection } from './selection';
 import { SelectionReturn } from './selection-return';
 import { Zone } from './zone';

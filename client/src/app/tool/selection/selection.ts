@@ -1,5 +1,5 @@
+import { Point } from '../shape/common/point';
 import { Offset } from './offset';
-import { Point } from './point';
 import { Zone } from './zone';
 
 export abstract class Selection {

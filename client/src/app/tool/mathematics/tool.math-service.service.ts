@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Point } from '../selection/point';
 import { Radius } from '../shape/common/ellipse';
+import { Point } from '../shape/common/point';
 import { Dimension } from '../shape/common/rectangle';
 
 const MINIMAL_DISTANCE = 3;

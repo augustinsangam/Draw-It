@@ -1,17 +1,17 @@
 import { fakeAsync, getTestBed, TestBed, tick } from '@angular/core/testing';
 import { EventManager } from '@angular/platform-browser';
 
-import { ScreenService } from './screen.service';
+import * as ScreenServiceModule from './screen.service';
 
 describe('ScreenService', () => {
 
-  let service: ScreenService;
+  let service: ScreenServiceModule.ScreenService;
 
   beforeEach( () => {
     TestBed.configureTestingModule({
       providers: [EventManager]
     });
-    service = getTestBed().get(ScreenService);
+    service = getTestBed().get(ScreenServiceModule.ScreenService);
   });
 
   it('should be created', () => {
@@ -21,7 +21,7 @@ describe('ScreenService', () => {
   it('#getCurrentSize() should return current size minus left bar width',
     () => {
     const currentScreenSize = {
-      width: innerWidth - service.sideBarWidth,
+      width: innerWidth - ScreenServiceModule.sideBarWidth,
       height: innerHeight
     }
     expect(currentScreenSize).toEqual(service.getCurrentSize());
