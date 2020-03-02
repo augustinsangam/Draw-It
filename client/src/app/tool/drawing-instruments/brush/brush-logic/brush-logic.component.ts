@@ -31,7 +31,7 @@ export class BrushLogicComponent extends PencilBrushCommon
           this.undoRedoService.saveState();
         }
       }
-    })
+    });
   }
 
   ngOnInit(): void {
@@ -104,8 +104,8 @@ export class BrushLogicComponent extends PencilBrushCommon
     this.renderer.appendChild(this.svgStructure.drawZone, this.svgPath);
   }
 
-  ngOnDestroy() {
-    this.listeners.forEach(end => { end(); });
+  ngOnDestroy(): void {
+    this.listeners.forEach((end) => { end(); });
     this.undoRedoService.resetActions();
     if (this.mouseOnHold) {
       this.stopDrawing();

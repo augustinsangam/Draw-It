@@ -50,12 +50,16 @@ import { NewDrawComponent } from './overlay/pages/new-draw/new-draw.component';
 import {
   PaletteDialogComponent
 } from './overlay/pages/new-draw/palette-dialog.component';
+import { SaveComponent } from './overlay/pages/save/save.component';
 import {
-  PanelComponent } from './panel/panel.component';
+  PanelComponent
+} from './panel/panel.component';
 import {
-  SidebarComponent } from './sidebar/sidebar.component';
+  SidebarComponent
+} from './sidebar/sidebar.component';
 import {
-  SvgComponent } from './svg/svg.component';
+  SvgComponent
+} from './svg/svg.component';
 import {
   ApplicatorLogicComponent
 } from './tool/applicator/applicator-logic/applicator-logic.component';
@@ -67,18 +71,15 @@ import {
 } from './tool/color/color-panel/color-panel.component';
 import {
   ColorPickerContentComponent
-// tslint:disable-next-line: max-line-length
 } from './tool/color/color-panel/color-picker-content/color-picker-content.component';
 import {
   ColorPickerItemComponent
 } from './tool/color/color-panel/color-picker-item/color-picker-item.component';
 import {
   AerosolLogicComponent
-// tslint:disable-next-line: max-line-length
 } from './tool/drawing-instruments/aerosol/aerosol-logic/aerosol-logic.component';
 import {
   AerosolPanelComponent
-// tslint:disable-next-line: max-line-length
 } from './tool/drawing-instruments/aerosol/aerosol-panel/aerosol-panel.component';
 import {
   BrushLogicComponent
@@ -140,7 +141,6 @@ import {
 import {
   RectanglePanelComponent
 } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
-import { SaveComponent } from './overlay/pages/save/save.component';
 
 @NgModule({
   declarations: [

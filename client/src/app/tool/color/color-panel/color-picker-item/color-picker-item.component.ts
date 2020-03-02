@@ -23,7 +23,7 @@ export class ColorPickerItemComponent implements AfterViewInit {
 
   constructor(private renderer: Renderer2) {}
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.updateColor(this.color);
     this.renderer.setStyle(
       this.button.nativeElement,

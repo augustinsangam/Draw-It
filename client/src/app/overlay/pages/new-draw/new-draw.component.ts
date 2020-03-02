@@ -113,7 +113,7 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     const screenSize = this.screenService.getCurrentSize();
     this.updateFormSize(screenSize);
-    this.screenSize = this.screenService.size.subscribe(screenSizeParam =>
+    this.screenSize = this.screenService.size.subscribe((screenSizeParam) =>
       this.updateFormSize(screenSizeParam)
     );
   }

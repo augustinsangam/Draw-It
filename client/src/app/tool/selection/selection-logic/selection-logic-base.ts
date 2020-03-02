@@ -1,9 +1,7 @@
 import { OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { SvgService } from 'src/app/svg/svg.service';
 import { MathService } from '../../mathematics/tool.math-service.service';
-import {
-  BackGroundProperties, StrokeProperties
-} from '../../shape/common/abstract-shape';
+import { BackGroundProperties, StrokeProperties } from '../../shape/common/abstract-shape';
 import { Circle } from '../../shape/common/circle';
 import { Rectangle } from '../../shape/common/rectangle';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
@@ -13,6 +11,7 @@ import { Offset } from '../offset';
 import { Point } from '../point';
 import { SelectionReturn } from '../selection-return';
 import { SingleSelection } from '../single-selection';
+import { Deplacement } from './deplacement';
 import { BasicSelectionType, ElementSelectedType } from './element-selected-type';
 import * as Util from './selection-logic-util';
 
@@ -41,9 +40,12 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   ngOnInit(): void {
-    this.initialiseMouse();
-    this.initialiseRectangles();
-    this.initialiseCircles();
+    this.mouse = Util.SelectionLogicUtil.initialiseMouse();
+    this.rectangles = Util.SelectionLogicUtil.initialiseRectangles(
+      this.renderer, this.svgStructure.temporaryZone, this.svgNS);
+    this.circles = Util.SelectionLogicUtil.initialiseCircles(
+      this.renderer, this.svgStructure.temporaryZone, this.svgNS
+    );
     const subscription = this.svgService.selectAllElements.subscribe(() => {
       this.applyMultipleSelection();
     });
@@ -76,9 +78,9 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.drawVisualisation(selection.points[0], selection.points[1]);
   }
 
-  private getMultipleSelection( startPoint?: Point, endPoint?: Point,
-                                elements?: Set<SVGElement>)
-  : SelectionReturn {
+  private getMultipleSelection(startPoint?: Point, endPoint?: Point,
+                               elements?: Set<SVGElement>)
+    : SelectionReturn {
     if (elements === undefined) {
       const allElements = Array.from(
         this.svgStructure.drawZone.children
@@ -105,13 +107,6 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.applyMultipleSelection(startPoint, endPoint, elementsToInvert);
   }
 
-  protected orderPoint(p1: Point, p2: Point): [Point, Point] {
-    return [
-      new Point(Math.min(p1.x, p2.x), Math.min(p1.y, p2.y)),
-      new Point(Math.max(p1.x, p2.x), Math.max(p1.y, p2.y))
-    ];
-  }
-
   protected drawSelection(p1: Point, p2: Point): void {
     this.drawARectangle(this.rectangles.selection, p1, p2,
       Util.COLORS.BLUE, false);
@@ -130,7 +125,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   private drawARectangle(element: SVGElement, p1: Point, p2: Point,
                          color: string, dasharray: boolean = false): void {
-    const [startPoint, endPoint] = this.orderPoint(p1, p2);
+    const [startPoint, endPoint] = Util.SelectionLogicUtil.orderPoint(p1, p2);
     const rectangleObject =
       new Rectangle(this.renderer, element, new MathService());
     rectangleObject.setParameters(BackGroundProperties.None,
@@ -148,23 +143,22 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   protected drawCircles(p1: Point, p2: Point): void {
-    const [startPoint, endPoint] = this.orderPoint(p1, p2);
+    const [startPoint, endPoint] = Util.SelectionLogicUtil.orderPoint(p1, p2);
     const centerPoint = new Point(
       (startPoint.x + endPoint.x) / 2,
       (startPoint.y + endPoint.y) / 2);
     this.setCircle(new Point(startPoint.x, centerPoint.y),
-    this.circles[Util.CircleType.LEFT_CIRCLE], Util.CIRCLE_RADIUS);
+      this.circles[Util.CircleType.LEFT_CIRCLE], Util.CIRCLE_RADIUS);
     this.setCircle(new Point(centerPoint.x, startPoint.y),
-    this.circles[Util.CircleType.TOP_CIRCLE], Util.CIRCLE_RADIUS);
+      this.circles[Util.CircleType.TOP_CIRCLE], Util.CIRCLE_RADIUS);
     this.setCircle(new Point(endPoint.x, centerPoint.y),
       this.circles[Util.CircleType.RIGHT_CIRCLE], Util.CIRCLE_RADIUS);
     this.setCircle(new Point(centerPoint.x, endPoint.y),
-    this.circles[Util.CircleType.BOTTOM_CIRCLE], Util.CIRCLE_RADIUS);
+      this.circles[Util.CircleType.BOTTOM_CIRCLE], Util.CIRCLE_RADIUS);
   }
 
   private setCircle(center: Point, circle: SVGElement, radius: string): void {
     // A la construction, tout est fait
-    // TODO : Remplacer Elref par un SVGElment
     // tslint:disable-next-line: no-unused-expression
     new Circle(center, this.renderer, circle, radius, Util.COLORS.GRAY);
   }
@@ -177,7 +171,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   private deleteCircles(): void {
-    this.circles.forEach(element => {
+    this.circles.forEach((element) => {
       this.renderer.setAttribute(element, 'r', '0');
       this.resetTranslate(element);
     });
@@ -218,97 +212,31 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   protected isInTheSelectionZone(x: number, y: number)
-  : boolean {
+    : boolean {
     const point = this.svgStructure.root.createSVGPoint();
     const [dx, dy] =
-      this.getTransformTranslate(this.rectangles.visualisation);
+      Deplacement.getTransformTranslate(this.rectangles.visualisation);
     [point.x, point.y] = [x - dx, y - dy];
     return (this.rectangles.visualisation as SVGGeometryElement)
-          .isPointInFill(point);
+      .isPointInFill(point);
   }
 
-  translateAll(x: number, y: number): void {
-    this.selectedElements.forEach(element => {
-      this.translate(element, x, y);
-    });
-    this.translate(this.rectangles.visualisation, x, y);
-    this.circles.forEach((circle) => this.translate(circle, x, y));
+  protected translateAll(x: number, y: number): void {
+    Deplacement.translateAll(this.selectedElements, x, y);
+    Deplacement.translateAll(this.circles, x, y);
+    Deplacement.translate(this.rectangles.visualisation, x, y);
   }
 
-  translate(element: SVGElement, x: number, y: number): void {
-    let [dx, dy] = this.getTransformTranslate(element);
-    [dx, dy] = [x + dx, y + dy];
-    element.setAttribute('transform', `translate(${dx},${dy})`);
-  }
-
-  private getTransformTranslate(element: SVGElement): [number, number] {
-    const transform = element.getAttribute('transform') as string;
-    const result  = /translate\(\s*([^\s,)]+)[ ,]([^\s,)]+)/.exec(transform);
-    return (result !== null) ?
-      [parseInt(result[1], 10), parseInt(result[2], 10)] : [0, 0];
-  }
-
-  getSvgOffset(): Offset {
+  private getSvgOffset(): Offset {
     const svgBoundingRect = this.svgStructure.root.getBoundingClientRect();
     return { top: svgBoundingRect.top, left: svgBoundingRect.left };
   }
 
-  setEquals(set1: Set<SVGElement>, set2: Set<SVGElement>): boolean {
-    if (set1.size !== set2.size) {
-      return false;
-    }
-    for (const entry of set1) {
-      if (!set2.has(entry)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private initialiseCircles(): void {
-    this.circles = [];
-    Util.CIRCLES.forEach((index) => {
-      const circle = this.renderer.createElement('circle', this.svgNS);
-      const resizeType = index % 2 === 0 ? 'col-resize' : 'ns-resize';
-      this.renderer.setStyle(circle, 'cursor', resizeType);
-      this.circles.push(circle);
-      this.renderer.appendChild(this.svgStructure.temporaryZone, circle);
-    });
-  }
-
-  private initialiseMouse(): void {
-    const fakePoint = new Point(0, 0);
-    this.mouse = {
-      left : {
-        startPoint: fakePoint, currentPoint: fakePoint, endPoint: fakePoint,
-        mouseIsDown: false, selectedElement: BasicSelectionType.NOTHING,
-        onDrag: false
-      },
-      right: {
-          startPoint: fakePoint, currentPoint: fakePoint, endPoint: fakePoint,
-          mouseIsDown: false, selectedElement: BasicSelectionType.NOTHING,
-          onDrag: false
-      }
-    };
-  }
-
-  private initialiseRectangles(): void {
-    this.rectangles = {
-      selection: this.renderer.createElement('rect', this.svgNS),
-      inversion: this.renderer.createElement('rect', this.svgNS),
-      visualisation: this.renderer.createElement('rect', this.svgNS)
-    };
-    [this.rectangles.selection, this.rectangles.inversion,
-      this.rectangles.visualisation].forEach((rectangle) => {
-        this.renderer.appendChild(this.svgStructure.temporaryZone, rectangle);
-    });
-  }
-
   private initialiseKeyManager(): void {
     this.keyManager = {
-      keyPressed : new Set(),
+      keyPressed: new Set(),
       lastTimeCheck: new Date().getTime(),
-      handlers : {
+      handlers: {
         keydown: ($event: KeyboardEvent) => {
           if (!this.keyManager.keyPressed.has($event.key)) {
             this.keyManager.keyPressed.add($event.key);
@@ -347,7 +275,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   ngOnDestroy(): void {
-    this.allListenners.forEach(end => end());
+    this.allListenners.forEach((end) => end());
     [this.rectangles.selection, this.rectangles.inversion,
     this.rectangles.visualisation].forEach((element: SVGElement) => {
       this.renderer.removeChild(this.svgStructure.temporaryZone, element);

@@ -12,13 +12,18 @@ import {ColorService} from '../../../color/color.service';
 import {ToolPanelDirective} from '../../../tool-panel/tool-panel.directive';
 import {AerosolService} from '../aerosol.service';
 
+// TODO : Change variable name
+const POINT = {
+  x : 150,
+  y : 110
+};
+
 @Component({
   selector: 'app-aerosol-panel',
   templateUrl: './aerosol-panel.component.html',
   styleUrls: ['./aerosol-panel.component.scss']
 })
 
-// tslint:disable:use-lifecycle-interface
 export class AerosolPanelComponent extends ToolPanelDirective
   implements AfterViewInit {
 
@@ -51,10 +56,9 @@ export class AerosolPanelComponent extends ToolPanelDirective
     });
   }
 
-  // TODO fix the panel not opening when using ngAfterViewInit
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     super.ngAfterViewInit();
-    this.updateThumbnail()
+    this.updateThumbnail();
   }
 
   protected onThicknessChange(): void {
@@ -73,10 +77,10 @@ export class AerosolPanelComponent extends ToolPanelDirective
     this.updateThumbnail();
   }
 
-  protected updateThumbnail() {
+  protected updateThumbnail(): void {
     let preview = '';
     for (let i = 0; i < this.service.frequency; i++) {
-      preview += this.service.generatePoints(new Point(150, 110));
+      preview += this.service.generatePoints(new Point(POINT.x, POINT.y));
     }
     this.renderer.setAttribute(
       this.prevPathRef.nativeElement,

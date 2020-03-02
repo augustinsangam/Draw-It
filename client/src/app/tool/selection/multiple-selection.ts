@@ -33,7 +33,7 @@ export class MultipleSelection extends Selection {
   }
 
   private findSelectedElements( elements: Set<SVGElement>): void {
-    elements.forEach(element => {
+    elements.forEach((element) => {
       if (element instanceof SVGElement) {
         const elementZone = this.getZone(element);
         const intersection = this.compareZone.intersection(elementZone);
@@ -53,7 +53,7 @@ export class MultipleSelection extends Selection {
 
   private selectAll(elements: Set<SVGElement>): void {
     this.selectedElements = elements;
-    elements.forEach(element => {
+    elements.forEach((element) => {
       if (element instanceof SVGElement) {
         if (!!this.zone) {
           this.zone = this.zone.union(this.getZone(element));

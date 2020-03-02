@@ -50,6 +50,7 @@ export class OverlayService {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
         this.toolSelectorService.set(Tool.Selection);
+        this.toolSelectorService.set(Tool.Selection); // To close the pannel
         this.svgService.selectAllElements.emit(null);
       } else if (!!event && !event.ctrlKey) {
         this.toolSelectorService.set(Tool.Aerosol);
@@ -111,7 +112,7 @@ export class OverlayService {
       this.getCommomDialogOptions()
     );
     this.dialogRefs.newDraw.disableClose = true;
-    this.dialogRefs.newDraw.afterClosed().subscribe(resultNewDialog => {
+    this.dialogRefs.newDraw.afterClosed().subscribe((resultNewDialog: string | SvgShape) => {
       this.shortcutHanler.activateAll();
       this.closeNewDrawDialog(resultNewDialog);
     });

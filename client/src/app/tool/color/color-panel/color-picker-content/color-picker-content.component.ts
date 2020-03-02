@@ -31,7 +31,8 @@ const CONSTANTS = {
   ALPHA_MIN : 0,
   ALPHA_MAX : 100,
   COLOR_WIDTH : 8,
-  TRAKER_WIDTH : 7
+  TRAKER_WIDTH : 7,
+  HEXADECIMAL_COLOR_LENGTH : 7
 };
 
 @Component({
@@ -180,8 +181,8 @@ export class ColorPickerContentComponent implements AfterViewInit {
       this.colorForm.patchValue({
         b: startColor.b,
         g: startColor.g,
-        a: 100,
-        hex: this.startColor.substring(1, 7)
+        a: CONSTANTS.ALPHA_MAX,
+        hex: this.startColor.substring(1, CONSTANTS.HEXADECIMAL_COLOR_LENGTH)
       });
       this.drawTracker(startColor.b, startColor.g);
     }, 0);

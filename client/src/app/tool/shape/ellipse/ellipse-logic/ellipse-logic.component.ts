@@ -212,7 +212,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
   }
 
   ngOnDestroy(): void {
-    this.allListeners.forEach(listener => listener());
+    this.allListeners.forEach((end) => end());
     this.undoRedoService.resetActions();
     if (this.onDrag) {
       this.onMouseUp(

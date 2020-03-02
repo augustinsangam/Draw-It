@@ -2,7 +2,6 @@ import { Component, HostListener, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import {
   ColorPickerContentComponent
-// tslint:disable-next-line: max-line-length
 } from 'src/app/tool/color/color-panel/color-picker-content/color-picker-content.component';
 import { ColorService } from 'src/app/tool/color/color.service';
 
@@ -17,12 +16,12 @@ export class PaletteDialogComponent {
   constructor(public dialogRef: MatDialogRef<PaletteDialogComponent>,
               private colorService: ColorService) { }
 
-  onPickColor($color: string) {
+  onPickColor($color: string): void {
     this.dialogRef.close(this.colorService.hexFormRgba($color));
   }
 
   @HostListener('document:keydown.enter', ['$event'])
-  protected onKeydownHandler(event: KeyboardEvent) {
+  protected onKeydownHandler(event: KeyboardEvent): void {
     event.stopPropagation();
     event.preventDefault();
     this.palette.onConfirm();

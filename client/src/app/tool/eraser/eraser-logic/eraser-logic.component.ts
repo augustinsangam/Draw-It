@@ -25,7 +25,6 @@ const CONSTANTS = {
   PIXEL_INCREMENT: 3
 };
 
-
 @Component({
   selector: 'app-eraser-logic',
   template: ''
@@ -229,7 +228,7 @@ export class EraserLogicComponent
   }
 
   ngOnDestroy(): void {
-    this.allListeners.forEach(end => end());
+    this.allListeners.forEach((end) => end());
     this.renderer.removeChild(this.svgStructure.temporaryZone, this.eraser);
     this.renderer.setStyle(this.svgStructure.root, 'cursor', 'default');
     this.undoRedoService.resetActions();

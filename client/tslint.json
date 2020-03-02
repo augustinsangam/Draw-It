@@ -15,16 +15,7 @@
     "use-lifecycle-interface": true,
     "use-pipe-transform-interface": true,
     "component-class-suffix": true,
-    "directive-class-suffix": true,
-    //
-    "arrow-parens": false,
-    "no-empty": false,
-    "max-classes-per-file": false,
-    "variable-name": {
-      "options": [
-        "allow-leading-underscore"
-      ]
-    }
+    "directive-class-suffix": true
   },
   "linterOptions": {
     "exclude": [

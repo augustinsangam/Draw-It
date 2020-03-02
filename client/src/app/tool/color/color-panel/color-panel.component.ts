@@ -27,6 +27,8 @@ export enum ColorOption {
   Background = 'BACKGROUND'
 }
 
+const ITEMS_BEFORE_RECENT_COLORS = 3;
+
 @Component({
   selector: 'app-color-panel',
   templateUrl: './color-panel.component.html',
@@ -94,7 +96,7 @@ export class ColorPanelComponent extends ToolPanelDirective
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
     this.updatePreviewColors();
-    this.colorsItemsArray = this.colorsItems.toArray().slice(3);
+    this.colorsItemsArray = this.colorsItems.toArray().slice(ITEMS_BEFORE_RECENT_COLORS);
 
     this.addEvents();
     this.updateRecentColors();

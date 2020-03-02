@@ -95,7 +95,7 @@ export class LineLogicComponent extends ToolLogicDirective
   }
 
   ngOnDestroy(): void {
-    this.listeners.forEach(end => end());
+    this.listeners.forEach((end) => end());
     this.undoRedoService.resetActions();
     if (!this.isNewPath) {
       // TODO Nicolas. Exactemment ici

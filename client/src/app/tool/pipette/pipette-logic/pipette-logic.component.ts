@@ -101,7 +101,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
   }
 
   ngOnDestroy(): void {
-    this.allListeners.forEach(end => end());
+    this.allListeners.forEach((end) => end());
   }
 
 }

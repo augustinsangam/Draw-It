@@ -190,7 +190,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
   }
 
   ngOnDestroy(): void {
-    this.allListeners.forEach(listenner => listenner());
+    this.allListeners.forEach((end) => end());
     this.undoRedoService.resetActions();
     if (this.onDrag) {
       this.onMouseUp(

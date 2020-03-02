@@ -44,6 +44,9 @@ export class MockColorPickerContentComponent {
     this.baseColors = [];
   }
 
+  // On crée un mock complet pour les tests. On veut explicitement que les
+  // fonctions ne fassent rien.
+  // tslint:disable: no-empty
   initialiseStartingColor(): void { }
 
   buildCanvas(redValue: number): void { }

@@ -105,7 +105,7 @@ export class PolygoneLogicComponent extends ToolLogicDirective
   }
 
   ngOnDestroy(): void {
-    this.allListeners.forEach(listenner => listenner());
+    this.allListeners.forEach((end) => end());
     this.undoRedoService.resetActions();
   }
 

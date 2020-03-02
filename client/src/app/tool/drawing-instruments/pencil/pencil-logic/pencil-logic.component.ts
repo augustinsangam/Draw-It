@@ -99,7 +99,7 @@ export class PencilLogicComponent extends PencilBrushCommon
   }
 
   ngOnDestroy(): void {
-    this.listeners.forEach(end => { end(); });
+    this.listeners.forEach((end) => { end(); });
     this.undoRedoService.resetActions();
     if (this.mouseOnHold) {
       this.stopDrawing();

@@ -30,7 +30,7 @@ export class DocumentationComponent {
   contentToDisplay: Page;
 
   constructor() {
-    this.treeControl = new NestedTreeControl<Node>(node => node.children);
+    this.treeControl = new NestedTreeControl<Node>((node) => node.children);
     this.dataSource = new MatTreeNestedDataSource<Node>();
     this.leafNodeArray = new Array<Node>();
     this.dataSource.data = docs;
@@ -110,12 +110,12 @@ export class DocumentationComponent {
       this.expandParent(docs, node.id);
     }
     fetch(encodeURI('../../assets/doc/md/' + node.label + '.md'))
-      .then(res => res.text())
-      .then(text => {
+      .then((res) => res.text())
+      .then((text) => {
         this.contentToDisplay.body = marked(text);
       });
   }
 
   hasChild = (_: number, node: Node) =>
-    !!node.children && node.children.length > 0;
+    !!node.children && node.children.length > 0
 }

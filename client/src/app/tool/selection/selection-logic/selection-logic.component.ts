@@ -55,7 +55,7 @@ export class SelectionLogicComponent
               this.drawSelection(this.mouse.left.startPoint,
                 this.mouse.left.currentPoint);
               if (!this.mouse.left.startPoint.equals(this.mouse.left.endPoint)) {
-                const [startPoint, currentPoint] = this.orderPoint(
+                const [startPoint, currentPoint] = Util.SelectionLogicUtil.orderPoint(
                   this.mouse.left.startPoint, this.mouse.left.currentPoint
                 );
                 this.applyMultipleSelection(startPoint, currentPoint);
@@ -108,7 +108,7 @@ export class SelectionLogicComponent
               new Point($event.offsetX, $event.offsetY);
             this.drawInversion(this.mouse.right.startPoint,
               this.mouse.right.currentPoint);
-            const [startPoint, currentPoint] = this.orderPoint(
+            const [startPoint, currentPoint] = Util.SelectionLogicUtil.orderPoint(
               this.mouse.right.startPoint, this.mouse.right.currentPoint
             );
             this.applyMultipleInversion(startPoint, currentPoint);

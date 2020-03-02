@@ -47,7 +47,7 @@ describe('PanelComponent', () => {
           LinePanelComponent,
         ],
       },
-    })
+    });
   }));
 
   beforeEach(() => {

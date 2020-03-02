@@ -275,7 +275,7 @@ describe('DocumentationComponent', () => {
 
     component['next']();
 
-    expect(component.contentToDisplay.title).toEqual('PetitEnfant2')
+    expect(component.contentToDisplay.title).toEqual('PetitEnfant2');
   });
 
   it('#previous() shouldn´t change contentToDisplay if at first node', () => {
@@ -288,7 +288,7 @@ describe('DocumentationComponent', () => {
 
     component['previous']();
 
-    expect(component.contentToDisplay.title).toEqual('PetitEnfant1')
+    expect(component.contentToDisplay.title).toEqual('PetitEnfant1');
   });
 
   it('#previous() should change contentToDisplay if not at first node', () => {
@@ -301,7 +301,7 @@ describe('DocumentationComponent', () => {
 
     component['previous']();
 
-    expect(component.contentToDisplay.title).toEqual('PetitEnfant1')
+    expect(component.contentToDisplay.title).toEqual('PetitEnfant1');
   });
 
   it('#isFirstNode() should return true if at first node', () => {
