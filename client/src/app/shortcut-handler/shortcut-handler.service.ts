@@ -57,11 +57,11 @@ export class ShortcutHandlerService {
   }
 
   activateAll(): void {
-    this.manager.forEach(handler => handler.isActive = true);
+    this.manager.forEach((handler) => handler.isActive = true);
   }
 
   desactivateAll(): void {
-    this.manager.forEach(handler => handler.isActive = false);
+    this.manager.forEach((handler) => handler.isActive = false);
   }
 
   set(shortcut: Shortcut, handler: ShortcutCallBack): void {
@@ -71,7 +71,7 @@ export class ShortcutHandlerService {
     });
   }
 
-  private clone(manager: Map<Shortcut, Handler>) {
+  private clone(manager: Map<Shortcut, Handler>): Map<Shortcut, Handler> {
     const managerClone = new Map<Shortcut, Handler>();
     for (const [shortcut, handler] of manager) {
       managerClone.set(shortcut, {
@@ -82,11 +82,11 @@ export class ShortcutHandlerService {
     return managerClone;
   }
 
-  push() {
+  push(): void {
     this.history.push(this.clone(this.manager));
   }
 
-  pop() {
+  pop(): void {
     this.manager = this.history.pop() as Map<Shortcut, Handler>;
   }
 }

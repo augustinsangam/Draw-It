@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
 
 @Component({
@@ -6,15 +6,14 @@ import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
   template: '',
 })
 
-// tslint:disable:use-lifecycle-interface
-export class GridLogicComponent extends ToolLogicDirective {
+export class GridLogicComponent extends ToolLogicDirective implements OnInit {
 
   constructor(
   ) {
     super();
   }
 
-  ngOnInit(): void {
-  }
+  // TODO : Trouver un truc à mettre pour eviter que LINT chiale
+  ngOnInit(): void { }
 
 }

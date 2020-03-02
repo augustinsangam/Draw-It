@@ -30,18 +30,15 @@ export class CommunicationService {
   private readonly host: string;
   private readonly xhr: XMLHttpRequest;
 
-  private static deserialize(
-		data: ArrayBuffer,
-	): flatbuffers.ByteBuffer {
-		return new flatbuffers.ByteBuffer(new Uint8Array(data));
-	}
+  private static deserialize( data: ArrayBuffer ): flatbuffers.ByteBuffer {
+    return new flatbuffers.ByteBuffer(new Uint8Array(data));
+  }
 
-  // Must be public
-  clear() {
+  clear(): void {
     this.fbb.clear();
   }
 
-  getAll() {
+  async getAll(): Promise<flatbuffers.ByteBuffer> {
     this.xhr.open('GET', this.host + '/draw', true);
     this.xhr.responseType = 'arraybuffer';
     const promise = new Promise<flatbuffers.ByteBuffer>((resolve, reject) => {
@@ -54,7 +51,7 @@ export class CommunicationService {
             reject(this.xhr.responseText);
           }
         }
-      }
+      };
     });
     this.xhr.send();
     return promise;
@@ -68,7 +65,7 @@ export class CommunicationService {
       for (let i = 0; i < attrsLen; i++) {
         const attr = el.attrs(i);
         if (!!attr) {
-          const k = attr.k(), v = attr.v();
+          const [k, v] = [attr.k(), attr.v()];
           // v may be empty, so !!v is not suitable
           if (!!k && v != null) {
             svgEl.setAttribute(k, v);
@@ -88,8 +85,6 @@ export class CommunicationService {
     return null;
   }
 
-
-  // Must be public
   encodeElementRecursively(el: Element): flatbuffers.Offset {
     const childrenList =  Array.from(el.childNodes)
       .filter((node) => node.nodeType === 1)
@@ -107,14 +102,13 @@ export class CommunicationService {
     return ElementT.create(this.fbb, name, attrs, children);
   }
 
-  private encodeTags(tags: string[]) {
+  private encodeTags(tags: string[]): number {
     const tagsOffsets = tags.map((tag) => this.fbb.createString(tag));
     return DrawT.createTagsVector(this.fbb, tagsOffsets);
   }
 
-  // Must be public
   encode(name: string, tags: string[], color: string,
-    width: number, height: number, elOffset: flatbuffers.Offset) {
+         width: number, height: number, elOffset: flatbuffers.Offset): void {
     const tagsOffset = this.encodeTags(tags);
     const nameOffset = this.fbb.createString(name);
     const colorOffset = this.fbb.createString(color);
@@ -130,7 +124,7 @@ export class CommunicationService {
     this.fbb.finish(draw);
   }
 
-  post(): Promise<number> {
+  async post(): Promise<number> {
     this.xhr.open('POST', this.host + '/draw', true);
     this.xhr.setRequestHeader('Content-Type', 'application/octet-stream');
     const promise = new Promise<number>((resolve, reject) => {
@@ -142,7 +136,7 @@ export class CommunicationService {
             reject(this.xhr.responseText);
           }
         }
-      }
+      };
       this.xhr.ontimeout = () => reject('Temps de repos dépassé');
       this.xhr.onerror = () => reject(
         'Communication impossible avec le serveur');
@@ -151,7 +145,7 @@ export class CommunicationService {
     return promise;
   }
 
-  put(id: number): Promise<null> {
+  async put(id: number): Promise<null> {
     this.xhr.open('PUT', `${this.host}/draw/${id}`, true);
     this.xhr.setRequestHeader('Content-Type', 'application/octet-stream');
     const promise = new Promise<null>((resolve, reject) => {
@@ -163,14 +157,14 @@ export class CommunicationService {
             reject(this.xhr.responseText);
           }
         }
-      }
+      };
       this.xhr.onerror = (err) => reject(err);
     });
     this.xhr.send(this.fbb.asUint8Array());
     return promise;
   }
 
-  delete(id: number): Promise<null> {
+  async delete(id: number): Promise<null> {
     this.xhr.open('DELETE', `${this.host}/draw/${id}`, true);
     const promise = new Promise<null>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
@@ -181,7 +175,7 @@ export class CommunicationService {
             reject(this.xhr.responseText);
           }
         }
-      }
+      };
       this.xhr.onerror = (err) => reject(err);
     });
     this.xhr.send();

@@ -80,7 +80,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
 
   private onMouseMove(mouseEv: MouseEvent): void {
     if (this.colorService.backgroundColor !== this.backgroundColorOnInit) {
-      this.ngOnInit()
+      this.ngOnInit();
     }
 
     if (this.image != null) {
@@ -90,17 +90,18 @@ export class PipetteLogicComponent extends ToolLogicDirective
         1,
         1
       ).data;
+      // TODO : Ask the chargé de lab 2 + 1
       this.service.currentColor = 'rgba(' +
         pixel[0].toString() + ',' +
         pixel[1].toString() + ',' +
         pixel[2].toString() + ',' +
-        pixel[3].toString() +
+        pixel[2 + 1].toString() +
       ')';
     }
   }
 
   ngOnDestroy(): void {
-    this.allListeners.forEach(end => end());
+    this.allListeners.forEach((end) => end());
   }
 
 }

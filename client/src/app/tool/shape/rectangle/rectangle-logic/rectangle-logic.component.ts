@@ -1,5 +1,5 @@
-import { Component, OnDestroy, Renderer2 } from '@angular/core';
-import { Point } from 'src/app/tool/selection/Point';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { Point } from 'src/app/tool/selection/point';
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { MathService } from '../../../mathematics/tool.math-service.service';
@@ -8,12 +8,13 @@ import {
   BackGroundProperties,
   StrokeProperties,
   Style
-} from '../../common/AbstractShape';
-import { Rectangle } from '../../common/Rectangle';
+} from '../../common/abstract-shape';
+import { Rectangle } from '../../common/rectangle';
 import { RectangleService } from '../rectangle.service';
 
 const SEMIOPACITY = '0.5';
 const FULLOPACITY = '1';
+
 enum ClickType {
   CLICKGAUCHE,
 }
@@ -24,10 +25,10 @@ enum ClickType {
 })
 
 export class RectangleLogicComponent extends ToolLogicDirective
-  implements OnDestroy {
+  implements OnDestroy, OnInit {
 
   private rectangles: Rectangle[] = [];
-  private onDrag = false;
+  private onDrag: boolean;
   private currentPoint: Point;
   private mouseDownPoint: Point;
   private style: Style;
@@ -41,6 +42,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
     private readonly mathService: MathService
   ) {
     super();
+    this.onDrag = false;
     this.undoRedoService.resetActions();
     this.undoRedoService.setPreUndoAction({
       enabled: true,
@@ -53,13 +55,12 @@ export class RectangleLogicComponent extends ToolLogicDirective
           );
           this.getRectangle().element.remove();
         }
-        this.undoRedoService.undoBase()
+        this.undoRedoService.undoBase();
       }
-    })
+    });
   }
 
-  // tslint:disable-next-line use-lifecycle-interface
-  ngOnInit() {
+  ngOnInit(): void {
     const onMouseDown = this.renderer.listen(
       this.svgStructure.root,
       'mousedown',
@@ -188,8 +189,8 @@ export class RectangleLogicComponent extends ToolLogicDirective
     );
   }
 
-  ngOnDestroy() {
-    this.allListeners.forEach(listenner => listenner());
+  ngOnDestroy(): void {
+    this.allListeners.forEach((end) => end());
     this.undoRedoService.resetActions();
     if (this.onDrag) {
       this.onMouseUp(

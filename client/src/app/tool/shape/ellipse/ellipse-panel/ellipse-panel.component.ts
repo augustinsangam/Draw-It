@@ -47,7 +47,7 @@ export class EllipsePanelComponent
       borderOption: [this.service.borderOption, []],
       thicknessSlider: [this.service.thickness, []],
       fillOption: [this.service.fillOption, []]
-    })
+    });
   }
 
   ngAfterViewChecked(): void {
@@ -78,7 +78,7 @@ export class EllipsePanelComponent
     this.ellipseForm.patchValue({
       thicknessFormField: this.thicknessSlider.value
     });
-    this.service.thickness = this.thicknessSlider.value as number
+    this.service.thickness = this.thicknessSlider.value as number;
   }
 
 }

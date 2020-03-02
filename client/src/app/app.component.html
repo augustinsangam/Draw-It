@@ -1,6 +1,7 @@
-<app-sidebar (documentationEvent)="overlayService.openDocumentationDialog(false)"
+<app-sidebar  (documentationEvent)="overlayService.openDocumentationDialog(false)"
               (exportEvent)="overlayService.openExportDialog()"
-              (saveEvent)="overlayService.openSaveDialog()"></app-sidebar>
+              (saveEvent)="overlayService.openSaveDialog()"
+              (homeEvent)="overlayService.openHomeDialog(true)"></app-sidebar>
 <app-panel></app-panel>
 <main id="canvasRef">
   <svg #svg app-svg

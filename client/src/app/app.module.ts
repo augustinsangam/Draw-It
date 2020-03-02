@@ -29,33 +29,37 @@ import { AppComponent } from './app.component';
 import { MaterialModule } from './material.module';
 import {
   DocumentationComponent
-} from './pages/documentation/documentation.component';
+} from './overlay/pages/documentation/documentation.component';
 import {
   ExportComponent
-} from './pages/export/export.component';
+} from './overlay/pages/export/export.component';
 import {
   DeleteConfirmationDialogComponent
-} from './pages/galery/deleteconfirmation-dialog.component';
+} from './overlay/pages/galery/deleteconfirmation-dialog.component';
 import {
   GaleryCardComponent
-} from './pages/galery/galery-card/galery-card.component';
-import { GaleryComponent } from './pages/galery/galery.component';
+} from './overlay/pages/galery/galery-card/galery-card.component';
+import { GaleryComponent } from './overlay/pages/galery/galery.component';
 import {
   HomeComponent
-} from './pages/home/home.component';
+} from './overlay/pages/home/home.component';
 import {
   ConfirmationDialogComponent
-} from './pages/new-draw/confirmation-dialog.component';
-import { NewDrawComponent } from './pages/new-draw/new-draw.component';
+} from './overlay/pages/new-draw/confirmation-dialog.component';
+import { NewDrawComponent } from './overlay/pages/new-draw/new-draw.component';
 import {
   PaletteDialogComponent
-} from './pages/new-draw/palette-dialog.component';
+} from './overlay/pages/new-draw/palette-dialog.component';
+import { SaveComponent } from './overlay/pages/save/save.component';
 import {
-  PanelComponent } from './panel/panel.component';
+  PanelComponent
+} from './panel/panel.component';
 import {
-  SidebarComponent } from './sidebar/sidebar.component';
+  SidebarComponent
+} from './sidebar/sidebar.component';
 import {
-  SvgComponent } from './svg/svg.component';
+  SvgComponent
+} from './svg/svg.component';
 import {
   ApplicatorLogicComponent
 } from './tool/applicator/applicator-logic/applicator-logic.component';
@@ -67,18 +71,15 @@ import {
 } from './tool/color/color-panel/color-panel.component';
 import {
   ColorPickerContentComponent
-// tslint:disable-next-line: max-line-length
 } from './tool/color/color-panel/color-picker-content/color-picker-content.component';
 import {
   ColorPickerItemComponent
 } from './tool/color/color-panel/color-picker-item/color-picker-item.component';
 import {
   AerosolLogicComponent
-// tslint:disable-next-line: max-line-length
 } from './tool/drawing-instruments/aerosol/aerosol-logic/aerosol-logic.component';
 import {
   AerosolPanelComponent
-// tslint:disable-next-line: max-line-length
 } from './tool/drawing-instruments/aerosol/aerosol-panel/aerosol-panel.component';
 import {
   BrushLogicComponent
@@ -140,7 +141,6 @@ import {
 import {
   RectanglePanelComponent
 } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
-import { SaveComponent } from './pages/save/save.component';
 
 @NgModule({
   declarations: [

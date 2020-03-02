@@ -6,9 +6,9 @@ import {
   TestBed,
   tick
 } from '@angular/core/testing';
+import { Point } from 'src/app/tool/selection/point';
 import { ColorService } from '../../../color/color.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
-import { Point } from '../../common/Point';
 import { RectangleService } from '../rectangle.service';
 import { RectangleLogicComponent } from './rectangle-logic.component';
 

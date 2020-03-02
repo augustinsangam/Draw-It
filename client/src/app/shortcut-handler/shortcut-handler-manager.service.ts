@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { OverlayService } from '../overlay/overlay.service';
 import { GridService } from '../tool/grid/grid.service';
 import {
   ToolSelectorService
@@ -10,7 +11,6 @@ import {
   ShortcutCallBack,
   ShortcutHandlerService
 } from './shortcut-handler.service';
-import { OverlayService } from '../overlay.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +28,7 @@ export class ShortcutHandlerManagerService {
   ) {
   }
 
-  initialiseShortcuts() {
+  initialiseShortcuts(): void {
 
     this.handlersFunc = new Map();
     this.handlersFunc.set(Shortcut.C, () =>

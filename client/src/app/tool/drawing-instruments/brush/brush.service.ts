@@ -8,7 +8,9 @@ export enum Texture {
   Texture3 = 'filter3',
   Texture4 = 'filter4',
   Texture5 = 'filter5'
-};
+}
+
+const DEFAULT_THIKCNESS = 20;
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +22,7 @@ export class BrushService extends ToolService {
 
   constructor() {
     super();
-    this.thickness = 20;
+    this.thickness = DEFAULT_THIKCNESS;
     this.isFirstLoaded = true;
     this.texture = Texture.Texture2;
   }

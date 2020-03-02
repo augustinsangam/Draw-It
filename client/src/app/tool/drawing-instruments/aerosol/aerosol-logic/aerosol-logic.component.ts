@@ -1,19 +1,19 @@
-import { Component, OnDestroy, Renderer2 } from '@angular/core';
-import { interval, Observable } from 'rxjs';
-import { Point } from 'src/app/tool/selection/Point';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { interval, Observable, Subscription } from 'rxjs';
+import { Point } from 'src/app/tool/selection/point';
 import { ColorService } from '../../../color/color.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
 import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import { AerosolService } from '../aerosol.service';
 
+const A_SECOND_IN_MS = 1000;
+
 @Component({
   selector: 'app-aerosol-logic',
   template: '',
 })
-
-// tslint:disable:use-lifecycle-interface
 export class AerosolLogicComponent
-  extends ToolLogicDirective implements OnDestroy {
+  extends ToolLogicDirective implements OnInit, OnDestroy {
 
   private listeners: (() => void)[];
   private currentPath: SVGElement;
@@ -22,7 +22,7 @@ export class AerosolLogicComponent
   private onDrag: boolean;
   private stringPath: string;
 
-  private periodicSplashAdder: any;
+  private periodicSplashAdder: Subscription;
   private frequency: Observable<number>;
 
   constructor(
@@ -43,10 +43,10 @@ export class AerosolLogicComponent
       overrideFunction: () => {
         if (this.onDrag) {
           this.onMouseUp();
-          this.currentPath.remove()
+          this.currentPath.remove();
         }
       }
-    })
+    });
   }
 
   ngOnInit(): void {
@@ -86,7 +86,7 @@ export class AerosolLogicComponent
   }
 
   ngOnDestroy(): void {
-    this.listeners.forEach(listenner => { listenner(); });
+    this.listeners.forEach((listenner) => { listenner(); });
     this.undoRedoService.resetActions();
   }
 
@@ -102,7 +102,7 @@ export class AerosolLogicComponent
 
     this.onDrag = true;
 
-    this.frequency = interval(1000 / (this.service.frequency));
+    this.frequency = interval(A_SECOND_IN_MS / (this.service.frequency));
     this.periodicSplashAdder = this.frequency.subscribe(
       () => this.addSplash()
     );

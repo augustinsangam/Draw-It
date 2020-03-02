@@ -13,9 +13,9 @@ import {AppComponent, NewDrawOptions} from './app.component';
 import {MaterialModule} from './material.module';
 import {
   DocumentationComponent
-} from './pages/documentation/documentation.component';
-import {HomeComponent} from './pages/home/home.component';
-import {NewDrawComponent} from './pages/new-draw/new-draw.component';
+} from './overlay/pages/documentation/documentation.component';
+import {HomeComponent} from './overlay/pages/home/home.component';
+import {NewDrawComponent} from './overlay/pages/new-draw/new-draw.component';
 import {PanelComponent} from './panel/panel.component';
 import {
   Shortcut, ShortcutCallBack, ShortcutHandlerService
