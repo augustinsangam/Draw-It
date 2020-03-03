@@ -73,11 +73,8 @@ export class SaveComponent implements OnInit {
     this.svgService.header.name = this.form.controls.name.value;
     this.svgService.header.tags = Array.from(this.tags);
     this.communicationService.encode(
-      this.svgService.header.name,
-      this.svgService.header.tags,
-      this.svgService.shape.color,
-      this.svgService.shape.width,
-      this.svgService.shape.height,
+      this.svgService.header,
+      this.svgService.shape,
       this.gElOffset);
     console.log(this.svgService.header.id);
     if (this.svgService.header.id) {
