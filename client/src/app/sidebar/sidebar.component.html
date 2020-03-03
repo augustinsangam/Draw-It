@@ -1,4 +1,6 @@
 <nav>
+  <a title="Acceuil"
+  (click)="homeEvent.emit()"><mat-icon>home</mat-icon></a>
   <a title="Selection [S]" #selection (click)="selectSelection($event)"
     style="background-image:url(/assets/sidebar-icons/selection.png)"></a>
   <a title="Efface [E]" #efface   (click)="selectEraser($event)"
@@ -47,9 +49,9 @@
   </mat-grid-tile>
 </mat-grid-list>
 
-<a title="Sauvegarder"
+<a title="Sauvegarder [CTRL + S]"
   (click)="saveEvent.emit()"><mat-icon>save</mat-icon></a>
-<a title="Exporter"
+<a title="Exporter [CTRL + E]"
   (click)="exportEvent.emit()"><mat-icon>save_alt</mat-icon></a>
 <a title="Aide" style="background-image:url(/assets/sidebar-icons/gimp-prefs-help-system.svg)"
   (click)="documentationEvent.emit()"></a>

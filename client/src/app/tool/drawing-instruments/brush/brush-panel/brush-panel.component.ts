@@ -24,33 +24,7 @@ export class BrushPanelComponent extends ToolPanelDirective {
   })
   private thicknessSlider: MatSlider;
 
-  protected textures = [
-    {
-      value: Texture.Texture2,
-      name: 'Flou',
-      src: '/assets/textures/texture2.png'
-    },
-    {
-      value: Texture.Texture3,
-      name: 'Ombre',
-      src: '/assets/textures/texture3.png'
-    },
-    {
-      value: Texture.Texture4,
-      name: 'Graffiti',
-      src: '/assets/textures/texture4.png'
-    },
-    {
-      value: Texture.Texture5,
-      name: 'Poussière',
-      src: '/assets/textures/texture5.png'
-    },
-    {
-      value: Texture.Texture1,
-      name: 'Fractal',
-      src: '/assets/textures/texture1.png'
-    },
-  ];
+  protected textures: TextureItem[];
 
   constructor(
     elementRef: ElementRef<HTMLElement>,
@@ -63,6 +37,37 @@ export class BrushPanelComponent extends ToolPanelDirective {
       thicknessSlider: [this.service.thickness, []],
       textureOption: [this.service.texture, []]
     });
+    this.initialiseTextures();
+  }
+
+  private initialiseTextures(): void {
+    this.textures = [
+      {
+        value: Texture.Texture2,
+        name: 'Flou',
+        src: '/assets/textures/texture2.png'
+      },
+      {
+        value: Texture.Texture3,
+        name: 'Ombre',
+        src: '/assets/textures/texture3.png'
+      },
+      {
+        value: Texture.Texture4,
+        name: 'Graffiti',
+        src: '/assets/textures/texture4.png'
+      },
+      {
+        value: Texture.Texture5,
+        name: 'Poussière',
+        src: '/assets/textures/texture5.png'
+      },
+      {
+        value: Texture.Texture1,
+        name: 'Fractal',
+        src: '/assets/textures/texture1.png'
+      },
+    ];
   }
 
   protected onThicknessChange(): void {
@@ -75,4 +80,10 @@ export class BrushPanelComponent extends ToolPanelDirective {
   protected onOptionChange($event: MatRadioChange): void {
     this.service.texture = $event.value;
   }
+}
+
+interface TextureItem {
+  value: Texture;
+  name: string;
+  src: string;
 }

@@ -8,19 +8,20 @@ import {UndoRedoService} from '../tool/undo-redo/undo-redo.service';
 export class SvgService {
 
   structure: SVGStructure;
-  selectAllElements: EventEmitter<null>;
   shape: SvgShape;
-
-  id: number;
-  name: string;
-  tags: string[];
+  header: SvgHeader;
+  drawInProgress: boolean;
+  selectAllElements: EventEmitter<null>;
 
   constructor(private readonly undoRedoService: UndoRedoService,
   ) {
-    this.id = 0;
-    this.name = '';
-    this.tags = [];
+    this.drawInProgress = false;
     this.selectAllElements = new EventEmitter();
+    this.header = {
+      id: 0,
+      name: '',
+      tags: []
+    };
     this.shape = {
       width: 0,
       height: 0,
@@ -48,4 +49,10 @@ export interface SvgShape {
   width: number;
   height: number;
   color: string;
+}
+
+export interface SvgHeader {
+  id: number;
+  name: string;
+  tags: string[];
 }

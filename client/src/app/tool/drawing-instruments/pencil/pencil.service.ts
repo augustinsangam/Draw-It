@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { ToolService } from '../../tool.service';
 
+const DEFAULT_THICKNESS = 10;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -11,6 +13,6 @@ export class PencilService extends ToolService {
 
   constructor() {
     super();
-    this.thickness = 10;
+    this.thickness = DEFAULT_THICKNESS;
   }
 }

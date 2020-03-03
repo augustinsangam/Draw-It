@@ -5,10 +5,11 @@ import {
 } from '@angular/core';
 
 export interface SVGStructure {
-  root: SVGSVGElement,
-  drawZone: SVGGElement,
-  temporaryZone: SVGGElement,
-  endZone: SVGGElement
+  root: SVGSVGElement;
+  defsZone: SVGGElement;
+  drawZone: SVGGElement;
+  temporaryZone: SVGGElement;
+  endZone: SVGGElement;
 }
 
 @Directive({
@@ -25,6 +26,5 @@ export abstract class ToolLogicDirective implements OnInit {
 
   // github.com/microsoft/TypeScript/issues/22815
   // svgElRef is NOT available from constructor, but rather from ngOnInit
-  // Must be public
   abstract ngOnInit(): void;
 }

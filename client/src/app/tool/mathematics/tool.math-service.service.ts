@@ -1,21 +1,20 @@
 import { Injectable } from '@angular/core';
+import { Radius } from '../shape/common/ellipse';
+import { Point } from '../shape/common/point';
+import { Dimension } from '../shape/common/rectangle';
 
-import { Point } from '../selection/Point';
-import { Radius } from '../shape/common/Ellipse';
-import { Dimension } from '../shape/common/Rectangle';
-
-const MINIMALDISTANCE = 3;
-const MULTIPLICATEURX: number [] =
+const MINIMAL_DISTANCE = 3;
+const MULTIPLICATEUR_X: number[] =
   [0, 0, 1.15, 1.415, 1.05, 1.00, 1.015, 1.08, 1.01, 1.0, 1.01, 1.03];
-const MULTIPLICATEURY: number [] =
+const MULTIPLICATEURY: number[] =
   [0, 0, 1.32, 1.415, 1.1, 1.155, 1.05, 1.08, 1.027, 1.05, 1.02, 1.03];
-const DECALAGEX: number [] =
+const DECALAGE_X: number[] =
   [0, 0, 1.15, 1.0, 1.045, 1.15, 1.025, 1.0, 1.0, 1.06, 1.02, 1.0];
-const DECALAGEY: number [] =
+const DECALAGE_Y: number[] =
   [0, 0, 1.0, 1.0, 0.97, 0.88, 1.0, 1.0, 1.0, 0.95, 1.0, 1.0];
-const RATIOTRANSITION: number[] =
+const RATIO_TRANSITION: number[] =
   [0, 0, 1.15, 1.0, 1.04, 1.15, 1.08, 1.0, 1.04, 1.06, 1.08, 1.0];
-const FACTEURTRANSITION: number[] =
+const FACTEUR_TRANSITION: number[] =
   [0, 0, 1.0, 1.0, 1.01, 1.0, 1.02, 1.0, 1.0, 1.0, 1.0, 1.0];
 
 @Injectable({
@@ -26,8 +25,8 @@ export class MathService {
 
   distanceIsLessThan3Pixel(point1: Point, point2: Point): boolean {
     return (
-      Math.abs(point1.x - point2.x) <= MINIMALDISTANCE &&
-      Math.abs(point1.y - point2.y) <= MINIMALDISTANCE
+      Math.abs(point1.x - point2.x) <= MINIMAL_DISTANCE &&
+      Math.abs(point1.y - point2.y) <= MINIMAL_DISTANCE
     );
   }
 
@@ -82,32 +81,32 @@ export class MathService {
     let decalageX = 1.0;
     let decalageY = 1.0;
     if (dimension.width === minSide) {
-      rayon = minSide * MULTIPLICATEURX [sides - 1] ;
-      decalageY = ((DECALAGEY [sides - 1])) ;
+      rayon = minSide * MULTIPLICATEUR_X [sides - 1] ;
+      decalageY = ((DECALAGE_Y [sides - 1])) ;
     } else {
       const ratio = dimension.width / dimension.height;
-      if ( ratio <= RATIOTRANSITION [sides - 1]) {
+      if ( ratio <= RATIO_TRANSITION [sides - 1]) {
         rayon =
-          minSide * MULTIPLICATEURX [sides - 1] * FACTEURTRANSITION [sides - 1];
-        decalageY = ((DECALAGEY [sides - 1])) ;
+          minSide * MULTIPLICATEUR_X [sides - 1] * FACTEUR_TRANSITION [sides - 1];
+        decalageY = ((DECALAGE_Y [sides - 1])) ;
         if (sides === 3 || sides === 6 || sides === 10) {
-          decalageX = ratio * FACTEURTRANSITION [sides - 1];
-          rayon = minSide * MULTIPLICATEURX [sides - 1] * ratio;
+          decalageX = ratio * FACTEUR_TRANSITION [sides - 1];
+          rayon = minSide * MULTIPLICATEUR_X [sides - 1] * ratio;
         }
         if (sides === 6 ) {
-          decalageY *= (ratio) * FACTEURTRANSITION [sides - 1];
+          decalageY *= (ratio) * FACTEUR_TRANSITION [sides - 1];
         }
         if (sides === 10) {
-          decalageY = FACTEURTRANSITION [sides - 1];
+          decalageY = FACTEUR_TRANSITION [sides - 1];
 
         }
       } else {
         rayon = minSide * (MULTIPLICATEURY [sides - 1]);
-        decalageX = ((DECALAGEX [sides - 1])) ;
+        decalageX = ((DECALAGE_X [sides - 1])) ;
       }
     }
     const sideLength = rayon * Math.sin(Math.PI / sides);
-    const points: Point [] = []
+    const points: Point [] = [];
     if (upLeftCorner.x < mouseDownPoint.x) {
       initialPoint.x =
         mouseDownPoint.x - minSide * decalageX / 2 - sideLength / 2;
@@ -120,7 +119,7 @@ export class MathService {
     } else {
       initialPoint.y = mouseDownPoint.y;
     }
-    points.push(initialPoint)
+    points.push(initialPoint);
     let i = 1;
 
     while (i < sides) {
@@ -134,6 +133,7 @@ export class MathService {
     // this.putCornersInRectangle(upLeftCorner, dimension, points);
     return points;
   }
+
   getRectangleUpLeftCorner(initialPoint: Point, oppositePoint: Point): Point {
     const deltaX = oppositePoint.x - initialPoint.x;
     const deltaY = oppositePoint.y - initialPoint.y;
@@ -154,13 +154,13 @@ export class MathService {
     return {
       rx: rectDims.width / 2,
       ry: rectDims.height / 2
-    }
+    };
   }
 
   getEllipseCenter(initialPoint: Point, oppositePoint: Point): Point {
     const initToCenterv = new Point(
-      0.5 * (oppositePoint.x - initialPoint.x),
-      0.5 * (oppositePoint.y - initialPoint.y)
+      (oppositePoint.x - initialPoint.x) / 2,
+      (oppositePoint.y - initialPoint.y) / 2
     );
 
     return new Point(
@@ -176,8 +176,8 @@ export class MathService {
     const re = this.getRectangleSize(initialPoint, oppositePoint);
     const m = Math.min(re.width, re.height);
     return new Point(
-      initialPoint.x + xSign * (m * 0.5),
-      initialPoint.y + ySign * (m * 0.5)
-    )
+      initialPoint.x + xSign * (m / 2),
+      initialPoint.y + ySign * (m / 2)
+    );
   }
 }

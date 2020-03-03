@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ToolService } from '../../tool.service';
 
+const SIDES_DEFAULT = 8;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -16,6 +18,6 @@ export class PolygoneService extends ToolService {
     this.fillOption = true;
     this.borderOption = true;
     this.thickness = 2;
-    this.sides = 8;
+    this.sides = SIDES_DEFAULT;
   }
 }

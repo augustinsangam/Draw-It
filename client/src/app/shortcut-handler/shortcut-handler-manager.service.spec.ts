@@ -9,4 +9,5 @@ describe('ShortcutHandlerManagerService', () => {
     const service: ShortcutHandlerManagerService = TestBed.get(ShortcutHandlerManagerService);
     expect(service).toBeTruthy();
   });
+
 });

@@ -1,68 +1,78 @@
 import {
-    Component, ElementRef, EventEmitter, Input, Output, QueryList
+  Component, ElementRef, EventEmitter, Input, Output, QueryList
 } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatSliderChange } from '@angular/material';
 import {
-    ColorPickerItemComponent
+  ColorPickerItemComponent
 } from '../color-picker-item/color-picker-item.component';
 
 @Component({
-    selector: 'app-color-picker-content',
-    template: '',
+  selector: 'app-color-picker-content',
+  template: '',
 })
 export class MockColorPickerContentComponent {
 
-    @Input()
-    startColor: string;
+  @Input()
+  startColor: string;
 
-    @Output()
-    colorChange = new EventEmitter();
+  @Output()
+  colorChange: EventEmitter<string>;
 
-    baseColors = [];
+  baseColors: string[];
 
-    canvas: ElementRef;
+  canvas: ElementRef;
 
-    actualColor: ColorPickerItemComponent;
+  actualColor: ColorPickerItemComponent;
 
-    baseColorsCircles: QueryList<ColorPickerItemComponent>;
+  baseColorsCircles: QueryList<ColorPickerItemComponent>;
 
-    context: CanvasRenderingContext2D;
+  context: CanvasRenderingContext2D;
 
-    colorForm: FormGroup;
+  colorForm: FormGroup;
 
-    static ValidatorHex(formControl: AbstractControl) { }
+  static ValidatorHex(formControl: AbstractControl): null | { valid: boolean } {
+    return null;
+  }
 
-    static ValidatorInteger(formControl: AbstractControl) { }
+  static ValidatorInteger(formControl: AbstractControl): null | { valid: boolean } {
+    return null;
+  }
 
-    constructor() { }
+  constructor() {
+    this.colorChange = new EventEmitter();
+    this.baseColors = [];
+  }
 
-    initialiseStartingColor() { }
+  // On crée un mock complet pour les tests. On veut explicitement que les
+  // fonctions ne fassent rien.
+  // tslint:disable: no-empty
+  initialiseStartingColor(): void { }
 
-    buildCanvas(redValue: number) { }
+  buildCanvas(redValue: number): void { }
 
-    onSlide($event: MatSliderChange) { }
+  onSlide($event: MatSliderChange): void { }
 
-    placeSlider(value: number) { }
+  placeSlider(value: number): void { }
 
-    onChangeR($event: Event) { }
+  onChangeR($event: Event): void { }
 
-    onChangeG($event: Event) { }
+  onChangeG($event: Event): void { }
 
-    onChangeB($event: Event) { }
+  onChangeB($event: Event): void { }
 
-    onChangeA($event: Event) { }
+  onChangeA($event: Event): void { }
 
-    onChangeHex($event: Event) { }
+  onChangeHex($event: Event): void { }
 
-    drawTracker(blue: number, green: number) { }
+  drawTracker(blue: number, green: number): void { }
 
-    reDrawTracker() { }
+  reDrawTracker(): void { }
 
-    updateHex() { }
+  updateHex(): void { }
 
-    getActualRgba() { }
+  getActualRgba(): void { }
 
-    onConfirm() { }
+  onConfirm(): void { }
 
 }

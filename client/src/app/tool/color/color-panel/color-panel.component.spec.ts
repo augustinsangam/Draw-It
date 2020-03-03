@@ -32,7 +32,7 @@ import {
 } from './color-picker-item/color-picker-item.component';
 
 // tslint:disable: no-string-literal
-describe('ColorPanelComponent', () => {
+fdescribe('ColorPanelComponent', () => {
   let component: ColorPanelComponent;
   let fixture: ComponentFixture<ColorPanelComponent>;
   let paletteColorChange: EventEmitter<string>;
@@ -212,5 +212,13 @@ describe('ColorPanelComponent', () => {
     component['colorOption'] = ColorOption.Background;
     component.colorService.backgroundColor = 'rgba(255, 255, 255, 1)';
     expect(component['getStartColor']()).toEqual('#FFFFFF');
+  });
+
+  it('#The pannel should update when primary or secondary color change', () => {
+    const spyOnInit = spyOn(component, 'ngOnInit');
+    const spyAfterViewInit = spyOn(component, 'ngAfterViewInit');
+    component.colorService.change.next();
+    expect(spyOnInit).toHaveBeenCalled();
+    expect(spyAfterViewInit).toHaveBeenCalled();
   });
 });

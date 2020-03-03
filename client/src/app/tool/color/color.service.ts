@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
+const HEXADECIMAL_BASE = 16;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -12,6 +14,7 @@ export class ColorService {
   change: Subject<null>;
 
   constructor() {
+    // TODO : Replace by the backend
     this.recentColors = [
       'rgba(230, 25, 75, 1)',
       'rgba(255, 225, 25, 1)',
@@ -31,13 +34,13 @@ export class ColorService {
     this.change = new Subject<null>();
   }
 
-  promote(index: number) {
+  promote(index: number): void {
     const colorToPromote = this.recentColors[index];
     this.recentColors.splice(index, 1);
     this.recentColors.unshift(colorToPromote);
   }
 
-  pushColor(color: string) {
+  pushColor(color: string): void {
     const rgbToMatch = this.rgbFormRgba(color);
     for (let i = 0; i < this.recentColors.length; ++i) {
       if (this.rgbEqual(rgbToMatch, this.rgbFormRgba(this.recentColors[i]))) {
@@ -51,17 +54,17 @@ export class ColorService {
     this.change.next();
   }
 
-  selectPrimaryColor(color: string) {
+  selectPrimaryColor(color: string): void {
     this.primaryColor = color;
     this.pushColor(color);
   }
 
-  selectSecondaryColor(color: string) {
+  selectSecondaryColor(color: string): void {
     this.secondaryColor = color;
     this.pushColor(color);
   }
 
-  selectBackgroundColor(color: string) {
+  selectBackgroundColor(color: string): void {
     this.backgroundColor = color;
     this.pushColor(color);
   }
@@ -70,16 +73,16 @@ export class ColorService {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {
-          r: parseInt(result[1], 16),
-          g: parseInt(result[2], 16),
-          b: parseInt(result[3], 16)
+          r: parseInt(result[1], HEXADECIMAL_BASE),
+          g: parseInt(result[2], HEXADECIMAL_BASE),
+          b: parseInt(result[1 + 2], HEXADECIMAL_BASE)
         }
       : { r: -1, g: -1, b: -1 };
   }
 
   rgbToHex(rgb: RGBColor): string {
     const valueToHex = (value: number) => {
-      const hex = value.toString(16);
+      const hex = value.toString(HEXADECIMAL_BASE);
       return hex.length === 1 ? '0' + hex : hex;
     };
     return (
@@ -93,20 +96,21 @@ export class ColorService {
     const result = rgba.match(
       /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d*(?:\.\d+)?)\)$/i
     );
+    // TODO : Ask the chargé de lab
     return result
       ? {
           r: Number(result[1]),
           g: Number(result[2]),
-          b: Number(result[3])
+          b: Number(result[1 + 2])
         }
       : { r: -1, g: -1, b: -1 };
   }
 
-  hexFormRgba(rgba: string) {
+  hexFormRgba(rgba: string): string {
     return `#${this.rgbToHex(this.rgbFormRgba(rgba))}`;
   }
 
-  private rgbEqual(rgb1: RGBColor, rgb2: RGBColor) {
+  private rgbEqual(rgb1: RGBColor, rgb2: RGBColor): boolean {
     return rgb1.r === rgb2.r && rgb1.g === rgb2.g && rgb1.b === rgb2.b;
   }
 }

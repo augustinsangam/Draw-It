@@ -10,7 +10,7 @@ import {
   selector: 'app-tool-panel'
 })
 export abstract class ToolPanelDirective implements AfterViewInit {
-  // Must be public
+
   @Output() width: EventEmitter<number>;
 
   protected constructor(
@@ -19,8 +19,7 @@ export abstract class ToolPanelDirective implements AfterViewInit {
     this.width = new EventEmitter();
   }
 
-  // Must be public
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     // NOTE: offsetWidth does NOT include left/right margins
     this.width.emit(this.elementRef.nativeElement.offsetWidth);
   }

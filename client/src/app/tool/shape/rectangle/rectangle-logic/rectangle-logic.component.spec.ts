@@ -1,4 +1,4 @@
-import { ElementRef, Renderer2 } from '@angular/core';
+import { Renderer2 } from '@angular/core';
 import {
   async,
   ComponentFixture,
@@ -6,9 +6,9 @@ import {
   TestBed,
   tick
 } from '@angular/core/testing';
+import { Point } from 'src/app/tool/shape/common/point';
 import { ColorService } from '../../../color/color.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
-import { Point } from '../../common/Point';
 import { RectangleService } from '../rectangle.service';
 import { RectangleLogicComponent } from './rectangle-logic.component';
 
@@ -20,6 +20,9 @@ const createClickMouseEvent = (event: string): MouseEvent => {
   } as MouseEventInit);
 };
 
+// On a explicitement besoin du any car nous testons des méthodes privées
+// tslint:disable: no-any
+// On a besoin des string-literal car on accède à des attributs privés
 // tslint:disable:no-string-literal
 describe('RectangleLogicComponent', () => {
   let component: RectangleLogicComponent;
@@ -35,9 +38,17 @@ describe('RectangleLogicComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(RectangleLogicComponent);
     component = fixture.componentInstance;
-    component.svgElRef = new ElementRef<SVGSVGElement>(
-      document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-    );
+    component.svgStructure = {
+      root: document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
+      defsZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
+      drawZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
+      temporaryZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
+      endZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement
+    };
+    component.svgStructure.root.appendChild(component.svgStructure.defsZone);
+    component.svgStructure.root.appendChild(component.svgStructure.drawZone);
+    component.svgStructure.root.appendChild(component.svgStructure.temporaryZone);
+    component.svgStructure.root.appendChild(component.svgStructure.endZone);
     fixture.detectChanges();
   });
 
@@ -47,7 +58,7 @@ describe('RectangleLogicComponent', () => {
 
   it('mousedown should call the initRectangle function', fakeAsync(() => {
     const spy1 = spyOn<any>(component, 'initRectangle').and.callThrough();
-    component.svgElRef.nativeElement.dispatchEvent(
+    component.svgStructure.root.dispatchEvent(
       createClickMouseEvent('mousedown')
     );
     setTimeout(() => {
@@ -61,7 +72,7 @@ describe('RectangleLogicComponent', () => {
     expect(component['onDrag']).toBeFalsy();
     const event = createClickMouseEvent('mousedown');
     component['initRectangle'](event);
-    const pointExpected: Point = { x: event.offsetX, y: event.offsetY };
+    const pointExpected = new Point(event.offsetX, event.offsetY);
     expect(component['currentPoint']).toEqual(pointExpected);
     expect(component['rectangles'].length).toEqual(1);
     expect(component['onDrag']).toBeTruthy();
@@ -70,22 +81,22 @@ describe('RectangleLogicComponent', () => {
   });
 
   it('the atributes are not initialised when the wrong button is clicked',
-   () => {
-    expect(component['rectangles']).toEqual([]);
-    expect(component['onDrag']).toBeFalsy();
-    const event = new MouseEvent('mousedown', {
-      offsetX: 10,
-      offsetY: 30,
-      button: 1 // right click.
-    } as MouseEventInit);
-    component['service'].borderOption = false;
-    component['initRectangle'](event);
-    const pointExpected: Point = { x: event.offsetX, y: event.offsetY };
-    expect(component['currentPoint']).not.toEqual(pointExpected);
-    expect(component['mouseDownPoint']).not.toEqual(pointExpected);
-    expect(component['rectangles'].length).not.toEqual(1);
-    expect(component['onDrag']).toBeFalsy();
-  });
+    () => {
+      expect(component['rectangles']).toEqual([]);
+      expect(component['onDrag']).toBeFalsy();
+      const event = new MouseEvent('mousedown', {
+        offsetX: 10,
+        offsetY: 30,
+        button: 1 // right click.
+      } as MouseEventInit);
+      component['service'].borderOption = false;
+      component['initRectangle'](event);
+      const pointExpected = new Point(event.offsetX, event.offsetY);
+      expect(component['currentPoint']).not.toEqual(pointExpected);
+      expect(component['mouseDownPoint']).not.toEqual(pointExpected);
+      expect(component['rectangles'].length).not.toEqual(1);
+      expect(component['onDrag']).toBeFalsy();
+    });
 
   it('the listeners should handle key downs', () => {
     const globKeyEv = new KeyboardEvent('keydown');
@@ -93,7 +104,7 @@ describe('RectangleLogicComponent', () => {
       expect(keyEv).toBe(globKeyEv)
     );
     component.ngOnInit();
-    component['svgElRef'].nativeElement.dispatchEvent(globKeyEv);
+    component.svgStructure.root.dispatchEvent(globKeyEv);
   });
 
   it('the listeners should handle key ups', () => {
@@ -102,7 +113,7 @@ describe('RectangleLogicComponent', () => {
       expect(keyEv).toBe(globKeyEv)
     );
     component.ngOnInit();
-    component['svgElRef'].nativeElement.dispatchEvent(globKeyEv);
+    component.svgStructure.root.dispatchEvent(globKeyEv);
   });
 
   it('the ngOnInit initialise the arrow of listeners', () => {
@@ -110,37 +121,37 @@ describe('RectangleLogicComponent', () => {
     expect(component['allListeners'].length).toEqual(5);
   });
 
-  it ('the getPath() should return undifined if the index is out of bound',
-  () => {
-        component['initRectangle'](createClickMouseEvent('mousedown'));
-        expect(component['getRectangle']()).toBeUndefined();
-  });
+  it('the getPath() should return undifined if the index is out of bound',
+    () => {
+      component['initRectangle'](createClickMouseEvent('mousedown'));
+      expect(component['getRectangle']()).toBeUndefined();
+    });
 
   it('the rectangle css is only defined by the rectangleService'
-   + 'and the colorService', () => {
-    const event = createClickMouseEvent('mousedown');
-    component['initRectangle'](event);
-    const spy = spyOn<any>(component['getRectangle'](), 'setParameters');
-    component['service'].borderOption = false;
-    component['service'].fillOption = true;
-    component['colorService'].secondaryColor = 'black';
-    component['colorService'].primaryColor = 'black';
-    const style = {
-      borderWidth: '0',
-      borderColor: 'red',
-      fillColor: 'red',
-      filled: true
-    };
-    component['initRectangle'](event);
-    expect(spy).not.toHaveBeenCalledWith(style);
-  });
+    + 'and the colorService', () => {
+      const event = createClickMouseEvent('mousedown');
+      component['initRectangle'](event);
+      const spy = spyOn<any>(component['getRectangle'](), 'setParameters');
+      component['service'].borderOption = false;
+      component['service'].fillOption = true;
+      component['colorService'].secondaryColor = 'black';
+      component['colorService'].primaryColor = 'black';
+      const style = {
+        borderWidth: '0',
+        borderColor: 'red',
+        fillColor: 'red',
+        filled: true
+      };
+      component['initRectangle'](event);
+      expect(spy).not.toHaveBeenCalledWith(style);
+    });
 
   it('mouseMove should call the viewTemporaryForm function', fakeAsync(() => {
     const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
-    component.svgElRef.nativeElement.dispatchEvent(
+    component.svgStructure.root.dispatchEvent(
       createClickMouseEvent('mousedown')
     );
-    component.svgElRef.nativeElement.dispatchEvent(
+    component.svgStructure.root.dispatchEvent(
       createClickMouseEvent('mousemove')
     );
     setTimeout(() => {
@@ -151,11 +162,11 @@ describe('RectangleLogicComponent', () => {
 
   it('mouseMove should not do anything if not on drag', fakeAsync(() => {
     const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
-    component.svgElRef.nativeElement.dispatchEvent(
+    component.svgStructure.root.dispatchEvent(
       createClickMouseEvent('mousedown')
     );
     component['onDrag'] = false;
-    component.svgElRef.nativeElement.dispatchEvent(
+    component.svgStructure.root.dispatchEvent(
       createClickMouseEvent('mousemove')
     );
     setTimeout(() => {
@@ -165,37 +176,39 @@ describe('RectangleLogicComponent', () => {
   }));
 
   it('viewTemporaryForm should call the function simulateRectangle'
-   + 'on mouseMove', fakeAsync(() => {
-    component['initRectangle'](createClickMouseEvent('mousedown'));
-    component.svgElRef.nativeElement.dispatchEvent(
-      createClickMouseEvent('mousedown')
-    );
-    const spy = spyOn<any>(
-      component['getRectangle'](),
-      'simulateRectangle'
-    ).and.callThrough();
-    component.svgElRef.nativeElement.dispatchEvent(
-      createClickMouseEvent('mousemove')
-    );
-    setTimeout(() => {
-      expect(spy).toHaveBeenCalled();
-    }, 500);
-    tick(500);
-  }));
+    + 'on mouseMove', fakeAsync(() => {
+      component['initRectangle'](createClickMouseEvent('mousedown'));
+      component.svgStructure.root.dispatchEvent(
+        createClickMouseEvent('mousedown')
+      );
+      const spy = spyOn<any>(
+        component['getRectangle'](),
+        'simulateRectangle'
+      ).and.callThrough();
+      component.svgStructure.root.dispatchEvent(
+        createClickMouseEvent('mousemove')
+      );
+      setTimeout(() => {
+        expect(spy).toHaveBeenCalled();
+      }, 500);
+      tick(500);
+    }));
 
   it('viewTemporaryForm should call the function simulateSquare'
-   + 'when shift is pressed ', fakeAsync(() => {
-    component['initRectangle'](createClickMouseEvent('mousedown'));
-    const spy1 = spyOn<any>(component['getRectangle'](), 'simulateSquare');
-    const event: MouseEvent = new MouseEvent('mousemove', {
-      offsetX: 10,
-      offsetY: 30,
-      button: 0,
-      shiftKey: true
-    } as MouseEventInit);
-    component['viewTemporaryForm'](event);
-    expect(spy1).toHaveBeenCalled();
-  }));
+    + 'when shift is pressed ', fakeAsync(() => {
+      component['initRectangle'](createClickMouseEvent('mousedown'));
+      // On a explicitement besoin du any car la méthode est privée
+      // tslint:disable-next-line: no-any
+      const spy1 = spyOn<any>(component['getRectangle'](), 'simulateSquare');
+      const event: MouseEvent = new MouseEvent('mousemove', {
+        offsetX: 10,
+        offsetY: 30,
+        button: 0,
+        shiftKey: true
+      } as MouseEventInit);
+      component['viewTemporaryForm'](event);
+      expect(spy1).toHaveBeenCalled();
+    }));
 
   it('a pressed shift should call simulateSquare', () => {
     component['initRectangle'](createClickMouseEvent('mousedown'));

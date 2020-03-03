@@ -31,7 +31,7 @@ export class BrushLogicComponent extends PencilBrushCommon
           this.undoRedoService.saveState();
         }
       }
-    })
+    });
   }
 
   ngOnInit(): void {
@@ -43,7 +43,7 @@ export class BrushLogicComponent extends PencilBrushCommon
       this.renderer.appendChild(svgDefsEl, this.generateFilterThree());
       this.renderer.appendChild(svgDefsEl, this.generateFilterFour());
       this.renderer.appendChild(svgDefsEl, this.generateFilterFive());
-      this.renderer.appendChild(this.svgStructure.endZone, svgDefsEl);
+      this.renderer.appendChild(this.svgStructure.defsZone, svgDefsEl);
       this.brushService.isFirstLoaded = false;
     }
     const mouseDownListen = this.renderer.listen(this.svgStructure.root,
@@ -104,8 +104,8 @@ export class BrushLogicComponent extends PencilBrushCommon
     this.renderer.appendChild(this.svgStructure.drawZone, this.svgPath);
   }
 
-  ngOnDestroy() {
-    this.listeners.forEach(end => { end(); });
+  ngOnDestroy(): void {
+    this.listeners.forEach((end) => { end(); });
     this.undoRedoService.resetActions();
     if (this.mouseOnHold) {
       this.stopDrawing();
