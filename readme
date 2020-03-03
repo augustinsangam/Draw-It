@@ -8,7 +8,7 @@ SERVER {{{
 	displayed on the console.
 
 	- npm run db
-	- npm run watch
+	- npm run build:watch
 	- npm start
 
 	- npm i nodemon
@@ -29,11 +29,6 @@ NAMING {{{
 	- observables end with $
 	  (angular.io/guide/rx-library#naming-conventions-for-observables)
 	- All hex values in caps
-}}}
-
-SERVER {{{
-	- ‘npm run watch’ watches for code changes on the server
-	- ‘npm start’ run the server
 }}}
 
 IMPORTS {{{

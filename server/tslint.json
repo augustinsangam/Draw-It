@@ -3,6 +3,7 @@
     "rulesDirectory": [],
     "defaultSeverity": "error",
     "rules": {
+      // REMOVE NEXT LINE BEFORE RELEASE
       "arrow-parens": false
     },
     "linterOptions": {
