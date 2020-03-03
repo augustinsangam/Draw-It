@@ -15,8 +15,12 @@ class Database {
 	private _collection?: mongodb.Collection;
 
 	constructor() {
-		// this._db = await mongodb.MongoClient.connect('mongodb://[::1]/log2990', {
-		this.client = new mongodb.MongoClient('mongodb://127.0.0.1/log2990', {
+		const uri =
+			// 'mongodb://127.0.0.1/log2990';
+			'mongodb+srv://cluster0-5pews.mongodb.net/log2990?retryWrites=true&w=majority';
+		// this._db = await mongodb.MongoClient.connect(uri, {
+		// this.client = new mongodb.MongoClient(uri, {
+		this.client = new mongodb.MongoClient(uri, {
 			auth: secrets.mongodb.auth,
 			// Next does not work with IPv6
 			useUnifiedTopology: true,
@@ -66,6 +70,9 @@ class Database {
 					$inc: {
 						seq: 1,
 					},
+				},
+				{
+					returnOriginal: false,
 				},
 			);
 			return obj.value.seq;

@@ -20,7 +20,7 @@ import {
 
 import { flatbuffers } from 'flatbuffers';
 import { ScreenService } from '../new-draw/sreen-service/screen.service';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 /**
  * @title Chips Autocomplete
@@ -85,6 +85,8 @@ export class GalleryComponent implements AfterViewInit {
 
     this.communicationService.getAll().then((fbbb) => {
       this.createGalleryDrawsTable(fbbb);
+    }).catch((err: string) => {
+      console.log(err);
     });
   }
 

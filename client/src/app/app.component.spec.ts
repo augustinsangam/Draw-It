@@ -19,7 +19,7 @@ import { NewDrawComponent } from './overlay/pages/new-draw/new-draw.component';
 import { SaveComponent } from './overlay/pages/save/save.component';
 import { PanelComponent } from './panel/panel.component';
 import {
-  ShortcutHandlerService, Shortcut
+  Shortcut, ShortcutHandlerService
 } from './shortcut-handler/shortcut-handler.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { SvgService, SvgShape } from './svg/svg.service';
@@ -30,8 +30,10 @@ import { PencilPanelComponent } from './tool/drawing-instruments/pencil/pencil-p
 import {
   ToolSelectorService
 } from './tool/tool-selector/tool-selector.service';
-import { UndoRedoService } from './tool/undo-redo/undo-redo.service';
 import { Tool } from './tool/tool.enum';
+import { UndoRedoService } from './tool/undo-redo/undo-redo.service';
+
+// Test Also OverlayService
 
 // tslint:disable: no-string-literal
 fdescribe('AppComponent', () => {
@@ -408,6 +410,18 @@ fdescribe('AppComponent', () => {
       expect(spyTool).toHaveBeenCalledWith(Tool.Aerosol);
       done();
     }, 500);
+  });
+
+  it('#closeSaveDialog works well when error undefined', () => {
+    const spy = spyOn<any>(service['snackBar'], 'open').and.callThrough();
+    service['closeSaveDialog'](undefined as unknown as string);
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#closeSaveDialog works well when error undefined', () => {
+    const spy = spyOn<any>(service['snackBar'], 'open').and.callThrough();
+    service['closeSaveDialog']('Success');
+    expect(spy).toHaveBeenCalled();
   });
 
 });

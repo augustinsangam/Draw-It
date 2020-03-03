@@ -6,6 +6,7 @@ import {
   Draw as DrawT,
   Element as ElementT,
 } from './data_generated';
+import { SvgHeader, SvgShape } from '../svg/svg.service';
 
 enum StatusCode {
   OK = 200,
@@ -48,8 +49,14 @@ export class CommunicationService {
           if (this.xhr.status === StatusCode.OK) {
             // response type is ArrayBuffer
             resolve(CommunicationService.deserialize(this.xhr.response));
-          } else {
-            reject(this.xhr.responseText);
+          //} else {
+            /* Failed to read the 'responseText' property from
+            'XMLHttpRequest': The value is only accessible if the object's
+            'responseType' is '' or 'text' (was 'arraybuffer').
+            at XMLHttpRequest.xhr.onreadystatechange
+            [as __zone_symbol__ON_PROPERTYreadystatechange]
+             */
+            // reject(this.xhr.response);
           }
         }
       };
@@ -111,19 +118,18 @@ export class CommunicationService {
     return DrawT.createTagsVector(this.fbb, tagsOffsets);
   }
 
-  encode(name: string, tags: string[], color: string,
-         width: number, height: number, elOffset: flatbuffers.Offset): void {
-    const tagsOffset = this.encodeTags(tags);
-    const nameOffset = this.fbb.createString(name);
-    const colorOffset = this.fbb.createString(color);
+  encode(header: SvgHeader, shape: SvgShape, elOffset: flatbuffers.Offset): void {
+    const tagsOffset = this.encodeTags(header.tags);
+    const nameOffset = this.fbb.createString(header.name);
+    const colorOffset = this.fbb.createString(shape.color);
     // TODO: colors
     DrawT.start(this.fbb);
     DrawT.addSvg(this.fbb, elOffset);
     DrawT.addTags(this.fbb, tagsOffset);
     DrawT.addName(this.fbb, nameOffset);
     DrawT.addColor(this.fbb, colorOffset);
-    DrawT.addWidth(this.fbb, width);
-    DrawT.addHeight(this.fbb, height);
+    DrawT.addWidth(this.fbb, shape.width);
+    DrawT.addHeight(this.fbb, shape.height);
     const draw = DrawT.end(this.fbb);
     this.fbb.finish(draw);
   }
