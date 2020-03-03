@@ -21,12 +21,11 @@ import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { SaveComponent } from './pages/save/save.component';
 
 const CONSTANTS = {
-  SUCCES_DURATION : 2000,
-  FAILURE_DURATION : 2000,
+  SUCCES_DURATION: 2000,
+  FAILURE_DURATION: 2000,
 };
 
 // Tested in app.component.spec.ts
-
 @Injectable({
   providedIn: 'root'
 })
@@ -37,10 +36,10 @@ export class OverlayService {
   private svgService: SvgService;
 
   constructor(private shortcutHanler: ShortcutHandlerService,
-              private colorService: ColorService,
-              private toolSelectorService: ToolSelectorService,
-              private readonly snackBar: MatSnackBar,
-              private undoRedo: UndoRedoService
+    private colorService: ColorService,
+    private toolSelectorService: ToolSelectorService,
+    private readonly snackBar: MatSnackBar,
+    private undoRedo: UndoRedoService
   ) {
     this.initialiseShortcuts();
   }
@@ -73,7 +72,7 @@ export class OverlayService {
         this.toolSelectorService.set(Tool.Selection);
         this.toolSelectorService.set(Tool.Selection); // To close the pannel
         this.svgService.selectAllElements.emit(null);
-      } else if (!!event && !event.ctrlKey) {
+      } else {
         this.toolSelectorService.set(Tool.Aerosol);
       }
     });
@@ -177,10 +176,14 @@ export class OverlayService {
     this.dialogRefs.save = this.dialog.open(SaveComponent, dialogOptions);
     this.dialogRefs.save.disableClose = true;
     this.dialogRefs.save.afterClosed().subscribe((error?: string) => {
-      this.shortcutHanler.activateAll();
-      this.snackBar.open(error ? error : 'Succès', 'Ok', {
-        duration: error ? CONSTANTS.SUCCES_DURATION : CONSTANTS.FAILURE_DURATION,
-      });
+      this.closeSaveDialog(error);
+    });
+  }
+
+  private closeSaveDialog(error?: string): void {
+    this.shortcutHanler.activateAll();
+    this.snackBar.open(error ? error : 'Succès', 'Ok', {
+      duration: error ? CONSTANTS.SUCCES_DURATION : CONSTANTS.FAILURE_DURATION,
     });
   }
 
@@ -210,8 +213,8 @@ export class OverlayService {
   }
 
   private closeGaleryDialog(
-      fromHome: boolean,
-      option: GaleryDraw | undefined): void {
+    fromHome: boolean,
+    option: GaleryDraw | undefined): void {
     if (!!option) {
       this.loadDraw(option);
     } else if (fromHome) {

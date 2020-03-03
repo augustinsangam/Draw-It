@@ -3,11 +3,20 @@ import { TestBed } from '@angular/core/testing';
 import { ShortcutHandlerManagerService } from './shortcut-handler-manager.service';
 
 describe('ShortcutHandlerManagerService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+
+  let service: ShortcutHandlerManagerService;
+
+  beforeEach(() => {
+    service.initialiseShortcuts();
+    TestBed.configureTestingModule({});
+    service = TestBed.get(ShortcutHandlerManagerService);
+  });
 
   it('should be created', () => {
-    const service: ShortcutHandlerManagerService = TestBed.get(ShortcutHandlerManagerService);
     expect(service).toBeTruthy();
+  });
+
+  it('#Others', () => {
   });
 
 });
