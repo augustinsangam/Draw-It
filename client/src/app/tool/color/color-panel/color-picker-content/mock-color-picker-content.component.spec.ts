@@ -5,7 +5,7 @@ import {
   MockColorPickerContentComponent
 } from './mock-color-picker-content.component';
 
-describe('MockColorPickerContentComponent', () => {
+fdescribe('MockColorPickerContentComponent', () => {
   let component: MockColorPickerContentComponent;
   let fixture: ComponentFixture<MockColorPickerContentComponent>;
 
@@ -24,12 +24,6 @@ describe('MockColorPickerContentComponent', () => {
 
   it('should create and Functions should at least launch', () => {
     expect(component).toBeTruthy();
-    MockColorPickerContentComponent.ValidatorHex(
-      ('' as unknown) as AbstractControl
-    );
-    MockColorPickerContentComponent.ValidatorInteger(
-      ('' as unknown) as AbstractControl
-    );
     component.initialiseStartingColor();
     component.buildCanvas(1);
     component.onSlide(('' as unknown) as MatSliderChange);
@@ -44,5 +38,11 @@ describe('MockColorPickerContentComponent', () => {
     component.updateHex();
     component.getActualRgba();
     component.onConfirm();
+    MockColorPickerContentComponent.ValidatorHex(
+      ('' as unknown) as AbstractControl
+    );
+    MockColorPickerContentComponent.ValidatorInteger(
+      ('' as unknown) as AbstractControl
+    );
   });
 });

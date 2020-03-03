@@ -9,6 +9,7 @@ import {
   ToolSelectorService
 } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
+import { UndoRedoService } from '../tool/undo-redo/undo-redo.service';
 import { OverlayPages } from './overlay-pages';
 import {
   DocumentationComponent
@@ -24,6 +25,8 @@ const CONSTANTS = {
   FAILURE_DURATION : 2000,
 };
 
+// Tested in app.component.spec.ts
+
 @Injectable({
   providedIn: 'root'
 })
@@ -37,8 +40,26 @@ export class OverlayService {
               private colorService: ColorService,
               private toolSelectorService: ToolSelectorService,
               private readonly snackBar: MatSnackBar,
+              private undoRedo: UndoRedoService
   ) {
+    this.initialiseShortcuts();
+  }
 
+  intialise(dialog: MatDialog, svgService: SvgService): void {
+    this.dialog = dialog;
+    this.dialogRefs = {
+      home: (undefined as unknown) as MatDialogRef<HomeComponent>,
+      newDraw: (undefined as unknown) as MatDialogRef<NewDrawComponent>,
+      documentation: (undefined as unknown) as
+        MatDialogRef<DocumentationComponent>,
+      export: (undefined as unknown) as MatDialogRef<ExportComponent>,
+      galery: (undefined as unknown) as MatDialogRef<GaleryComponent>,
+      save: (undefined as unknown) as MatDialogRef<SaveComponent>,
+    };
+    this.svgService = svgService;
+  }
+
+  private initialiseShortcuts(): void {
     this.shortcutHanler.set(Shortcut.O, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
@@ -56,20 +77,6 @@ export class OverlayService {
         this.toolSelectorService.set(Tool.Aerosol);
       }
     });
-  }
-
-  intialise(dialog: MatDialog, svgService: SvgService): void {
-    this.dialog = dialog;
-    this.dialogRefs = {
-      home: (undefined as unknown) as MatDialogRef<HomeComponent>,
-      newDraw: (undefined as unknown) as MatDialogRef<NewDrawComponent>,
-      documentation: (undefined as unknown) as
-        MatDialogRef<DocumentationComponent>,
-      export: (undefined as unknown) as MatDialogRef<ExportComponent>,
-      galery: (undefined as unknown) as MatDialogRef<GaleryComponent>,
-      save: (undefined as unknown) as MatDialogRef<SaveComponent>,
-    };
-    this.svgService = svgService;
   }
 
   start(): void {
@@ -205,14 +212,10 @@ export class OverlayService {
   private closeGaleryDialog(
       fromHome: boolean,
       option: GaleryDraw | undefined): void {
-    if (fromHome) {
-      if (!!option) {
-        this.loadDraw(option);
-      } else {
-        this.openHomeDialog();
-      }
-    } else if (!!option) {
+    if (!!option) {
       this.loadDraw(option);
+    } else if (fromHome) {
+      this.openHomeDialog();
     }
   }
 
@@ -238,6 +241,7 @@ export class OverlayService {
     Array.from(draw.svg.children).forEach((element: SVGGElement) => {
       this.svgService.structure.drawZone.appendChild(element);
     });
+    this.undoRedo.setStartingCommand();
   }
 
   private getCommomDialogOptions(): MatDialogConfig {
