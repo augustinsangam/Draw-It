@@ -48,11 +48,20 @@ export class CommunicationService {
           if (this.xhr.status === StatusCode.OK) {
             // response type is ArrayBuffer
             resolve(CommunicationService.deserialize(this.xhr.response));
-          } else {
-            reject(this.xhr.responseText);
+          //} else {
+            /* Failed to read the 'responseText' property from
+            'XMLHttpRequest': The value is only accessible if the object's
+            'responseType' is '' or 'text' (was 'arraybuffer').
+            at XMLHttpRequest.xhr.onreadystatechange
+            [as __zone_symbol__ON_PROPERTYreadystatechange]
+             */
+            // reject(this.xhr.response);
           }
         }
       };
+      this.xhr.ontimeout = () => reject('Temps de repos dépassé');
+      this.xhr.onerror = () => reject(
+        'Communication impossible avec le serveur');
     });
     this.xhr.send();
     return promise;

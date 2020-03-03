@@ -114,6 +114,8 @@ export class GaleryComponent implements AfterViewInit {
 
     this.communicationService.getAll().then(fbbb => {
       this.createGaleryDrawsTable(fbbb);
+    }).catch((err: string) => {
+      console.log(err);
     });
   }
 
