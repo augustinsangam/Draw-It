@@ -9,8 +9,7 @@ export class MultipleSelection extends Selection {
   private compareZone: Zone;
   private selectedElements: Set<SVGElement>;
 
-  constructor(elements: Set<SVGElement>, svgOffset: Offset,
-              private point: SVGPoint, p1?: Point, p2?: Point) {
+  constructor(elements: Set<SVGElement>, svgOffset: Offset, p1?: Point, p2?: Point) {
     super(svgOffset);
     if (p1 === undefined || p2 === undefined) {
       this.selectAll(elements);
@@ -37,8 +36,14 @@ export class MultipleSelection extends Selection {
       if (element instanceof SVGElement) {
         const elementZone = this.getZone(element);
         const intersection = this.compareZone.intersection(elementZone);
-        if (intersection[0] && intersection[1]
-            .deepTestPass(element as SVGGeometryElement, this.point)) {
+        // TODO : J'ai implémenté un deep test de base. Mais ce n'est demandé à ce qu'il
+        // parait. Je le garde pour le futur au cas où je decide de continuer cette
+        // application pour faire celle de mes rêves.
+        // Pour faire un deeptest utiliser :
+        // if (intersection[0] && intersection[1]
+        //    .deepTestPass(element as SVGGeometryElement, this.point))
+        // Il faut aussi passer un SVGPoint au constructeur
+        if (intersection[0]) {
           // Les zones et les élements se touchent
           this.selectedElements.add(element);
           if (!!this.zone) {

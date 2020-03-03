@@ -131,7 +131,14 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
       this.canRedo = canRedo;
       this.changeDetectorRef.detectChanges();
     }
-    this.svgService.drawInProgress = (canRedo || canUndo) ? true :  false;
+    const canUndoOrRedo = (canRedo || canUndo);
+    if (!!this.svgService.structure) {
+      this.svgService.drawInProgress = (this.svgService.structure.drawZone.childElementCount !== 0) ?
+        true : canUndoOrRedo;
+    } else {
+      this.svgService.drawInProgress = canUndoOrRedo;
+    }
+
   }
 
   private setTool(tool: Tool, old?: Tool): void {

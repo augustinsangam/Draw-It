@@ -88,8 +88,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
       elements = new Set<SVGElement>(allElements);
     }
     const multipleSelection = new MultipleSelection(
-      elements, this.getSvgOffset(), this.svgStructure.root.createSVGPoint(),
-      startPoint, endPoint
+      elements, this.getSvgOffset(), startPoint, endPoint
     );
     return multipleSelection.getSelection();
   }
@@ -233,35 +232,40 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   private initialiseKeyManager(): void {
+    const allArrows = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
     this.keyManager = {
       keyPressed: new Set(),
       lastTimeCheck: new Date().getTime(),
       handlers: {
         keydown: ($event: KeyboardEvent) => {
-          if (!this.keyManager.keyPressed.has($event.key)) {
-            this.keyManager.keyPressed.add($event.key);
-          }
-          const actualTime = new Date().getTime();
-          if (actualTime - this.keyManager.lastTimeCheck >= Util.TIME_INTERVAL) {
-            this.keyManager.lastTimeCheck = actualTime;
-            this.handleKey('ArrowUp', 0, -Util.OFFSET_TRANSLATE);
-            this.handleKey('ArrowDown', 0, Util.OFFSET_TRANSLATE);
-            this.handleKey('ArrowLeft', -Util.OFFSET_TRANSLATE, 0);
-            this.handleKey('ArrowRight', Util.OFFSET_TRANSLATE, 0);
+          if (allArrows.indexOf($event.key) !== -1) {
+            $event.preventDefault();
+            if (!this.keyManager.keyPressed.has($event.key)) {
+              this.keyManager.keyPressed.add($event.key);
+            }
+            const actualTime = new Date().getTime();
+            if (actualTime - this.keyManager.lastTimeCheck >= Util.TIME_INTERVAL) {
+              this.keyManager.lastTimeCheck = actualTime;
+              this.handleKey('ArrowUp', 0, -Util.OFFSET_TRANSLATE);
+              this.handleKey('ArrowDown', 0, Util.OFFSET_TRANSLATE);
+              this.handleKey('ArrowLeft', -Util.OFFSET_TRANSLATE, 0);
+              this.handleKey('ArrowRight', Util.OFFSET_TRANSLATE, 0);
+            }
           }
         },
         keyup: ($event: KeyboardEvent) => {
-          let count = 0;
-          const allArrows = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
-          allArrows.forEach((arrow) => {
-            if (this.keyManager.keyPressed.has(arrow)) {
-              count++;
+          if (allArrows.indexOf($event.key) !== -1) {
+            let count = 0;
+            allArrows.forEach((arrow) => {
+              if (this.keyManager.keyPressed.has(arrow)) {
+                count++;
+              }
+            });
+            this.keyManager.keyPressed.delete($event.key);
+            // TODO : Verifier uniquement les touches qui s'appliquent
+            if (count === 1 && allArrows.indexOf($event.key) !== -1) {
+              this.undoRedoService.saveState();
             }
-          });
-          this.keyManager.keyPressed.delete($event.key);
-          // TODO : Verifier uniquement les touches qui s'appliquent
-          if (count === 1 && allArrows.indexOf($event.key) !== -1) {
-            this.undoRedoService.saveState();
           }
         }
       }
