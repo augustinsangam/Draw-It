@@ -71,6 +71,9 @@ class Database {
 						seq: 1,
 					},
 				},
+				{
+					returnOriginal: false,
+				},
 			);
 			return obj.value.seq;
 		}
