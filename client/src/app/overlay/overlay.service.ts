@@ -14,7 +14,7 @@ import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
 import { ExportComponent } from './pages/export/export.component';
-import { GaleryComponent, GaleryDraw } from './pages/galery/galery.component';
+import { GalleryComponent, GalleryDraw } from './pages/gallery/gallery.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { SaveComponent } from './pages/save/save.component';
@@ -66,7 +66,7 @@ export class OverlayService {
       documentation: (undefined as unknown) as
         MatDialogRef<DocumentationComponent>,
       export: (undefined as unknown) as MatDialogRef<ExportComponent>,
-      galery: (undefined as unknown) as MatDialogRef<GaleryComponent>,
+      gallery: (undefined as unknown) as MatDialogRef<GalleryComponent>,
       save: (undefined as unknown) as MatDialogRef<SaveComponent>,
     };
     this.svgService = svgService;
@@ -95,7 +95,7 @@ export class OverlayService {
         this.openNewDrawDialog();
         break;
       case OverlayPages.Library:
-        this.openGaleryDialog(true);
+        this.openGalleryDialog(true);
         break;
       case OverlayPages.Documentation:
         this.openDocumentationDialog(true);
@@ -183,28 +183,28 @@ export class OverlayService {
     }
   }
 
-  openGaleryDialog(fromHome: boolean): void {
+  openGalleryDialog(fromHome: boolean): void {
     const dialogOptions: MatDialogConfig = {
       width: '115vw',
       height: '100vh',
-      panelClass: 'galery',
+      panelClass: 'gallery',
       data: { drawInProgress: this.svgService.drawInProgress },
     };
     this.shortcutHanler.desactivateAll();
-    this.dialogRefs.galery = this.dialog.open(
-      GaleryComponent,
+    this.dialogRefs.gallery = this.dialog.open(
+      GalleryComponent,
       dialogOptions,
     );
-    this.dialogRefs.galery.disableClose = false;
-    this.dialogRefs.galery.afterClosed().subscribe((option) => {
+    this.dialogRefs.gallery.disableClose = false;
+    this.dialogRefs.gallery.afterClosed().subscribe((option) => {
       this.shortcutHanler.activateAll();
-      this.closeGaleryDialog(fromHome, option);
+      this.closeGalleryDialog(fromHome, option);
     });
   }
 
-  private closeGaleryDialog(
+  private closeGalleryDialog(
       fromHome: boolean,
-      option: GaleryDraw | undefined): void {
+      option: GalleryDraw | undefined): void {
     if (fromHome) {
       if (!!option) {
         this.loadDraw(option);
@@ -228,7 +228,7 @@ export class OverlayService {
     this.toolSelectorService.set(Tool.Pencil);
   }
 
-  private loadDraw(draw: GaleryDraw): void {
+  private loadDraw(draw: GalleryDraw): void {
     this.svgService.clearDom();
     this.svgService.shape = {
       height: draw.height,
@@ -254,6 +254,6 @@ interface DialogRefs {
   newDraw: MatDialogRef<NewDrawComponent>;
   documentation: MatDialogRef<DocumentationComponent>;
   export: MatDialogRef<ExportComponent>;
-  galery: MatDialogRef<GaleryComponent>;
+  gallery: MatDialogRef<GalleryComponent>;
   save: MatDialogRef<SaveComponent>;
 }

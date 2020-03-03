@@ -4,11 +4,11 @@ import {
 import { Subject } from 'rxjs';
 
 @Component({
-  selector: 'app-galery-card',
-  templateUrl: './galery-card.component.html',
-  styleUrls: ['./galery-card.component.scss']
+  selector: 'app-gallery-card',
+  templateUrl: './gallery-card.component.html',
+  styleUrls: ['./gallery-card.component.scss']
 })
-export class GaleryCardComponent implements AfterViewInit {
+export class GalleryCardComponent implements AfterViewInit {
 
   @Input() name: string;
   @Input() svg: SVGGElement;

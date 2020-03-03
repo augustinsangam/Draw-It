@@ -1,7 +1,7 @@
 <mat-card class="card">
   <mat-card-title>
     <h1 class='title'>
-      <mat-icon>photo_library</mat-icon> Galerie
+      <mat-icon>photo_library</mat-icon> Gallerie
     </h1>
     <div class="search-bar">
       <mat-form-field class="chip-list">
@@ -27,14 +27,13 @@
   </mat-card-title>
   <mat-card-content #cardContent>
     <div class="centered">
-      <!-- <mat-spinner *ngIf="galeryDrawTable.length === 0" class="loading-spinner" color="warn"></mat-spinner> -->
-      <h2 *ngIf="galeryDrawTable.length === 0" class="loading-spinner" color="warn">Chargement ... </h2>
-      <app-galery-card *ngFor="let draw of filteredGaleryDrawTable" [name]="draw.name" [id]="draw.id" [tags]="draw.tags"
+      <h2 *ngIf="galleryDrawTable.length === 0" class="loading-spinner" color="warn">Chargement ... </h2>
+      <app-gallery-card *ngFor="let draw of filteredGalleryDrawTable" [name]="draw.name" [id]="draw.id" [tags]="draw.tags"
         [color]="draw.backgroundColor" [height]="draw.height" [width]="draw.width" 
         [svg]="draw.svg" (load)="loadDraw($event)" (delete)="deleteDraw($event)"
         (tagClick)="addTag($event)">
-      </app-galery-card>
-      <div *ngIf="filteredGaleryDrawTable.length === 0 && galeryDrawTable.length !== 0">
+      </app-gallery-card>
+      <div *ngIf="filteredGalleryDrawTable.length === 0 && galleryDrawTable.length !== 0">
         <h1 class="alert">Aucun dessin trouvé</h1>
       </div>
     </div>

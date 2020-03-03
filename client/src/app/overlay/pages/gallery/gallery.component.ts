@@ -41,7 +41,7 @@ export interface DialogRefs {
   load: MatDialogRef<ConfirmationDialogComponent>;
 }
 
-export interface GaleryDraw {
+export interface GalleryDraw {
   name: string | null;
   id: number;
   svg: SVGGElement;
@@ -52,11 +52,11 @@ export interface GaleryDraw {
 }
 
 @Component({
-  selector: 'app-galery',
-  templateUrl: './galery.component.html',
-  styleUrls: ['./galery.component.scss']
+  selector: 'app-gallery',
+  templateUrl: './gallery.component.html',
+  styleUrls: ['./gallery.component.scss']
 })
-export class GaleryComponent implements AfterViewInit {
+export class GalleryComponent implements AfterViewInit {
   // Determine si la recherche se fait avec OU ou ET
   searchStatementToggle = false;
   selectable = true;
@@ -66,8 +66,8 @@ export class GaleryComponent implements AfterViewInit {
   filteredTags: Observable<string[]>;
   tags: string[];
   allTags: string[];
-  galeryDrawTable: GaleryDraw[];
-  filteredGaleryDrawTable: GaleryDraw[];
+  galleryDrawTable: GalleryDraw[];
+  filteredGalleryDrawTable: GalleryDraw[];
   private dialogRefs: DialogRefs;
   svg: SVGSVGElement;
 
@@ -94,13 +94,13 @@ export class GaleryComponent implements AfterViewInit {
     private communicationService: CommunicationService,
     private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    @Optional() public dialogRef: MatDialogRef<GaleryComponent>,
+    @Optional() public dialogRef: MatDialogRef<GalleryComponent>,
     private renderer: Renderer2,
     private screenService: ScreenService
   ) {
 
-    this.galeryDrawTable = new Array<GaleryDraw>();
-    this.filteredGaleryDrawTable = new Array<GaleryDraw>();
+    this.galleryDrawTable = new Array<GalleryDraw>();
+    this.filteredGalleryDrawTable = new Array<GalleryDraw>();
     this.allTags = new Array<string>();
     this.tags = new Array<string>();
     this.dialogRefs = {
@@ -113,11 +113,11 @@ export class GaleryComponent implements AfterViewInit {
       map(tag => tag ? this._filter(tag) : this._filter2()));
 
     this.communicationService.getAll().then(fbbb => {
-      this.createGaleryDrawsTable(fbbb);
+      this.createGalleryDrawsTable(fbbb);
     });
   }
 
-  createGaleryDrawsTable(fbbb: flatbuffers.ByteBuffer): void {
+  createGalleryDrawsTable(fbbb: flatbuffers.ByteBuffer): void {
     const draws = Draws.getRoot(fbbb);
     const drawsLenght = draws.drawBuffersLength();
     const tempsAllTags = new Set<string>();
@@ -148,7 +148,7 @@ export class GaleryComponent implements AfterViewInit {
             const newSvg = this.communicationService.decodeElementRecursively(
               svgElement, this.renderer) as SVGGElement;
 
-            const newGaleryDraw: GaleryDraw = {
+            const newGalleryDraw: GalleryDraw = {
               id: newId,
               name: newName,
               svg: newSvg,
@@ -158,13 +158,13 @@ export class GaleryComponent implements AfterViewInit {
               backgroundColor: draw.color() as string
             };
 
-            this.galeryDrawTable.push(newGaleryDraw);
+            this.galleryDrawTable.push(newGalleryDraw);
           }
         }
       }
     }
     this.allTags = Array.from(tempsAllTags);
-    this.filteredGaleryDrawTable = this.galeryDrawTable;
+    this.filteredGalleryDrawTable = this.galleryDrawTable;
     this.tagCtrl.setValue(null);
     this.tagInput.nativeElement.blur();
     this.ajustImagesWidth();
@@ -173,7 +173,7 @@ export class GaleryComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.searchToggleRef.change.subscribe(($event: MatSlideToggleChange) => {
       this.searchStatementToggle = $event.checked;
-      this.filterGaleryTable();
+      this.filterGalleryTable();
     });
     this.screenService.size.subscribe(() => this.ajustImagesWidth());
   }
@@ -196,7 +196,7 @@ export class GaleryComponent implements AfterViewInit {
     if (input) {
       input.value = '';
     }
-    this.filterGaleryTable();
+    this.filterGalleryTable();
 
     this.tagCtrl.setValue(null);
   }
@@ -209,20 +209,20 @@ export class GaleryComponent implements AfterViewInit {
     }
 
     this.tagCtrl.setValue(null);
-    this.filterGaleryTable();
+    this.filterGalleryTable();
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
     this.tags.push(event.option.viewValue);
     this.tagInput.nativeElement.value = '';
     this.tagCtrl.setValue(null);
-    this.filterGaleryTable();
+    this.filterGalleryTable();
   }
 
-  private filterGaleryTable() {
-    this.filteredGaleryDrawTable = new Array<GaleryDraw>();
+  private filterGalleryTable() {
+    this.filteredGalleryDrawTable = new Array<GalleryDraw>();
 
-    for (const elem of this.galeryDrawTable) {
+    for (const elem of this.galleryDrawTable) {
       let keep = true;
       for (const tag of this.tags) {
         if (this.searchStatementToggle) {
@@ -239,7 +239,7 @@ export class GaleryComponent implements AfterViewInit {
         }
       }
       if (keep) {
-        this.filteredGaleryDrawTable.push(elem);
+        this.filteredGalleryDrawTable.push(elem);
       }
     }
   }
@@ -260,7 +260,7 @@ export class GaleryComponent implements AfterViewInit {
       this.tags.push(tag);
     }
     this.tagCtrl.setValue(null);
-    this.filterGaleryTable();
+    this.filterGalleryTable();
   }
 
   protected deleteDraw(id: number) {
@@ -284,9 +284,9 @@ export class GaleryComponent implements AfterViewInit {
     if (result) {
       console.log('ERREUR');
     } else {
-      const draw = this.galeryDrawTable.filter((element) => element.id === id);
-      this.galeryDrawTable.splice(this.galeryDrawTable.indexOf(draw[0]), 1);
-      this.filterGaleryTable();
+      const draw = this.galleryDrawTable.filter((element) => element.id === id);
+      this.galleryDrawTable.splice(this.galleryDrawTable.indexOf(draw[0]), 1);
+      this.filterGalleryTable();
     }
   }
 
@@ -303,7 +303,7 @@ export class GaleryComponent implements AfterViewInit {
 
   private loadDrawHandler = (result: boolean, id: number) => {
     if (result) {
-      const draw = this.galeryDrawTable.filter((element) => element.id === id);
+      const draw = this.galleryDrawTable.filter((element) => element.id === id);
       this.dialogRef.close(draw[0]);
     } else {
       this.dialogRefs.load.close();

@@ -35,11 +35,11 @@ import {
 } from './overlay/pages/export/export.component';
 import {
   DeleteConfirmationDialogComponent
-} from './overlay/pages/galery/deleteconfirmation-dialog.component';
+} from './overlay/pages/gallery/deleteconfirmation-dialog.component';
 import {
-  GaleryCardComponent
-} from './overlay/pages/galery/galery-card/galery-card.component';
-import { GaleryComponent } from './overlay/pages/galery/galery.component';
+  GalleryCardComponent
+} from './overlay/pages/gallery/gallery-card/gallery-card.component';
+import { GalleryComponent } from './overlay/pages/gallery/gallery.component';
 import {
   HomeComponent
 } from './overlay/pages/home/home.component';
@@ -155,7 +155,7 @@ import {
     DocumentationComponent,
     EllipseLogicComponent,
     EllipsePanelComponent,
-    GaleryComponent,
+    GalleryComponent,
     EraserPanelComponent,
     EraserLogicComponent,
     HomeComponent,
@@ -172,7 +172,7 @@ import {
     RectanglePanelComponent,
     SidebarComponent,
     SvgComponent,
-    GaleryCardComponent,
+    GalleryCardComponent,
     SelectionPanelComponent,
     SelectionLogicComponent,
     PolygoneLogicComponent,
@@ -218,7 +218,7 @@ import {
     DocumentationComponent,
     EllipseLogicComponent,
     EllipsePanelComponent,
-    GaleryComponent,
+    GalleryComponent,
     HomeComponent,
     ExportComponent,
     LineLogicComponent,
