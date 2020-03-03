@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
 const HEXADECIMAL_BASE = 16;
+
 @Injectable({
   providedIn: 'root'
 })

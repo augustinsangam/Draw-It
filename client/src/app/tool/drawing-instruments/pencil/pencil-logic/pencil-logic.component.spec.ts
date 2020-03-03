@@ -1,4 +1,4 @@
-import { ElementRef, Renderer2 } from '@angular/core';
+import { Renderer2 } from '@angular/core';
 import {
   async,
   ComponentFixture,
@@ -30,9 +30,17 @@ describe('PencilLogicComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PencilLogicComponent);
     component = fixture.componentInstance;
-    component.svgElRef = new ElementRef<SVGSVGElement>(
-      document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-    );
+    component.svgStructure = {
+      root: document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
+      defsZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
+      drawZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
+      temporaryZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
+      endZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement
+    };
+    component.svgStructure.root.appendChild(component.svgStructure.defsZone);
+    component.svgStructure.root.appendChild(component.svgStructure.drawZone);
+    component.svgStructure.root.appendChild(component.svgStructure.temporaryZone);
+    component.svgStructure.root.appendChild(component.svgStructure.endZone);
     mouseEvLeft = new MouseEvent('mousedown', {
       offsetX: 10,
       offsetY: 30,
@@ -108,7 +116,7 @@ describe('PencilLogicComponent', () => {
     component['onMouseDown'](mouseEvLeft);
     component['configureSvgElement'](anElement);
     expect(anElement.getAttribute('stroke-width')).toEqual(
-      component.pencilService.thickness.toString()
+      component['pencilService'].thickness.toString()
     );
     expect(anElement.getAttribute('stroke-linecap')).toEqual(
       component.strokeLineCap
@@ -128,7 +136,7 @@ describe('PencilLogicComponent', () => {
 
   it('#should trigger onMouseDown method when mouse is down', fakeAsync(() => {
     const spy = spyOn<any>(component, 'onMouseDown');
-    component.svgElRef.nativeElement.dispatchEvent(mouseEvLeft);
+    component.svgStructure.root.dispatchEvent(mouseEvLeft);
     setTimeout(() => {
       expect(spy).toHaveBeenCalled();
     }, 500);
@@ -139,7 +147,7 @@ describe('PencilLogicComponent', () => {
     '#shouldnt trigger onMouseDown method when' + ' left button is unhold',
     fakeAsync(() => {
       const spy = spyOn<any>(component, 'onMouseDown');
-      component.svgElRef.nativeElement.dispatchEvent(mouseEvRight);
+      component.svgStructure.root.dispatchEvent(mouseEvRight);
       setTimeout(() => {
         expect(spy).toHaveBeenCalledTimes(0);
       }, 500);
@@ -149,8 +157,8 @@ describe('PencilLogicComponent', () => {
 
   it('#should call onMouseMove method when mouse is moving', fakeAsync(() => {
     const spy = spyOn<any>(component, 'onMouseMove');
-    component.svgElRef.nativeElement.dispatchEvent(mouseEvLeft);
-    component.svgElRef.nativeElement.dispatchEvent(mouseMoveEvLeft);
+    component.svgStructure.root.dispatchEvent(mouseEvLeft);
+    component.svgStructure.root.dispatchEvent(mouseMoveEvLeft);
     setTimeout(() => {
       expect(spy).toHaveBeenCalledTimes(1);
     }, 1000);
@@ -161,7 +169,7 @@ describe('PencilLogicComponent', () => {
     '#should reset the values of stringPath and' +
       ' mouseOnHold when mouse is up',
     fakeAsync(() => {
-      component.svgElRef.nativeElement.dispatchEvent(
+      component.svgStructure.root.dispatchEvent(
         new MouseEvent('mouseup', {} as MouseEventInit)
       );
       setTimeout(() => {
@@ -173,7 +181,7 @@ describe('PencilLogicComponent', () => {
 
   it('#should reset stringPath when mouse is leaving', fakeAsync(() => {
     component.mouseOnHold = true;
-    component.svgElRef.nativeElement.dispatchEvent(mouseleaveEvLeft);
+    component.svgStructure.root.dispatchEvent(mouseleaveEvLeft);
     setTimeout(() => {
       expect(component.stringPath).toEqual('');
     }, 1000);
@@ -187,7 +195,7 @@ describe('PencilLogicComponent', () => {
       component['onMouseDown'](mouseEvLeft);
       let pathExpected = 'M' + mouseEvLeft.offsetX;
       pathExpected += ',' + mouseEvLeft.offsetY + ' h0';
-      component.svgElRef.nativeElement.dispatchEvent(mouseleaveEvRight);
+      component.svgStructure.root.dispatchEvent(mouseleaveEvRight);
       setTimeout(() => {
         expect(component.stringPath).toEqual(pathExpected);
       }, 1000);
@@ -200,7 +208,7 @@ describe('PencilLogicComponent', () => {
       ' mouse button isnt hold',
     fakeAsync(() => {
       component['onMouseDown'](mouseEvLeft);
-      component.svgElRef.nativeElement.dispatchEvent(mouseEvRight);
+      component.svgStructure.root.dispatchEvent(mouseEvRight);
       let pathExpected: string = 'M' + mouseEvLeft.offsetX;
       pathExpected += ',' + mouseEvLeft.offsetY + ' h0';
       setTimeout(() => {
@@ -215,7 +223,7 @@ describe('PencilLogicComponent', () => {
       ' method when mouse isnt hold',
     fakeAsync(() => {
       const spy = spyOn<any>(component, 'onMouseMove');
-      component.svgElRef.nativeElement.dispatchEvent(mouseMoveEvLeft);
+      component.svgStructure.root.dispatchEvent(mouseMoveEvLeft);
       setTimeout(() => {
         expect(spy).toHaveBeenCalledTimes(0);
       }, 1000);

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { Point } from 'src/app/tool/selection/point';
+import { Point } from 'src/app/tool/shape/common/point';
 import { ColorService } from '../../../color/color.service';
 import { MathService } from '../../../mathematics/tool.math-service.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';

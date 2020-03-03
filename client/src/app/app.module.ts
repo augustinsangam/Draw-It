@@ -141,6 +141,7 @@ import {
 import {
   RectanglePanelComponent
 } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
+import { TagsFilterComponent } from './overlay/pages/gallery/tags-filter/tags-filter.component';
 
 @NgModule({
   declarations: [
@@ -187,6 +188,7 @@ import {
     GridLogicComponent,
     GridPanelComponent,
     SaveComponent,
+    TagsFilterComponent,
   ],
   imports: [
     BrowserAnimationsModule,

@@ -39,6 +39,7 @@ export class CommunicationService {
   }
 
   async getAll(): Promise<flatbuffers.ByteBuffer> {
+    // return Promise.reject('nope');
     this.xhr.open('GET', this.host + '/draw', true);
     this.xhr.responseType = 'arraybuffer';
     const promise = new Promise<flatbuffers.ByteBuffer>((resolve, reject) => {
@@ -52,6 +53,9 @@ export class CommunicationService {
           }
         }
       };
+      this.xhr.ontimeout = () => reject('Temps de repos dépassé');
+      this.xhr.onerror = () => reject(
+        'Communication impossible avec le serveur');
     });
     this.xhr.send();
     return promise;

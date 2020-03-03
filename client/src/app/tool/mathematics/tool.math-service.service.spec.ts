@@ -1,7 +1,6 @@
-import {TestBed} from '@angular/core/testing';
-
-import {Point} from '../selection/point';
-import {MathService} from './tool.math-service.service';
+import { TestBed } from '@angular/core/testing';
+import { Point } from '../shape/common/point';
+import { MathService } from './tool.math-service.service';
 
 describe('MathService', () => {
   let service: MathService;
@@ -74,7 +73,7 @@ describe('MathService', () => {
 
     const result = service.findAlignedSegmentPoint(mousePosition, lastpoint);
 
-    expect(result).toEqual({x: mousePosition.x, y: lastpoint.y});
+    expect(result).toEqual(new Point(mousePosition.x, lastpoint.y));
   });
 
   it('#findAlignedSegmentPoint should return lastPoint.x'
@@ -85,7 +84,7 @@ describe('MathService', () => {
 
     const result = service.findAlignedSegmentPoint(mousePosition, lastpoint);
 
-    expect(result).toEqual({x: lastpoint.x, y: mousePosition.y});
+    expect(result).toEqual(new Point(lastpoint.x, mousePosition.y));
   });
 
   it('#findAlignedSegmentPoint should return mousePosition.x'
@@ -96,7 +95,7 @@ describe('MathService', () => {
 
     const result = service.findAlignedSegmentPoint(mousePosition, lastpoint);
 
-    expect(result).toEqual({x: mousePosition.x, y: lastpoint.y + 3});
+    expect(result).toEqual(new Point(mousePosition.x, lastpoint.y + 3));
   });
 
   it('#findAlignedSegmentPoint should return mousePosition.x'
@@ -107,7 +106,7 @@ describe('MathService', () => {
 
     const result = service.findAlignedSegmentPoint(mousePosition, lastpoint);
 
-    expect(result).toEqual({x: mousePosition.x, y: lastpoint.y - -3});
+    expect(result).toEqual(new Point(mousePosition.x, lastpoint.y - -3));
   });
 
   it('#getRectangleUpLeftCorner should return initialPoint.x'
@@ -118,7 +117,7 @@ describe('MathService', () => {
 
     const result = service.getRectangleUpLeftCorner(initPoint, oppositePoint);
 
-    expect(result).toEqual({x: initPoint.x, y: initPoint.y + (-42)});
+    expect(result).toEqual(new Point(initPoint.x, initPoint.y + (-42)));
   });
 
   it('#getRectangleUpLeftCorner should return initialPoint.x + deltaX'
@@ -129,7 +128,7 @@ describe('MathService', () => {
 
     const result = service.getRectangleUpLeftCorner(initPoint, oppositePoint);
 
-    expect(result).toEqual({x: initPoint.x + (-69), y: initPoint.y + (-42)});
+    expect(result).toEqual(new Point(initPoint.x + (-69),initPoint.y + (-42)));
   });
 
   it('#getRectangleUpLeftCorner should return '
@@ -140,7 +139,7 @@ describe('MathService', () => {
 
     const result = service.getRectangleUpLeftCorner(initPoint, oppositePoint);
 
-    expect(result).toEqual({x: initPoint.x + (-69), y: initPoint.y});
+    expect(result).toEqual(new Point(initPoint.x - 69, initPoint.y));
   });
 
   it('#getRectangleUpLeftCorner should return initialPoint.x'
@@ -151,7 +150,7 @@ describe('MathService', () => {
 
     const result = service.getRectangleUpLeftCorner(initPoint, oppositePoint);
 
-    expect(result).toEqual({x: initPoint.x, y: initPoint.y});
+    expect(result).toEqual(new Point(initPoint.x, initPoint.y));
   });
 
   it('#getRectangleSize should return the width and the height' +
@@ -185,7 +184,7 @@ describe('MathService', () => {
     const result = service.transformRectangleToSquare
                    (initialPoint, oppositePoint);
 
-    expect(result).toEqual({x: 42, y: 42});
+    expect(result).toEqual(new Point(42, 42));
   });
   it('#transformRectangleToSquare should return initialPoin.x + deltaX'
    + 'and initialPoin.y + deltaY', () => {
@@ -196,7 +195,7 @@ describe('MathService', () => {
     const result = service.transformRectangleToSquare
                    (initialPoint, oppositePoint);
 
-    expect(result).toEqual({x: 42, y: 42});
+    expect(result).toEqual(new Point(42, 42));
   });
 
   it('#getEllipseRadius should return half of the' +
@@ -209,12 +208,10 @@ describe('MathService', () => {
 
     expect(
       service.getEllipseRadius(initialPoint, oppositePoint)
-    ).toEqual(
-      {
+    ).toEqual({
         rx: dimensions.width / 2,
         ry: dimensions.height / 2
-      }
-    );
+    });
   });
 
   it('#getEllipseCenter should return the coordinates ' +
@@ -225,12 +222,7 @@ describe('MathService', () => {
 
     expect(
       service.getEllipseCenter(initialPoint, oppositePoint)
-    ).toEqual(
-      {
-        x: 3.5,
-        y: 2.5
-      }
-    )
+    ).toEqual(new Point(3.5, 2.5));
   });
 
   it('#getCircleCenter should return ' +
@@ -246,7 +238,7 @@ describe('MathService', () => {
       ) - Math.sqrt(
         Math.pow(3.034, 2) + Math.pow(3.547, 2)
       )
-    ).toBeLessThan(0.001)
-  })
+    ).toBeLessThan(0.001);
+  });
 
 });

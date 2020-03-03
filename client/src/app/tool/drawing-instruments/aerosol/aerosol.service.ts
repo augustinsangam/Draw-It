@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Point } from '../../selection/point';
+import { Point } from '../../shape/common/point';
 import { ToolService } from '../../tool.service';
 
 // TODO : S'assurer d'avoir les valeurs la dans le html

@@ -1,5 +1,5 @@
 import { Renderer2 } from '@angular/core';
-import { Point } from '../point';
+import { Point } from '../../shape/common/point';
 import { BasicSelectionType } from './element-selected-type';
 import { MouseTracking } from './mouse-tracking';
 

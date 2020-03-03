@@ -9,6 +9,7 @@ export class UndoRedoService {
   private svgStructure: SVGStructure;
   private cmdDone: (SVGElement[])[];
   private cmdUndone: (SVGElement[])[];
+  private initialCommand: SVGElement[];
 
   private actions: {
     undo: [PreAction, PostAction],
@@ -18,11 +19,17 @@ export class UndoRedoService {
   constructor() {
     this.cmdDone = [];
     this.cmdUndone = [];
+    this.initialCommand = [];
     this.resetActions();
   }
 
   intialise(svgStructure: SVGStructure): void {
     this.svgStructure = svgStructure;
+  }
+
+  setStartingCommand(): void {
+    this.initialCommand = Array.from(this.svgStructure.drawZone.children) as
+      SVGElement[];
   }
 
   resetActions(): void {
@@ -100,7 +107,7 @@ export class UndoRedoService {
     for (const element of Array.from(this.svgStructure.drawZone.childNodes)) {
       element.remove();
     }
-    const nodeChildrens = node ? Array.from(node) : [];
+    const nodeChildrens = node ? Array.from(node) : this.initialCommand;
     for (const element of nodeChildrens) {
       this.svgStructure.drawZone.appendChild(element);
     }

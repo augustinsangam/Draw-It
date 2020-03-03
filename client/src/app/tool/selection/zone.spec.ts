@@ -1,7 +1,8 @@
 import { Zone } from './zone';
 
+// TODO : Ask the chargé de lab
 // tslint:disable: no-magic-numbers
-fdescribe('Zone', () => {
+describe('Zone', () => {
   let instance: Zone;
   beforeEach(() => {
     instance = new Zone(5, 10, 5, 10);

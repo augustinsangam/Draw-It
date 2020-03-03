@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { EventManager } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 
-const sideBarWidth = 68;
+export const sideBarWidth = 68;
 
 @Injectable({
   providedIn: 'root'

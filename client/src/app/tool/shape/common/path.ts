@@ -1,6 +1,6 @@
 import { Renderer2 } from '@angular/core';
 import { MathService } from '../../mathematics/tool.math-service.service';
-import { Point } from '../../selection/point';
+import { Point } from './point';
 
 // Class tested in ../Line/line-logic.component.spec.ts
 export class Path {

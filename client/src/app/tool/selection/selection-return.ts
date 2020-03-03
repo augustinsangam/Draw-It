@@ -1,4 +1,4 @@
-import { Point } from './point';
+import { Point } from '../shape/common/point';
 
 export interface SelectionReturn {
   empty: boolean;

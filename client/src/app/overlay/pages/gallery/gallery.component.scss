@@ -13,13 +13,6 @@ mat-card-title {
   background-color: whitesmoke;
 }
 
-.chip-list {
-    width: 50%;
-    padding-left: 25%;
-    padding-right: 5%;
-    font-size: large;
-}
-
 .title {
   text-align: center;
   margin-top: 0px;
@@ -31,14 +24,6 @@ mat-card-title {
   display: flex;
   flex-direction: row;
   align-items: baseline;
-}
-
-.slider {
-  padding-left: 15px;
-  padding-right: 15px;
-  float: left;
-  border: 3px solid #2F3136;
-  border-radius: 25px;
 }
 
 mat-card-content {
@@ -82,7 +67,7 @@ img{
   width: 250px;
 }
 
-.alert {
+.allert {
   color: rgb(148, 28, 28);
 }
 

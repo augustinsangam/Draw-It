@@ -3,27 +3,9 @@
     <h1 class='title'>
       <mat-icon>photo_library</mat-icon> Gallerie
     </h1>
-    <div class="search-bar">
-      <mat-form-field class="chip-list">
-        <mat-chip-list #chipList aria-label="Tag selection">
-          <mat-chip *ngFor="let tag of tags" [selectable]="selectable" [removable]="removable" (removed)="remove(tag)">
-            {{tag}}
-            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-          </mat-chip>
-          <input placeholder="Nouvelle étiquette ..." #tagInput [formControl]="tagCtrl" [matAutocomplete]="auto"
-            [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-            (matChipInputTokenEnd)="add($event)">
-        </mat-chip-list>
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="selected($event)">
-          <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
-            {{tag}}
-          </mat-option>
-        </mat-autocomplete>
-      </mat-form-field>
-      <span>OU</span>
-      <mat-slide-toggle #searchToggleRef (click)="ajustImagesWidth()"></mat-slide-toggle>
-      <span>ET</span>
-    </div>
+    <app-tags-filter  [allTags]="allTags.asObservable()" 
+                      [selectedTag]="selectedTag.asObservable()"
+                      (filteredTagsChange)="filterGalleryTable($event)"></app-tags-filter>
   </mat-card-title>
   <mat-card-content #cardContent>
     <div class="centered">
@@ -34,7 +16,7 @@
         (tagClick)="addTag($event)">
       </app-gallery-card>
       <div *ngIf="filteredGalleryDrawTable.length === 0 && galleryDrawTable.length !== 0">
-        <h1 class="alert">Aucun dessin trouvé</h1>
+        <h1 class="allert">Aucun dessin trouvé</h1>
       </div>
     </div>
   </mat-card-content>

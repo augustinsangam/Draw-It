@@ -1,22 +1,11 @@
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import {
   AfterViewInit, Component, ElementRef, Inject,
   Optional, Renderer2, ViewChild
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import {
   MAT_DIALOG_DATA,
-  MatDialog, MatDialogRef,
-  MatSlideToggle,
-  MatSlideToggleChange
+  MatDialog, MatDialogRef, MatSnackBar,
 } from '@angular/material';
-import {
-  MatAutocomplete,
-  MatAutocompleteSelectedEvent
-} from '@angular/material/autocomplete';
-import { MatChipInputEvent } from '@angular/material/chips';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
 import {
   CommunicationService
 } from 'src/app/communication/communication.service';
@@ -31,6 +20,7 @@ import {
 
 import { flatbuffers } from 'flatbuffers';
 import { ScreenService } from '../new-draw/sreen-service/screen.service';
+import { Observable, Subject } from 'rxjs';
 
 /**
  * @title Chips Autocomplete
@@ -51,6 +41,11 @@ export interface GalleryDraw {
   backgroundColor: string;
 }
 
+export interface DrawsArrays {
+  galleryDrawTable: GalleryDraw[];
+  filteredGalleryDrawTable: GalleryDraw[];
+}
+
 @Component({
   selector: 'app-gallery',
   templateUrl: './gallery.component.html',
@@ -58,33 +53,12 @@ export interface GalleryDraw {
 })
 export class GalleryComponent implements AfterViewInit {
   // Determine si la recherche se fait avec OU ou ET
-  searchStatementToggle = false;
-  selectable = true;
-  removable = true;
-  separatorKeysCodes: number[] = [ENTER, COMMA];
-  tagCtrl = new FormControl();
-  filteredTags: Observable<string[]>;
-  tags: string[];
-  allTags: string[];
+  selectedTag: Subject<string>;
+  allTags: Subject<string[]>;
   galleryDrawTable: GalleryDraw[];
   filteredGalleryDrawTable: GalleryDraw[];
   private dialogRefs: DialogRefs;
   svg: SVGSVGElement;
-
-  @ViewChild('searchToggleRef', {
-    static: false,
-    read: MatSlideToggle
-  }) protected searchToggleRef: MatSlideToggle;
-
-  @ViewChild('tagInput', {
-    static: false,
-    read: ElementRef
-  }) protected tagInput: ElementRef<HTMLInputElement>;
-
-  @ViewChild('auto', {
-    static: false,
-    read: MatAutocomplete
-  }) protected matAutocomplete: MatAutocomplete;
 
   @ViewChild('cardContent', {
     static: false
@@ -96,23 +70,20 @@ export class GalleryComponent implements AfterViewInit {
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     @Optional() public dialogRef: MatDialogRef<GalleryComponent>,
     private renderer: Renderer2,
-    private screenService: ScreenService
+    private screenService: ScreenService,
+    private snackBar: MatSnackBar
   ) {
-
     this.galleryDrawTable = new Array<GalleryDraw>();
     this.filteredGalleryDrawTable = new Array<GalleryDraw>();
-    this.allTags = new Array<string>();
-    this.tags = new Array<string>();
+    this.allTags = new Subject<string[]>();
+    this.selectedTag = new Subject<string>();
     this.dialogRefs = {
       delete:
         (undefined as unknown) as MatDialogRef<DeleteConfirmationDialogComponent>,
       load: (undefined as unknown) as MatDialogRef<ConfirmationDialogComponent>,
     };
-    this.filteredTags = this.tagCtrl.valueChanges.pipe(
-      startWith(null),
-      map(tag => tag ? this._filter(tag) : this._filter2()));
 
-    this.communicationService.getAll().then(fbbb => {
+    this.communicationService.getAll().then((fbbb) => {
       this.createGalleryDrawsTable(fbbb);
     });
   }
@@ -126,7 +97,7 @@ export class GalleryComponent implements AfterViewInit {
       const drawBuffer = draws.drawBuffers(i);
 
       if (!!drawBuffer) {
-        const newId = drawBuffer.id();
+        const id = drawBuffer.id();
         const serializedDraw = drawBuffer.bufArray();
 
         if (!!serializedDraw) {
@@ -149,7 +120,7 @@ export class GalleryComponent implements AfterViewInit {
               svgElement, this.renderer) as SVGGElement;
 
             const newGalleryDraw: GalleryDraw = {
-              id: newId,
+              id,
               name: newName,
               svg: newSvg,
               tags: newTagArray,
@@ -163,18 +134,12 @@ export class GalleryComponent implements AfterViewInit {
         }
       }
     }
-    this.allTags = Array.from(tempsAllTags);
+    this.allTags.next(Array.from(tempsAllTags));
     this.filteredGalleryDrawTable = this.galleryDrawTable;
-    this.tagCtrl.setValue(null);
-    this.tagInput.nativeElement.blur();
     this.ajustImagesWidth();
   }
 
   ngAfterViewInit(): void {
-    this.searchToggleRef.change.subscribe(($event: MatSlideToggleChange) => {
-      this.searchStatementToggle = $event.checked;
-      this.filterGalleryTable();
-    });
     this.screenService.size.subscribe(() => this.ajustImagesWidth());
   }
 
@@ -184,48 +149,17 @@ export class GalleryComponent implements AfterViewInit {
       `${(contentWidth % 340) / 2}px`);
   }
 
-  add(event: MatChipInputEvent): void {
-    const input = event.input;
-    const value = event.value;
-    // Add our tag
-    if ((value || '').trim()) {
-      this.tags.push(value.trim());
-    }
-
-    // Reset the input value
-    if (input) {
-      input.value = '';
-    }
-    this.filterGalleryTable();
-
-    this.tagCtrl.setValue(null);
+  addTag(tag: string): void {
+    this.selectedTag.next(tag);
   }
 
-  remove(tag: string): void {
-    const index = this.tags.indexOf(tag);
-
-    if (index >= 0) {
-      this.tags.splice(index, 1);
-    }
-
-    this.tagCtrl.setValue(null);
-    this.filterGalleryTable();
-  }
-
-  selected(event: MatAutocompleteSelectedEvent): void {
-    this.tags.push(event.option.viewValue);
-    this.tagInput.nativeElement.value = '';
-    this.tagCtrl.setValue(null);
-    this.filterGalleryTable();
-  }
-
-  private filterGalleryTable() {
+  protected filterGalleryTable([tags, searchToggle]: [string[], boolean]): void {
     this.filteredGalleryDrawTable = new Array<GalleryDraw>();
 
     for (const elem of this.galleryDrawTable) {
       let keep = true;
-      for (const tag of this.tags) {
-        if (this.searchStatementToggle) {
+      for (const tag of tags) {
+        if (searchToggle) {
           if (elem.tags.indexOf(tag) === -1) {   // ET
             keep = false;
           }
@@ -244,26 +178,7 @@ export class GalleryComponent implements AfterViewInit {
     }
   }
 
-  private _filter(value: string): string[] {
-    return this.allTags.filter(
-      tag => tag.toLowerCase().indexOf(value.toLowerCase()) === 0 &&
-        this.tags.indexOf(tag) === -1
-    );
-  }
-
-  private _filter2() {
-    return this.allTags.filter((tag) => this.tags.indexOf(tag) === -1);
-  }
-
-  addTag(tag: string): void {
-    if (this.tags.indexOf(tag) === -1) {
-      this.tags.push(tag);
-    }
-    this.tagCtrl.setValue(null);
-    this.filterGalleryTable();
-  }
-
-  protected deleteDraw(id: number) {
+  protected deleteDraw(id: number): void {
     this.dialogRefs.delete = this.dialog.open(
       DeleteConfirmationDialogComponent);
     this.dialogRefs.delete.disableClose = true;
@@ -280,17 +195,19 @@ export class GalleryComponent implements AfterViewInit {
     }
   }
 
-  private deletePromiseHandler(result: any, id: number): void {
+  private deletePromiseHandler(result: string | null, id: number): void {
     if (result) {
-      console.log('ERREUR');
+      this.snackBar.open('Impossible de supprimer le dessin', 'Ok', {
+        duration: 5000
+      });
     } else {
       const draw = this.galleryDrawTable.filter((element) => element.id === id);
       this.galleryDrawTable.splice(this.galleryDrawTable.indexOf(draw[0]), 1);
-      this.filterGalleryTable();
+      // this.filterGalleryTable();
     }
   }
 
-  protected loadDraw(id: number) {
+  protected loadDraw(id: number): void {
     if (this.data.drawInProgress) {
       this.dialogRefs.load = this.dialog.open(ConfirmationDialogComponent);
       this.dialogRefs.load.disableClose = true;

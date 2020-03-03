@@ -1,7 +1,7 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { SvgService } from 'src/app/svg/svg.service';
+import { Point } from '../../shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
-import { Point } from '../point';
 import { BasicSelectionType } from './element-selected-type';
 import { SelectionLogicBase } from './selection-logic-base';
 import * as Util from './selection-logic-util';

@@ -1,4 +1,4 @@
-import { Point } from '../point';
+import { Point } from '../../shape/common/point';
 import { ElementSelectedType } from './element-selected-type';
 
 export interface MouseTracking {
