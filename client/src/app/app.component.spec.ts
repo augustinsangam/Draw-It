@@ -14,6 +14,7 @@ import { DocumentationComponent } from './overlay/pages/documentation/documentat
 import { ExportComponent } from './overlay/pages/export/export.component';
 import { GalleryCardComponent } from './overlay/pages/gallery/gallery-card/gallery-card.component';
 import { GalleryComponent, GalleryDraw } from './overlay/pages/gallery/gallery.component';
+import { TagsFilterComponent } from './overlay/pages/gallery/tags-filter/tags-filter.component';
 import { HomeComponent } from './overlay/pages/home/home.component';
 import { NewDrawComponent } from './overlay/pages/new-draw/new-draw.component';
 import { SaveComponent } from './overlay/pages/save/save.component';
@@ -34,7 +35,6 @@ import { Tool } from './tool/tool.enum';
 import { UndoRedoService } from './tool/undo-redo/undo-redo.service';
 
 // Test Also OverlayService
-
 // tslint:disable: no-string-literal
 fdescribe('AppComponent', () => {
   let component: AppComponent;
@@ -58,14 +58,15 @@ fdescribe('AppComponent', () => {
         GalleryComponent,
         GalleryCardComponent,
         ExportComponent,
-        SaveComponent
+        SaveComponent,
+        TagsFilterComponent
       ],
       imports: [
         BrowserAnimationsModule,
         MatDialogModule,
         ReactiveFormsModule,
         FormsModule,
-        MaterialModule
+        MaterialModule,
       ],
       providers: [
         SvgService,
@@ -319,14 +320,18 @@ fdescribe('AppComponent', () => {
     drawElements.appendChild(rec1);
     drawElements.appendChild(rec2);
 
-    const draw = {
-      name: 'Zeus',
-      id: 3,
+    const draw: GalleryDraw = {
+      header : {
+        name: 'Zeus',
+        id: 3,
+        tags: [],
+      },
+      shape: {
+        height: 400,
+        width: 400,
+        color: '#FFFFFF'
+      },
       svg: drawElements,
-      tags: [],
-      height: 400,
-      width: 400,
-      backgroundColor: '#FFFFFF'
     };
 
     service['loadDraw'](draw);
