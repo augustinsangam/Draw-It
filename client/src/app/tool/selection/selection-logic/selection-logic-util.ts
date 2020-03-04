@@ -26,8 +26,8 @@ export enum CircleType {
 export const CIRCLES = [
   CircleType.LEFT_CIRCLE,
   CircleType.TOP_CIRCLE,
-  CircleType.BOTTOM_CIRCLE,
-  CircleType.RIGHT_CIRCLE
+  CircleType.RIGHT_CIRCLE,
+  CircleType.BOTTOM_CIRCLE
 ];
 
 export type MouseEventCallBack = ($event: MouseEvent) => void;

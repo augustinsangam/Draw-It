@@ -1,5 +1,3 @@
-/* tslint:disable:no-string-literal */
-
 import {
   CUSTOM_ELEMENTS_SCHEMA,
   ElementRef,
@@ -14,6 +12,8 @@ import {
 import { Tool } from '../tool/tool.enum';
 import { SidebarComponent } from './sidebar.component';
 
+// tslint:disable:no-string-literal
+// tslint:disable:no-any
 describe('SidebarComponent', () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
