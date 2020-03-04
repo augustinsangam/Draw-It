@@ -41,6 +41,7 @@ export class SvgService {
         });
     });
     this.undoRedoService.clearUndoRedo();
+    // TODO setter la variable gridService.active à false sans cyclic imports
   }
 
 }

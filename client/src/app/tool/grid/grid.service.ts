@@ -58,15 +58,13 @@ export class GridService extends ToolService {
   }
 
   handleGrid(): void {
-    if (this.svgDimensions === undefined) {
-      const width = this.svg.structure.root.getAttribute('width');
-      const height = this.svg.structure.root.getAttribute('height');
-      if (width != null && height != null) {
-        this.svgDimensions = {
-          width: +width,
-          height: +height
-        };
-      }
+    const width = this.svg.structure.root.getAttribute('width');
+    const height = this.svg.structure.root.getAttribute('height');
+    if (width != null && height != null) {
+      this.svgDimensions = {
+        width: +width,
+        height: +height
+      };
     }
 
     if (!!this.grid) {
