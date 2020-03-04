@@ -50,8 +50,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
   @ViewChild('canvas', {
     read: ElementRef,
     static: false
-  })
-  private canvas: ElementRef;
+  }) private canvas: ElementRef;
 
   @ViewChild('actualColor', {
     read: ColorPickerItemComponent,
@@ -219,7 +218,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
         allPixels.data[i + 1] = g;
         allPixels.data[i + 2] = b;
         // TODO : Ask the chargé de lab
-        allPixels.data[i + 2 + 2] = rgbMax; // Alpha stay the max value.
+        allPixels.data[i + 1 + 2] = rgbMax; // Alpha stay the max value.
         i += 2 + 2;
       }
     }

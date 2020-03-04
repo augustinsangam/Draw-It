@@ -36,10 +36,10 @@ export class OverlayService {
   private svgService: SvgService;
 
   constructor(private shortcutHanler: ShortcutHandlerService,
-    private colorService: ColorService,
-    private toolSelectorService: ToolSelectorService,
-    private readonly snackBar: MatSnackBar,
-    private undoRedo: UndoRedoService
+              private colorService: ColorService,
+              private toolSelectorService: ToolSelectorService,
+              private readonly snackBar: MatSnackBar,
+              private undoRedo: UndoRedoService
   ) {
     this.initialiseShortcuts();
   }
