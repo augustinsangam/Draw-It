@@ -52,8 +52,14 @@ export class ShortcutHandlerManagerService {
     this.handlersFunc.set(Shortcut.I, () =>
       this.toolSelectorService.set(Tool.Pipette)
     );
-    this.handlersFunc.set(Shortcut.E, () =>
-      this.toolSelectorService.set(Tool.Eraser)
+    this.handlersFunc.set(Shortcut.E, (event: KeyboardEvent) => {
+      event.preventDefault();
+      if (event.ctrlKey) {
+        this.overlayService.openExportDialog();
+      } else {
+        this.toolSelectorService.set(Tool.Eraser);
+      }
+    }
     );
     this.handlersFunc.set(Shortcut.G, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
@@ -72,17 +78,24 @@ export class ShortcutHandlerManagerService {
     this.handlersFunc.set(Shortcut.Z, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
-        if (event.shiftKey) {
-          this.undoRedoService.redo();
-        } else {
-          this.undoRedoService.undo();
-        }
+        this.undoRedoService.undo();
+      }
+    });
+    this.handlersFunc.set(Shortcut.ZShift, (event: KeyboardEvent) => {
+      if (!!event && event.ctrlKey && event.shiftKey) {
+        event.preventDefault();
+        this.undoRedoService.redo();
       }
     });
 
-    this.handlersFunc.set(Shortcut.S, () =>
-      this.toolSelectorService.set(Tool.Selection)
-    );
+    this.handlersFunc.set(Shortcut.S, (event: KeyboardEvent) => {
+      event.preventDefault();
+      if ( !event.ctrlKey ) {
+        this.toolSelectorService.set(Tool.Selection);
+      } else {
+        this.overlayService.openSaveDialog();
+      }
+    });
     this.handlersFunc.set(Shortcut.R, () =>
       this.toolSelectorService.set(Tool.Applicator));
 

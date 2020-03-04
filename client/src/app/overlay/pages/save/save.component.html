@@ -1,6 +1,6 @@
 <svg:svg #preview></svg:svg>
 
-<form id="form" [formGroup]="form">
+<form id="form" [formGroup]="form" (keyup.enter)="onSubmit()">
   <mat-form-field appearance="outline">
     <mat-label>Nom du dessin</mat-label>
     <input matInput formControlName="name">
@@ -25,16 +25,17 @@
     </mat-hint>
   </mat-form-field>
   <button mat-raised-button
+  color="primary"
+  (click)="onSubmit()"
+  [disabled]="form.invalid"
+  type="submit" 
+  #submitButton>
+  Sauvegarder
+  </button>
+  <button mat-raised-button
             color="warn"
             (click)="onCancel()"
             #cancelButton>
             Annuler
-  </button>
-  <button mat-raised-button
-          color="primary"
-          (click)="onSubmit()"
-          [disabled]="form.invalid"
-          #submitButton>
-          Sauvegarder
   </button>
 </form>
