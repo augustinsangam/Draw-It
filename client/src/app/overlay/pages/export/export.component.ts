@@ -72,7 +72,6 @@ export class ExportComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
   }
 
   ngAfterViewInit(): void {
@@ -80,7 +79,7 @@ export class ExportComponent implements OnInit {
     this.innerSVG = this.renderer.createElement(
       'svg', 'http://www.w3.org/2000/svg');
 
-      Array.from(this.svgService.structure.defsZone.children)
+    Array.from(this.svgService.structure.defsZone.children)
       .forEach((element: SVGElement) => {
         this.renderer.appendChild(this.innerSVG, element.cloneNode(true)); });
 
