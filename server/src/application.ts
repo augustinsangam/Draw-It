@@ -3,6 +3,7 @@ import { IncomingMessage, ServerResponse } from 'http';
 import inversify from 'inversify';
 import log from 'loglevel';
 
+import { COLOR } from './color';
 import { Router } from './router';
 import { TYPES } from './types';
 
@@ -13,7 +14,7 @@ class Application {
 	constructor(@inversify.inject(TYPES.Router) router: Router) {
 		this.app = express();
 		this.app.use((req, res, next) => {
-			log.info(`\x1b[0;32m${req.method}\x1b[0m: ${req.url}`);
+			log.info(`${COLOR.fg.green}${req.method}${COLOR.reset}: ${req.url}`);
 			res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
 			res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
 			res.header('Access-Control-Allow-Headers', 'Content-Type');

@@ -7,7 +7,7 @@ import sinon from 'sinon';
 import { Draw, Draws } from '../data_generated';
 import { Database, Entry } from '../database';
 import { myContainer } from '../inversify.config';
-import { Router } from '../router';
+import { Router, StatusCode } from '../router';
 import { TYPES } from '../types';
 
 class ResMock {
@@ -163,23 +163,37 @@ describe('all', () => {
 		const res = new ResMock();
 		reqHandler({} as any, res as any, cb);
 		chai.expect(cb.called).to.be.false;
-		chai.expect(res.code).to.equal(406);
+		chai.expect(res.code).to.equal(StatusCode.NOT_ACCEPTABLE);
 		chai.expect(res.body).to.equal(errMsg);
 		stubVerify.restore();
 	});
 
-	it('should fail with 500 on methodPost', () => {
+	it.only('should insert on methodPost', () => {
 		const router = myContainer.get<Router>(TYPES.Router);
 		const db = myContainer.get<Database>(TYPES.Database);
 		const stubVerify = sinon.stub(router as any, 'verify');
-		const errMsg = 'fail';
-		stubVerify.returns(errMsg);
+		stubVerify.returns(null);
+		const stubDbNext = sinon.stub(db, 'nextID');
+		stubDbNext.returns(Promise.resolve(42));
 		const reqHandler = router['methodPost']();
 		const cb = sinon.spy();
+		const stubInsert = sinon.stub(db, 'insert');
+		let entry: Entry | undefined;
+		stubInsert.callsFake(entry_ => {
+			entry = entry_;
+			return Promise.resolve({} as any);
+		});
 		const res = new ResMock();
-		reqHandler({} as any, res as any, cb);
+		const req = {
+			body: 'hi',
+		};
+		reqHandler(req as any, res as any, cb);
 		chai.expect(cb.called).to.be.false;
-		chai.expect(res.body).to.equal(errMsg);
+		chai.expect(res.code).to.equal(StatusCode.CREATED);
+		chai.expect(res.body).to.equal('42');
+		chai.expect(entry?._id).to.equal(42);
 		stubVerify.restore();
+		stubDbNext.restore();
+		stubInsert.restore();
 	});
 });
