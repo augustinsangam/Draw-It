@@ -2,7 +2,7 @@ import { Point } from '../../shape/common/point';
 import { SelectionLogicUtil } from './selection-logic-util';
 
 fdescribe('SelectionLogicUtil', () => {
-
+  // Remaining functions tested by the selection
   it('#orderPoint works well', () => {
     const testsCases = [
       [
