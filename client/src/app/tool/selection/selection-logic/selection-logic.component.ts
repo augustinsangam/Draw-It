@@ -142,9 +142,12 @@ export class SelectionLogicComponent
           );
         });
       });
-    this.renderer.listen(document, 'keydown',
-      this.keyManager.handlers.keydown);
-    this.renderer.listen(document, 'keyup', this.keyManager.handlers.keyup);
+    this.allListenners.push(
+      this.renderer.listen(document, 'keydown',
+      this.keyManager.handlers.keydown));
+    this.allListenners.push(
+      this.renderer.listen(document, 'keyup',
+      this.keyManager.handlers.keyup));
   }
 
 }
