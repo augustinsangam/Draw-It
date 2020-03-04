@@ -1,12 +1,12 @@
 import { Injectable, Renderer2 } from '@angular/core';
 import { flatbuffers } from 'flatbuffers';
 
+import { SvgHeader, SvgShape } from '../svg/svg.service';
 import {
   Attr as AttrT,
   Draw as DrawT,
   Element as ElementT,
 } from './data_generated';
-import { SvgHeader, SvgShape } from '../svg/svg.service';
 
 enum StatusCode {
   OK = 200,
@@ -49,7 +49,7 @@ export class CommunicationService {
           if (this.xhr.status === StatusCode.OK) {
             // response type is ArrayBuffer
             resolve(CommunicationService.deserialize(this.xhr.response));
-          //} else {
+          // } else {
             /* Failed to read the 'responseText' property from
             'XMLHttpRequest': The value is only accessible if the object's
             'responseType' is '' or 'text' (was 'arraybuffer').
@@ -181,12 +181,15 @@ export class CommunicationService {
         if (this.xhr.readyState === 4) {
           if (this.xhr.status === StatusCode.ACCEPTED) {
             resolve();
-          } else {
-            reject(this.xhr.responseText);
+          // } else {
+          //  reject(this.xhr.responseText);
+          // }
           }
         }
       };
-      this.xhr.onerror = (err) => reject(err);
+      this.xhr.ontimeout = () => reject('Temps de repos dépassé');
+      this.xhr.onerror = () => reject(
+      'Communication impossible avec le serveur');
     });
     this.xhr.send();
     return promise;

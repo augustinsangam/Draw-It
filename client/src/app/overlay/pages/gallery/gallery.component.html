@@ -10,10 +10,11 @@
   <mat-card-content #cardContent>
     <div class="centered">
       <h2 *ngIf="galleryDrawTable.length === 0" class="loading-spinner" color="warn">Chargement ... </h2>
-      <app-gallery-card *ngFor="let draw of filteredGalleryDrawTable" [name]="draw.name" [id]="draw.id" [tags]="draw.tags"
-        [color]="draw.backgroundColor" [height]="draw.height" [width]="draw.width" 
-        [svg]="draw.svg" (load)="loadDraw($event)" (delete)="deleteDraw($event)"
-        (tagClick)="addTag($event)">
+      <app-gallery-card *ngFor="let draw of filteredGalleryDrawTable"
+                        [draw]="draw"
+                        (load)="loadDraw($event)"
+                        (delete)="deleteDraw($event)"
+                        (tagClick)="addTag($event)">
       </app-gallery-card>
       <div *ngIf="filteredGalleryDrawTable.length === 0 && galleryDrawTable.length !== 0">
         <h1 class="allert">Aucun dessin trouvé</h1>

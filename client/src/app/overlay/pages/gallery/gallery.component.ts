@@ -19,8 +19,9 @@ import {
 } from './deleteconfirmation-dialog.component';
 
 import { flatbuffers } from 'flatbuffers';
-import { ScreenService } from '../new-draw/sreen-service/screen.service';
 import { Subject } from 'rxjs';
+import { SvgHeader, SvgShape } from 'src/app/svg/svg.service';
+import { ScreenService } from '../new-draw/sreen-service/screen.service';
 
 /**
  * @title Chips Autocomplete
@@ -32,13 +33,9 @@ export interface DialogRefs {
 }
 
 export interface GalleryDraw {
-  name: string | null;
-  id: number;
   svg: SVGGElement;
-  tags: string[];
-  height: number;
-  width: number;
-  backgroundColor: string;
+  header: SvgHeader;
+  shape: SvgShape;
 }
 
 export interface DrawsArrays {
@@ -95,7 +92,7 @@ export class GalleryComponent implements AfterViewInit {
     const drawsLenght = draws.drawBuffersLength();
     const tempsAllTags = new Set<string>();
 
-    for (let i = drawsLenght; i--; ) {
+    for (let i = drawsLenght; i--;) {
       const drawBuffer = draws.drawBuffers(i);
 
       if (!!drawBuffer) {
@@ -122,13 +119,17 @@ export class GalleryComponent implements AfterViewInit {
               svgElement, this.renderer) as SVGGElement;
 
             const newGalleryDraw: GalleryDraw = {
-              id,
-              name: newName,
+              header: {
+                id,
+                name: newName as string,
+                tags: newTagArray,
+              },
+              shape: {
+                height: draw.height(),
+                width: draw.width(),
+                color: draw.color() as string
+              },
               svg: newSvg,
-              tags: newTagArray,
-              height: draw.height(),
-              width: draw.width(),
-              backgroundColor: draw.color() as string
             };
 
             this.galleryDrawTable.push(newGalleryDraw);
@@ -162,11 +163,11 @@ export class GalleryComponent implements AfterViewInit {
       let keep = true;
       for (const tag of tags) {
         if (searchToggle) {
-          if (elem.tags.indexOf(tag) === -1) {   // ET
+          if (elem.header.tags.indexOf(tag) === -1) {   // ET
             keep = false;
           }
         } else {
-          if (elem.tags.indexOf(tag) !== -1) {  // OU
+          if (elem.header.tags.indexOf(tag) !== -1) {  // OU
             keep = true;
             break;
           } else {
@@ -185,13 +186,18 @@ export class GalleryComponent implements AfterViewInit {
       DeleteConfirmationDialogComponent);
     this.dialogRefs.delete.disableClose = true;
     this.dialogRefs.delete.afterClosed().subscribe(
-      result => this.deleteCloseHandler(result, id));
+      (result) => this.deleteCloseHandler(result, id));
   }
 
   private deleteCloseHandler = (result: boolean, id: number) => {
     if (result) {
       this.communicationService.delete(id).then(
-        (promise) => this.deletePromiseHandler(promise, id));
+        (promise) => this.deletePromiseHandler(promise, id))
+        .catch(() => {
+          this.snackBar.open('Impossible de supprimer le dessin', 'Ok', {
+            duration: 5000
+          });
+        });
     } else {
       this.dialogRefs.delete.close();
     }
@@ -203,7 +209,7 @@ export class GalleryComponent implements AfterViewInit {
         duration: 5000
       });
     } else {
-      const draw = this.galleryDrawTable.filter((element) => element.id === id);
+      const draw = this.galleryDrawTable.filter((element) => element.header.id === id);
       this.galleryDrawTable.splice(this.galleryDrawTable.indexOf(draw[0]), 1);
       // this.filterGalleryTable();
     }
@@ -222,7 +228,7 @@ export class GalleryComponent implements AfterViewInit {
 
   private loadDrawHandler = (result: boolean, id: number) => {
     if (result) {
-      const draw = this.galleryDrawTable.filter((element) => element.id === id);
+      const draw = this.galleryDrawTable.filter((element) => element.header.id === id);
       this.dialogRef.close(draw[0]);
     } else {
       this.dialogRefs.load.close();

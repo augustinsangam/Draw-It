@@ -236,15 +236,15 @@ export class OverlayService {
 
   private loadDraw(draw: GalleryDraw): void {
     this.svgService.clearDom();
-    this.svgService.shape = {
-      height: draw.height,
-      width: draw.width,
-      color: draw.backgroundColor
-    };
+    this.svgService.shape = draw.shape;
     Array.from(draw.svg.children).forEach((element: SVGGElement) => {
       this.svgService.structure.drawZone.appendChild(element);
     });
+    this.svgService.header = draw.header;
     this.undoRedo.setStartingCommand();
+    this.snackBar.open('Dessin chargé avec succès', 'Ok', {
+      duration: 500
+    });
   }
 
   private getCommomDialogOptions(): MatDialogConfig {
