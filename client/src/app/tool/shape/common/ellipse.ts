@@ -1,18 +1,20 @@
 import { Renderer2 } from '@angular/core';
 import { MathService } from '../../mathematics/tool.math-service.service';
+import {EllipseService} from '../ellipse/ellipse.service';
 import { AbstractShape } from './abstract-shape';
 import { Point } from './point';
 
 export class Ellipse extends AbstractShape {
-
   constructor(
     initialPoint: Point,
     protected renderer: Renderer2,
     // TODO element sprivate ?
     public element: SVGElement,
-    private mathService: MathService
+    private mathService: MathService,
+    private ellipseService: EllipseService,
   ) {
     super(renderer, element);
+    console.log(ellipseService);
   }
 
   insertEllipseInSVG(center: Point, radius: Radius): void {
