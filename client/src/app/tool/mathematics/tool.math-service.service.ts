@@ -5,9 +5,9 @@ import { Dimension } from '../shape/common/rectangle';
 
 const MINIMAL_DISTANCE = 3;
 const MULTIPLICATEUR_X: number[] =
-  [0, 0, 1.15, 1.415, 1.05, 1.00, 1.015, 1.08, 1.01, 1.0, 1.01, 1.03];
+  [0, 0, 1.15, 1.0, 1.05, 1.00, 1.015, 1.08, 1.01, 1.0, 1.01, 1.03];
 const MULTIPLICATEURY: number[] =
-  [0, 0, 1.32, 1.415, 1.1, 1.155, 1.05, 1.08, 1.027, 1.05, 1.02, 1.03];
+  [0, 0, 1.32, 1.0, 1.1, 1.155, 1.05, 1.08, 1.027, 1.05, 1.02, 1.03];
 const DECALAGE_X: number[] =
   [0, 0, 1.15, 1.0, 1.045, 1.15, 1.025, 1.0, 1.0, 1.06, 1.02, 1.0];
 const DECALAGE_Y: number[] =
@@ -77,13 +77,13 @@ export class MathService {
     const minSide = Math.min(dimension.width, dimension.height);
 
     const initialPoint = new Point(0, 0);
-    let angle = 0;
+    let angle = (Math.PI) / sides;
     let rayon = 0;
     let decalageX = 1.0;
     let decalageY = 1.0;
     if (dimension.width === minSide) {
       rayon = minSide * MULTIPLICATEUR_X [sides - 1] ;
-      decalageY = ((DECALAGE_Y [sides - 1])) ;
+      decalageY = DECALAGE_Y [sides - 1];
     } else {
       const ratio = dimension.width / dimension.height;
       if ( ratio <= RATIO_TRANSITION [sides - 1]) {
@@ -110,10 +110,10 @@ export class MathService {
     const points: Point [] = [];
     if (upLeftCorner.x < mouseDownPoint.x) {
       initialPoint.x =
-        mouseDownPoint.x - minSide * decalageX / 2 - sideLength / 2;
+        mouseDownPoint.x - minSide * decalageX / 2;
     } else {
       initialPoint.x =
-        mouseDownPoint.x + minSide * decalageX / 2 - sideLength / 2;
+        mouseDownPoint.x + minSide * decalageX / 2;
     }
     if (upLeftCorner.y === mouseDownPoint.y) {
       initialPoint.y = upLeftCorner.y + minSide * decalageY;
