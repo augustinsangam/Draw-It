@@ -154,11 +154,11 @@ export class MathService {
     return new Point(initialPoint.x + border, initialPoint.y + border);
   }
 
-  getEllipseRadius(initialPoint: Point, oppositePoint: Point): Radius {
+  getEllipseRadius(initialPoint: Point, oppositePoint: Point, border: number): Radius {
     const rectDims = this.getRectangleSize(initialPoint, oppositePoint);
     return {
-      rx: rectDims.width / 2,
-      ry: rectDims.height / 2
+      rx: Math.max(rectDims.width / 2 - border / 2, 0),
+      ry: Math.max(rectDims.height / 2 - border / 2, 0)
     };
   }
 

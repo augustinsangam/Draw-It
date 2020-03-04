@@ -30,10 +30,11 @@ export class Ellipse extends AbstractShape {
     );
   }
 
-  simulateEllipse(initialPoint: Point, oppositePoint: Point): void {
+  simulateEllipse(initialPoint: Point, oppositePoint: Point, border: number): void {
     const radius = this.mathService.getEllipseRadius(
       initialPoint,
-      oppositePoint
+      oppositePoint,
+      border
     );
     const center = this.mathService.getEllipseCenter(
       initialPoint,
@@ -42,10 +43,11 @@ export class Ellipse extends AbstractShape {
     this.insertEllipseInSVG(center, radius);
   }
 
-  simulateCircle(initialPoint: Point, oppositePoint: Point): void {
+  simulateCircle(initialPoint: Point, oppositePoint: Point, border: number): void {
     const radius = this.mathService.getEllipseRadius(
       initialPoint,
-      oppositePoint
+      oppositePoint,
+      border
     );
     const center = this.mathService.getCircleCenter(
       initialPoint,
