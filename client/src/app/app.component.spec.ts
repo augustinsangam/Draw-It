@@ -12,8 +12,8 @@ import { MaterialModule } from './material.module';
 import { OverlayService } from './overlay/overlay.service';
 import { DocumentationComponent } from './overlay/pages/documentation/documentation.component';
 import { ExportComponent } from './overlay/pages/export/export.component';
-import { GaleryCardComponent } from './overlay/pages/galery/galery-card/galery-card.component';
-import { GaleryComponent, GaleryDraw } from './overlay/pages/galery/galery.component';
+import { GalleryCardComponent } from './overlay/pages/gallery/gallery-card/gallery-card.component';
+import { GalleryComponent, GalleryDraw } from './overlay/pages/gallery/gallery.component';
 import { HomeComponent } from './overlay/pages/home/home.component';
 import { NewDrawComponent } from './overlay/pages/new-draw/new-draw.component';
 import { SaveComponent } from './overlay/pages/save/save.component';
@@ -55,8 +55,8 @@ fdescribe('AppComponent', () => {
         PencilPanelComponent,
         ColorPanelComponent,
         ColorPickerContentComponent,
-        GaleryComponent,
-        GaleryCardComponent,
+        GalleryComponent,
+        GalleryCardComponent,
         ExportComponent,
         SaveComponent
       ],
@@ -84,7 +84,7 @@ fdescribe('AppComponent', () => {
           NewDrawComponent,
           DocumentationComponent,
           PencilPanelComponent,
-          GaleryComponent,
+          GalleryComponent,
           ExportComponent,
           SaveComponent,
         ]
@@ -283,29 +283,29 @@ fdescribe('AppComponent', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('#openGaleryDialog should not call getCommomDialogOptions.', () => {
+  it('#openGalleryDialog should not call getCommomDialogOptions.', () => {
     const spy = spyOn<any>(service, 'getCommomDialogOptions');
-    service['openGaleryDialog'](true);
-    service['dialogRefs'].galery.close();
+    service['openGalleryDialog'](true);
+    service['dialogRefs'].gallery.close();
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('#closeGaleryDialog should load the draw if option is not undefined', () => {
+  it('#closeGalleryDialog should load the draw if option is not undefined', () => {
     const spy = spyOn<any>(service, 'loadDraw');
-    service['closeGaleryDialog'](false, ' ' as unknown as GaleryDraw);
+    service['closeGalleryDialog'](false, ' ' as unknown as GalleryDraw);
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#closeGaleryDialog should not load the draw if option is undefined', () => {
+  it('#closeGalleryDialog should not load the draw if option is undefined', () => {
     const spy = spyOn<any>(service, 'loadDraw');
-    service['closeGaleryDialog'](false, undefined);
+    service['closeGalleryDialog'](false, undefined);
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('#closeGaleryDialog should open home dialog when option is undefined'
+  it('#closeGalleryDialog should open home dialog when option is undefined'
     + ' and from home is set', () => {
     const spy = spyOn<any>(service, 'openHomeDialog');
-    service['closeGaleryDialog'](true, undefined);
+    service['closeGalleryDialog'](true, undefined);
     expect(spy).toHaveBeenCalled();
   });
 

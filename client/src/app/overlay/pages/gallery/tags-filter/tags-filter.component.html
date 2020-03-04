@@ -1,0 +1,21 @@
+<div class="search-bar">
+    <mat-form-field class="chip-list">
+        <mat-chip-list #chipList aria-label="Tag selection">
+            <mat-chip *ngFor="let tag of tags.addedTags" [selectable]="true" [removable]="true" (removed)="remove(tag)">
+                {{tag}}
+                <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+            <input placeholder="Nouvelle étiquette ..." #tagInput [formControl]="tags.tagCtrl" [matAutocomplete]="auto"
+                [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                (matChipInputTokenEnd)="add($event)">
+        </mat-chip-list>
+        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="selected($event)">
+            <mat-option *ngFor="let tag of tags.filteredTags | async" [value]="tag">
+                {{tag}}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+    <span>OU</span>
+    <mat-slide-toggle #searchToggleRef (change)="filteredTagsChangeHandler()"></mat-slide-toggle>
+    <span>ET</span>
+</div>
