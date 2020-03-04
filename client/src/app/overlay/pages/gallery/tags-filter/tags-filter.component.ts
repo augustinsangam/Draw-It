@@ -74,7 +74,9 @@ export class TagsFilterComponent implements OnInit {
 
     // Add our tag
     const toAdd = (value || '').trim();
-    if (this.tags.addedTags.indexOf(toAdd) === -1) {
+    if (this.tags.addedTags.indexOf(toAdd) === -1 &&
+        toAdd.length >= 3 &&
+        toAdd.length <= 21) {
       this.tags.addedTags.push(value.trim());
       input.value = '';
     }

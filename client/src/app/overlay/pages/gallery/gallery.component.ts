@@ -50,6 +50,8 @@ export interface DrawsArrays {
 })
 export class GalleryComponent implements AfterViewInit {
   // Determine si la recherche se fait avec OU ou ET
+  // tslint:disable-next-line: no-inferrable-types
+  loading: boolean = true;
   selectedTag: Subject<string>;
   allTags: Subject<string[]>;
   galleryDrawTable: GalleryDraw[];
@@ -88,6 +90,7 @@ export class GalleryComponent implements AfterViewInit {
   }
 
   createGalleryDrawsTable(fbbb: flatbuffers.ByteBuffer): void {
+    this.loading = false;
     const draws = Draws.getRoot(fbbb);
     const drawsLenght = draws.drawBuffersLength();
     const tempsAllTags = new Set<string>();
