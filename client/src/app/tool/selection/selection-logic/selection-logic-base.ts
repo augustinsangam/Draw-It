@@ -6,7 +6,7 @@ import { Circle } from '../../shape/common/circle';
 import { Point } from '../../shape/common/point';
 import { Rectangle } from '../../shape/common/rectangle';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
-import { UndoRedoService, PostAction } from '../../undo-redo/undo-redo.service';
+import { PostAction, UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { MultipleSelection } from '../multiple-selection';
 import { Offset } from '../offset';
 import { SelectionReturn } from '../selection-return';
@@ -83,6 +83,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   private getMultipleSelection(startPoint?: Point, endPoint?: Point,
                                elements?: Set<SVGElement>)
     : SelectionReturn {
+    this.selectedElements = new Set();
     if (elements === undefined) {
       const allElements = Array.from(
         this.svgStructure.drawZone.children
