@@ -1,13 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GalleryComponent } from './gallery.component';
-import { MaterialModule } from 'src/app/material.module';
-import { TagsFilterComponent } from './tags-filter/tags-filter.component';
-import { GalleryCardComponent } from './gallery-card/gallery-card.component';
-import { DeleteConfirmationDialogComponent } from './deleteconfirmation-dialog.component';
 import { Overlay } from '@angular/cdk/overlay';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { MaterialModule } from 'src/app/material.module';
+import { DeleteConfirmationDialogComponent } from './deleteconfirmation-dialog.component';
+import { GalleryCardComponent } from './gallery-card/gallery-card.component';
+import { GalleryComponent } from './gallery.component';
+import { TagsFilterComponent } from './tags-filter/tags-filter.component';
 
 fdescribe('GalleryComponent', () => {
   let component: GalleryComponent;
