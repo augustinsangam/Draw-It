@@ -76,7 +76,7 @@ export class ShortcutHandlerManagerService {
       this.gridService.keyEvHandler('-');
     });
     this.handlersFunc.set(Shortcut.Z, (event: KeyboardEvent) => {
-      if (!!event && event.ctrlKey) {
+      if (!!event && event.ctrlKey && !event.shiftKey) {
         event.preventDefault();
         this.undoRedoService.undo();
       }

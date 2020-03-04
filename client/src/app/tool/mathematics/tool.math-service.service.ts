@@ -48,9 +48,10 @@ export class MathService {
     return new Point(mousePosition.x, lastPoint.y - deltaX);
   }
 
-  getRectangleSize(initialPoint: Point, oppositePoint: Point): Dimension {
-    const x = Math.abs(oppositePoint.x - initialPoint.x);
-    const y = Math.abs(oppositePoint.y - initialPoint.y);
+  getRectangleSize(initialPoint: Point, oppositePoint: Point, strokeWidth?: number): Dimension {
+    const border = (strokeWidth === undefined) ? 0 : strokeWidth;
+    const x = Math.max(Math.abs(oppositePoint.x - initialPoint.x) - border, 1);
+    const y = Math.max(Math.abs(oppositePoint.y - initialPoint.y) - border, 1);
     return { height: y, width: x };
   }
 
@@ -134,19 +135,23 @@ export class MathService {
     return points;
   }
 
-  getRectangleUpLeftCorner(initialPoint: Point, oppositePoint: Point): Point {
+  getRectangleUpLeftCorner(initialPoint: Point, oppositePoint: Point, strokeWidth?: number): Point {
+    const border = (strokeWidth === undefined) ? 0 : strokeWidth / 2;
     const deltaX = oppositePoint.x - initialPoint.x;
     const deltaY = oppositePoint.y - initialPoint.y;
     if (deltaX > 0 && deltaY < 0) {
-      return new Point(initialPoint.x, initialPoint.y + deltaY);
+      console.log(1);
+      return new Point(initialPoint.x + border, initialPoint.y + deltaY + border);
     }
     if (deltaX < 0 && deltaY < 0) {
-      return new Point(initialPoint.x + deltaX, initialPoint.y + deltaY);
+      console.log(2);
+      return new Point(initialPoint.x + deltaX + border, initialPoint.y + deltaY + border);
     }
     if (deltaX < 0 && deltaY > 0) {
-      return new Point(initialPoint.x + deltaX, initialPoint.y);
+      console.log(3);
+      return new Point(initialPoint.x + deltaX + border, initialPoint.y + border);
     }
-    return initialPoint;
+    return new Point(initialPoint.x + border, initialPoint.y + border);
   }
 
   getEllipseRadius(initialPoint: Point, oppositePoint: Point): Radius {

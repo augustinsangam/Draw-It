@@ -40,7 +40,7 @@ export class LineLogicComponent extends ToolLogicDirective
           // TODO Nicolas. Exactemment ici
           // tu dois mettre la logique pour elever
           // uniquement le trait sans ce cercle
-          this.getPath().removeLastInstruction();
+          this.addNewLine( this.mousePosition);
           this.undoRedoService.saveState();
           this.onKeyDown({ code: 'Escape'} as unknown as KeyboardEvent);
         }
@@ -167,9 +167,10 @@ export class LineLogicComponent extends ToolLogicDirective
         this.getPath().removePath();
         this.isNewPath = true;
       }
+      const maxRemovableInstruction = this.service.withJonction ? 2 * 2 : 2;
       if (
         keyEv.code === 'Backspace' &&
-        this.getPath().datas.points.length >= 2
+        this.getPath().datas.instructions.length >= maxRemovableInstruction
       ) {
         this.removeLine();
         this.getPath().simulateNewLine(this.getPath().lastPoint);

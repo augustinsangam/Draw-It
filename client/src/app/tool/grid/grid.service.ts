@@ -39,26 +39,15 @@ export class GridService extends ToolService {
         break;
       }
       case '+': {
-<<<<<<< HEAD
-        if (this.active && this.squareSize < MAX_SQUARESIZE) {
-          this.squareSize += OFFSET_SQUARESIZE - (this.squareSize % OFFSET_SQUARESIZE);
-=======
         if (this.active && this.squareSize < this.MAX_SQUARESIZE) {
           this.squareSize += this.SQUARESIZE_INCREMENT - (this.squareSize % this.SQUARESIZE_INCREMENT);
->>>>>>> b60e39c8b73bfca46f97b876b6aff852b4ffa031
         }
         break;
       }
       case '-': {
-<<<<<<< HEAD
-        if (this.active && this.squareSize > MIN_SQUARESIZE) {
-          this.squareSize % OFFSET_SQUARESIZE === 0 ?
-            this.squareSize -= OFFSET_SQUARESIZE : this.squareSize -= this.squareSize % OFFSET_SQUARESIZE;
-=======
         if (this.active && this.squareSize > this.MIN_SQUARESIZE) {
           this.squareSize % this.SQUARESIZE_INCREMENT === 0 ?
             this.squareSize -= this.SQUARESIZE_INCREMENT : this.squareSize -= this.squareSize % this.SQUARESIZE_INCREMENT;
->>>>>>> b60e39c8b73bfca46f97b876b6aff852b4ffa031
         }
         break;
       }
