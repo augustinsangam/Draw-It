@@ -169,7 +169,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.resetRectangle(this.rectangles.visualisation);
     this.resetTranslate(this.rectangles.visualisation);
     this.deleteCircles();
-    this.selectedElements.clear();
+    this.selectedElements = new Set();
   }
 
   private deleteCircles(): void {

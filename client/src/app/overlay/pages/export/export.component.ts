@@ -1,5 +1,5 @@
 
-import { Component, ElementRef, OnInit, Optional, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Optional, Renderer2, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MatRadioChange } from '@angular/material';
 import { SvgService, SvgShape } from 'src/app/svg/svg.service';
@@ -9,34 +9,17 @@ import { SvgService, SvgShape } from 'src/app/svg/svg.service';
   templateUrl: './export.component.html',
   styleUrls: ['./export.component.scss']
 })
-export class ExportComponent implements OnInit {
+export class ExportComponent implements AfterViewInit {
 
-  @ViewChild('svgView', { static: false })
-  protected svgView: ElementRef<SVGSVGElement>;
+  @ViewChild('svgView', {
+    static: false
+  }) protected svgView: ElementRef<SVGSVGElement>;
+
   innerSVG: SVGSVGElement;
   svgShape: SvgShape;
   downloadLink: HTMLAnchorElement;
   canvasDownload: HTMLCanvasElement;
-  name: string;
-  format: string;
-
-  ////////////////////
   protected form: FormGroup;
-
-  protected filters = [
-    FilterChoice.None,
-    FilterChoice.Blur,
-    FilterChoice.BlackWhite,
-    FilterChoice.Inverse,
-    FilterChoice.Artifice,
-    FilterChoice.Grey
-  ];
-
-  protected formats = [
-    FormatChoice.Svg,
-    FormatChoice.Png,
-    FormatChoice.Jpeg
-  ];
 
   constructor(private formBuilder: FormBuilder,
               @Optional() public dialogRef: MatDialogRef<ExportComponent>,
@@ -55,22 +38,36 @@ export class ExportComponent implements OnInit {
     });
   }
 
+  protected getFilters(): FilterChoice[] {
+    return [
+      FilterChoice.None,
+      FilterChoice.Blur,
+      FilterChoice.BlackWhite,
+      FilterChoice.Inverse,
+      FilterChoice.Artifice,
+      FilterChoice.Grey
+    ];
+  }
+
+  protected getFormats(): FormatChoice[] {
+    return [
+      FormatChoice.Svg,
+      FormatChoice.Png,
+      FormatChoice.Jpeg
+    ];
+  }
+
   protected onOptionChange($change: MatRadioChange): void {
     this.createView(String($change.value));
   }
 
   protected onConfirm(): void {
-    this.name = this.form.controls.name.value;
-    this.format = (this.form.controls.format.value).toLocaleLowerCase();
     this.exportDrawing();
     this.dialogRef.close();
   }
 
   protected onCancel(): void {
     this.dialogRef.close();
-  }
-
-  ngOnInit(): void {
   }
 
   ngAfterViewInit(): void {
@@ -120,11 +117,13 @@ export class ExportComponent implements OnInit {
   downloadFile(canvaRecu: HTMLCanvasElement): void {
     const canvas: HTMLCanvasElement = canvaRecu;
     const downloadLink: HTMLAnchorElement = this.renderer.createElement('a');
-    const url = canvas.toDataURL('image/' + this.format);
+    const format = this.form.controls.format.value;
+    const url = canvas.toDataURL('image/' + format);
     this.innerSVG.appendChild(downloadLink);
-    downloadLink.href = (this.format === 'svg') ?
+    downloadLink.href = (format === 'svg') ?
       this.convertSVGToBase64() : url;
-    downloadLink.download = this.name + '.' + this.format;
+    const name = this.form.controls.name.value.trim();
+    downloadLink.download = name + '.' + format;
     downloadLink.click();
     this.innerSVG.removeChild(downloadLink);
   }
@@ -141,7 +140,9 @@ export class ExportComponent implements OnInit {
     const downloadLink: HTMLAnchorElement = this.renderer.createElement('a');
     this.innerSVG.appendChild(downloadLink);
     downloadLink.href = uri;
-    downloadLink.download = this.name + '.' + this.format;
+    const name = this.form.controls.name.value.trim();
+    const format = this.form.controls.format.value;
+    downloadLink.download = name + '.' + format;
     downloadLink.click();
     this.innerSVG.removeChild(downloadLink);
   }
@@ -149,10 +150,10 @@ export class ExportComponent implements OnInit {
   exportDrawing(): HTMLCanvasElement {
     this.resetInnerSVG();
     const canvas: HTMLCanvasElement = this.configureCanvas();
-    if (this.format === 'svg') {
+    const format = this.form.controls.format.value;
+    if (format as FormatChoice === FormatChoice.Svg) {
       this.exportSVG();
     } else {
-
       const ctx = canvas.getContext('2d');
       const URL = self.URL || self;
       const img = new Image();

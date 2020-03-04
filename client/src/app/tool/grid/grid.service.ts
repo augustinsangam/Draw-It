@@ -3,16 +3,16 @@ import { SvgService } from 'src/app/svg/svg.service';
 import { Dimension } from '../shape/common/rectangle';
 import { ToolService } from '../tool.service';
 
-const MAX_SQUARESIZE = 400;
-const MIN_SQUARESIZE = 5;
-const DEFAULT_OPACITY = 0.4;
-const DEFAULT_SQUARESIZE = 100;
-const OFFSET_SQUARESIZE = 100;
-
 @Injectable({
   providedIn: 'root'
 })
 export class GridService extends ToolService {
+
+  readonly MAX_SQUARESIZE: number = 400;
+  readonly MIN_SQUARESIZE: number = 5;
+  protected readonly DEFAULT_OPACITY: number = 0.4;
+  protected readonly DEFAULT_SQUARESIZE: number = 100;
+  protected readonly SQUARESIZE_INCREMENT: number = 5;
 
   active: boolean;
   opacity: number;
@@ -26,8 +26,8 @@ export class GridService extends ToolService {
               private svg: SvgService
   ) {
     super();
-    this.squareSize = DEFAULT_SQUARESIZE;
-    this.opacity = DEFAULT_OPACITY;
+    this.squareSize = this.DEFAULT_SQUARESIZE;
+    this.opacity = this.DEFAULT_OPACITY;
     this.active = false;
     this.renderer = rendererFactory.createRenderer(null, null);
   }
@@ -39,15 +39,26 @@ export class GridService extends ToolService {
         break;
       }
       case '+': {
+<<<<<<< HEAD
         if (this.active && this.squareSize < MAX_SQUARESIZE) {
           this.squareSize += OFFSET_SQUARESIZE - (this.squareSize % OFFSET_SQUARESIZE);
+=======
+        if (this.active && this.squareSize < this.MAX_SQUARESIZE) {
+          this.squareSize += this.SQUARESIZE_INCREMENT - (this.squareSize % this.SQUARESIZE_INCREMENT);
+>>>>>>> b60e39c8b73bfca46f97b876b6aff852b4ffa031
         }
         break;
       }
       case '-': {
+<<<<<<< HEAD
         if (this.active && this.squareSize > MIN_SQUARESIZE) {
           this.squareSize % OFFSET_SQUARESIZE === 0 ?
             this.squareSize -= OFFSET_SQUARESIZE : this.squareSize -= this.squareSize % OFFSET_SQUARESIZE;
+=======
+        if (this.active && this.squareSize > this.MIN_SQUARESIZE) {
+          this.squareSize % this.SQUARESIZE_INCREMENT === 0 ?
+            this.squareSize -= this.SQUARESIZE_INCREMENT : this.squareSize -= this.squareSize % this.SQUARESIZE_INCREMENT;
+>>>>>>> b60e39c8b73bfca46f97b876b6aff852b4ffa031
         }
         break;
       }
@@ -58,15 +69,13 @@ export class GridService extends ToolService {
   }
 
   handleGrid(): void {
-    if (this.svgDimensions === undefined) {
-      const width = this.svg.structure.root.getAttribute('width');
-      const height = this.svg.structure.root.getAttribute('height');
-      if (width != null && height != null) {
-        this.svgDimensions = {
-          width: +width,
-          height: +height
-        };
-      }
+    const width = this.svg.structure.root.getAttribute('width');
+    const height = this.svg.structure.root.getAttribute('height');
+    if (width != null && height != null) {
+      this.svgDimensions = {
+        width: +width,
+        height: +height
+      };
     }
 
     if (!!this.grid) {
