@@ -64,7 +64,7 @@ export class ShortcutHandlerManagerService {
     this.handlersFunc.set(Shortcut.G, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
-        this.overlayService.openGaleryDialog(false);
+        this.overlayService.openGalleryDialog(false);
       } else {
         this.gridService.keyEvHandler('g');
       }

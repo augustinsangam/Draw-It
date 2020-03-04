@@ -1,8 +1,10 @@
 import express from 'express';
 import flatbuffers from 'flatbuffers';
 import inversify from 'inversify';
+import log from 'loglevel';
 import mongodb from 'mongodb';
 
+import { COLOR } from './color';
 import { Draw, DrawBuffer, Draws } from './data_generated';
 import { Database, Entry } from './database';
 import { TYPES } from './types';
@@ -85,12 +87,15 @@ class Router {
 				return;
 			}
 			try {
+				console.log('A');
 				const _id = await this.db.nextID();
-				console.log(_id);
+				console.log('A');
 				await this.db.insert({
 					_id,
 					data: new mongodb.Binary(req.body),
 				});
+				log.info(`${COLOR.fg.yellow}ID${COLOR.reset}: ${_id}`);
+				console.log('A ' + _id);
 				res.status(StatusCode.CREATED).send(_id.toString());
 			} catch (err) {
 				next(err);
@@ -129,4 +134,4 @@ class Router {
 	}
 }
 
-export { Router };
+export { Router, StatusCode };

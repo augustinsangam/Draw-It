@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GaleryCardComponent } from './galery-card.component';
+import { TagsFilterComponent } from './tags-filter.component';
 
-describe('GaleryCardComponent', () => {
-  let component: GaleryCardComponent;
-  let fixture: ComponentFixture<GaleryCardComponent>;
+describe('TagsFilterComponent', () => {
+  let component: TagsFilterComponent;
+  let fixture: ComponentFixture<TagsFilterComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GaleryCardComponent ]
+      declarations: [ TagsFilterComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GaleryCardComponent);
+    fixture = TestBed.createComponent(TagsFilterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

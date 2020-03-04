@@ -2,21 +2,16 @@ import {
   AfterViewInit, Component, ElementRef, Input, Output, Renderer2, ViewChild
 } from '@angular/core';
 import { Subject } from 'rxjs';
+import { GalleryDraw } from '../gallery.component';
 
 @Component({
-  selector: 'app-galery-card',
-  templateUrl: './galery-card.component.html',
-  styleUrls: ['./galery-card.component.scss']
+  selector: 'app-gallery-card',
+  templateUrl: './gallery-card.component.html',
+  styleUrls: ['./gallery-card.component.scss']
 })
-export class GaleryCardComponent implements AfterViewInit {
+export class GalleryCardComponent implements AfterViewInit {
 
-  @Input() name: string;
-  @Input() svg: SVGGElement;
-  @Input() tags: string[];
-  @Input() id: number;
-  @Input() height: number;
-  @Input() width: number;
-  @Input() color: string;
+  @Input() draw: GalleryDraw;
 
   @Output() load: Subject<number>;
   @Output() delete: Subject<number>;
@@ -35,25 +30,25 @@ export class GaleryCardComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     let viewPortWidth;
     let viewPortHeight;
-    if (!!this.width && !!this.height) {
-      const factor = Math.max(+this.width / 300, +this.height / 170);
-      viewPortWidth = Number(this.width) / factor;
-      viewPortHeight = Number(this.height) / factor;
+    if (!!this.draw.shape.width && !!this.draw.shape.height) {
+      const factor = Math.max(+this.draw.shape.width / 300, +this.draw.shape.height / 170);
+      viewPortWidth = Number(this.draw.shape.width) / factor;
+      viewPortHeight = Number(this.draw.shape.height) / factor;
       this.svgRef.nativeElement.setAttribute('width', viewPortWidth.toString());
       this.svgRef.nativeElement.setAttribute('height', viewPortHeight.toString());
     }
     this.svgRef.nativeElement.setAttribute('viewBox',
-      [0, 0, this.width, this.height].join(' '));
-    this.svgRef.nativeElement.style.backgroundColor = this.color;
-    this.renderer.appendChild(this.svgRef.nativeElement, this.svg);
+      [0, 0, this.draw.shape.width, this.draw.shape.height].join(' '));
+    this.svgRef.nativeElement.style.backgroundColor = this.draw.shape.color;
+    this.renderer.appendChild(this.svgRef.nativeElement, this.draw.svg);
   }
 
   onLoad(): void {
-    this.load.next(this.id);
+    this.load.next(this.draw.header.id);
   }
 
   onDelete(): void {
-    this.delete.next(this.id);
+    this.delete.next(this.draw.header.id);
   }
 
   onClick(tag: string): void {

@@ -1,4 +1,4 @@
-La première fois que vous lancez DrawIt, plusieurs options s’offrent à vous : `Créer un nouveau dessin` et `Guide d’utilisation`. Si vous avez déjà utilisé DrawIt auparavant, vous aurez également accès aux boutons `Continuer un ancien dessin` et `Aller à la galerie`.
+La première fois que vous lancez DrawIt, plusieurs options s’offrent à vous : `Créer un nouveau dessin` et `Guide d’utilisation`. Si vous avez déjà utilisé DrawIt auparavant, vous aurez également accès aux boutons `Continuer un ancien dessin` et `Aller à la gallerie`.
 
 <img class="doc-fig" alt="Page accueil de DrawIt" src="../../assets/doc/imgs/doc-home.png" title="La page d’accueil de DrawIt" width="40%">
 
