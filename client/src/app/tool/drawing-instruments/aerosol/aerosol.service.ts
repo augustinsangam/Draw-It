@@ -9,11 +9,11 @@ export class AerosolService extends ToolService {
 
   readonly MAX_FREQUENCY: number = 400;
   readonly MIN_FREQUENCY: number = 1;
-  readonly DEFAULT_FREQUENCY: number = 100;
+  readonly DEFAULT_FREQUENCY: number = 250;
   readonly MAX_THICKNESS: number = 100;
   readonly MIN_THICKNESS: number = 10;
-  readonly DEFAULT_THICKNESS: number = 50;
-  readonly NUMBER_POINTS: number = 2;
+  readonly DEFAULT_THICKNESS: number = 20;
+  readonly NUMBER_POINTS: number = 25;
 
   thickness: number;
   frequency: number;
