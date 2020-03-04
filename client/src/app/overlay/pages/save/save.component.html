@@ -1,9 +1,9 @@
 <svg:svg #preview></svg:svg>
 
-<form id="form" [formGroup]="form" (keyup.enter)="onSubmit()">
+<form id="form" [formGroup]="form">
   <mat-form-field appearance="outline">
     <mat-label>Nom du dessin</mat-label>
-    <input matInput formControlName="name">
+    <input matInput formControlName="name"v>
     <mat-hint>
       Le nom doit être en 3 et 21 caractères.
     </mat-hint>
@@ -29,7 +29,8 @@
     (click)="onSubmit()"
     [disabled]="form.invalid || saving"
     type="submit"
-  #submitButton>
+    #submitButton
+  >
   Sauvegarder
   </button>
   <button mat-raised-button

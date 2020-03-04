@@ -18,7 +18,7 @@
             <td class="filters option">
               <h4>Filtres</h4>
               <mat-radio-group (change)="onOptionChange($event)" formControlName="filter">
-                <div *ngFor="let filter of filters" class="filterOption">
+                <div *ngFor="let filter of getFilters()" class="filterOption">
                   <mat-radio-button [value]="filter"></mat-radio-button>
                   {{filter}}
                 </div>
@@ -28,7 +28,7 @@
             <td class="option">
               <h4>Formats</h4>
               <mat-radio-group formControlName="format">
-                <div *ngFor="let format of formats" class="formatOption">
+                <div *ngFor="let format of getFormats()" class="formatOption">
                   <mat-radio-button [value]="format" #radioFormat></mat-radio-button>
                   {{format}}
                 </div>
