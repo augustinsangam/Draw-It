@@ -116,11 +116,11 @@
   <table id="export-buttons">
     <tr>
       <td>
-        <button mat-raised-button color="warn" (click)="onCancel($event)">Annuler </button>
-      </td>
-      <td>
         <button mat-raised-button color="primary" (click)="onConfirm($event)"
           [disabled]="form.invalid">Exporter</button>
+      </td>
+      <td>
+        <button mat-raised-button color="warn" (click)="onCancel($event)">Annuler </button>
       </td>
     </tr>
   </table>

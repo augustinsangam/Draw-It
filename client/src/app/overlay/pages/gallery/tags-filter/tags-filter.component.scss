@@ -1,0 +1,20 @@
+.chip-list {
+    width: 50%;
+    padding-left: 25%;
+    padding-right: 5%;
+    font-size: large;
+}
+
+.search-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+}
+  
+.slider {
+    padding-left: 15px;
+    padding-right: 15px;
+    float: left;
+    border: 3px solid #2F3136;
+    border-radius: 25px;
+}

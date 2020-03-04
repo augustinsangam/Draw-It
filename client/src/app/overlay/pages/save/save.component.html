@@ -1,6 +1,6 @@
 <svg:svg #preview></svg:svg>
 
-<form id="form" [formGroup]="form">
+<form id="form" [formGroup]="form" (keyup.enter)="onSubmit()">
   <mat-form-field appearance="outline">
     <mat-label>Nom du dessin</mat-label>
     <input matInput formControlName="name">
@@ -20,18 +20,22 @@
              [matChipInputAddOnBlur]="addOnBlur"
              (matChipInputTokenEnd)="add($event)">
     </mat-chip-list>
+    <mat-hint>
+      Le tag doit être en 3 et 21 caractères.
+    </mat-hint>
   </mat-form-field>
+  <button mat-raised-button
+  color="primary"
+  (click)="onSubmit()"
+  [disabled]="form.invalid"
+  type="submit" 
+  #submitButton>
+  Sauvegarder
+  </button>
   <button mat-raised-button
             color="warn"
             (click)="onCancel()"
             #cancelButton>
             Annuler
-  </button>
-  <button mat-raised-button
-          color="primary"
-          (click)="onSubmit()"
-          [disabled]="form.invalid"
-          #submitButton>
-          Sauvegarder
   </button>
 </form>

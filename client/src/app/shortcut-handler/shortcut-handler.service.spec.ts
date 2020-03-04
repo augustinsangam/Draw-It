@@ -15,7 +15,7 @@ fdescribe('ShortcutHandlerService', () => {
     debugVariable += 2;
   };
   const debugFunction2: ShortcutCallBack = (event: KeyboardEvent) => {
-    debugVariable += 5;
+    debugVariable += (5);
   };
 
   beforeEach(() => {
@@ -91,9 +91,9 @@ fdescribe('ShortcutHandlerService', () => {
   it('#execute should not call the hander fonction when inactive', () => {
     service.set(Shortcut.C, debugFunction1);
     service.set(Shortcut.L, debugFunction2);
-    service.execute(({ code: 'KeyC' } as unknown) as KeyboardEvent);
+    service.execute(({ key: 'c' } as unknown) as KeyboardEvent);
     expect(debugVariable).toBe(3);
-    service.execute(({ code: 'KeyL' } as unknown) as KeyboardEvent);
+    service.execute(({ key: 'l' } as unknown) as KeyboardEvent);
     expect(debugVariable).toBe(8);
   });
 
