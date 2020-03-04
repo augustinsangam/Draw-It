@@ -229,7 +229,6 @@ export class ExportComponent implements OnInit {
   }
 
   resetInnerSVG(): void {
-
     Array.from(this.svgView.nativeElement.children).forEach(
       (element: SVGElement) => {
         this.renderer.appendChild(this.innerSVG, element.cloneNode(true)); });
