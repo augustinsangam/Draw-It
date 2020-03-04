@@ -12,7 +12,6 @@ import {ColorService} from '../../../color/color.service';
 import {ToolPanelDirective} from '../../../tool-panel/tool-panel.directive';
 import {AerosolService} from '../aerosol.service';
 
-// TODO : Change variable name
 const PREVIEW_CENTER = {
   x : 150,
   y : 110
