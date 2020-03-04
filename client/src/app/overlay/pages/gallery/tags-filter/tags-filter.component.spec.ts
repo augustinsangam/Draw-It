@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TagsFilterComponent } from './tags-filter.component';
-import { MaterialModule } from 'src/app/material.module';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MaterialModule } from 'src/app/material.module';
+import { TagsFilterComponent } from './tags-filter.component';
 
 fdescribe('TagsFilterComponent', () => {
   let component: TagsFilterComponent;

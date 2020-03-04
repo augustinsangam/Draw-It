@@ -25,6 +25,19 @@ export class GalleryCardComponent implements AfterViewInit {
     this.load = new Subject();
     this.delete = new Subject();
     this.tagClick = new Subject();
+    // this.draw = {
+    //   header: {
+    //     id: 0,
+    //     name: '',
+    //     tags: [],
+    //   },
+    //   shape: {
+    //     height: 0,
+    //     width: 0,
+    //     color: '#FFFFFF'
+    //   },
+    //   svg: new SVGGElement(),
+    // };
   }
 
   ngAfterViewInit(): void {
