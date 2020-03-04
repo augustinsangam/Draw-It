@@ -29,30 +29,34 @@ export class Rectangle extends AbstractShape {
     );
   }
 
-  dragRectangle(mouseDownPoint: Point, mouseMovePoint: Point): void {
+  dragRectangle(mouseDownPoint: Point, mouseMovePoint: Point, strokeWidth?: number): void {
     const dimensions = this.mathService.getRectangleSize(
       mouseDownPoint,
-      mouseMovePoint
+      mouseMovePoint,
+      strokeWidth
     );
     const transformedPoint = this.mathService.getRectangleUpLeftCorner(
       mouseDownPoint,
-      mouseMovePoint
+      mouseMovePoint,
+      strokeWidth
     );
     this.insertRectangleInSVG(transformedPoint, dimensions);
   }
 
-  dragSquare(mouseDownPoint: Point, mouseMovePoint: Point): void {
+  dragSquare(mouseDownPoint: Point, mouseMovePoint: Point, strokeWidth?: number): void {
     const transformedPoint = this.mathService.transformRectangleToSquare(
       mouseDownPoint,
       mouseMovePoint
     );
     const finalPoint = this.mathService.getRectangleUpLeftCorner(
       mouseDownPoint,
-      transformedPoint
+      transformedPoint,
+      strokeWidth
     );
     const squareDimension = this.mathService.getRectangleSize(
       mouseDownPoint,
-      transformedPoint
+      transformedPoint,
+      strokeWidth
     );
     this.insertRectangleInSVG(finalPoint, squareDimension);
   }

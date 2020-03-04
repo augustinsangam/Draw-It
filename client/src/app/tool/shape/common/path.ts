@@ -68,7 +68,7 @@ export class Path {
     this.datas.points.pop();
     let instructionToRemove = 1;
     if (this.withJonctions) {
-      instructionToRemove = 2;
+      instructionToRemove ++;
     }
     for (let index = 0; index < instructionToRemove; index++) {
       const lengthToRemove = String(this.datas.instructions.pop()).length;

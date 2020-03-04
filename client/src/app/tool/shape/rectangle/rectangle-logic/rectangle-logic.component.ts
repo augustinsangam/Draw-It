@@ -113,7 +113,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
   private onKeyDown(keyEv: KeyboardEvent): void {
     if (this.onDrag) {
       if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
-        this.getRectangle().dragSquare(this.mouseDownPoint, this.currentPoint);
+        this.getRectangle().dragSquare(this.mouseDownPoint, this.currentPoint, this.service.thickness);
       }
     }
   }
@@ -122,7 +122,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
     if (this.onDrag) {
       if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
         this.getRectangle().dragRectangle(
-          this.mouseDownPoint, this.currentPoint);
+          this.mouseDownPoint, this.currentPoint, this.service.thickness);
       }
     }
   }
@@ -160,11 +160,12 @@ export class RectangleLogicComponent extends ToolLogicDirective
   }
 
   private viewTemporaryForm(mouseEv: MouseEvent): void {
-    mouseEv.shiftKey ?
-      this.getRectangle().dragSquare(this. mouseDownPoint, this.currentPoint) :
-      this.getRectangle().dragRectangle(
-        this. mouseDownPoint, this.currentPoint);
+    if (mouseEv.shiftKey) {
+      this.getRectangle().dragSquare(this. mouseDownPoint, this.currentPoint, this.service.thickness);
+    } else {
+      this.getRectangle().dragRectangle(this. mouseDownPoint, this.currentPoint, this.service.thickness);
     }
+  }
 
   private setRectangleProperties(): void {
     this.style = {

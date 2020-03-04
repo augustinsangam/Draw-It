@@ -11,11 +11,9 @@ import {
   ColorPanelComponent } from '../tool/color/color-panel/color-panel.component';
 import {
   ColorPickerContentComponent
-// tslint:disable-next-line: max-line-length
 } from '../tool/color/color-panel/color-picker-content/color-picker-content.component';
 import {
   ColorPickerItemComponent
-// tslint:disable-next-line: max-line-length
 } from '../tool/color/color-panel/color-picker-item/color-picker-item.component';
 import {
   LinePanelComponent
@@ -23,7 +21,11 @@ import {
 import { Tool } from '../tool/tool.enum';
 import { PanelComponent } from './panel.component';
 
-describe('PanelComponent', () => {
+// TODO : Ask the chargé de lab
+
+// tslint:disable: no-magic-numbers
+// tslint:disable: no-any
+fdescribe('PanelComponent', () => {
   let component: PanelComponent;
   let fixture: ComponentFixture<PanelComponent>;
 
