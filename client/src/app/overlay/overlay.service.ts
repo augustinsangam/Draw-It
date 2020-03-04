@@ -224,6 +224,11 @@ export class OverlayService {
 
   private createNewDraw(shape: SvgShape): void {
     this.svgService.shape = shape;
+    this.svgService.header = {
+      name: '',
+      tags: [],
+      id: 0
+    };
     const rgb = this.colorService.hexToRgb(shape.color);
     this.colorService.selectBackgroundColor(
       `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`
