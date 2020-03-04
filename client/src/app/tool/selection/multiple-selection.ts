@@ -31,7 +31,7 @@ export class MultipleSelection extends Selection {
     };
   }
 
-  private findSelectedElements( elements: Set<SVGElement>): void {
+  private findSelectedElements(elements: Set<SVGElement>): void {
     elements.forEach((element) => {
       if (element instanceof SVGElement) {
         const elementZone = this.getZone(element);

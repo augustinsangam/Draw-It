@@ -6,7 +6,7 @@ import { Circle } from '../../shape/common/circle';
 import { Point } from '../../shape/common/point';
 import { Rectangle } from '../../shape/common/rectangle';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
-import { UndoRedoService } from '../../undo-redo/undo-redo.service';
+import { UndoRedoService, PostAction } from '../../undo-redo/undo-redo.service';
 import { MultipleSelection } from '../multiple-selection';
 import { Offset } from '../offset';
 import { SelectionReturn } from '../selection-return';
@@ -31,12 +31,14 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     super();
     this.allListenners = [];
     this.selectedElements = new Set();
-    this.undoRedoService.setPostUndoAction({
+    const action: PostAction = {
       functionDefined: true,
       function: () => {
         this.deleteVisualisation();
       }
-    });
+    };
+    this.undoRedoService.setPostUndoAction(action);
+    this.undoRedoService.setPostRedoAction(action);
   }
 
   ngOnInit(): void {
@@ -210,7 +212,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     return BasicSelectionType.NOTHING;
   }
 
-  protected isInTheSelectionZone(x: number, y: number)
+  protected isInTheVisualisationZone(x: number, y: number)
     : boolean {
     const point = this.svgStructure.root.createSVGPoint();
     const [dx, dy] =
@@ -232,40 +234,36 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   private initialiseKeyManager(): void {
-    const allArrows = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
     this.keyManager = {
       keyPressed: new Set(),
       lastTimeCheck: new Date().getTime(),
       handlers: {
         keydown: ($event: KeyboardEvent) => {
-          if (allArrows.indexOf($event.key) !== -1) {
-            $event.preventDefault();
-            if (!this.keyManager.keyPressed.has($event.key)) {
-              this.keyManager.keyPressed.add($event.key);
-            }
-            const actualTime = new Date().getTime();
-            if (actualTime - this.keyManager.lastTimeCheck >= Util.TIME_INTERVAL) {
-              this.keyManager.lastTimeCheck = actualTime;
-              this.handleKey('ArrowUp', 0, -Util.OFFSET_TRANSLATE);
-              this.handleKey('ArrowDown', 0, Util.OFFSET_TRANSLATE);
-              this.handleKey('ArrowLeft', -Util.OFFSET_TRANSLATE, 0);
-              this.handleKey('ArrowRight', Util.OFFSET_TRANSLATE, 0);
-            }
+          $event.preventDefault();
+          if (!this.keyManager.keyPressed.has($event.key)) {
+            this.keyManager.keyPressed.add($event.key);
+          }
+          const actualTime = new Date().getTime();
+          if (actualTime - this.keyManager.lastTimeCheck >= Util.TIME_INTERVAL) {
+            this.keyManager.lastTimeCheck = actualTime;
+            this.handleKey('ArrowUp', 0, -Util.OFFSET_TRANSLATE);
+            this.handleKey('ArrowDown', 0, Util.OFFSET_TRANSLATE);
+            this.handleKey('ArrowLeft', -Util.OFFSET_TRANSLATE, 0);
+            this.handleKey('ArrowRight', Util.OFFSET_TRANSLATE, 0);
           }
         },
         keyup: ($event: KeyboardEvent) => {
-          if (allArrows.indexOf($event.key) !== -1) {
-            let count = 0;
-            allArrows.forEach((arrow) => {
-              if (this.keyManager.keyPressed.has(arrow)) {
-                count++;
-              }
-            });
-            this.keyManager.keyPressed.delete($event.key);
-            // TODO : Verifier uniquement les touches qui s'appliquent
-            if (count === 1 && allArrows.indexOf($event.key) !== -1) {
-              this.undoRedoService.saveState();
+          const allArrows = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+          let count = 0;
+          allArrows.forEach((arrow) => {
+            if (this.keyManager.keyPressed.has(arrow)) {
+              count++;
             }
+          });
+          this.keyManager.keyPressed.delete($event.key);
+          // TODO : Verifier uniquement les touches qui s'appliquent
+          if (count === 1 && allArrows.indexOf($event.key) !== -1) {
+            this.undoRedoService.saveState();
           }
         }
       }
