@@ -5,6 +5,9 @@ import { MatChipInputEvent, MatDialogRef } from '@angular/material';
 import { CommunicationService } from 'src/app/communication/communication.service';
 import { SvgService } from 'src/app/svg/svg.service';
 
+const MIN_LETTERS = 3;
+const MAX_LETTERS = 21;
+
 @Component({
   selector: 'app-save',
   templateUrl: './save.component.html',
@@ -18,7 +21,7 @@ export class SaveComponent implements OnInit {
 
   protected form: FormGroup;
   protected addOnBlur: boolean;
-  protected tags: string[] = ['Mes dessins'];
+  protected tags: string[];
   readonly separatorKeysCodes: number[];
   private gElOffset?: flatbuffers.Offset;
   protected saving: boolean;
@@ -32,8 +35,10 @@ export class SaveComponent implements OnInit {
     this.addOnBlur = true;
     this.separatorKeysCodes = [ENTER, COMMA];
     this.form = this.formBuilder.group({
-      name: [, [Validators.required, Validators.pattern('.{3,21}')]]
+      name: [this.svgService.header.name, [Validators.required, Validators.pattern(`.{${MIN_LETTERS},${MAX_LETTERS}}`)]]
     });
+    this.tags = (this.svgService.header.tags.length === 0) ? ['Mes dessins'] :
+                this.svgService.header.tags;
   }
 
   ngOnInit(): void {
@@ -52,7 +57,7 @@ export class SaveComponent implements OnInit {
     const input = event.input;
     const value = event.value;
     const toAdd = (value || '').trim();
-    if (toAdd.length >= 3 && toAdd.length <= 21) {
+    if (toAdd.length >= MIN_LETTERS && toAdd.length <= MAX_LETTERS) {
       this.tags.push(value.trim());
       input.value = '';
     }
@@ -76,7 +81,6 @@ export class SaveComponent implements OnInit {
       this.svgService.header,
       this.svgService.shape,
       this.gElOffset);
-    console.log(this.svgService.header.id);
     if (this.svgService.header.id) {
       this.communicationService.put(this.svgService.header.id)
         .then(() => this.dialogRef.close())
