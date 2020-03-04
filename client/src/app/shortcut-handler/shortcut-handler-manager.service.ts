@@ -66,14 +66,14 @@ export class ShortcutHandlerManagerService {
         event.preventDefault();
         this.overlayService.openGaleryDialog(false);
       } else {
-        this.gridService.keyEvHandler('KeyG');
+        this.gridService.keyEvHandler('g');
       }
     });
     this.handlersFunc.set(Shortcut.plus, () => {
-      this.gridService.keyEvHandler('NumpadAdd');
+      this.gridService.keyEvHandler('+');
     });
     this.handlersFunc.set(Shortcut.minus, () => {
-      this.gridService.keyEvHandler('NumpadSubtract');
+      this.gridService.keyEvHandler('-');
     });
     this.handlersFunc.set(Shortcut.Z, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {

@@ -34,17 +34,17 @@ export class GridService extends ToolService {
 
   keyEvHandler(keyCode: string): void {
     switch (keyCode) {
-      case 'KeyG': {
+      case 'g': {
         this.active = !this.active;
         break;
       }
-      case 'NumpadAdd': {
+      case '+': {
         if (this.active && this.squareSize < MAX_SQUARESIZE) {
           this.squareSize += OFFSET_SQUARESIZE - (this.squareSize % OFFSET_SQUARESIZE);
         }
         break;
       }
-      case 'NumpadSubtract': {
+      case '-': {
         if (this.active && this.squareSize > MIN_SQUARESIZE) {
           this.squareSize % OFFSET_SQUARESIZE === 0 ?
             this.squareSize -= OFFSET_SQUARESIZE : this.squareSize -= this.squareSize % OFFSET_SQUARESIZE;
