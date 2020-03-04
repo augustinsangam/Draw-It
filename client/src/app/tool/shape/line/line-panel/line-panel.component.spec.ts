@@ -32,7 +32,7 @@ import {
 import { LinePanelComponent } from './line-panel.component';
 
 // tslint:disable: no-string-literal
-describe('LinePanelComponent', () => {
+fdescribe('LinePanelComponent', () => {
   let component: LinePanelComponent;
   let fixture: ComponentFixture<LinePanelComponent>;
 

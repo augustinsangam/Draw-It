@@ -38,28 +38,25 @@ export class SelectionLogicComponent
               $event.target as SVGElement
             );
             this.mouse.left.onDrag =
-              this.isInTheSelectionZone($event.offsetX, $event.offsetY);
+              this.isInTheVisualisationZone($event.offsetX, $event.offsetY);
           }
         }],
         ['mousemove', ($event: MouseEvent) => {
           if (this.mouse.left.mouseIsDown) {
+            const previousCurrentPoint = this.mouse.left.currentPoint;
+            this.mouse.left.currentPoint = new Point($event.offsetX,
+              $event.offsetY);
             if (this.mouse.left.onDrag) {
-              const offsetX = $event.offsetX - this.mouse.left.currentPoint.x;
-              const offsetY = $event.offsetY - this.mouse.left.currentPoint.y;
-              this.mouse.left.currentPoint = new Point($event.offsetX,
-                $event.offsetY);
+              const offsetX = $event.offsetX - previousCurrentPoint.x;
+              const offsetY = $event.offsetY - previousCurrentPoint.y;
               this.translateAll(offsetX, offsetY);
             } else {
-              this.mouse.left.currentPoint = new Point($event.offsetX,
-                $event.offsetY);
               this.drawSelection(this.mouse.left.startPoint,
                 this.mouse.left.currentPoint);
-              if (!this.mouse.left.startPoint.equals(this.mouse.left.endPoint)) {
-                const [startPoint, currentPoint] = Util.SelectionLogicUtil.orderPoint(
-                  this.mouse.left.startPoint, this.mouse.left.currentPoint
-                );
-                this.applyMultipleSelection(startPoint, currentPoint);
-              }
+              const [startPoint, currentPoint] = Util.SelectionLogicUtil.orderPoint(
+                this.mouse.left.startPoint, this.mouse.left.currentPoint
+              );
+              this.applyMultipleSelection(startPoint, currentPoint);
             }
           }
         }],
@@ -67,11 +64,11 @@ export class SelectionLogicComponent
           if ($event.button === 0) {
             if (this.mouse.left.onDrag &&
               !this.mouse.left.startPoint.equals(this.mouse.left.currentPoint)) {
-              this.undoRedoService.saveState();
+                this.undoRedoService.saveState();
             }
-            this.mouse.left.onDrag = false;
             this.mouse.left.endPoint = new Point($event.offsetX, $event.offsetY);
             this.mouse.left.mouseIsDown = false;
+            this.mouse.left.onDrag = false;
             this.deleteSelection();
           }
         }],
@@ -145,9 +142,12 @@ export class SelectionLogicComponent
           );
         });
       });
-    this.renderer.listen(document, 'keydown',
-      this.keyManager.handlers.keydown);
-    this.renderer.listen(document, 'keyup', this.keyManager.handlers.keyup);
+    this.allListenners.push(
+      this.renderer.listen(document, 'keydown',
+      this.keyManager.handlers.keydown));
+    this.allListenners.push(
+      this.renderer.listen(document, 'keyup',
+      this.keyManager.handlers.keyup));
   }
 
 }

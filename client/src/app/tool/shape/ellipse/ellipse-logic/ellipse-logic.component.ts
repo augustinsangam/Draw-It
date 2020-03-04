@@ -134,7 +134,9 @@ export class EllipseLogicComponent extends ToolLogicDirective
   private onMouseUp(mouseEv: MouseEvent): void {
     if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
       this.onDrag = false;
-      this.rectVisu.element.remove();
+      if (!!this.rectVisu) {
+        this.rectVisu.element.remove();
+      }
       this.style.opacity = FULLOPACITY;
       this.getEllipse().setCss(this.style);
       this.undoRedoService.saveState();

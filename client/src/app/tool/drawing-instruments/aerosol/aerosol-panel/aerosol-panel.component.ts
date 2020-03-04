@@ -13,7 +13,7 @@ import {ToolPanelDirective} from '../../../tool-panel/tool-panel.directive';
 import {AerosolService} from '../aerosol.service';
 
 // TODO : Change variable name
-const POINT = {
+const PREVIEW_CENTER = {
   x : 150,
   y : 110
 };
@@ -80,7 +80,7 @@ export class AerosolPanelComponent extends ToolPanelDirective
   protected updateThumbnail(): void {
     let preview = '';
     for (let i = 0; i < this.service.frequency; i++) {
-      preview += this.service.generatePoints(new Point(POINT.x, POINT.y));
+      preview += this.service.generatePoints(new Point(PREVIEW_CENTER.x, PREVIEW_CENTER.y));
     }
     this.renderer.setAttribute(
       this.prevPathRef.nativeElement,
