@@ -14,7 +14,7 @@ import { SidebarComponent } from './sidebar.component';
 
 // tslint:disable:no-string-literal
 // tslint:disable:no-any
-describe('SidebarComponent', () => {
+fdescribe('SidebarComponent', () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
 
@@ -105,33 +105,46 @@ describe('SidebarComponent', () => {
     expect(newHtmlEl.classList.contains('selected')).toBeTruthy();
   });
 
-  it('selectLine devrait appeler ToolSelectorService.set', () => {
-    const spy = spyOn(component['toolSelectorService'], 'set');
-    component['selectLine']();
-    expect(spy).toHaveBeenCalled();
+  const functions = [
+    ['selectLine', Tool.Line],
+    ['selectEraser', Tool.Eraser],
+    ['selectRectangle', Tool.Rectangle],
+    ['selectPolygone', Tool.Polygone],
+    ['selectPencil', Tool.Pencil],
+    ['selectBrush', Tool.Brush],
+    ['selectSelection', Tool.Selection],
+    ['selectEllipse', Tool.Ellipse],
+    ['selectPipette', Tool.Pipette],
+    ['selectAerosol', Tool.Aerosol],
+    ['selectApplicator', Tool.Applicator],
+    ['selectGrid', Tool.Grid],
+  ];
+
+  functions.forEach((func) => {
+    it(`${func[0]} should call toolSelectorService.set`, () => {
+      const spy = spyOn(component['toolSelectorService'], 'set');
+      // TODO : Ask the chargé de lab
+      (component as any)[func[0]]();
+      expect(spy).toHaveBeenCalledWith(func[1]);
+    });
   });
 
-  it('selectRectangle devrait appeler ToolSelectorService.set', () => {
-    const spy = spyOn(component['toolSelectorService'], 'set');
-    component['selectRectangle']();
-    expect(spy).toHaveBeenCalled();
+  it('#ngAfterViewChecked should not do anything when canUndo or canRedo'
+      + 'is unchanged', () => {
+    component['canUndo'] = false;
+    component['canRedo'] = false;
+    spyOn(component['changeDetectorRef'], 'detectChanges');
+    spyOn(component['undoRedoService'], 'canUndo')
+    .and.callFake(() => {
+      return component['canUndo'];
+    });
+    spyOn(component['undoRedoService'], 'canRedo')
+    .and.callFake(() => {
+      return component['canRedo'];
+    });
+    component['ngAfterViewChecked']();
+    expect(component['canUndo']).toEqual(false);
+    expect(component['canRedo']).toEqual(false);
   });
 
-  it('selectPencil devrait appeler ToolSelectorService.set', () => {
-    const spy = spyOn(component['toolSelectorService'], 'set');
-    component['selectPencil']();
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('selectBrush devrait appeler ToolSelectorService.set', () => {
-    const spy = spyOn(component['toolSelectorService'], 'set');
-    component['selectBrush']();
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('selectEllipse devrait appelesr ToolSelectorService.set', () => {
-    const spy = spyOn(component['toolSelectorService'], 'set');
-    component['selectEllipse']();
-    expect(spy).toHaveBeenCalled();
-  });
 });

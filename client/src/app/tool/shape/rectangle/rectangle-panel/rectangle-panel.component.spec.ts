@@ -12,14 +12,13 @@ import {
 } from '../../../color/color-panel/color-panel.component';
 import {
   ColorPickerContentComponent
-// tslint:disable-next-line: max-line-length
 } from '../../../color/color-panel/color-picker-content/color-picker-content.component';
 import {
   ColorPickerItemComponent
-// tslint:disable-next-line: max-line-length
 } from '../../../color/color-panel/color-picker-item/color-picker-item.component';
 import { RectanglePanelComponent } from './rectangle-panel.component';
 
+// TODO : Ask the chargé de lab
 // tslint:disable: no-string-literal
 fdescribe('RectanglePanelComponent', () => {
   let component: RectanglePanelComponent;

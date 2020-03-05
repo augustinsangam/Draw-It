@@ -3,7 +3,7 @@ import { EventManager } from '@angular/platform-browser';
 
 import * as ScreenServiceModule from './screen.service';
 
-describe('ScreenService', () => {
+fdescribe('ScreenService', () => {
 
   let service: ScreenServiceModule.ScreenService;
 
@@ -23,7 +23,7 @@ describe('ScreenService', () => {
     const currentScreenSize = {
       width: innerWidth - ScreenServiceModule.sideBarWidth,
       height: innerHeight
-    }
+    };
     expect(currentScreenSize).toEqual(service.getCurrentSize());
   });
 

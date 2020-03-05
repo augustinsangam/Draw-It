@@ -25,17 +25,15 @@ import {
 } from '../../../color/color-panel/color-panel.component';
 import {
   ColorPickerContentComponent
-// tslint:disable-next-line: max-line-length
 } from '../../../color/color-panel/color-picker-content/color-picker-content.component';
 import {
   ColorPickerItemComponent
-// tslint:disable-next-line: max-line-length
 } from '../../../color/color-panel/color-picker-item/color-picker-item.component';
 import { BrushPanelComponent } from './brush-panel.component';
 
 // On a besoin des string-literal pour accéder aux attributs privés
 // tslint:disable: no-string-literal
-describe('BrushPanelComponent', () => {
+fdescribe('BrushPanelComponent', () => {
   let component: BrushPanelComponent;
   let fixture: ComponentFixture<BrushPanelComponent>;
 
