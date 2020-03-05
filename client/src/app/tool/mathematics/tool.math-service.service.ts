@@ -15,7 +15,11 @@ const DECALAGE_Y: number[] =
 const RATIO_TRANSITION: number[] =
   [0, 0, 1.15, 1.0, 1.04, 1.1, 1.08, 1.0, 1.04, 1.06, 1.08, 1.0];
 const FACTEUR_TRANSITION: number[] =
-  [0, 0, 1.0, 1.0, 1.01, 1.05, 1.02, 1.0, 1.0, 1.0, 1.0, 1.0];
+  [0, 0, 1.0, 1.0, 1.01, 0.909, 1.02, 1.0, 1.0, 1.0, 1.0, 1.0];
+const FACTEUR_DECALAGE_X: number[] =
+  [0, 0, 1.0, 1.0, 1.0, 0.9, 1.0, 1.0, 1.0, 0.95, 1.0, 1.0];
+const FACTEUR_DECALAGE_Y: number[] =
+  [0, 0, 1.0, 1.0, 1.0, 0.92, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];  
 
 @Injectable({
   providedIn: 'root'
@@ -73,58 +77,33 @@ export class MathService {
     mouseDownPoint: Point,
     upLeftCorner: Point,
     dimension: Dimension,
-    sides: number): Point [] {
+    sides: number,
+    ): Point [] {
     const minSide = Math.min(dimension.width, dimension.height);
     const initialPoint = new Point(0, 0);
-    let angle = 0;
-    if ( sides % 2 === 0) {
-      angle = (Math.PI) / sides;
-    }
+    let angle = ( sides % 2 === 0)? (Math.PI) / sides : 0 ;
     let rayon = 0;
     let decalageX = 1.0;
     let decalageY = 1.0;
+    const ratio =  dimension.width / dimension.height;
     if (dimension.width === minSide) {
       rayon = minSide * MULTIPLICATEUR_X [sides - 1] ;
       decalageY = DECALAGE_Y [sides - 1];
-      const ratio =  dimension.width / dimension.height
-      if (ratio >= 0.91 && (sides === 6 )) {
+      if (ratio >= 0.91 && (sides === 6 || sides === 10)) {
         rayon = minSide ;
-        decalageY *= 0.92;
-        decalageX = 0.9;
-        console.log('ici')
-      }
-      if (ratio >= 0.91 && (sides === 10 )) {
-        rayon = minSide ;
-        decalageY *= 1;
-        decalageX = 0.95;
-        console.log('ici')
+        decalageY *= FACTEUR_DECALAGE_Y[sides - 1];
+        decalageX = FACTEUR_DECALAGE_X[sides - 1];
       }
     } else {
-      const ratio = dimension.width / dimension.height;
       if ( ratio <= RATIO_TRANSITION [sides - 1]) {
-        console.log('voila');
-        rayon =
-          minSide * MULTIPLICATEUR_X [sides - 1] * FACTEUR_TRANSITION [sides - 1];
+        rayon = minSide * MULTIPLICATEUR_X [sides - 1] * FACTEUR_TRANSITION [sides - 1];
         decalageY = DECALAGE_Y[sides - 1] ;
-        //decalageX = DECALAGE_X [sides - 1];
-        if (sides === 3 || sides === 10) {
+        if (sides === 3) {
           decalageX = ratio * FACTEUR_TRANSITION [sides - 1];
           rayon = minSide * MULTIPLICATEUR_X [sides - 1] * (ratio)  ;
         }
-        if (sides === 6) {
-          rayon = minSide;
-          decalageY *= 0.91;
-          decalageX = 0.9;
-        }
-        if (sides === 6 || sides === 10 ) {
-          rayon = minSide;
-          decalageY *= 1;
-          decalageX = 0.95;
-        }
-        // if (sides === 10) {
-        //   decalageY = FACTEUR_TRANSITION [sides - 1];
-        // }
-
+        decalageY *= FACTEUR_DECALAGE_Y[sides - 1];
+        decalageX = FACTEUR_DECALAGE_X[sides - 1];
       } else {
         rayon = minSide * (MULTIPLICATEURY [sides - 1]);
         decalageX = ((DECALAGE_X [sides - 1])) ;
@@ -134,11 +113,9 @@ export class MathService {
     const points: Point [] = [];
     const translation = (sides % 2 === 0) ? 0 : sideLength / 2;
     if (upLeftCorner.x < mouseDownPoint.x) {
-      initialPoint.x =
-        mouseDownPoint.x - minSide * decalageX / 2 - translation;
+      initialPoint.x = mouseDownPoint.x - minSide * decalageX / 2 - translation;
     } else {
-      initialPoint.x =
-        mouseDownPoint.x + minSide * decalageX / 2 - translation;
+      initialPoint.x = mouseDownPoint.x + minSide * decalageX / 2 - translation;
     }
     if (upLeftCorner.y === mouseDownPoint.y) {
       initialPoint.y = upLeftCorner.y + minSide * decalageY;
@@ -165,7 +142,6 @@ export class MathService {
     angle += (Math.PI * 2) / sides;
     i += 1;
     }
-    // this.putCornersInRectangle(upLeftCorner, dimension, points);
     return points;
   }
 
@@ -174,15 +150,12 @@ export class MathService {
     const deltaX = oppositePoint.x - initialPoint.x;
     const deltaY = oppositePoint.y - initialPoint.y;
     if (deltaX > 0 && deltaY < 0) {
-      console.log(1);
       return new Point(initialPoint.x + border, initialPoint.y + deltaY + border);
     }
     if (deltaX < 0 && deltaY < 0) {
-      console.log(2);
       return new Point(initialPoint.x + deltaX + border, initialPoint.y + deltaY + border);
     }
     if (deltaX < 0 && deltaY > 0) {
-      console.log(3);
       return new Point(initialPoint.x + deltaX + border, initialPoint.y + border);
     }
     return new Point(initialPoint.x + border, initialPoint.y + border);
