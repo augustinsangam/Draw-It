@@ -19,8 +19,11 @@ const FACTEUR_TRANSITION: number[] =
 const FACTEUR_DECALAGE_X: number[] =
   [0, 0, 1.0, 1.0, 1.0, 0.9, 1.0, 1.0, 1.0, 0.95, 1.0, 1.0];
 const FACTEUR_DECALAGE_Y: number[] =
-  [0, 0, 1.0, 1.0, 1.0, 0.92, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];  
-
+  [0, 0, 1.0, 1.0, 1.0, 0.92, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
+const FACTEUR_BORDER_X: number[] =
+  [0, 0, 1.8, 1.38, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
+const FACTEUR_BORDER_Y: number[] =
+  [0, 0, 2.0, 1.38, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];  
 @Injectable({
   providedIn: 'root'
 })
@@ -78,34 +81,36 @@ export class MathService {
     upLeftCorner: Point,
     dimension: Dimension,
     sides: number,
-    ): Point [] {
+    strokeWidth: number): Point [] {
+    const borderX = strokeWidth * FACTEUR_BORDER_X [sides - 1];
+    const borderY = strokeWidth * FACTEUR_BORDER_Y [sides - 1];
     const minSide = Math.min(dimension.width, dimension.height);
     const initialPoint = new Point(0, 0);
-    let angle = ( sides % 2 === 0)? (Math.PI) / sides : 0 ;
+    let angle = ( sides % 2 === 0) ? (Math.PI) / sides : 0 ;
     let rayon = 0;
     let decalageX = 1.0;
     let decalageY = 1.0;
     const ratio =  dimension.width / dimension.height;
     if (dimension.width === minSide) {
-      rayon = minSide * MULTIPLICATEUR_X [sides - 1] ;
+      rayon = Math.max((minSide - borderX) * MULTIPLICATEUR_X [sides - 1]  , 0) ;
       decalageY = DECALAGE_Y [sides - 1];
       if (ratio >= 0.91 && (sides === 6 || sides === 10)) {
-        rayon = minSide ;
+        rayon = minSide - borderX ;
         decalageY *= FACTEUR_DECALAGE_Y[sides - 1];
         decalageX = FACTEUR_DECALAGE_X[sides - 1];
       }
     } else {
       if ( ratio <= RATIO_TRANSITION [sides - 1]) {
-        rayon = minSide * MULTIPLICATEUR_X [sides - 1] * FACTEUR_TRANSITION [sides - 1];
+        rayon = Math.max((minSide - borderX) * MULTIPLICATEUR_X [sides - 1] * FACTEUR_TRANSITION [sides - 1], 0);
         decalageY = DECALAGE_Y[sides - 1] ;
-        if (sides === 3) {
-          decalageX = ratio * FACTEUR_TRANSITION [sides - 1];
-          rayon = minSide * MULTIPLICATEUR_X [sides - 1] * (ratio)  ;
-        }
         decalageY *= FACTEUR_DECALAGE_Y[sides - 1];
         decalageX = FACTEUR_DECALAGE_X[sides - 1];
+        if (sides === 3) {
+          decalageX = ratio * FACTEUR_TRANSITION [sides - 1];
+          rayon = Math.max((minSide - borderX) * MULTIPLICATEUR_X [sides - 1] * (ratio), 0);
+        }
       } else {
-        rayon = minSide * (MULTIPLICATEURY [sides - 1]);
+        rayon = Math.max((minSide - borderX) * (MULTIPLICATEURY [sides - 1]), 0);
         decalageX = ((DECALAGE_X [sides - 1])) ;
       }
     }
@@ -118,7 +123,6 @@ export class MathService {
       initialPoint.x = mouseDownPoint.x + minSide * decalageX / 2 - translation;
     }
     if (upLeftCorner.y === mouseDownPoint.y) {
-      initialPoint.y = upLeftCorner.y + minSide * decalageY;
       let index = 1;
       let decalage = upLeftCorner.y ;
       let angleY = (Math.PI * 2) / sides;
@@ -127,9 +131,9 @@ export class MathService {
         angleY += (Math.PI * 2) / sides;
         index += 1;
       }
-      initialPoint.y = (sides % 2 === 0) ? upLeftCorner.y + minSide * decalageY : decalage;
+      initialPoint.y = (sides % 2 === 0) ? upLeftCorner.y + minSide * decalageY - borderY / 2: decalage + borderY / 2;
     } else {
-      initialPoint.y = mouseDownPoint.y;
+      initialPoint.y = mouseDownPoint.y - borderY / 2;
     }
     points.push(initialPoint);
     let i = 1;
