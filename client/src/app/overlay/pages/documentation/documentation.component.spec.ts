@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MaterialModule } from 'src/app/material.module';
 import { DocumentationComponent, Node } from './documentation.component';
 
-describe('DocumentationComponent', () => {
+fdescribe('DocumentationComponent', () => {
   let component: DocumentationComponent;
   let fixture: ComponentFixture<DocumentationComponent>;
   const defaultArray = new Array<Node>(
@@ -37,8 +37,7 @@ describe('DocumentationComponent', () => {
     fixture.detectChanges();
   });
 
-  /* tslint:disable:no-string-literal */
-
+  // tslint:disable:no-string-literal
   it('should create', () => {
     expect(component).toBeTruthy();
   });

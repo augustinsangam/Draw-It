@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { ColorService } from '../../color/color.service';
 import { MathService } from '../../mathematics/tool.math-service.service';
-import { Offset } from '../../selection/offset';
 import { BasicSelectionType } from '../../selection/selection-logic/element-selected-type';
 import { MouseTracking } from '../../selection/selection-logic/mouse-tracking';
 import * as Util from '../../selection/selection-logic/selection-logic-util';
@@ -14,7 +13,7 @@ import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { PostAction, UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { EraserService } from '../eraser.service';
 
-const CONSTANTS = {
+export const CONSTANTS = {
   MAX_RED: 150,
   MIN_GREEN: 100,
   MIN_BLUE: 100,
@@ -118,6 +117,7 @@ export class EraserLogicComponent
         this.mouse.mouseIsDown = false;
         if (this.elementsDeletedInDrag) {
           this.undoRedoService.saveState();
+          this.elementsDeletedInDrag = false;
         }
       }]
     ]);
@@ -133,11 +133,6 @@ export class EraserLogicComponent
       });
     this.svgStructure.root.style.cursor = 'none';
     this.renderer.appendChild(this.svgStructure.temporaryZone, this.eraser);
-  }
-
-  protected elementSelectedType(element: SVGElement): ElementSelectedType {
-    return (this.svgStructure.drawZone.contains(element)) ?
-      ElementSelectedType.NOTHING : ElementSelectedType.DRAW_ELEMENT;
   }
 
   private drawEraser(): void {
@@ -174,20 +169,18 @@ export class EraserLogicComponent
     }
     this.markedElements.clear();
     selectedElements.forEach((element: SVGElement) => {
-      if (!!element) {
-        const stroke = element.getAttribute('stroke');
-        let strokeModified = CONSTANTS.RED;
-        if (stroke !== null && stroke !== 'none') {
-          const rgb = this.colorService.rgbFormRgba(stroke);
-          // Si on a beaucoup de rouge mais pas trop les autres couleurs
-          if (rgb.r > CONSTANTS.MAX_RED && rgb.g < CONSTANTS.MIN_GREEN
-            && rgb.b < CONSTANTS.MIN_BLUE) {
-            rgb.r = rgb.r - CONSTANTS.FACTOR;
-            strokeModified = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
-          }
-          this.markedElements.set(element, stroke as string);
-          element.setAttribute('stroke', strokeModified);
+      const stroke = element.getAttribute('stroke');
+      let strokeModified = CONSTANTS.RED;
+      if (stroke !== null && stroke !== 'none') {
+        const rgb = this.colorService.rgbFormRgba(stroke);
+        // Si on a beaucoup de rouge mais pas trop les autres couleurs
+        if (rgb.r > CONSTANTS.MAX_RED && rgb.g < CONSTANTS.MIN_GREEN
+          && rgb.b < CONSTANTS.MIN_BLUE) {
+          rgb.r = rgb.r - CONSTANTS.FACTOR;
+          strokeModified = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
         }
+        this.markedElements.set(element, stroke as string);
+        element.setAttribute('stroke', strokeModified);
       }
     });
     return selectedElements;
@@ -196,9 +189,7 @@ export class EraserLogicComponent
   private deleteAll(elements: Set<SVGElement>): void {
     this.restoreMarkedElements();
     elements.forEach((element) => {
-      if (!!element) {
-        this.renderer.removeChild(this.svgStructure.drawZone, element);
-      }
+      this.renderer.removeChild(this.svgStructure.drawZone, element);
     });
   }
 
@@ -207,11 +198,6 @@ export class EraserLogicComponent
       entry[0].setAttribute('stroke', entry[1]);
     }
     this.markedElements.clear();
-  }
-
-  getSvgOffset(): Offset {
-    const svgBoundingRect = this.svgStructure.root.getBoundingClientRect();
-    return { top: svgBoundingRect.top, left: svgBoundingRect.left };
   }
 
   private getCorners(): [Point, Point] {
@@ -234,9 +220,4 @@ export class EraserLogicComponent
     this.undoRedoService.resetActions();
   }
 
-}
-
-enum ElementSelectedType {
-  DRAW_ELEMENT,
-  NOTHING
 }

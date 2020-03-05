@@ -140,15 +140,12 @@ export class MathService {
     const deltaX = oppositePoint.x - initialPoint.x;
     const deltaY = oppositePoint.y - initialPoint.y;
     if (deltaX > 0 && deltaY < 0) {
-      console.log(1);
       return new Point(initialPoint.x + border, initialPoint.y + deltaY + border);
     }
     if (deltaX < 0 && deltaY < 0) {
-      console.log(2);
       return new Point(initialPoint.x + deltaX + border, initialPoint.y + deltaY + border);
     }
     if (deltaX < 0 && deltaY > 0) {
-      console.log(3);
       return new Point(initialPoint.x + deltaX + border, initialPoint.y + border);
     }
     return new Point(initialPoint.x + border, initialPoint.y + border);
