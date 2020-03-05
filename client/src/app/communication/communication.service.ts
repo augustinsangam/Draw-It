@@ -14,6 +14,12 @@ enum StatusCode {
   ACCEPTED,
 }
 
+/* Failed to read the 'responseText' property from
+ * 'XMLHttpRequest': The value is only accessible if the object's
+ * 'responseType' is '' or 'text' (was 'arraybuffer').
+ * at XMLHttpRequest.xhr.onreadystatechange
+ * [as __zone_symbol__ON_PROPERTYreadystatechange]
+ */
 // developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/
 //   Sending_and_Receiving_Binary_Data#Sending_typed_arrays_as_binary_data
 // gomakethings.com/promise-based-xhr/
@@ -26,6 +32,8 @@ export class CommunicationService {
     this.fbb = new flatbuffers.Builder();
     this.host = 'http://[::1]:8080';
     this.xhr = new XMLHttpRequest();
+    this.xhr.timeout = 7000;
+    // by default, xhr is async
   }
   private readonly fbb: flatbuffers.Builder;
   private readonly host: string;
@@ -39,28 +47,84 @@ export class CommunicationService {
     this.fbb.clear();
   }
 
-  async getAll(): Promise<flatbuffers.ByteBuffer> {
+  async get(): Promise<flatbuffers.ByteBuffer> {
     // return Promise.reject('nope');
-    this.xhr.open('GET', this.host + '/draw', true);
+    this.xhr.open('GET', `${this.host}/draw`);
     this.xhr.responseType = 'arraybuffer';
     const promise = new Promise<flatbuffers.ByteBuffer>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
         if (this.xhr.readyState === 4) {
           if (this.xhr.status === StatusCode.OK) {
-            // response type is ArrayBuffer
             resolve(CommunicationService.deserialize(this.xhr.response));
-          // } else {
-            /* Failed to read the 'responseText' property from
-            'XMLHttpRequest': The value is only accessible if the object's
-            'responseType' is '' or 'text' (was 'arraybuffer').
-            at XMLHttpRequest.xhr.onreadystatechange
-            [as __zone_symbol__ON_PROPERTYreadystatechange]
-             */
-            // reject(this.xhr.response);
+          } else if (this.xhr.status) {
+            reject(String.fromCharCode.apply(null,
+              new Uint8Array(this.xhr.response)));
           }
         }
       };
-      this.xhr.ontimeout = () => reject('Temps de repos dépassé');
+      this.xhr.ontimeout = () => reject('Délai d’attente dépassé');
+      this.xhr.onerror = () => reject(
+        'Communication impossible avec le serveur');
+    });
+    this.xhr.send();
+    return promise;
+  }
+
+  async post(): Promise<number> {
+    this.xhr.open('POST', `${this.host}/draw`);
+    this.xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+    const promise = new Promise<number>((resolve, reject) => {
+      this.xhr.onreadystatechange = () => {
+        if (this.xhr.readyState === 4) {
+          if (this.xhr.status === StatusCode.CREATED) {
+            resolve(Number(this.xhr.response));
+          } else if (this.xhr.status) {
+            reject(this.xhr.responseText);
+          }
+        }
+      };
+      this.xhr.ontimeout = () => reject('Délai d’attente dépassé');
+      this.xhr.onerror = () => reject(
+        'Communication impossible avec le serveur');
+    });
+    this.xhr.send(this.fbb.asUint8Array());
+    return promise;
+  }
+
+  async put(id: number): Promise<null> {
+    this.xhr.open('PUT', `${this.host}/draw/${id}`);
+    this.xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+    const promise = new Promise<null>((resolve, reject) => {
+      this.xhr.onreadystatechange = () => {
+        if (this.xhr.readyState === 4) {
+          if (this.xhr.status === StatusCode.ACCEPTED) {
+            resolve();
+          } else if (this.xhr.status) {
+            reject(this.xhr.responseText);
+          }
+        }
+      };
+      this.xhr.ontimeout = () => reject('Délai d’attente dépassé');
+      this.xhr.onerror = () => reject(
+        'Communication impossible avec le serveur');
+    });
+    this.xhr.send(this.fbb.asUint8Array());
+    return promise;
+  }
+
+  async delete(id: number): Promise<null> {
+    this.xhr.open('DELETE', `${this.host}/draw/${id}`);
+    const promise = new Promise<null>((resolve, reject) => {
+      this.xhr.onreadystatechange = () => {
+        if (this.xhr.readyState === 4) {
+          if (this.xhr.status === StatusCode.ACCEPTED) {
+            resolve();
+          } else if (this.xhr.status) {
+            reject(this.xhr.responseText);
+          }
+        }
+      };
+      this.xhr.ontimeout = () => reject('Délai d’attente dépassé');
       this.xhr.onerror = () => reject(
         'Communication impossible avec le serveur');
     });
@@ -112,11 +176,6 @@ export class CommunicationService {
     return ElementT.create(this.fbb, name, attrs, children);
   }
 
-  private encodeTags(tags: string[]): number {
-    const tagsOffsets = tags.map((tag) => this.fbb.createString(tag));
-    return DrawT.createTagsVector(this.fbb, tagsOffsets);
-  }
-
   encode(header: SvgHeader, shape: SvgShape, elOffset: flatbuffers.Offset): void {
     const tagsOffset = this.encodeTags(header.tags);
     const nameOffset = this.fbb.createString(header.name);
@@ -133,64 +192,8 @@ export class CommunicationService {
     this.fbb.finish(draw);
   }
 
-  async post(): Promise<number> {
-    this.xhr.open('POST', this.host + '/draw', true);
-    this.xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-    const promise = new Promise<number>((resolve, reject) => {
-      this.xhr.onreadystatechange = () => {
-        if (this.xhr.readyState === 4) {
-          if (this.xhr.status === StatusCode.CREATED) {
-            resolve(Number(this.xhr.response));
-          } else if (this.xhr.status) {
-            reject(this.xhr.responseText);
-          }
-        }
-      };
-      this.xhr.ontimeout = () => reject('Temps de repos dépassé');
-      this.xhr.onerror = () => reject(
-        'Communication impossible avec le serveur');
-    });
-    this.xhr.send(this.fbb.asUint8Array());
-    return promise;
-  }
-
-  async put(id: number): Promise<null> {
-    this.xhr.open('PUT', `${this.host}/draw/${id}`, true);
-    this.xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-    const promise = new Promise<null>((resolve, reject) => {
-      this.xhr.onreadystatechange = () => {
-        if (this.xhr.readyState === 4) {
-          if (this.xhr.status === StatusCode.ACCEPTED) {
-            resolve();
-          } else {
-            reject(this.xhr.responseText);
-          }
-        }
-      };
-      this.xhr.onerror = (err) => reject(err);
-    });
-    this.xhr.send(this.fbb.asUint8Array());
-    return promise;
-  }
-
-  async delete(id: number): Promise<null> {
-    this.xhr.open('DELETE', `${this.host}/draw/${id}`, true);
-    const promise = new Promise<null>((resolve, reject) => {
-      this.xhr.onreadystatechange = () => {
-        if (this.xhr.readyState === 4) {
-          if (this.xhr.status === StatusCode.ACCEPTED) {
-            resolve();
-          // } else {
-          //  reject(this.xhr.responseText);
-          // }
-          }
-        }
-      };
-      this.xhr.ontimeout = () => reject('Temps de repos dépassé');
-      this.xhr.onerror = () => reject(
-      'Communication impossible avec le serveur');
-    });
-    this.xhr.send();
-    return promise;
+  private encodeTags(tags: string[]): number {
+    const tagsOffsets = tags.map((tag) => this.fbb.createString(tag));
+    return DrawT.createTagsVector(this.fbb, tagsOffsets);
   }
 }

@@ -2,6 +2,7 @@ import express from 'express';
 import { IncomingMessage, ServerResponse } from 'http';
 import inversify from 'inversify';
 import log from 'loglevel';
+import mongodb from 'mongodb';
 
 import { COLORS, StatusCode, TYPES } from './constants';
 import { Router } from './router';
@@ -46,13 +47,15 @@ class Application {
 	 */
 
 	private static err(
-		err: string,
+		err: Error | mongodb.MongoError,
 		_req: express.Request,
 		res: express.Response,
 		_next: express.NextFunction,
 	): void {
 		log.error(`[${COLORS.fg.red}ERR${COLORS.reset}] ${err}`);
-		res.status(StatusCode.INTERNAL_SERVER_ERROR).send(err);
+		res
+			.status(StatusCode.INTERNAL_SERVER_ERROR)
+			.send(`${err.name}: ${err.message}`);
 	}
 
 	// from @types/koa

@@ -16,6 +16,7 @@ class Database {
 
 	// mongodb.github.io/node-mongodb-native/3.5/api/MongoClient.html
 	// nodejs.org/api/url.html
+	// mongodb.github.io/mongo-java-driver/3.8/javadoc/com/mongodb/ConnectionString.html
 	constructor() {
 		const uri = new URL('mongodb+srv://cluster0-5pews.mongodb.net');
 		// const uri = new URL('mongodb://127.0.0.1');

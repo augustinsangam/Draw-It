@@ -82,9 +82,10 @@ export class GalleryComponent implements AfterViewInit {
       load: (undefined as unknown) as MatDialogRef<ConfirmationDialogComponent>,
     };
 
-    this.communicationService.getAll().then((fbbb) => {
+    this.communicationService.get().then((fbbb) => {
       this.createGalleryDrawsTable(fbbb);
     }).catch((err: string) => {
+      // TODO: Do smthg
       console.log(err);
     });
   }
