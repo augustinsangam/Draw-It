@@ -22,6 +22,7 @@ export class FilterService {
   generateExportFilters(renderer: Renderer2): SVGDefsElement {
     const svgDefsEl: SVGDefsElement = renderer.createElement('defs', SVG_NS);
     renderer.appendChild(svgDefsEl, this.generateFilterBlackWhite(renderer));
+    renderer.appendChild(svgDefsEl, this.generateFilterSaturate(renderer));
     return svgDefsEl;
   }
 
@@ -174,12 +175,9 @@ export class FilterService {
 
     return filterSvgEl;
   }
-  // <filter id="blackWhite">
-  //             <feColorMatrix type="matrix" values="0 1 0 0 0
-  //                       0 1 0 0 0
-  //                       0 1 0 0 0
-  //                       0 1 0 1 0 " />
-  //           </filter>
+  // <filter id="saturate">
+  //   <feColorMatrix in="SourceGraphic" type="saturate" values=".5" result="A" />
+  // </filter>
 
   private generateFilterBlackWhite(renderer: Renderer2): SVGFilterElement {
     const filterSvgEl: SVGFilterElement = renderer.createElement('filter', SVG_NS);
@@ -188,6 +186,18 @@ export class FilterService {
     const feColorMatrixSvgEl: SVGFEColorMatrixElement = renderer.createElement('feColorMatrix', SVG_NS);
     feColorMatrixSvgEl.setAttribute('type', 'matrix');
     feColorMatrixSvgEl.setAttribute('values', '0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 1 0 ');
+    renderer.appendChild(filterSvgEl, feColorMatrixSvgEl);
+    return filterSvgEl;
+  }
+
+  private generateFilterSaturate(renderer: Renderer2): SVGFilterElement {
+    const filterSvgEl: SVGFilterElement = renderer.createElement('filter', SVG_NS);
+    filterSvgEl.setAttribute('id', 'saturate');
+
+    const feColorMatrixSvgEl: SVGFEColorMatrixElement = renderer.createElement('feColorMatrix', SVG_NS);
+    feColorMatrixSvgEl.setAttribute('in', 'SourceGraphic');
+    feColorMatrixSvgEl.setAttribute('type', 'saturate');
+    feColorMatrixSvgEl.setAttribute('values', '0.5');
     renderer.appendChild(filterSvgEl, feColorMatrixSvgEl);
     return filterSvgEl;
   }
