@@ -30,7 +30,7 @@ export class ApplicatorLogicComponent
 
     this.handlers = {
       left: ($event: MouseEvent) => {
-        if (this.isSvgElement($event.target as SVGElement)) {
+        if (this.isADrawElement($event.target as SVGElement)) {
           if ($event.target instanceof SVGPathElement) {
               ($event.target as SVGElement)
             .setAttribute('stroke', this.colorService.primaryColor);
@@ -48,7 +48,7 @@ export class ApplicatorLogicComponent
       },
       right: ($event: MouseEvent) => {
         $event.preventDefault();
-        if (this.isSvgElement($event.target as SVGElement)
+        if (this.isADrawElement($event.target as SVGElement)
           && !($event.target instanceof SVGPathElement)) {
           ($event.target as SVGElement)
           .setAttribute('stroke', this.colorService.secondaryColor);
@@ -72,8 +72,8 @@ export class ApplicatorLogicComponent
     this.svgStructure.root.style.cursor = 'crosshair';
   }
 
-  private isSvgElement(element: SVGElement): boolean {
-    return element !== this.svgStructure.root;
+  private isADrawElement(element: SVGElement): boolean {
+    return this.svgStructure.drawZone.contains(element);
   }
 
   ngOnDestroy(): void {

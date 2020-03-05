@@ -111,7 +111,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   protected drawSelection(p1: Point, p2: Point): void {
     this.drawARectangle(this.rectangles.selection, p1, p2,
-      Util.COLORS.BLUE, false);
+      Util.COLORS.BLUE);
   }
 
   private drawVisualisation(p1: Point, p2: Point): void {
@@ -241,9 +241,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
       handlers: {
         keydown: ($event: KeyboardEvent) => {
           $event.preventDefault();
-          if (!this.keyManager.keyPressed.has($event.key)) {
-            this.keyManager.keyPressed.add($event.key);
-          }
+          this.keyManager.keyPressed.add($event.key);
           const actualTime = new Date().getTime();
           if (actualTime - this.keyManager.lastTimeCheck >= Util.TIME_INTERVAL) {
             this.keyManager.lastTimeCheck = actualTime;

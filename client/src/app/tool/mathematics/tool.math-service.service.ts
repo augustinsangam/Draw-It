@@ -194,8 +194,11 @@ export class MathService {
       rx: Math.max(rectDims.width / 2 - border / 2, 0),
       ry: Math.max(rectDims.height / 2 - border / 2, 0)
     };
-    if (radius.rx  + border / 2 < border
-      || radius.ry + border / 2 < border) {
+    if (radius.rx + border / 2 < 0
+      || radius.ry + border / 2 < 0
+      || (radius.rx < border / 2
+      && radius.ry < border / 2)
+    ) {
       radius = {rx: 0, ry: 0};
     }
     return radius;
