@@ -4,6 +4,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatDialogRef, MatRadioChange } from '@angular/material';
 import { SvgService, SvgShape } from 'src/app/svg/svg.service';
 
+const SVG_NS = 'http://www.w3.org/2000/svg' ;
+
 @Component({
   selector: 'app-export',
   templateUrl: './export.component.html',
@@ -42,7 +44,7 @@ export class ExportComponent implements AfterViewInit {
   protected getFilters(): FilterChoice[] {
     return [
       FilterChoice.None,
-      FilterChoice.Blur,
+      FilterChoice.Saturate,
       FilterChoice.BlackWhite,
       FilterChoice.Inverse,
       FilterChoice.Artifice,
@@ -73,8 +75,7 @@ export class ExportComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.svgShape = this.svgService.shape;
-    this.innerSVG = this.renderer.createElement(
-      'svg', 'http://www.w3.org/2000/svg');
+    this.innerSVG = this.renderer.createElement('svg', SVG_NS);
 
     Array.from(this.svgService.structure.defsZone.children)
       .forEach((element: SVGElement) => {
@@ -209,7 +210,7 @@ export class ExportComponent implements AfterViewInit {
       case FilterChoice.None:
         filterName = '';
         break;
-      case FilterChoice.Blur:
+      case FilterChoice.Saturate:
         filterName = 'url(#saturate)';  // A revoir concordance
         break;
       case FilterChoice.BlackWhite:
@@ -233,6 +234,7 @@ export class ExportComponent implements AfterViewInit {
   resetInnerSVG(): void {
 
     const filterZone: SVGGElement = this.renderer.createElement('g', 'http://www.w3.org/2000/svg');
+    this.innerSVG.setAttribute('filter', this.chooseFilter(this.form.controls.filter.value.toString()));
     this.configureSize(filterZone, this.svgShape);
     this.renderer.removeChild(this.svgView, this.pictureView);
     Array.from(this.svgView.nativeElement.children).forEach((element: SVGElement) => {
@@ -240,7 +242,6 @@ export class ExportComponent implements AfterViewInit {
           this.renderer.appendChild(filterZone, element.cloneNode(true));
         }
     });
-    this.innerSVG.setAttribute('filter', this.chooseFilter(this.form.controls.filter.value.toString()));
     this.configureSize(this.innerSVG, this.svgShape);
     this.renderer.appendChild(this.innerSVG, filterZone);
   }
@@ -264,7 +265,7 @@ export class ExportComponent implements AfterViewInit {
 
 enum FilterChoice {
   None = 'Aucun',
-  Blur = 'Flou',
+  Saturate = 'Saturation',
   BlackWhite = 'Noir et blanc',
   Inverse = 'Inversion',
   Artifice = 'Artifice',
