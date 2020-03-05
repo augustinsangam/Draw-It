@@ -53,7 +53,11 @@ export class AerosolLogicComponent
     const onMouseDown = this.renderer.listen(
       this.svgStructure.root,
       'mousedown',
-      (mouseEv: MouseEvent) => this.onMouseDown(mouseEv)
+      (mouseEv: MouseEvent) => {
+        if (mouseEv.button === 0) {
+          this.onMouseDown(mouseEv);
+        }
+      }
     );
 
     const onMouseMove = this.renderer.listen(
