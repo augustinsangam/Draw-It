@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { MaterialModule } from 'src/app/material.module';
 import { TagsFilterComponent } from './tags-filter.component';
+import { MatChipInputEvent } from '@angular/material';
 
 fdescribe('TagsFilterComponent', () => {
   let component: TagsFilterComponent;
@@ -37,14 +38,13 @@ fdescribe('TagsFilterComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  // it('#add should add the value of the event if it exists', () => {
-  //   const event: MatChipInputEvent = {
-  //     input: new HTMLInputElement(),
-  //     value: 'test',
-  //   };
-
-  //   component.add(event);
-
-  //   // expect(component.tags.addedTags).toEqual(['test']);
-  // });
+  it('#add should add the value of the event if it exists', () => {
+    const input = fixture.nativeElement.querySelector('input');
+    const event: MatChipInputEvent = {
+      input: (input as HTMLInputElement),
+      value: 'test',
+    };
+    component.add(event);
+    expect(component.tags.addedTags).toEqual(['test']);
+  });
 });
