@@ -7,7 +7,7 @@ import { PencilPanelComponent } from './pencil-panel.component';
 
 // TODO : Ask the chargé de lab
 // tslint:disable: no-string-literal
-fdescribe('PencilPanelComponent', () => {
+describe('PencilPanelComponent', () => {
   let component: PencilPanelComponent;
   let fixture: ComponentFixture<PencilPanelComponent>;
 

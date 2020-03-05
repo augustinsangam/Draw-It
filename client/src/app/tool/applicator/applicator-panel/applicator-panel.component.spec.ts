@@ -11,7 +11,7 @@ import { ColorPickerContentComponent } from '../../color/color-panel/color-picke
 import { ColorPickerItemComponent } from '../../color/color-panel/color-picker-item/color-picker-item.component';
 import { ApplicatorPanelComponent } from './applicator-panel.component';
 
-fdescribe('ApplicatorPanelComponent', () => {
+describe('ApplicatorPanelComponent', () => {
   let component: ApplicatorPanelComponent;
   let fixture: ComponentFixture<ApplicatorPanelComponent>;
 

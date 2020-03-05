@@ -47,7 +47,7 @@ import { ElementRef } from '@angular/core';
 
 // TODO : Ask the chargé de lab
 // tslint:disable: no-string-literal
-fdescribe('NewDrawComponent', () => {
+describe('NewDrawComponent', () => {
   let component: NewDrawComponent;
   let fixture: ComponentFixture<NewDrawComponent>;
   const mockDialogRef = {

@@ -7,7 +7,7 @@ import { Handler, Shortcut } from './shortcut-handler.service';
 
 // TODO : Ask the chargé de lab
 // tslint:disable: no-string-literal no-any no-empty
-fdescribe('ShortcutHandlerManagerService', () => {
+describe('ShortcutHandlerManagerService', () => {
 
   let service: ShortcutHandlerManagerService;
   const waitTime = 5;

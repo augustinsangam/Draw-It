@@ -235,33 +235,28 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   private initialiseKeyManager(): void {
+    const allArrows = new Set<string>([Arrow.Up, Arrow.Down, Arrow.Left, Arrow.Right]);
     this.keyManager = {
       keyPressed: new Set(),
       lastTimeCheck: new Date().getTime(),
       handlers: {
         keydown: ($event: KeyboardEvent) => {
-          $event.preventDefault();
-          this.keyManager.keyPressed.add($event.key);
-          const actualTime = new Date().getTime();
-          if (actualTime - this.keyManager.lastTimeCheck >= Util.TIME_INTERVAL) {
-            this.keyManager.lastTimeCheck = actualTime;
-            this.handleKey('ArrowUp', 0, -Util.OFFSET_TRANSLATE);
-            this.handleKey('ArrowDown', 0, Util.OFFSET_TRANSLATE);
-            this.handleKey('ArrowLeft', -Util.OFFSET_TRANSLATE, 0);
-            this.handleKey('ArrowRight', Util.OFFSET_TRANSLATE, 0);
+          if (allArrows.has($event.key)) {
+            $event.preventDefault();
+            this.keyManager.keyPressed.add($event.key);
+            const actualTime = new Date().getTime();
+            if (actualTime - this.keyManager.lastTimeCheck >= Util.TIME_INTERVAL) {
+              this.keyManager.lastTimeCheck = actualTime;
+              this.handleKey(Arrow.Up, 0, -Util.OFFSET_TRANSLATE);
+              this.handleKey(Arrow.Down, 0, Util.OFFSET_TRANSLATE);
+              this.handleKey(Arrow.Left, -Util.OFFSET_TRANSLATE, 0);
+              this.handleKey(Arrow.Right, Util.OFFSET_TRANSLATE, 0);
+            }
           }
         },
         keyup: ($event: KeyboardEvent) => {
-          const allArrows = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
-          let count = 0;
-          allArrows.forEach((arrow) => {
-            if (this.keyManager.keyPressed.has(arrow)) {
-              count++;
-            }
-          });
           this.keyManager.keyPressed.delete($event.key);
-          // TODO : Verifier uniquement les touches qui s'appliquent
-          if (count === 1 && allArrows.indexOf($event.key) !== -1) {
+          if (this.keyManager.keyPressed.size === 0 && allArrows.has($event.key)) {
             this.undoRedoService.saveState();
           }
         }
@@ -286,4 +281,11 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     );
   }
 
+}
+
+enum Arrow {
+  Up = 'ArrowUp',
+  Down = 'ArrowDown',
+  Left = 'ArrowLeft',
+  Right = 'ArrowRight'
 }

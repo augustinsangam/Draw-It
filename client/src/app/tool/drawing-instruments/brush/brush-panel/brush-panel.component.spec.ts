@@ -33,7 +33,7 @@ import { BrushPanelComponent } from './brush-panel.component';
 
 // On a besoin des string-literal pour accéder aux attributs privés
 // tslint:disable: no-string-literal
-fdescribe('BrushPanelComponent', () => {
+describe('BrushPanelComponent', () => {
   let component: BrushPanelComponent;
   let fixture: ComponentFixture<BrushPanelComponent>;
 

@@ -15,7 +15,7 @@ import {
 } from 'src/app/tool/color/color-panel/color-picker-item/color-picker-item.component';
 import { PaletteDialogComponent } from './palette-dialog.component';
 
-fdescribe('ColorPanelComponent', () => {
+describe('ColorPanelComponent', () => {
   let component: PaletteDialogComponent;
   let fixture: ComponentFixture<PaletteDialogComponent>;
   const mockDialogRef = {

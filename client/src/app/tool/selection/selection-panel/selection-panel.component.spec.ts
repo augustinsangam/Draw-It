@@ -7,7 +7,7 @@ import { ColorPickerContentComponent } from '../../color/color-panel/color-picke
 import { ColorPickerItemComponent } from '../../color/color-panel/color-picker-item/color-picker-item.component';
 import { SelectionPanelComponent } from './selection-panel.component';
 
-fdescribe('SelectionPanelComponent', () => {
+describe('SelectionPanelComponent', () => {
   let component: SelectionPanelComponent;
   let fixture: ComponentFixture<SelectionPanelComponent>;
 
