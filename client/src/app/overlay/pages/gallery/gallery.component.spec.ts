@@ -49,6 +49,16 @@ fdescribe('GalleryComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+  
+  it('#ngAfterViewInit should call ajustImagesWidth when screenService.size changes', () => {
+    const spy = spyOn<any>(component, 'ajustImagesWidth');
+
+    component.ngAfterViewInit();
+
+    component['screenService'].size.next({width: 400, height: 400});
+
+    expect(spy).toHaveBeenCalled();
+  });
 
   it('#ajustImageWidth should set the padding of cardContent to 29 when width of saved draws is less than the width', () => {
     component['renderer'].setStyle(component['cardContent'].nativeElement, 'width', '400px');
