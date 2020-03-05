@@ -105,21 +105,11 @@ export class ExportComponent implements AfterViewInit {
     return new Blob([this.serializeSVG()], {type: 'image/svg+xml;charset=utf-8'});
   }
 
-  // encodeImage(): SVGImageElement {
-  //   const picture: SVGImageElement = this.renderer.createElement('image', SVG_NS );
-  //   picture.setAttribute('width', this.svgShape.width.toString());
-  //   picture.setAttribute('height', this.svgShape.height.toString());
-  //   picture.setAttribute('href', this.convertSVGToBase64());
-  //   return picture;
-  // }
-
-  downloadFile(canvaRecu: HTMLCanvasElement): void {
-    const canvas: HTMLCanvasElement = canvaRecu;
+  downloadImage(pictureUrl: string): void {
     const downloadLink: HTMLAnchorElement = this.renderer.createElement('a');
     const format = this.form.controls.format.value.toLocaleLowerCase();
-    const url = canvas.toDataURL('image/' + format);
     this.innerSVG.appendChild(downloadLink);
-    downloadLink.href = (format === 'svg') ? this.convertSVGToBase64() : url;
+    downloadLink.href = pictureUrl;
     const name: string = this.form.controls.name.value.trim().toLocaleLowerCase();
     downloadLink.download = name + '.' + format;
     downloadLink.click();
@@ -135,14 +125,7 @@ export class ExportComponent implements AfterViewInit {
 
   exportSVG(): void {
     const uri = 'data:image/svg+xml,' + encodeURIComponent(this.serializeSVG());
-    const downloadLink: HTMLAnchorElement = this.renderer.createElement('a');
-    this.innerSVG.appendChild(downloadLink);
-    downloadLink.href = uri;
-    const name: string = this.form.controls.name.value.trim().toLocaleLowerCase();
-    const format: string = this.form.controls.format.value.toLocaleLowerCase();
-    downloadLink.download = name + '.' + format;
-    downloadLink.click();
-    this.innerSVG.removeChild(downloadLink);
+    this.downloadImage(uri);
   }
 
   exportDrawing(): HTMLCanvasElement {
@@ -161,7 +144,8 @@ export class ExportComponent implements AfterViewInit {
       img.onload = () => {
         if (ctx) {
           ctx.drawImage(img, 0, 0);
-          this.downloadFile(canvas);
+          const pictureUrl = canvas.toDataURL('image/' + format);
+          this.downloadImage(pictureUrl);
           URL.revokeObjectURL(url);
         }
       };
