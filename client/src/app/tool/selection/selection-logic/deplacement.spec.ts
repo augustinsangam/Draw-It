@@ -2,7 +2,7 @@ import { Deplacement } from './deplacement';
 
 // TODO : Ask the chargé de lab
 // tslint:disable: no-magic-numbers
-fdescribe('DeplacementUtil', () => {
+describe('DeplacementUtil', () => {
 
   it('#getTransformTranslate works well', () => {
     const element = document.createElementNS(

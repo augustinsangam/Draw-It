@@ -5,7 +5,7 @@ import { MathService } from './tool.math-service.service';
 // TODO : Ask the chargé de lab
 // tslint:disable: no-magic-numbers
 
-fdescribe('MathService', () => {
+describe('MathService', () => {
   let service: MathService;
 
   beforeEach(() => {

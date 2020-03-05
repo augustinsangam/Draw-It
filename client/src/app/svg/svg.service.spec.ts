@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { SvgService } from './svg.service';
 
-fdescribe('SvgService', () => {
+describe('SvgService', () => {
   let service: SvgService;
 
   beforeEach(() => TestBed.configureTestingModule({}));

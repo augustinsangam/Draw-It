@@ -5,7 +5,7 @@ import { AerosolService } from './aerosol.service';
 
 // tslint:disable:no-string-literal
 // tslint:disable:no-magic-numbers
-fdescribe('AerosolService', () => {
+describe('AerosolService', () => {
   let service: AerosolService;
 
   beforeEach(() => {

@@ -21,7 +21,7 @@ import { ColorPanelComponent } from '../../color/color-panel/color-panel.compone
 import { ColorPickerContentComponent } from '../../color/color-panel/color-picker-content/color-picker-content.component';
 import { ColorPickerItemComponent } from '../../color/color-panel/color-picker-item/color-picker-item.component';
 
-fdescribe('EraserPanelComponent', () => {
+describe('EraserPanelComponent', () => {
   let component: EraserPanelComponent;
   let fixture: ComponentFixture<EraserPanelComponent>;
 

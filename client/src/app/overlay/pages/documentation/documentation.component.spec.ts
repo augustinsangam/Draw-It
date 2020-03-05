@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MaterialModule } from 'src/app/material.module';
 import { DocumentationComponent, Node } from './documentation.component';
 
-fdescribe('DocumentationComponent', () => {
+describe('DocumentationComponent', () => {
   let component: DocumentationComponent;
   let fixture: ComponentFixture<DocumentationComponent>;
   const defaultArray = new Array<Node>(

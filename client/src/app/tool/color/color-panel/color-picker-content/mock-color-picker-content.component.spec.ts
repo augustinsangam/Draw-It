@@ -5,7 +5,7 @@ import {
   MockColorPickerContentComponent
 } from './mock-color-picker-content.component';
 
-fdescribe('MockColorPickerContentComponent', () => {
+describe('MockColorPickerContentComponent', () => {
   let component: MockColorPickerContentComponent;
   let fixture: ComponentFixture<MockColorPickerContentComponent>;
 
