@@ -47,4 +47,6 @@ fdescribe('GalleryComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  // it('#ajustImageWidth');
 });

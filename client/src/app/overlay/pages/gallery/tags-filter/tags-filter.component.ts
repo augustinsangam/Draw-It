@@ -55,9 +55,6 @@ export class TagsFilterComponent implements OnInit {
       startWith(null),
       map((tag) => tag ? this._filter(tag) : this._filter2()));
     this.filteredTagsChange = new Subject<[string[], boolean]>();
-
-    this.allTags = new Observable<string[]>();
-    this.selectedTag = new Observable<string>();
   }
 
   ngOnInit(): void {
