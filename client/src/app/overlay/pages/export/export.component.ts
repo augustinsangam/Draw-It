@@ -3,6 +3,7 @@ import { AfterViewInit, Component, ElementRef, Optional, Renderer2, ViewChild } 
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MatRadioChange } from '@angular/material';
 import { SvgService, SvgShape } from 'src/app/svg/svg.service';
+import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.service';
 
 const SVG_NS = 'http://www.w3.org/2000/svg' ;
 
@@ -25,7 +26,8 @@ export class ExportComponent implements AfterViewInit {
   constructor(private formBuilder: FormBuilder,
               @Optional() public dialogRef: MatDialogRef<ExportComponent>,
               private renderer: Renderer2,
-              private svgService: SvgService,
+              private filterService: FilterService,
+              private svgService: SvgService
   ) {
     this.form = this.formBuilder.group({
       name: ['', [Validators.required, (control: FormControl) => {
@@ -73,6 +75,8 @@ export class ExportComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    const filterZone: SVGDefsElement = this.filterService.generateExportFilters(this.renderer);
+    this.renderer.appendChild(this.svgView.nativeElement, filterZone);
     this.initializeElements();
     this.createView(FilterChoice.None);
   }

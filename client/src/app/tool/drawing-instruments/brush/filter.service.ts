@@ -19,6 +19,12 @@ export class FilterService {
     return svgDefsEl;
   }
 
+  generateExportFilters(renderer: Renderer2): SVGDefsElement {
+    const svgDefsEl: SVGDefsElement = renderer.createElement('defs', SVG_NS);
+    renderer.appendChild(svgDefsEl, this.generateFilterBlackWhite(renderer));
+    return svgDefsEl;
+  }
+
   private generateFilterOne(renderer: Renderer2): SVGFilterElement {
     const svgFilterEl: SVGFilterElement = renderer.createElement('filter', SVG_NS);
     svgFilterEl.setAttribute('id', 'filter1');
@@ -151,8 +157,7 @@ export class FilterService {
   }
 
   private generateFilterFive(renderer: Renderer2): SVGFilterElement {
-    const filterSvgEl: SVGFilterElement =
-      renderer.createElement('filter', SVG_NS);
+    const filterSvgEl: SVGFilterElement = renderer.createElement('filter', SVG_NS);
     filterSvgEl.setAttribute('id', 'filter5');
     filterSvgEl.setAttribute('filterUnits', 'userSpaceOnUse');
 
@@ -167,6 +172,23 @@ export class FilterService {
     feDisplacementMapSvgEl.setAttribute('scale', '20');
     renderer.appendChild(filterSvgEl, feDisplacementMapSvgEl);
 
+    return filterSvgEl;
+  }
+  // <filter id="blackWhite">
+  //             <feColorMatrix type="matrix" values="0 1 0 0 0
+  //                       0 1 0 0 0
+  //                       0 1 0 0 0
+  //                       0 1 0 1 0 " />
+  //           </filter>
+
+  private generateFilterBlackWhite(renderer: Renderer2): SVGFilterElement {
+    const filterSvgEl: SVGFilterElement = renderer.createElement('filter', SVG_NS);
+    filterSvgEl.setAttribute('id', 'blackWhite');
+
+    const feColorMatrixSvgEl: SVGFEColorMatrixElement = renderer.createElement('feColorMatrix', SVG_NS);
+    feColorMatrixSvgEl.setAttribute('type', 'matrix');
+    feColorMatrixSvgEl.setAttribute('values', '0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 1 0 ');
+    renderer.appendChild(filterSvgEl, feColorMatrixSvgEl);
     return filterSvgEl;
   }
 }
