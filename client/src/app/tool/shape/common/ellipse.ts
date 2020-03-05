@@ -4,13 +4,12 @@ import { AbstractShape } from './abstract-shape';
 import { Point } from './point';
 
 export class Ellipse extends AbstractShape {
-
   constructor(
     initialPoint: Point,
     protected renderer: Renderer2,
     // TODO element sprivate ?
     public element: SVGElement,
-    private mathService: MathService
+    private mathService: MathService,
   ) {
     super(renderer, element);
   }
