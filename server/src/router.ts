@@ -80,15 +80,12 @@ class Router {
 				return;
 			}
 			try {
-				console.log('A');
 				const _id = await this.db.nextID();
-				console.log('A');
 				await this.db.insert({
 					_id,
 					data: new mongodb.Binary(req.body),
 				});
 				log.info(`${COLORS.fg.yellow}ID${COLORS.reset}: ${_id}`);
-				console.log('A ' + _id);
 				res.status(StatusCode.CREATED).send(_id.toString());
 			} catch (err) {
 				next(err);
