@@ -150,9 +150,14 @@ export class GalleryComponent implements AfterViewInit {
   }
 
   protected ajustImagesWidth(): void {
-    const contentWidth = this.cardContent.nativeElement.clientWidth - 20;
+    const contentWidth = this.cardContent.nativeElement.clientWidth;
+    if (this.galleryDrawTable.length * 342 < contentWidth) {
+      this.renderer.setStyle(this.cardContent.nativeElement, 'padding-left',
+      `${(contentWidth - (this.galleryDrawTable.length * 342)) / 2}px`);
+    } else {
     this.renderer.setStyle(this.cardContent.nativeElement, 'padding-left',
-      `${(contentWidth % 340) / 2}px`);
+      `${(contentWidth % 342) / 2}px`);
+    }
   }
 
   addTag(tag: string): void {
