@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, ElementRef, Input, OnInit, ViewChild, Output } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteSelectedEvent, MatChipInputEvent, MatSlideToggle } from '@angular/material';
 import { Observable, Subject } from 'rxjs';
@@ -55,6 +55,9 @@ export class TagsFilterComponent implements OnInit {
       startWith(null),
       map((tag) => tag ? this._filter(tag) : this._filter2()));
     this.filteredTagsChange = new Subject<[string[], boolean]>();
+
+    this.allTags = new Observable<string[]>();
+    this.selectedTag = new Observable<string>();
   }
 
   ngOnInit(): void {
