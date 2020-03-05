@@ -9,15 +9,13 @@ import {
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   ColorPickerContentComponent
-// tslint:disable-next-line: max-line-length
 } from 'src/app/tool/color/color-panel/color-picker-content/color-picker-content.component';
 import {
   ColorPickerItemComponent
-// tslint:disable-next-line: max-line-length
 } from 'src/app/tool/color/color-panel/color-picker-item/color-picker-item.component';
 import { PaletteDialogComponent } from './palette-dialog.component';
 
-describe('ColorPanelComponent', () => {
+fdescribe('ColorPanelComponent', () => {
   let component: PaletteDialogComponent;
   let fixture: ComponentFixture<PaletteDialogComponent>;
   const mockDialogRef = {

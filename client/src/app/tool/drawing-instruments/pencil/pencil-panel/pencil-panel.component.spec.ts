@@ -5,8 +5,9 @@ import {FormBuilder, FormsModule} from '@angular/forms';
 import {PencilService} from '../pencil.service';
 import { PencilPanelComponent } from './pencil-panel.component';
 
+// TODO : Ask the chargé de lab
 // tslint:disable: no-string-literal
-describe('PencilPanelComponent', () => {
+fdescribe('PencilPanelComponent', () => {
   let component: PencilPanelComponent;
   let fixture: ComponentFixture<PencilPanelComponent>;
 
