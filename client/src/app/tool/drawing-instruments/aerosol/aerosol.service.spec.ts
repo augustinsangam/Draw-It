@@ -8,10 +8,13 @@ import { AerosolService } from './aerosol.service';
 fdescribe('AerosolService', () => {
   let service: AerosolService;
 
-  beforeEach(() => TestBed.configureTestingModule({}));
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.get(AerosolService);
+    }
+  );
 
   it('should be created', () => {
-    service = TestBed.get(AerosolService);
     expect(service).toBeTruthy();
   });
 
