@@ -140,8 +140,8 @@ export class ExportComponent implements AfterViewInit {
     const downloadLink: HTMLAnchorElement = this.renderer.createElement('a');
     this.innerSVG.appendChild(downloadLink);
     downloadLink.href = uri;
-    const name = this.form.controls.name.value.trim();
-    const format = this.form.controls.format.value;
+    const name: string = this.form.controls.name.value.trim().toLocaleLowerCase();
+    const format: string = this.form.controls.format.value.toLocaleLowerCase();
     downloadLink.download = name + '.' + format;
     downloadLink.click();
     this.innerSVG.removeChild(downloadLink);
@@ -230,14 +230,38 @@ export class ExportComponent implements AfterViewInit {
   }
 
   resetInnerSVG(): void {
+    // Array.from(this.svgView.nativeElement.children).forEach(
+    //   (element: SVGElement) => {
+    //     this.renderer.appendChild(this.innerSVG, element.cloneNode(true)); });
+    // Array.from(this.innerSVG.children).forEach(
+    //   (element: SVGElement) => {
+    //     element.setAttribute('filter', this.chooseFilter(this.form.controls.filter.value.toString())); });
+    // this.innerSVG.setAttribute('width', String(this.svgShape.width));
+    // this.innerSVG.setAttribute('height', String(this.svgShape.height));
+    // const picture = this.innerSVG.getElementById('pictureView');
+    // if (picture) {
+    //   picture.setAttribute('width', String(this.svgShape.width));
+    //   picture.setAttribute('height', String(this.svgShape.height));
+    //   picture.setAttribute('filter', this.chooseFilter(this.form.controls.filter.value.toString()));
+    // }
+
+    const theGZone: SVGGElement = this.renderer.createElement('g', 'http://www.w3.org/2000/svg');
+    // theGZone.setAttribute('filter', this.form.controls.filter.value.toString());
+    theGZone.setAttribute('width', String(this.svgShape.width));
+    theGZone.setAttribute('height', String(this.svgShape.height));
+    theGZone.setAttribute('id', 'testBatch');
     Array.from(this.svgView.nativeElement.children).forEach(
       (element: SVGElement) => {
-        this.renderer.appendChild(this.innerSVG, element.cloneNode(true)); });
+        this.renderer.appendChild(theGZone, element.cloneNode(true)); });
     Array.from(this.innerSVG.children).forEach(
       (element: SVGElement) => {
-        element.setAttribute('filter', this.chooseFilter(this.form.controls.filter.value.toString())); });
+        this.renderer.appendChild(theGZone, element.cloneNode(true));
+        // element.setAttribute('filter', this.chooseFilter(this.form.controls.filter.value.toString()));
+      });
+    theGZone.setAttribute('filter', this.chooseFilter(this.form.controls.filter.value.toString()));
     this.innerSVG.setAttribute('width', String(this.svgShape.width));
     this.innerSVG.setAttribute('height', String(this.svgShape.height));
+    this.renderer.appendChild(this.innerSVG, theGZone);
     const picture = this.innerSVG.getElementById('pictureView');
     if (picture) {
       picture.setAttribute('width', String(this.svgShape.width));
