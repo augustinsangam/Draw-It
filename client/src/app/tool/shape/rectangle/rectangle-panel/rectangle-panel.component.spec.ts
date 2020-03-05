@@ -20,7 +20,7 @@ import { RectanglePanelComponent } from './rectangle-panel.component';
 
 // TODO : Ask the chargé de lab
 // tslint:disable: no-string-literal
-fdescribe('RectanglePanelComponent', () => {
+describe('RectanglePanelComponent', () => {
   let component: RectanglePanelComponent;
   let fixture: ComponentFixture<RectanglePanelComponent>;
 

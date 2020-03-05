@@ -32,7 +32,7 @@ import {
 } from './color-picker-item/color-picker-item.component';
 
 // tslint:disable: no-string-literal
-fdescribe('ColorPanelComponent', () => {
+describe('ColorPanelComponent', () => {
   let component: ColorPanelComponent;
   let fixture: ComponentFixture<ColorPanelComponent>;
   let paletteColorChange: EventEmitter<string>;

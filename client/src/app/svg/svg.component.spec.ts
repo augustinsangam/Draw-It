@@ -15,7 +15,7 @@ import { Tool } from '../tool/tool.enum';
 import { SvgComponent } from './svg.component';
 
 // tslint:disable: no-string-literal
-fdescribe('SvgComponent', () => {
+describe('SvgComponent', () => {
   let component: SvgComponent;
   let fixture: ComponentFixture<SvgComponent>;
 

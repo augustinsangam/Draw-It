@@ -3,7 +3,7 @@ import { EventManager } from '@angular/platform-browser';
 
 import * as ScreenServiceModule from './screen.service';
 
-fdescribe('ScreenService', () => {
+describe('ScreenService', () => {
 
   let service: ScreenServiceModule.ScreenService;
 

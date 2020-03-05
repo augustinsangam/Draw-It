@@ -21,7 +21,7 @@ import {
 import { EllipsePanelComponent } from './ellipse-panel.component';
 
 // tslint:disable: no-string-literal
-fdescribe('EllipsePanelComponent', () => {
+describe('EllipsePanelComponent', () => {
   let component: EllipsePanelComponent;
   let fixture: ComponentFixture<EllipsePanelComponent>;
 

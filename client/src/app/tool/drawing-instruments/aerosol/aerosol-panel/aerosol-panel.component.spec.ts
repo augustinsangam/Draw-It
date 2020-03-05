@@ -18,7 +18,7 @@ import { AerosolPanelComponent } from './aerosol-panel.component';
 
 // tslint:disable:no-string-literal
 // tslint:disable:no-magic-numbers
-fdescribe('AerosolPanelComponent', () => {
+describe('AerosolPanelComponent', () => {
   let component: AerosolPanelComponent;
   let fixture: ComponentFixture<AerosolPanelComponent>;
 
