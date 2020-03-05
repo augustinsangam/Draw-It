@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/material.module';
 import { TagsFilterComponent } from './tags-filter.component';
 
-fdescribe('TagsFilterComponent', () => {
+describe('TagsFilterComponent', () => {
   let component: TagsFilterComponent;
   let fixture: ComponentFixture<TagsFilterComponent>;
 

@@ -14,7 +14,7 @@ import { SidebarComponent } from './sidebar.component';
 
 // tslint:disable:no-string-literal
 // tslint:disable:no-any
-fdescribe('SidebarComponent', () => {
+describe('SidebarComponent', () => {
   let component: SidebarComponent;
   let fixture: ComponentFixture<SidebarComponent>;
 

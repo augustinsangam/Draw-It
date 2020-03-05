@@ -9,7 +9,7 @@ import { GalleryCardComponent } from './gallery-card/gallery-card.component';
 import { GalleryComponent } from './gallery.component';
 import { TagsFilterComponent } from './tags-filter/tags-filter.component';
 
-fdescribe('GalleryComponent', () => {
+describe('GalleryComponent', () => {
   let component: GalleryComponent;
   let fixture: ComponentFixture<GalleryComponent>;
 

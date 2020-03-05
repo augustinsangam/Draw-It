@@ -19,7 +19,7 @@ import { PolygonePanelComponent } from './polygone-panel.component';
 
 // TODO : Ask the chargé de lab
 // tslint:disable: no-string-literal
-fdescribe('PolygonePanelComponent', () => {
+describe('PolygonePanelComponent', () => {
   let component: PolygonePanelComponent;
   let fixture: ComponentFixture<PolygonePanelComponent>;
 

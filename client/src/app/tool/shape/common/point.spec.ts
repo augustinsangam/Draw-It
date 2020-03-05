@@ -2,7 +2,7 @@ import { Point } from './point';
 
 // TODO : Ask the chargé de lab
 // tslint:disable: no-magic-numbers
-fdescribe('Point', () => {
+describe('Point', () => {
 
   it('#Point can be instanciate', () => {
     const point = new Point(5 , 10);

@@ -8,7 +8,7 @@ import { CONSTANTS, EraserLogicComponent } from './eraser-logic.component';
 // TODO : Ask the chargé de lab
 // tslint:disable: no-any
 // tslint:disable: no-string-literal
-fdescribe('EraserLogicComponent', () => {
+describe('EraserLogicComponent', () => {
   let component: EraserLogicComponent;
   let fixture: ComponentFixture<EraserLogicComponent>;
 

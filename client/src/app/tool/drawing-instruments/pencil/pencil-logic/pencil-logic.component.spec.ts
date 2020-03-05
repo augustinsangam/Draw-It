@@ -13,7 +13,7 @@ import { PencilLogicComponent } from './pencil-logic.component';
 
 // TODO : Ask the chargé de lab
 // tslint:disable:no-string-literal no-any
-fdescribe('PencilLogicComponent', () => {
+describe('PencilLogicComponent', () => {
   let component: PencilLogicComponent;
   let fixture: ComponentFixture<PencilLogicComponent>;
   let mouseEvLeft: MouseEvent;

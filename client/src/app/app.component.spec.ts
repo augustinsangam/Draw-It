@@ -36,7 +36,7 @@ import { UndoRedoService } from './tool/undo-redo/undo-redo.service';
 
 // Test Also OverlayService
 // tslint:disable: no-string-literal
-fdescribe('AppComponent', () => {
+describe('AppComponent', () => {
   let component: AppComponent;
   let service: OverlayService;
   let svgService: SvgService;

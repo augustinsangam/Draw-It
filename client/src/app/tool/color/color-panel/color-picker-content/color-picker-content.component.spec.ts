@@ -25,7 +25,7 @@ import {
 import { ColorPickerContentComponent } from './color-picker-content.component';
 
 /* tslint:disable:no-string-literal */
-fdescribe('ColorPickerContentComponent', () => {
+describe('ColorPickerContentComponent', () => {
   let component: ColorPickerContentComponent;
   let fixture: ComponentFixture<ColorPickerContentComponent>;
 

@@ -57,7 +57,6 @@ export class UndoRedoService {
   }
 
   undo(): void {
-
     if (this.actions.undo[0].enabled
       && this.actions.undo[0].overrideFunctionDefined) {
       (this.actions.undo[0].overrideFunction as () => void)();
