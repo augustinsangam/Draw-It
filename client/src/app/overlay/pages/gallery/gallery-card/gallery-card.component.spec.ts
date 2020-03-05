@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MaterialModule } from 'src/app/material.module';
 import { GalleryCardComponent } from './gallery-card.component';
 
-describe('GalleryCardComponent', () => {
+fdescribe('GalleryCardComponent', () => {
   let component: GalleryCardComponent;
   let fixture: ComponentFixture<GalleryCardComponent>;
 
@@ -33,7 +33,8 @@ describe('GalleryCardComponent', () => {
         width: 0,
         color: '#FFFFFF'
       },
-      svg: new SVGGElement(),
+      svg: document.createElementNS('http://www.w3.org/2000/svg',
+        'svg:g') as SVGGElement
     };
     fixture.detectChanges();
   });
