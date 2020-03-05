@@ -48,7 +48,7 @@ export class ExportComponent implements AfterViewInit {
       FilterChoice.Saturate,
       FilterChoice.BlackWhite,
       FilterChoice.Inverse,
-      FilterChoice.Artifice,
+      FilterChoice.Sepia,
       FilterChoice.Grey
     ];
   }
@@ -203,7 +203,7 @@ export class ExportComponent implements AfterViewInit {
       case FilterChoice.Inverse:
         filterName = 'url(#invertion)';
         break;
-      case FilterChoice.Artifice:
+      case FilterChoice.Sepia:
         filterName = 'url(#sepia)';
         break;
       case FilterChoice.Grey:
@@ -251,7 +251,7 @@ enum FilterChoice {
   Saturate = 'Saturation',
   BlackWhite = 'Noir et blanc',
   Inverse = 'Inversion',
-  Artifice = 'Artifice',
+  Sepia = 'Sepia',
   Grey = 'Gris épatant'
 }
 
