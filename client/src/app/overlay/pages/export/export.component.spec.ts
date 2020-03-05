@@ -1,18 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ObserversModule } from '@angular/cdk/observers';
-import { Overlay } from '@angular/cdk/overlay';
 import { Renderer2 } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import {  MAT_DIALOG_DATA,  MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialog,  MatDialogClose ,
-   MatDialogRef,
-   MatInputModule,
-   MatRadioButton,
-   MatRadioGroup,
-   MatRippleModule} from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MaterialModule } from 'src/app/material.module';
 import { SvgService } from 'src/app/svg/svg.service';
-import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.service';
+import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ExportComponent } from './export.component';
 
 fdescribe('ExportComponent', () => {
@@ -22,35 +14,16 @@ fdescribe('ExportComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        ReactiveFormsModule,
-        ObserversModule,
-        MatRippleModule,
-        MatInputModule,
-        BrowserAnimationsModule
+        MaterialModule,
+        FormsModule,
+        ReactiveFormsModule
       ],
       declarations: [
-        ExportComponent,
-        MatDialogClose,
-        MatRadioButton,
-        MatRadioGroup
-
+        ExportComponent
       ],
       providers: [
-        Overlay,
         Renderer2,
-        FormBuilder,
-        FilterService,
         SvgService,
-        MatDialog,
-        MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
-        {
-          provide: MatDialogRef,
-          useValue: {}
-        },
-        {
-          provide: MAT_DIALOG_DATA,
-          useValue: {}
-        }
       ]
     }).compileComponents();
   }));
@@ -59,7 +32,7 @@ fdescribe('ExportComponent', () => {
     fixture = TestBed.createComponent(ExportComponent);
     component = fixture.componentInstance;
 
-    const svgService: SvgService = TestBed.get(component['svgService']) as SvgService;
+    const svgService: SvgService = TestBed.get(SvgService) as SvgService;
     svgService.structure = {
       root: document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
       defsZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
@@ -71,6 +44,9 @@ fdescribe('ExportComponent', () => {
     svgService.structure.root.appendChild(svgService.structure.drawZone);
     svgService.structure.root.appendChild(svgService.structure.temporaryZone);
     svgService.structure.root.appendChild(svgService.structure.endZone);
+
+    (TestBed.get(UndoRedoService) as UndoRedoService)
+    .intialise(component['svgService'].structure);
 
     fixture.detectChanges();
   });
