@@ -1,10 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 
 import { Renderer2 } from '@angular/core';
 import { Point } from '../../shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import * as Util from './selection-logic-util';
 import { SelectionLogicComponent } from './selection-logic.component';
+import { MultipleSelection } from '../multiple-selection';
+import { Offset } from '../offset';
 
 // TODO : Ask the chargé de lab
 // tslint:disable: no-magic-numbers
@@ -44,15 +46,18 @@ fdescribe('SelectionLogicComponent', () => {
     rec1.setAttribute('y', '3');
     rec1.setAttribute('width', '100');
     rec1.setAttribute('height', '100');
+    rec1.setAttribute('stroke-width', '5');
     const rec2 = document.createElementNS('http://www.w3.org/2000/svg', 'svg:rect');
     rec2.setAttribute('x', '22');
     rec2.setAttribute('y', '30');
     rec2.setAttribute('width', '100');
     rec2.setAttribute('height', '100');
-    // const circle = document.createElementNS('http://www.w3.org/2000/svg', 'svg:circle');
+    rec2.style.strokeWidth = '2';
+    const rec3 = document.createElementNS('http://www.w3.org/2000/svg', 'svg:rect');
+    rec3.classList.add('filter1');
     component.svgStructure.drawZone.appendChild(rec1);
     component.svgStructure.drawZone.appendChild(rec2);
-    // component.svgStructure.temporaryZone.appendChild(circle);
+    component.svgStructure.drawZone.appendChild(rec3);
 
     (TestBed.get(UndoRedoService) as UndoRedoService)
     .intialise(component.svgStructure);
@@ -201,7 +206,7 @@ fdescribe('SelectionLogicComponent', () => {
     const mouseMoveHandler = (component['mouseHandlers'].get('rightButton') as
     Map<string, Util.MouseEventCallBack>).get('mousemove') as
     Util.MouseEventCallBack;
-
+    component['selectedElementsFreezed'] = new Set();
     component['mouse'].right.mouseIsDown = true;
     mouseMoveHandler(fakeEvent);
     expect(component['mouse'].right.currentPoint).toEqual(new Point(200, 200));
@@ -259,7 +264,8 @@ fdescribe('SelectionLogicComponent', () => {
       target: component.svgStructure.drawZone.children.item(0)
     } as unknown as MouseEvent;
 
-    const spy = spyOn<any>(component, 'applySingleInversion');
+    const spy = spyOn<any>(component, 'applySingleInversion').and.callThrough();
+    spyOn<any>(component, 'applyInversion');
 
     const contextMenuHandler = (component['mouseHandlers'].get('rightButton') as
       Map<string, Util.MouseEventCallBack>).get('contextmenu') as
@@ -452,5 +458,86 @@ fdescribe('SelectionLogicComponent', () => {
       expect(component['mouse'].right.endPoint).not.toEqual(new Point(200, 200));
     });
 
+  it('overrided function in undo redo service function works well', () => {
+    const spy = spyOn<any>(component, 'deleteVisualisation');
+    component['undoRedoService'].undo();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('A multiple selection is perfomed when user use Ctrl + A', () => {
+    const spy = spyOn<any>(component, 'applyMultipleSelection');
+    component['svgService'].selectAllElements.next();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#applyInversion works well !', () => {
+    const allElements = new Set<SVGElement>(
+      Array.from(component['svgStructure'].drawZone.children) as SVGElement[]
+    );
+    const selectedElement =
+      component['svgStructure'].drawZone.children.item(0) as SVGElement;
+    component['selectedElementsFreezed'] = new Set([selectedElement]);
+    component['applyInversion'](
+      allElements, new Point(0, 0), new Point(1000, 1000));
+
+    expect(component['selectedElements']).not.toContain(selectedElement);
+  });
+
+  it('KeyManager should contain all keypressed', () => {
+    let fakeKeyDownEvent = {
+      key: 'ArrowUp',
+      preventDefault: () => {}
+    } as unknown as KeyboardEvent;
+    component['keyManager'].handlers.keydown(fakeKeyDownEvent);
+    expect(component['keyManager'].keyPressed).toContain('ArrowUp');
+    fakeKeyDownEvent = {
+      key: 'ArrowDown',
+      preventDefault: () => {}
+    } as unknown as KeyboardEvent;
+    component['keyManager'].handlers.keydown(fakeKeyDownEvent);
+    expect(component['keyManager'].keyPressed).toContain('ArrowUp');
+    expect(component['keyManager'].keyPressed).toContain('ArrowDown');
+  });
+
+  it('Translate should be done only after each 100 ms', fakeAsync(() => {
+    const spy = spyOn<any>(component, 'handleKey').and.callThrough();
+    const fakeKeyDownEvent = {
+      key: 'ArrowUp',
+      preventDefault: () => {}
+    } as unknown as KeyboardEvent;
+    component['keyManager'].handlers.keydown(fakeKeyDownEvent);
+    expect(spy).not.toHaveBeenCalled();
+    setTimeout(() => {
+      component['keyManager'].handlers.keydown(fakeKeyDownEvent);
+    }, 200);
+    tick(200);
+    expect(spy).toHaveBeenCalled();
+    component['keyManager'].handlers.keydown(fakeKeyDownEvent);
+  }));
+
+  it('KeyUp handler should save the state only'
+       + 'áll arrows are released', fakeAsync(() => {
+    const spy = spyOn(component['undoRedoService'], 'saveState');
+    const arrowUpEvent = {
+      key: 'ArrowUp',
+      preventDefault: () => {}
+    } as unknown as KeyboardEvent;
+    const arrowDownEvent = {
+      key: 'ArrowDown',
+      preventDefault: () => {}
+    } as unknown as KeyboardEvent;
+    component['keyManager'].handlers.keydown(arrowUpEvent);
+    component['keyManager'].handlers.keydown(arrowDownEvent);
+    component['keyManager'].handlers.keyup(arrowUpEvent);
+    expect(spy).not.toHaveBeenCalled();
+    component['keyManager'].handlers.keyup(arrowDownEvent);
+    expect(spy).toHaveBeenCalled();
+  }));
+
+  it('#MultipleSelection.getSelection should return a null Zone'
+   + ' when no element is selected', () => {
+    expect(new MultipleSelection(new Set(), undefined as unknown as Offset)
+    .getSelection().points).toEqual([new Point(0, 0), new Point(0, 0)]);
+  });
 
 });
