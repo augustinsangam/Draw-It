@@ -99,7 +99,10 @@ class Database {
 		return Promise.reject('collection is null');
 	}
 
-	replace(entry: Entry): Promise<mongodb.ReplaceWriteOpResult> {
+	replace(
+		entry: Entry,
+		upsert: boolean,
+	): Promise<mongodb.ReplaceWriteOpResult> {
 		if (!!this.collection) {
 			return this.collection.replaceOne(
 				{
@@ -107,6 +110,9 @@ class Database {
 				},
 				{
 					data: entry.data,
+				},
+				{
+					upsert,
 				},
 			);
 		}

@@ -104,10 +104,13 @@ class Router {
 				return;
 			}
 			try {
-				await this.db.replace({
-					_id: Number(req.params.id),
-					data: new mongodb.Binary(req.body),
-				});
+				await this.db.replace(
+					{
+						_id: Number(req.params.id),
+						data: new mongodb.Binary(req.body),
+					},
+					true,
+				);
 			} catch (err) {
 				return next(err);
 			}

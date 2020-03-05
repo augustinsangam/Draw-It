@@ -33,8 +33,8 @@ class Application {
 		next: express.NextFunction,
 	): void {
 		let logMsg = '';
-		logMsg += `[${COLORS.fg.green}LOG${COLORS.reset}]:`;
-		logMsg += ` ${req.method} - ${req.url}`;
+		logMsg += `[${COLORS.fg.green}LOG${COLORS.reset}] `;
+		logMsg += `${req.method} - ${req.url}`;
 		log.info(logMsg);
 		res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
 		res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
