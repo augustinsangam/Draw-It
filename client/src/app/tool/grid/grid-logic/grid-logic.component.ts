@@ -13,7 +13,8 @@ export class GridLogicComponent extends ToolLogicDirective implements OnInit {
     super();
   }
 
-  // TODO : Trouver un truc à mettre pour eviter que LINT chiale
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.svgStructure.root.style.cursor = 'auto';
+  }
 
 }
