@@ -25,6 +25,7 @@ export class FilterService {
     renderer.appendChild(svgDefsEl, this.generateFilterSaturate(renderer));
     renderer.appendChild(svgDefsEl, this.generateFilterInvertion(renderer));
     renderer.appendChild(svgDefsEl, this.generateFilterSepia(renderer));
+    renderer.appendChild(svgDefsEl, this.generateFilterGreyScale(renderer));
     return svgDefsEl;
   }
 
@@ -177,13 +178,18 @@ export class FilterService {
 
     return filterSvgEl;
   }
-  
-  // <filter id="sepia">
-  //   <feColorMatrix in="SourceGraphic" type="matrix" values=".35 .35 .35 0 0
-  //                                                           .25 .25 .25 0 0
-  //                                                           .15 .15 .15 0 0
-  //                                                           0 0 0 1 0" />
-  // </filter>
+
+  private generateFilterGreyScale(renderer: Renderer2): SVGFilterElement {
+    const filterSvgEl: SVGFilterElement = renderer.createElement('filter', SVG_NS);
+    filterSvgEl.setAttribute('id', 'greyscale');
+
+    const feColorMatrixSvgEl: SVGFEColorMatrixElement = renderer.createElement('feColorMatrix', SVG_NS);
+    feColorMatrixSvgEl.setAttribute('in', 'SourceGraphic');
+    feColorMatrixSvgEl.setAttribute('type', 'matrix');
+    feColorMatrixSvgEl.setAttribute('values', '.33 .33 .33 0 0 .33 .33 .33 0 0 .33 .33 .33 0 0 0 0 0 1 0');
+    renderer.appendChild(filterSvgEl, feColorMatrixSvgEl);
+    return filterSvgEl;
+  }
 
   private generateFilterSepia(renderer: Renderer2): SVGFilterElement {
     const filterSvgEl: SVGFilterElement = renderer.createElement('filter', SVG_NS);
