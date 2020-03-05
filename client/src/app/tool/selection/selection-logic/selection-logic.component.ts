@@ -121,6 +121,7 @@ export class SelectionLogicComponent
         ['contextmenu', ($event: MouseEvent) => {
           $event.preventDefault();
           const type = this.elementSelectedType($event.target as SVGElement);
+          console.log(type);
           if (type === BasicSelectionType.DRAW_ELEMENT) {
             this.applySingleInversion($event.target as SVGElement);
           }
