@@ -101,20 +101,17 @@ export class ExportComponent implements AfterViewInit {
   }
 
   convertToBlob(): Blob {
-    this.innerSVG.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    return new Blob([this.serializeSVG()], {
-      type: 'image/svg+xml;charset=utf-8'
-    });
+    this.innerSVG.setAttribute('xmlns', SVG_NS);
+    return new Blob([this.serializeSVG()], {type: 'image/svg+xml;charset=utf-8'});
   }
 
-  encodeImage(): SVGImageElement {
-    const picture: SVGImageElement = this.renderer.createElement(
-      'img', 'http://www.w3.org/2000/svg' );
-    picture.setAttribute('width', this.svgShape.width.toString());
-    picture.setAttribute('height', this.svgShape.height.toString());
-    picture.setAttribute('href', this.convertSVGToBase64());
-    return picture;
-  }
+  // encodeImage(): SVGImageElement {
+  //   const picture: SVGImageElement = this.renderer.createElement('image', SVG_NS );
+  //   picture.setAttribute('width', this.svgShape.width.toString());
+  //   picture.setAttribute('height', this.svgShape.height.toString());
+  //   picture.setAttribute('href', this.convertSVGToBase64());
+  //   return picture;
+  // }
 
   downloadFile(canvaRecu: HTMLCanvasElement): void {
     const canvas: HTMLCanvasElement = canvaRecu;
@@ -122,15 +119,14 @@ export class ExportComponent implements AfterViewInit {
     const format = this.form.controls.format.value.toLocaleLowerCase();
     const url = canvas.toDataURL('image/' + format);
     this.innerSVG.appendChild(downloadLink);
-    downloadLink.href = (format === 'svg') ?
-      this.convertSVGToBase64() : url;
+    downloadLink.href = (format === 'svg') ? this.convertSVGToBase64() : url;
     const name: string = this.form.controls.name.value.trim().toLocaleLowerCase();
     downloadLink.download = name + '.' + format;
     downloadLink.click();
     this.innerSVG.removeChild(downloadLink);
   }
 
-  configureCanvas(): HTMLCanvasElement {
+  generateCanvas(): HTMLCanvasElement {
     const canvas: HTMLCanvasElement = this.renderer.createElement('canvas');
     canvas.height = this.svgShape.height;
     canvas.width = this.svgShape.width;
@@ -151,7 +147,7 @@ export class ExportComponent implements AfterViewInit {
 
   exportDrawing(): HTMLCanvasElement {
     this.resetInnerSVG();
-    const canvas: HTMLCanvasElement = this.configureCanvas();
+    const canvas: HTMLCanvasElement = this.generateCanvas();
     const format = this.form.controls.format.value;
     if (format as FormatChoice === FormatChoice.Svg) {
       this.exportSVG();
@@ -175,8 +171,7 @@ export class ExportComponent implements AfterViewInit {
   }
 
   createView(filterName: string): void {
-    this.pictureView = this.renderer.createElement('image',
-      'http://www.w3.org/2000/svg');
+    this.pictureView = this.renderer.createElement('image', SVG_NS);
     const viewZone = this.svgView.nativeElement;
     this.configurePicture(this.pictureView, filterName);
     if (viewZone) {
@@ -211,7 +206,7 @@ export class ExportComponent implements AfterViewInit {
         filterName = '';
         break;
       case FilterChoice.Saturate:
-        filterName = 'url(#saturate)';  // A revoir concordance
+        filterName = 'url(#saturate)';
         break;
       case FilterChoice.BlackWhite:
         filterName = 'url(#blackWhite)';
@@ -233,7 +228,7 @@ export class ExportComponent implements AfterViewInit {
 
   resetInnerSVG(): void {
 
-    const filterZone: SVGGElement = this.renderer.createElement('g', 'http://www.w3.org/2000/svg');
+    const filterZone: SVGGElement = this.renderer.createElement('g', SVG_NS);
     this.innerSVG.setAttribute('filter', this.chooseFilter(this.form.controls.filter.value.toString()));
     this.configureSize(filterZone, this.svgShape);
     this.renderer.removeChild(this.svgView, this.pictureView);
@@ -252,8 +247,7 @@ export class ExportComponent implements AfterViewInit {
   }
 
   generateBackground(): SVGRectElement {
-    const rect: SVGRectElement = this.renderer.createElement(
-      'rect', 'http://www.w3.org/2000/svg');
+    const rect: SVGRectElement = this.renderer.createElement('rect', SVG_NS);
     rect.setAttribute('x', '0');
     rect.setAttribute('y', '0');
     rect.setAttribute('height', String(this.svgShape.height));
