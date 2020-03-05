@@ -14,13 +14,18 @@ class Database {
 	private _db?: mongodb.Db;
 	private _collection?: mongodb.Collection;
 
+	// mongodb.github.io/node-mongodb-native/3.5/api/MongoClient.html
+	// nodejs.org/api/url.html
+	// mongodb.github.io/mongo-java-driver/3.8/javadoc/com/mongodb/ConnectionString.html
 	constructor() {
-		const uri =
-			// 'mongodb://127.0.0.1/log2990';
-			'mongodb+srv://cluster0-5pews.mongodb.net/log2990?retryWrites=true&w=majority';
-		// this._db = await mongodb.MongoClient.connect(uri, {
-		// this.client = new mongodb.MongoClient(uri, {
-		this.client = new mongodb.MongoClient(uri, {
+		const uri = new URL('mongodb+srv://cluster0-5pews.mongodb.net');
+		// const uri = new URL('mongodb://127.0.0.1');
+		uri.pathname = 'log2990';
+		uri.searchParams.append('serverSelectionTimeoutMS', '3000');
+		uri.searchParams.append('retryWrites', 'true');
+		uri.searchParams.append('w', 'majority');
+		// this._db = await mongodb.MongoClient.connect(uri.href, {
+		this.client = new mongodb.MongoClient(uri.href, {
 			auth: secrets.mongodb.auth,
 			// Next does not work with IPv6
 			useUnifiedTopology: true,

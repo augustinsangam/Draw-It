@@ -45,6 +45,11 @@ export class SaveComponent implements OnInit {
     const clone = this.svgService.structure.drawZone.cloneNode(true);
     const h = this.svgService.shape.height;
     const w = this.svgService.shape.width;
+    if (h > w) {
+      const max = 400;
+      this.elementRef.nativeElement.setAttribute('width', (max*w/h).toString());
+      this.elementRef.nativeElement.setAttribute('height', max.toString());
+    }
     this.elementRef.nativeElement.setAttribute('viewBox', `0 0 ${w} ${h}`);
     this.elementRef.nativeElement.style.backgroundColor = this.svgService.shape.color;
     this.renderer.appendChild(this.elementRef.nativeElement, clone);

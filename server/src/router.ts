@@ -4,18 +4,9 @@ import inversify from 'inversify';
 import log from 'loglevel';
 import mongodb from 'mongodb';
 
-import { COLOR } from './color';
+import { COLORS, StatusCode, TYPES } from './constants';
 import { Draw, DrawBuffer, Draws } from './data_generated';
 import { Database, Entry } from './database';
-import { TYPES } from './types';
-
-enum StatusCode {
-	CREATED = 201,
-	ACCEPTED,
-	NO_CONTENT = 204,
-	NOT_ACCEPTABLE = 406,
-	IM_A_TEAPOT = 418,
-}
 
 // zellwk.com/blog/async-await-express/
 @inversify.injectable()
@@ -72,7 +63,9 @@ class Router {
 			const drawBuffers = Draws.createDrawBuffersVector(fbb, drawBufferOffsets);
 			const draws = Draws.create(fbb, drawBuffers);
 			fbb.finish(draws);
+			//setTimeout(() =>
 			res.send(Buffer.from(fbb.asUint8Array()));
+			//, 7000);
 		};
 	}
 
@@ -94,7 +87,7 @@ class Router {
 					_id,
 					data: new mongodb.Binary(req.body),
 				});
-				log.info(`${COLOR.fg.yellow}ID${COLOR.reset}: ${_id}`);
+				log.info(`${COLORS.fg.yellow}ID${COLORS.reset}: ${_id}`);
 				console.log('A ' + _id);
 				res.status(StatusCode.CREATED).send(_id.toString());
 			} catch (err) {
@@ -125,6 +118,7 @@ class Router {
 	private methodDelete(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
 			try {
+				// delRes.deletedCount == delRes.result.n
 				await this.db.delete(Number(req.params.id));
 			} catch (err) {
 				return next(err);
@@ -134,4 +128,4 @@ class Router {
 	}
 }
 
-export { Router, StatusCode };
+export { Router };

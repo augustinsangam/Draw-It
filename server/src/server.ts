@@ -4,8 +4,8 @@ import { ListenOptions, Socket } from 'net';
 import { promisify } from 'util';
 
 import { Application } from './application';
+import { TYPES } from './constants';
 import { Database } from './database';
-import { TYPES } from './types';
 
 @inversify.injectable()
 class Server {

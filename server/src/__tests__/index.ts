@@ -1,8 +1,8 @@
 /*import chai from 'chai';
 
+import { TYPES } from '../constants';
 import { Warrior } from '../interfaces';
 import { myContainer } from '../inversify.config';
-import { TYPES } from '../types';
 
 describe('all', () => {
 	let ninja: Warrior;
