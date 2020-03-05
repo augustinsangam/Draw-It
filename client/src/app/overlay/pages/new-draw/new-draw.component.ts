@@ -35,7 +35,7 @@ export interface DialogRefs {
 const CONSTANTS = {
   START_COLOR : '#FFFFFF',
   MIN_DIMENSION: 1,
-  MAX_DIMENSION: 10000
+  MAX_DIMENSION: 65535
 };
 
 @Component({
