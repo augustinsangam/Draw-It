@@ -6,9 +6,9 @@ import {
   tick
 } from '@angular/core/testing';
 
+import {Point} from '../../../shape/common/point';
 import {UndoRedoService} from '../../../undo-redo/undo-redo.service';
 import { AerosolLogicComponent } from './aerosol-logic.component';
-import {Point} from '../../../shape/common/point';
 
 const createClickMouseEvent = (event: string): MouseEvent =>  new MouseEvent(
   event,  {
@@ -122,5 +122,49 @@ fdescribe('AerosolLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
     expect(component['currentPath'].getAttribute('d')).toEqual(dummyPath);
   });
+
+  it('the ngOnInit should initialise the arrow of' +
+    ' listeners', () => {
+    component.ngOnInit();
+    expect(component['listeners'].length).toEqual(4);
+  });
+
+  it('A mouseleave should call onMouseUp function', () => {
+    const spy = spyOn<any>(component, 'onMouseUp');
+    component.svgStructure.root.dispatchEvent(createClickMouseEvent('mouseleave'));
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('A mouseup should call onMouseUp function', () => {
+    const spy = spyOn<any>(component, 'onMouseUp');
+    component.svgStructure.root.dispatchEvent(createClickMouseEvent('mouseup'));
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('A mousemove should call onMouseMove function', () => {
+    const spy = spyOn<any>(component, 'onMouseMove');
+    component.svgStructure.root.dispatchEvent(createClickMouseEvent('mousemove'));
+    expect(spy).toHaveBeenCalled();
+  });
+
+  // TODO find a way to generate a CTRL + Z
+
+  // it('if we are on drag and a mouseUp is launched, the override function of' +
+  //   ' the undoRedoService should be called and should call call remove on ' +
+  //   'currentPath before saving', () => {
+  //   const spyOnMouseUp = spyOn<any>(component, 'onMouseUp').and.callThrough();
+  //   component['onMouseDown'](createClickMouseEvent('mousedown'));
+  //   component['onMouseMove'](createClickMouseEvent('mousemove'));
+  //   const spyRemove = spyOn<any>(component['currentPath'], 'remove').and.callThrough();
+  //   const keyboardEvent = new KeyboardEvent(
+  //     'window:keydown',
+  //     {
+  //       key: 'z',
+  //       ctrlKey: true
+  //     });
+  //   component.svgStructure.root.dispatchEvent(keyboardEvent);
+  //   expect(spyRemove).toHaveBeenCalledTimes(1);
+  //   expect(spyOnMouseUp).toHaveBeenCalledTimes(1);
+  // });
 
 });

@@ -1,12 +1,21 @@
 import { TestBed } from '@angular/core/testing';
 
+import {Point} from '../../shape/common/point';
 import { AerosolService } from './aerosol.service';
 
-describe('AerosolService', () => {
+// tslint:disable:no-string-literal
+// tslint:disable:no-magic-numbers
+fdescribe('AerosolService', () => {
+  let service: AerosolService;
+
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: AerosolService = TestBed.get(AerosolService);
+    service = TestBed.get(AerosolService);
     expect(service).toBeTruthy();
+  });
+
+  it('generatePoints should return a non empty string', () => {
+    expect(service.generatePoints(new Point(42, 42))).not.toEqual('');
   });
 });
