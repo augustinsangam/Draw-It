@@ -3,10 +3,10 @@ import 'reflect-metadata';
 import inversify from 'inversify';
 
 import { Application } from './application';
+import { TYPES } from './constants';
 import { Database } from './database';
 import { Router } from './router';
 import { Server } from './server';
-import { TYPES } from './types';
 
 const myContainer = new inversify.Container();
 myContainer.bind<Application>(TYPES.Application).to(Application);
