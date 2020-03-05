@@ -20,7 +20,6 @@ export class ExportComponent implements AfterViewInit {
   innerSVG: SVGSVGElement;
   svgShape: SvgShape;
   pictureView: SVGImageElement;
-  downloadLink: HTMLAnchorElement;
   canvasDownload: HTMLCanvasElement;
   protected form: FormGroup;
 
@@ -32,7 +31,8 @@ export class ExportComponent implements AfterViewInit {
     this.form = this.formBuilder.group({
       name: ['', [Validators.required, (control: FormControl) => {
         const input = (control.value as string).trim();
-        return (input.indexOf(' ') === -1 && input !== '') ? null : {
+        const NOT_FOUND = -1;
+        return (input.indexOf(' ') === NOT_FOUND && input !== '') ? null : {
           spaceError: { value: 'No whitespace allowed' }
         };
       }]],
@@ -135,15 +135,15 @@ export class ExportComponent implements AfterViewInit {
     if (format as FormatChoice === FormatChoice.Svg) {
       this.exportSVG();
     } else {
-      const ctx = canvas.getContext('2d');
+      const canvasContext = canvas.getContext('2d');
       const URL = self.URL || self;
       const img = new Image();
       const svgBlob = this.convertToBlob();
       const url = URL.createObjectURL(svgBlob);
 
       img.onload = () => {
-        if (ctx) {
-          ctx.drawImage(img, 0, 0);
+        if (canvasContext) {
+          canvasContext.drawImage(img, 0, 0);
           const pictureUrl = canvas.toDataURL('image/' + format);
           this.downloadImage(pictureUrl);
           URL.revokeObjectURL(url);
@@ -198,7 +198,7 @@ export class ExportComponent implements AfterViewInit {
       case FilterChoice.Inverse:
         filterName = 'url(#invertion)';
         break;
-      case FilterChoice.Artifice: // a modifier
+      case FilterChoice.Artifice:
         filterName = 'url(#sepia)';
         break;
       case FilterChoice.Grey:
