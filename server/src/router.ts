@@ -14,6 +14,7 @@ enum StatusCode {
 	ACCEPTED,
 	NO_CONTENT = 204,
 	NOT_ACCEPTABLE = 406,
+	GONE = 410,
 	IM_A_TEAPOT = 418,
 }
 
@@ -125,6 +126,7 @@ class Router {
 	private methodDelete(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
 			try {
+				// delRes.deletedCount == delRes.result.n
 				await this.db.delete(Number(req.params.id));
 			} catch (err) {
 				return next(err);

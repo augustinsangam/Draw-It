@@ -100,7 +100,6 @@ export class CommunicationService {
     const childrenList =  Array.from(el.childNodes)
       .filter((node) => node.nodeType === 1)
       .map((node) => node as Element)
-      // TODO : Fix Lint
       .map((childEl) => this.encodeElementRecursively(childEl));
     const children = ElementT.createChildrenVector(this.fbb, childrenList);
     const attrsList = Array.from(el.attributes)
