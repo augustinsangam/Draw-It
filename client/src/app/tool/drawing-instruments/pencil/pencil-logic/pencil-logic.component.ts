@@ -15,6 +15,7 @@ export class PencilLogicComponent extends PencilBrushCommon
   implements OnInit, AfterViewInit, OnDestroy {
 
   private listeners: (() => void)[];
+  private preUndoFunction : () => void;
 
   constructor(private renderer: Renderer2,
               private colorService: ColorService,
@@ -23,20 +24,21 @@ export class PencilLogicComponent extends PencilBrushCommon
   ) {
     super();
     this.listeners = [];
+    this.preUndoFunction = () => {
+      if (this.mouseOnHold) {
+        this.stopDrawing();
+        this.undoRedoService.saveState();
+      }
+    };
     this.undoRedoService.setPreUndoAction({
       enabled: true,
       overrideDefaultBehaviour: false,
       overrideFunctionDefined: true,
-      overrideFunction: () => {
-        if (this.mouseOnHold) {
-          this.stopDrawing();
-          this.undoRedoService.saveState();
-        }
-      }
-    })
+      overrideFunction: this.preUndoFunction
+    });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.svgStructure.root.style.cursor = 'crosshair';
   }
 
@@ -62,7 +64,7 @@ export class PencilLogicComponent extends PencilBrushCommon
     this.renderer.appendChild(this.svgStructure.drawZone, this.svgPath);
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     const mouseDownListen = this.renderer.listen(this.svgStructure.root,
       'mousedown', (mouseEv: MouseEvent) => {
         if (mouseEv.button === 0) {
@@ -80,10 +82,7 @@ export class PencilLogicComponent extends PencilBrushCommon
 
     const mouseUpListen = this.renderer.listen(this.svgStructure.root,
       'mouseup', () => {
-        if (this.mouseOnHold) {
-          this.stopDrawing();
-          this.undoRedoService.saveState();
-        }
+        this.preUndoFunction();
     });
 
     const mouseLeaveListen = this.renderer.listen(this.svgStructure.root,
@@ -98,12 +97,9 @@ export class PencilLogicComponent extends PencilBrushCommon
       mouseUpListen, mouseLeaveListen];
   }
 
-  ngOnDestroy() {
-    this.listeners.forEach(end => { end(); });
+  ngOnDestroy(): void {
+    this.listeners.forEach((end) => { end(); });
     this.undoRedoService.resetActions();
-    if (this.mouseOnHold) {
-      this.stopDrawing();
-      this.undoRedoService.saveState();
-    }
+    this.preUndoFunction();
   }
 }

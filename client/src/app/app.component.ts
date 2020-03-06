@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, HostListener, } from '@angular/core';
-import { MatDialog } from '@angular/material';
-import { OverlayService } from './overlay.service';
+import { OverlayManager } from './overlay/overlay-manager';
+import { OverlayService } from './overlay/overlay.service';
 import {
   ShortcutHandlerManagerService
 } from './shortcut-handler/shortcut-handler-manager.service';
@@ -16,7 +16,7 @@ import { SvgService } from './svg/svg.service';
 })
 export class AppComponent implements AfterViewInit {
 
-  constructor(private dialog: MatDialog,
+  constructor(private dialog: OverlayManager,
               private svgService: SvgService,
               private shortcutHanler: ShortcutHandlerService,
               private shortcutManager: ShortcutHandlerManagerService,
@@ -24,11 +24,11 @@ export class AppComponent implements AfterViewInit {
   ) { }
 
   @HostListener('window:keydown', ['$event'])
-  keyEvent(event: KeyboardEvent) {
+  keyEvent(event: KeyboardEvent): void {
     this.shortcutHanler.execute(event);
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.overlayService.intialise(this.dialog, this.svgService);
     this.overlayService.start();
     this.shortcutManager.initialiseShortcuts();

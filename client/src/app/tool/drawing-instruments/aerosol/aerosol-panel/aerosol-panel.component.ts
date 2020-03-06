@@ -7,10 +7,15 @@ import {
 } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSlider} from '@angular/material/slider';
-import { Point } from 'src/app/tool/selection/Point';
+import { Point } from 'src/app/tool/shape/common/point';
 import {ColorService} from '../../../color/color.service';
 import {ToolPanelDirective} from '../../../tool-panel/tool-panel.directive';
 import {AerosolService} from '../aerosol.service';
+
+const PREVIEW_CENTER = {
+  x : 150,
+  y : 110
+};
 
 @Component({
   selector: 'app-aerosol-panel',
@@ -18,7 +23,6 @@ import {AerosolService} from '../aerosol.service';
   styleUrls: ['./aerosol-panel.component.scss']
 })
 
-// tslint:disable:use-lifecycle-interface
 export class AerosolPanelComponent extends ToolPanelDirective
   implements AfterViewInit {
 
@@ -51,10 +55,9 @@ export class AerosolPanelComponent extends ToolPanelDirective
     });
   }
 
-  // TODO fix the panel not opening when using ngAfterViewInit
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     super.ngAfterViewInit();
-    this.updateThumbnail()
+    this.updateThumbnail();
   }
 
   protected onThicknessChange(): void {
@@ -73,10 +76,10 @@ export class AerosolPanelComponent extends ToolPanelDirective
     this.updateThumbnail();
   }
 
-  protected updateThumbnail() {
+  protected updateThumbnail(): void {
     let preview = '';
     for (let i = 0; i < this.service.frequency; i++) {
-      preview += this.service.generatePoints(new Point(150, 110));
+      preview += this.service.generatePoints(new Point(PREVIEW_CENTER.x, PREVIEW_CENTER.y));
     }
     this.renderer.setAttribute(
       this.prevPathRef.nativeElement,

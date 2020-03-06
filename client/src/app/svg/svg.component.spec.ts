@@ -34,7 +34,7 @@ describe('SvgComponent', () => {
           BrushLogicComponent
         ]
       }
-    })
+    });
   }));
 
   beforeEach(() => {
@@ -50,7 +50,7 @@ describe('SvgComponent', () => {
   it('#setTool should set the good value to the variable ref', () => {
     let refReturned: ComponentRef<ToolLogicDirective>;
     refReturned = component['setTool'](Tool.Line);
-    expect(refReturned.instance.svgElRef).toEqual(component['elementRef']);
+    expect(refReturned.instance.svgStructure).toEqual(component['svgStructure']);
   });
 
   it('#ngOnInit should call onChange', () => {

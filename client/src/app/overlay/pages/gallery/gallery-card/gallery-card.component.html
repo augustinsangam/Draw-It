@@ -1,0 +1,21 @@
+<mat-card class='card'>
+    <mat-card-header>
+        <mat-card-title>{{draw.header.name}}</mat-card-title>
+    </mat-card-header>
+    <div class="svg-wrapper">
+        <svg #svg></svg>
+    </div>
+    <mat-card-content>
+        <div>
+            <mat-chip-list>
+                <mat-chip *ngFor="let tag of draw.header.tags" (click)="onClick(tag)">
+                    {{tag}}
+                </mat-chip>
+            </mat-chip-list>
+        </div>
+    </mat-card-content>
+    <mat-card-actions class="action-Button">
+        <button mat-stroked-button color="primary" (click)="onLoad($event)">Charger</button>
+        <button mat-stroked-button color="warn" (click)="onDelete($event)">Supprimer</button>
+    </mat-card-actions>
+</mat-card>

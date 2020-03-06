@@ -19,8 +19,8 @@ import {
 import { Tool } from '../tool/tool.enum';
 
 import * as Tools from '../tool/tools';
-import { SvgService } from './svg.service';
 import { UndoRedoService } from '../tool/undo-redo/undo-redo.service';
+import { SvgService } from './svg.service';
 
 @Component({
   selector: '[app-svg]',
@@ -33,6 +33,10 @@ export class SvgComponent implements OnInit, AfterViewInit {
     read: ViewContainerRef,
     static: true
   }) private viewContainerRef: ViewContainerRef;
+
+  @ViewChild('defsZone', {
+    static: true,
+  }) private defsZone: ElementRef<SVGGElement>;
 
   @ViewChild('drawZone', {
     static: true,
@@ -57,7 +61,7 @@ export class SvgComponent implements OnInit, AfterViewInit {
     private readonly svgService: SvgService,
     private readonly undoRedoService: UndoRedoService
   ) {
-    this.components = new Array(Tool._Len)
+    this.components = new Array(Tool._Len);
     for ( const entry of Tools.TOOL_MANAGER ) {
       this.components[entry[0]] = entry[1][1];
     }
@@ -65,13 +69,14 @@ export class SvgComponent implements OnInit, AfterViewInit {
 
   private setToolHandler = (tool: Tool) => this.setTool(tool);
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.toolSelectorService.onChange(this.setToolHandler);
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.svgStructure = {
       root: this.elementRef.nativeElement,
+      defsZone: this.defsZone.nativeElement,
       drawZone: this.drawZone.nativeElement,
       temporaryZone: this.temporaryZone.nativeElement,
       endZone: this.endZone.nativeElement

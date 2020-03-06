@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
 
 export enum Shortcut {
-  C = 'KeyC',
-  W = 'KeyW',
-  L = 'KeyL',
-  Digit1 = 'Digit1',
-  Digit2 = 'Digit2',
-  Digit3 = 'Digit3',
-  O = 'KeyO',
-  A = 'KeyA',
-  S = 'KeyS',
-  I = 'KeyI',
-  Z = 'KeyZ',
-  E = 'KeyE',
-  R = 'KeyR',
-  G = 'KeyG',
-  // TODO : change the keycodes to {+} and {-} key
-  plus = 'KeyP',
-  minus = 'KeyM',
+  C = 'c',
+  W = 'w',
+  L = 'l',
+  Digit1 = '1',
+  Digit2 = '2',
+  Digit3 = '3',
+  O = 'o',
+  A = 'a',
+  S = 's',
+  I = 'i',
+  Z = 'z',
+  ZShift = 'Z',
+  E = 'e',
+  R = 'r',
+  G = 'g',
+  plus = '+',
+  minus = '-',
 }
 
 export type ShortcutCallBack = (event?: KeyboardEvent) => void;
@@ -41,7 +41,7 @@ export class ShortcutHandlerService {
   }
 
   execute(event: KeyboardEvent): void {
-    const handler = this.manager.get(event.code as Shortcut);
+    const handler = this.manager.get(event.key as Shortcut);
 
     if (!!handler && handler.isActive) {
       handler.handlerFunction(event);
@@ -57,11 +57,11 @@ export class ShortcutHandlerService {
   }
 
   activateAll(): void {
-    this.manager.forEach(handler => handler.isActive = true);
+    this.manager.forEach((handler) => handler.isActive = true);
   }
 
   desactivateAll(): void {
-    this.manager.forEach(handler => handler.isActive = false);
+    this.manager.forEach((handler) => handler.isActive = false);
   }
 
   set(shortcut: Shortcut, handler: ShortcutCallBack): void {
@@ -71,7 +71,7 @@ export class ShortcutHandlerService {
     });
   }
 
-  private clone(manager: Map<Shortcut, Handler>) {
+  private clone(manager: Map<Shortcut, Handler>): Map<Shortcut, Handler> {
     const managerClone = new Map<Shortcut, Handler>();
     for (const [shortcut, handler] of manager) {
       managerClone.set(shortcut, {
@@ -82,11 +82,11 @@ export class ShortcutHandlerService {
     return managerClone;
   }
 
-  push() {
+  push(): void {
     this.history.push(this.clone(this.manager));
   }
 
-  pop() {
+  pop(): void {
     this.manager = this.history.pop() as Map<Shortcut, Handler>;
   }
 }

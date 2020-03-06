@@ -21,7 +21,7 @@ a {
   color: #FFF;
   padding-left: 22px;
   padding-right: 22px;
-  padding-top: 10px;
+  padding-top: 8px;
   background-position: center;
   background-repeat: no-repeat;
   height: 40px;
@@ -33,7 +33,7 @@ a:hover {
 
 nav a {
   transition: .3s filter;
-  filter: grayscale(100%);
+  filter: grayscale(99%);
 }
 
 nav a:hover, nav a.selected {

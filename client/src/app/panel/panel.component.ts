@@ -39,19 +39,15 @@ export class PanelComponent implements OnInit {
     private readonly componentFactoryResolver: ComponentFactoryResolver,
     private readonly toolSelectorService: ToolSelectorService
   ) {
-    this.components = new Array(Tool._Len)
+    this.components = new Array(Tool._Len);
     for ( const entry of Tools.TOOL_MANAGER ) {
       this.components[entry[0]] = entry[1][0];
     }
     this.childWidth = 0;
-    // Panel is collapsed by default
     this.hostWidth = 0;
   }
 
-  // Must be public
-  // OnInit instead of AfterViewInit because the content
-  // is static and generated dynamically.
-  ngOnInit() {
+  ngOnInit(): void {
     this.toolSelectorService.onSame(() => this.toggle());
     this.toolSelectorService.onChange((tool: Tool) => this.setTool(tool));
   }
@@ -75,7 +71,7 @@ export class PanelComponent implements OnInit {
     return null;
   }
 
-  private setWidthOfChild(width: number) {
+  private setWidthOfChild(width: number): void {
     this.hostWidth = this.childWidth = width;
   }
 }

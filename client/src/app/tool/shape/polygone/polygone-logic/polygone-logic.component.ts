@@ -1,15 +1,17 @@
-import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { Point } from 'src/app/tool/shape/common/point';
 import { ColorService } from '../../../color/color.service';
 import { MathService } from '../../../mathematics/tool.math-service.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
-import { BackGroundProperties,
-         StrokeProperties,
-         Style } from '../../common/AbstractShape';
-import { Polygone} from '../../common/Polygone';
-import { Rectangle} from '../../common/Rectangle';
+import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
+import {
+  BackGroundProperties,
+  StrokeProperties,
+  Style
+} from '../../common/abstract-shape';
+import { Polygone } from '../../common/polygone';
+import { Rectangle } from '../../common/rectangle';
 import { PolygoneService } from '../polygone.service';
-import { Point } from 'src/app/tool/selection/Point';
-import {UndoRedoService} from '../../../undo-redo/undo-redo.service';
 
 const SEMI_OPACITY = '0.5';
 const FULL_OPACITY = '1';
@@ -23,8 +25,8 @@ enum ClickType {
   template: ''
 })
 export class PolygoneLogicComponent extends ToolLogicDirective
-implements OnDestroy {
-  private polygones: Polygone [];
+  implements OnDestroy, OnInit {
+  private polygones: Polygone[];
   private mouseDownPoint: Point;
   private onDrag: boolean;
   private style: Style;
@@ -55,12 +57,12 @@ implements OnDestroy {
           // undoRedoService.saveState() is called in onMouseUp
           this.getPolygone().element.remove();
         }
-        this.undoRedoService.undoBase()
+        this.undoRedoService.undoBase();
       }
-    })
-    }
-  // tslint:disable-next-line:use-lifecycle-interface
-  ngOnInit() {
+    });
+  }
+
+  ngOnInit(): void {
 
     const onMouseDown = this.renderer.listen(
       this.svgStructure.root,
@@ -81,7 +83,7 @@ implements OnDestroy {
             this.mouseDownPoint, currentPoint);
 
           this.getPolygone().drawPolygonFromRectangle(
-            this.mouseDownPoint, currentPoint);
+            this.mouseDownPoint, currentPoint, this.service.thickness);
         }
       }
     );
@@ -102,8 +104,8 @@ implements OnDestroy {
 
   }
 
-  ngOnDestroy() {
-    this.allListeners.forEach(listenner => listenner());
+  ngOnDestroy(): void {
+    this.allListeners.forEach((end) => end());
     this.undoRedoService.resetActions();
   }
 
@@ -113,7 +115,7 @@ implements OnDestroy {
 
   private onMouseUp(mouseEv: MouseEvent): void {
     const validClick = mouseEv.button === ClickType.CLICKGAUCHE;
-    if (validClick && this.onDrag ) {
+    if (validClick && this.onDrag) {
       this.onDrag = false;
       this.style.opacity = FULL_OPACITY;
       this.getPolygone().setCss(this.style);
@@ -134,7 +136,7 @@ implements OnDestroy {
         this.renderer,
         polygon,
         this.mathService, this.service.sides));
-      }
+    }
     this.setPolygoneProperties();
   }
 
@@ -155,25 +157,22 @@ implements OnDestroy {
     }
   }
 
-  private setPolygoneProperties() {
+  private setPolygoneProperties(): void {
     this.style = {
-      strokeWidth : this.service.thickness.toString(),
-      fillColor : this.colorService.primaryColor,
-      strokeColor : this.colorService.secondaryColor,
-      opacity : SEMI_OPACITY
+      strokeWidth: this.service.thickness.toString(),
+      fillColor: this.colorService.primaryColor,
+      strokeColor: this.colorService.secondaryColor,
+      opacity: SEMI_OPACITY
     };
     this.getPolygone().setCss(this.style);
 
     const backgroundProperties = this.service.fillOption ?
-    BackGroundProperties.Filled :
-    BackGroundProperties.None;
+      BackGroundProperties.Filled :
+      BackGroundProperties.None;
 
     const strokeProperties = this.service.borderOption ?
-    StrokeProperties.Filled :
-    StrokeProperties.None;
+      StrokeProperties.Filled : StrokeProperties.None;
 
-    this.getPolygone().setParameters(
-      backgroundProperties,
-      strokeProperties);
+    this.getPolygone().setParameters(backgroundProperties, strokeProperties);
   }
 }

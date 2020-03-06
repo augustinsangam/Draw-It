@@ -36,3 +36,9 @@ svg {
     background-color: rgba(0, 0, 0, 0.5);
   }
 }
+
+::ng-deep .gallery {
+  ::ng-deep .mat-dialog-container {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+}

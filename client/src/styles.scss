@@ -17,6 +17,10 @@ body {
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+.documentation {
+  padding: 0;
+}
+
 .doc-fig {
   display: block;
   border: 1px solid rgb(172, 172, 172);

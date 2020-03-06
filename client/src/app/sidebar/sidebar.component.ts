@@ -9,11 +9,12 @@ import {
   ViewChild,
 } from '@angular/core';
 
+import { SvgService } from '../svg/svg.service';
 import {
   ToolSelectorService
 } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
-import { UndoRedoService } from '../tool/undo-redo/undo-redo.service'
+import { UndoRedoService } from '../tool/undo-redo/undo-redo.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -80,6 +81,8 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
 
   @Output() protected documentationEvent: EventEmitter<null>;
   @Output() protected exportEvent: EventEmitter<null>;
+  @Output() protected saveEvent: EventEmitter<null>;
+  @Output() protected homeEvent: EventEmitter<null>;
 
   private toolToElRef: ElementRef<HTMLElement>[];
 
@@ -89,14 +92,17 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
   // Must be pubilc
   constructor(private readonly toolSelectorService: ToolSelectorService,
               protected readonly undoRedoService: UndoRedoService,
-              private changeDetectorRef: ChangeDetectorRef) {
+              private changeDetectorRef: ChangeDetectorRef,
+              private svgService: SvgService) {
     this.documentationEvent = new EventEmitter<null>();
     this.exportEvent = new EventEmitter<null>();
+    this.saveEvent = new EventEmitter<null>();
+    this.homeEvent = new EventEmitter<null>();
     this.toolToElRef = new Array(Tool._Len);
   }
 
   // Must be pubilc
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.toolToElRef[Tool.Aerosol] = this.aerosolElRef;
     this.toolToElRef[Tool.Applicator] = this.applicatorElRef;
     this.toolToElRef[Tool.Brush] = this.brushElRef;
@@ -114,7 +120,7 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
       (tool, old) => this.setTool(tool, old));
   }
 
-  ngAfterViewChecked() {
+  ngAfterViewChecked(): void {
     const canUndo = this.undoRedoService.canUndo();
     const canRedo = this.undoRedoService.canRedo();
     if (canUndo !== this.canUndo) {
@@ -125,6 +131,12 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
       this.canRedo = canRedo;
       this.changeDetectorRef.detectChanges();
     }
+    let elementInDrawZone = false;
+    if (!!this.svgService.structure) {
+      elementInDrawZone = this.svgService.structure.drawZone.childElementCount !== 0;
+    }
+    this.svgService.drawInProgress = elementInDrawZone || canRedo || canUndo;
+
   }
 
   private setTool(tool: Tool, old?: Tool): void {

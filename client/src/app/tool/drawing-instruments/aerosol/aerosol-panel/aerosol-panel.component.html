@@ -2,7 +2,7 @@
 <form [formGroup]="aerosolForm">
   <p>Épaisseur</p>
   <div class="thickness">
-    <mat-slider min=1 max=100 step=1
+    <mat-slider min="{{this.service.MIN_THICKNESS}}" max="{{this.service.MAX_THICKNESS}}" step=1
                 (input)="onThicknessChange()"
                 (change)="onThicknessChange()"
                 formControlName="thicknessSlider"

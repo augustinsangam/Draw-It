@@ -7,8 +7,9 @@ import { SVGStructure } from '../tool-logic/tool-logic.directive';
 export class UndoRedoService {
 
   private svgStructure: SVGStructure;
-  private cmdDone: (SVGElement[])[]
+  private cmdDone: (SVGElement[])[];
   private cmdUndone: (SVGElement[])[];
+  private initialCommand: SVGElement[];
 
   private actions: {
     undo: [PreAction, PostAction],
@@ -18,6 +19,7 @@ export class UndoRedoService {
   constructor() {
     this.cmdDone = [];
     this.cmdUndone = [];
+    this.initialCommand = [];
     this.resetActions();
   }
 
@@ -25,15 +27,24 @@ export class UndoRedoService {
     this.svgStructure = svgStructure;
   }
 
-  resetActions() {
+  setStartingCommand(): void {
+    this.initialCommand = Array.from(this.svgStructure.drawZone.children) as
+      SVGElement[];
+  }
+
+  resetActions(): void {
     this.actions = {
       undo: [ this.createDefaultPreAction(), this.createDefaultPostAction() ],
       redo: [ this.createDefaultPreAction(), this.createDefaultPostAction() ]
-    }
+    };
+  }
+
+  clearUndoRedo(): void {
+    this.cmdDone = [];
+    this.cmdUndone = [];
   }
 
   saveState(): void {
-    // TODO : J'ai changé plein de tucs. Tu copiais des référecences Nico
     const drawZone = this.svgStructure.drawZone;
     const length = drawZone.children.length;
     const toPush = new Array(length);
@@ -54,15 +65,15 @@ export class UndoRedoService {
 
     if (!this.actions.undo[0].overrideDefaultBehaviour) {
       this.undoBase();
+      console.log('undo base');
     }
-
-    if (this.actions.undo[1].enabled && this.actions.undo[1].functionDefined) {
+    if (this.actions.undo[1].functionDefined) {
       (this.actions.undo[1].function as () => void)();
     }
 
   }
 
-  undoBase() {
+  undoBase(): void {
     if (this.cmdDone.length !== 0) {
       const lastCommand = this.cmdDone.pop();
       this.cmdUndone.push(lastCommand as SVGElement[]);
@@ -80,12 +91,12 @@ export class UndoRedoService {
       this.redoBase();
     }
 
-    if (this.actions.redo[1].enabled && this.actions.redo[1].functionDefined) {
+    if (this.actions.redo[1].functionDefined) {
       (this.actions.redo[1].function as () => void)();
     }
   }
 
-  redoBase() {
+  redoBase(): void {
     if (this.cmdUndone.length) {
       const lastCommand = this.cmdUndone.pop();
       this.cmdDone.push(lastCommand as SVGElement[]);
@@ -94,15 +105,13 @@ export class UndoRedoService {
   }
 
   refresh(node: ChildNode[]): void {
-    // TODO : Nicolas. Look if it make sense. J'ai changé des trucs
     for (const element of Array.from(this.svgStructure.drawZone.childNodes)) {
       element.remove();
     }
-    const nodeChildrens = node ? Array.from(node) : [];
+    const nodeChildrens = node ? Array.from(node) : this.initialCommand;
     for (const element of nodeChildrens) {
-      this.svgStructure.drawZone.appendChild(element);
+      this.svgStructure.drawZone.appendChild(element.cloneNode(true));
     }
-
   }
 
   canUndo(): boolean {
@@ -118,43 +127,41 @@ export class UndoRedoService {
       enabled: false,
       overrideDefaultBehaviour: false,
       overrideFunctionDefined: false
-    }
+    };
   }
 
   private createDefaultPostAction(): PostAction {
     return {
-      enabled: false,
       functionDefined: false,
-    }
+    };
   }
 
-  setPreUndoAction(action: PreAction) {
+  setPreUndoAction(action: PreAction): void {
     this.actions.undo[0] = action;
   }
 
-  setPostUndoAction(action: PostAction) {
+  setPostUndoAction(action: PostAction): void {
     this.actions.undo[1] = action;
   }
 
-  setPreRedoAction(action: PreAction) {
-    this.actions.undo[0] = action;
+  setPreRedoAction(action: PreAction): void {
+    this.actions.redo[0] = action;
   }
 
-  setPostRedoAction(action: PostAction) {
-    this.actions.undo[1] = action;
+  setPostRedoAction(action: PostAction): void {
+    this.actions.redo[1] = action;
   }
 
 }
 
-interface PreAction {
-  enabled: boolean,
-  overrideDefaultBehaviour: boolean,
-  overrideFunctionDefined: boolean
-  overrideFunction?: () => void
+export interface PreAction {
+  enabled: boolean;
+  overrideDefaultBehaviour: boolean;
+  overrideFunctionDefined: boolean;
+  overrideFunction?: () => void;
 }
 
-interface PostAction {
-  enabled: boolean,
-  functionDefined: boolean,
-  function?: () => void
+export interface PostAction {
+  functionDefined: boolean;
+  function?: () => void;
 }

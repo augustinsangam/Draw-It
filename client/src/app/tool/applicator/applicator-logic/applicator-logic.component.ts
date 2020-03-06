@@ -1,4 +1,4 @@
-import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { ColorService } from '../../color/color.service';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import {UndoRedoService} from '../../undo-redo/undo-redo.service';
@@ -9,9 +9,13 @@ import {UndoRedoService} from '../../undo-redo/undo-redo.service';
   styleUrls: ['./applicator-logic.component.scss']
 })
 export class ApplicatorLogicComponent
-  extends ToolLogicDirective implements OnDestroy {
+  extends ToolLogicDirective implements OnDestroy, OnInit {
 
   private allListenners: (() => void)[];
+  private handlers: {
+    left: ($event: MouseEvent) => void,
+    right: ($event: MouseEvent) => void,
+  };
 
   constructor(private renderer: Renderer2,
               private colorService: ColorService,
@@ -19,39 +23,42 @@ export class ApplicatorLogicComponent
     super();
     this.allListenners = [];
     this.undoRedoService.resetActions();
+    this.initialiseHandlers();
   }
 
-  private handlers = {
-    left: ($event: MouseEvent) => {
-      if (this.isSvgElement($event.target as SVGElement)) {
-        if ($event.target instanceof SVGPathElement) {
-            ($event.target as SVGElement)
-          .setAttribute('stroke', this.colorService.primaryColor);
-            this.undoRedoService.saveState();
-        } else {
-          const fill = ($event.target as SVGElement).getAttribute('fill');
-          const isFilled = (fill !== null && fill !== 'none');
-          if (isFilled) {
-            ($event.target as SVGElement)
-            .setAttribute('fill', this.colorService.primaryColor);
-            this.undoRedoService.saveState();
+  private initialiseHandlers(): void {
+
+    this.handlers = {
+      left: ($event: MouseEvent) => {
+        if (this.isADrawElement($event.target as SVGElement)) {
+          if ($event.target instanceof SVGPathElement) {
+              ($event.target as SVGElement)
+            .setAttribute('stroke', this.colorService.primaryColor);
+              this.undoRedoService.saveState();
+          } else {
+            const fill = ($event.target as SVGElement).getAttribute('fill');
+            const isFilled = (fill !== null && fill !== 'none');
+            if (isFilled) {
+              ($event.target as SVGElement)
+              .setAttribute('fill', this.colorService.primaryColor);
+              this.undoRedoService.saveState();
+            }
           }
         }
+      },
+      right: ($event: MouseEvent) => {
+        $event.preventDefault();
+        if (this.isADrawElement($event.target as SVGElement)
+          && !($event.target instanceof SVGPathElement)) {
+          ($event.target as SVGElement)
+          .setAttribute('stroke', this.colorService.secondaryColor);
+          this.undoRedoService.saveState();
+        }
       }
-    },
-    right: ($event: MouseEvent) => {
-      $event.preventDefault();
-      if (this.isSvgElement($event.target as SVGElement)
-        && !($event.target instanceof SVGPathElement)) {
-        ($event.target as SVGElement)
-        .setAttribute('stroke', this.colorService.secondaryColor);
-        this.undoRedoService.saveState();
-      }
-    }
-  };
+    };
+  }
 
-  // tslint:disable-next-line: use-lifecycle-interface
-  ngOnInit() {
+  ngOnInit(): void {
 
     this.allListenners.push(
       this.renderer.listen(this.svgStructure.root, 'click',
@@ -65,12 +72,14 @@ export class ApplicatorLogicComponent
     this.svgStructure.root.style.cursor = 'crosshair';
   }
 
-  private isSvgElement(element: SVGElement): boolean {
-    return element !== this.svgStructure.root;
+  private isADrawElement(element: SVGElement): boolean {
+    return this.svgStructure.drawZone.contains(element);
   }
 
-  ngOnDestroy() {
-    this.allListenners.forEach((end) => {end()});
+  ngOnDestroy(): void {
+    this.allListenners.forEach((end) => {
+      end();
+    });
     this.undoRedoService.resetActions();
   }
 

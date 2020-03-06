@@ -10,13 +10,14 @@
     <p>Taille des carrés</p>
     <div class="squareSize">
       <mat-slider min="{{service.MIN_SQUARESIZE}}" max="{{service.MAX_SQUARESIZE}}" step=1
+                  value="{{service.squareSize}}"
                   (input)="onSquareSizeChange()"
                   (change)="onSquareSizeChange()"
                   formControlName="squareSizeSlider"
                   #squareSizeSlider>
       </mat-slider>
       <mat-form-field>
-        <input readonly matInput formControlName="squareSizeFormField" />
+        <input readonly matInput formControlName="squareSizeFormField" value="{{service.squareSize}}"/>
         <span matSuffix>px</span>
       </mat-form-field>
     </div>
@@ -24,13 +25,15 @@
     <p>Opacité</p>
     <div class="opacity">
       <mat-slider min=0.10 max=1.0 step="0.01"
+                  value="{{service.opacity}}"
                   (input)="onOpacityChange()"
                   (change)="onOpacityChange()"
                   formControlName="opacitySlider"
                   #opacitySlider>
       </mat-slider>
       <mat-form-field>
-        <input readonly matInput formControlName="opacityFormField" />
+        <input readonly matInput formControlName="opacityFormField" value="{{service.opacity}}"/>
+        <span matSuffix>%</span>
       </mat-form-field>
     </div>
   </div>

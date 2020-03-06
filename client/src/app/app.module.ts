@@ -29,26 +29,38 @@ import { AppComponent } from './app.component';
 import { MaterialModule } from './material.module';
 import {
   DocumentationComponent
-} from './pages/documentation/documentation.component';
+} from './overlay/pages/documentation/documentation.component';
 import {
   ExportComponent
-} from './pages/export/export.component';
+} from './overlay/pages/export/export.component';
+import {
+  DeleteConfirmationDialogComponent
+} from './overlay/pages/gallery/deleteconfirmation-dialog.component';
+import {
+  GalleryCardComponent
+} from './overlay/pages/gallery/gallery-card/gallery-card.component';
+import { GalleryComponent } from './overlay/pages/gallery/gallery.component';
+import { TagsFilterComponent } from './overlay/pages/gallery/tags-filter/tags-filter.component';
 import {
   HomeComponent
-} from './pages/home/home.component';
+} from './overlay/pages/home/home.component';
 import {
   ConfirmationDialogComponent
-} from './pages/new-draw/confirmation-dialog.component';
-import { NewDrawComponent } from './pages/new-draw/new-draw.component';
+} from './overlay/pages/new-draw/confirmation-dialog.component';
+import { NewDrawComponent } from './overlay/pages/new-draw/new-draw.component';
 import {
   PaletteDialogComponent
-} from './pages/new-draw/palette-dialog.component';
+} from './overlay/pages/new-draw/palette-dialog.component';
+import { SaveComponent } from './overlay/pages/save/save.component';
 import {
-  PanelComponent } from './panel/panel.component';
+  PanelComponent
+} from './panel/panel.component';
 import {
-  SidebarComponent } from './sidebar/sidebar.component';
+  SidebarComponent
+} from './sidebar/sidebar.component';
 import {
-  SvgComponent } from './svg/svg.component';
+  SvgComponent
+} from './svg/svg.component';
 import {
   ApplicatorLogicComponent
 } from './tool/applicator/applicator-logic/applicator-logic.component';
@@ -60,18 +72,15 @@ import {
 } from './tool/color/color-panel/color-panel.component';
 import {
   ColorPickerContentComponent
-// tslint:disable-next-line: max-line-length
 } from './tool/color/color-panel/color-picker-content/color-picker-content.component';
 import {
   ColorPickerItemComponent
 } from './tool/color/color-panel/color-picker-item/color-picker-item.component';
 import {
   AerosolLogicComponent
-// tslint:disable-next-line: max-line-length
 } from './tool/drawing-instruments/aerosol/aerosol-logic/aerosol-logic.component';
 import {
   AerosolPanelComponent
-// tslint:disable-next-line: max-line-length
 } from './tool/drawing-instruments/aerosol/aerosol-panel/aerosol-panel.component';
 import {
   BrushLogicComponent
@@ -143,9 +152,11 @@ import {
     ColorPickerContentComponent,
     ColorPickerItemComponent,
     ConfirmationDialogComponent,
+    DeleteConfirmationDialogComponent,
     DocumentationComponent,
     EllipseLogicComponent,
     EllipsePanelComponent,
+    GalleryComponent,
     EraserPanelComponent,
     EraserLogicComponent,
     HomeComponent,
@@ -156,10 +167,13 @@ import {
     PaletteDialogComponent,
     PencilLogicComponent,
     PencilPanelComponent,
+    PolygoneLogicComponent,
+    PolygonePanelComponent,
     RectangleLogicComponent,
     RectanglePanelComponent,
     SidebarComponent,
     SvgComponent,
+    GalleryCardComponent,
     SelectionPanelComponent,
     SelectionLogicComponent,
     PolygoneLogicComponent,
@@ -173,6 +187,8 @@ import {
     ApplicatorLogicComponent,
     GridLogicComponent,
     GridPanelComponent,
+    SaveComponent,
+    TagsFilterComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -200,13 +216,15 @@ import {
     EraserPanelComponent,
     PaletteDialogComponent,
     ConfirmationDialogComponent,
+    DeleteConfirmationDialogComponent,
     DocumentationComponent,
     EllipseLogicComponent,
     EllipsePanelComponent,
+    GalleryComponent,
+    HomeComponent,
     ExportComponent,
     LineLogicComponent,
     LinePanelComponent,
-    HomeComponent,
     NewDrawComponent,
     PencilLogicComponent,
     PencilPanelComponent,
@@ -221,7 +239,8 @@ import {
     SelectionLogicComponent,
     SelectionPanelComponent,
     GridLogicComponent,
-    GridPanelComponent
+    GridPanelComponent,
+    SaveComponent,
   ],
   bootstrap: [
     AppComponent,

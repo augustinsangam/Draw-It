@@ -213,4 +213,12 @@ describe('ColorPanelComponent', () => {
     component.colorService.backgroundColor = 'rgba(255, 255, 255, 1)';
     expect(component['getStartColor']()).toEqual('#FFFFFF');
   });
+
+  it('#The pannel should update when primary or secondary color change', () => {
+    const spyOnInit = spyOn(component, 'ngOnInit');
+    const spyAfterViewInit = spyOn(component, 'ngAfterViewInit');
+    component.colorService.change.next();
+    expect(spyOnInit).toHaveBeenCalled();
+    expect(spyAfterViewInit).toHaveBeenCalled();
+  });
 });

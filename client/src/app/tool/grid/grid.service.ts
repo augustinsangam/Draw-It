@@ -1,6 +1,6 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { SvgService } from 'src/app/svg/svg.service';
-import { Dimension } from '../shape/common/Rectangle';
+import { Dimension } from '../shape/common/rectangle';
 import { ToolService } from '../tool.service';
 
 @Injectable({
@@ -8,8 +8,11 @@ import { ToolService } from '../tool.service';
 })
 export class GridService extends ToolService {
 
-  readonly MAX_SQUARESIZE = 400;
-  readonly MIN_SQUARESIZE = 5;
+  readonly MAX_SQUARESIZE: number = 400;
+  readonly MIN_SQUARESIZE: number = 5;
+  protected readonly DEFAULT_OPACITY: number = 0.4;
+  protected readonly DEFAULT_SQUARESIZE: number = 100;
+  protected readonly SQUARESIZE_INCREMENT: number = 5;
 
   active: boolean;
   opacity: number;
@@ -23,46 +26,45 @@ export class GridService extends ToolService {
               private svg: SvgService
   ) {
     super();
-    this.squareSize = 100;
-    this.opacity = 0.4;
+    this.squareSize = this.DEFAULT_SQUARESIZE;
+    this.opacity = this.DEFAULT_OPACITY;
     this.active = false;
     this.renderer = rendererFactory.createRenderer(null, null);
   }
 
-  keyEvHandler(keyCode: string) {
+  keyEvHandler(keyCode: string): void {
     switch (keyCode) {
-      case 'KeyG': {
+      case 'g': {
         this.active = !this.active;
         break;
       }
-      case 'NumpadAdd': {
+      case '+': {
         if (this.active && this.squareSize < this.MAX_SQUARESIZE) {
-          this.squareSize += 5 - (this.squareSize % 5);
+          this.squareSize += this.SQUARESIZE_INCREMENT - (this.squareSize % this.SQUARESIZE_INCREMENT);
         }
         break;
       }
-      case 'NumpadSubtract': {
+      case '-': {
         if (this.active && this.squareSize > this.MIN_SQUARESIZE) {
-          this.squareSize % 5 === 0 ?
-            this.squareSize -= 5 : this.squareSize -= this.squareSize % 5;
+          this.squareSize % this.SQUARESIZE_INCREMENT === 0 ?
+            this.squareSize -= this.SQUARESIZE_INCREMENT : this.squareSize -= this.squareSize % this.SQUARESIZE_INCREMENT;
         }
         break;
       }
-      default: { break }
+      default:
+        break;
     }
     this.handleGrid();
   }
 
-  handleGrid() {
-    if (this.svgDimensions === undefined) {
-      const width = this.svg.structure.root.getAttribute('width');
-      const height = this.svg.structure.root.getAttribute('height');
-      if (width != null && height != null) {
-        this.svgDimensions = {
-          width: +width,
-          height: +height
-        }
-      }
+  handleGrid(): void {
+    const width = this.svg.structure.root.getAttribute('width');
+    const height = this.svg.structure.root.getAttribute('height');
+    if (width != null && height != null) {
+      this.svgDimensions = {
+        width: +width,
+        height: +height
+      };
     }
 
     if (!!this.grid) {
@@ -94,15 +96,15 @@ export class GridService extends ToolService {
     for (let i = 0; i < this.svgDimensions.width;
       i += this.squareSize) {
       stringPath += ' M ' + i.toString() + ',0'
-        + ' L' + i.toString() + ',' + this.svgDimensions.height
+        + ' L' + i.toString() + ',' + this.svgDimensions.height;
     }
     // lignes horizontales
     for (let i = 0; i < this.svgDimensions.height;
       i += this.squareSize) {
       stringPath += ' M 0' + ',' + i.toString()
-        + ' L ' + this.svgDimensions.width + ',' + i.toString()
+        + ' L ' + this.svgDimensions.width + ',' + i.toString();
     }
 
-    return stringPath
+    return stringPath;
   }
 }
