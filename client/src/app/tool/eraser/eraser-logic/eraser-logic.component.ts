@@ -139,14 +139,14 @@ export class EraserLogicComponent
     const [startPoint, endPoint] = this.getCorners();
     const rectangleObject =
       new Rectangle(this.renderer, this.eraser, new MathService());
-    rectangleObject.setParameters(BackGroundProperties.None,
+    rectangleObject.setParameters(BackGroundProperties.Filled,
       StrokeProperties.Filled);
     rectangleObject.dragRectangle(startPoint, endPoint);
     rectangleObject.setCss({
       strokeWidth: CONSTANTS.STROKE_WIDTH,
       strokeColor: CONSTANTS.RED_TRANSPARENT,
-      fillColor: 'none',
-      opacity: '0'
+      fillColor: '#FFFFFF',
+      opacity: '1'
     });
   }
 
@@ -158,6 +158,7 @@ export class EraserLogicComponent
   private markElementsInZone(x: number, y: number): Set<SVGElement> {
     const selectedElements = new Set<SVGElement>();
     const halfSize = this.service.size / 2;
+    this.hideEraser();
     for (let i = x - halfSize; i <= x + halfSize; i += CONSTANTS.PIXEL_INCREMENT) {
       for (let j = y - halfSize; j <= y + halfSize; j += CONSTANTS.PIXEL_INCREMENT) {
         const element = document.elementFromPoint(i, j);
@@ -167,6 +168,7 @@ export class EraserLogicComponent
         }
       }
     }
+    this.drawEraser();
     this.markedElements.clear();
     selectedElements.forEach((element: SVGElement) => {
       const stroke = element.getAttribute('stroke');
