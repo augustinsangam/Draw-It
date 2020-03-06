@@ -64,6 +64,7 @@ export class UndoRedoService {
     }
     if (!this.actions.undo[0].overrideDefaultBehaviour) {
       this.undoBase();
+      console.log('undo base');
     }
     if (this.actions.undo[1].functionDefined) {
       (this.actions.undo[1].function as () => void)();
@@ -108,9 +109,8 @@ export class UndoRedoService {
     }
     const nodeChildrens = node ? Array.from(node) : this.initialCommand;
     for (const element of nodeChildrens) {
-      this.svgStructure.drawZone.appendChild(element);
+      this.svgStructure.drawZone.appendChild(element.cloneNode(true));
     }
-
   }
 
   canUndo(): boolean {
