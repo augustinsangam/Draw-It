@@ -4,10 +4,10 @@ import { FormControl } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteSelectedEvent, MatChipInputEvent, MatSlideToggle } from '@angular/material';
 import { Observable, Subject } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-// import { GalleryDraw } from '../gallery.component';s
 
-const MINTAGLENGTH = Number('3');
-const MAXTAGLENGTH = Number('21');
+const MIN_TAG_LENGTH = 3;
+const MAX_TAG_LENGTH = 21;
+const NOT_FOUND = -1;
 
 export interface Tags {
   addedTags: string[];
@@ -23,16 +23,10 @@ export interface Tags {
 })
 export class TagsFilterComponent implements OnInit {
 
-  // Determine si la recherche se fait avec OU ou ET
-  protected separatorKeysCodes: number[] = [ENTER, COMMA];
-  protected addedTags: string[];
-  protected allTags: string[];
-  protected filteredTags: Observable<string[]>;
-  protected tagCtrl: FormControl;
+  // TODO: protected methodes
 
   @Input() tags: Observable<string[]>;
   @Input() selectedTag: Observable<string>;
-
   @Output() filteredTagsChange: Subject<[string[], boolean]>;
 
   @ViewChild('searchToggleRef', {
@@ -50,10 +44,17 @@ export class TagsFilterComponent implements OnInit {
     read: MatAutocomplete
   }) protected matAutocomplete: MatAutocomplete;
 
+  protected separatorKeysCodes: number[];
+  protected addedTags: string[];
+  protected allTags: string[];
+  protected filteredTags: Observable<string[]>;
+  protected tagCtrl: FormControl;
+
   constructor() {
-    this.allTags = new Array<string>(),
-    this.addedTags = new Array<string>(),
-    this.tagCtrl = new FormControl(),
+    this.separatorKeysCodes = [ENTER, COMMA];
+    this.allTags = [];
+    this.addedTags = [];
+    this.tagCtrl = new FormControl();
     this.filteredTags = this.tagCtrl.valueChanges.pipe(
       startWith(null),
       map((tag) => tag ? this._filter(tag) : this._filter2()));
@@ -75,21 +76,18 @@ export class TagsFilterComponent implements OnInit {
     const input = event.input;
     const value = event.value;
 
-    // Add our tag
     const toAdd = (value || '').trim();
-    if (this.addedTags.indexOf(toAdd) === -1 &&
-        toAdd.length >= MINTAGLENGTH &&
-        toAdd.length <= MAXTAGLENGTH) {
+    if (this.addedTags.indexOf(toAdd) === NOT_FOUND &&
+        toAdd.length >= MIN_TAG_LENGTH &&
+        toAdd.length <= MAX_TAG_LENGTH) {
       this.addedTags.push(value.trim());
       input.value = '';
     }
-
-    // Reset the input value
+    // TODO : VOIR SI PERTINENT
     if (input) {
       input.value = '';
     }
     this.filteredTagsChangeHandler();
-
     this.tagCtrl.setValue(null);
   }
 
@@ -114,12 +112,12 @@ export class TagsFilterComponent implements OnInit {
   private _filter(value: string): string[] {
     return this.allTags.filter(
       (tag) => tag.toLowerCase().indexOf(value.toLowerCase()) === 0 &&
-        this.addedTags.indexOf(tag) === -1
+        this.addedTags.indexOf(tag) === NOT_FOUND
     );
   }
 
   private _filter2(): string[] {
-    return this.allTags.filter((tag) => this.addedTags.indexOf(tag) === -1);
+    return this.allTags.filter((tag) => this.addedTags.indexOf(tag) === NOT_FOUND);
   }
 
   protected filteredTagsChangeHandler(): void {
@@ -127,7 +125,7 @@ export class TagsFilterComponent implements OnInit {
   }
 
   addTag(tag: string): void {
-    if (this.addedTags.indexOf(tag) === -1) {
+    if (this.addedTags.indexOf(tag) === NOT_FOUND) {
       this.addedTags.push(tag);
     }
     this.tagCtrl.setValue(null);
