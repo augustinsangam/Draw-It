@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { MatDialogConfig, MatDialogRef, MatSnackBar } from '@angular/material';
+import { Shortcut } from '../shortcut-handler/shortcut';
 import {
-  Shortcut, ShortcutHandlerService
+  ShortcutHandlerService
 } from '../shortcut-handler/shortcut-handler.service';
 import { SvgService, SvgShape } from '../svg/svg.service';
 import { ColorService } from '../tool/color/color.service';
