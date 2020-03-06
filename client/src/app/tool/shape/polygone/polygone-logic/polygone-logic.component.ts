@@ -83,7 +83,7 @@ export class PolygoneLogicComponent extends ToolLogicDirective
             this.mouseDownPoint, currentPoint);
 
           this.getPolygone().drawPolygonFromRectangle(
-            this.mouseDownPoint, currentPoint);
+            this.mouseDownPoint, currentPoint, this.service.thickness);
         }
       }
     );

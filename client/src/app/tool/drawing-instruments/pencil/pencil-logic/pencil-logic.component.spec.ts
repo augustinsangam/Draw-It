@@ -6,11 +6,13 @@ import {
   TestBed,
   tick
 } from '@angular/core/testing';
+import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { PencilService } from '../pencil.service';
 import { PencilLogicComponent } from './pencil-logic.component';
 
-// tslint:disable:no-string-literal
+// TODO : Ask the chargé de lab
+// tslint:disable:no-string-literal no-any
 describe('PencilLogicComponent', () => {
   let component: PencilLogicComponent;
   let fixture: ComponentFixture<PencilLogicComponent>;
@@ -41,6 +43,10 @@ describe('PencilLogicComponent', () => {
     component.svgStructure.root.appendChild(component.svgStructure.drawZone);
     component.svgStructure.root.appendChild(component.svgStructure.temporaryZone);
     component.svgStructure.root.appendChild(component.svgStructure.endZone);
+
+    (TestBed.get(UndoRedoService) as UndoRedoService)
+    .intialise(component.svgStructure);
+
     mouseEvLeft = new MouseEvent('mousedown', {
       offsetX: 10,
       offsetY: 30,

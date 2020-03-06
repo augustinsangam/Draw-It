@@ -8,14 +8,14 @@ import {
 } from './shortcut-handler.service';
 
 // tslint:disable no-string-literal
-fdescribe('ShortcutHandlerService', () => {
+describe('ShortcutHandlerService', () => {
   let service: ShortcutHandlerService;
   let debugVariable = 1;
   const debugFunction1: ShortcutCallBack = (event: KeyboardEvent) => {
     debugVariable += 2;
   };
   const debugFunction2: ShortcutCallBack = (event: KeyboardEvent) => {
-    debugVariable += (5);
+    debugVariable += 5;
   };
 
   beforeEach(() => {

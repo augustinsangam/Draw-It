@@ -33,24 +33,15 @@ export class MultipleSelection extends Selection {
 
   private findSelectedElements(elements: Set<SVGElement>): void {
     elements.forEach((element) => {
-      if (element instanceof SVGElement) {
-        const elementZone = this.getZone(element);
-        const intersection = this.compareZone.intersection(elementZone);
-        // TODO : J'ai implémenté un deep test de base. Mais ce n'est demandé à ce qu'il
-        // parait. Je le garde pour le futur au cas où je decide de continuer cette
-        // application pour faire celle de mes rêves.
-        // Pour faire un deeptest utiliser :
-        // if (intersection[0] && intersection[1]
-        //    .deepTestPass(element as SVGGeometryElement, this.point))
-        // Il faut aussi passer un SVGPoint au constructeur
-        if (intersection[0]) {
-          // Les zones et les élements se touchent
-          this.selectedElements.add(element);
-          if (!!this.zone) {
-            this.zone = this.zone.union(elementZone);
-          } else {
-            this.zone = elementZone;
-          }
+      const elementZone = this.getZone(element);
+      const intersection = this.compareZone.intersection(elementZone);
+      if (intersection[0]) {
+        // Les zones et les élements se touchent
+        this.selectedElements.add(element);
+        if (!!this.zone) {
+          this.zone = this.zone.union(elementZone);
+        } else {
+          this.zone = elementZone;
         }
       }
     });
@@ -59,12 +50,10 @@ export class MultipleSelection extends Selection {
   private selectAll(elements: Set<SVGElement>): void {
     this.selectedElements = elements;
     elements.forEach((element) => {
-      if (element instanceof SVGElement) {
-        if (!!this.zone) {
-          this.zone = this.zone.union(this.getZone(element));
-        } else {
-          this.zone = this.getZone(element);
-        }
+      if (!!this.zone) {
+        this.zone = this.zone.union(this.getZone(element));
+      } else {
+        this.zone = this.getZone(element);
       }
     });
   }

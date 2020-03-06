@@ -25,7 +25,7 @@ import { PanelComponent } from './panel.component';
 
 // tslint:disable: no-magic-numbers
 // tslint:disable: no-any
-fdescribe('PanelComponent', () => {
+describe('PanelComponent', () => {
   let component: PanelComponent;
   let fixture: ComponentFixture<PanelComponent>;
 

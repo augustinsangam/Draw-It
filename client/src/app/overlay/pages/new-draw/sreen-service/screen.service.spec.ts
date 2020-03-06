@@ -23,7 +23,7 @@ describe('ScreenService', () => {
     const currentScreenSize = {
       width: innerWidth - ScreenServiceModule.sideBarWidth,
       height: innerHeight
-    }
+    };
     expect(currentScreenSize).toEqual(service.getCurrentSize());
   });
 

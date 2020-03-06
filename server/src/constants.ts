@@ -1,4 +1,4 @@
-const COLOR = {
+const COLORS = {
 	reset: '\x1b[0m',
 	bright: '\x1b[1m',
 	dim: '\x1b[2m',
@@ -32,4 +32,21 @@ const COLOR = {
 	},
 };
 
-export { COLOR };
+enum StatusCode {
+	CREATED = 201,
+	ACCEPTED,
+	NO_CONTENT = 204,
+	NOT_ACCEPTABLE = 406,
+	GONE = 410,
+	IM_A_TEAPOT = 418,
+	INTERNAL_SERVER_ERROR = 500,
+}
+
+const TYPES = {
+	Application: Symbol.for('Application'),
+	Database: Symbol.for('Database'),
+	Router: Symbol.for('Router'),
+	Server: Symbol.for('Server'),
+};
+
+export { COLORS, StatusCode, TYPES };

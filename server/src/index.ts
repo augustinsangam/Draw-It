@@ -1,8 +1,8 @@
 import log from 'loglevel';
 
+import { TYPES } from './constants';
 import { myContainer } from './inversify.config';
 import { Server } from './server';
-import { TYPES } from './types';
 
 log.setLevel('trace');
 

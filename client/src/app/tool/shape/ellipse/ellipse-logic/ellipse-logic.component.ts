@@ -118,7 +118,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
   private onKeyDown(keyEv: KeyboardEvent): void {
     if (this.onDrag) {
       if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
-        this.getEllipse().simulateCircle(this.initialPoint, this.currentPoint);
+        this.getEllipse().simulateCircle(this.initialPoint, this.currentPoint, this.service.thickness);
       }
     }
   }
@@ -126,7 +126,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
   private onKeyUp(keyEv: KeyboardEvent): void {
     if (this.onDrag) {
       if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
-        this.getEllipse().simulateEllipse(this.initialPoint, this.currentPoint);
+        this.getEllipse().simulateEllipse(this.initialPoint, this.currentPoint, this.service.thickness);
       }
     }
   }
@@ -156,7 +156,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
         this.currentPoint,
         this.renderer,
         ellipse,
-        this.mathService
+        this.mathService,
       ));
       this.setEllipseProperties();
       this.onDrag = true;
@@ -184,9 +184,9 @@ export class EllipseLogicComponent extends ToolLogicDirective
 
   private viewTemporaryForm(mouseEv: MouseEvent): void {
     if (mouseEv.shiftKey) {
-      this.getEllipse().simulateCircle(this.initialPoint, this.currentPoint);
+      this.getEllipse().simulateCircle(this.initialPoint, this.currentPoint, this.service.thickness);
     } else {
-      this.getEllipse().simulateEllipse(this.initialPoint, this.currentPoint);
+      this.getEllipse().simulateEllipse(this.initialPoint, this.currentPoint, this.service.thickness);
     }
   }
 

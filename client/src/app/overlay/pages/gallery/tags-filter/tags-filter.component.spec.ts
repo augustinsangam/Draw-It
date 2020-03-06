@@ -9,7 +9,7 @@ import { TagsFilterComponent } from './tags-filter.component';
 
 // tslint:disable: no-string-literal
 
-fdescribe('TagsFilterComponent', () => {
+describe('TagsFilterComponent', () => {
   let component: TagsFilterComponent;
   let fixture: ComponentFixture<TagsFilterComponent>;
 

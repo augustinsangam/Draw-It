@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatDialog, MatDialogConfig, MatDialogRef, MatSnackBar } from '@angular/material';
+import { MatDialogConfig, MatDialogRef, MatSnackBar } from '@angular/material';
 import {
   Shortcut, ShortcutHandlerService
 } from '../shortcut-handler/shortcut-handler.service';
@@ -10,6 +10,7 @@ import {
 } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
 import { UndoRedoService } from '../tool/undo-redo/undo-redo.service';
+import { OverlayManager } from './overlay-manager';
 import { OverlayPages } from './overlay-pages';
 import {
   DocumentationComponent
@@ -31,7 +32,7 @@ const CONSTANTS = {
 })
 export class OverlayService {
 
-  private dialog: MatDialog;
+  private dialog: OverlayManager;
   private dialogRefs: DialogRefs;
   private svgService: SvgService;
 
@@ -44,7 +45,7 @@ export class OverlayService {
     this.initialiseShortcuts();
   }
 
-  intialise(dialog: MatDialog, svgService: SvgService): void {
+  intialise(dialog: OverlayManager, svgService: SvgService): void {
     this.dialog = dialog;
     this.dialogRefs = {
       home: (undefined as unknown) as MatDialogRef<HomeComponent>,
@@ -88,9 +89,7 @@ export class OverlayService {
       this.getCommomDialogOptions()
     );
     this.dialogRefs.home.disableClose = !closable;
-    this.shortcutHanler.desactivateAll();
     this.dialogRefs.home.afterClosed().subscribe((result: string) => {
-      this.shortcutHanler.activateAll();
       this.openSelectedDialog(result);
     });
   }
@@ -112,14 +111,12 @@ export class OverlayService {
   }
 
   private openNewDrawDialog(): void {
-    this.shortcutHanler.desactivateAll();
     this.dialogRefs.newDraw = this.dialog.open(
       NewDrawComponent,
       this.getCommomDialogOptions()
     );
     this.dialogRefs.newDraw.disableClose = true;
     this.dialogRefs.newDraw.afterClosed().subscribe((resultNewDialog: string | SvgShape) => {
-      this.shortcutHanler.activateAll();
       this.closeNewDrawDialog(resultNewDialog);
     });
   }
@@ -138,14 +135,12 @@ export class OverlayService {
       height: '100vh',
       panelClass: 'documentation'
     };
-    this.shortcutHanler.desactivateAll();
     this.dialogRefs.documentation = this.dialog.open(
       DocumentationComponent,
       dialogOptions
     );
     this.dialogRefs.documentation.disableClose = false;
     this.dialogRefs.documentation.afterClosed().subscribe(() => {
-      this.shortcutHanler.activateAll();
       this.closeDocumentationDialog(fromHome);
     });
   }
@@ -155,16 +150,11 @@ export class OverlayService {
       width: '1000px',
       height: '90vh'
     };
-    this.shortcutHanler.desactivateAll();
     this.dialogRefs.export = this.dialog.open(
       ExportComponent,
       dialogOptions
     );
     this.dialogRefs.export.disableClose = true;
-    this.dialogRefs.export.afterClosed().subscribe(() => {
-      this.shortcutHanler.activateAll();
-    });
-
   }
 
   openSaveDialog(): void {
@@ -172,7 +162,6 @@ export class OverlayService {
       width: '1000px',
       height: '90vh'
     };
-    this.shortcutHanler.desactivateAll();
     this.dialogRefs.save = this.dialog.open(SaveComponent, dialogOptions);
     this.dialogRefs.save.disableClose = true;
     this.dialogRefs.save.afterClosed().subscribe((error?: string) => {
@@ -181,7 +170,6 @@ export class OverlayService {
   }
 
   private closeSaveDialog(error?: string): void {
-    this.shortcutHanler.activateAll();
     this.snackBar.open(error ? error : 'Succès', 'Ok', {
       duration: error ? CONSTANTS.SUCCES_DURATION : CONSTANTS.FAILURE_DURATION,
     });
@@ -200,14 +188,12 @@ export class OverlayService {
       panelClass: 'gallery',
       data: { drawInProgress: this.svgService.drawInProgress },
     };
-    this.shortcutHanler.desactivateAll();
     this.dialogRefs.gallery = this.dialog.open(
       GalleryComponent,
       dialogOptions,
     );
     this.dialogRefs.gallery.disableClose = false;
     this.dialogRefs.gallery.afterClosed().subscribe((option) => {
-      this.shortcutHanler.activateAll();
       this.closeGalleryDialog(fromHome, option);
     });
   }

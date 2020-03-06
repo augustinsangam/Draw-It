@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CommunicationService } from './communication.service';
+import { FilterService } from './filter.service';
 
-describe('CommunicationService', () => {
+describe('FilterService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: CommunicationService = TestBed.get(CommunicationService);
+    const service: FilterService = TestBed.get(FilterService);
     expect(service).toBeTruthy();
   });
 });

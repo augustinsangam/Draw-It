@@ -5,6 +5,7 @@ import {
   ComponentFixture,
   fakeAsync,
   TestBed,
+  tick,
 } from '@angular/core/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -42,8 +43,9 @@ import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 import { NewDrawComponent } from './new-draw.component';
 import { PaletteDialogComponent } from './palette-dialog.component';
 import { ScreenService } from './sreen-service/screen.service';
+import { ElementRef } from '@angular/core';
 
-// we remove this rule to have acces to some private
+// TODO : Ask the chargé de lab
 // tslint:disable: no-string-literal
 describe('NewDrawComponent', () => {
   let component: NewDrawComponent;
@@ -131,55 +133,60 @@ describe('NewDrawComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  // TODO : TODO
-  // it('#ngAfterViewInit should do smth when click', fakeAsync(() => {
-  //   const spyDialogOpen = spyOn(component['dialog'], 'open').and.callFake(
-  //     // On a besoin d'utiliser les funtion à cause du template
-  //     // tslint:disable-next-line: no-shadowed-variable only-arrow-functions
-  //     function <PaletteDialogComponent>():
-  //       MatDialogRef<PaletteDialogComponent> {
-  //       return ({
-  //         afterClosed: () => new Observable<any>()
-  //       } as unknown) as MatDialogRef<PaletteDialogComponent>;
-  //     }
-  //   );
-  //   component['palette'] = {
-  //     button: new ElementRef(component['renderer'].createElement('button'))
-  //   } as ColorPickerItemComponent;
-  //   component.ngAfterViewInit();
-  //   tick(500);
-  //   component['palette'].button.nativeElement.click();
-  //   setTimeout(() => {
-  //     expect(spyDialogOpen).toHaveBeenCalled();
-  //   }, 500);
-  //   tick(500);
-  // }));
+  it('#ngAfterViewInit should do smth when click', fakeAsync(() => {
+    const spyDialogOpen = spyOn(component['dialog'], 'open').and.callFake(
+      // On a besoin d'utiliser les funtion à cause du template
+      // tslint:disable-next-line: no-shadowed-variable only-arrow-functions
+      function <PaletteDialogComponent>():
+        MatDialogRef<PaletteDialogComponent> {
+        return ({
+          afterClosed: () => new Observable<any>()
+        } as unknown) as MatDialogRef<PaletteDialogComponent>;
+      }
+    );
+
+    component['palette'] =
+      new ElementRef(component['renderer'].createElement('div'));
+
+    component.ngAfterViewInit();
+
+    const halfSecond = 500;
+    tick(halfSecond);
+    component['palette'].nativeElement.click();
+    setTimeout(() => {
+      expect(spyDialogOpen).toHaveBeenCalled();
+    }, halfSecond);
+    tick(halfSecond);
+
+  }));
 
   it('#paletteCloseHandler should call closePaletteDialog', () => {
+    // La méthode est privée. On n'a pas le choix
+    // tslint:disable-next-line: no-any
     const spy = spyOn<any>(component, 'closePaletteDialog').and.callThrough();
     component['paletteCloseHandler']('#FFFFFF');
     expect(spy).toHaveBeenCalled();
   });
 
-  // it(
-  //   '#closePaletteDialog should call palette.' +
-  //   'updateColor with colorPicked if it is not undefine',
-  //   () => {
-  //     const spy = spyOn(component['palette'], 'updateColor');
-  //     component['closePaletteDialog']('#FFFFFF');
-  //     expect(spy).toHaveBeenCalledWith('#FFFFFF');
-  //   }
-  // );
+  it(
+    '#closePaletteDialog should call palette.' +
+    'updateColor with colorPicked if it is not undefine',
+    () => {
+      const spy = spyOn(component['renderer'], 'setStyle');
+      component['closePaletteDialog']('#FFFFFF');
+      expect(spy).toHaveBeenCalled();
+    }
+  );
 
-  // it(
-  //   '#closePaletteDialog should not call palette.updateColor' +
-  //   'if colorPiked is undefine',
-  //   () => {
-  //     const spy = spyOn(component['palette'], 'updateColor');
-  //     component['closePaletteDialog'](undefined);
-  //     expect(spy).toHaveBeenCalledTimes(0);
-  //   }
-  // );
+  it(
+    '#closePaletteDialog should not call palette.updateColor' +
+    'if colorPiked is undefine',
+    () => {
+      const spy = spyOn(component['form'], 'patchValue');
+      component['closePaletteDialog'](undefined);
+      expect(spy).not.toHaveBeenCalled();
+    }
+  );
 
   it(
     '#updateFormSize should not call form.patchVale()' +
@@ -278,7 +285,7 @@ describe('NewDrawComponent', () => {
 
   it('#Other', () => {
     const spy = spyOn(component['renderer'], 'listen');
-    // component['palette'] = undefined as unknown as ColorPickerItemComponent;
+    component['palette'] = undefined as unknown as ElementRef<HTMLElement>;
     component['ngAfterViewInit']();
     expect(spy).toHaveBeenCalledTimes(0);
   });

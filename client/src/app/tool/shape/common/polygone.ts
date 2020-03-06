@@ -23,7 +23,7 @@ export class Polygone extends AbstractShape {
     this.renderer.setAttribute(this.element, 'points', atribute);
   }
 
-  drawPolygonFromRectangle(mouseDownPoint: Point, oppositePoint: Point): void {
+  drawPolygonFromRectangle(mouseDownPoint: Point, oppositePoint: Point, border: number): void {
     const dimensions = this.mathService.getRectangleSize(
       mouseDownPoint,
       oppositePoint
@@ -33,7 +33,7 @@ export class Polygone extends AbstractShape {
       oppositePoint
     );
     const points: Point [] = this.mathService.getPolynomeCornersFromRectangle(
-      mouseDownPoint, upLeftCorner, dimensions, this.sides);
+      mouseDownPoint, upLeftCorner, dimensions, this.sides, border);
     this.insertPolygonInSVG(points);
     }
 }
