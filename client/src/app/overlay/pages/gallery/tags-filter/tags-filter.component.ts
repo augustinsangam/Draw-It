@@ -6,6 +6,9 @@ import { Observable, Subject } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 // import { GalleryDraw } from '../gallery.component';s
 
+const MINTAGLENGTH = Number('3');
+const MAXTAGLENGTH = Number('21');
+
 export interface Tags {
   addedTags: string[];
   allTags: string[];
@@ -21,10 +24,13 @@ export interface Tags {
 export class TagsFilterComponent implements OnInit {
 
   // Determine si la recherche se fait avec OU ou ET
-  separatorKeysCodes: number[] = [ENTER, COMMA];
-  tags: Tags;
+  protected separatorKeysCodes: number[] = [ENTER, COMMA];
+  protected addedTags: string[];
+  protected allTags: string[];
+  protected filteredTags: Observable<string[]>;
+  protected tagCtrl: FormControl;
 
-  @Input() allTags: Observable<string[]>;
+  @Input() tags: Observable<string[]>;
   @Input() selectedTag: Observable<string>;
 
   @Output() filteredTagsChange: Subject<[string[], boolean]>;
@@ -45,22 +51,19 @@ export class TagsFilterComponent implements OnInit {
   }) protected matAutocomplete: MatAutocomplete;
 
   constructor() {
-    this.tags = {
-      allTags: new Array<string>(),
-      addedTags: new Array<string>(),
-      tagCtrl: new FormControl(),
-      filteredTags: new Observable<string[]>(),
-    };
-    this.tags.filteredTags = this.tags.tagCtrl.valueChanges.pipe(
+    this.allTags = new Array<string>(),
+    this.addedTags = new Array<string>(),
+    this.tagCtrl = new FormControl(),
+    this.filteredTags = this.tagCtrl.valueChanges.pipe(
       startWith(null),
       map((tag) => tag ? this._filter(tag) : this._filter2()));
     this.filteredTagsChange = new Subject<[string[], boolean]>();
   }
 
   ngOnInit(): void {
-    this.allTags.subscribe((allTags) => {
-      this.tags.allTags = allTags;
-      this.tags.tagCtrl.setValue(null);
+    this.tags.subscribe((allTags) => {
+      this.allTags = allTags;
+      this.tagCtrl.setValue(null);
     });
 
     this.selectedTag.subscribe((tag) => {
@@ -74,10 +77,10 @@ export class TagsFilterComponent implements OnInit {
 
     // Add our tag
     const toAdd = (value || '').trim();
-    if (this.tags.addedTags.indexOf(toAdd) === -1 &&
-        toAdd.length >= 3 &&
-        toAdd.length <= 21) {
-      this.tags.addedTags.push(value.trim());
+    if (this.addedTags.indexOf(toAdd) === -1 &&
+        toAdd.length >= MINTAGLENGTH &&
+        toAdd.length <= MAXTAGLENGTH) {
+      this.addedTags.push(value.trim());
       input.value = '';
     }
 
@@ -87,47 +90,47 @@ export class TagsFilterComponent implements OnInit {
     }
     this.filteredTagsChangeHandler();
 
-    this.tags.tagCtrl.setValue(null);
+    this.tagCtrl.setValue(null);
   }
 
   remove(tag: string): void {
-    const index = this.tags.addedTags.indexOf(tag);
+    const index = this.addedTags.indexOf(tag);
 
     if (index >= 0) {
-      this.tags.addedTags.splice(index, 1);
+      this.addedTags.splice(index, 1);
     }
 
-    this.tags.tagCtrl.setValue(null);
+    this.tagCtrl.setValue(null);
     this.filteredTagsChangeHandler();
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.tags.addedTags.push(event.option.viewValue);
+    this.addedTags.push(event.option.viewValue);
     this.tagInput.nativeElement.value = '';
-    this.tags.tagCtrl.setValue(null);
+    this.tagCtrl.setValue(null);
     this.filteredTagsChangeHandler();
   }
 
   private _filter(value: string): string[] {
-    return this.tags.allTags.filter(
+    return this.allTags.filter(
       (tag) => tag.toLowerCase().indexOf(value.toLowerCase()) === 0 &&
-        this.tags.addedTags.indexOf(tag) === -1
+        this.addedTags.indexOf(tag) === -1
     );
   }
 
   private _filter2(): string[] {
-    return this.tags.allTags.filter((tag) => this.tags.addedTags.indexOf(tag) === -1);
+    return this.allTags.filter((tag) => this.addedTags.indexOf(tag) === -1);
   }
 
   protected filteredTagsChangeHandler(): void {
-    this.filteredTagsChange.next([this.tags.addedTags, this.searchToggleRef.checked]);
+    this.filteredTagsChange.next([this.addedTags, this.searchToggleRef.checked]);
   }
 
   addTag(tag: string): void {
-    if (this.tags.addedTags.indexOf(tag) === -1) {
-      this.tags.addedTags.push(tag);
+    if (this.addedTags.indexOf(tag) === -1) {
+      this.addedTags.push(tag);
     }
-    this.tags.tagCtrl.setValue(null);
+    this.tagCtrl.setValue(null);
     this.filteredTagsChangeHandler();
   }
 }

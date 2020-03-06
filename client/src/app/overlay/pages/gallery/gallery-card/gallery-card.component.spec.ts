@@ -4,6 +4,7 @@ import { MaterialModule } from 'src/app/material.module';
 import { GalleryCardComponent } from './gallery-card.component';
 
 // tslint:disable: no-magic-numbers
+// tslint:disable: no-string-literal
 
 fdescribe('GalleryCardComponent', () => {
   let component: GalleryCardComponent;
@@ -66,7 +67,7 @@ fdescribe('GalleryCardComponent', () => {
   it('#onLoad should call load.next()', () => {
     const spy = spyOn(component.load, 'next');
 
-    component.onLoad();
+    component['onLoad']();
 
     expect(spy).toHaveBeenCalled();
   });
@@ -74,7 +75,7 @@ fdescribe('GalleryCardComponent', () => {
   it('#onDelete should call delete.next()', () => {
     const spy = spyOn(component.delete, 'next');
 
-    component.onDelete();
+    component['onDelete']();
 
     expect(spy).toHaveBeenCalled();
   });
@@ -82,7 +83,7 @@ fdescribe('GalleryCardComponent', () => {
   it('#onClick should call tagClick.next() with "tag"', () => {
     const spy = spyOn(component.tagClick, 'next');
 
-    component.onClick('test1');
+    component['onClick']('test1');
 
     expect(spy).toHaveBeenCalledWith('test1');
   });

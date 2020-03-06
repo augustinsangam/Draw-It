@@ -25,19 +25,6 @@ export class GalleryCardComponent implements AfterViewInit {
     this.load = new Subject();
     this.delete = new Subject();
     this.tagClick = new Subject();
-    // this.draw = {
-    //   header: {
-    //     id: 0,
-    //     name: '',
-    //     tags: [],
-    //   },
-    //   shape: {
-    //     height: 0,
-    //     width: 0,
-    //     color: '#FFFFFF'
-    //   },
-    //   svg: new SVGGElement(),
-    // };
   }
 
   ngAfterViewInit(): void {
@@ -56,15 +43,15 @@ export class GalleryCardComponent implements AfterViewInit {
     this.renderer.appendChild(this.svgRef.nativeElement, this.draw.svg);
   }
 
-  onLoad(): void {
+  protected onLoad(): void {
     this.load.next(this.draw.header.id);
   }
 
-  onDelete(): void {
+  protected onDelete(): void {
     this.delete.next(this.draw.header.id);
   }
 
-  onClick(tag: string): void {
+  protected onClick(tag: string): void {
     this.tagClick.next(tag);
   }
 }

@@ -76,10 +76,6 @@ fdescribe('GalleryComponent', () => {
           provide: MatDialogRef,
           useValue: mockDialogRef
         },
-        // {
-        //   provide: CommunicationService,
-        //   useValue: mockCommunicationService,
-        // },
       ]
     }).overrideModule(BrowserDynamicTestingModule, {
       set: {
@@ -113,7 +109,7 @@ fdescribe('GalleryComponent', () => {
 
   it('#ajustImageWidth should set the padding of cardContent to 29 when width of saved draws is less than the width', () => {
     component['renderer'].setStyle(component['cardContent'].nativeElement, 'width', '400px');
-    component.galleryDrawTable.length = 1;
+    component['filteredGalleryDrawTable'].length = 1;
 
     component['ajustImagesWidth']();
 
@@ -122,17 +118,26 @@ fdescribe('GalleryComponent', () => {
 
   it('#ajustImageWidth should set the padding of cardContent to 29 when width of saved draws is more than the width', () => {
     component['renderer'].setStyle(component['cardContent'].nativeElement, 'width', '800px');
-    component.galleryDrawTable.length = 4;
+    component['filteredGalleryDrawTable'].length = 4;
 
     component['ajustImagesWidth']();
 
     expect(component['cardContent'].nativeElement.style.paddingLeft).toEqual('58px');
   });
 
-  it('#addTag shoul call selectedTag.next() with "tag"', () => {
-    const spy = spyOn(component.selectedTag, 'next');
+  it('#ajustImageWidth should set the padding of cardContent to 0 when there is no draw displayed', () => {
+    component['renderer'].setStyle(component['cardContent'].nativeElement, 'width', '800px');
+    component['filteredGalleryDrawTable'].length = 0;
 
-    component.addTag('test');
+    component['ajustImagesWidth']();
+
+    expect(component['cardContent'].nativeElement.style.paddingLeft).toEqual('0px');
+  });
+
+  it('#addTag shoul call selectedTag.next() with "tag"', () => {
+    const spy = spyOn(component['selectedTag'], 'next');
+
+    component['addTag']('test');
 
     expect(spy).toHaveBeenCalledWith('test');
   });
@@ -142,11 +147,11 @@ fdescribe('GalleryComponent', () => {
     testDrawsTable[1].header.tags = ['test1', 'test3'];
     testDrawsTable[2].header.tags = ['test3', 'test4'];
 
-    component.galleryDrawTable = Array.from(testDrawsTable);
+    component['galleryDrawTable'] = Array.from(testDrawsTable);
 
     component['filterGalleryTable']([['test1', 'test2'], false]);
 
-    expect(component.filteredGalleryDrawTable).toContain(testDrawsTable[0], testDrawsTable[1]);
+    expect(component['filteredGalleryDrawTable']).toContain(testDrawsTable[0], testDrawsTable[1]);
   });
 
   it('#filterGalleryTable should apply an AND filter on galleryDrawTable when "searchToggle" is true', () => {
@@ -154,11 +159,11 @@ fdescribe('GalleryComponent', () => {
     testDrawsTable[1].header.tags = ['test1', 'test3'];
     testDrawsTable[2].header.tags = ['test3', 'test4'];
 
-    component.galleryDrawTable = Array.from(testDrawsTable);
+    component['galleryDrawTable'] = Array.from(testDrawsTable);
 
     component['filterGalleryTable']([['test1', 'test2'], true]);
 
-    expect(component.filteredGalleryDrawTable).toContain(testDrawsTable[0]);
+    expect(component['filteredGalleryDrawTable']).toContain(testDrawsTable[0]);
   });
 
   it('#deleteDraw should call deleteCloseHandler() with "id" when dialogRefs.delete is closed', () => {
@@ -202,13 +207,13 @@ fdescribe('GalleryComponent', () => {
   });
 
   it('#deletePromiseHandler should remove the draw with "id" in galleryDrawTable when result is null', () => {
-    component.galleryDrawTable = Array.from(testDrawsTable);
+    component['galleryDrawTable'] = Array.from(testDrawsTable);
 
     component['deletePromiseHandler'](null, 0);
 
-    expect(component.galleryDrawTable[0]).toEqual(testDrawsTable[1]);
-    expect(component.galleryDrawTable[1]).toEqual(testDrawsTable[2]);
-    expect(component.galleryDrawTable.length).toBe(2);
+    expect(component['galleryDrawTable'][0]).toEqual(testDrawsTable[1]);
+    expect(component['galleryDrawTable'][1]).toEqual(testDrawsTable[2]);
+    expect(component['galleryDrawTable'].length).toBe(2);
   });
 
   it('#loadDraw should set dialogRefs.load.disableClose to true when data.drawInProgress is true', () => {
@@ -231,7 +236,7 @@ fdescribe('GalleryComponent', () => {
   });
 
   it('#loadDrawHandler should call dialogRef.close() when result is true', () => {
-    component.galleryDrawTable = Array.from(testDrawsTable);
+    component['galleryDrawTable'] = Array.from(testDrawsTable);
 
     component['loadDrawHandler'](true, 0);
 

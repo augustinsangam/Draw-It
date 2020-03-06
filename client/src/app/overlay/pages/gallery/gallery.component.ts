@@ -27,6 +27,8 @@ import { ScreenService } from '../new-draw/sreen-service/screen.service';
  * @title Chips Autocomplete
  */
 
+const CARDWIDTH = 342;
+
 export interface DialogRefs {
   delete: MatDialogRef<DeleteConfirmationDialogComponent>;
   load: MatDialogRef<ConfirmationDialogComponent>;
@@ -38,11 +40,6 @@ export interface GalleryDraw {
   shape: SvgShape;
 }
 
-export interface DrawsArrays {
-  galleryDrawTable: GalleryDraw[];
-  filteredGalleryDrawTable: GalleryDraw[];
-}
-
 @Component({
   selector: 'app-gallery',
   templateUrl: './gallery.component.html',
@@ -51,13 +48,12 @@ export interface DrawsArrays {
 export class GalleryComponent implements AfterViewInit {
   // Determine si la recherche se fait avec OU ou ET
   // tslint:disable-next-line: no-inferrable-types
-  loading: boolean = true;
-  selectedTag: Subject<string>;
-  allTags: Subject<string[]>;
-  galleryDrawTable: GalleryDraw[];
-  filteredGalleryDrawTable: GalleryDraw[];
+  protected loading: boolean = true;
+  protected selectedTag: Subject<string>;
+  protected allTags: Subject<string[]>;
+  protected galleryDrawTable: GalleryDraw[];
+  protected filteredGalleryDrawTable: GalleryDraw[];
   private dialogRefs: DialogRefs;
-  svg: SVGSVGElement;
 
   @ViewChild('cardContent', {
     static: false
@@ -86,11 +82,14 @@ export class GalleryComponent implements AfterViewInit {
       this.createGalleryDrawsTable(fbbb);
     }).catch((err: string) => {
       // TODO: Do smthg
-      console.log(err);
+      this.loading = false;
+      this.snackBar.open(err, 'Ok', {
+        duration: 5000
+      });
     });
   }
 
-  createGalleryDrawsTable(fbbb: flatbuffers.ByteBuffer): void {
+  private createGalleryDrawsTable(fbbb: flatbuffers.ByteBuffer): void {
     this.loading = false;
     const draws = Draws.getRoot(fbbb);
     const drawsLenght = draws.drawBuffersLength();
@@ -152,17 +151,23 @@ export class GalleryComponent implements AfterViewInit {
 
   protected ajustImagesWidth(): void {
     const contentWidth = this.cardContent.nativeElement.clientWidth;
-    if (this.galleryDrawTable.length * 342 < contentWidth) {
+    if (this.filteredGalleryDrawTable.length !== 0) {
+      if (this.filteredGalleryDrawTable.length * CARDWIDTH < contentWidth) {
+        this.renderer.setStyle(this.cardContent.nativeElement, 'padding-left',
+        `${(contentWidth - (this.filteredGalleryDrawTable.length * CARDWIDTH)) / 2}px`);
+      } else {
       this.renderer.setStyle(this.cardContent.nativeElement, 'padding-left',
-      `${(contentWidth - (this.galleryDrawTable.length * 342)) / 2}px`);
+        `${(contentWidth % CARDWIDTH) / 2}px`);
+      }
     } else {
-    this.renderer.setStyle(this.cardContent.nativeElement, 'padding-left',
-      `${(contentWidth % 342) / 2}px`);
+      this.renderer.setStyle(this.cardContent.nativeElement, 'padding-left',
+        '0px');
     }
   }
 
-  addTag(tag: string): void {
+  protected addTag(tag: string): void {
     this.selectedTag.next(tag);
+    this.ajustImagesWidth();
   }
 
   protected filterGalleryTable([tags, searchToggle]: [string[], boolean]): void {
@@ -188,6 +193,7 @@ export class GalleryComponent implements AfterViewInit {
         this.filteredGalleryDrawTable.push(elem);
       }
     }
+    this.ajustImagesWidth();
   }
 
   protected deleteDraw(id: number): void {
@@ -220,7 +226,7 @@ export class GalleryComponent implements AfterViewInit {
     } else {
       const draw = this.galleryDrawTable.filter((element) => element.header.id === id);
       this.galleryDrawTable.splice(this.galleryDrawTable.indexOf(draw[0]), 1);
-      // this.filterGalleryTable();
+      this.ajustImagesWidth();
     }
   }
 

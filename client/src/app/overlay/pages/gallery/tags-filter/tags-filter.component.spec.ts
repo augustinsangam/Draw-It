@@ -9,7 +9,7 @@ import { TagsFilterComponent } from './tags-filter.component';
 
 // tslint:disable: no-string-literal
 
-describe('TagsFilterComponent', () => {
+fdescribe('TagsFilterComponent', () => {
   let component: TagsFilterComponent;
   let fixture: ComponentFixture<TagsFilterComponent>;
 
@@ -32,7 +32,7 @@ describe('TagsFilterComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TagsFilterComponent);
     component = fixture.componentInstance;
-    component.allTags = new Observable<string[]>();
+    component.tags = new Observable<string[]>();
     component.selectedTag = new Observable<string>();
     fixture.detectChanges();
   });
@@ -41,14 +41,14 @@ describe('TagsFilterComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('#ngOnInit should set tags.allTags to allTags when the value of allTags changes', () => {
+  it('#ngOnInit should set allTags to allTags when the value of allTags changes', () => {
     const testAllTags = new Subject<string[]>();
-    component.allTags = testAllTags.asObservable();
+    component.tags = testAllTags.asObservable();
 
     component.ngOnInit();
     testAllTags.next(['test1', 'test2']);
 
-    expect(component.tags.allTags).toEqual(['test1', 'test2']);
+    expect(component['allTags']).toEqual(['test1', 'test2']);
   });
 
   it('#ngOnInit should call addTag with "test1" when the value of selectedTag changes', () => {
@@ -63,43 +63,43 @@ describe('TagsFilterComponent', () => {
     expect(spy).toHaveBeenCalledWith('test1');
   });
 
-  it('#add should add the event\'s value to tags.addedTags if it exists', () => {
+  it('#add should add the event\'s value to addedTags if it exists', () => {
     const input = fixture.nativeElement.querySelector('input');
     const event: MatChipInputEvent = {
       input: (input as HTMLInputElement),
       value: 'test',
     };
     component.add(event);
-    expect(component.tags.addedTags).toEqual(['test']);
+    expect(component['addedTags']).toEqual(['test']);
   });
 
-  it('#add should add nothing to tags.addedTags if the event\'s value is empty', () => {
+  it('#add should add nothing to addedTags if the event\'s value is empty', () => {
     // const input = fixture.nativeElement.querySelector('');
     const event: MatChipInputEvent = {
       input: null as unknown as HTMLInputElement,
       value: '',
     };
     component.add(event);
-    expect(component.tags.addedTags).toEqual([]);
+    expect(component['addedTags']).toEqual([]);
   });
 
-  it('#remove should remove "tag" from tags.addedTags if it contains it', () => {
-    component.tags.addedTags = ['test1', 'test2'];
+  it('#remove should remove "tag" from addedTags if it contains it', () => {
+    component['addedTags'] = ['test1', 'test2'];
 
     component.remove('test1');
 
-    expect(component.tags.addedTags).toEqual(['test2']);
+    expect(component['addedTags']).toEqual(['test2']);
   });
 
-  it('#remove should not remove "tag" from tags.addedTags if it does not contain it', () => {
-    component.tags.addedTags = ['test1', 'test2'];
+  it('#remove should not remove "tag" from addedTags if it does not contain it', () => {
+    component['addedTags'] = ['test1', 'test2'];
 
     component.remove('test3');
 
-    expect(component.tags.addedTags).toEqual(['test1', 'test2']);
+    expect(component['addedTags']).toEqual(['test1', 'test2']);
   });
 
-  // it('#selected should add event.option.viewValue to tags.addedTags', () => {
+  // it('#selected should add event.option.viewValue to addedTags', () => {
   //   const event: MatAutocompleteSelectedEvent = {
   //     source: component['matAutocomplete'], // null as unknown as MatAutocomplete,
   //     option: new MatOption(
@@ -113,33 +113,33 @@ describe('TagsFilterComponent', () => {
 
   //   component.selected(event);
 
-  //   expect(component.tags.addedTags).toContain('test1');
+  //   expect(component['addedTags']).toContain('test1');
   // });
 
-  it('#_filter should return the tags in tags.allTags that contains "value" and are not in tags.addedTags', () => {
-    component.tags.allTags = ['test1', 'test2', 'test3'];
-    component.tags.addedTags = ['test1'];
+  it('#_filter should return the tags in allTags that contains "value" and are not in addedTags', () => {
+    component['allTags'] = ['test1', 'test2', 'test3'];
+    component['addedTags'] = ['test1'];
 
     const returnedTags = component['_filter']('te');
 
     expect(returnedTags).toEqual(['test2', 'test3']);
   });
 
-  it('#_filter2 should return the tags in tags.allTags that are not in tags.addedTags', () => {
-    component.tags.tagCtrl.setValue('t');
-    component.tags.allTags = ['test1', 'test2', 'test3'];
-    component.tags.addedTags = ['test1'];
+  it('#_filter2 should return the tags in allTags that are not in addedTags', () => {
+    component['tagCtrl'].setValue('t');
+    component['allTags'] = ['test1', 'test2', 'test3'];
+    component['addedTags'] = ['test1'];
 
     const returnedTags = component['_filter2']();
 
     expect(returnedTags).toEqual(['test2', 'test3']);
   });
 
-  it('#filteredTagsChangeHandler should call filteredTagsChange.next() with tags.addedTags and searchToggleRef\'s status', () => {
+  it('#filteredTagsChangeHandler should call filteredTagsChange.next() with addedTags and searchToggleRef\'s status', () => {
     const spy = spyOn(component.filteredTagsChange, 'next');
 
-    component.tags.tagCtrl.setValue('t');
-    component.tags.addedTags = ['test1', 'test2'];
+    component['tagCtrl'].setValue('t');
+    component['addedTags'] = ['test1', 'test2'];
     component['searchToggleRef'].toggle();
 
     component['filteredTagsChangeHandler']();
@@ -147,19 +147,19 @@ describe('TagsFilterComponent', () => {
     expect(spy).toHaveBeenCalledWith([['test1', 'test2'], true]);
   });
 
-  it('#addTag should add "tag" to tags.addedTags when it does not contain it', () => {
-    component.tags.addedTags = ['test1', 'test2'];
+  it('#addTag should add "tag" to addedTags when it does not contain it', () => {
+    component['addedTags'] = ['test1', 'test2'];
 
     component.addTag('test3');
 
-    expect(component.tags.addedTags).toEqual(['test1', 'test2', 'test3']);
+    expect(component['addedTags']).toEqual(['test1', 'test2', 'test3']);
   });
 
-  it('#addTag should not add "tag" to tags.addedTags when it does contain it', () => {
-    component.tags.addedTags = ['test1', 'test2', 'test3'];
+  it('#addTag should not add "tag" to addedTags when it does contain it', () => {
+    component['addedTags'] = ['test1', 'test2', 'test3'];
 
     component.addTag('test3');
 
-    expect(component.tags.addedTags).toEqual(['test1', 'test2', 'test3']);
+    expect(component['addedTags']).toEqual(['test1', 'test2', 'test3']);
   });
 });
