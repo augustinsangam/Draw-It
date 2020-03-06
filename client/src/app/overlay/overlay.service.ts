@@ -21,9 +21,21 @@ import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { SaveComponent } from './pages/save/save.component';
 
+interface DialogRefs {
+  home: MatDialogRef<HomeComponent>;
+  newDraw: MatDialogRef<NewDrawComponent>;
+  documentation: MatDialogRef<DocumentationComponent>;
+  export: MatDialogRef<ExportComponent>;
+  gallery: MatDialogRef<GalleryComponent>;
+  save: MatDialogRef<SaveComponent>;
+}
+
+// TODO : CONST pour dialog options.
+
 const CONSTANTS = {
   SUCCES_DURATION: 2000,
-  FAILURE_DURATION: 2000,
+  FAILURE_DURATION: 2020,
+  LOAD_DURATION: 500,
 };
 
 // Tested in app.component.spec.ts
@@ -71,7 +83,7 @@ export class OverlayService {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
         this.toolSelectorService.set(Tool.Selection);
-        this.toolSelectorService.set(Tool.Selection); // To close the pannel
+        this.toolSelectorService.set(Tool.Selection); // To close the panel
         this.svgService.selectAllElements.emit(null);
       } else {
         this.toolSelectorService.set(Tool.Aerosol);
@@ -86,7 +98,7 @@ export class OverlayService {
   private openHomeDialog(closable: boolean = false): void {
     this.dialogRefs.home = this.dialog.open(
       HomeComponent,
-      this.getCommomDialogOptions()
+      this.getCommonDialogOptions()
     );
     this.dialogRefs.home.disableClose = !closable;
     this.dialogRefs.home.afterClosed().subscribe((result: string) => {
@@ -113,12 +125,14 @@ export class OverlayService {
   private openNewDrawDialog(): void {
     this.dialogRefs.newDraw = this.dialog.open(
       NewDrawComponent,
-      this.getCommomDialogOptions()
+      this.getCommonDialogOptions()
     );
     this.dialogRefs.newDraw.disableClose = true;
-    this.dialogRefs.newDraw.afterClosed().subscribe((resultNewDialog: string | SvgShape) => {
-      this.closeNewDrawDialog(resultNewDialog);
-    });
+    this.dialogRefs.newDraw.afterClosed().subscribe(
+      (resultNewDialog: string | SvgShape) => {
+        this.closeNewDrawDialog(resultNewDialog);
+      }
+    );
   }
 
   private closeNewDrawDialog(option: string | SvgShape): void {
@@ -170,8 +184,8 @@ export class OverlayService {
   }
 
   private closeSaveDialog(error?: string): void {
-    this.snackBar.open(error ? error : 'Succès', 'Ok', {
-      duration: error ? CONSTANTS.SUCCES_DURATION : CONSTANTS.FAILURE_DURATION,
+    this.snackBar.open(error || 'Succès', 'Ok', {
+      duration: error ? CONSTANTS.FAILURE_DURATION : CONSTANTS.SUCCES_DURATION,
     });
   }
 
@@ -200,7 +214,7 @@ export class OverlayService {
 
   private closeGalleryDialog(
       fromHome: boolean,
-      option: GalleryDraw | undefined): void {
+      option?: GalleryDraw): void {
     if (!!option) {
       this.loadDraw(option);
     } else if (fromHome) {
@@ -234,24 +248,15 @@ export class OverlayService {
     this.svgService.header = draw.header;
     this.undoRedo.setStartingCommand();
     this.snackBar.open('Dessin chargé avec succès', 'Ok', {
-      duration: 500
+      duration: CONSTANTS.LOAD_DURATION
     });
   }
 
-  private getCommomDialogOptions(): MatDialogConfig {
+  private getCommonDialogOptions(): MatDialogConfig {
     return {
       width: '650px',
       height: '90%',
       data: { drawInProgress: this.svgService.drawInProgress }
     };
   }
-}
-
-interface DialogRefs {
-  home: MatDialogRef<HomeComponent>;
-  newDraw: MatDialogRef<NewDrawComponent>;
-  documentation: MatDialogRef<DocumentationComponent>;
-  export: MatDialogRef<ExportComponent>;
-  gallery: MatDialogRef<GalleryComponent>;
-  save: MatDialogRef<SaveComponent>;
 }
