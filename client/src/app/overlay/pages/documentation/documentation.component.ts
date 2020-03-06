@@ -109,7 +109,7 @@ export class DocumentationComponent {
       this.treeControl.collapseAll();
       this.expandParent(docs, node.id);
     }
-    fetch(encodeURI('../../assets/doc/md/' + node.label + '.md'))
+    fetch(encodeURI('/assets/doc/md/' + node.label + '.md'))
       .then((res) => res.text())
       .then((text) => {
         this.contentToDisplay.body = marked(text);

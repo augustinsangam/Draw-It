@@ -90,12 +90,14 @@ export class PipetteLogicComponent extends ToolLogicDirective
         1,
         1
       ).data;
-      // TODO : Ask the chargé de lab 2 + 1
+      // TODO : check the justification
       this.service.currentColor = 'rgba(' +
         pixel[0].toString() + ',' +
         pixel[1].toString() + ',' +
         pixel[2].toString() + ',' +
-        pixel[2 + 1].toString() +
+        // simplement accéder à la valeur du alpha
+        // tslint:disable-next-line:no-magic-numbers
+        pixel[3].toString() +
       ')';
     }
   }
