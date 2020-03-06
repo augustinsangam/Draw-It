@@ -1,8 +1,8 @@
 <h1>Polygone</h1>
 <form [formGroup]="polygoneForm">
-  <p> Cotés </p>
+  <p> Côtés </p>
   <div class="sides">
-    <mat-slider min=3 max=12 step=1 id = "sidesSlider" (input)="onSidesChange()" (change)="onSidesChange()"
+    <mat-slider min=3 max=12 step=1 id = "sidesSlider" (input)="onSidesChange()" (change)="onSidesChange()" [value]="service.sides"
       #sidesSlider>
     </mat-slider>
     <mat-form-field>
@@ -20,7 +20,7 @@
     Contour
   </p>
   <div class="thickness" *ngIf="this.service.borderOption">
-    <mat-slider id = "thicknessSlider" min=1 max=100 step=1 (input)="onThicknessChange()" (change)="onThicknessChange()"
+    <mat-slider id = "thicknessSlider" min=1 max=100 step=1 (input)="onThicknessChange()" (change)="onThicknessChange()" [value]="service.thickness"
       #thicknessSlider>
     </mat-slider>
     <mat-form-field>
