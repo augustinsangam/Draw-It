@@ -4,7 +4,8 @@ import { Shortcut } from '../shortcut-handler/shortcut';
 import {
   ShortcutHandlerService
 } from '../shortcut-handler/shortcut-handler.service';
-import { SvgService, SvgShape } from '../svg/svg.service';
+import { SvgService } from '../svg/svg.service';
+import { SvgShape } from "../svg/svg-shape";
 import { ColorService } from '../tool/color/color.service';
 import {
   ToolSelectorService

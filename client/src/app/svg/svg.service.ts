@@ -1,6 +1,8 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { SVGStructure } from '../tool/tool-logic/tool-logic.directive';
 import {UndoRedoService} from '../tool/undo-redo/undo-redo.service';
+import { SvgShape } from './svg-shape';
+import { SvgHeader } from './svg-header';
 
 @Injectable({
   providedIn: 'root'
@@ -43,16 +45,4 @@ export class SvgService {
     this.undoRedoService.clearUndoRedo();
   }
 
-}
-
-export interface SvgShape {
-  width: number;
-  height: number;
-  color: string;
-}
-
-export interface SvgHeader {
-  id: number;
-  name: string;
-  tags: string[];
 }

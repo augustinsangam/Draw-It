@@ -1,7 +1,8 @@
 import { Injectable, Renderer2 } from '@angular/core';
 import { flatbuffers } from 'flatbuffers';
 
-import { SvgHeader, SvgShape } from '../svg/svg.service';
+import { SvgHeader } from "../svg/svg-header";
+import { SvgShape } from "../svg/svg-shape";
 import {
   Attr as AttrT,
   Draw as DrawT,

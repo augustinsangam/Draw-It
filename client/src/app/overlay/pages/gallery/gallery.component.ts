@@ -20,7 +20,8 @@ import {
 
 import { flatbuffers } from 'flatbuffers';
 import { Subject } from 'rxjs';
-import { SvgHeader, SvgShape } from 'src/app/svg/svg.service';
+import { SvgHeader } from "src/app/svg/svg-header";
+import { SvgShape } from "src/app/svg/svg-shape";
 import { ScreenService } from '../new-draw/sreen-service/screen.service';
 
 const CARD_WIDTH = 342;

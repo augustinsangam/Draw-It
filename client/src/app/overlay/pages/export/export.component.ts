@@ -2,7 +2,8 @@
 import { AfterViewInit, Component, ElementRef, Optional, Renderer2, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MatRadioChange } from '@angular/material';
-import { SvgService, SvgShape } from 'src/app/svg/svg.service';
+import { SvgService } from 'src/app/svg/svg.service';
+import { SvgShape } from "src/app/svg/svg-shape";
 import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.service';
 
 const SVG_NS = 'http://www.w3.org/2000/svg' ;
