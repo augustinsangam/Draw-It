@@ -42,8 +42,6 @@ const DECAGONE_SIDES = 10;
   providedIn: 'root'
 })
 export class MathService {
-  constructor() {};
-
   distanceIsLessThan3Pixel(point1: Point, point2: Point): boolean {
     return (
       Math.abs(point1.x - point2.x) <= MINIMAL_3PX_DISTANCE &&
