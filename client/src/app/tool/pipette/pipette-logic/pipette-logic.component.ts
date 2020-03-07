@@ -26,6 +26,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
   }
 
   ngOnInit(): void {
+    // TODO : RENDERER
     this.svgStructure.root.style.cursor = 'wait';
 
     html2canvas(this.svgStructure.root as unknown as HTMLElement).then(
@@ -64,6 +65,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
       'crosshair'
     );
 
+    // TODO : Renderer
     this.backgroundColorOnInit = this.colorService.backgroundColor;
     this.svgStructure.root.style.cursor = 'crosshair';
 
@@ -90,7 +92,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
         1,
         1
       ).data;
-      // TODO : check the justification
+      // TODO : string template
       this.service.currentColor = 'rgba(' +
         pixel[0].toString() + ',' +
         pixel[1].toString() + ',' +
