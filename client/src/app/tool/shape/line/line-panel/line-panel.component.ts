@@ -13,8 +13,6 @@ import { LineService } from '../line.service';
 })
 export class LinePanelComponent extends ToolPanelDirective {
 
-  private lineForm: FormGroup;
-
   @ViewChild ('slideToggle', {
     static: false
   }) protected slideToggle: MatSlideToggle;
@@ -28,6 +26,8 @@ export class LinePanelComponent extends ToolPanelDirective {
     static: false,
     read: MatSlider
   }) private radiusSlider: MatSlider;
+
+  private lineForm: FormGroup;
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: LineService,
