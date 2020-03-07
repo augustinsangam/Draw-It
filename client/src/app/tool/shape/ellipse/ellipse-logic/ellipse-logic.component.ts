@@ -14,6 +14,7 @@ import { EllipseService } from '../ellipse.service';
 
 const SEMIOPACITY = '0.5';
 const FULLOPACITY = '1';
+
 enum ClickType {
   CLICKGAUCHE = 0,
 }
@@ -25,7 +26,7 @@ enum ClickType {
 
 export class EllipseLogicComponent extends ToolLogicDirective
   implements OnInit, OnDestroy {
-
+// TODO : Illegal mathu, dry destroy.
   private ellipses: Ellipse[] = [];
   private onDrag: boolean;
   private currentPoint: Point;
@@ -84,9 +85,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
         if (this.onDrag) {
           this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
           this.viewTemporaryForm(mouseEv);
-          this.rectVisu.dragRectangle(
-            this.initialPoint, this.currentPoint
-          );
+          this.rectVisu.dragRectangle(this.initialPoint, this.currentPoint);
         }
       }
     );
@@ -110,12 +109,13 @@ export class EllipseLogicComponent extends ToolLogicDirective
       onKeyDown,
       onKeyUp
     ];
-
+      // TODO : Renderer
     this.svgStructure.root.style.cursor = 'crosshair';
 
   }
 
   private onKeyDown(keyEv: KeyboardEvent): void {
+    // TODO : NESTING EVERYWHERE
     if (this.onDrag) {
       if (keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') {
         this.getEllipse().simulateCircle(this.initialPoint, this.currentPoint, this.service.thickness);
@@ -132,6 +132,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
   }
 
   private onMouseUp(mouseEv: MouseEvent): void {
+    // TODO : Nesting
     if (mouseEv.button === ClickType.CLICKGAUCHE && this.onDrag) {
       this.onDrag = false;
       if (!!this.rectVisu) {
@@ -216,6 +217,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
   ngOnDestroy(): void {
     this.allListeners.forEach((end) => end());
     this.undoRedoService.resetActions();
+    // DRY
     if (this.onDrag) {
       this.onMouseUp(
         new MouseEvent('mouseup', { button: 0 } as MouseEventInit)

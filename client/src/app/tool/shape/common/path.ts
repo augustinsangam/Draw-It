@@ -2,7 +2,13 @@ import { Renderer2 } from '@angular/core';
 import { MathService } from '../../mathematics/tool.math-service.service';
 import { Point } from './point';
 
+interface PathData {
+  points: Point[];
+  instructions: string[];
+}
+
 // Class tested in ../Line/line-logic.component.spec.ts
+// TODO: les strings bizares
 export class Path {
   private pathAtribute: string;
   private mathService: MathService;
@@ -70,7 +76,7 @@ export class Path {
     if (this.withJonctions) {
       instructionToRemove ++;
     }
-    for (let index = 0; index < instructionToRemove; index++) {
+    for (let i = 0; i < instructionToRemove; i++) {
       const lengthToRemove = String(this.datas.instructions.pop()).length;
       this.pathAtribute = this.pathAtribute.substr(
         0,
@@ -96,9 +102,4 @@ export class Path {
       this.renderer.setAttribute(this.element, 'fill', 'none');
     }
   }
-}
-
-interface PathData {
-  points: Point[];
-  instructions: string[];
 }
