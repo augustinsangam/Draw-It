@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { SVGStructure } from '../tool/tool-logic/tool-logic.directive';
+import { SVGStructure } from "./svg-structure";
 import {UndoRedoService} from '../tool/undo-redo/undo-redo.service';
 import { SvgShape } from './svg-shape';
 import { SvgHeader } from './svg-header';

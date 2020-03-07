@@ -11,9 +11,9 @@ import {
 } from '@angular/core';
 
 import {
-  SVGStructure,
   ToolLogicDirective
 } from '../tool/tool-logic/tool-logic.directive';
+import { SVGStructure } from "./svg-structure";
 import {
   ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';

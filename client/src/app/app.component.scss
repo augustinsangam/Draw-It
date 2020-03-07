@@ -11,20 +11,15 @@ app-panel {
 main {
   flex-grow: 1;
   display: grid;
-  // place-items: center;
   overflow: auto;
-  // https://start.duckduckgo.com/assets/transparency-bg.jpg
-  // chrome://global/skin/media/imagedoc-lightnoise.png
-  // chrome://global/skin/media/imagedoc-lightnoise.png
   background-image: linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%),linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%);
   background-color: #333;
   background-position: 0 0, 10px 10px;
-  // NOTE: 20px renders fragments
   background-size: 21px 21px;
 }
 
 svg {
-  cursor: crosshair; // or cell
+  cursor: crosshair;
 }
 
 ::ng-deep .cdk-overlay-container {
