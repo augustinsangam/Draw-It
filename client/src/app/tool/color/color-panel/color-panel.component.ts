@@ -37,13 +37,6 @@ const ITEMS_BEFORE_RECENT_COLORS = 3;
 export class ColorPanelComponent extends ToolPanelDirective
   implements OnInit, AfterViewInit, OnDestroy {
 
-  protected colorOptionEnum: typeof ColorOption = ColorOption;
-
-  private colorOption: ColorOption;
-  private recentColors: string[];
-  private showPalette: boolean;
-  private colorChange: Subscription;
-
   @ViewChild('colorPreviewPrimary', {
     read: ColorPickerItemComponent,
     static: false
@@ -72,6 +65,11 @@ export class ColorPanelComponent extends ToolPanelDirective
   private colorPalette: ColorPickerContentComponent;
 
   protected colorsItemsArray: ColorPickerItemComponent[];
+  protected colorOptionEnum: typeof ColorOption = ColorOption;
+  private colorOption: ColorOption;
+  private recentColors: string[];
+  private showPalette: boolean;
+  private colorChange: Subscription;
 
   constructor(
     elementRef: ElementRef<HTMLElement>,
@@ -102,6 +100,7 @@ export class ColorPanelComponent extends ToolPanelDirective
     this.updateRecentColors();
   }
 
+  // TODO : DRY
   private addEvents(): void {
     for (let i = 0; i < this.recentColors.length; i++) {
       this.eventManager.addEventListener(
@@ -196,5 +195,4 @@ export class ColorPanelComponent extends ToolPanelDirective
   ngOnDestroy(): void {
     this.colorChange.unsubscribe();
   }
-
 }

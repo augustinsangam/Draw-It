@@ -41,11 +41,6 @@ const CONSTANTS = {
   styleUrls: ['./color-picker-content.component.scss']
 })
 export class ColorPickerContentComponent implements AfterViewInit {
-  @Input() startColor: string;
-
-  @Output() colorChange: EventEmitter<string>;
-
-  private baseColors: string[];
 
   @ViewChild('canvas', {
     read: ElementRef,
@@ -67,6 +62,10 @@ export class ColorPickerContentComponent implements AfterViewInit {
   @ViewChild('aField', { static: false }) private aField: ElementRef;
   @ViewChild('hexField', { static: false }) private hexField: ElementRef;
 
+  @Input() startColor: string;
+  @Output() colorChange: EventEmitter<string>;
+
+  private baseColors: string[];
   private context: CanvasRenderingContext2D;
   private colorForm: FormGroup;
 
@@ -93,6 +92,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
     private colorService: ColorService,
     private shortcutHandler: ShortcutHandlerService
   ) {
+    // TODO : DRY
     this.colorForm = this.formBuilder.group({
       r: [
         '',
@@ -159,7 +159,6 @@ export class ColorPickerContentComponent implements AfterViewInit {
       this.eventManager.addEventListener(field.nativeElement, 'focusout',
         this.focusHandlers.out);
     });
-
   }
 
   initialiseStartingColor(): void {
@@ -214,12 +213,10 @@ export class ColorPickerContentComponent implements AfterViewInit {
     let i = 0;
     for (let g = 0; g <= rgbMax; ++g) {
       for (let b = 0; b <= rgbMax; ++b) {
-        allPixels.data[i] = redValue;
-        allPixels.data[i + 1] = g;
-        allPixels.data[i + 2] = b;
-        // TODO : Ask the chargé de lab
-        allPixels.data[i + 1 + 2] = rgbMax; // Alpha stay the max value.
-        i += 2 + 2;
+        allPixels.data[i++] = redValue;
+        allPixels.data[i++] = g;
+        allPixels.data[i++] = b;
+        allPixels.data[i++] = rgbMax;
       }
     }
     this.context.putImageData(allPixels, 0, 0);
@@ -248,7 +245,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
       (this.colorForm.get(name) as AbstractControl).patchValue( max );
     }
   }
-
+  // TODO : Enlever la duplication
   protected onChangeR(): void {
     this.checkValidity('r', CONSTANTS.RGB_MIN, CONSTANTS.RGB_MAX);
     this.placeSlider(this.colorForm.controls.r.value);
