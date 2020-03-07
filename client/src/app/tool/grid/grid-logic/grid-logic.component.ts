@@ -8,10 +8,11 @@ import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
 
 export class GridLogicComponent extends ToolLogicDirective implements OnInit {
 
-  constructor(
-  ) {
+  constructor() {
     super();
   }
+
+  // TODO : RENDERER
 
   ngOnInit(): void {
     this.svgStructure.root.style.cursor = 'auto';

@@ -16,6 +16,7 @@ import {
 import { Tool } from '../tool/tool.enum';
 import { UndoRedoService } from '../tool/undo-redo/undo-redo.service';
 
+// TODO: ISSAM ENLEVE LE DRY + RENDERER
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
@@ -89,19 +90,17 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
   private canUndo: boolean;
   private canRedo: boolean;
 
-  // Must be pubilc
   constructor(private readonly toolSelectorService: ToolSelectorService,
               protected readonly undoRedoService: UndoRedoService,
               private changeDetectorRef: ChangeDetectorRef,
               private svgService: SvgService) {
-    this.documentationEvent = new EventEmitter<null>();
-    this.exportEvent = new EventEmitter<null>();
-    this.saveEvent = new EventEmitter<null>();
-    this.homeEvent = new EventEmitter<null>();
+    this.documentationEvent = new EventEmitter();
+    this.exportEvent = new EventEmitter();
+    this.saveEvent = new EventEmitter();
+    this.homeEvent = new EventEmitter();
     this.toolToElRef = new Array(Tool._Len);
   }
 
-  // Must be pubilc
   ngAfterViewInit(): void {
     this.toolToElRef[Tool.Aerosol] = this.aerosolElRef;
     this.toolToElRef[Tool.Applicator] = this.applicatorElRef;
@@ -139,8 +138,9 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
 
   }
 
+  // TODO : utiliser renderer
+
   private setTool(tool: Tool, old?: Tool): void {
-    // TODO: TS 3.7 get(…)?.nativeEl w/o ‘has’ check
     if (old != null && old < Tool._Len) {
       const oldElRef = this.toolToElRef[old];
       oldElRef.nativeElement.classList.remove('selected');
