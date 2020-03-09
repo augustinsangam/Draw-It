@@ -7,6 +7,7 @@ import { SvgService, SvgShape } from 'src/app/svg/svg.service';
 import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.service';
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ExportComponent } from './export.component';
+import { MatDialogRef, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MAT_DIALOG_DATA } from '@angular/material';
 
 fdescribe('ExportComponent', () => {
   let component: ExportComponent;
@@ -24,7 +25,12 @@ fdescribe('ExportComponent', () => {
       providers: [
         Renderer2,
         SvgService,
-        FilterService
+        FilterService,
+        MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
+        {
+          provide: MatDialogRef,
+        },
+        { provide: MAT_DIALOG_DATA, useValue: {} },
       ]
     }).compileComponents();
   }));
@@ -55,6 +61,12 @@ fdescribe('ExportComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('#ngAfterViewInit should call createView', fakeAsync(() => {
+    const spy = spyOn<any>(component, 'createView');
+    component.ngAfterViewInit();
+    expect(spy).toHaveBeenCalledTimes(1);
+  }));
 
   it('#InitialzeElements should set the good values to svgShape', fakeAsync(() => {
     const svgShapeTest: SvgShape = {
@@ -113,6 +125,12 @@ fdescribe('ExportComponent', () => {
     expect(canvas.width).toEqual(svgShapeTest.width);
   }));
 
+  it('#exportSvg should call our download method', fakeAsync(() => {
+    const spy = spyOn<any>(component, 'downloadImage');
+    component.exportSVG();
+    expect(spy).toHaveBeenCalledTimes(1);
+  }));
+
   it('#createView return true when the viewZone exist', fakeAsync(() => {
     const creationResult = component.createView('');
     expect(creationResult).toBeTruthy();
@@ -137,12 +155,33 @@ fdescribe('ExportComponent', () => {
     expect(picture.getAttribute('filter')).toEqual('');
   }));
 
-  it('#configurePicture should make good width and height configuration', fakeAsync(() => {
-    const picture = component['renderer'].createElement('picture', 'http://www.w3.org/2000/svg');
+  it('#chooseFilter should return the good url', fakeAsync(() => {
+    const urlReceived = component.chooseFilter('Saturation');
+    expect(urlReceived).toEqual('url(#saturate)');
+  }));
+
+  it('#resetInnerSVG should set good width and height value to innerSvg', fakeAsync(() => {
     const svgShapeTest: SvgShape = {color: 'blue', width: 1345, height: 245};
     component.svgShape = svgShapeTest;
-    component.configurePicture(picture, '');
-    expect(picture.getAttribute('width')).toEqual(svgShapeTest.width);
-    expect(picture.getAttribute('height')).toEqual(svgShapeTest.height);
+    component.resetInnerSVG();
+    expect(component.innerSVG.getAttribute('width')).toEqual(svgShapeTest.width.toString());
+    expect(component.innerSVG.getAttribute('height')).toEqual(svgShapeTest.height.toString());
+  }));
+
+  it('#configureSize is making good configuration', fakeAsync(() => {
+    const svgShapeTest: SvgShape = {color: 'blue', width: 1345, height: 245};
+    const picture: SVGImageElement  = component['renderer'].createElement('image', 'http://www.w3.org/2000/svg');
+    component.configureSize(picture, svgShapeTest);
+    expect(picture.getAttribute('width')).toEqual(svgShapeTest.width.toString());
+    expect(picture.getAttribute('height')).toEqual(svgShapeTest.height.toString());
+  }));
+
+  it('#generateBackground return a good rectangle configu', fakeAsync(() => {
+    const svgShapeTest: SvgShape = {color: 'blue', width: 1345, height: 245};
+    component.svgShape = svgShapeTest;
+    const background = component.generateBackground();
+    expect(background.getAttribute('width')).toEqual(svgShapeTest.width.toString());
+    expect(background.getAttribute('height')).toEqual(svgShapeTest.height.toString());
+    expect(background.getAttribute('fill')).toEqual(svgShapeTest.color);
   }));
 });
