@@ -7,6 +7,11 @@ import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import { Path } from '../../common/path';
 import { LineService } from '../line.service';
 
+interface JonctionOption {
+  radius: number;
+  color: string;
+}
+
 @Component({
   selector: 'app-line-logic',
   template: ''
@@ -150,6 +155,8 @@ export class LineLogicComponent extends ToolLogicDirective
     this.getPath().simulateNewLine(point);
   }
 
+
+  // TODO : enumeration shortcut
   private onKeyDown(keyEv: KeyboardEvent): void {
     const shiftIsPressed =
       keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight';
@@ -160,7 +167,7 @@ export class LineLogicComponent extends ToolLogicDirective
       this.getPath().removePath();
       this.isNewPath = true;
     }
-    const maxRemovableInstruction = this.service.withJonction ? 2 * 2 : 2;
+    const maxRemovableInstruction = this.service.withJonction ? 2 * 2 : 2; // TODO : Magie
     const shouldConnect = this.getPath().datas.instructions.length >= maxRemovableInstruction;
     if (keyEv.code === 'Backspace' && shouldConnect) {
       this.removeLine();
@@ -210,9 +217,4 @@ export class LineLogicComponent extends ToolLogicDirective
   private getPath(): Path {
     return this.paths[this.paths.length - 1];
   }
-}
-
-interface JonctionOption {
-  radius: number;
-  color: string;
 }

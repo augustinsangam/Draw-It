@@ -15,7 +15,7 @@ export class PencilLogicComponent extends PencilBrushCommon
   implements OnInit, AfterViewInit, OnDestroy {
 
   private listeners: (() => void)[];
-  private preUndoFunction : () => void;
+  private preUndoFunction: () => void;
 
   constructor(private renderer: Renderer2,
               private colorService: ColorService,
@@ -41,6 +41,8 @@ export class PencilLogicComponent extends PencilBrushCommon
   ngOnInit(): void {
     this.svgStructure.root.style.cursor = 'crosshair';
   }
+
+  // TODO : RENDERER
 
   protected configureSvgElement(element: SVGElement): void {
     element.setAttribute('d', this.stringPath);

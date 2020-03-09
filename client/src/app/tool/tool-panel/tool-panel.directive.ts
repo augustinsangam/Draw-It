@@ -13,14 +13,11 @@ export abstract class ToolPanelDirective implements AfterViewInit {
 
   @Output() width: EventEmitter<number>;
 
-  protected constructor(
-    protected readonly elementRef: ElementRef<HTMLElement>
-  ) {
+  protected constructor(protected readonly elementRef: ElementRef<HTMLElement>) {
     this.width = new EventEmitter();
   }
 
   ngAfterViewInit(): void {
-    // NOTE: offsetWidth does NOT include left/right margins
     this.width.emit(this.elementRef.nativeElement.offsetWidth);
   }
 }

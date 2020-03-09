@@ -6,8 +6,8 @@ import {
 } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
 import { UndoRedoService } from '../tool/undo-redo/undo-redo.service';
+import { Shortcut } from './shortcut';
 import {
-  Shortcut,
   ShortcutCallBack,
   ShortcutHandlerService
 } from './shortcut-handler.service';
@@ -44,15 +44,15 @@ export class ShortcutHandlerManagerService {
       this.toolSelectorService.set(Tool.Brush)
     );
 
-    this.handlersFunc.set(Shortcut.Digit1, () =>
+    this.handlersFunc.set(Shortcut.DIGIT_1, () =>
       this.toolSelectorService.set(Tool.Rectangle)
     );
 
-    this.handlersFunc.set(Shortcut.Digit2, () =>
+    this.handlersFunc.set(Shortcut.DIGIT_2, () =>
       this.toolSelectorService.set(Tool.Ellipse)
     );
 
-    this.handlersFunc.set(Shortcut.Digit3, () =>
+    this.handlersFunc.set(Shortcut.DIGIT_3, () =>
       this.toolSelectorService.set(Tool.Polygone)
     );
 
@@ -60,11 +60,11 @@ export class ShortcutHandlerManagerService {
       this.toolSelectorService.set(Tool.Pipette)
     );
 
-    this.handlersFunc.set(Shortcut.plus, () => {
+    this.handlersFunc.set(Shortcut.PLUS, () => {
       this.gridService.keyEvHandler('+');
     });
 
-    this.handlersFunc.set(Shortcut.minus, () => {
+    this.handlersFunc.set(Shortcut.MINUS, () => {
       this.gridService.keyEvHandler('-');
     });
 
@@ -105,7 +105,7 @@ export class ShortcutHandlerManagerService {
       }
     });
 
-    this.handlersFunc.set(Shortcut.ZShift, (event: KeyboardEvent) => {
+    this.handlersFunc.set(Shortcut.Z_SHIFT, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey && event.shiftKey) {
         event.preventDefault();
         this.undoRedoService.redo();

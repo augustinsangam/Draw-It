@@ -36,7 +36,6 @@ export class MultipleSelection extends Selection {
       const elementZone = this.getZone(element);
       const intersection = this.compareZone.intersection(elementZone);
       if (intersection[0]) {
-        // Les zones et les élements se touchent
         this.selectedElements.add(element);
         if (!!this.zone) {
           this.zone = this.zone.union(elementZone);
@@ -47,6 +46,8 @@ export class MultipleSelection extends Selection {
     });
   }
 
+
+  // TODO : ternaire
   private selectAll(elements: Set<SVGElement>): void {
     this.selectedElements = elements;
     elements.forEach((element) => {

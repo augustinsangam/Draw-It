@@ -1,5 +1,17 @@
 import { Injectable } from '@angular/core';
-import { SVGStructure } from '../tool-logic/tool-logic.directive';
+import { SVGStructure } from '../../svg/svg-structure';
+
+export interface PreAction {
+  enabled: boolean;
+  overrideDefaultBehaviour: boolean;
+  overrideFunctionDefined: boolean;
+  overrideFunction?: () => void;
+}
+
+export interface PostAction {
+  functionDefined: boolean;
+  function?: () => void;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -53,7 +65,6 @@ export class UndoRedoService {
     }
     this.cmdDone.push(toPush);
     this.cmdUndone = [];
-    console.log('On sauvegarde');
   }
 
   undo(): void {
@@ -64,7 +75,6 @@ export class UndoRedoService {
     }
     if (!this.actions.undo[0].overrideDefaultBehaviour) {
       this.undoBase();
-      console.log('undo base');
     }
     if (this.actions.undo[1].functionDefined) {
       (this.actions.undo[1].function as () => void)();
@@ -103,7 +113,7 @@ export class UndoRedoService {
     }
   }
 
-  refresh(node: ChildNode[]): void {
+  refresh(node?: ChildNode[]): void {
     for (const element of Array.from(this.svgStructure.drawZone.childNodes)) {
       element.remove();
     }
@@ -151,16 +161,4 @@ export class UndoRedoService {
     this.actions.redo[1] = action;
   }
 
-}
-
-export interface PreAction {
-  enabled: boolean;
-  overrideDefaultBehaviour: boolean;
-  overrideFunctionDefined: boolean;
-  overrideFunction?: () => void;
-}
-
-export interface PostAction {
-  functionDefined: boolean;
-  function?: () => void;
 }

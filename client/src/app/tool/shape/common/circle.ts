@@ -1,6 +1,9 @@
 import { Renderer2 } from '@angular/core';
 import { Point } from './point';
 
+// TODO : Static
+
+
 export class Circle {
   constructor(private center: Point,
               private renderer: Renderer2,

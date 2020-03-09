@@ -32,6 +32,8 @@ export class GridService extends ToolService {
     this.renderer = rendererFactory.createRenderer(null, null);
   }
 
+  // TODO : ENUM, RENDERER
+
   keyEvHandler(keyCode: string): void {
     switch (keyCode) {
       case 'g': {
@@ -89,16 +91,16 @@ export class GridService extends ToolService {
     }
   }
 
+  // TODO : `
+
   protected generateGrid(): string {
     let stringPath = '';
 
-    // lignes verticales
     for (let i = 0; i < this.svgDimensions.width;
       i += this.squareSize) {
       stringPath += ' M ' + i.toString() + ',0'
         + ' L' + i.toString() + ',' + this.svgDimensions.height;
     }
-    // lignes horizontales
     for (let i = 0; i < this.svgDimensions.height;
       i += this.squareSize) {
       stringPath += ' M 0' + ',' + i.toString()

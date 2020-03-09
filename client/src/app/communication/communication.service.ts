@@ -1,25 +1,25 @@
 import { Injectable, Renderer2 } from '@angular/core';
 import { flatbuffers } from 'flatbuffers';
 
-import { SvgHeader, SvgShape } from '../svg/svg.service';
+import { SvgHeader } from "../svg/svg-header";
+import { SvgShape } from "../svg/svg-shape";
 import {
   Attr as AttrT,
   Draw as DrawT,
   Element as ElementT,
 } from './data_generated';
 
+const TIMEOUT = 7000;
+const DONE = 4;
+
 enum StatusCode {
   OK = 200,
   CREATED,
   ACCEPTED,
 }
+//TODO: duplication message, decode element recursively reduire l imbrication,
+//enlever les abreviations
 
-/* Failed to read the 'responseText' property from
- * 'XMLHttpRequest': The value is only accessible if the object's
- * 'responseType' is '' or 'text' (was 'arraybuffer').
- * at XMLHttpRequest.xhr.onreadystatechange
- * [as __zone_symbol__ON_PROPERTYreadystatechange]
- */
 // developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/
 //   Sending_and_Receiving_Binary_Data#Sending_typed_arrays_as_binary_data
 // gomakethings.com/promise-based-xhr/
@@ -28,18 +28,18 @@ enum StatusCode {
 })
 export class CommunicationService {
 
-  constructor() {
-    this.fbb = new flatbuffers.Builder();
-    this.host = 'http://[::1]:8080';
-    this.xhr = new XMLHttpRequest();
-    this.xhr.timeout = 7000;
-    // by default, xhr is async
-  }
   private readonly fbb: flatbuffers.Builder;
   private readonly host: string;
   private readonly xhr: XMLHttpRequest;
 
-  private static deserialize( data: ArrayBuffer ): flatbuffers.ByteBuffer {
+  constructor() {
+    this.fbb = new flatbuffers.Builder();
+    this.host = 'http://[::1]:8080';
+    this.xhr = new XMLHttpRequest();
+    this.xhr.timeout = TIMEOUT;
+  }
+
+  private static deserialize(data: ArrayBuffer): flatbuffers.ByteBuffer {
     return new flatbuffers.ByteBuffer(new Uint8Array(data));
   }
 
@@ -48,18 +48,19 @@ export class CommunicationService {
   }
 
   async get(): Promise<flatbuffers.ByteBuffer> {
-    // return Promise.reject('nope');
+    // TODO: return Promise.reject('nope');
     this.xhr.open('GET', `${this.host}/draw`);
     this.xhr.responseType = 'arraybuffer';
     const promise = new Promise<flatbuffers.ByteBuffer>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
-        if (this.xhr.readyState === 4) {
-          if (this.xhr.status === StatusCode.OK) {
-            resolve(CommunicationService.deserialize(this.xhr.response));
-          } else if (this.xhr.status) {
-            reject(String.fromCharCode.apply(null,
-              new Uint8Array(this.xhr.response)));
-          }
+        if (this.xhr.readyState !== DONE) {
+          return;
+        }
+        if (this.xhr.status === StatusCode.OK) {
+          resolve(CommunicationService.deserialize(this.xhr.response));
+        } else if (this.xhr.status) {
+          reject(String.fromCharCode.apply(null,
+            new Uint8Array(this.xhr.response)));
         }
       };
       this.xhr.ontimeout = () => reject('Délai d’attente dépassé');
@@ -75,12 +76,13 @@ export class CommunicationService {
     this.xhr.setRequestHeader('Content-Type', 'application/octet-stream');
     const promise = new Promise<number>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
-        if (this.xhr.readyState === 4) {
-          if (this.xhr.status === StatusCode.CREATED) {
-            resolve(Number(this.xhr.response));
-          } else if (this.xhr.status) {
-            reject(this.xhr.responseText);
-          }
+        if (this.xhr.readyState !== DONE) {
+          return;
+        }
+        if (this.xhr.status === StatusCode.CREATED) {
+          resolve(Number(this.xhr.response));
+        } else if (this.xhr.status) {
+          reject(this.xhr.responseText);
         }
       };
       this.xhr.ontimeout = () => reject('Délai d’attente dépassé');
@@ -96,7 +98,7 @@ export class CommunicationService {
     this.xhr.setRequestHeader('Content-Type', 'application/octet-stream');
     const promise = new Promise<null>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
-        if (this.xhr.readyState === 4) {
+        if (this.xhr.readyState === DONE) {
           if (this.xhr.status === StatusCode.ACCEPTED) {
             resolve();
           } else if (this.xhr.status) {
@@ -116,7 +118,7 @@ export class CommunicationService {
     this.xhr.open('DELETE', `${this.host}/draw/${id}`);
     const promise = new Promise<null>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
-        if (this.xhr.readyState === 4) {
+        if (this.xhr.readyState === DONE) {
           if (this.xhr.status === StatusCode.ACCEPTED) {
             resolve();
           } else if (this.xhr.status) {
@@ -132,24 +134,24 @@ export class CommunicationService {
     return promise;
   }
 
-  decodeElementRecursively(el: ElementT, renderer: Renderer2): SVGElement | null {
-    const name = el.name();
+  decodeElementRecursively(element: ElementT, renderer: Renderer2): SVGElement | null {
+    const name = element.name();
     if (!!name) {
       const svgEl: SVGElement = renderer.createElement(name, 'http://www.w3.org/2000/svg');
-      const attrsLen = el.attrsLength();
+      const attrsLen = element.attrsLength();
       for (let i = 0; i < attrsLen; i++) {
-        const attr = el.attrs(i);
+        const attr = element.attrs(i);
         if (!!attr) {
-          const [k, v] = [attr.k(), attr.v()];
+          const [key, value] = [attr.k(), attr.v()];
           // v may be empty, so !!v is not suitable
-          if (!!k && v != null) {
-            svgEl.setAttribute(k, v);
+          if (!!key && value != null) {
+            svgEl.setAttribute(key, value);
           }
         }
       }
-      const childrenLen = el.childrenLength();
+      const childrenLen = element.childrenLength();
       for (let i = 0; i < childrenLen; i++) {
-        const child = el.children(i);
+        const child = element.children(i);
         if (!!child) {
           renderer.appendChild(svgEl,
             this.decodeElementRecursively(child, renderer));
