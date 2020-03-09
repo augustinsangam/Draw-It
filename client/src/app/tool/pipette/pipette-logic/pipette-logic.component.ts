@@ -1,8 +1,8 @@
-import {Component, OnDestroy, Renderer2} from '@angular/core';
-import html2canvas from 'html2canvas';
-import {ColorService} from '../../color/color.service';
-import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
-import {PipetteService} from '../pipette.service';
+import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { SvgToCanvasService } from 'src/app/svg-to-canvas/svg-to-canvas.service';
+import { ColorService } from '../../color/color.service';
+import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
+import { PipetteService } from '../pipette.service';
 
 @Component({
   selector: 'app-pipette-logic',
@@ -20,7 +20,8 @@ export class PipetteLogicComponent extends ToolLogicDirective
   constructor(
     private readonly service: PipetteService,
     private readonly renderer: Renderer2,
-    private readonly colorService: ColorService
+    private readonly colorService: ColorService,
+    private readonly svgToCanvas: SvgToCanvasService
   ) {
     super();
   }
@@ -29,11 +30,8 @@ export class PipetteLogicComponent extends ToolLogicDirective
     // TODO : RENDERER
     this.svgStructure.root.style.cursor = 'wait';
 
-    html2canvas(this.svgStructure.root as unknown as HTMLElement).then(
-      (value) => {
-        this.image = value.getContext('2d') as CanvasRenderingContext2D;
-      }
-    );
+    this.image = this.svgToCanvas.getCanvas(this.renderer)
+                    .getContext('2d') as CanvasRenderingContext2D;
 
     const onLeftClick = this.renderer.listen(
       this.svgStructure.root,
@@ -100,7 +98,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
         // simplement accéder à la valeur du alpha
         // tslint:disable-next-line:no-magic-numbers
         pixel[3].toString() +
-      ')';
+        ')';
     }
   }
 
