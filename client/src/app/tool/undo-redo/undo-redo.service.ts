@@ -73,7 +73,6 @@ export class UndoRedoService {
       && this.actions.undo[0].overrideFunctionDefined) {
       (this.actions.undo[0].overrideFunction as () => void)();
     }
-
     if (!this.actions.undo[0].overrideDefaultBehaviour) {
       this.undoBase();
     }

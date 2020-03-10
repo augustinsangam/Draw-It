@@ -263,7 +263,7 @@ fdescribe('UndoRedoService', () => {
     expect(service['actions'].redo[0]).toEqual(expectedAction);
   });
 
-  it('setPostRedoAction should set the parameter as the first item of undso', () => {
+  it('setPostRedoAction should set the parameter as the first item of undo', () => {
     const expectedAction = {
       functionDefined: false,
     };
@@ -271,17 +271,96 @@ fdescribe('UndoRedoService', () => {
     expect(service['actions'].redo[1]).toEqual(expectedAction);
   });
 
-  // it('redo should do lots of things', () => {
-  //   const ellipse1 = createEllipse();
-  //   const ellipse2 = createEllipse();
-  //   testSVGStructure.drawZone.appendChild(ellipse1);
-  //   testSVGStructure.drawZone.appendChild(ellipse2);
-  //   service.undo();
-  //   const spy1 = spyOn<any>(service['actions'].redo, 'ellipse1');
-  //   const spy2 = spyOn<any>(service['actions'].redo, 'ellipse2');
-  //   service.redo();
-  //   expect(spy1).toHaveBeenCalled();
-  //   expect(spy2).toHaveBeenCalled();
-  // });
+  it('undo should call the overrideFunction of undo when it is defined, ' +
+    'the function of PostAction when defined and not call undoBase if the preAction is' +
+    ' set not to overrideDefaultBehaviour', () => {
+    let called = false;
+    const callback = jasmine.createSpy().and.callFake(() => { called = true; });
+    const spy = spyOn<any>(service, 'undoBase');
+    service['actions'].undo = [
+      {
+        enabled: true,
+        overrideDefaultBehaviour: true,
+        overrideFunctionDefined: true,
+        overrideFunction: callback
+      }, {
+        functionDefined: true,
+        function: callback
+      }
+     ];
+    service.undo();
+    expect(callback).toHaveBeenCalledTimes(2);
+    expect(spy).not.toHaveBeenCalled();
+    expect(called).toBeTruthy();
+  });
+
+  it('undo should not call the overrideFunction of undo when it is not defined, ' +
+    'nor the function of PostAction when not defined and call undoBase if the preAction is' +
+    ' set to overrideDefaultBehaviour', () => {
+    let called = false;
+    const callback = jasmine.createSpy().and.callFake(() => { called = true; });
+    const spy = spyOn<any>(service, 'undoBase');
+    service['actions'].undo = [
+      {
+        enabled: false,
+        overrideDefaultBehaviour: false,
+        overrideFunctionDefined: false,
+        overrideFunction: callback
+      }, {
+        functionDefined: false,
+        function: callback
+      }
+     ];
+    service.undo();
+    expect(callback).not.toHaveBeenCalled();
+    expect(spy).toHaveBeenCalled();
+    expect(called).toBeFalsy();
+  });
+
+  it('redo should call the overrideFunction of redo when it is defined, ' +
+    'the function of PostAction when defined and not call redoBase if the preAction is' +
+    ' set not to overrideDefaultBehaviour', () => {
+    let called = false;
+    const callback = jasmine.createSpy().and.callFake(() => { called = true; });
+    const spy = spyOn<any>(service, 'redoBase');
+    service['actions'].redo = [
+      {
+        enabled: true,
+        overrideDefaultBehaviour: true,
+        overrideFunctionDefined: true,
+        overrideFunction: callback
+      }, {
+        functionDefined: true,
+        function: callback
+      }
+     ];
+    service.redo();
+    expect(callback).toHaveBeenCalledTimes(2);
+    expect(spy).not.toHaveBeenCalled();
+    expect(called).toBeTruthy();
+  });
+
+  it('redo should not call the overrideFunction of redo when it is not defined, ' +
+    'nor the function of PostAction when not defined and call redoBase if the preAction is' +
+    ' set to overrideDefaultBehaviour', () => {
+    let called = false;
+    const callback = jasmine.createSpy().and.callFake(() => { called = true; });
+    const spy = spyOn<any>(service, 'redoBase');
+    service['actions'].redo = [
+      {
+        enabled: false,
+        overrideDefaultBehaviour: false,
+        overrideFunctionDefined: false,
+        overrideFunction: callback
+      }, {
+        functionDefined: false,
+        function: callback
+      }
+     ];
+    service.redo();
+    expect(callback).not.toHaveBeenCalled();
+    expect(spy).toHaveBeenCalled();
+    expect(called).toBeFalsy();
+  });
 
   });
