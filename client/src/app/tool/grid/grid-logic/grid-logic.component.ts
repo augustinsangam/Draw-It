@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Renderer2} from '@angular/core';
 import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
 
 @Component({
@@ -8,14 +8,12 @@ import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
 
 export class GridLogicComponent extends ToolLogicDirective implements OnInit {
 
-  constructor() {
+  constructor(private renderer: Renderer2) {
     super();
   }
 
-  // TODO : RENDERER
-
   ngOnInit(): void {
-    this.svgStructure.root.style.cursor = 'auto';
+    this.renderer.setStyle(this.svgStructure.root, 'cursor', 'auto');
   }
 
 }
