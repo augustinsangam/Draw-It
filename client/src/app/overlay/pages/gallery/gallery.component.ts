@@ -91,7 +91,7 @@ export class GalleryComponent implements AfterViewInit {
     this.loading = false;
     const draws = Draws.getRoot(fbbb);
     const drawsLenght = draws.drawBuffersLength();
-    const tempsAllTags = new Set<string>();
+    let tempsAllTags = new Set<string>();
 
     for (let i = drawsLenght - 1; i !== 0; i--) {
 
@@ -99,7 +99,7 @@ export class GalleryComponent implements AfterViewInit {
       if (drawBuffer == null) {
         continue;
       }
-      const id = drawBuffer.id();
+
       const serializedDraw = drawBuffer.bufArray();
 
       if (serializedDraw == null) {
@@ -107,42 +107,48 @@ export class GalleryComponent implements AfterViewInit {
       }
       const drawFbbb = new flatbuffers.ByteBuffer(serializedDraw);
       const draw = Draw.getRoot(drawFbbb);
-      const newName = draw.name();
-      const tagArrayLenght = draw.tagsLength();
-      const newTagArray = new Array<string>();
-
-      for (let j = 0; j < tagArrayLenght; j++) {
-        const tag = draw.tags(j);
-        newTagArray.push(tag);
-        tempsAllTags.add(tag);
-      }
-
-      const svgElement = draw.svg();
-
-      if (!!svgElement) {
-        const newSvg = this.communicationService.decodeElementRecursively(
-          svgElement, this.renderer) as SVGGElement;
-
-        const newGalleryDraw: GalleryDraw = {
-          header: {
-            id,
-            name: newName as string,
-            tags: newTagArray,
-          },
-          shape: {
-            height: draw.height(),
-            width: draw.width(),
-            color: draw.color() as string
-          },
-          svg: newSvg,
-        };
-
-        this.galleryDrawTable.push(newGalleryDraw);
-      }
+      const id = drawBuffer.id();
+      tempsAllTags = this.newDraw(draw, id, tempsAllTags);
     }
     this.allTags.next(Array.from(tempsAllTags));
     this.filteredGalleryDrawTable = this.galleryDrawTable;
     this.ajustImagesWidth();
+  }
+
+  private newDraw(draw: Draw, id: number, tempsAllTags: Set<string>): Set<string> {
+    const newTagArray = new Array<string>();
+
+    for (let i = 0; i < draw.tagsLength(); i++) {
+      const tag = draw.tags(i);
+      newTagArray.push(tag);
+      tempsAllTags.add(tag);
+    }
+
+    const svgElement = draw.svg();
+
+    let svg: SVGGElement;
+
+    if (!!svgElement) {
+      svg = this.communicationService.decodeElementRecursively(
+        svgElement, this.renderer) as SVGGElement;
+
+      const newGalleryDraw: GalleryDraw = {
+        header: {
+          id,
+          name: draw.name() as string,
+          tags: newTagArray,
+        },
+        shape: {
+          height: draw.height(),
+          width: draw.width(),
+          color: draw.color() as string
+        },
+        svg,
+      };
+      this.galleryDrawTable.push(newGalleryDraw);
+    }
+
+    return tempsAllTags;
   }
 
   ngAfterViewInit(): void {
@@ -175,9 +181,13 @@ export class GalleryComponent implements AfterViewInit {
     for (const elem of this.galleryDrawTable) {
       let keep = true;
       for (const tag of tags) {
-        keep = (elem.header.tags.indexOf(tag) !== NOT_FOUND);
-        if (!searchToggle && keep) {
-          break;
+        if (!searchToggle) {
+          keep = (elem.header.tags.indexOf(tag) !== NOT_FOUND);
+          if (keep) {
+            break;
+          }
+        } else {
+          keep = (elem.header.tags.indexOf(tag) !== NOT_FOUND) && keep;
         }
       }
       if (keep) {
@@ -208,15 +218,19 @@ export class GalleryComponent implements AfterViewInit {
       this.dialogRefs.delete.close();
     }
   }
-  // TODO: Petite fonction askip pour le draw (DRY)
+
+  private findDraw(id: number): GalleryDraw {
+    const draw = this.galleryDrawTable.filter((element) => element.header.id === id);
+    return draw[0];
+  }
+
   private deletePromiseHandler(result: string | null, id: number): void {
     if (result) {
       this.snackBar.open('Impossible de supprimer le dessin', 'Ok', {
         duration: SNACKBAR_DURATION
       });
     } else {
-      const draw = this.galleryDrawTable.filter((element) => element.header.id === id);
-      this.galleryDrawTable.splice(this.galleryDrawTable.indexOf(draw[0]), 1);
+      this.galleryDrawTable.splice(this.galleryDrawTable.indexOf(this.findDraw(id)), 1);
       this.ajustImagesWidth();
     }
   }
@@ -234,8 +248,7 @@ export class GalleryComponent implements AfterViewInit {
 
   private loadDrawHandler = (result: boolean, id: number) => {
     if (result) {
-      const draw = this.galleryDrawTable.filter((element) => element.header.id === id);
-      this.dialogRef.close(draw[0]);
+      this.dialogRef.close(this.findDraw(id));
     } else {
       this.dialogRefs.load.close();
     }

@@ -166,6 +166,18 @@ fdescribe('GalleryComponent', () => {
     expect(component['filteredGalleryDrawTable']).toContain(testDrawsTable[0]);
   });
 
+  it('#filterGalleryTable should apply an AND filter on galleryDrawTable when "searchToggle" is true.\nShould return nothing', () => {
+    testDrawsTable[0].header.tags = ['test1', 'test2'];
+    testDrawsTable[1].header.tags = ['test1', 'test3'];
+    testDrawsTable[2].header.tags = ['test3', 'test4'];
+
+    component['galleryDrawTable'] = Array.from(testDrawsTable);
+
+    component['filterGalleryTable']([['test3', 'test2'], true]);
+
+    expect(component['filteredGalleryDrawTable']).toEqual([]);
+  });
+
   it('#deleteDraw should call deleteCloseHandler() with "id" when dialogRefs.delete is closed', () => {
     // const spy = spyOn<any>(component, 'deleteCloseHandler');
 
