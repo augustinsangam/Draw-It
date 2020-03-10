@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { ColorService } from '../../../color/color.service';
 import { MathService } from '../../../mathematics/tool.math-service.service';
-import { Point } from '../../../shape/common/point';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
 import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import {
@@ -9,6 +8,7 @@ import {
   StrokeProperties,
   Style
 } from '../../common/abstract-shape';
+import { Point } from '../../common/point';
 import { Rectangle } from '../../common/rectangle';
 import { RectangleService } from '../rectangle.service';
 
@@ -27,12 +27,13 @@ enum ClickType {
 export class RectangleLogicComponent extends ToolLogicDirective
   implements OnDestroy, OnInit {
 
-  private rectangles: Rectangle[] = [];
+  private rectangles: Rectangle[];
   private onDrag: boolean;
   private currentPoint: Point;
   private mouseDownPoint: Point;
   private style: Style;
-  private allListeners: (() => void)[] = [];
+  private allListeners: (() => void)[];
+
   constructor(
     private readonly service: RectangleService,
     private readonly renderer: Renderer2,
@@ -42,6 +43,8 @@ export class RectangleLogicComponent extends ToolLogicDirective
   ) {
     super();
     this.onDrag = false;
+    this.rectangles = [];
+    this.allListeners = [];
     this.undoRedoService.resetActions();
     this.undoRedoService.setPreUndoAction({
       enabled: true,
@@ -97,12 +100,11 @@ export class RectangleLogicComponent extends ToolLogicDirective
 
     this.allListeners = [onMouseDown, onKeyDown, onKeyUp, onMouseMove, onMouseUp];
 
-    // TODO : Renderer
-    this.svgStructure.root.style.cursor = 'crosshair';
+    this.renderer.setStyle(this.svgStructure.root, 'cursor', 'crosshair');
 
   }
 
-  // TODO : Enum ; on drag au debut
+  // TODO : Enum ?
 
   private onKeyDown(keyEv: KeyboardEvent): void {
     if ((keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') && this.onDrag) {
@@ -112,19 +114,19 @@ export class RectangleLogicComponent extends ToolLogicDirective
 
   private onKeyUp(keyEv: KeyboardEvent): void {
     if ((keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') && this.onDrag) {
-      this.getRectangle().dragRectangle(
-        this.mouseDownPoint, this.currentPoint, this.service.thickness);
+      this.getRectangle().dragRectangle(this.mouseDownPoint, this.currentPoint, this.service.thickness);
     }
   }
 
   private onMouseUp(mouseEv: MouseEvent): void {
-    if ((mouseEv.button === ClickType.CLICKGAUCHE) && this.onDrag) {
-      this.onDrag = false;
-      this.style.opacity = FULLOPACITY;
-      this.getRectangle().setCss(this.style);
-      this.undoRedoService.saveState();
-      this.viewTemporaryForm(mouseEv);
+    if (mouseEv.button !== ClickType.CLICKGAUCHE || !this.onDrag) {
+      return ;
     }
+    this.onDrag = false;
+    this.style.opacity = FULLOPACITY;
+    this.getRectangle().setCss(this.style);
+    this.undoRedoService.saveState();
+    this.viewTemporaryForm(mouseEv);
   }
 
   private getRectangle(): Rectangle {
@@ -132,14 +134,15 @@ export class RectangleLogicComponent extends ToolLogicDirective
   }
 
   private initRectangle(mouseEv: MouseEvent): void {
-    if (mouseEv.button === ClickType.CLICKGAUCHE) {
-      const rectangle = this.renderer.createElement('rect', this.svgNS);
-      this.renderer.appendChild(this.svgStructure.drawZone, rectangle);
-      this.rectangles.push(new Rectangle(this.renderer, rectangle, this.mathService));
-      this.setRectangleProperties();
-      this.onDrag = true;
-      this.mouseDownPoint = this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+    if (mouseEv.button !== ClickType.CLICKGAUCHE) {
+      return ;
     }
+    const rectangle = this.renderer.createElement('rect', this.svgNS);
+    this.renderer.appendChild(this.svgStructure.drawZone, rectangle);
+    this.rectangles.push(new Rectangle(this.renderer, rectangle, this.mathService));
+    this.setRectangleProperties();
+    this.onDrag = true;
+    this.mouseDownPoint = this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
   }
 
   private viewTemporaryForm(mouseEv: MouseEvent): void {
@@ -176,10 +179,8 @@ export class RectangleLogicComponent extends ToolLogicDirective
   ngOnDestroy(): void {
     this.allListeners.forEach((end) => end());
     this.undoRedoService.resetActions();
-    // TODO : Dry
     if (this.onDrag) {
       this.onMouseUp(new MouseEvent('mouseup', { button: 0 } as MouseEventInit));
-      this.getRectangle().element.remove();
     }
   }
 }
