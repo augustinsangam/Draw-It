@@ -20,8 +20,8 @@ import {
 
 import { flatbuffers } from 'flatbuffers';
 import { Subject } from 'rxjs';
-import { SvgHeader } from "src/app/svg/svg-header";
-import { SvgShape } from "src/app/svg/svg-shape";
+import { SvgHeader } from 'src/app/svg/svg-header';
+import { SvgShape } from 'src/app/svg/svg-shape';
 import { ScreenService } from '../new-draw/sreen-service/screen.service';
 
 const CARD_WIDTH = 342;
@@ -86,7 +86,7 @@ export class GalleryComponent implements AfterViewInit {
       });
     });
   }
-  // TODO: Splitter
+
   private createGalleryDrawsTable(fbbb: flatbuffers.ByteBuffer): void {
     this.loading = false;
     const draws = Draws.getRoot(fbbb);
@@ -197,6 +197,11 @@ export class GalleryComponent implements AfterViewInit {
     this.ajustImagesWidth();
   }
 
+  private findDraw(id: number): GalleryDraw {
+    const draw = this.galleryDrawTable.filter((element) => element.header.id === id);
+    return draw[0];
+  }
+
   protected deleteDraw(id: number): void {
     this.dialogRefs.delete = this.dialog.open(
       DeleteConfirmationDialogComponent);
@@ -217,11 +222,6 @@ export class GalleryComponent implements AfterViewInit {
     } else {
       this.dialogRefs.delete.close();
     }
-  }
-
-  private findDraw(id: number): GalleryDraw {
-    const draw = this.galleryDrawTable.filter((element) => element.header.id === id);
-    return draw[0];
   }
 
   private deletePromiseHandler(result: string | null, id: number): void {

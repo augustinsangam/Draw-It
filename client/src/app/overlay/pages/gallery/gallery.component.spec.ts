@@ -10,6 +10,8 @@ import { DeleteConfirmationDialogComponent } from './deleteconfirmation-dialog.c
 import { GalleryCardComponent } from './gallery-card/gallery-card.component';
 import { GalleryComponent, GalleryDraw } from './gallery.component';
 import { TagsFilterComponent } from './tags-filter/tags-filter.component';
+import { Draw } from 'src/app/communication/data_generated';
+import { CommunicationService } from 'src/app/communication/communication.service';
 // import { CommunicationService } from 'src/app/communication/communication.service';
 
 // tslint:disable: no-string-literal
@@ -97,6 +99,64 @@ fdescribe('GalleryComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('#newDraw should return tempsAllTags with added tags ad add the draw to galleryDrawTable', () => {
+    const draw = new Draw();
+    const service: CommunicationService = TestBed.get(CommunicationService);
+
+    spyOn(draw, 'name').and.callFake(() => {
+      return 'test';
+    });
+    spyOn(draw, 'height').and.callFake(() => {
+      return 150;
+    });
+    spyOn(draw, 'width').and.callFake(() => {
+      return 300;
+    });
+    spyOn(draw, 'color').and.callFake(() => {
+      return '#420069';
+    });
+    spyOn(draw, 'svg').and.callFake((obj) => {
+      const elem = new Element();
+      return elem;
+    });
+    spyOn(draw, 'tagsLength').and.callFake(() => {
+      return 3;
+    });
+    spyOn(draw, 'tags').and.callFake((i: number) => {
+      const tags = ['test1', 'test2', 'test3'];
+      return tags[i];
+    });
+
+    spyOn(service, 'decodeElementRecursively').and.callFake(() => {
+      return document.createElementNS('http://www.w3.org/2000/svg',
+      'svg:g') as SVGGElement;
+    });
+
+    let tempsAllTags = new Set<string>(['test1', 'test4']);
+
+    tempsAllTags = component['newDraw'](draw, 0, tempsAllTags);
+
+    const arrayTempsAllTags = Array.from(tempsAllTags);
+
+    const expectedDraw: GalleryDraw = {
+      header: {
+        id: 0,
+        name: 'test',
+        tags: ['test1', 'test2', 'test3'],
+      },
+      shape: {
+        height: 150,
+        width: 300,
+        color: '#420069'
+      },
+      svg: document.createElementNS('http://www.w3.org/2000/svg',
+      'svg:g') as SVGGElement
+    };
+
+    expect(arrayTempsAllTags).toEqual(['test1', 'test4', 'test2', 'test3']);
+    expect(component['galleryDrawTable']).toContain(expectedDraw);
+  });
+
   it('#ngAfterViewInit should call ajustImagesWidth when screenService.size changes', () => {
     const spy = spyOn<any>(component, 'ajustImagesWidth');
 
@@ -176,6 +236,14 @@ fdescribe('GalleryComponent', () => {
     component['filterGalleryTable']([['test3', 'test2'], true]);
 
     expect(component['filteredGalleryDrawTable']).toEqual([]);
+  });
+
+  it('#findDraw should return the correct draw from "id"', () => {
+    component['galleryDrawTable'] = Array.from(testDrawsTable);
+
+    const draw = component['findDraw'](1);
+
+    expect(draw.header.id).toEqual(1);
   });
 
   it('#deleteDraw should call deleteCloseHandler() with "id" when dialogRefs.delete is closed', () => {

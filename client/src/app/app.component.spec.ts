@@ -38,7 +38,7 @@ import { Shortcut } from './shortcut-handler/shortcut';
 
 // Test Also OverlayService
 // tslint:disable: no-string-literal
-fdescribe('AppComponent', () => {
+describe('AppComponent', () => {
   let component: AppComponent;
   let service: OverlayService;
   let svgService: SvgService;
