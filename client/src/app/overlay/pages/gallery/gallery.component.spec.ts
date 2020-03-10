@@ -14,7 +14,6 @@ import { TagsFilterComponent } from './tags-filter/tags-filter.component';
 
 // tslint:disable: no-string-literal
 // tslint:disable: no-magic-numbers
-fdescribe('GalleryComponent', () => {
 describe('GalleryComponent', () => {
   let component: GalleryComponent;
   let fixture: ComponentFixture<GalleryComponent>;

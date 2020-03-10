@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import {SVGStructure} from '../tool-logic/tool-logic.directive';
+import { SVGStructure } from '../../svg/svg-structure';
 import { UndoRedoService } from './undo-redo.service';
 
 const createEllipse = (): SVGElement => {
@@ -17,7 +17,7 @@ const createEllipse = (): SVGElement => {
 };
 
 // tslint:disable:no-string-literal
-fdescribe('UndoRedoService', () => {
+describe('UndoRedoService', () => {
   let service: UndoRedoService;
   let testSVGStructure: SVGStructure;
 

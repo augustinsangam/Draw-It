@@ -6,7 +6,7 @@ import { GalleryCardComponent } from './gallery-card.component';
 // tslint:disable: no-magic-numbers
 // tslint:disable: no-string-literal
 
-fdescribe('GalleryCardComponent', () => {
+describe('GalleryCardComponent', () => {
   let component: GalleryCardComponent;
   let fixture: ComponentFixture<GalleryCardComponent>;
 
