@@ -6,8 +6,6 @@ import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
 import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import { AerosolService } from '../aerosol.service';
 
-// TODO : gerer changement outils ondrag
-
 const A_SECOND_IN_MS = 1000;
 
 @Component({
@@ -86,12 +84,12 @@ export class AerosolLogicComponent
       onMouseUp,
       onMouseMove,
     ];
-    // TODO utiliser renderer
-    this.svgStructure.root.style.cursor = 'crosshair';
+    this.renderer.setStyle(this.svgStructure.root, 'cursor', 'crosshair');
 
   }
 
   ngOnDestroy(): void {
+    this.onMouseUp();
     this.listeners.forEach((listenner) => { listenner(); });
     this.undoRedoService.resetActions();
   }
