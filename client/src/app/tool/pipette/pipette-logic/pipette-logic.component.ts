@@ -27,8 +27,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
   }
 
   ngOnInit(): void {
-    // TODO : RENDERER
-    this.svgStructure.root.style.cursor = 'wait';
+    this.renderer.setStyle(this.svgStructure.root, 'cursor', 'wait');
 
     this.image = this.svgToCanvas.getCanvas(this.renderer)
                     .getContext('2d') as CanvasRenderingContext2D;
@@ -57,15 +56,8 @@ export class PipetteLogicComponent extends ToolLogicDirective
       onRightClick
     ];
 
-    this.renderer.setStyle(
-      this.svgStructure.root,
-      'cursor',
-      'crosshair'
-    );
-
-    // TODO : Renderer
     this.backgroundColorOnInit = this.colorService.backgroundColor;
-    this.svgStructure.root.style.cursor = 'crosshair';
+    this.renderer.setStyle(this.svgStructure.root, 'cursor', 'crosshair');
 
   }
 
@@ -90,15 +82,9 @@ export class PipetteLogicComponent extends ToolLogicDirective
         1,
         1
       ).data;
-      // TODO : string template
-      this.service.currentColor = 'rgba(' +
-        pixel[0].toString() + ',' +
-        pixel[1].toString() + ',' +
-        pixel[2].toString() + ',' +
-        // simplement accéder à la valeur du alpha
-        // tslint:disable-next-line:no-magic-numbers
-        pixel[3].toString() +
-        ')';
+      // simplement pour accéder à la 4è valeur du pixel[3] qui correspond au alpha
+      // tslint:disable-next-line:no-magic-numbers
+      this.service.currentColor = `rgba(${pixel[0]},${pixel[1]},${pixel[2]},${pixel[3]})`;
     }
   }
 
