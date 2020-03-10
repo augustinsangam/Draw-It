@@ -1,6 +1,18 @@
 import { Injectable } from '@angular/core';
 import { SVGStructure } from '../tool-logic/tool-logic.directive';
 
+
+export interface PreAction {
+  enabled: boolean;
+  overrideDefaultBehaviour: boolean;
+  overrideFunctionDefined: boolean;
+  overrideFunction?: () => void;
+}
+
+export interface PostAction {
+  functionDefined: boolean;
+  function?: () => void;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -151,16 +163,4 @@ export class UndoRedoService {
     this.actions.redo[1] = action;
   }
 
-}
-
-export interface PreAction {
-  enabled: boolean;
-  overrideDefaultBehaviour: boolean;
-  overrideFunctionDefined: boolean;
-  overrideFunction?: () => void;
-}
-
-export interface PostAction {
-  functionDefined: boolean;
-  function?: () => void;
 }

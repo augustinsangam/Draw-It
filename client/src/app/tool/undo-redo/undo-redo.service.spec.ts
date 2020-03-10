@@ -202,21 +202,86 @@ fdescribe('UndoRedoService', () => {
       Array.from(testSVGStructure.drawZone.children) as SVGElement[]
     ).toEqual([ellipse1]);  });
 
-  // TODO : find a way to send a « false array » to refresh in order to
-  //  restore initialCommand in testSVGStructure.drawZone
-  // it('refresh should restore the initial command if an' +
-  //   ' empty array is passed', () => {
+  it('refresh should restore the initial command if an' +
+    ' empty array is passed', () => {
+    const ellipse1 = createEllipse();
+    const ellipse2 = createEllipse();
+    const ellipse3 = createEllipse();
+    testSVGStructure.drawZone.appendChild(ellipse1);
+    testSVGStructure.drawZone.appendChild(ellipse2);
+    service['initialCommand'] = [ellipse3];
+    service.saveState();
+    service.refresh(undefined as unknown as ChildNode[]);
+    expect(
+      Array.from(testSVGStructure.drawZone.children) as SVGElement[]
+    ).toEqual([ellipse3]);
+  });
+
+  it('createDefaultPreActions should return a conform object with the default' +
+    'options', () => {
+    expect(service['createDefaultPreAction']()).toEqual({
+      enabled: false,
+      overrideDefaultBehaviour: false,
+      overrideFunctionDefined: false
+    });
+  });
+
+  it('createDefaultPostActions should return a conform object with the default' +
+    'options', () => {
+    expect(service['createDefaultPostAction']()).toEqual({
+      functionDefined: false
+    });
+  });
+
+  it('setPreUndoAction should set the parameter as the first item of undo', () => {
+    const expectedAction = {
+      enabled: true,
+      overrideDefaultBehaviour: true,
+      overrideFunctionDefined: true,
+      overrideFunction: () => true
+    };
+    service.setPreUndoAction(expectedAction);
+    expect(service['actions'].undo[0]).toEqual(expectedAction);
+  });
+
+  it('setPostUndoAction should set the parameter as the first item of undo', () => {
+    const expectedAction = {
+      functionDefined: false,
+    };
+    service.setPostUndoAction(expectedAction);
+    expect(service['actions'].undo[1]).toEqual(expectedAction);
+  });
+
+  it('setPreRedoAction should set the parameter as the first item of undo', () => {
+    const expectedAction = {
+      enabled: true,
+      overrideDefaultBehaviour: true,
+      overrideFunctionDefined: true,
+      overrideFunction: () => true
+    };
+    service.setPreRedoAction(expectedAction);
+    expect(service['actions'].redo[0]).toEqual(expectedAction);
+  });
+
+  it('setPostRedoAction should set the parameter as the first item of undso', () => {
+    const expectedAction = {
+      functionDefined: false,
+    };
+    service.setPostRedoAction(expectedAction);
+    expect(service['actions'].redo[1]).toEqual(expectedAction);
+  });
+
+  // it('redo should do lots of things', () => {
   //   const ellipse1 = createEllipse();
   //   const ellipse2 = createEllipse();
-  //   const ellipse3 = createEllipse();
   //   testSVGStructure.drawZone.appendChild(ellipse1);
   //   testSVGStructure.drawZone.appendChild(ellipse2);
-  //   service['initialCommand'] = [ellipse3];
-  //   service.saveState();
-  //   service.refresh();
-  //   expect(
-  //     Array.from(testSVGStructure.drawZone.children) as SVGElement[]
-  //   ).toEqual([ellipse3]);
+  //   service.undo();
+  //   const spy1 = spyOn<any>(service['actions'].redo, 'ellipse1');
+  //   const spy2 = spyOn<any>(service['actions'].redo, 'ellipse2');
+  //   service.redo();
+  //   expect(spy1).toHaveBeenCalled();
+  //   expect(spy2).toHaveBeenCalled();
   // });
 
   });
