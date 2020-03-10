@@ -15,6 +15,13 @@ import { Deplacement } from './deplacement';
 import { BasicSelectionType, ElementSelectedType } from './element-selected-type';
 import * as Util from './selection-logic-util';
 
+enum Arrow {
+  Up = 'ArrowUp',
+  Down = 'ArrowDown',
+  Left = 'ArrowLeft',
+  Right = 'ArrowRight'
+}
+
 export abstract class SelectionLogicBase extends ToolLogicDirective
   implements OnInit, OnDestroy {
 
@@ -40,6 +47,8 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.undoRedoService.setPostUndoAction(action);
     this.undoRedoService.setPostRedoAction(action);
   }
+
+  // TODO : Renderer
 
   ngOnInit(): void {
     this.mouse = Util.SelectionLogicUtil.initialiseMouse();
@@ -88,7 +97,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
       const allElements = Array.from(
         this.svgStructure.drawZone.children
       ) as SVGElement[];
-      elements = new Set<SVGElement>(allElements);
+      elements = new Set(allElements);
     }
     const multipleSelection = new MultipleSelection(
       elements, this.getSvgOffset(), startPoint, endPoint
@@ -98,7 +107,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   private applyInversion(elements: Set<SVGElement>,
                          startPoint?: Point, endPoint?: Point): void {
-    const elementsToInvert = new Set<SVGElement>(this.selectedElementsFreezed);
+    const elementsToInvert = new Set(this.selectedElementsFreezed);
     elements.forEach((element: SVGElement) => {
       if (this.selectedElementsFreezed.has(element)) {
         elementsToInvert.delete(element);
@@ -110,13 +119,11 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   protected drawSelection(p1: Point, p2: Point): void {
-    this.drawARectangle(this.rectangles.selection, p1, p2,
-      Util.COLORS.BLUE);
+    this.drawARectangle(this.rectangles.selection, p1, p2, Util.COLORS.BLUE);
   }
 
   private drawVisualisation(p1: Point, p2: Point): void {
-    this.drawARectangle(this.rectangles.visualisation, p1, p2,
-      Util.COLORS.GREEN, true);
+    this.drawARectangle(this.rectangles.visualisation, p1, p2, Util.COLORS.GREEN, true);
     this.drawCircles(p1, p2);
   }
 
@@ -130,8 +137,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     const [startPoint, endPoint] = Util.SelectionLogicUtil.orderPoint(p1, p2);
     const rectangleObject =
       new Rectangle(this.renderer, element, new MathService());
-    rectangleObject.setParameters(BackGroundProperties.None,
-      StrokeProperties.Filled);
+    rectangleObject.setParameters(BackGroundProperties.None, StrokeProperties.Filled);
     rectangleObject.dragRectangle(startPoint, endPoint);
     rectangleObject.setCss({
       strokeWidth: Util.RECTANGLE_STROKE,
@@ -140,6 +146,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
       opacity: '0'
     });
     if (dasharray) {
+      // TODO : Renderer
       element.setAttribute('stroke-dasharray', Util.DASH_ARRAY);
     }
   }
@@ -160,6 +167,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   private setCircle(center: Point, circle: SVGElement, radius: string): void {
+    // TODO : Méthode statique
     // A la construction, tout est fait
     // tslint:disable-next-line: no-unused-expression
     new Circle(center, this.renderer, circle, radius, Util.COLORS.GRAY);
@@ -213,14 +221,11 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     return BasicSelectionType.NOTHING;
   }
 
-  protected isInTheVisualisationZone(x: number, y: number)
-    : boolean {
+  protected isInTheVisualisationZone(x: number, y: number): boolean {
     const point = this.svgStructure.root.createSVGPoint();
-    const [dx, dy] =
-      Deplacement.getTransformTranslate(this.rectangles.visualisation);
+    const [dx, dy] = Deplacement.getTransformTranslate(this.rectangles.visualisation);
     [point.x, point.y] = [x - dx, y - dy];
-    return (this.rectangles.visualisation as SVGGeometryElement)
-      .isPointInFill(point);
+    return (this.rectangles.visualisation as SVGGeometryElement).isPointInFill(point);
   }
 
   protected translateAll(x: number, y: number): void {
@@ -235,33 +240,29 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   private initialiseKeyManager(): void {
+    const allArrows = new Set<string>([Arrow.Up, Arrow.Down, Arrow.Left, Arrow.Right]);
     this.keyManager = {
       keyPressed: new Set(),
       lastTimeCheck: new Date().getTime(),
       handlers: {
         keydown: ($event: KeyboardEvent) => {
+          if (!allArrows.has($event.key)) {
+            return ;
+          }
           $event.preventDefault();
           this.keyManager.keyPressed.add($event.key);
           const actualTime = new Date().getTime();
           if (actualTime - this.keyManager.lastTimeCheck >= Util.TIME_INTERVAL) {
             this.keyManager.lastTimeCheck = actualTime;
-            this.handleKey('ArrowUp', 0, -Util.OFFSET_TRANSLATE);
-            this.handleKey('ArrowDown', 0, Util.OFFSET_TRANSLATE);
-            this.handleKey('ArrowLeft', -Util.OFFSET_TRANSLATE, 0);
-            this.handleKey('ArrowRight', Util.OFFSET_TRANSLATE, 0);
+            this.handleKey(Arrow.Up, 0, -Util.OFFSET_TRANSLATE);
+            this.handleKey(Arrow.Down, 0, Util.OFFSET_TRANSLATE);
+            this.handleKey(Arrow.Left, -Util.OFFSET_TRANSLATE, 0);
+            this.handleKey(Arrow.Right, Util.OFFSET_TRANSLATE, 0);
           }
         },
         keyup: ($event: KeyboardEvent) => {
-          const allArrows = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
-          let count = 0;
-          allArrows.forEach((arrow) => {
-            if (this.keyManager.keyPressed.has(arrow)) {
-              count++;
-            }
-          });
           this.keyManager.keyPressed.delete($event.key);
-          // TODO : Verifier uniquement les touches qui s'appliquent
-          if (count === 1 && allArrows.indexOf($event.key) !== -1) {
+          if (this.keyManager.keyPressed.size === 0 && allArrows.has($event.key)) {
             this.undoRedoService.saveState();
           }
         }

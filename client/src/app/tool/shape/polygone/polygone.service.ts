@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ToolService } from '../../tool.service';
 
-const SIDES_DEFAULT = 8;
+const SIDES_DEFAULT = 3;
 
 @Injectable({
   providedIn: 'root'

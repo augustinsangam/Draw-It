@@ -1,4 +1,5 @@
 
+// TODO : RENDERER
 export class Deplacement {
 
   static translate(element: SVGElement, x: number, y: number): void {

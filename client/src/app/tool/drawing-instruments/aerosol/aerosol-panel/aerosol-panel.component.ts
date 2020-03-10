@@ -5,16 +5,16 @@ import {
   Renderer2,
   ViewChild
 } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatSlider} from '@angular/material/slider';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSlider } from '@angular/material/slider';
 import { Point } from 'src/app/tool/shape/common/point';
-import {ColorService} from '../../../color/color.service';
-import {ToolPanelDirective} from '../../../tool-panel/tool-panel.directive';
-import {AerosolService} from '../aerosol.service';
+import { ColorService } from '../../../color/color.service';
+import { ToolPanelDirective } from '../../../tool-panel/tool-panel.directive';
+import { AerosolService } from '../aerosol.service';
 
 const PREVIEW_CENTER = {
-  x : 150,
-  y : 110
+  x: 150,
+  y: 110
 };
 
 @Component({
@@ -25,8 +25,6 @@ const PREVIEW_CENTER = {
 
 export class AerosolPanelComponent extends ToolPanelDirective
   implements AfterViewInit {
-
-  private aerosolForm: FormGroup;
 
   @ViewChild('thicknessSlider', {
     static: false,
@@ -39,6 +37,8 @@ export class AerosolPanelComponent extends ToolPanelDirective
   @ViewChild('prevPath', {
     static: false,
   }) private prevPathRef: ElementRef<SVGPathElement>;
+
+  private aerosolForm: FormGroup;
 
   constructor(
     elementRef: ElementRef<HTMLElement>,

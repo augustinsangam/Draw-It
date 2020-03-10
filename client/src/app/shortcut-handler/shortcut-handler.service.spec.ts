@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
+import { Shortcut } from './shortcut';
 import {
   Handler,
-  Shortcut,
   ShortcutCallBack,
   ShortcutHandlerService
 } from './shortcut-handler.service';

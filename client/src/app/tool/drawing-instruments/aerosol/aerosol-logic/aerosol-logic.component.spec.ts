@@ -68,20 +68,20 @@ describe('AerosolLogicComponent', () => {
     tick(100);
   }));
 
-  it('onMouseMove should update currMousePos if onDrag', () => {
+  it('onMouseMove should update currentMousePos if onDrag', () => {
     component['onDrag'] = true;
     const mouseEv = createClickMouseEvent('mousemove');
     const expectedPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
     component['onMouseMove'](mouseEv);
-    expect(component['currMousePos']).toEqual(expectedPoint);
+    expect(component['currentMousePos']).toEqual(expectedPoint);
   });
 
-  it ('onMouseMove should not update currMousePos if not onDrag', () => {
+  it ('onMouseMove should not update currentMousePos if not onDrag', () => {
     const expectedPoint = new Point(43, 43);
-    component['currMousePos'] = expectedPoint;
+    component['currentMousePos'] = expectedPoint;
     component['onDrag'] = false;
     component['onMouseMove'](createClickMouseEvent('mousemove'));
-    expect(component['currMousePos']).toEqual(expectedPoint);
+    expect(component['currentMousePos']).toEqual(expectedPoint);
   });
 
   it ('onMouseUp should stop the splash if onDrag and to call' +

@@ -40,6 +40,7 @@ import {
   GalleryCardComponent
 } from './overlay/pages/gallery/gallery-card/gallery-card.component';
 import { GalleryComponent } from './overlay/pages/gallery/gallery.component';
+import { TagsFilterComponent } from './overlay/pages/gallery/tags-filter/tags-filter.component';
 import {
   HomeComponent
 } from './overlay/pages/home/home.component';
@@ -141,7 +142,6 @@ import {
 import {
   RectanglePanelComponent
 } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
-import { TagsFilterComponent } from './overlay/pages/gallery/tags-filter/tags-filter.component';
 
 @NgModule({
   declarations: [
@@ -188,7 +188,7 @@ import { TagsFilterComponent } from './overlay/pages/gallery/tags-filter/tags-fi
     GridLogicComponent,
     GridPanelComponent,
     SaveComponent,
-    TagsFilterComponent,
+    TagsFilterComponent
   ],
   imports: [
     BrowserAnimationsModule,

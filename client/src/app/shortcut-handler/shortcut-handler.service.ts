@@ -1,24 +1,5 @@
 import { Injectable } from '@angular/core';
-
-export enum Shortcut {
-  C = 'c',
-  W = 'w',
-  L = 'l',
-  Digit1 = '1',
-  Digit2 = '2',
-  Digit3 = '3',
-  O = 'o',
-  A = 'a',
-  S = 's',
-  I = 'i',
-  Z = 'z',
-  ZShift = 'Z',
-  E = 'e',
-  R = 'r',
-  G = 'g',
-  plus = '+',
-  minus = '-',
-}
+import { Shortcut } from './shortcut';
 
 export type ShortcutCallBack = (event?: KeyboardEvent) => void;
 

@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, HostListener, } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { OverlayManager } from './overlay/overlay-manager';
 import { OverlayService } from './overlay/overlay.service';
 import {
   ShortcutHandlerManagerService
@@ -16,7 +16,7 @@ import { SvgService } from './svg/svg.service';
 })
 export class AppComponent implements AfterViewInit {
 
-  constructor(private dialog: MatDialog,
+  constructor(private dialog: OverlayManager,
               private svgService: SvgService,
               private shortcutHanler: ShortcutHandlerService,
               private shortcutManager: ShortcutHandlerManagerService,

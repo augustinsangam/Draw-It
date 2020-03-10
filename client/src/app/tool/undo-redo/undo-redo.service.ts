@@ -1,5 +1,17 @@
 import { Injectable } from '@angular/core';
-import { SVGStructure } from '../tool-logic/tool-logic.directive';
+import { SVGStructure } from '../../svg/svg-structure';
+
+export interface PreAction {
+  enabled: boolean;
+  overrideDefaultBehaviour: boolean;
+  overrideFunctionDefined: boolean;
+  overrideFunction?: () => void;
+}
+
+export interface PostAction {
+  functionDefined: boolean;
+  function?: () => void;
+}
 
 
 export interface PreAction {
@@ -65,7 +77,6 @@ export class UndoRedoService {
     }
     this.cmdDone.push(toPush);
     this.cmdUndone = [];
-    console.log('On sauvegarde');
   }
 
   undo(): void {
@@ -113,15 +124,14 @@ export class UndoRedoService {
     }
   }
 
-  refresh(node: ChildNode[]): void {
+  refresh(node?: ChildNode[]): void {
     for (const element of Array.from(this.svgStructure.drawZone.childNodes)) {
       element.remove();
     }
     const nodeChildrens = node ? Array.from(node) : this.initialCommand;
     for (const element of nodeChildrens) {
-      this.svgStructure.drawZone.appendChild(element);
+      this.svgStructure.drawZone.appendChild(element.cloneNode(true));
     }
-
   }
 
   canUndo(): boolean {
