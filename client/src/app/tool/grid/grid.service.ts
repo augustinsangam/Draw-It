@@ -66,15 +66,10 @@ export class GridService extends ToolService {
   }
 
   handleGrid(): void {
-    // TODO is it possible to use renderer ?
-    const width = this.svg.structure.root.getAttribute('width');
-    const height = this.svg.structure.root.getAttribute('height');
-    if (width != null && height != null) {
-      this.svgDimensions = {
-        width: +width,
-        height: +height
-      };
-    }
+    this.svgDimensions = {
+      width: this.svg.shape.width,
+      height: this.svg.shape.height
+    };
 
     if (!!this.grid) {
       this.grid.remove();

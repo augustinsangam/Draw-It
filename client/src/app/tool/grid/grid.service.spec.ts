@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import { GridService } from './grid.service';
 
@@ -8,27 +8,32 @@ enum gridKeys {
   minus = '-',
 }
 
+const SVG_TEST_HEIGHT = 1000;
+const SVG_TEST_WIDTH = 1000;
+
 // tslint:disable:no-string-literal
 fdescribe('GridService', () => {
   let service: GridService;
+  let fixture: ComponentFixture<GridService>;
 
   beforeEach(() => {
       TestBed.configureTestingModule({});
-      service = TestBed.get(GridService);
-      const testSVGStructure = {
+      fixture = TestBed.get(GridService);
+      service = fixture.componentInstance;
+      service['svg'].structure = {
         root: document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
         defsZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
         drawZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
         temporaryZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
         endZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement
       };
-      testSVGStructure.root.appendChild(testSVGStructure.defsZone);
-      testSVGStructure.root.appendChild(testSVGStructure.drawZone);
-      testSVGStructure.root.appendChild(testSVGStructure.temporaryZone);
-      testSVGStructure.root.appendChild(testSVGStructure.endZone);
+      service['svg'].structure.root.appendChild(service['svg'].structure.defsZone);
+      service['svg'].structure.root.appendChild(service['svg'].structure.drawZone);
+      service['svg'].structure.root.appendChild(service['svg'].structure.temporaryZone);
+      service['svg'].structure.root.appendChild(service['svg'].structure.endZone);
 
-      service['svg'].structure.root.setAttribute('width', '1000');
-      service['svg'].structure.root.setAttribute('height', '1000');
+      service['svg'].shape.width = SVG_TEST_WIDTH;
+      service['svg'].shape.height = SVG_TEST_HEIGHT;
     }
   );
 
