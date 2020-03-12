@@ -1,3 +1,7 @@
+// Not any stub number…
+// Answer to the Ultimate Question of Life, the Universe, and Everything
+const ANSWER_TO_LIFE = 42;
+
 const COLORS = {
 	reset: '\x1b[0m',
 	bright: '\x1b[1m',
@@ -42,6 +46,11 @@ enum StatusCode {
 	INTERNAL_SERVER_ERROR = 500,
 }
 
+enum TextLen {
+	MIN = 3,
+	MAX = 21,
+}
+
 const TYPES = {
 	Application: Symbol.for('Application'),
 	Database: Symbol.for('Database'),
@@ -49,4 +58,4 @@ const TYPES = {
 	Server: Symbol.for('Server'),
 };
 
-export { COLORS, StatusCode, TYPES };
+export { ANSWER_TO_LIFE, COLORS, StatusCode, TextLen, TYPES };
