@@ -1,10 +1,16 @@
+// tslint:disable: no-any no-string-literal no-unused-expression
+// https://www.chaijs.com/api/bdd/#method_true
+
 import chai from 'chai';
 import express from 'express';
 import flatbuffers from 'flatbuffers';
+import log from 'loglevel';
 import mongodb from 'mongodb';
 import sinon from 'sinon';
+import supertest from 'supertest';
 
-import { StatusCode, TYPES } from '../constants';
+import { Application } from '../application';
+import { ANSWER_TO_LIFE, StatusCode, TYPES } from '../constants';
 import { Draw, Draws } from '../data_generated';
 import { Database, Entry } from '../database';
 import { myContainer } from '../inversify.config';
@@ -23,8 +29,20 @@ class ResMock {
 }
 
 describe('all', () => {
+	let app: express.Express;
+	let db: Database;
+	let router: Router;
+
+	before(() => {
+		app = express();
+		app.use(express.raw());
+		db = myContainer.get<Database>(TYPES.Database);
+		router = myContainer.get<Router>(TYPES.Router);
+		app.use(router.router);
+		log.setLevel('silent');
+	});
+
 	it('should invalidate short name', () => {
-		const router = myContainer.get<Router>(TYPES.Router);
 		const fbb = new flatbuffers.flatbuffers.Builder();
 		const nameOffset = fbb.createString('yo');
 		Draw.start(fbb);
@@ -35,7 +53,6 @@ describe('all', () => {
 	});
 
 	it('should invalidate long name', () => {
-		const router = myContainer.get<Router>(TYPES.Router);
 		const fbb = new flatbuffers.flatbuffers.Builder();
 		const name = 'this is more than 21 characters';
 		const nameOffset = fbb.createString(name);
@@ -47,7 +64,6 @@ describe('all', () => {
 	});
 
 	it('should invalidate short tag', () => {
-		const router = myContainer.get<Router>(TYPES.Router);
 		const fbb = new flatbuffers.flatbuffers.Builder();
 		const nameOffset = fbb.createString('correct name');
 		const tag1 = fbb.createString('correct tag');
@@ -62,7 +78,6 @@ describe('all', () => {
 	});
 
 	it('should invalidate long tag', () => {
-		const router = myContainer.get<Router>(TYPES.Router);
 		const fbb = new flatbuffers.flatbuffers.Builder();
 		const nameOffset = fbb.createString('correct name');
 		const tag = 'this is more than 21 characters';
@@ -78,7 +93,6 @@ describe('all', () => {
 	});
 
 	it('should validate', () => {
-		const router = myContainer.get<Router>(TYPES.Router);
 		const fbb = new flatbuffers.flatbuffers.Builder();
 		const nameOffset = fbb.createString('correct name');
 		const tag1 = fbb.createString('correct tag #1');
@@ -93,11 +107,9 @@ describe('all', () => {
 	});
 
 	it('should fail with 500 on methodGet', () => {
-		const db = myContainer.get<Database>(TYPES.Database);
 		const stub = sinon.stub(db, 'all');
 		const errMsg = 'oops something went wrong';
 		stub.throwsException(errMsg);
-		const router = myContainer.get<Router>(TYPES.Router);
 		const reqHandler = router['methodGet']();
 		const cb = sinon.spy();
 		reqHandler({} as any, {} as any, cb);
@@ -107,7 +119,6 @@ describe('all', () => {
 	});
 
 	it('should returns entries inside methodGet', async () => {
-		const db = myContainer.get<Database>(TYPES.Database);
 		const stubDbAll = sinon.stub(db, 'all');
 		const fbb1 = new flatbuffers.flatbuffers.Builder();
 		const nameOffset = fbb1.createString('correct name');
@@ -121,15 +132,14 @@ describe('all', () => {
 		const entries: Entry[] = [
 			{
 				_id: 42,
-				data: new mongodb.Binary(new Buffer(fbb1.asUint8Array())),
+				data: new mongodb.Binary(Buffer.from(fbb1.asUint8Array())),
 			},
 		];
 		stubDbAll.returns(new Promise(r => r(entries)));
-		const router = myContainer.get<Router>(TYPES.Router);
 		const reqHandler = router['methodGet']();
 		const cb = sinon.spy();
 		const res = {
-			send: function(_bufArr: Uint8Array): void {
+			send: (_bufArr: Uint8Array): void => {
 				return;
 			},
 		};
@@ -147,14 +157,12 @@ describe('all', () => {
 		chai.expect(draws.drawBuffersLength()).to.equal(1);
 		const drawBuffer = draws.drawBuffers(0);
 		chai.expect(drawBuffer).to.not.be.null;
-		chai.expect(drawBuffer?.id()).to.equal(42);
+		chai.expect(drawBuffer?.id()).to.equal(ANSWER_TO_LIFE);
 		stubDbAll.restore();
 		stubRes.restore();
 	});
 
 	it('should fail with 406 on methodPost', () => {
-		const router = myContainer.get<Router>(TYPES.Router);
-		const db = myContainer.get<Database>(TYPES.Database);
 		const stubVerify = sinon.stub(router as any, 'verify');
 		const errMsg = 'fail';
 		stubVerify.returns(errMsg);
@@ -168,32 +176,154 @@ describe('all', () => {
 		stubVerify.restore();
 	});
 
-	it.only('should insert on methodPost', () => {
-		const router = myContainer.get<Router>(TYPES.Router);
-		const db = myContainer.get<Database>(TYPES.Database);
+	it('methodPost should reject empty request', async () => {
+		return supertest(app)
+			.post('/draw')
+			.expect(StatusCode.NOT_ACCEPTABLE)
+			.then();
+	});
+
+	it('methodPost should fail on nextID error', async () => {
 		const stubVerify = sinon.stub(router as any, 'verify');
 		stubVerify.returns(null);
+
 		const stubDbNext = sinon.stub(db, 'nextID');
-		stubDbNext.returns(Promise.resolve(42));
-		const reqHandler = router['methodPost']();
-		const cb = sinon.spy();
-		const stubInsert = sinon.stub(db, 'insert');
-		let entry: Entry | undefined;
-		stubInsert.callsFake(entry_ => {
-			entry = entry_;
-			return Promise.resolve({} as any);
-		});
-		const res = new ResMock();
-		const req = {
-			body: 'hi',
-		};
-		reqHandler(req as any, res as any, cb);
-		chai.expect(cb.called).to.be.false;
-		chai.expect(res.code).to.equal(StatusCode.CREATED);
-		chai.expect(res.body).to.equal('42');
-		chai.expect(entry?._id).to.equal(42);
+		stubDbNext.rejects('foobar');
+
+		app.use(Application['err']);
+		await supertest(app)
+			.post('/draw')
+			.expect(StatusCode.INTERNAL_SERVER_ERROR)
+			.then();
+
+		chai.expect(stubDbNext.calledOnce).to.be.true;
+
 		stubVerify.restore();
 		stubDbNext.restore();
-		stubInsert.restore();
+	});
+
+	it('methodPost should insert', async () => {
+		const stubVerify = sinon.stub(router as any, 'verify');
+		stubVerify.returns(null);
+
+		const stubDbNext = sinon.stub(db, 'nextID');
+		stubDbNext.resolves(ANSWER_TO_LIFE);
+
+		let entry: Entry | undefined;
+		const stubDbInsert = sinon.stub(db, 'insert');
+		stubDbInsert.callsFake(async localEntry => {
+			entry = localEntry;
+			return Promise.resolve({} as any);
+		});
+
+		await supertest(app)
+			.post('/draw')
+			.set('Content-Type', 'application/octet-stream')
+			.then();
+
+		chai.expect(entry?._id).to.equal(ANSWER_TO_LIFE);
+
+		chai.expect(stubVerify.calledOnce).to.be.true;
+		chai.expect(stubDbNext.calledOnce).to.be.true;
+		chai.expect(stubDbInsert.calledOnce).to.be.true;
+
+		stubVerify.restore();
+		stubDbNext.restore();
+		stubDbInsert.restore();
+	});
+
+	it('methodPut should reject empty request', async () =>
+		supertest(app)
+			.put(`/draw/${ANSWER_TO_LIFE}`)
+			.expect(StatusCode.NOT_ACCEPTABLE)
+			.then());
+
+	it('methodPut should reject id zero', async () => {
+		const stubVerify = sinon.stub(router as any, 'verify');
+		stubVerify.returns(null);
+
+		return supertest(app)
+			.put('/draw/0')
+			.expect(StatusCode.NOT_ACCEPTABLE)
+			.then(() => stubVerify.restore());
+	});
+
+	it('methodPut should reject negative id', async () => {
+		const stubVerify = sinon.stub(router as any, 'verify');
+		stubVerify.returns(null);
+
+		return supertest(app)
+			.put(`/draw/-${ANSWER_TO_LIFE}`)
+			.expect(StatusCode.NOT_ACCEPTABLE)
+			.then(() => stubVerify.restore());
+	});
+
+	it('methodPut should fail on replace error', async () => {
+		const stubVerify = sinon.stub(router as any, 'verify');
+		stubVerify.returns(null);
+
+		const stubDbReplace = sinon.stub(db, 'replace');
+		stubDbReplace.rejects('foobar');
+
+		app.use(Application['err']);
+		await supertest(app)
+			.put(`/draw/${ANSWER_TO_LIFE}`)
+			.set('Content-Type', 'application/octet-stream')
+			.expect(StatusCode.INTERNAL_SERVER_ERROR)
+			.then();
+
+		stubVerify.restore();
+		stubDbReplace.restore();
+	});
+
+	it('methodPut should replace', async () => {
+		const stubVerify = sinon.stub(router as any, 'verify');
+		stubVerify.returns(null);
+
+		const stubDbReplace = sinon.stub(db, 'replace');
+
+		await supertest(app)
+			.put(`/draw/${ANSWER_TO_LIFE}`)
+			.set('Content-Type', 'application/octet-stream')
+			.expect(StatusCode.ACCEPTED)
+			.then();
+
+		chai.expect(stubVerify.calledOnce).to.be.true;
+		chai.expect(stubDbReplace.calledOnce).to.be.true;
+
+		const entry = stubDbReplace.args[0][0];
+		chai.expect(entry._id).to.equal(ANSWER_TO_LIFE);
+
+		stubVerify.restore();
+		stubDbReplace.restore();
+	});
+
+	it('methodDelete should fail on delete error', async () => {
+		const stubDbDelete = sinon.stub(db, 'delete');
+		stubDbDelete.rejects('foobar');
+
+		await supertest(app)
+			.delete(`/draw/${ANSWER_TO_LIFE}`)
+			.expect(StatusCode.INTERNAL_SERVER_ERROR)
+			.then();
+
+		chai.expect(stubDbDelete.calledOnce).to.be.true;
+		chai.expect(stubDbDelete.args[0][0]).to.equal(ANSWER_TO_LIFE);
+
+		stubDbDelete.restore();
+	});
+
+	it('methodDelete should delete', async () => {
+		const stubDbDelete = sinon.stub(db, 'delete');
+
+		await supertest(app)
+			.delete(`/draw/${ANSWER_TO_LIFE}`)
+			.expect(StatusCode.ACCEPTED)
+			.then();
+
+		chai.expect(stubDbDelete.calledOnce).to.be.true;
+		chai.expect(stubDbDelete.args[0][0]).to.equal(ANSWER_TO_LIFE);
+
+		stubDbDelete.restore();
 	});
 });

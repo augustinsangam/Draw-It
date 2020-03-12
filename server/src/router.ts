@@ -4,7 +4,7 @@ import inversify from 'inversify';
 import log from 'loglevel';
 import mongodb from 'mongodb';
 
-import { COLORS, StatusCode, TYPES } from './constants';
+import { COLORS, StatusCode, TextLen, TYPES } from './constants';
 import { Draw, DrawBuffer, Draws } from './data_generated';
 import { Database, Entry } from './database';
 
@@ -35,12 +35,16 @@ class Router {
 		const fbBB = new flatbuffers.flatbuffers.ByteBuffer(buf);
 		const draw = Draw.getRoot(fbBB);
 		const name = draw.name();
-		if (name == null || name.length < 3 || name.length > 21) {
+		if (
+			name == null ||
+			name.length < TextLen.MIN ||
+			name.length > TextLen.MAX
+		) {
 			return `nom “${name}” invalide`;
 		}
 		for (let i = draw.tagsLength(); i--; ) {
 			const tag = draw.tags(i);
-			if (tag.length < 3 || tag.length > 21) {
+			if (tag.length < TextLen.MIN || tag.length > TextLen.MAX) {
 				return `étiquette “${tag}” invalide`;
 			}
 		}
@@ -63,9 +67,9 @@ class Router {
 			const drawBuffers = Draws.createDrawBuffersVector(fbb, drawBufferOffsets);
 			const draws = Draws.create(fbb, drawBuffers);
 			fbb.finish(draws);
-			//setTimeout(() =>
+			// setTimeout(() =>
 			res.send(Buffer.from(fbb.asUint8Array()));
-			//, 7000);
+			// , 7000);
 		};
 	}
 
@@ -80,13 +84,13 @@ class Router {
 				return;
 			}
 			try {
-				const _id = await this.db.nextID();
+				const id = await this.db.nextID();
 				await this.db.insert({
-					_id,
+					_id: id,
 					data: new mongodb.Binary(req.body),
 				});
-				log.info(`${COLORS.fg.yellow}ID${COLORS.reset}: ${_id}`);
-				res.status(StatusCode.CREATED).send(_id.toString());
+				log.info(`${COLORS.fg.yellow}ID${COLORS.reset}: ${id}`);
+				res.status(StatusCode.CREATED).send(id.toString());
 			} catch (err) {
 				next(err);
 			}
@@ -100,10 +104,15 @@ class Router {
 				res.status(StatusCode.NOT_ACCEPTABLE).send(errMsg);
 				return;
 			}
+			const id = Number(req.params.id);
+			if (id < 1) {
+				res.status(StatusCode.NOT_ACCEPTABLE).send(`${id} should be > 0`);
+				return;
+			}
 			try {
 				await this.db.replace(
 					{
-						_id: Number(req.params.id),
+						_id: id,
 						data: new mongodb.Binary(req.body),
 					},
 					true,
@@ -118,6 +127,7 @@ class Router {
 	private methodDelete(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
 			try {
+				// If you want to check if success
 				// delRes.deletedCount == delRes.result.n
 				await this.db.delete(Number(req.params.id));
 			} catch (err) {
@@ -128,4 +138,6 @@ class Router {
 	}
 }
 
+// https://github.com/bcoe/c8/issues/196
+/* c8 ignore next */
 export { Router };
