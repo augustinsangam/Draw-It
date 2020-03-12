@@ -1,6 +1,5 @@
-import 'reflect-metadata';
-
 import inversify from 'inversify';
+import 'reflect-metadata';
 
 import { Application } from './application';
 import { TYPES } from './constants';
