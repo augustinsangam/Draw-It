@@ -18,7 +18,7 @@ class Database {
 	// nodejs.org/api/url.html
 	// mongodb.github.io/mongo-java-driver/3.8/javadoc/com/mongodb/ConnectionString.html
 	constructor() {
-		const uri = new URL('mongodb+srv://cluster0-5pews.mongodb.net');
+		const uri = new URL('mongodb+srv://luster0-5pews.mongodb.net');
 		// const uri = new URL('mongodb://127.0.0.1');
 		uri.pathname = 'log2990';
 		uri.searchParams.append('serverSelectionTimeoutMS', '3000');
@@ -61,7 +61,7 @@ class Database {
 		return this._db;
 	}
 
-	close(force?: boolean): Promise<void> {
+	async close(force?: boolean): Promise<void> {
 		return this.client.close(force);
 	}
 
@@ -82,24 +82,24 @@ class Database {
 			);
 			return obj.value.seq;
 		}
-		return Promise.reject('database is null');
+		return Promise.reject(new Error('database is null'));
 	}
 
-	all(): Promise<Entry[]> {
+	async all(): Promise<Entry[]> {
 		if (!!this.collection) {
 			return this.collection.find<Entry>().toArray();
 		}
-		return Promise.reject('collection is null');
+		return Promise.reject(new Error('collection is null'));
 	}
 
-	insert(entry: Entry): Promise<mongodb.InsertOneWriteOpResult<Entry>> {
+	async insert(entry: Entry): Promise<mongodb.InsertOneWriteOpResult<Entry>> {
 		if (!!this.collection) {
 			return this.collection.insertOne(entry);
 		}
-		return Promise.reject('collection is null');
+		return Promise.reject(new Error('collection is null'));
 	}
 
-	replace(
+	async replace(
 		entry: Entry,
 		upsert: boolean,
 	): Promise<mongodb.ReplaceWriteOpResult> {
@@ -116,16 +116,16 @@ class Database {
 				},
 			);
 		}
-		return Promise.reject('collection is null');
+		return Promise.reject(new Error('collection is null'));
 	}
 
-	delete(_id: number): Promise<mongodb.DeleteWriteOpResultObject> {
+	async delete(id: number): Promise<mongodb.DeleteWriteOpResultObject> {
 		if (!!this.collection) {
 			return this.collection.deleteOne({
-				_id,
+				_id: id,
 			});
 		}
-		return Promise.reject('collection is null');
+		return Promise.reject(new Error('collection is null'));
 	}
 }
 
