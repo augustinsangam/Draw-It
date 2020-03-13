@@ -78,7 +78,7 @@ export class GalleryComponent implements AfterViewInit {
     };
 
     this.communicationService.get().then((fbbb) => {
-      this.createGalleryDrawsTable(fbbb);
+      this.responsePromiseHandler(fbbb);
     }).catch((err: string) => {
       this.loading = false;
       this.snackBar.open(err, 'Ok', {
@@ -87,9 +87,13 @@ export class GalleryComponent implements AfterViewInit {
     });
   }
 
-  private createGalleryDrawsTable(fbbb: flatbuffers.ByteBuffer): void {
+  private responsePromiseHandler(fbbb: flatbuffers.ByteBuffer): void {
     this.loading = false;
     const draws = Draws.getRoot(fbbb);
+    this.createGalleryDrawsTable(draws);
+  }
+
+  private createGalleryDrawsTable(draws: Draws): void {
     const drawsLenght = draws.drawBuffersLength();
     let tempsAllTags = new Set<string>();
 
@@ -109,6 +113,7 @@ export class GalleryComponent implements AfterViewInit {
       const draw = Draw.getRoot(drawFbbb);
       const id = drawBuffer.id();
       tempsAllTags = this.newDraw(draw, id, tempsAllTags);
+
     }
     this.allTags.next(Array.from(tempsAllTags));
     this.filteredGalleryDrawTable = this.galleryDrawTable;
@@ -122,6 +127,7 @@ export class GalleryComponent implements AfterViewInit {
       const tag = draw.tags(i);
       newTagArray.push(tag);
       tempsAllTags.add(tag);
+      console.log('tag: ' + tag);
     }
 
     const svgElement = draw.svg();
