@@ -11,22 +11,21 @@ import { Database } from './database';
 class Server {
 	private readonly listenOptions: ListenOptions;
 	private readonly openedSockets: Set<Socket>;
-	private readonly srv: HttpServer; // TODO
+	private readonly server: HttpServer;
 
 	constructor(
 		@inversify.inject(TYPES.Application) private readonly app: Application,
 		@inversify.inject(TYPES.Database) private readonly db: Database,
 	) {
-		// TDOD : Constant; pas d'abréviations
 		this.listenOptions = {
 			host: '::1',
 			ipv6Only: true,
 			port: 8080,
 		};
-		this.openedSockets = new Set<Socket>();
-		this.srv = createServer();
-		this.srv.on('request', this.app.callback());
-		this.srv.on('connection', socket => {
+		this.openedSockets = new Set();
+		this.server = createServer();
+		this.server.on('request', this.app.callback());
+		this.server.on('connection', socket => {
 			this.openedSockets.add(socket);
 			socket.on('close', () => this.openedSockets.delete(socket));
 		});
@@ -34,7 +33,7 @@ class Server {
 
 	async launch(): Promise<void> {
 		await this.db.connect();
-		this.srv.listen(this.listenOptions);
+		this.server.listen(this.listenOptions);
 	}
 
 	async close(): Promise<void> {
@@ -42,8 +41,8 @@ class Server {
 			() => this.openedSockets.forEach(socket => socket.destroy()),
 			TIMEOUT,
 		);
-		// Source : github.com/nodejs/node/blob/master/doc/api/util.md#utilpromisifyoriginal
-		const closePromise = promisify(this.srv.close).bind(this.srv);
+		// Source: nodejs.org/api/util.html#util_util_promisify_original
+		const closePromise = promisify(this.server.close).bind(this.server);
 		await closePromise();
 		clearTimeout(timer);
 		return this.db.close();

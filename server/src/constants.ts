@@ -1,5 +1,3 @@
-// Not any stub number…
-// Answer to the Ultimate Question of Life, the Universe, and Everything
 const ANSWER_TO_LIFE = 42;
 
 const COLORS = {
@@ -36,6 +34,11 @@ const COLORS = {
 	},
 };
 
+const ERRORS = {
+	nullCollection: new Error('collection is null'),
+	nullDb: new Error('database is null'),
+};
+
 enum StatusCode {
 	CREATED = 201,
 	ACCEPTED,
@@ -60,4 +63,4 @@ const TYPES = {
 	Server: Symbol.for('Server'),
 };
 
-export { ANSWER_TO_LIFE, COLORS, StatusCode, TextLen, TIMEOUT, TYPES };
+export { ANSWER_TO_LIFE, COLORS, ERRORS, StatusCode, TextLen, TIMEOUT, TYPES };

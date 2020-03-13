@@ -1,6 +1,7 @@
 import inversify from 'inversify';
 import mongodb from 'mongodb';
 
+import { ERRORS } from './constants.js';
 import secrets from './secrets.json';
 
 interface Entry {
@@ -11,25 +12,21 @@ interface Entry {
 @inversify.injectable()
 class Database {
 	private readonly client: mongodb.MongoClient;
-	// TODO : Pas d'underscore
+
+	// TODO: No underscore
+	// tslint:disable-next-line: variable-name
 	private _db?: mongodb.Db;
+	// tslint:disable-next-line: variable-name
 	private _collection?: mongodb.Collection;
 
-	// mongodb.github.io/node-mongodb-native/3.5/api/MongoClient.html
-	// nodejs.org/api/url.html
-	// mongodb.github.io/mongo-java-driver/3.8/javadoc/com/mongodb/ConnectionString.html
 	constructor() {
 		const uri = new URL('mongodb+srv://cluster0-5pews.mongodb.net');
-		// To use local mongodb, use next line
-		// const uri = new URL('mongodb://127.0.0.1');
 		uri.pathname = 'log2990';
 		uri.searchParams.append('serverSelectionTimeoutMS', '3000');
 		uri.searchParams.append('retryWrites', 'true');
 		uri.searchParams.append('w', 'majority');
-		// this._db = await mongodb.MongoClient.connect(uri.href, {
 		this.client = new mongodb.MongoClient(uri.href, {
 			auth: secrets.mongodb.auth,
-			// Next does not work with IPv6
 			useUnifiedTopology: true,
 		});
 	}
@@ -45,8 +42,8 @@ class Database {
 	// docs.mongodb.com/manual/reference/operator/update/setOnInsert/#example
 	async connect(dbName?: string): Promise<mongodb.Db> {
 		await this.client.connect();
-		this._db = this.client.db(dbName);
-		await this._db.collection('counter').updateOne(
+		const db = this.client.db(dbName);
+		await db.collection('counter').updateOne(
 			{
 				_id: 'productid',
 			},
@@ -59,8 +56,8 @@ class Database {
 				upsert: true,
 			},
 		);
-		this._collection = this._db?.collection('drawings');
-		return this._db;
+		this._collection = db.collection('drawings');
+		return (this._db = db);
 	}
 
 	async close(force?: boolean): Promise<void> {
@@ -85,7 +82,7 @@ class Database {
 			return obj.value.seq;
 		}
 
-		return Promise.reject(new Error('database is null'));
+		return Promise.reject(ERRORS.nullDb);
 	}
 
 	async all(): Promise<Entry[]> {
@@ -93,7 +90,7 @@ class Database {
 			return this.collection.find<Entry>().toArray();
 		}
 
-		return Promise.reject(new Error('collection is null'));
+		return Promise.reject(ERRORS.nullCollection);
 	}
 
 	async insert(entry: Entry): Promise<mongodb.InsertOneWriteOpResult<Entry>> {
@@ -101,7 +98,7 @@ class Database {
 			return this.collection.insertOne(entry);
 		}
 
-		return Promise.reject(new Error('collection is null'));
+		return Promise.reject(ERRORS.nullCollection);
 	}
 
 	async replace(
@@ -122,7 +119,7 @@ class Database {
 			);
 		}
 
-		return Promise.reject(new Error('collection is null'));
+		return Promise.reject(ERRORS.nullCollection);
 	}
 
 	async delete(id: number): Promise<mongodb.DeleteWriteOpResultObject> {
@@ -132,7 +129,7 @@ class Database {
 			});
 		}
 
-		return Promise.reject(new Error('collection is null'));
+		return Promise.reject(ERRORS.nullCollection);
 	}
 }
 
