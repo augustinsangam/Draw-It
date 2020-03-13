@@ -9,6 +9,8 @@ interface Entry {
 	data: mongodb.Binary;
 }
 
+const mongo = mongodb;
+
 @inversify.injectable()
 class Database {
 	private readonly client: mongodb.MongoClient;
@@ -20,15 +22,15 @@ class Database {
 	private _collection?: mongodb.Collection;
 
 	constructor() {
-		const uri = new URL('mongodb+srv://cluster0-5pews.mongodb.net');
+		const uri = new URL(secrets.mongodb.uri);
 		uri.pathname = 'log2990';
 		uri.searchParams.append('serverSelectionTimeoutMS', '3000');
 		uri.searchParams.append('retryWrites', 'true');
 		uri.searchParams.append('w', 'majority');
-		this.client = new mongodb.MongoClient(uri.href, {
+		this.client = new mongo.MongoClient(uri.href, {
 			auth: secrets.mongodb.auth,
 			useUnifiedTopology: true,
-		});
+		};
 	}
 
 	get db(): mongodb.Db | undefined {
@@ -39,7 +41,7 @@ class Database {
 		return this._collection;
 	}
 
-	// docs.mongodb.com/manual/reference/operator/update/setOnInsert/#example
+	// Source: docs.mongodb.com/manual/reference/operator/update/setOnInsert/#example
 	async connect(dbName?: string): Promise<mongodb.Db> {
 		await this.client.connect();
 		const db = this.client.db(dbName);

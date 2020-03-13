@@ -14,13 +14,53 @@ describe('all', () => {
 		db = myContainer.get<Database>(TYPES.Database);
 	});
 
-	/*it('connect should handle connection fail', () => {
-		const client = db['client'];
-		const clientConnectStub = sinon.stub(client, 'connect');
-		clientConnectStub.rejects('foobar');
+	it('connect should throw on connection fail', async () => {
+		const errMessage = 'foobar';
+		const clientConnectStub = sinon.stub(db['client'], 'connect');
+		clientConnectStub.rejects(errMessage);
 
-		db.connect();
+		try {
+			await db.connect();
+		} catch (err) {
+			chai.expect(err.name).to.equal(errMessage);
+			return;
+		}
 
 		clientConnectStub.restore();
-	});*/
+		chai.assert.fail('did not throw');
+	});
+
+	it('connect should throw on connection fail', async () => {
+		const errMessage = 'foobar';
+		const clientConnectStub = sinon.stub(db['client'], 'connect');
+		clientConnectStub.rejects(errMessage);
+
+		try {
+			await db.connect();
+		} catch (err) {
+			chai.expect(err.name).to.equal(errMessage);
+			return;
+		}
+
+		clientConnectStub.restore();
+		chai.assert.fail('did not throw');
+	});
+
+	it.only('connect should throw on connection fail', async () => {
+		const client = db['client'];
+
+		const clientConnectStub = sinon.stub(client, 'connect');
+		clientConnectStub.resolves();
+
+		const;
+		// try {
+		await db.connect();
+		/*} catch (err) {
+			chai.expect(err.name).to.equal(errMessage);
+			return;
+		}*/
+
+		clientConnectStub.restore();
+		chai.assert.fail('did not throw');
+	});
 });
