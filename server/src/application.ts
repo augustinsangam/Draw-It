@@ -10,7 +10,7 @@ import { Router } from './router';
 @inversify.injectable()
 class Application {
 	private readonly app: express.Application;
-
+	// TODO : No comment
 	constructor(@inversify.inject(TYPES.Router) router: Router) {
 		this.app = express();
 		// Logging middleware
@@ -42,9 +42,6 @@ class Application {
 		// goto next middleware
 		next();
 	}
-
-	/* log.warn(`[${COLORS.fg.yello}WRN${COLORS.reset}]: …`);
-	 */
 
 	private static err(
 		err: Error | mongodb.MongoError,

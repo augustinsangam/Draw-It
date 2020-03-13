@@ -9,6 +9,7 @@ log.setLevel('trace');
 log.info(`PID is ${process.pid}`);
 
 const main = async (): Promise<void> => {
+	// TODO : Pas d'abréviations
 	const s = myContainer.get<Server>(TYPES.Server);
 	try {
 		await s.launch();

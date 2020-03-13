@@ -6,12 +6,12 @@ import mongodb from 'mongodb';
 
 import { COLORS, StatusCode, TextLen, TYPES } from './constants';
 import { Draw, DrawBuffer, Draws } from './data_generated';
-import { Database, Entry } from './database';
+import { Database, Entry } from './database'; // TODO
 
 // zellwk.com/blog/async-await-express/
 @inversify.injectable()
 class Router {
-	private readonly _router: express.Router;
+	private readonly _router: express.Router; // TODO remove _
 
 	constructor(@inversify.inject(TYPES.Database) private readonly db: Database) {
 		this._router = express.Router();
@@ -32,6 +32,7 @@ class Router {
 	}
 
 	private verify(buf: Uint8Array): string | null {
+		// TODO : Remove all abréviations
 		const fbBB = new flatbuffers.flatbuffers.ByteBuffer(buf);
 		const draw = Draw.getRoot(fbBB);
 		const name = draw.name();
@@ -73,10 +74,10 @@ class Router {
 		};
 	}
 
-	// medium.com/@dineshuthakota/how-to-save-file-in-mongodb-usipostDatang-node
-	//  -js-1a9d09b019c1
+	// Source : medium.com/@dineshuthakota/how-to-save-file-in-mongodb-usipostDatang-node-js-1a9d09b019c1
 	private methodPost(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
+			// Remove : TODO
 			// req.body is a Buffer (which extends Uint8Array)
 			const errMsg = this.verify(req.body);
 			if (!!errMsg) {
@@ -127,8 +128,6 @@ class Router {
 	private methodDelete(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
 			try {
-				// If you want to check if success
-				// delRes.deletedCount == delRes.result.n
 				await this.db.delete(Number(req.params.id));
 			} catch (err) {
 				return next(err);
@@ -138,6 +137,7 @@ class Router {
 	}
 }
 
+// TODO : Explain
 // https://github.com/bcoe/c8/issues/196
 /* c8 ignore next */
 export { Router };

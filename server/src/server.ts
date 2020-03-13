@@ -11,12 +11,13 @@ import { Database } from './database';
 class Server {
 	private readonly listenOptions: ListenOptions;
 	private readonly openedSockets: Set<Socket>;
-	private readonly srv: HttpServer;
+	private readonly srv: HttpServer; // TODO
 
 	constructor(
 		@inversify.inject(TYPES.Application) private readonly app: Application,
 		@inversify.inject(TYPES.Database) private readonly db: Database,
 	) {
+		// TDOD : Constant; pas d'abréviations
 		this.listenOptions = {
 			host: '::1',
 			ipv6Only: true,
@@ -29,7 +30,6 @@ class Server {
 			this.openedSockets.add(socket);
 			socket.on('close', () => this.openedSockets.delete(socket));
 		});
-		// TODO: ws
 	}
 
 	async launch(): Promise<void> {
@@ -42,7 +42,7 @@ class Server {
 			() => this.openedSockets.forEach(socket => socket.destroy()),
 			TIMEOUT,
 		);
-		// github.com/nodejs/node/blob/master/doc/api/util.md#utilpromisifyoriginal
+		// Source : github.com/nodejs/node/blob/master/doc/api/util.md#utilpromisifyoriginal
 		const closePromise = promisify(this.srv.close).bind(this.srv);
 		await closePromise();
 		clearTimeout(timer);

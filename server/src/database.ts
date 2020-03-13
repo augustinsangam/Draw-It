@@ -11,6 +11,7 @@ interface Entry {
 @inversify.injectable()
 class Database {
 	private readonly client: mongodb.MongoClient;
+	// TODO : Pas d'underscore
 	private _db?: mongodb.Db;
 	private _collection?: mongodb.Collection;
 
@@ -83,6 +84,7 @@ class Database {
 			);
 			return obj.value.seq;
 		}
+
 		return Promise.reject(new Error('database is null'));
 	}
 
@@ -90,6 +92,7 @@ class Database {
 		if (!!this.collection) {
 			return this.collection.find<Entry>().toArray();
 		}
+
 		return Promise.reject(new Error('collection is null'));
 	}
 
@@ -97,6 +100,7 @@ class Database {
 		if (!!this.collection) {
 			return this.collection.insertOne(entry);
 		}
+
 		return Promise.reject(new Error('collection is null'));
 	}
 
@@ -117,6 +121,7 @@ class Database {
 				},
 			);
 		}
+
 		return Promise.reject(new Error('collection is null'));
 	}
 
@@ -126,6 +131,7 @@ class Database {
 				_id: id,
 			});
 		}
+
 		return Promise.reject(new Error('collection is null'));
 	}
 }
