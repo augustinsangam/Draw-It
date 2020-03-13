@@ -217,7 +217,7 @@ fdescribe('ExportComponent', () => {
   }));
 
   it('#chooseFilter should return the good url', fakeAsync(() => {
-    const urlReceived = component.chooseFilter('Saturation');
+    const urlReceived = component['filtersChooser'].get('Saturation') as string;
     expect(urlReceived).toEqual('url(#saturate)');
   }));
 

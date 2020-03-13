@@ -39,7 +39,7 @@ export class ExportComponent implements AfterViewInit {
   innerSVG: SVGSVGElement;
   svgShape: SvgShape;
   pictureView: SVGImageElement;
-  // private filtersChooser: Map<string, string>;
+  private filtersChooser: Map<string, string>;
   protected form: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
@@ -49,6 +49,7 @@ export class ExportComponent implements AfterViewInit {
               private svgService: SvgService
   ) {
 
+    this.filtersChooser = new Map<string, string>();
     this.form = this.formBuilder.group({
       name: ['', [Validators.required, (control: FormControl) => {
         const input = (control.value as string).trim();
@@ -99,17 +100,18 @@ export class ExportComponent implements AfterViewInit {
     const filterZone = this.filterService.generateExportFilters(this.renderer);
     this.renderer.appendChild(this.svgView.nativeElement, filterZone);
     this.initializeElements();
+    this.initializeFiltersChooser();
     this.createView(FilterChoice.None);
   }
 
-  // initializeFiltersChooser(): void {
-  //   this.filtersChooser.set(FilterChoice.None, '');
-  //   this.filtersChooser.set(FilterChoice.Saturate, 'url(#saturate)');
-  //   this.filtersChooser.set( FilterChoice.BlackWhite,'url(#blackWhite)' );
-  //   this.filtersChooser.set(FilterChoice.Sepia, 'url(#sepia)');
-  //   this.filtersChooser.set(FilterChoice.Inverse , 'url(#invertion)');
-  //   this.filtersChooser.set(FilterChoice.Grey, 'url(#greyscale)');
-  // }
+  initializeFiltersChooser(): void {
+    this.filtersChooser.set(FilterChoice.None, '');
+    this.filtersChooser.set(FilterChoice.Saturate, 'url(#saturate)');
+    this.filtersChooser.set( FilterChoice.BlackWhite,'url(#blackWhite)' );
+    this.filtersChooser.set(FilterChoice.Sepia, 'url(#sepia)');
+    this.filtersChooser.set(FilterChoice.Inverse , 'url(#invertion)');
+    this.filtersChooser.set(FilterChoice.Grey, 'url(#greyscale)');
+  }
 
   initializeElements(): void {
     this.svgShape = this.svgService.shape;
@@ -219,41 +221,16 @@ export class ExportComponent implements AfterViewInit {
     picture.setAttribute('href', this.convertSVGToBase64());
     picture.setAttribute('width', pictureWidth.toString());
     picture.setAttribute('height', pictureHeigth.toString());
-    picture.setAttribute('filter', this.chooseFilter(filterName));
-  }
-
-  chooseFilter(filter: string): string {
-    let filterName: string;
-    switch (filter) {
-      case FilterChoice.None:
-        filterName = '';
-        break;
-      case FilterChoice.Saturate:
-        filterName = 'url(#saturate)';
-        break;
-      case FilterChoice.BlackWhite:
-        filterName = 'url(#blackWhite)';
-        break;
-      case FilterChoice.Inverse:
-        filterName = 'url(#invertion)';
-        break;
-      case FilterChoice.Sepia:
-        filterName = 'url(#sepia)';
-        break;
-      case FilterChoice.Grey:
-        filterName = 'url(#greyscale)';
-        break;
-      default:
-        filterName = '';
-    }
-    return filterName;
+    const filter = this.filtersChooser.get(this.form.controls.filter.value.toString()) as string;
+    picture.setAttribute('filter', filter);
   }
 
   resetInnerSVG(): void {
 
     // TODO : Use renderer everywhere
     const filterZone: SVGGElement = this.renderer.createElement('g', SVG_NS);
-    this.innerSVG.setAttribute('filter', this.chooseFilter(this.form.controls.filter.value.toString()));
+    const filter = this.filtersChooser.get(this.form.controls.filter.value.toString()) as string;
+    this.innerSVG.setAttribute('filter', filter);
     this.configureSize(filterZone, this.svgShape);
     this.renderer.removeChild(this.svgView, this.pictureView);
     Array.from(this.svgView.nativeElement.children).forEach((element: SVGElement) => {
