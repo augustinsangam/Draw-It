@@ -1,5 +1,12 @@
 [
   {
+    "label": "Bienvenue2",
+    "children": [{
+        "label": "Bienvenue"
+      }
+    ]
+  },
+  {
     "label": "Commencer",
     "children": [
       {

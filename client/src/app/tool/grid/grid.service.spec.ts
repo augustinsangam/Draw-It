@@ -1,6 +1,8 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import { GridService } from './grid.service';
+import {UndoRedoService} from '../undo-redo/undo-redo.service';
+import {SvgService} from '../../svg/svg.service';
 
 enum gridKeys {
   G = 'g',
@@ -14,26 +16,29 @@ const SVG_TEST_WIDTH = 1000;
 // tslint:disable:no-string-literal
 fdescribe('GridService', () => {
   let service: GridService;
+  let svgService: SvgService;
   let fixture: ComponentFixture<GridService>;
 
   beforeEach(() => {
       TestBed.configureTestingModule({});
       fixture = TestBed.get(GridService);
       service = fixture.componentInstance;
-      service['svg'].structure = {
+      svgService = (TestBed.get(SvgService) as SvgService);
+      svgService.structure = {
         root: document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
         defsZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
         drawZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
         temporaryZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
         endZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement
       };
-      service['svg'].structure.root.appendChild(service['svg'].structure.defsZone);
-      service['svg'].structure.root.appendChild(service['svg'].structure.drawZone);
-      service['svg'].structure.root.appendChild(service['svg'].structure.temporaryZone);
-      service['svg'].structure.root.appendChild(service['svg'].structure.endZone);
+      svgService.structure.root.appendChild(service['svg'].structure.defsZone);
+      svgService.structure.root.appendChild(service['svg'].structure.drawZone);
+      svgService.structure.root.appendChild(service['svg'].structure.temporaryZone);
+      svgService.structure.root.appendChild(service['svg'].structure.endZone);
 
-      service['svg'].shape.width = SVG_TEST_WIDTH;
-      service['svg'].shape.height = SVG_TEST_HEIGHT;
+      svgService.shape.width = SVG_TEST_WIDTH;
+      svgService.shape.height = SVG_TEST_HEIGHT;
+
     }
   );
 
