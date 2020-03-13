@@ -51,6 +51,8 @@ enum TextLen {
 	MAX = 21,
 }
 
+const TIMEOUT = 3000;
+
 const TYPES = {
 	Application: Symbol.for('Application'),
 	Database: Symbol.for('Database'),
@@ -58,4 +60,4 @@ const TYPES = {
 	Server: Symbol.for('Server'),
 };
 
-export { ANSWER_TO_LIFE, COLORS, StatusCode, TextLen, TYPES };
+export { ANSWER_TO_LIFE, COLORS, StatusCode, TextLen, TIMEOUT, TYPES };

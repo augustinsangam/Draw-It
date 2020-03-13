@@ -4,7 +4,7 @@ import { ListenOptions, Socket } from 'net';
 import { promisify } from 'util';
 
 import { Application } from './application';
-import { TYPES } from './constants';
+import { TIMEOUT, TYPES } from './constants';
 import { Database } from './database';
 
 @inversify.injectable()
@@ -40,7 +40,7 @@ class Server {
 	async close(): Promise<void> {
 		const timer = setTimeout(
 			() => this.openedSockets.forEach(socket => socket.destroy()),
-			3000,
+			TIMEOUT,
 		);
 		// github.com/nodejs/node/blob/master/doc/api/util.md#utilpromisifyoriginal
 		const closePromise = promisify(this.srv.close).bind(this.srv);
