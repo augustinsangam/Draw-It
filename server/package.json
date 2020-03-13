@@ -11,7 +11,7 @@
     "start": "nodemon --es-module-specifier-resolution=node --unhandled-rejections=strict --require=source-map-support/register",
     "test": "node --es-module-specifier-resolution=node node_modules/.bin/mocha",
     "test:watch": "npm start node_modules/.bin/mocha",
-    "coverage": "c8 --all npm t",
+    "coverage": "c8 npm t",
     "lint": "tslint --project .",
     "eslint": "eslint --fix --max-warnings=0 --ext=.js,.ts src/",
     "flatc": "flatc --ts --short-names -o src/ ../data.fbs",
@@ -25,6 +25,13 @@
   },
   "mocha": {
     "spec": "lib/__tests__/"
+  },
+  "c8": {
+    "all": true,
+    "exclude": [
+      "**/__tests__/**",
+      "**/*_generated.[jt]s"
+    ]
   },
   "eslintConfig": {
     "root": true,
@@ -82,7 +89,7 @@
     "overrides": [
       {
         "files": [
-          "**/__tests__/*"
+          "**/__tests__/**"
         ],
         "rules": {
           "@typescript-eslint/no-explicit-any": 0
