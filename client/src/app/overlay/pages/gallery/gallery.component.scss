@@ -28,9 +28,7 @@ mat-card-title {
 
 mat-card-content {
   display: flex;
-  justify-content: center;
   height: calc(100% - 188px);
-  // height: 100%;
   overflow-y: auto;
   background-color: whitesmoke;
 }
@@ -44,7 +42,6 @@ app-gallery-card {
 }
 
 .loading {
-  align-self: center;
   margin-left: auto;
   margin-right: auto;
   color: #e91e63;
@@ -68,6 +65,8 @@ img{
 }
 
 .allert {
+  margin-left: auto;
+  margin-right: auto;
   color: rgb(148, 28, 28);
 }
 

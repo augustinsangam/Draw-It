@@ -4,11 +4,11 @@ import flatbuffers from 'flatbuffers';
 import mongodb from 'mongodb';
 import sinon from 'sinon';
 
+import { StatusCode, TYPES } from '../constants';
 import { Draw, Draws } from '../data_generated';
 import { Database, Entry } from '../database';
 import { myContainer } from '../inversify.config';
-import { Router, StatusCode } from '../router';
-import { TYPES } from '../types';
+import { Router } from '../router';
 
 class ResMock {
 	code?: number;

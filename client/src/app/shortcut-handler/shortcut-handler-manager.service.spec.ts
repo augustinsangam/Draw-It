@@ -2,8 +2,9 @@ import { TestBed } from '@angular/core/testing';
 
 import { MaterialModule } from '../material.module';
 import { Tool } from '../tool/tool.enum';
+import { Shortcut } from './shortcut';
 import { ShortcutHandlerManagerService } from './shortcut-handler-manager.service';
-import { Handler, Shortcut } from './shortcut-handler.service';
+import { Handler } from './shortcut-handler.service';
 
 // TODO : Ask the chargé de lab
 // tslint:disable: no-string-literal no-any no-empty
@@ -70,7 +71,7 @@ describe('ShortcutHandlerManagerService', () => {
 
   it('#Handler for Digit 1 should select Rectangle', (done: DoneFn) => {
     const spyTool = spyOn(service['toolSelectorService'], 'set');
-    const handler = service['shortcutHanler']['manager'].get(Shortcut.Digit1) as Handler;
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.DIGIT_1) as Handler;
     handler.handlerFunction();
     setTimeout(() => {
       expect(spyTool).toHaveBeenCalledWith(Tool.Rectangle);
@@ -80,7 +81,7 @@ describe('ShortcutHandlerManagerService', () => {
 
   it('#Handler for Digit 2 should select Ellipse', (done: DoneFn) => {
     const spyTool = spyOn(service['toolSelectorService'], 'set');
-    const handler = service['shortcutHanler']['manager'].get(Shortcut.Digit2) as Handler;
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.DIGIT_2) as Handler;
     handler.handlerFunction();
     setTimeout(() => {
       expect(spyTool).toHaveBeenCalledWith(Tool.Ellipse);
@@ -90,7 +91,7 @@ describe('ShortcutHandlerManagerService', () => {
 
   it('#Handler for Digit 3 should select Polygone', (done: DoneFn) => {
     const spyTool = spyOn(service['toolSelectorService'], 'set');
-    const handler = service['shortcutHanler']['manager'].get(Shortcut.Digit3) as Handler;
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.DIGIT_3) as Handler;
     handler.handlerFunction();
     setTimeout(() => {
       expect(spyTool).toHaveBeenCalledWith(Tool.Polygone);
@@ -110,7 +111,7 @@ describe('ShortcutHandlerManagerService', () => {
 
   it('#Shortcut + should call grid service', (done: DoneFn) => {
     const spyTool = spyOn(service['gridService'], 'keyEvHandler');
-    const handler = service['shortcutHanler']['manager'].get(Shortcut.plus) as Handler;
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.PLUS) as Handler;
     handler.handlerFunction();
     setTimeout(() => {
       expect(spyTool).toHaveBeenCalledWith('+');
@@ -120,7 +121,7 @@ describe('ShortcutHandlerManagerService', () => {
 
   it('#Shortcut - should call grid service', (done: DoneFn) => {
     const spyTool = spyOn(service['gridService'], 'keyEvHandler');
-    const handler = service['shortcutHanler']['manager'].get(Shortcut.minus) as Handler;
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.MINUS) as Handler;
     handler.handlerFunction();
     setTimeout(() => {
       expect(spyTool).toHaveBeenCalledWith('-');
@@ -256,7 +257,7 @@ describe('ShortcutHandlerManagerService', () => {
       preventDefault: () => { }
     } as unknown as KeyboardEvent;
     const spy = spyOn<any>(service['undoRedoService'], 'redo');
-    const handler = service['shortcutHanler']['manager'].get(Shortcut.ZShift);
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.Z_SHIFT);
     if (!!handler) {
       handler.handlerFunction(event);
     }
@@ -294,7 +295,7 @@ describe('ShortcutHandlerManagerService', () => {
       preventDefault: () => { }
     } as unknown as KeyboardEvent;
     const spy = spyOn<any>(service['undoRedoService'], 'redo');
-    const handler = service['shortcutHanler']['manager'].get(Shortcut.ZShift);
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.Z_SHIFT);
     if (!!handler) {
       handler.handlerFunction(event);
     }

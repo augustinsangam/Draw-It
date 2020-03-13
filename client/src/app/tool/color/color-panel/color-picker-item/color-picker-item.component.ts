@@ -13,6 +13,7 @@ import {
   styleUrls: ['./color-picker-item.component.scss']
 })
 export class ColorPickerItemComponent implements AfterViewInit {
+
   @Input() color: string;
 
   @ViewChild('button', {

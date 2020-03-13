@@ -17,7 +17,7 @@ export class AerosolLogicComponent
 
   private listeners: (() => void)[];
   private currentPath: SVGElement;
-  private currMousePos: Point;
+  private currentMousePos: Point;
 
   private onDrag: boolean;
   private stringPath: string;
@@ -84,18 +84,18 @@ export class AerosolLogicComponent
       onMouseUp,
       onMouseMove,
     ];
-
-    this.svgStructure.root.style.cursor = 'crosshair';
+    this.renderer.setStyle(this.svgStructure.root, 'cursor', 'crosshair');
 
   }
 
   ngOnDestroy(): void {
+    this.onMouseUp();
     this.listeners.forEach((listenner) => { listenner(); });
     this.undoRedoService.resetActions();
   }
 
   protected onMouseDown(mouseEv: MouseEvent): void {
-    this.currMousePos = new Point(mouseEv.offsetX, mouseEv.offsetY);
+    this.currentMousePos = new Point(mouseEv.offsetX, mouseEv.offsetY);
 
     this.currentPath = this.renderer.createElement('path', this.svgNS);
     this.currentPath.setAttribute(
@@ -114,7 +114,7 @@ export class AerosolLogicComponent
 
   protected onMouseMove(mouseEv: MouseEvent): void {
     if (this.onDrag) {
-      this.currMousePos = new Point(mouseEv.offsetX, mouseEv.offsetY);
+      this.currentMousePos = new Point(mouseEv.offsetX, mouseEv.offsetY);
     }
   }
 
@@ -129,7 +129,7 @@ export class AerosolLogicComponent
 
   private addSplash(): void {
     this.stringPath += this.service.generatePoints(
-      this.currMousePos
+      this.currentMousePos
     );
     this.currentPath.setAttribute('d', this.stringPath);
   }

@@ -1,6 +1,30 @@
 import { Injectable } from '@angular/core';
-import { SVGStructure } from '../tool-logic/tool-logic.directive';
+import { SVGStructure } from '../../svg/svg-structure';
 
+export interface PreAction {
+  enabled: boolean;
+  overrideDefaultBehaviour: boolean;
+  overrideFunctionDefined: boolean;
+  overrideFunction?: () => void;
+}
+
+export interface PostAction {
+  functionDefined: boolean;
+  function?: () => void;
+}
+
+
+export interface PreAction {
+  enabled: boolean;
+  overrideDefaultBehaviour: boolean;
+  overrideFunctionDefined: boolean;
+  overrideFunction?: () => void;
+}
+
+export interface PostAction {
+  functionDefined: boolean;
+  function?: () => void;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -53,16 +77,13 @@ export class UndoRedoService {
     }
     this.cmdDone.push(toPush);
     this.cmdUndone = [];
-    console.log('On sauvegarde');
   }
 
   undo(): void {
-
     if (this.actions.undo[0].enabled
       && this.actions.undo[0].overrideFunctionDefined) {
       (this.actions.undo[0].overrideFunction as () => void)();
     }
-
     if (!this.actions.undo[0].overrideDefaultBehaviour) {
       this.undoBase();
     }
@@ -103,15 +124,14 @@ export class UndoRedoService {
     }
   }
 
-  refresh(node: ChildNode[]): void {
+  refresh(node?: ChildNode[]): void {
     for (const element of Array.from(this.svgStructure.drawZone.childNodes)) {
       element.remove();
     }
     const nodeChildrens = node ? Array.from(node) : this.initialCommand;
     for (const element of nodeChildrens) {
-      this.svgStructure.drawZone.appendChild(element);
+      this.svgStructure.drawZone.appendChild(element.cloneNode(true));
     }
-
   }
 
   canUndo(): boolean {
@@ -152,16 +172,4 @@ export class UndoRedoService {
     this.actions.redo[1] = action;
   }
 
-}
-
-export interface PreAction {
-  enabled: boolean;
-  overrideDefaultBehaviour: boolean;
-  overrideFunctionDefined: boolean;
-  overrideFunction?: () => void;
-}
-
-export interface PostAction {
-  functionDefined: boolean;
-  function?: () => void;
 }

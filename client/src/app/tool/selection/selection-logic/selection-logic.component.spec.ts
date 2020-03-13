@@ -1,12 +1,12 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { Renderer2 } from '@angular/core';
 import { Point } from '../../shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
-import * as Util from './selection-logic-util';
-import { SelectionLogicComponent } from './selection-logic.component';
 import { MultipleSelection } from '../multiple-selection';
 import { Offset } from '../offset';
+import * as Util from './selection-logic-util';
+import { SelectionLogicComponent } from './selection-logic.component';
 
 // TODO : Ask the chargé de lab
 // tslint:disable: no-magic-numbers
@@ -470,7 +470,7 @@ describe('SelectionLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#applyInversion works well !', () => {
+  it('#applyInversion invert selection !', () => {
     const allElements = new Set<SVGElement>(
       Array.from(component['svgStructure'].drawZone.children) as SVGElement[]
     );
@@ -499,6 +499,16 @@ describe('SelectionLogicComponent', () => {
     expect(component['keyManager'].keyPressed).toContain('ArrowDown');
   });
 
+  it('KeyDown manager should consider only arrows', () => {
+    const fakeKeyDownEvent = {
+      key: 'ArrowUppppp',
+      preventDefault: () => {}
+    } as unknown as KeyboardEvent;
+    const spy = spyOn(fakeKeyDownEvent, 'preventDefault');
+    component['keyManager'].handlers.keydown(fakeKeyDownEvent);
+    expect(spy).not.toHaveBeenCalled();
+  });
+
   it('Translate should be done only after each 100 ms', fakeAsync(() => {
     const spy = spyOn<any>(component, 'handleKey').and.callThrough();
     const fakeKeyDownEvent = {
@@ -516,7 +526,7 @@ describe('SelectionLogicComponent', () => {
   }));
 
   it('KeyUp handler should save the state only'
-       + 'áll arrows are released', fakeAsync(() => {
+       + ' all arrows are released', fakeAsync(() => {
     const spy = spyOn(component['undoRedoService'], 'saveState');
     const arrowUpEvent = {
       key: 'ArrowUp',
