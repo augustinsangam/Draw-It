@@ -6,7 +6,7 @@ describe('SvgToCanvasService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: SvgToCanvasService = TestBed.get(SvgToCanvasService);
+    const service: SvgToCanvas = TestBed.get(SvgToCanvas);
     expect(service).toBeTruthy();
   });
 });
