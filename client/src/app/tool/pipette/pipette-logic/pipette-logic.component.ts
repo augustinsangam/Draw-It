@@ -34,9 +34,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
     });
     this.undoRedoService.setPostRedoAction({
       functionDefined: true,
-      function: () => {
-        this.ngOnInit();
-      }
+      function: () => this.ngOnInit()
     });
   }
 
