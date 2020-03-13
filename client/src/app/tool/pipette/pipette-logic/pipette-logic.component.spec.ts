@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PipetteLogicComponent } from './pipette-logic.component';
 
-describe('PipetteLogicComponent', () => {
+fdescribe('PipetteLogicComponent', () => {
   let component: PipetteLogicComponent;
   let fixture: ComponentFixture<PipetteLogicComponent>;
 
@@ -23,10 +23,10 @@ describe('PipetteLogicComponent', () => {
       temporaryZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
       endZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement
     };
-    testSvgStructure.root.appendChild(component.svgStructure.defsZone);
-    testSvgStructure.root.appendChild(component.svgStructure.drawZone);
-    testSvgStructure.root.appendChild(component.svgStructure.temporaryZone);
-    testSvgStructure.root.appendChild(component.svgStructure.endZone);
+    testSvgStructure.root.appendChild(testSvgStructure.defsZone);
+    testSvgStructure.root.appendChild(testSvgStructure.drawZone);
+    testSvgStructure.root.appendChild(testSvgStructure.temporaryZone);
+    testSvgStructure.root.appendChild(testSvgStructure.endZone);
 
     component.svgStructure = testSvgStructure;
 

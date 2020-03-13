@@ -9,7 +9,7 @@ import {ColorPickerItemComponent} from '../../color/color-panel/color-picker-ite
 import {PipettePanelComponent} from './pipette-panel.component';
 
 // tslint:disable:no-string-literal
-fdescribe('PipettePanelComponent', () => {
+describe('PipettePanelComponent', () => {
   let component: PipettePanelComponent;
   let fixture: ComponentFixture<PipettePanelComponent>;
 
