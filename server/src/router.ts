@@ -4,7 +4,7 @@ import inversify from 'inversify';
 import log from 'loglevel';
 import mongodb from 'mongodb';
 
-import { COLORS, StatusCode, TextLen, TYPES } from './constants';
+import { COLORS, ContentType, StatusCode, TextLen, TYPES } from './constants';
 import { Draw, DrawBuffer, Draws } from './data_generated';
 import { Database, Entry } from './database'; // TODO
 
@@ -28,20 +28,24 @@ class Router {
 	private verify(buf: Uint8Array): string | null {
 		const fbByteBuffer = new flatbuffers.flatbuffers.ByteBuffer(buf);
 		const draw = Draw.getRoot(fbByteBuffer);
+
 		const name = draw.name();
 		if (
 			name == null ||
 			name.length < TextLen.MIN ||
 			name.length > TextLen.MAX
 		) {
-			return `nom “${name}” invalide`;
+			return `Nom “${name}” invalide`;
 		}
-		for (let i = draw.tagsLength(); i--; ) {
+
+		const tagsLen = draw.tagsLength();
+		for (let i = 0; i < tagsLen; ++i) {
 			const tag = draw.tags(i);
 			if (tag.length < TextLen.MIN || tag.length > TextLen.MAX) {
-				return `étiquette “${tag}” invalide`;
+				return `Étiquette “${tag}” invalide`;
 			}
 		}
+
 		return null;
 	}
 
@@ -74,12 +78,22 @@ class Router {
 	// Source: medium.com/@dineshuthakota/how-to-save-file-in-mongodb-usipostDatang-node-js-1a9d09b019c1
 	private methodPost(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
-			const buffer = req.body as Buffer;
-			const errMsg = this.verify(buffer);
-			if (!!errMsg) {
-				res.status(StatusCode.NOT_ACCEPTABLE).send(errMsg);
+			res.type(ContentType.PLAIN_UTF8);
+
+			if (!req.is(ContentType.OCTET_STREAM)) {
+				res.status(StatusCode.BAD_REQUEST).send('Requète incorrecte');
 				return;
 			}
+
+			const buffer = req.body as Buffer;
+
+			const errMessage = this.verify(buffer);
+			if (!!errMessage) {
+				res.status(StatusCode.NOT_ACCEPTABLE);
+				res.send(errMessage);
+				return;
+			}
+
 			try {
 				const id = await this.db.nextID();
 				await this.db.insert({
@@ -96,16 +110,24 @@ class Router {
 
 	private methodPut(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
-			const errMsg = this.verify(req.body);
-			if (!!errMsg) {
-				res.status(StatusCode.NOT_ACCEPTABLE).send(errMsg);
+			res.type(ContentType.PLAIN_UTF8);
+
+			if (!req.is(ContentType.OCTET_STREAM)) {
+				res.status(StatusCode.BAD_REQUEST).send('Requète incorrecte');
 				return;
 			}
+
 			const id = Number(req.params.id);
 			if (id < 1) {
 				res
-					.status(StatusCode.NOT_ACCEPTABLE)
+					.status(StatusCode.BAD_REQUEST)
 					.send(`${id} doit être suppérieur à zéro`);
+				return;
+			}
+
+			const errMessage = this.verify(req.body);
+			if (!!errMessage) {
+				res.status(StatusCode.NOT_ACCEPTABLE).send(errMessage);
 				return;
 			}
 			try {

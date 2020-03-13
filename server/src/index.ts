@@ -9,18 +9,17 @@ log.setLevel('trace');
 log.info(`PID is ${process.pid}`);
 
 const main = async (): Promise<void> => {
-	// TODO : Pas d'abréviations
-	const s = myContainer.get<Server>(TYPES.Server);
+	const server = myContainer.get<Server>(TYPES.Server);
 	try {
-		await s.launch();
+		await server.launch();
 		log.info('Server launched');
 		await {
-			then(r: () => void): void {
-				process.on('SIGINT', r);
+			then(resolve: () => void): void {
+				process.on('SIGINT', resolve);
 			},
 		};
 		log.info('SIGINT');
-		await s.close();
+		await server.close();
 		log.info('Server closed');
 	} catch (err) {
 		log.error('Unable to start server');

@@ -14,7 +14,7 @@ describe('all', () => {
 		db = myContainer.get<Database>(TYPES.Database);
 	});
 
-	it.only('connect should handle connection fail', () => {
+	/*it('connect should handle connection fail', () => {
 		const client = db['client'];
 		const clientConnectStub = sinon.stub(client, 'connect');
 		clientConnectStub.rejects('foobar');
@@ -22,5 +22,5 @@ describe('all', () => {
 		db.connect();
 
 		clientConnectStub.restore();
-	});
+	});*/
 });

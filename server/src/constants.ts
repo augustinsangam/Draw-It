@@ -34,15 +34,22 @@ const COLORS = {
 	},
 };
 
+enum ContentType {
+	OCTET_STREAM = 'application/octet-stream',
+	PLAIN_UTF8 = 'text/plain; charset=utf-8',
+}
+
 const ERRORS = {
 	nullCollection: new Error('collection is null'),
 	nullDb: new Error('database is null'),
 };
 
 enum StatusCode {
-	CREATED = 201,
+	OK = 200,
+	CREATED,
 	ACCEPTED,
 	NO_CONTENT = 204,
+	BAD_REQUEST = 400,
 	NOT_ACCEPTABLE = 406,
 	GONE = 410,
 	IM_A_TEAPOT = 418,
@@ -63,4 +70,13 @@ const TYPES = {
 	Server: Symbol.for('Server'),
 };
 
-export { ANSWER_TO_LIFE, COLORS, ERRORS, StatusCode, TextLen, TIMEOUT, TYPES };
+export {
+	ANSWER_TO_LIFE,
+	COLORS,
+	ContentType,
+	ERRORS,
+	StatusCode,
+	TextLen,
+	TIMEOUT,
+	TYPES,
+};

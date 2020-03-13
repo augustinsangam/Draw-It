@@ -13,6 +13,7 @@ class Application {
 
 	constructor(@inversify.inject(TYPES.Router) router: Router) {
 		this.app = express();
+		this.app.disable('x-powered-by');
 		this.app.use(Application.log);
 		this.app.use(
 			express.raw({
@@ -32,9 +33,9 @@ class Application {
 		logMsg += `[${COLORS.fg.green}LOG${COLORS.reset}] `;
 		logMsg += `${req.method} - ${req.url}`;
 		log.info(logMsg);
-		res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
-		res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
 		res.header('Access-Control-Allow-Headers', 'Content-Type');
+		res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
+		res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
 		next();
 	}
 
