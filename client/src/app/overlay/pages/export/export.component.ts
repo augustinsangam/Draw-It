@@ -142,7 +142,7 @@ export class ExportComponent implements AfterViewInit {
     });
   }
 
-  downloadImage(pictureUrl: string): boolean {
+  downloadImage(pictureUrl: string): void {
     const downloadLink: HTMLAnchorElement = this.renderer.createElement('a');
     const format = this.form.controls.format.value.toLocaleLowerCase();
     downloadLink.href = pictureUrl;
