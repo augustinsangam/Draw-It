@@ -3,6 +3,7 @@ import { SvgToCanvasService } from 'src/app/svg-to-canvas/svg-to-canvas.service'
 import { ColorService } from '../../color/color.service';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { PipetteService } from '../pipette.service';
+import {UndoRedoService} from '../../undo-redo/undo-redo.service';
 
 @Component({
   selector: 'app-pipette-logic',
@@ -21,9 +22,22 @@ export class PipetteLogicComponent extends ToolLogicDirective
     private readonly service: PipetteService,
     private readonly renderer: Renderer2,
     private readonly colorService: ColorService,
-    private readonly svgToCanvas: SvgToCanvasService
+    private readonly svgToCanvas: SvgToCanvasService,
+    private readonly undoRedoService: UndoRedoService,
   ) {
     super();
+
+    this.undoRedoService.resetActions();
+    this.undoRedoService.setPostUndoAction({
+      functionDefined: true,
+      function: () => this.ngOnInit()
+    });
+    this.undoRedoService.setPostRedoAction({
+      functionDefined: true,
+      function: () => {
+        this.ngOnInit();
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -90,6 +104,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
 
   ngOnDestroy(): void {
     this.allListeners.forEach((end) => end());
+    this.undoRedoService.resetActions();
   }
 
 }
