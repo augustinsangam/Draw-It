@@ -1,9 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { MatChipInputEvent, /*, MatAutocompleteSelectedEvent, MatOption, MatOptionParentComponent, MatOptgroup*/
-MatAutocompleteSelectedEvent,
-MatOption} from '@angular/material';
+import {
+  MatAutocompleteSelectedEvent,
+  MatChipInputEvent,
+  MatOption
+} from '@angular/material';
 import { Observable, Subject } from 'rxjs';
 import { MaterialModule } from 'src/app/material.module';
 import { TagsFilterComponent } from './tags-filter.component';
@@ -28,7 +30,7 @@ fdescribe('TagsFilterComponent', () => {
         FormBuilder,
       ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -105,7 +107,7 @@ fdescribe('TagsFilterComponent', () => {
     const event: MatAutocompleteSelectedEvent = {
       source: component['matAutocomplete'],
       option: {
-        viewValue : 'test1'
+        viewValue: 'test1'
       } as MatOption,
     };
     component.selected(event);
