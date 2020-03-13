@@ -1,10 +1,6 @@
 [
   {
-    "label": "Bienvenue2",
-    "children": [{
-        "label": "Bienvenue"
-      }
-    ]
+    "label": "Bienvenue"
   },
   {
     "label": "Commencer",

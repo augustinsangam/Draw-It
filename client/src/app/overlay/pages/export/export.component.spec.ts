@@ -26,7 +26,7 @@ describe('ExportComponent', () => {
       imports: [
         MaterialModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
       ],
       declarations: [
         ExportComponent

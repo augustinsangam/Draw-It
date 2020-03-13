@@ -346,8 +346,7 @@ describe('RectangleLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it(
-    'ngOnDestroy should set "called" to true ' +
+  it('ngOnDestroy should set "called" to true ' +
     '(= call every listener´s functions)',
     () => {
       let called = false;
