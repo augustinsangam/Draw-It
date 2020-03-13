@@ -15,6 +15,8 @@ export class Polygone extends AbstractShape {
       super(renderer, element);
     }
 
+    // TODO : `
+
   insertPolygonInSVG(points: Point []): void {
     let atribute = '';
     for (const point of points) {
@@ -32,7 +34,7 @@ export class Polygone extends AbstractShape {
       mouseDownPoint,
       oppositePoint
     );
-    const points: Point [] = this.mathService.getPolynomeCornersFromRectangle(
+    const points: Point [] = this.mathService.getPolygonCornersFromRectangle(
       mouseDownPoint, upLeftCorner, dimensions, this.sides, border);
     this.insertPolygonInSVG(points);
     }

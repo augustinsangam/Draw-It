@@ -24,7 +24,7 @@
     <br>
     <p>Opacité</p>
     <div class="opacity">
-      <mat-slider min=0.10 max=1.0 step="0.01"
+      <mat-slider min="{{service.MIN_OPACITY}}" max="{{service.MAX_OPACITY}}" step="1"
                   value="{{service.opacity}}"
                   (input)="onOpacityChange()"
                   (change)="onOpacityChange()"

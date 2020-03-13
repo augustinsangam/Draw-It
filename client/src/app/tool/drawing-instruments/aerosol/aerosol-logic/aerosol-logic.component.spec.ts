@@ -68,20 +68,20 @@ describe('AerosolLogicComponent', () => {
     tick(100);
   }));
 
-  it('onMouseMove should update currMousePos if onDrag', () => {
+  it('onMouseMove should update currentMousePos if onDrag', () => {
     component['onDrag'] = true;
     const mouseEv = createClickMouseEvent('mousemove');
     const expectedPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
     component['onMouseMove'](mouseEv);
-    expect(component['currMousePos']).toEqual(expectedPoint);
+    expect(component['currentMousePos']).toEqual(expectedPoint);
   });
 
-  it ('onMouseMove should not update currMousePos if not onDrag', () => {
+  it ('onMouseMove should not update currentMousePos if not onDrag', () => {
     const expectedPoint = new Point(43, 43);
-    component['currMousePos'] = expectedPoint;
+    component['currentMousePos'] = expectedPoint;
     component['onDrag'] = false;
     component['onMouseMove'](createClickMouseEvent('mousemove'));
-    expect(component['currMousePos']).toEqual(expectedPoint);
+    expect(component['currentMousePos']).toEqual(expectedPoint);
   });
 
   it ('onMouseUp should stop the splash if onDrag and to call' +
@@ -147,24 +147,16 @@ describe('AerosolLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  // TODO find a way to generate a CTRL + Z
+  // TODO find a way to test the undoRedoPreActions functions properly
 
   // it('if we are on drag and a mouseUp is launched, the override function of' +
   //   ' the undoRedoService should be called and should call call remove on ' +
   //   'currentPath before saving', () => {
-  //   const spyOnMouseUp = spyOn<any>(component, 'onMouseUp').and.callThrough();
+  //   const spyOnOverride = jasmine.createSpy('spyOnOverride', component['undoRedoOverride']);
   //   component['onMouseDown'](createClickMouseEvent('mousedown'));
   //   component['onMouseMove'](createClickMouseEvent('mousemove'));
-  //   const spyRemove = spyOn<any>(component['currentPath'], 'remove').and.callThrough();
-  //   const keyboardEvent = new KeyboardEvent(
-  //     'window:keydown',
-  //     {
-  //       key: 'z',
-  //       ctrlKey: true
-  //     });
-  //   component.svgStructure.root.dispatchEvent(keyboardEvent);
-  //   expect(spyRemove).toHaveBeenCalledTimes(1);
-  //   expect(spyOnMouseUp).toHaveBeenCalledTimes(1);
+  //   setTimeout(() => component['undoRedoService'].undo(), 100);
+  //   expect(spyOnOverride).toHaveBeenCalled();
   // });
 
 });

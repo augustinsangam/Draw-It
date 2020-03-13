@@ -20,10 +20,14 @@ import { NewDrawComponent } from './overlay/pages/new-draw/new-draw.component';
 import { SaveComponent } from './overlay/pages/save/save.component';
 import { PanelComponent } from './panel/panel.component';
 import {
-  Shortcut, ShortcutHandlerService
+  Shortcut
+} from './shortcut-handler/shortcut';
+import {
+  ShortcutHandlerService
 } from './shortcut-handler/shortcut-handler.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { SvgService, SvgShape } from './svg/svg.service';
+import { SvgShape } from './svg/svg-shape';
+import { SvgService } from './svg/svg.service';
 import { ColorPanelComponent } from './tool/color/color-panel/color-panel.component';
 import { ColorPickerContentComponent } from './tool/color/color-panel/color-picker-content/color-picker-content.component';
 import { ColorPickerItemComponent } from './tool/color/color-panel/color-picker-item/color-picker-item.component';
@@ -36,7 +40,7 @@ import { UndoRedoService } from './tool/undo-redo/undo-redo.service';
 
 // Test Also OverlayService
 // tslint:disable: no-string-literal
-fdescribe('AppComponent', () => {
+describe('AppComponent', () => {
   let component: AppComponent;
   let service: OverlayService;
   let svgService: SvgService;
