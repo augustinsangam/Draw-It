@@ -97,7 +97,11 @@ fdescribe('GalleryComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('#newDraw should return tempsAllTags with added tags ad add the draw to galleryDrawTable', () => {
+  // it('#createGalleryDrawsTable should call ', () => {
+
+  // });
+
+  it('#newDraw should return tempsAllTags with added tags and add the draw to galleryDrawTable', () => {
 
     const draw = {
       name: () => 'test',
@@ -137,6 +141,33 @@ fdescribe('GalleryComponent', () => {
 
     expect(arrayTempsAllTags).toEqual(['test1', 'test4', 'test2', 'test3']);
     expect(component['galleryDrawTable']).toContain(expectedDraw);
+  });
+
+  it('#newDraw should return tempsAllTags with added tags but don\'t add the draw to galleryDrawTable', () => {
+    const draw = {
+      name: () => 'test',
+      height: () => 150,
+      width: () => 300,
+      color: () => '#420069',
+      svg: () => null,
+      tagsLength: () => 3,
+      tags: (index: number) => ['test1', 'test2', 'test3'][index]
+    } as unknown as Draw;
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg',
+    'svg:g') as SVGGElement;
+    spyOn(component['communicationService'], 'decodeElementRecursively').and.callFake(() => {
+      return svg;
+    });
+
+    let tempsAllTags = new Set<string>(['test1', 'test4']);
+
+    tempsAllTags = component['newDraw'](draw, 0, tempsAllTags);
+
+    const arrayTempsAllTags = Array.from(tempsAllTags);
+
+    expect(arrayTempsAllTags).toEqual(['test1', 'test4', 'test2', 'test3']);
+    expect(component['galleryDrawTable']).toEqual([]);
   });
 
   it('#ngAfterViewInit should call ajustImagesWidth when screenService.size changes', () => {
