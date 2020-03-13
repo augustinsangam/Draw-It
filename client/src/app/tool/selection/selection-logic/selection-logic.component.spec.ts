@@ -244,7 +244,7 @@ describe('SelectionLogicComponent', () => {
 
   it('contextmenu handler should at least prevent default action', () => {
     const fakeEvent = {
-      preventDefault: () => { },
+      preventDefault: () => {return ; },
     } as unknown as MouseEvent;
 
     const spy = spyOn(fakeEvent, 'preventDefault');

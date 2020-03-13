@@ -43,7 +43,7 @@ export class ExportComponent implements AfterViewInit {
   protected form: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
-              @Optional() private dialogRef: MatDialogRef<ExportComponent>,
+              @Optional() public dialogRef: MatDialogRef<ExportComponent>,
               private renderer: Renderer2,
               private filterService: FilterService,
               private svgService: SvgService

@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialogRef } from '@angular/material';
 import { MaterialModule } from 'src/app/material.module';
 import { SvgShape } from 'src/app/svg/svg-shape';
-import { SvgService } from 'src/app/svg/svg.service';
+import { SvgService} from 'src/app/svg/svg.service';
 import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.service';
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ExportComponent } from './export.component';
@@ -13,6 +13,14 @@ import { ExportComponent } from './export.component';
 describe('ExportComponent', () => {
   let component: ExportComponent;
   let fixture: ComponentFixture<ExportComponent>;
+
+  const mockDialogRef = {
+    close: jasmine.createSpy('close')
+  }
+  const mockDownloadLink = {
+    click: jasmine.createSpy('click')
+  };
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -30,6 +38,11 @@ describe('ExportComponent', () => {
         MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
         {
           provide: MatDialogRef,
+          useValue: mockDialogRef
+        },
+        {
+          provide: HTMLAnchorElement,
+          useValue: mockDownloadLink
         },
         { provide: MAT_DIALOG_DATA, useValue: {} },
       ]
@@ -39,6 +52,7 @@ describe('ExportComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ExportComponent);
     component = fixture.componentInstance;
+
     const svgService: SvgService = TestBed.get(SvgService) as SvgService;
     svgService.structure = {
       root: document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
@@ -67,6 +81,17 @@ describe('ExportComponent', () => {
     component.ngAfterViewInit();
     expect(spy).toHaveBeenCalledTimes(1);
   }));
+
+  it('#onConfirm should close the dialogRef', () => {
+    spyOn(component, 'exportDrawing');
+    component['onConfirm']();
+    expect(mockDialogRef.close).toHaveBeenCalled();
+  });
+
+  it('#onCancel should close the dialogRef', () => {
+    component['onCancel']();
+    expect(mockDialogRef.close).toHaveBeenCalled();
+  });
 
   it('#InitialzeElements should set the good values to svgShape', fakeAsync(() => {
     const svgShapeTest: SvgShape = {
@@ -112,6 +137,19 @@ describe('ExportComponent', () => {
 
     expect(component.convertToBlob()).toEqual(blobExpected);
   }));
+
+  it('#downloadImage ', () => {
+    const pictureUrl = 'url';
+    const downloadLink = {
+      href: pictureUrl,
+      download: '',
+      click: () => {}
+    } as unknown as HTMLAnchorElement;
+    spyOn(component['renderer'], 'createElement').and.callFake(() =>  downloadLink);
+    const spy = spyOn(downloadLink, 'click');
+    component['downloadImage'](pictureUrl);
+    expect(spy).toHaveBeenCalled();
+  });
 
   it('#generateCanvas return a canvas with good configurations', fakeAsync(() => {
     const svgShapeTest: SvgShape = {
