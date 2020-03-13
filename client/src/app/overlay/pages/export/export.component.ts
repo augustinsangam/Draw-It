@@ -8,7 +8,7 @@ import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.ser
 
 const SVG_NS = 'http://www.w3.org/2000/svg' ;
 
-enum FilterChoice {
+export enum FilterChoice {
   None = 'Aucun',
   Saturate = 'Saturation',
   BlackWhite = 'Noir et blanc',
@@ -17,7 +17,7 @@ enum FilterChoice {
   Grey = 'Gris épatant',
 }
 
-enum FormatChoice {
+export enum FormatChoice {
   Svg = 'SVG',
   Png = 'PNG',
   Jpeg = 'JPEG',

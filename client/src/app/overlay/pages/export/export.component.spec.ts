@@ -2,13 +2,13 @@ import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testi
 
 import { Renderer2 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialogRef } from '@angular/material';
+import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialogRef, MatRadioChange} from '@angular/material';
 import { MaterialModule } from 'src/app/material.module';
 import { SvgShape } from 'src/app/svg/svg-shape';
 import { SvgService} from 'src/app/svg/svg.service';
 import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.service';
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
-import { ExportComponent } from './export.component';
+import { ExportComponent, FormatChoice, FilterChoice } from './export.component';
 
 fdescribe('ExportComponent', () => {
   let component: ExportComponent;
@@ -82,10 +82,34 @@ fdescribe('ExportComponent', () => {
     expect(spy).toHaveBeenCalledTimes(1);
   }));
 
+  it('#getFormats() should return an array of FormatChoice', fakeAsync(() => {
+    const result = component['getFormats']();
+    expect(result[0]).toEqual(FormatChoice.Svg);
+    expect(result[1]).toEqual(FormatChoice.Png);
+    expect(result[2]).toEqual(FormatChoice.Jpeg);
+  }));
+
+  it('#getFilters() should return an array of FilterChoice', fakeAsync(() => {
+    const result = component['getFilters']();
+    expect(result[0]).toEqual(FilterChoice.None);
+    expect(result[1]).toEqual(FilterChoice.Saturate);
+    expect(result[2]).toEqual(FilterChoice.BlackWhite);
+    expect(result[3]).toEqual(FilterChoice.Inverse);
+    expect(result[4]).toEqual(FilterChoice.Sepia);
+    expect(result[5]).toEqual(FilterChoice.Grey);
+  }));
+
   it('#onConfirm should close the dialogRef', () => {
     spyOn(component, 'exportDrawing');
     component['onConfirm']();
     expect(mockDialogRef.close).toHaveBeenCalled();
+  });
+
+  it('#onOptionChange should call createView', () => {
+    const spy = spyOn<any>(component, 'createView');
+    const change = {} as unknown as MatRadioChange;
+    component['onOptionChange'](change);
+    expect(spy).toHaveBeenCalled();
   });
 
   it('#onCancel should close the dialogRef', () => {
@@ -138,7 +162,7 @@ fdescribe('ExportComponent', () => {
     expect(component.convertToBlob()).toEqual(blobExpected);
   }));
 
-  it('#downloadImage ', () => {
+  it('#downloadImage should call the click method of the anchor', () => {
     const pictureUrl = 'url';
     const downloadLink = {
       href: pictureUrl,
@@ -174,7 +198,6 @@ fdescribe('ExportComponent', () => {
     expect(creationResult).toBeTruthy();
   }));
 
-  // à revoir
   // it('#createView return false when the viewZone didnt exist', fakeAsync(() => {
   //   component['svgView'].nativeElement = null;
   //   const creationResult = component.createView('');
