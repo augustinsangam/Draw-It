@@ -19,6 +19,7 @@ class Database {
 	// mongodb.github.io/mongo-java-driver/3.8/javadoc/com/mongodb/ConnectionString.html
 	constructor() {
 		const uri = new URL('mongodb+srv://cluster0-5pews.mongodb.net');
+		// To use local mongodb, use next line
 		// const uri = new URL('mongodb://127.0.0.1');
 		uri.pathname = 'log2990';
 		uri.searchParams.append('serverSelectionTimeoutMS', '3000');

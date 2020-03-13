@@ -1,4 +1,7 @@
+// tslint:disable: no-any no-string-literal no-unused-expression
+
 import chai from 'chai';
+import sinon from 'sinon';
 
 import { TYPES } from '../constants';
 import { Database } from '../database';
@@ -11,8 +14,13 @@ describe('all', () => {
 		db = myContainer.get<Database>(TYPES.Database);
 	});
 
-	it('should cut', () => {
-		// console.log(db['client']);
-		chai.expect(true).be.true;
+	it.only('connect should handle connection fail', () => {
+		const client = db['client'];
+		const clientConnectStub = sinon.stub(client, 'connect');
+		clientConnectStub.rejects('foobar');
+
+		db.connect();
+
+		clientConnectStub.restore();
 	});
 });
