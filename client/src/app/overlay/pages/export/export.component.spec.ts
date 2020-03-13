@@ -12,6 +12,14 @@ import { MatDialogRef, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MAT_DIALOG_DATA } fr
 fdescribe('ExportComponent', () => {
   let component: ExportComponent;
   let fixture: ComponentFixture<ExportComponent>;
+
+  const mockDialogRef = {
+    close: jasmine.createSpy('close')
+  }
+  const mockDownloadLink = {
+    click: jasmine.createSpy('click')
+  };
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -29,6 +37,11 @@ fdescribe('ExportComponent', () => {
         MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
         {
           provide: MatDialogRef,
+          useValue: mockDialogRef
+        },
+        {
+          provide: HTMLAnchorElement,
+          useValue: mockDownloadLink
         },
         { provide: MAT_DIALOG_DATA, useValue: {} },
       ]
@@ -67,6 +80,18 @@ fdescribe('ExportComponent', () => {
     component.ngAfterViewInit();
     expect(spy).toHaveBeenCalledTimes(1);
   }));
+
+
+  it('#onConfirm should close the dialogRef', () => {
+    spyOn(component, 'exportDrawing');
+    component['onConfirm']();
+    expect(mockDialogRef.close).toHaveBeenCalled();
+  });
+
+  it('#onCancel should close the dialogRef', () => {
+    component['onCancel']();
+    expect(mockDialogRef.close).toHaveBeenCalled();
+  });
 
   it('#InitialzeElements should set the good values to svgShape', fakeAsync(() => {
     const svgShapeTest: SvgShape = {
@@ -112,6 +137,19 @@ fdescribe('ExportComponent', () => {
 
     expect(component.convertToBlob()).toEqual(blobExpected);
   }));
+
+  it('#downloadImage ', () => {
+    const pictureUrl = 'url';
+    const downloadLink = {
+      href: pictureUrl,
+      download: '',
+      click: () => {}
+    } as unknown as HTMLAnchorElement;
+    spyOn(component['renderer'], 'createElement').and.callFake(() =>  downloadLink);
+    const spy = spyOn(downloadLink, 'click');
+    component['downloadImage'](pictureUrl);
+    expect(spy).toHaveBeenCalled();
+  });
 
   it('#generateCanvas return a canvas with good configurations', fakeAsync(() => {
     const svgShapeTest: SvgShape = {

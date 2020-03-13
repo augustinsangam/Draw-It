@@ -25,7 +25,7 @@ export class ExportComponent implements AfterViewInit {
   protected form: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
-              @Optional() private dialogRef: MatDialogRef<ExportComponent>,
+              @Optional() public dialogRef: MatDialogRef<ExportComponent>,
               private renderer: Renderer2,
               private filterService: FilterService,
               private svgService: SvgService
@@ -121,16 +121,13 @@ export class ExportComponent implements AfterViewInit {
     return new Blob([this.serializeSVG()], {type: 'image/svg+xml;charset=utf-8'});
   }
 
-  downloadImage(pictureUrl: string): boolean {
+  downloadImage(pictureUrl: string): void {
     const downloadLink: HTMLAnchorElement = this.renderer.createElement('a');
     const format = this.form.controls.format.value.toLocaleLowerCase();
-    this.innerSVG.appendChild(downloadLink);
     downloadLink.href = pictureUrl;
     const name: string = this.form.controls.name.value.trim().toLocaleLowerCase();
     downloadLink.download = name + '.' + format;
     downloadLink.click();
-    this.innerSVG.removeChild(downloadLink);
-    return true;
   }
 
   generateCanvas(): HTMLCanvasElement {
