@@ -14,7 +14,7 @@ const createClickMouseEvent = (event: string, button: number): MouseEvent => {
 
 // tslint:disable:no-string-literal
 // tslint:disable:no-magic-numbers
-fdescribe('PipetteLogicComponent', () => {
+describe('PipetteLogicComponent', () => {
   let component: PipetteLogicComponent;
   let fixture: ComponentFixture<PipetteLogicComponent>;
   let svgService: SvgService;
