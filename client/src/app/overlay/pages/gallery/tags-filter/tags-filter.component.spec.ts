@@ -1,7 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { MatChipInputEvent /*, MatAutocompleteSelectedEvent, MatOption, MatOptionParentComponent, MatOptgroup*/ } from '@angular/material';
+import { MatChipInputEvent, /*, MatAutocompleteSelectedEvent, MatOption, MatOptionParentComponent, MatOptgroup*/
+MatAutocompleteSelectedEvent,
+MatOption} from '@angular/material';
 import { Observable, Subject } from 'rxjs';
 import { MaterialModule } from 'src/app/material.module';
 import { TagsFilterComponent } from './tags-filter.component';
@@ -99,22 +101,16 @@ fdescribe('TagsFilterComponent', () => {
     expect(component['addedTags']).toEqual(['test1', 'test2']);
   });
 
-  // it('#selected should add event.option.viewValue to addedTags', () => {
-  //   const event: MatAutocompleteSelectedEvent = {
-  //     source: component['matAutocomplete'], // null as unknown as MatAutocomplete,
-  //     option: new MatOption(
-  //       null as unknown as ElementRef<HTMLElement>,
-  //       null as unknown as ChangeDetectorRef,
-  //       null as unknown as MatOptionParentComponent,
-  //       null as unknown as MatOptgroup,
-  //     ),
-  //   };
-  //   event.option.value = 'test1';
-
-  //   component.selected(event);
-
-  //   expect(component['addedTags']).toContain('test1');
-  // });
+  it('#selected should add event.option.viewValue to addedTags', () => {
+    const event: MatAutocompleteSelectedEvent = {
+      source: component['matAutocomplete'],
+      option: {
+        viewValue : 'test1'
+      } as MatOption,
+    };
+    component.selected(event);
+    expect(component['addedTags']).toContain('test1');
+  });
 
   it('#_filter should return the tags in allTags that contains "value" and are not in addedTags', () => {
     component['allTags'] = ['test1', 'test2', 'test3'];
