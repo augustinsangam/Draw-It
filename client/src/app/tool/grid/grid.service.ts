@@ -1,6 +1,6 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { SvgService } from 'src/app/svg/svg.service';
-import { Dimension } from '../shape/common/rectangle';
+import { Dimension } from '../shape/common/dimension';
 import { ToolService } from '../tool.service';
 import { GridKeys } from './grid-keys';
 

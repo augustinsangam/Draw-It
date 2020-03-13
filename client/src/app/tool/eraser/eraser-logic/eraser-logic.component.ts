@@ -35,7 +35,7 @@ export class EraserLogicComponent
   private mouse: MouseTracking;
   private eraser: SVGRectElement;
   private allListeners: (() => void)[];
-  private markedElements: Map<SVGElement, string>;
+  private markedElements: Map<SVGElement, [boolean, string]>;
   private elementsDeletedInDrag: boolean;
   private lastestMousePosition: Point;
   private handlers: Map<string, Util.MouseEventCallBack>;
@@ -183,19 +183,20 @@ export class EraserLogicComponent
     this.addFill();
     this.markedElements.clear();
     selectedElements.forEach((element: SVGElement) => {
-      const stroke = element.getAttribute('stroke');
+      let stroke = element.getAttribute('stroke');
       let strokeModified = CONSTANTS.RED;
-      if (stroke == null || stroke === 'none') {
-        return;
+      const hasStroke = !(stroke == null || stroke === 'none');
+      if (!hasStroke) {
+        stroke = element.getAttribute('fill') as string;
       }
-      const rgb = this.colorService.rgbFormRgba(stroke);
+      const rgb = this.colorService.rgbFormRgba(stroke as string);
       if (rgb.r > CONSTANTS.MAX_RED && rgb.g < CONSTANTS.MIN_GREEN
         && rgb.b < CONSTANTS.MIN_BLUE) {
         rgb.r = rgb.r - CONSTANTS.FACTOR;
         strokeModified = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
       }
-      this.markedElements.set(element, stroke as string);
-      element.setAttribute('stroke', strokeModified);
+      this.markedElements.set(element, [hasStroke, stroke as string]);
+      element.setAttribute(hasStroke ? 'stroke' : 'fill', strokeModified);
     });
     return selectedElements;
   }
@@ -209,7 +210,7 @@ export class EraserLogicComponent
 
   private restoreMarkedElements(): void {
     for (const entry of this.markedElements) {
-      entry[0].setAttribute('stroke', entry[1]);
+      entry[0].setAttribute(entry[1][0] ? 'stroke' : 'fill', entry[1][1]);
     }
     this.markedElements.clear();
   }

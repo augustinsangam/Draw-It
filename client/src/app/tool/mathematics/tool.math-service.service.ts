@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Radius } from '../shape/common/ellipse';
 import { Point } from '../shape/common/point';
-import { Dimension } from '../shape/common/rectangle';
+import { Dimension } from "../shape/common/dimension";
 
 // tslint:disable:no-magic-numbers
 // cette regle est desactiviee car toutes les constantes sont utilisee pour que

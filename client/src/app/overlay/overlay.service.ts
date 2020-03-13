@@ -22,6 +22,7 @@ import { GalleryComponent, GalleryDraw } from './pages/gallery/gallery.component
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { SaveComponent } from './pages/save/save.component';
+import { GridService } from '../tool/grid/grid.service';
 
 interface DialogRefs {
   home: MatDialogRef<HomeComponent>;
@@ -54,7 +55,8 @@ export class OverlayService {
               private colorService: ColorService,
               private toolSelectorService: ToolSelectorService,
               private readonly snackBar: MatSnackBar,
-              private undoRedo: UndoRedoService
+              private undoRedo: UndoRedoService,
+              private gridService: GridService
   ) {
     this.initialiseShortcuts();
   }
@@ -236,6 +238,7 @@ export class OverlayService {
       `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`
     );
     this.svgService.clearDom();
+    this.gridService.handleGrid();
     this.toolSelectorService.set(Tool.Pencil);
     // Deuxième fois juste pour fermer le panneau latéral
     this.toolSelectorService.set(Tool.Pencil);

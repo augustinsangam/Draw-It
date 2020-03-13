@@ -2,11 +2,7 @@ import { Renderer2 } from '@angular/core';
 import { MathService } from '../../mathematics/tool.math-service.service';
 import { AbstractShape } from './abstract-shape';
 import { Point } from './point';
-
-export interface Dimension {
-  width: number;
-  height: number;
-}
+import { Dimension } from './dimension';
 
 // Class tested in ../Rectangle/rectangle-logic.component.spec.ts
 export class Rectangle extends AbstractShape {
