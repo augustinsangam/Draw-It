@@ -22,7 +22,7 @@ import { ColorPickerItemComponent } from '../../color/color-panel/color-picker-i
 import { GridPanelComponent } from './grid-panel.component';
 
 // tslint:disable:no-string-literal
-fdescribe('GridPanelComponent', () => {
+describe('GridPanelComponent', () => {
   let component: GridPanelComponent;
   let fixture: ComponentFixture<GridPanelComponent>;
 

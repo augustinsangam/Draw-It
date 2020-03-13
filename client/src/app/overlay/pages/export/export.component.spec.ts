@@ -10,7 +10,7 @@ import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.ser
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ExportComponent } from './export.component';
 
-fdescribe('ExportComponent', () => {
+describe('ExportComponent', () => {
   let component: ExportComponent;
   let fixture: ComponentFixture<ExportComponent>;
 
