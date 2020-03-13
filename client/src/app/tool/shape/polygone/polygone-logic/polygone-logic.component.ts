@@ -54,7 +54,6 @@ export class PolygoneLogicComponent extends ToolLogicDirective
           this.onMouseUp(
             new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
           );
-          // undoRedoService.saveState() is called in onMouseUp
           this.getPolygone().element.remove();
         }
         this.undoRedoService.undoBase();
@@ -100,6 +99,7 @@ export class PolygoneLogicComponent extends ToolLogicDirective
       onMouseUp
     ];
 
+    // TODO : Renderer
     this.svgStructure.root.style.cursor = 'crosshair';
 
   }

@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core';
-import { MatDialog, MatDialogConfig, MatDialogRef, MatSnackBar } from '@angular/material';
+import { MatDialogConfig, MatDialogRef, MatSnackBar } from '@angular/material';
+import { Shortcut } from '../shortcut-handler/shortcut';
 import {
-  Shortcut, ShortcutHandlerService
+  ShortcutHandlerService
 } from '../shortcut-handler/shortcut-handler.service';
-import { SvgService, SvgShape } from '../svg/svg.service';
+import { SvgService } from '../svg/svg.service';
+import { SvgShape } from "../svg/svg-shape";
 import { ColorService } from '../tool/color/color.service';
 import {
   ToolSelectorService
 } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
 import { UndoRedoService } from '../tool/undo-redo/undo-redo.service';
+import { OverlayManager } from './overlay-manager';
 import { OverlayPages } from './overlay-pages';
 import {
   DocumentationComponent
@@ -20,9 +23,21 @@ import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { SaveComponent } from './pages/save/save.component';
 
+interface DialogRefs {
+  home: MatDialogRef<HomeComponent>;
+  newDraw: MatDialogRef<NewDrawComponent>;
+  documentation: MatDialogRef<DocumentationComponent>;
+  export: MatDialogRef<ExportComponent>;
+  gallery: MatDialogRef<GalleryComponent>;
+  save: MatDialogRef<SaveComponent>;
+}
+
+// TODO : CONST pour dialog options.
+
 const CONSTANTS = {
   SUCCES_DURATION: 2000,
-  FAILURE_DURATION: 2000,
+  FAILURE_DURATION: 2020,
+  LOAD_DURATION: 500,
 };
 
 // Tested in app.component.spec.ts
@@ -31,7 +46,7 @@ const CONSTANTS = {
 })
 export class OverlayService {
 
-  private dialog: MatDialog;
+  private dialog: OverlayManager;
   private dialogRefs: DialogRefs;
   private svgService: SvgService;
 
@@ -44,7 +59,7 @@ export class OverlayService {
     this.initialiseShortcuts();
   }
 
-  intialise(dialog: MatDialog, svgService: SvgService): void {
+  intialise(dialog: OverlayManager, svgService: SvgService): void {
     this.dialog = dialog;
     this.dialogRefs = {
       home: (undefined as unknown) as MatDialogRef<HomeComponent>,
@@ -70,7 +85,7 @@ export class OverlayService {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
         this.toolSelectorService.set(Tool.Selection);
-        this.toolSelectorService.set(Tool.Selection); // To close the pannel
+        this.toolSelectorService.set(Tool.Selection); // To close the panel
         this.svgService.selectAllElements.emit(null);
       } else {
         this.toolSelectorService.set(Tool.Aerosol);
@@ -85,12 +100,10 @@ export class OverlayService {
   private openHomeDialog(closable: boolean = false): void {
     this.dialogRefs.home = this.dialog.open(
       HomeComponent,
-      this.getCommomDialogOptions()
+      this.getCommonDialogOptions()
     );
     this.dialogRefs.home.disableClose = !closable;
-    this.shortcutHanler.desactivateAll();
     this.dialogRefs.home.afterClosed().subscribe((result: string) => {
-      this.shortcutHanler.activateAll();
       this.openSelectedDialog(result);
     });
   }
@@ -112,16 +125,16 @@ export class OverlayService {
   }
 
   private openNewDrawDialog(): void {
-    this.shortcutHanler.desactivateAll();
     this.dialogRefs.newDraw = this.dialog.open(
       NewDrawComponent,
-      this.getCommomDialogOptions()
+      this.getCommonDialogOptions()
     );
     this.dialogRefs.newDraw.disableClose = true;
-    this.dialogRefs.newDraw.afterClosed().subscribe((resultNewDialog: string | SvgShape) => {
-      this.shortcutHanler.activateAll();
-      this.closeNewDrawDialog(resultNewDialog);
-    });
+    this.dialogRefs.newDraw.afterClosed().subscribe(
+      (resultNewDialog: string | SvgShape) => {
+        this.closeNewDrawDialog(resultNewDialog);
+      }
+    );
   }
 
   private closeNewDrawDialog(option: string | SvgShape): void {
@@ -138,14 +151,12 @@ export class OverlayService {
       height: '100vh',
       panelClass: 'documentation'
     };
-    this.shortcutHanler.desactivateAll();
     this.dialogRefs.documentation = this.dialog.open(
       DocumentationComponent,
       dialogOptions
     );
     this.dialogRefs.documentation.disableClose = false;
     this.dialogRefs.documentation.afterClosed().subscribe(() => {
-      this.shortcutHanler.activateAll();
       this.closeDocumentationDialog(fromHome);
     });
   }
@@ -155,16 +166,11 @@ export class OverlayService {
       width: '1000px',
       height: '90vh'
     };
-    this.shortcutHanler.desactivateAll();
     this.dialogRefs.export = this.dialog.open(
       ExportComponent,
       dialogOptions
     );
     this.dialogRefs.export.disableClose = true;
-    this.dialogRefs.export.afterClosed().subscribe(() => {
-      this.shortcutHanler.activateAll();
-    });
-
   }
 
   openSaveDialog(): void {
@@ -172,7 +178,6 @@ export class OverlayService {
       width: '1000px',
       height: '90vh'
     };
-    this.shortcutHanler.desactivateAll();
     this.dialogRefs.save = this.dialog.open(SaveComponent, dialogOptions);
     this.dialogRefs.save.disableClose = true;
     this.dialogRefs.save.afterClosed().subscribe((error?: string) => {
@@ -181,9 +186,8 @@ export class OverlayService {
   }
 
   private closeSaveDialog(error?: string): void {
-    this.shortcutHanler.activateAll();
-    this.snackBar.open(error ? error : 'Succès', 'Ok', {
-      duration: error ? CONSTANTS.SUCCES_DURATION : CONSTANTS.FAILURE_DURATION,
+    this.snackBar.open(error || 'Succès', 'Ok', {
+      duration: error ? CONSTANTS.FAILURE_DURATION : CONSTANTS.SUCCES_DURATION,
     });
   }
 
@@ -200,21 +204,19 @@ export class OverlayService {
       panelClass: 'gallery',
       data: { drawInProgress: this.svgService.drawInProgress },
     };
-    this.shortcutHanler.desactivateAll();
     this.dialogRefs.gallery = this.dialog.open(
       GalleryComponent,
       dialogOptions,
     );
     this.dialogRefs.gallery.disableClose = false;
     this.dialogRefs.gallery.afterClosed().subscribe((option) => {
-      this.shortcutHanler.activateAll();
       this.closeGalleryDialog(fromHome, option);
     });
   }
 
   private closeGalleryDialog(
       fromHome: boolean,
-      option: GalleryDraw | undefined): void {
+      option?: GalleryDraw): void {
     if (!!option) {
       this.loadDraw(option);
     } else if (fromHome) {
@@ -248,24 +250,15 @@ export class OverlayService {
     this.svgService.header = draw.header;
     this.undoRedo.setStartingCommand();
     this.snackBar.open('Dessin chargé avec succès', 'Ok', {
-      duration: 500
+      duration: CONSTANTS.LOAD_DURATION
     });
   }
 
-  private getCommomDialogOptions(): MatDialogConfig {
+  private getCommonDialogOptions(): MatDialogConfig {
     return {
       width: '650px',
       height: '90%',
       data: { drawInProgress: this.svgService.drawInProgress }
     };
   }
-}
-
-interface DialogRefs {
-  home: MatDialogRef<HomeComponent>;
-  newDraw: MatDialogRef<NewDrawComponent>;
-  documentation: MatDialogRef<DocumentationComponent>;
-  export: MatDialogRef<ExportComponent>;
-  gallery: MatDialogRef<GalleryComponent>;
-  save: MatDialogRef<SaveComponent>;
 }

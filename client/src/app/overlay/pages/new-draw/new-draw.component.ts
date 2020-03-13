@@ -35,7 +35,7 @@ export interface DialogRefs {
 const CONSTANTS = {
   START_COLOR : '#FFFFFF',
   MIN_DIMENSION: 1,
-  MAX_DIMENSION: 10000
+  MAX_DIMENSION: 65535
 };
 
 @Component({
@@ -44,6 +44,7 @@ const CONSTANTS = {
   styleUrls: ['./new-draw.component.scss']
 })
 export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
+
   private startColor: string;
   private form: FormGroup;
   private maxWidth: number;
@@ -54,14 +55,12 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('palette', {
     static: false,
-  })
-  private palette: ElementRef<HTMLElement>;
+  }) private palette: ElementRef<HTMLElement>;
 
   @ViewChild('button', {
     static: false,
     read: ElementRef
-  })
-  private button: ElementRef;
+  }) private button: ElementRef;
 
   static validatorInteger(formControl: AbstractControl): null | { valid: boolean } {
     return Number.isInteger(formControl.value) ? null : {
@@ -123,7 +122,6 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    // Simuler l'asynchronisité
     setTimeout(() => {
       this.form.patchValue({ color: this.startColor });
     }, 0);
@@ -181,11 +179,7 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private closeDialog(result: boolean): void {
-    if (result) {
-      this.dialogRef.close(this.form.value);
-    } else {
-      this.dialogRef.close(OverlayPages.Home as string);
-    }
+    this.dialogRef.close(result ? this.form.value : OverlayPages.Home as string);
   }
 
   protected onReturn(): void {

@@ -23,7 +23,7 @@ export class SelectionLogicComponent
     super(renderer, svgService, undoRedoService);
     this.initialiseHandlers();
   }
-
+  // TODO: NESTING
   private initialiseHandlers(): void {
     this.mouseHandlers = new Map<string, Map<string, Util.MouseEventCallBack>>([
       ['leftButton', new Map<string, Util.MouseEventCallBack>([
@@ -74,6 +74,7 @@ export class SelectionLogicComponent
         }],
         ['click', ($event: MouseEvent) => {
           if ($event.button === 0) {
+            // TODO : Double nesting
             const type = this.elementSelectedType($event.target as SVGElement);
             if (this.mouse.left.startPoint.equals(this.mouse.left.endPoint)) {
               if (type === BasicSelectionType.DRAW_ELEMENT) {

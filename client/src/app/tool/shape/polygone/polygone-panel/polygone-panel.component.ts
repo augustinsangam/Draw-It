@@ -22,8 +22,6 @@ import { PolygoneService } from '../polygone.service';
 export class PolygonePanelComponent
   extends ToolPanelDirective implements AfterViewChecked {
 
-  private polygoneForm: FormGroup;
-
   @ViewChild('fillOptionRef', {
     static: false,
     read : MatSlideToggle
@@ -43,6 +41,8 @@ export class PolygonePanelComponent
     static: false,
     read: MatSlider
   }) private sidesSlider: MatSlider;
+
+  private polygoneForm: FormGroup;
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: PolygoneService,

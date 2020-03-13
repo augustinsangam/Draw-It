@@ -1,8 +1,8 @@
-import {Component, OnDestroy, Renderer2} from '@angular/core';
-import html2canvas from 'html2canvas';
-import {ColorService} from '../../color/color.service';
-import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
-import {PipetteService} from '../pipette.service';
+import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { SvgToCanvasService } from 'src/app/svg-to-canvas/svg-to-canvas.service';
+import { ColorService } from '../../color/color.service';
+import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
+import { PipetteService } from '../pipette.service';
 
 @Component({
   selector: 'app-pipette-logic',
@@ -20,19 +20,17 @@ export class PipetteLogicComponent extends ToolLogicDirective
   constructor(
     private readonly service: PipetteService,
     private readonly renderer: Renderer2,
-    private readonly colorService: ColorService
+    private readonly colorService: ColorService,
+    private readonly svgToCanvas: SvgToCanvasService
   ) {
     super();
   }
 
   ngOnInit(): void {
-    this.svgStructure.root.style.cursor = 'wait';
+    this.renderer.setStyle(this.svgStructure.root, 'cursor', 'wait');
 
-    html2canvas(this.svgStructure.root as unknown as HTMLElement).then(
-      (value) => {
-        this.image = value.getContext('2d') as CanvasRenderingContext2D;
-      }
-    );
+    this.image = this.svgToCanvas.getCanvas(this.renderer)
+                    .getContext('2d') as CanvasRenderingContext2D;
 
     const onLeftClick = this.renderer.listen(
       this.svgStructure.root,
@@ -58,14 +56,8 @@ export class PipetteLogicComponent extends ToolLogicDirective
       onRightClick
     ];
 
-    this.renderer.setStyle(
-      this.svgStructure.root,
-      'cursor',
-      'crosshair'
-    );
-
     this.backgroundColorOnInit = this.colorService.backgroundColor;
-    this.svgStructure.root.style.cursor = 'crosshair';
+    this.renderer.setStyle(this.svgStructure.root, 'cursor', 'crosshair');
 
   }
 
@@ -90,13 +82,9 @@ export class PipetteLogicComponent extends ToolLogicDirective
         1,
         1
       ).data;
-      // TODO : Ask the chargé de lab 2 + 1
-      this.service.currentColor = 'rgba(' +
-        pixel[0].toString() + ',' +
-        pixel[1].toString() + ',' +
-        pixel[2].toString() + ',' +
-        pixel[2 + 1].toString() +
-      ')';
+      // simplement pour accéder à la 4è valeur du pixel[3] qui correspond au alpha
+      // tslint:disable-next-line:no-magic-numbers
+      this.service.currentColor = `rgba(${pixel[0]},${pixel[1]},${pixel[2]},${pixel[3]})`;
     }
   }
 

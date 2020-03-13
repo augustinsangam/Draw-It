@@ -1,5 +1,21 @@
 import { Renderer2 } from '@angular/core';
 
+export interface Style {
+  strokeWidth: string;
+  strokeColor: string;
+  fillColor: string;
+  opacity: string;
+}
+export enum BackGroundProperties {
+  Filled,
+  None
+}
+export enum StrokeProperties {
+  Filled,
+  Dashed,
+  None
+}
+
 export abstract class AbstractShape {
 
   protected backgoundProperties: BackGroundProperties;
@@ -40,19 +56,4 @@ export abstract class AbstractShape {
         this.element, 'stroke', style.strokeColor);
     }
   }
-}
-export interface Style {
-  strokeWidth: string;
-  strokeColor: string;
-  fillColor: string;
-  opacity: string;
-}
-export enum BackGroundProperties {
-  Filled,
-  None
-}
-export enum StrokeProperties {
-  Filled,
-  Dashed,
-  None
 }

@@ -1,11 +1,16 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { Point } from 'src/app/tool/shape/common/point';
-import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { MathService } from '../../../mathematics/tool.math-service.service';
+import { Point } from '../../../shape/common/point';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
+import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import { Path } from '../../common/path';
 import { LineService } from '../line.service';
+
+interface JonctionOption {
+  radius: number;
+  color: string;
+}
 
 @Component({
   selector: 'app-line-logic',
@@ -37,9 +42,6 @@ export class LineLogicComponent extends ToolLogicDirective
       overrideFunctionDefined: true,
       overrideFunction: () => {
         if (!this.isNewPath) {
-          // TODO Nicolas. Exactemment ici
-          // tu dois mettre la logique pour elever
-          // uniquement le trait sans ce cercle
           this.addNewLine( this.mousePosition);
           this.undoRedoService.saveState();
           this.onKeyDown({ code: 'Escape'} as unknown as KeyboardEvent);
@@ -98,12 +100,7 @@ export class LineLogicComponent extends ToolLogicDirective
     this.listeners.forEach((end) => end());
     this.undoRedoService.resetActions();
     if (!this.isNewPath) {
-      // TODO Nicolas. Exactemment ici
-      // tu dois mettre la logique pour elever
-      // uniquement le trait sans ce cercle
-      this.paths.pop();
       this.undoRedoService.saveState();
-      this.onKeyDown({ code: 'Escape'} as unknown as KeyboardEvent);
     }
   }
 
@@ -124,68 +121,66 @@ export class LineLogicComponent extends ToolLogicDirective
   }
 
   private onMouseDblClick(mouseEv: MouseEvent): void {
-    if (!this.isNewPath) {
-      let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
-      this.removeLine();
-      this.removeLine(); // remove the click event
-      const firstPoint = this.getPath().datas.points[0];
-      const isLessThan3pixels = this.mathService.distanceIsLessThan3Pixel(
-        currentPoint,
-        firstPoint
-      );
-      if (isLessThan3pixels) {
-        this.addNewLine(firstPoint);
-      } else {
-        if (mouseEv.shiftKey) {
-          currentPoint = this.getPath().getAlignedPoint(currentPoint);
-        }
-        this.addNewLine(currentPoint);
-      }
-      this.isNewPath = true;
-      this.undoRedoService.saveState();
+    if (this.isNewPath) {
+      return;
     }
+    let currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+    this.removeLine();
+    this.removeLine(); // remove the click event
+    const firstPoint = this.getPath().datas.points[0];
+    const isLessThan3pixels = this.mathService.distanceIsLessThan3Pixel(currentPoint, firstPoint);
+    if (isLessThan3pixels) {
+      this.addNewLine(firstPoint);
+    } else {
+      if (mouseEv.shiftKey) {
+        currentPoint = this.getPath().getAlignedPoint(currentPoint);
+      }
+      this.addNewLine(currentPoint);
+    }
+    this.isNewPath = true;
+    this.undoRedoService.saveState();
   }
 
   private onMouseMove(mouseEv: MouseEvent): void {
-    if (!this.isNewPath) {
-      let point = (this.mousePosition = new Point(
-        mouseEv.offsetX,
-        mouseEv.offsetY
-      ));
-      if (mouseEv.shiftKey) {
-        point = this.getPath().getAlignedPoint(point);
-      }
-      this.getPath().simulateNewLine(point);
+    if (this.isNewPath) {
+      return;
     }
+    let point = (this.mousePosition = new Point(
+      mouseEv.offsetX,
+      mouseEv.offsetY
+    ));
+    if (mouseEv.shiftKey) {
+      point = this.getPath().getAlignedPoint(point);
+    }
+    this.getPath().simulateNewLine(point);
   }
 
+
+  // TODO : enumeration shortcut
   private onKeyDown(keyEv: KeyboardEvent): void {
     const shiftIsPressed =
       keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight';
-    if (!this.isNewPath) {
-      if (keyEv.code === 'Escape') {
-        this.getPath().removePath();
-        this.isNewPath = true;
-      }
-      const maxRemovableInstruction = this.service.withJonction ? 2 * 2 : 2;
-      if (
-        keyEv.code === 'Backspace' &&
-        this.getPath().datas.instructions.length >= maxRemovableInstruction
-      ) {
-        this.removeLine();
-        this.getPath().simulateNewLine(this.getPath().lastPoint);
-      }
-      if (shiftIsPressed) {
-        const transformedPoint = this.getPath().getAlignedPoint(
-          this.mousePosition);
-        this.getPath().simulateNewLine(transformedPoint);
-      }
+    if (this.isNewPath) {
+      return;
+    }
+    if (keyEv.code === 'Escape') {
+      this.getPath().removePath();
+      this.isNewPath = true;
+    }
+    const maxRemovableInstruction = this.service.withJonction ? 2 * 2 : 2; // TODO : Magie
+    const shouldConnect = this.getPath().datas.instructions.length >= maxRemovableInstruction;
+    if (keyEv.code === 'Backspace' && shouldConnect) {
+      this.removeLine();
+      this.getPath().simulateNewLine(this.getPath().lastPoint);
+    }
+    if (shiftIsPressed) {
+      const transformedPoint = this.getPath().getAlignedPoint(this.mousePosition);
+      this.getPath().simulateNewLine(transformedPoint);
     }
   }
 
   private onKeyUp(keyEv: KeyboardEvent): void {
-    const shiftIsPressed =
-      keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight';
+    const shiftIsPressed = keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight';
     if (shiftIsPressed && !this.isNewPath) {
       this.getPath().simulateNewLine(this.mousePosition);
     }
@@ -222,9 +217,4 @@ export class LineLogicComponent extends ToolLogicDirective
   private getPath(): Path {
     return this.paths[this.paths.length - 1];
   }
-}
-
-interface JonctionOption {
-  radius: number;
-  color: string;
 }

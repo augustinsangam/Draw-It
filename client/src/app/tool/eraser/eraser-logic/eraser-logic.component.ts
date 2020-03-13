@@ -90,25 +90,26 @@ export class EraserLogicComponent
         this.drawEraser();
       }],
       ['mouseup', ($event: MouseEvent) => {
-        if ($event.button === 0) {
-          this.mouse.mouseIsDown = false;
-          this.mouse.endPoint = new Point($event.offsetX, $event.offsetY);
-          if (this.elementsDeletedInDrag) {
-            this.restoreMarkedElements();
-            this.undoRedoService.saveState();
-          }
+        if ($event.button !== 0) {
+          return;
+        }
+        this.mouse.mouseIsDown = false;
+        this.mouse.endPoint = new Point($event.offsetX, $event.offsetY);
+        if (this.elementsDeletedInDrag) {
+          this.restoreMarkedElements();
+          this.undoRedoService.saveState();
         }
       }],
       ['click', ($event: MouseEvent) => {
-        if ($event.button === 0) {
-          // On s'assure d'avoir un vrai click
-          if (this.mouse.startPoint.equals(this.mouse.endPoint)) {
-            this.restoreMarkedElements();
-            const marked = this.markElementsInZone($event.x, $event.y);
-            if (marked.size !== 0) {
-              this.deleteAll(marked);
-              this.undoRedoService.saveState();
-            }
+        if ($event.button !== 0) {
+          return;
+        }
+        if (this.mouse.startPoint.equals(this.mouse.endPoint)) {
+          this.restoreMarkedElements();
+          const marked = this.markElementsInZone($event.x, $event.y);
+          if (marked.size !== 0) {
+            this.deleteAll(marked);
+            this.undoRedoService.saveState();
           }
         }
       }],
@@ -151,6 +152,8 @@ export class EraserLogicComponent
     });
   }
 
+  // TODO : RENDERER, separer la logique en deux
+
   private hideEraser(): void {
     this.eraser.setAttribute('width', '0');
     this.eraser.setAttribute('height', '0');
@@ -182,17 +185,17 @@ export class EraserLogicComponent
     selectedElements.forEach((element: SVGElement) => {
       const stroke = element.getAttribute('stroke');
       let strokeModified = CONSTANTS.RED;
-      if (stroke !== null && stroke !== 'none') {
-        const rgb = this.colorService.rgbFormRgba(stroke);
-        // Si on a beaucoup de rouge mais pas trop les autres couleurs
-        if (rgb.r > CONSTANTS.MAX_RED && rgb.g < CONSTANTS.MIN_GREEN
-          && rgb.b < CONSTANTS.MIN_BLUE) {
-          rgb.r = rgb.r - CONSTANTS.FACTOR;
-          strokeModified = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
-        }
-        this.markedElements.set(element, stroke as string);
-        element.setAttribute('stroke', strokeModified);
+      if (stroke == null || stroke === 'none') {
+        return;
       }
+      const rgb = this.colorService.rgbFormRgba(stroke);
+      if (rgb.r > CONSTANTS.MAX_RED && rgb.g < CONSTANTS.MIN_GREEN
+        && rgb.b < CONSTANTS.MIN_BLUE) {
+        rgb.r = rgb.r - CONSTANTS.FACTOR;
+        strokeModified = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
+      }
+      this.markedElements.set(element, stroke as string);
+      element.setAttribute('stroke', strokeModified);
     });
     return selectedElements;
   }
@@ -230,5 +233,4 @@ export class EraserLogicComponent
     this.renderer.setStyle(this.svgStructure.root, 'cursor', 'default');
     this.undoRedoService.resetActions();
   }
-
 }
