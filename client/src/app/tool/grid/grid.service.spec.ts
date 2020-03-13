@@ -6,7 +6,7 @@ const SVG_TEST_HEIGHT = 1000;
 const SVG_TEST_WIDTH = 1000;
 
 // tslint:disable:no-string-literal
-fdescribe('GridService', () => {
+describe('GridService', () => {
   let service: GridService;
 
   beforeEach(() => {
