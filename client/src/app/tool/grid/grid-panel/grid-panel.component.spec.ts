@@ -2,13 +2,14 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MaterialModule } from '../../../material.module';
 
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {PanelComponent} from '../../../panel/panel.component';
 import {ColorPanelComponent} from '../../color/color-panel/color-panel.component';
 import {ColorPickerContentComponent} from '../../color/color-panel/color-picker-content/color-picker-content.component';
 import {ColorPickerItemComponent} from '../../color/color-panel/color-picker-item/color-picker-item.component';
 import { GridPanelComponent } from './grid-panel.component';
 
 // tslint:disable:no-string-literal
-describe('GridPanelComponent', () => {
+fdescribe('GridPanelComponent', () => {
   let component: GridPanelComponent;
   let fixture: ComponentFixture<GridPanelComponent>;
 
@@ -24,6 +25,7 @@ describe('GridPanelComponent', () => {
         ColorPanelComponent,
         ColorPickerItemComponent,
         ColorPickerContentComponent,
+        PanelComponent
       ],
     })
     .compileComponents();
