@@ -55,7 +55,7 @@ describe('PipetteLogicComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('onMouseClick should set the colorService primary color ' +
+  it('onMouseClick should set the colorService primary color  ' +
     'if called with a left click', () => {
     const expected = 'rgba(42,42,42,1)';
     component['service'].currentColor = expected;
@@ -71,6 +71,15 @@ describe('PipetteLogicComponent', () => {
     expect(component['colorService'].secondaryColor).toEqual(expected);
   });
 
+  it('onMouseClick should not do anything when called with ' +
+    'an unknown click', () => {
+    const spy1 = spyOn(component['colorService'], 'selectPrimaryColor');
+    const spy2 = spyOn(component['colorService'], 'selectSecondaryColor');
+    component['onMouseClick'](createClickMouseEvent('mouseclick', 1));
+    expect(spy1).not.toHaveBeenCalled();
+    expect(spy2).not.toHaveBeenCalled();
+  });
+
   it('onMouseMove should call ngOnInit whent the background color has changed', () => {
     component['colorService'].backgroundColor = 'rgba(0,0,0,1)';
     const spy = spyOn(component, 'ngOnInit');
@@ -83,7 +92,7 @@ describe('PipetteLogicComponent', () => {
       return {data: [1, 1, 1, 1]} as unknown as ImageData;
     });
     component['service'].currentColor = 'rgba(124,124,124,1)';
-    component['onMouseMove'](createClickMouseEvent('mousemove', 1));
+    component['onMouseMove'](createClickMouseEvent('mousemove', 2));
     expect(spy).toHaveBeenCalled();
   });
 
@@ -124,6 +133,25 @@ describe('PipetteLogicComponent', () => {
     component.ngOnInit();
     component.svgStructure.root.dispatchEvent(expectedMouseEv);
     expect(spy).toHaveBeenCalled();
+  });
+
+  it('the post undo override function should call ngOnInit', () => {
+    const spy = spyOn(component, 'ngOnInit');
+    (component['undoRedoService']['actions'].undo[1].function as () => void)();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('the post redo override function should call ngOnInit', () => {
+    const spy = spyOn(component, 'ngOnInit');
+    (component['undoRedoService']['actions'].redo[1].function as () => void)();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('onMouseMove should not call getImageData if the image is null', () => {
+    const spy = spyOn(component['image'], 'getImageData');
+    component['image'] = null as unknown as CanvasRenderingContext2D;
+    component['onMouseMove'](createClickMouseEvent('mousemove', 2));
+    expect(spy).not.toHaveBeenCalled();
   });
 
 });
