@@ -1,8 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { GridService } from './grid.service';
-import {UndoRedoService} from '../undo-redo/undo-redo.service';
 import {SvgService} from '../../svg/svg.service';
+import { GridService } from './grid.service';
 
 enum gridKeys {
   G = 'g',
