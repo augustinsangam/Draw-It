@@ -2,12 +2,13 @@ import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testi
 
 import { Renderer2 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialogRef } from '@angular/material';
 import { MaterialModule } from 'src/app/material.module';
-import { SvgService, SvgShape } from 'src/app/svg/svg.service';
+import { SvgShape } from 'src/app/svg/svg-shape';
+import { SvgService} from 'src/app/svg/svg.service';
 import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.service';
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ExportComponent } from './export.component';
-import { MatDialogRef, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MAT_DIALOG_DATA } from '@angular/material';
 
 fdescribe('ExportComponent', () => {
   let component: ExportComponent;
@@ -80,7 +81,6 @@ fdescribe('ExportComponent', () => {
     component.ngAfterViewInit();
     expect(spy).toHaveBeenCalledTimes(1);
   }));
-
 
   it('#onConfirm should close the dialogRef', () => {
     spyOn(component, 'exportDrawing');

@@ -19,9 +19,7 @@ import { HomeComponent } from './overlay/pages/home/home.component';
 import { NewDrawComponent } from './overlay/pages/new-draw/new-draw.component';
 import { SaveComponent } from './overlay/pages/save/save.component';
 import { PanelComponent } from './panel/panel.component';
-import {
-  Shortcut
-} from './shortcut-handler/shortcut';
+import { Shortcut } from './shortcut-handler/shortcut';
 import {
   ShortcutHandlerService
 } from './shortcut-handler/shortcut-handler.service';
