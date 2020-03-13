@@ -8,7 +8,7 @@ import {ColorPickerContentComponent} from '../../color/color-panel/color-picker-
 import {ColorPickerItemComponent} from '../../color/color-panel/color-picker-item/color-picker-item.component';
 import { PipettePanelComponent } from './pipette-panel.component';
 
-describe('PipettePanelComponent', () => {
+fdescribe('PipettePanelComponent', () => {
   let component: PipettePanelComponent;
   let fixture: ComponentFixture<PipettePanelComponent>;
 
