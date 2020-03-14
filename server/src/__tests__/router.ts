@@ -18,18 +18,6 @@ import { Database, Entry } from '../database';
 import { myContainer } from '../inversify.config';
 import { Router } from '../router';
 
-class ResMock {
-	code?: number;
-	body?: string;
-	status(code: number): ResMock {
-		this.code = code;
-		return this;
-	}
-	send(body: string): void {
-		this.body = body;
-	}
-}
-
 describe('router', () => {
 	let app: express.Express;
 	let db: Database;
@@ -352,7 +340,7 @@ describe('router', () => {
 			.then();
 
 		chai.expect(stubDbDelete.calledOnce).to.be.true;
-		chai.expect(stubDbDelete.args[0][0]).to.equal(ANSWER_TO_LIFE);
+		chai.expect(stubDbDelete.args[0][0]._id).to.equal(ANSWER_TO_LIFE);
 
 		stubDbDelete.restore();
 	});
@@ -366,7 +354,7 @@ describe('router', () => {
 			.then();
 
 		chai.expect(stubDbDelete.calledOnce).to.be.true;
-		chai.expect(stubDbDelete.args[0][0]).to.equal(ANSWER_TO_LIFE);
+		chai.expect(stubDbDelete.args[0][0]._id).to.equal(ANSWER_TO_LIFE);
 
 		stubDbDelete.restore();
 	});

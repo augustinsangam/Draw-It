@@ -58,13 +58,15 @@ class Router {
 				return next(err);
 			}
 			const fbBuilder = new flatbuffers.flatbuffers.Builder();
-			const drawBufferOffsets = entries.map(entry => {
-				const bufOffset = DrawBuffer.createBufVector(
-					fbBuilder,
-					entry.data.buffer,
-				);
-				return DrawBuffer.create(fbBuilder, entry._id, bufOffset);
-			});
+			const drawBufferOffsets = entries
+				.filter(entry => !!entry.data)
+				.map(entry => {
+					const bufOffset = DrawBuffer.createBufVector(
+						fbBuilder,
+						entry.data?.buffer as Buffer,
+					);
+					return DrawBuffer.create(fbBuilder, entry._id, bufOffset);
+				});
 			const drawBuffers = Draws.createDrawBuffersVector(
 				fbBuilder,
 				drawBufferOffsets,
@@ -148,7 +150,7 @@ class Router {
 	private methodDelete(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
 			try {
-				await this.db.delete(Number(req.params.id));
+				await this.db.delete({ _id: Number(req.params.id) });
 			} catch (err) {
 				return next(err);
 			}

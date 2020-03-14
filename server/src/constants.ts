@@ -40,8 +40,8 @@ enum ContentType {
 }
 
 const ERRORS = {
-	nullCollection: new Error('collection is null'),
-	nullDb: new Error('database is null'),
+	nullCollection: new Error('collection is null or undefined'),
+	nullDb: new Error('database is null or undefined'),
 };
 
 enum StatusCode {

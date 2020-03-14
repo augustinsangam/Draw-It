@@ -6,10 +6,8 @@ import secrets from './secrets.json';
 
 interface Entry {
 	_id: number;
-	data: mongodb.Binary;
+	data?: mongodb.Binary;
 }
-
-const mongo = mongodb;
 
 @inversify.injectable()
 class Database {
@@ -27,10 +25,10 @@ class Database {
 		uri.searchParams.append('serverSelectionTimeoutMS', '3000');
 		uri.searchParams.append('retryWrites', 'true');
 		uri.searchParams.append('w', 'majority');
-		this.client = new mongo.MongoClient(uri.href, {
+		this.client = new mongodb.MongoClient(uri.href, {
 			auth: secrets.mongodb.auth,
 			useUnifiedTopology: true,
-		};
+		});
 	}
 
 	get db(): mongodb.Db | undefined {
@@ -67,24 +65,24 @@ class Database {
 	}
 
 	async nextID(): Promise<number> {
-		if (!!this.db) {
-			const obj = await this.db.collection('counter').findOneAndUpdate(
-				{
-					_id: 'productid',
-				},
-				{
-					$inc: {
-						seq: 1,
-					},
-				},
-				{
-					returnOriginal: false,
-				},
-			);
-			return obj.value.seq;
+		if (this.db == null) {
+			return Promise.reject(ERRORS.nullDb);
 		}
 
-		return Promise.reject(ERRORS.nullDb);
+		const obj = await this.db.collection('counter').findOneAndUpdate(
+			{
+				_id: 'productid',
+			},
+			{
+				$inc: {
+					seq: 1,
+				},
+			},
+			{
+				returnOriginal: false,
+			},
+		);
+		return obj.value.seq;
 	}
 
 	async all(): Promise<Entry[]> {
@@ -107,31 +105,34 @@ class Database {
 		entry: Entry,
 		upsert: boolean,
 	): Promise<mongodb.ReplaceWriteOpResult> {
-		if (!!this.collection) {
-			return this.collection.replaceOne(
-				{
-					_id: entry._id,
-				},
-				{
-					data: entry.data,
-				},
-				{
-					upsert,
-				},
-			);
+		if (this.collection == null) {
+			return Promise.reject(ERRORS.nullCollection);
 		}
 
-		return Promise.reject(ERRORS.nullCollection);
+		return this.collection.replaceOne(
+			{
+				_id: entry._id,
+			},
+			{
+				data: entry.data,
+			},
+			{
+				upsert,
+			},
+		);
 	}
 
-	async delete(id: number): Promise<mongodb.DeleteWriteOpResultObject> {
-		if (!!this.collection) {
-			return this.collection.deleteOne({
-				_id: id,
-			});
+	async delete(entry: Entry): Promise<mongodb.DeleteWriteOpResultObject> {
+		if (this.collection == null) {
+			return Promise.reject(ERRORS.nullCollection);
 		}
 
-		return Promise.reject(ERRORS.nullCollection);
+		/*
+		return this.collection.deleteOne({
+			_id: entry._id,
+		});
+		*/
+		return this.collection.deleteOne(entry);
 	}
 }
 
