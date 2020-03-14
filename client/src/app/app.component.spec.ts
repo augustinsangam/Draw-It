@@ -184,8 +184,8 @@ describe('AppComponent', () => {
       expect(spy2).toHaveBeenCalledTimes(0);
     });
 
-  it('#openNewDrawDialog should call getCommomDialogOptions.', () => {
-    const spy = spyOn<any>(service, 'getCommomDialogOptions').and.callThrough();
+  it('#openNewDrawDialog should call getCommonDialogOptions.', () => {
+    const spy = spyOn<any>(service, 'getCommonDialogOptions').and.callThrough();
 
     service['openNewDrawDialog']();
 
@@ -271,22 +271,22 @@ describe('AppComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#openSaveDialog and #openExportDialog should not call getCommomDialogOptions.', () => {
-    const spy = spyOn<any>(service, 'getCommomDialogOptions');
+  it('#openSaveDialog and #openExportDialog should not call getCommonDialogOptions.', () => {
+    const spy = spyOn<any>(service, 'getCommonDialogOptions');
     service['openSaveDialog']();
     service['dialogRefs'].save.close();
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('#openExportDialog should not call getCommomDialogOptions.', () => {
-    const spy = spyOn<any>(service, 'getCommomDialogOptions');
+  it('#openExportDialog should not call getCommonDialogOptions.', () => {
+    const spy = spyOn<any>(service, 'getCommonDialogOptions');
     service['openExportDialog']();
     service['dialogRefs'].export.close();
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('#openGalleryDialog should not call getCommomDialogOptions.', () => {
-    const spy = spyOn<any>(service, 'getCommomDialogOptions');
+  it('#openGalleryDialog should not call getCommonDialogOptions.', () => {
+    const spy = spyOn<any>(service, 'getCommonDialogOptions');
     service['openGalleryDialog'](true);
     service['dialogRefs'].gallery.close();
     expect(spy).not.toHaveBeenCalled();

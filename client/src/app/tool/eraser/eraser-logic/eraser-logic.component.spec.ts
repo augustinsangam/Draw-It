@@ -330,16 +330,17 @@ describe('EraserLogicComponent', () => {
     .toEqual(`rgba(${255 - CONSTANTS.FACTOR}, 0, 0, 1)`);
   });
 
-  it('#markElementsInZone should do nothing for non-stroke draw elements!', () => {
+  it('#markElementsInZone should use fill for non-stroke draw elements!', () => {
     const element = component.svgStructure.drawZone.children.item(0) as SVGElement;
     element.setAttribute('stroke', 'none');
+    element.setAttribute('fill', 'rgba(255, 255, 255, 1)');
     spyOn(document, 'elementFromPoint').and.callFake(() => {
       return component.svgStructure.drawZone.children.item(0);
     });
     const markedElements = component['markElementsInZone'](0, 0);
     expect(markedElements).toContain(element);
-    expect(element.getAttribute('stroke'))
-    .toEqual('none');
+    expect(element.getAttribute('fill'))
+    .toEqual('rgba(255, 0, 0, 1)');
   });
 
   it('#markElementsInZone should not do anything when there is no'

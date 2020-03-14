@@ -7,6 +7,7 @@ import {
 } from '@angular/core/testing';
 
 import { Renderer2 } from '@angular/core';
+import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { BrushService } from '../brush.service';
 import { BrushLogicComponent } from './brush-logic.component';
@@ -58,6 +59,10 @@ describe('BrushLogicComponent', () => {
     component.svgStructure.root.appendChild(component.svgStructure.drawZone);
     component.svgStructure.root.appendChild(component.svgStructure.temporaryZone);
     component.svgStructure.root.appendChild(component.svgStructure.endZone);
+
+    (TestBed.get(UndoRedoService) as UndoRedoService)
+    .intialise(component.svgStructure);
+
     fixture.detectChanges();
   });
 

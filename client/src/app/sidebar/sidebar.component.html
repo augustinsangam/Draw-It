@@ -1,59 +1,77 @@
 <nav>
-  <a title="Acceuil"
-  (click)="homeEvent.emit()"><mat-icon>home</mat-icon></a>
-  <a title="Selection [S]" #selection (click)="selectSelection($event)"
-    style="background-image:url(/assets/sidebar-icons/selection.png)"></a>
-  <a title="Efface [E]" #efface   (click)="selectEraser($event)"
-    style="background-image:url(/assets/sidebar-icons/gimp-tool-eraser.png)"></a>
-  <a title="Crayon [C]" #pencil (click)="selectPencil($event)"
-    style="background-image:url(/assets/sidebar-icons/gimp-tool-pencil.png)"></a>
-    <a title="Pinceau [W]" #brush (click)="selectBrush($event)"
-      style="background-image:url(/assets/sidebar-icons/gimp-tool-paintbrush.png)"></a>
-  <a title="Ligne [L]" #line (click)="selectLine($event)"
-    style="background-image:url(/assets/sidebar-icons/line.png)"></a>
-  <a title="Rectangle [1]" #rectangle (click)="selectRectangle($event)"
-    style="background-image:url(/assets/sidebar-icons/rectangle.png)"></a>
-  <a title="Ellipse [2]" #ellipse (click)="selectEllipse($event)"
-    style="background-image:url(/assets/sidebar-icons/ellipse.png)"></a>
-  <a title="Polygone [3]" #polygone (click)="selectPolygone($event)"
-    style="background-image:url(/assets/sidebar-icons/polygone.png)"></a>
-  <a title="Pipette [I]"  #pipette  (click)="selectPipette($event)"
-     style="background-image:url(/assets/sidebar-icons/pipette.png)"></a>
-  <a title="Applicateur de couleur [R]"  #applicator  (click)="selectApplicator($event)"
-     ><mat-icon>invert_colors</mat-icon></a>
-  <a title="Aérosol [A]" #aerosol (click)="selectAerosol($event)"
-     style="background-image:url(/assets/sidebar-icons/aerosol.png)"></a>
-  <a title="Grille [G]" #grid (click)="selectGrid($event)"
-      style="background-image: url(/assets/sidebar-icons/grid.png); width: 24px"></a>
+  <a title="Acceuil" (click)="homeEvent.emit()">
+    <mat-icon>home</mat-icon>
+  </a>
+  <a title="Selection [S]" #selection (click)="toolSelectorService.set(Tool.Selection)"
+    style="background-image:url(/assets/sidebar-icons/selection.png)">
+  </a>
+  <a title="Efface [E]" #efface (click)="toolSelectorService.set(Tool.Eraser)"
+    style="background-image:url(/assets/sidebar-icons/gimp-tool-eraser.png)">
+  </a>
+  <a title="Crayon [C]" #pencil (click)="toolSelectorService.set(Tool.Pencil)"
+    style="background-image:url(/assets/sidebar-icons/gimp-tool-pencil.png)">
+  </a>
+  <a title="Pinceau [W]" #brush (click)="toolSelectorService.set(Tool.Brush)"
+    style="background-image:url(/assets/sidebar-icons/gimp-tool-paintbrush.png)">
+  </a>
+  <a title="Ligne [L]" #line (click)="toolSelectorService.set(Tool.Line)"
+    style="background-image:url(/assets/sidebar-icons/line.png)">
+  </a>
+  <a title="Rectangle [1]" #rectangle (click)="toolSelectorService.set(Tool.Rectangle)"
+    style="background-image:url(/assets/sidebar-icons/rectangle.png)">
+  </a>
+  <a title="Ellipse [2]" #ellipse (click)="toolSelectorService.set(Tool.Ellipse)"
+    style="background-image:url(/assets/sidebar-icons/ellipse.png)">
+  </a>
+  <a title="Polygone [3]" #polygone (click)="toolSelectorService.set(Tool.Polygone)"
+    style="background-image:url(/assets/sidebar-icons/polygone.png)">
+  </a>
+  <a title="Pipette [I]" #pipette (click)="toolSelectorService.set(Tool.Pipette)"
+    style="background-image:url(/assets/sidebar-icons/pipette.png)">
+  </a>
+  <a title="Applicateur de couleur [R]" #applicator (click)="toolSelectorService.set(Tool.Applicator)">
+    <mat-icon>invert_colors</mat-icon>
+  </a>
+  <a title="Aérosol [A]" #aerosol (click)="toolSelectorService.set(Tool.Aerosol)"
+    style="background-image:url(/assets/sidebar-icons/aerosol.png)"></a>
+  <a title="Grille [G]" #grid (click)="toolSelectorService.set(Tool.Grid)"
+    style="background-image: url(/assets/sidebar-icons/grid.png); width: 24px"></a>
 </nav>
 
 <mat-grid-list cols="2" rowHeight="30px">
   <mat-grid-tile>
-    <button mat-raised-button
-          color="warn"
-          *ngIf="canUndo"
-          (click)="undoRedoService.undo()"
-          title="Annuler [CTRL + Z]">
-    <mat-icon>undo</mat-icon>
-  </button>
+    <button mat-raised-button color="warn" *ngIf="canUndo" (click)="undoRedoService.undo()" title="Annuler [CTRL + Z]">
+      <mat-icon>
+        undo
+      </mat-icon>
+    </button>
 
   </mat-grid-tile>
   <mat-grid-tile>
-    <button mat-raised-button
-            color="accent"
-            *ngIf="canRedo"
-            (click)="undoRedoService.redo()"
-            title="Refaire [CTRL + SHIFT + Z]">
-      <mat-icon>redo</mat-icon>
+    <button mat-raised-button color="accent" *ngIf="canRedo" (click)="undoRedoService.redo()"
+      title="Refaire [CTRL + SHIFT + Z]">
+      <mat-icon>
+        redo
+      </mat-icon>
     </button>
   </mat-grid-tile>
 </mat-grid-list>
 
-<a title="Sauvegarder [CTRL + S]"
-  (click)="saveEvent.emit()"><mat-icon>save</mat-icon></a>
-<a title="Exporter [CTRL + E]"
-  (click)="exportEvent.emit()"><mat-icon>save_alt</mat-icon></a>
-<a title="Gallerie [CTRL + G]"
-  (click)="galleryEvent.emit()"><mat-icon>photo_library</mat-icon></a>
+<a title="Sauvegarder [CTRL + S]" (click)="saveEvent.emit()">
+  <mat-icon>
+    save
+  </mat-icon>
+</a>
+<a title="Exporter [CTRL + E]" (click)="exportEvent.emit()">
+  <mat-icon>
+    save_alt
+  </mat-icon>
+</a>
+<a title="Gallerie [CTRL + G]" (click)="galleryEvent.emit()">
+  <mat-icon>
+    photo_library
+  </mat-icon>
+</a>
 <a title="Aide" style="background-image:url(/assets/sidebar-icons/gimp-prefs-help-system.svg)"
-  (click)="documentationEvent.emit()"></a>
+  (click)="documentationEvent.emit()">
+</a>

@@ -8,10 +8,7 @@ import { Offset } from '../offset';
 import * as Util from './selection-logic-util';
 import { SelectionLogicComponent } from './selection-logic.component';
 
-// TODO : Ask the chargé de lab
-// tslint:disable: no-magic-numbers
-// tslint:disable: no-string-literal
-// tslint:disable: no-any
+// tslint:disable: no-magic-numbers no-string-literal no-any
 describe('SelectionLogicComponent', () => {
   let component: SelectionLogicComponent;
   let fixture: ComponentFixture<SelectionLogicComponent>;
@@ -61,6 +58,7 @@ describe('SelectionLogicComponent', () => {
 
     (TestBed.get(UndoRedoService) as UndoRedoService)
     .intialise(component.svgStructure);
+
     fixture.detectChanges();
   });
 
@@ -336,7 +334,7 @@ describe('SelectionLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('left click handler should apply single selection when'
+  it('left down handler should apply single selection when'
       + 'target is a draw and the click is real', () => {
     const fakeEvent = {
       button: 0,
@@ -344,7 +342,7 @@ describe('SelectionLogicComponent', () => {
     } as unknown as MouseEvent;
 
     const mouseClickHandler = (component['mouseHandlers'].get('leftButton') as
-      Map<string, Util.MouseEventCallBack>).get('click') as
+      Map<string, Util.MouseEventCallBack>).get('mousedown') as
       Util.MouseEventCallBack;
 
     const spy = spyOn<any>(component, 'applySingleSelection').and.callThrough();

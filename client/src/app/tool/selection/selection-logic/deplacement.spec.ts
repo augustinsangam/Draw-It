@@ -1,18 +1,14 @@
 import { Renderer2 } from '@angular/core';
-import { async, TestBed } from '@angular/core/testing';
 import { Deplacement } from './deplacement';
 
 // tslint:disable: no-magic-numbers
 describe('DeplacementUtil', () => {
 
-  let renderer: Renderer2;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      providers: [ Renderer2 ]
-    });
-    renderer = TestBed.get(Renderer2);
-  }));
+  const renderer = {
+    setAttribute: ( element: SVGElement, attribute: string, value: string ) => {
+      element.setAttribute( attribute, value);
+    }
+  } as unknown as Renderer2;
 
   it('#getTransformTranslate works well', () => {
     const element = document.createElementNS(
