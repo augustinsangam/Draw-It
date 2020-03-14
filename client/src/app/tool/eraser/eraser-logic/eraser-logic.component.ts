@@ -133,7 +133,7 @@ export class EraserLogicComponent
             this.handlers.get(event) as Util.MouseEventCallBack)
         );
       });
-    this.svgStructure.root.style.cursor = 'none';
+    this.renderer.setStyle(this.svgStructure.root, 'cursor', 'none');
     this.renderer.appendChild(this.svgStructure.temporaryZone, this.eraser);
   }
 
@@ -152,35 +152,21 @@ export class EraserLogicComponent
     });
   }
 
-  // TODO : RENDERER, separer la logique en deux
-
   private hideEraser(): void {
-    this.eraser.setAttribute('width', '0');
-    this.eraser.setAttribute('height', '0');
+    this.renderer.setAttribute(this.eraser, 'width', '0');
+    this.renderer.setAttribute(this.eraser, 'height', '0');
   }
 
   private removeFill(): void {
-    this.eraser.setAttribute('fill', 'none');
+    this.renderer.setAttribute(this.eraser, 'fill', 'none');
   }
 
   private addFill(): void {
-    this.eraser.setAttribute('fill', CONSTANTS.FILL_COLOR);
+    this.renderer.setAttribute(this.eraser, 'fill', CONSTANTS.FILL_COLOR);
   }
 
   private markElementsInZone(x: number, y: number): Set<SVGElement> {
-    const selectedElements = new Set<SVGElement>();
-    const halfSize = this.service.size / 2;
-    this.removeFill();
-    for (let i = x - halfSize; i <= x + halfSize; i += CONSTANTS.PIXEL_INCREMENT) {
-      for (let j = y - halfSize; j <= y + halfSize; j += CONSTANTS.PIXEL_INCREMENT) {
-        const element = document.elementFromPoint(i, j);
-        if (this.svgStructure.drawZone.contains(element)
-          && element !== this.eraser) {
-          selectedElements.add(element as SVGElement);
-        }
-      }
-    }
-    this.addFill();
+    const selectedElements = this.findElementsInZone(x, y);
     this.markedElements.clear();
     selectedElements.forEach((element: SVGElement) => {
       let stroke = element.getAttribute('stroke');
@@ -196,8 +182,29 @@ export class EraserLogicComponent
         strokeModified = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
       }
       this.markedElements.set(element, [hasStroke, stroke as string]);
-      element.setAttribute(hasStroke ? 'stroke' : 'fill', strokeModified);
+      this.renderer.setAttribute(
+        element,
+        hasStroke ? 'stroke' : 'fill',
+        strokeModified
+      )
     });
+    return selectedElements;
+  }
+
+  private findElementsInZone(x: number, y: number): Set<SVGElement> {
+    const selectedElements = new Set<SVGElement>();
+    const halfSize = this.service.size / 2;
+    this.removeFill();
+    for (let i = x - halfSize; i <= x + halfSize; i += CONSTANTS.PIXEL_INCREMENT) {
+      for (let j = y - halfSize; j <= y + halfSize; j += CONSTANTS.PIXEL_INCREMENT) {
+        const element = document.elementFromPoint(i, j);
+        if (this.svgStructure.drawZone.contains(element)
+          && element !== this.eraser) {
+          selectedElements.add(element as SVGElement);
+        }
+      }
+    }
+    this.addFill();
     return selectedElements;
   }
 
@@ -210,7 +217,11 @@ export class EraserLogicComponent
 
   private restoreMarkedElements(): void {
     for (const entry of this.markedElements) {
-      entry[0].setAttribute(entry[1][0] ? 'stroke' : 'fill', entry[1][1]);
+      this.renderer.setAttribute(
+        entry[0],
+        entry[1][0] ? 'stroke' : 'fill',
+        entry[1][1]
+      );
     }
     this.markedElements.clear();
   }
