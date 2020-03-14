@@ -12,6 +12,7 @@ interface PathData {
 export class Path {
   private pathAtribute: string;
   private mathService: MathService;
+  private strokeWidth: string;
   datas: PathData;
   lastPoint: Point;
 
@@ -32,6 +33,7 @@ export class Path {
   }
 
   addLine(point: Point): void {
+    this.renderer.setAttribute(this.element, 'stroke-width', this.strokeWidth);
     this.datas.points.push(point);
     const instruction =
       'L ' + point.x.toString() + ' ' + point.y.toString() + ' ';
@@ -48,7 +50,7 @@ export class Path {
     const instruction = ` M ${center.x},
     ${center.y} m -${radius} 0 a ${radius},${radius} 0 1,0 ${2 * radius},
     0 a ${radius},${radius} 0 1,0 -${2 * radius},0 M ${center.x},
-    ${center.y} `;
+    ${center.y}`;
     this.addInstruction(instruction);
   }
 
@@ -94,12 +96,9 @@ export class Path {
   }
 
   setLineCss(strokewidth: string, strokeColor: string): void {
+    this.strokeWidth = strokewidth;
     this.renderer.setAttribute(this.element, 'stroke-width', strokewidth);
     this.renderer.setAttribute(this.element, 'stroke', strokeColor);
-    if (this.withJonctions) {
-      this.renderer.setAttribute(this.element, 'fill', strokeColor);
-    } else {
-      this.renderer.setAttribute(this.element, 'fill', 'none');
-    }
+    this.renderer.setAttribute(this.element, 'fill', strokeColor);
   }
 }
