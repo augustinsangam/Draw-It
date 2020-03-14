@@ -20,10 +20,7 @@ const createClickMouseEvent = (event: string): MouseEvent => {
   } as MouseEventInit);
 };
 
-// On a explicitement besoin du any car nous testons des méthodes privées
-// tslint:disable: no-any
-// On a besoin des string-literal car on accède à des attributs privés
-// tslint:disable:no-string-literal
+// tslint:disable:no-string-literal no-any no-magic-numbers
 describe('RectangleLogicComponent', () => {
   let component: RectangleLogicComponent;
   let fixture: ComponentFixture<RectangleLogicComponent>;
@@ -356,3 +353,4 @@ describe('RectangleLogicComponent', () => {
     }
   );
 });
+// tslint:disable-next-line: max-file-line-count

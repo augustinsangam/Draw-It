@@ -186,7 +186,7 @@ export class EraserLogicComponent
         element,
         hasStroke ? 'stroke' : 'fill',
         strokeModified
-      )
+      );
     });
     return selectedElements;
   }

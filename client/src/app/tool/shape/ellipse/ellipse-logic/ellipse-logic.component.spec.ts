@@ -21,7 +21,7 @@ const createClickMouseEvent = (event: string): MouseEvent => {
   } as MouseEventInit);
 };
 
-// tslint:disable:no-string-literal
+// tslint:disable:no-string-literal no-any no-magic-numbers
 describe('EllipseLogicComponent', () => {
   let component: EllipseLogicComponent;
   let fixture: ComponentFixture<EllipseLogicComponent>;

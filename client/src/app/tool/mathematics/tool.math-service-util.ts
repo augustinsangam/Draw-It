@@ -43,8 +43,6 @@
 
 // CONSTANTS.get(service.side as Shape)
 
-
-
 // // const MINIMAL_3PX_DISTANCE = 3;
 // // const MINIMAL_ALIGN_ANGLE =  Math.PI / 8;
 // // const MAXIMAL_ALIGN_ANGLE =  3 * Math.PI / 8;
@@ -74,4 +72,3 @@
 // // const TRIANGLE_SIDES = 3;
 // // const HEXAGONE_SIDES = 6;
 // // const DECAGONE_SIDES = 10;
-

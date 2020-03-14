@@ -1,8 +1,8 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { SVGStructure } from "./svg-structure";
-import {UndoRedoService} from '../tool/undo-redo/undo-redo.service';
-import { SvgShape } from './svg-shape';
+import { UndoRedoService } from '../tool/undo-redo/undo-redo.service';
 import { SvgHeader } from './svg-header';
+import { SvgShape } from './svg-shape';
+import { SVGStructure } from './svg-structure';
 
 @Injectable({
   providedIn: 'root'

@@ -8,12 +8,11 @@ const createClickMouseEvent = (event: string, button: number): MouseEvent => {
   return new MouseEvent(event, {
     offsetX: 10,
     offsetY: 30,
-    button: button
+    button
   } as MouseEventInit);
 };
 
-// tslint:disable:no-string-literal
-// tslint:disable:no-magic-numbers
+// tslint:disable:no-magic-numbers no-string-literal no-any
 describe('PipetteLogicComponent', () => {
   let component: PipetteLogicComponent;
   let fixture: ComponentFixture<PipetteLogicComponent>;

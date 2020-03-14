@@ -31,7 +31,7 @@ import {
   ColorPickerItemComponent
 } from './color-picker-item/color-picker-item.component';
 
-// tslint:disable: no-string-literal
+// tslint:disable: no-string-literal no-any no-magic-numbers
 describe('ColorPanelComponent', () => {
   let component: ColorPanelComponent;
   let fixture: ComponentFixture<ColorPanelComponent>;
@@ -76,8 +76,6 @@ describe('ColorPanelComponent', () => {
   });
 
   it('#Button Palette should call swapColors() method', fakeAsync(() => {
-    // Synthaxe pour appeler une méthode privée.
-    // Le any est necessaire pour acceder a la methode prive.
     const spy = spyOn<any>(component, 'swapColors');
     const swapButton = fixture.debugElement.nativeElement.querySelector(
       '#swapButton'

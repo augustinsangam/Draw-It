@@ -10,13 +10,14 @@ import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.ser
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ExportComponent } from './export.component';
 
+// tslint:disable: no-magic-numbers no-any no-string-literal
 describe('ExportComponent', () => {
   let component: ExportComponent;
   let fixture: ComponentFixture<ExportComponent>;
 
   const mockDialogRef = {
     close: jasmine.createSpy('close')
-  }
+  };
   const mockDownloadLink = {
     click: jasmine.createSpy('click')
   };
@@ -143,7 +144,7 @@ describe('ExportComponent', () => {
     const downloadLink = {
       href: pictureUrl,
       download: '',
-      click: () => {}
+      click: () => { return ; }
     } as unknown as HTMLAnchorElement;
     spyOn(component['renderer'], 'createElement').and.callFake(() =>  downloadLink);
     const spy = spyOn(downloadLink, 'click');
@@ -173,13 +174,6 @@ describe('ExportComponent', () => {
     const creationResult = component.createView('');
     expect(creationResult).toBeTruthy();
   }));
-
-  // à revoir
-  // it('#createView return false when the viewZone didnt exist', fakeAsync(() => {
-  //   component['svgView'].nativeElement = null;
-  //   const creationResult = component.createView('');
-  //   expect(creationResult).toBeTruthy();
-  // }));
 
   it('#configurePicture should make good id configuration', fakeAsync(() => {
     const picture = component['renderer'].createElement('picture', 'http://www.w3.org/2000/svg');

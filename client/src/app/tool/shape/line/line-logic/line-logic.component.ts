@@ -155,7 +155,6 @@ export class LineLogicComponent extends ToolLogicDirective
     this.getPath().simulateNewLine(point);
   }
 
-
   // TODO : enumeration shortcut
   private onKeyDown(keyEv: KeyboardEvent): void {
     const shiftIsPressed =

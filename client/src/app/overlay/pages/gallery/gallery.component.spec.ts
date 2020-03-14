@@ -12,8 +12,7 @@ import { GalleryCardComponent } from './gallery-card/gallery-card.component';
 import { GalleryComponent, GalleryDraw } from './gallery.component';
 import { TagsFilterComponent } from './tags-filter/tags-filter.component';
 
-// tslint:disable: no-string-literal
-// tslint:disable: no-magic-numbers
+// tslint:disable: no-magic-numbers no-any no-string-literal
 describe('GalleryComponent', () => {
   let component: GalleryComponent;
   let fixture: ComponentFixture<GalleryComponent>;
@@ -42,14 +41,6 @@ describe('GalleryComponent', () => {
   const mockDialogRef = {
     close: jasmine.createSpy('close')
   };
-
-  // const mockCommunicationService = {
-  //   getAll: jasmine.createSpy('getAll').and.callFake(() => {
-  //     return new Promise<flatbuffers.ByteBuffer>((resolve) => {
-  //       return resolve();
-  //     });
-  //   })
-  // };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -239,7 +230,8 @@ describe('GalleryComponent', () => {
   });
 
   it('#deleteCloseHandler shoul call communicationService.delete() with "id" when result is true', () => {
-    const spy = spyOn(component['communicationService'], 'delete').and.callFake(() => {
+    const spy = spyOn(component['communicationService'], 'delete')
+    .and.callFake(async () => {
       return new Promise<null>((resolve) => {
         resolve();
       });

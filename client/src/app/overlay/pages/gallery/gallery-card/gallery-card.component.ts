@@ -4,7 +4,6 @@ import {
 import { Subject } from 'rxjs';
 import { GalleryDraw } from '../gallery.component';
 
-
 const THUMBNAIL_WIDTH = 300;
 const THUMBNAIL_HEIGHT = 170;
 @Component({

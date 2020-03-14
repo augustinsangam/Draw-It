@@ -1,8 +1,8 @@
 import { Injectable, Renderer2 } from '@angular/core';
 import { flatbuffers } from 'flatbuffers';
 
-import { SvgHeader } from "../svg/svg-header";
-import { SvgShape } from "../svg/svg-shape";
+import { SvgHeader } from '../svg/svg-header';
+import { SvgShape } from '../svg/svg-shape';
 import {
   Attr as AttrT,
   Draw as DrawT,
@@ -17,8 +17,9 @@ enum StatusCode {
   CREATED,
   ACCEPTED,
 }
-//TODO: duplication message, decode element recursively reduire l imbrication,
-//enlever les abreviations
+
+// TODO: duplication message, decode element recursively reduire l imbrication,
+// enlever les abreviations
 
 // developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/
 //   Sending_and_Receiving_Binary_Data#Sending_typed_arrays_as_binary_data
