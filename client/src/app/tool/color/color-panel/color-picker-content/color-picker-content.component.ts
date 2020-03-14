@@ -20,20 +20,28 @@ import { EventManager } from '@angular/platform-browser';
 import {
   ShortcutHandlerService
 } from 'src/app/shortcut-handler/shortcut-handler.service';
-import { ColorService, RGBColor } from '../../color.service';
+import { ColorService } from '../../color.service';
+import { RGBColor } from '../../rgb-color';
 import {
   ColorPickerItemComponent
 } from '../color-picker-item/color-picker-item.component';
 
 const CONSTANTS = {
-  RGB_MAX : 255,
-  RGB_MIN : 0,
-  ALPHA_MIN : 0,
-  ALPHA_MAX : 100,
-  COLOR_WIDTH : 8,
-  TRAKER_WIDTH : 7,
-  HEXADECIMAL_COLOR_LENGTH : 7
+  RGB_MAX: 255,
+  RGB_MIN: 0,
+  ALPHA_MIN: 0,
+  ALPHA_MAX: 100,
+  COLOR_WIDTH: 8,
+  TRAKER_WIDTH: 7,
+  HEXADECIMAL_COLOR_LENGTH: 7
 };
+
+enum Field {
+  R = 'r',
+  G = 'g',
+  B = 'b',
+  A = 'a'
+}
 
 @Component({
   selector: 'app-color-picker-content',
@@ -74,13 +82,13 @@ export class ColorPickerContentComponent implements AfterViewInit {
     out: () => void
   };
 
-  static ValidatorHex(formControl: AbstractControl): null | {valid: boolean} {
+  static ValidatorHex(formControl: AbstractControl): null | { valid: boolean } {
     return (/^[0-9A-F]{6}$/i.test(formControl.value)) ? null : {
       valid: true,
     };
   }
 
-  static ValidatorInteger(formControl: AbstractControl): null | {valid: boolean} {
+  static ValidatorInteger(formControl: AbstractControl): null | { valid: boolean } {
     return (Number.isInteger(formControl.value)) ? null : {
       valid: true,
     };
@@ -92,24 +100,12 @@ export class ColorPickerContentComponent implements AfterViewInit {
     private colorService: ColorService,
     private shortcutHandler: ShortcutHandlerService
   ) {
-    // TODO : DRY
+    const validatorsRGBA = [Validators.required, ColorPickerContentComponent.ValidatorInteger];
     this.colorForm = this.formBuilder.group({
-      r: [
-        '',
-        [Validators.required, ColorPickerContentComponent.ValidatorInteger]
-      ],
-      g: [
-        '',
-        [Validators.required, ColorPickerContentComponent.ValidatorInteger]
-      ],
-      b: [
-        '',
-        [Validators.required, ColorPickerContentComponent.ValidatorInteger]
-      ],
-      a: [
-        '',
-        [Validators.required, ColorPickerContentComponent.ValidatorInteger]
-      ],
+      r: [ '', validatorsRGBA ],
+      g: [ '', validatorsRGBA ],
+      b: [ '', validatorsRGBA ],
+      a: [ '', validatorsRGBA ],
       slider: [''],
       hex: ['', [Validators.required, ColorPickerContentComponent.ValidatorHex]]
     });
@@ -127,11 +123,11 @@ export class ColorPickerContentComponent implements AfterViewInit {
     ];
     this.colorChange = new EventEmitter();
     this.focusHandlers = {
-      in : () => {
+      in: () => {
         this.shortcutHandler.push();
         this.shortcutHandler.desactivateAll();
       },
-      out : () => this.shortcutHandler.pop()
+      out: () => this.shortcutHandler.pop()
     };
   }
 
@@ -153,12 +149,12 @@ export class ColorPickerContentComponent implements AfterViewInit {
       });
 
     [this.rField, this.gField, this.bField, this.aField, this.hexField]
-    .forEach((field: ElementRef) => {
-      this.eventManager.addEventListener(field.nativeElement, 'focus',
-        this.focusHandlers.in);
-      this.eventManager.addEventListener(field.nativeElement, 'focusout',
-        this.focusHandlers.out);
-    });
+      .forEach((field: ElementRef) => {
+        this.eventManager.addEventListener(field.nativeElement, 'focus',
+          this.focusHandlers.in);
+        this.eventManager.addEventListener(field.nativeElement, 'focusout',
+          this.focusHandlers.out);
+      });
   }
 
   initialiseStartingColor(): void {
@@ -239,35 +235,43 @@ export class ColorPickerContentComponent implements AfterViewInit {
 
   private checkValidity(name: string, min: number, max: number): void {
     if (this.colorForm.controls[name].value < min ||
-        this.colorForm.controls[name].value == null ) {
-      (this.colorForm.get(name) as AbstractControl).patchValue( min );
+      this.colorForm.controls[name].value == null) {
+      (this.colorForm.get(name) as AbstractControl).patchValue(min);
     } else if (this.colorForm.controls[name].value > max) {
-      (this.colorForm.get(name) as AbstractControl).patchValue( max );
+      (this.colorForm.get(name) as AbstractControl).patchValue(max);
+    } else {
+      (this.colorForm.get(name) as AbstractControl).patchValue(
+        this.colorForm.controls[name].value
+      );
     }
   }
-  // TODO : Enlever la duplication
+
   protected onChangeR(): void {
-    this.checkValidity('r', CONSTANTS.RGB_MIN, CONSTANTS.RGB_MAX);
+    this.checkValidity(Field.R, CONSTANTS.RGB_MIN, CONSTANTS.RGB_MAX);
     this.placeSlider(this.colorForm.controls.r.value);
-    this.reDrawTracker();
-    this.updateHex();
+    this.refreshView();
   }
 
   protected onChangeG(): void {
-    this.checkValidity('g', CONSTANTS.RGB_MIN, CONSTANTS.RGB_MAX);
+    this.onChangeAxes(Field.G);
+  }
+
+  protected onChangeB(): void {
+    this.onChangeAxes(Field.B);
+  }
+
+  private onChangeAxes(field: Field): void {
+    this.checkValidity(field, CONSTANTS.RGB_MIN, CONSTANTS.RGB_MAX);
+    this.refreshView();
+  }
+
+  private refreshView(): void {
     this.reDrawTracker();
     this.updateHex();
   }
 
-  protected onChangeB(): void {
-    this.checkValidity('b', CONSTANTS.RGB_MIN, CONSTANTS.RGB_MAX);
-    this.reDrawTracker(); // On aurait pu combiner ces deux actions
-    this.updateHex();     // pour en faire une fonction. Mais ce ne
-                          // serait pas intutif de comprendre le code.
-  }
-
   protected onChangeA(): void {
-    this.checkValidity('a', CONSTANTS.ALPHA_MIN, CONSTANTS.ALPHA_MAX);
+    this.checkValidity(Field.A, CONSTANTS.ALPHA_MIN, CONSTANTS.ALPHA_MAX);
     this.actualColor.updateColor(this.getActualRgba());
   }
 
