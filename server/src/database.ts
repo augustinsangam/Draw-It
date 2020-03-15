@@ -136,4 +136,8 @@ class Database {
 	}
 }
 
+// Due to a bug, c8 reports the export line as uncovered even tho
+// it’s used outside of the current file
+// See the bug submission https://github.com/bcoe/c8/issues/196
+/* c8 ignore next */
 export { Database, Entry };

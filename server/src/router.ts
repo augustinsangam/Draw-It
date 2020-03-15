@@ -63,7 +63,10 @@ class Router {
 				.map(entry => {
 					const bufOffset = DrawBuffer.createBufVector(
 						fbBuilder,
-						entry.data?.buffer as Buffer,
+						// I am guaranteed the data proprety is not undefined
+						// because of the filter instruction above
+						// tslint:disable-next-line: no-non-null-assertion
+						entry.data!.buffer as Buffer,
 					);
 					return DrawBuffer.create(fbBuilder, entry._id, bufOffset);
 				});

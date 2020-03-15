@@ -7,7 +7,7 @@ import mongodb from 'mongodb';
 import sinon from 'sinon';
 
 import { ANSWER_TO_LIFE, ERRORS, TYPES } from '../constants';
-import { Database } from '../database';
+import { Database, Entry } from '../database';
 import { myContainer } from '../inversify.config';
 
 interface MongoFindAndModifyWriteOpResultObjectMock {
@@ -16,7 +16,46 @@ interface MongoFindAndModifyWriteOpResultObjectMock {
 	};
 }
 
+class MongoCursorMock {
+	async toArray(): Promise<Entry[]> {
+		return [{ _id: ANSWER_TO_LIFE }];
+	}
+}
+
 class MongoCollectionMock {
+	readonly internalCursor: MongoCursorMock;
+	constructor() {
+		this.internalCursor = new MongoCursorMock();
+	}
+	find(): MongoCursorMock {
+		return this.internalCursor;
+	}
+	async deleteOne(entry: Entry): Promise<mongodb.DeleteWriteOpResultObject> {
+		return {
+			result: {
+				ok: 1,
+				n: 1,
+			},
+			deletedCount: 1,
+		};
+	}
+	async insertOne(
+		entry: Entry,
+	): Promise<mongodb.InsertOneWriteOpResult<Entry>> {
+		return {
+			connection: {},
+			insertedCount: 1,
+			insertedId: entry._id,
+			ops: [entry],
+			result: {
+				ok: 1,
+				n: 1,
+			},
+		};
+	}
+	async replaceOne(a: any, b: any, c: any): Promise<any> {
+		return Promise.resolve();
+	}
 	async updateOne(a: any, b: any, c: any): Promise<void> {
 		return Promise.resolve();
 	}
@@ -45,9 +84,11 @@ class MongoDbMock {
 
 describe('all', () => {
 	let db: Database;
+	let dbMock: MongoDbMock;
 
 	before(() => {
 		db = myContainer.get<Database>(TYPES.Database);
+		dbMock = new MongoDbMock();
 		chai.use(chaiAsPromised);
 	});
 
@@ -73,16 +114,15 @@ describe('all', () => {
 		const clientConnectStub = sinon.stub(client, 'connect');
 		clientConnectStub.resolves();
 
-		const pseudoDb = new MongoDbMock();
-		const updateOneStub = sinon.stub(pseudoDb.internalCollection, 'updateOne');
+		const updateOneStub = sinon.stub(dbMock.internalCollection, 'updateOne');
 
 		const clientDbStub = sinon.stub(client, 'db');
-		clientDbStub.returns(pseudoDb as any);
+		clientDbStub.returns(dbMock as any);
 
 		await db.connect();
 
 		chai.expect(updateOneStub.calledOnce).to.be.true;
-		chai.expect(db['_collection']).to.equal(pseudoDb.internalCollection as any);
+		chai.expect(db['_collection']).to.equal(dbMock.internalCollection as any);
 
 		clientDbStub.restore();
 		updateOneStub.restore();
@@ -106,30 +146,74 @@ describe('all', () => {
 		chai.expect(db.nextID()).to.eventually.be.rejectedWith(ERRORS.nullDb));
 
 	it(`nextID should return ${ANSWER_TO_LIFE}`, async () => {
-		const pseudoDb = new MongoDbMock();
-		const clientDbStub = sinon.stub(db, 'db');
-		clientDbStub.get(() => pseudoDb);
+		const dbStub = sinon.stub(db, 'db');
+		dbStub.get(() => dbMock);
 
 		await chai.expect(db.nextID()).to.eventually.equal(ANSWER_TO_LIFE);
 
-		clientDbStub.restore();
+		dbStub.restore();
 	});
 
 	it('all should reject with error', () =>
 		chai.expect(db.all()).to.eventually.be.rejectedWith(ERRORS.nullCollection));
+
+	it('all should returns a promise of entry array', async () => {
+		const collectionStub = sinon.stub(db, 'collection');
+		collectionStub.get(() => dbMock.internalCollection);
+
+		const entries = await db.all();
+
+		chai.expect(entries[0]._id).to.equal(ANSWER_TO_LIFE);
+
+		collectionStub.restore();
+	});
 
 	it('insert should reject with error', () =>
 		chai
 			.expect(db.insert({ _id: ANSWER_TO_LIFE }))
 			.to.eventually.be.rejectedWith(ERRORS.nullCollection));
 
+	it('insert should return number of inserted', async () => {
+		const collectionStub = sinon.stub(db, 'collection');
+		collectionStub.get(() => dbMock.internalCollection);
+
+		const res = await db.insert({ _id: ANSWER_TO_LIFE });
+		chai.expect(res.insertedId).to.equal(ANSWER_TO_LIFE);
+
+		collectionStub.restore();
+	});
+
 	it('replace should reject with error', () =>
 		chai
 			.expect(db.replace({ _id: ANSWER_TO_LIFE }, true))
 			.to.eventually.be.rejectedWith(ERRORS.nullCollection));
 
+	it('replace should call replaceOne', () => {
+		const collectionStub = sinon.stub(db, 'collection');
+		collectionStub.get(() => dbMock.internalCollection);
+
+		const replaceOneStub = sinon.stub(dbMock.internalCollection, 'replaceOne');
+
+		db.replace({ _id: ANSWER_TO_LIFE }, true);
+
+		chai.expect(replaceOneStub.calledOnce).to.be.true;
+
+		replaceOneStub.restore();
+		collectionStub.restore();
+	});
+
 	it('delete should reject with error', () =>
 		chai
 			.expect(db.delete({ _id: ANSWER_TO_LIFE }))
 			.to.eventually.be.rejectedWith(ERRORS.nullCollection));
+
+	it('delete should return 1', async () => {
+		const collectionStub = sinon.stub(db, 'collection');
+		collectionStub.get(() => dbMock.internalCollection);
+
+		const res = await db.delete({ _id: ANSWER_TO_LIFE });
+		chai.expect(res.deletedCount).to.equal(1);
+
+		collectionStub.restore();
+	});
 });
