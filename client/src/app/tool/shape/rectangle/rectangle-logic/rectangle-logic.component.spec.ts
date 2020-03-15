@@ -20,10 +20,7 @@ const createClickMouseEvent = (event: string): MouseEvent => {
   } as MouseEventInit);
 };
 
-// On a explicitement besoin du any car nous testons des méthodes privées
-// tslint:disable: no-any
-// On a besoin des string-literal car on accède à des attributs privés
-// tslint:disable:no-string-literal
+// tslint:disable:no-string-literal no-any no-magic-numbers
 describe('RectangleLogicComponent', () => {
   let component: RectangleLogicComponent;
   let fixture: ComponentFixture<RectangleLogicComponent>;
@@ -346,8 +343,7 @@ describe('RectangleLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it(
-    'ngOnDestroy should set "called" to true ' +
+  it('ngOnDestroy should set "called" to true ' +
     '(= call every listener´s functions)',
     () => {
       let called = false;
@@ -357,3 +353,4 @@ describe('RectangleLogicComponent', () => {
     }
   );
 });
+// tslint:disable-next-line: max-file-line-count

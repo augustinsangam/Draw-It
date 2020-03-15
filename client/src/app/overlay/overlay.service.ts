@@ -4,9 +4,10 @@ import { Shortcut } from '../shortcut-handler/shortcut';
 import {
   ShortcutHandlerService
 } from '../shortcut-handler/shortcut-handler.service';
+import { SvgShape } from '../svg/svg-shape';
 import { SvgService } from '../svg/svg.service';
-import { SvgShape } from "../svg/svg-shape";
 import { ColorService } from '../tool/color/color.service';
+import { GridService } from '../tool/grid/grid.service';
 import {
   ToolSelectorService
 } from '../tool/tool-selector/tool-selector.service';
@@ -32,15 +33,17 @@ interface DialogRefs {
   save: MatDialogRef<SaveComponent>;
 }
 
-// TODO : CONST pour dialog options.
-
 const CONSTANTS = {
   SUCCES_DURATION: 2000,
   FAILURE_DURATION: 2020,
   LOAD_DURATION: 500,
 };
 
-// Tested in app.component.spec.ts
+const exportSaveDialogOptions: MatDialogConfig = {
+  width: '1000px',
+  height: '90vh'
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -54,7 +57,8 @@ export class OverlayService {
               private colorService: ColorService,
               private toolSelectorService: ToolSelectorService,
               private readonly snackBar: MatSnackBar,
-              private undoRedo: UndoRedoService
+              private undoRedo: UndoRedoService,
+              private gridService: GridService
   ) {
     this.initialiseShortcuts();
   }
@@ -162,23 +166,15 @@ export class OverlayService {
   }
 
   openExportDialog(): void {
-    const dialogOptions = {
-      width: '1000px',
-      height: '90vh'
-    };
     this.dialogRefs.export = this.dialog.open(
       ExportComponent,
-      dialogOptions
+      exportSaveDialogOptions
     );
     this.dialogRefs.export.disableClose = true;
   }
 
   openSaveDialog(): void {
-    const dialogOptions = {
-      width: '1000px',
-      height: '90vh'
-    };
-    this.dialogRefs.save = this.dialog.open(SaveComponent, dialogOptions);
+    this.dialogRefs.save = this.dialog.open(SaveComponent, exportSaveDialogOptions);
     this.dialogRefs.save.disableClose = true;
     this.dialogRefs.save.afterClosed().subscribe((error?: string) => {
       this.closeSaveDialog(error);
@@ -236,6 +232,7 @@ export class OverlayService {
       `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`
     );
     this.svgService.clearDom();
+    this.gridService.handleGrid();
     this.toolSelectorService.set(Tool.Pencil);
     // Deuxième fois juste pour fermer le panneau latéral
     this.toolSelectorService.set(Tool.Pencil);

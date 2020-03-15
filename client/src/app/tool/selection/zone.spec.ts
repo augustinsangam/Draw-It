@@ -1,5 +1,5 @@
-import { Zone } from './zone';
 import { Point } from '../shape/common/point';
+import { Zone } from './zone';
 
 // TODO : Ask the chargé de lab
 // tslint:disable: no-magic-numbers

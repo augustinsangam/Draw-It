@@ -3,7 +3,7 @@
     <h1 class='title'>
       <mat-icon>photo_library</mat-icon> Gallerie
     </h1>
-    <app-tags-filter  [tags]="allTags.asObservable()" 
+    <app-tags-filter  [tags]="allTags.asObservable()"
                       [selectedTag]="selectedTag.asObservable()"
                       (filteredTagsChange)="filterGalleryTable($event)"></app-tags-filter>
   </mat-card-title>

@@ -64,7 +64,7 @@ describe('ApplicatorLogicComponent', () => {
       SVGElement;
     const fakeEvent = {
       target,
-      preventDefault: () => { }
+      preventDefault: () => { return ; }
     } as unknown as MouseEvent;
     component['handlers'].right(fakeEvent);
     expect(target.getAttribute('stroke'))
@@ -77,7 +77,7 @@ describe('ApplicatorLogicComponent', () => {
       SVGElement;
     const fakeEvent = {
       target,
-      preventDefault: () => { }
+      preventDefault: () => { return ; }
     } as unknown as MouseEvent;
     const spy = spyOn(target, 'setAttribute');
     component['handlers'].right(fakeEvent);
@@ -90,7 +90,7 @@ describe('ApplicatorLogicComponent', () => {
       SVGElement;
     const fakeEvent = {
       target,
-      preventDefault: () => { }
+      preventDefault: () => { return ; }
     } as unknown as MouseEvent;
     const spy = spyOn(target, 'setAttribute');
     component['handlers'].left(fakeEvent);

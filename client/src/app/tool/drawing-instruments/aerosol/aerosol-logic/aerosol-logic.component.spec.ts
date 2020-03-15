@@ -18,8 +18,7 @@ const createClickMouseEvent = (event: string): MouseEvent =>  new MouseEvent(
   } as MouseEventInit
 );
 
-// tslint:disable:no-string-literal
-// tslint:disable:no-magic-numbers
+// tslint:disable:no-string-literal no-any no-magic-numbers
 describe('AerosolLogicComponent', () => {
   let component: AerosolLogicComponent;
   let fixture: ComponentFixture<AerosolLogicComponent>;
@@ -147,16 +146,37 @@ describe('AerosolLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  // TODO find a way to test the undoRedoPreActions functions properly
+  it('Undo redo override function should remove current path the drawing is not finished', () => {
+    component['onDrag'] = true;
+    component['currentPath'] = { remove: () => { return ; } } as SVGElement;
+    const spy = spyOn(component['currentPath'], 'remove');
+    spyOn<any>(component, 'onMouseUp');
+    (component['undoRedoService']['actions'].undo[0].overrideFunction as () => void)();
+    expect(spy).toHaveBeenCalled();
+  });
 
-  // it('if we are on drag and a mouseUp is launched, the override function of' +
-  //   ' the undoRedoService should be called and should call call remove on ' +
-  //   'currentPath before saving', () => {
-  //   const spyOnOverride = jasmine.createSpy('spyOnOverride', component['undoRedoOverride']);
-  //   component['onMouseDown'](createClickMouseEvent('mousedown'));
-  //   component['onMouseMove'](createClickMouseEvent('mousemove'));
-  //   setTimeout(() => component['undoRedoService'].undo(), 100);
-  //   expect(spyOnOverride).toHaveBeenCalled();
-  // });
+  it('Undo redo override function should not do anything if the drawing is finished', () => {
+    component['onDrag'] = false;
+    component['currentPath'] = { remove: () => { return ; } } as SVGElement;
+    const spy = spyOn(component['currentPath'], 'remove');
+    (component['undoRedoService']['actions'].undo[0].overrideFunction as () => void)();
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('Mouse down event handler consider only left mouse actions', fakeAsync(() => {
+    component['service'].frequency = 100;
+    const spy = spyOn<any>(component, 'onMouseDown');
+    component.svgStructure.root.dispatchEvent(new MouseEvent(
+      'mousedown', {
+        offsetX: 420,
+        offsetY: 420,
+        button: 1
+      } as MouseEventInit)
+    );
+    setTimeout(() => {
+      expect(spy).not.toHaveBeenCalled();
+    }, 100);
+    tick(100);
+  }));
 
 });

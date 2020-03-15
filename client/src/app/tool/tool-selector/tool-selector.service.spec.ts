@@ -13,8 +13,8 @@ describe('ToolSelectorService', () => {
 
   beforeEach(() => {
     service = TestBed.get(ToolSelectorService);
-    service['onChangeCallbacks'][0] = (tool: Tool) => {};
-    service['onSameCallbacks'][0] = (tool: Tool) => {};
+    service['onChangeCallbacks'][0] = (tool: Tool) => { return ; };
+    service['onSameCallbacks'][0] = (tool: Tool) => { return ; };
   });
 
   it('should be created', () => {
@@ -33,13 +33,13 @@ describe('ToolSelectorService', () => {
   });
 
   it('#onChange() should push argument in onChangeCallbacks', () => {
-    const cb: callback = () => { };
+    const cb: callback = () => {return ; };
     service.onChange(cb);
     expect(service['onChangeCallbacks']).toContain(cb);
   });
 
   it('#onSame() should push argument in onSameCallbacks', () => {
-    const cb: callback = () => { };
+    const cb: callback = () => { return ; };
     service.onSame(cb);
     expect(service['onSameCallbacks']).toContain(cb);
   });

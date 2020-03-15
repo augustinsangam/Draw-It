@@ -244,7 +244,7 @@ describe('SelectionLogicComponent', () => {
 
   it('contextmenu handler should at least prevent default action', () => {
     const fakeEvent = {
-      preventDefault: () => { },
+      preventDefault: () => {return ; },
     } as unknown as MouseEvent;
 
     const spy = spyOn(fakeEvent, 'preventDefault');
@@ -260,7 +260,7 @@ describe('SelectionLogicComponent', () => {
   it('contextmenu handler should at apply a single inversion when target'
       + 'is a draw element', () => {
     const fakeEvent = {
-      preventDefault: () => { },
+      preventDefault: () => { return ; },
       target: component.svgStructure.drawZone.children.item(0)
     } as unknown as MouseEvent;
 
@@ -486,13 +486,13 @@ describe('SelectionLogicComponent', () => {
   it('KeyManager should contain all keypressed', () => {
     let fakeKeyDownEvent = {
       key: 'ArrowUp',
-      preventDefault: () => {}
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     component['keyManager'].handlers.keydown(fakeKeyDownEvent);
     expect(component['keyManager'].keyPressed).toContain('ArrowUp');
     fakeKeyDownEvent = {
       key: 'ArrowDown',
-      preventDefault: () => {}
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     component['keyManager'].handlers.keydown(fakeKeyDownEvent);
     expect(component['keyManager'].keyPressed).toContain('ArrowUp');
@@ -502,7 +502,7 @@ describe('SelectionLogicComponent', () => {
   it('KeyDown manager should consider only arrows', () => {
     const fakeKeyDownEvent = {
       key: 'ArrowUppppp',
-      preventDefault: () => {}
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     const spy = spyOn(fakeKeyDownEvent, 'preventDefault');
     component['keyManager'].handlers.keydown(fakeKeyDownEvent);
@@ -513,7 +513,7 @@ describe('SelectionLogicComponent', () => {
     const spy = spyOn<any>(component, 'handleKey').and.callThrough();
     const fakeKeyDownEvent = {
       key: 'ArrowUp',
-      preventDefault: () => {}
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     component['keyManager'].handlers.keydown(fakeKeyDownEvent);
     expect(spy).not.toHaveBeenCalled();
@@ -530,11 +530,11 @@ describe('SelectionLogicComponent', () => {
     const spy = spyOn(component['undoRedoService'], 'saveState');
     const arrowUpEvent = {
       key: 'ArrowUp',
-      preventDefault: () => {}
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     const arrowDownEvent = {
       key: 'ArrowDown',
-      preventDefault: () => {}
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     component['keyManager'].handlers.keydown(arrowUpEvent);
     component['keyManager'].handlers.keydown(arrowDownEvent);
@@ -551,3 +551,4 @@ describe('SelectionLogicComponent', () => {
   });
 
 });
+// tslint:disable-next-line: max-file-line-count

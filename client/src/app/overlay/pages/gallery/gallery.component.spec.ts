@@ -4,16 +4,15 @@ import { Overlay } from '@angular/cdk/overlay';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { Draw } from 'src/app/communication/data_generated';
 import { MaterialModule } from 'src/app/material.module';
 import { ConfirmationDialogComponent } from '../new-draw/confirmation-dialog.component';
 import { DeleteConfirmationDialogComponent } from './deleteconfirmation-dialog.component';
 import { GalleryCardComponent } from './gallery-card/gallery-card.component';
 import { GalleryComponent, GalleryDraw } from './gallery.component';
 import { TagsFilterComponent } from './tags-filter/tags-filter.component';
-// import { CommunicationService } from 'src/app/communication/communication.service';
 
-// tslint:disable: no-string-literal
-// tslint:disable: no-magic-numbers
+// tslint:disable: no-magic-numbers no-any no-string-literal
 describe('GalleryComponent', () => {
   let component: GalleryComponent;
   let fixture: ComponentFixture<GalleryComponent>;
@@ -42,14 +41,6 @@ describe('GalleryComponent', () => {
   const mockDialogRef = {
     close: jasmine.createSpy('close')
   };
-
-  // const mockCommunicationService = {
-  //   getAll: jasmine.createSpy('getAll').and.callFake(() => {
-  //     return new Promise<flatbuffers.ByteBuffer>((resolve) => {
-  //       return resolve();
-  //     });
-  //   })
-  // };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -95,6 +86,48 @@ describe('GalleryComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('#newDraw should return tempsAllTags with added tags ad add the draw to galleryDrawTable', () => {
+
+    const draw = {
+      name: () => 'test',
+      height: () => 150,
+      width: () => 300,
+      color: () => '#420069',
+      svg: () => 'unused' as unknown as Element,
+      tagsLength: () => 3,
+      tags: (index: number) => ['test1', 'test2', 'test3'][index]
+    } as unknown as Draw;
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg',
+    'svg:g') as SVGGElement;
+    spyOn(component['communicationService'], 'decodeElementRecursively').and.callFake(() => {
+      return svg;
+    });
+
+    let tempsAllTags = new Set<string>(['test1', 'test4']);
+
+    tempsAllTags = component['newDraw'](draw, 0, tempsAllTags);
+
+    const arrayTempsAllTags = Array.from(tempsAllTags);
+
+    const expectedDraw: GalleryDraw = {
+      header: {
+        id: 0,
+        name: 'test',
+        tags: ['test1', 'test2', 'test3'],
+      },
+      shape: {
+        height: 150,
+        width: 300,
+        color: '#420069'
+      },
+      svg
+    };
+
+    expect(arrayTempsAllTags).toEqual(['test1', 'test4', 'test2', 'test3']);
+    expect(component['galleryDrawTable']).toContain(expectedDraw);
   });
 
   it('#ngAfterViewInit should call ajustImagesWidth when screenService.size changes', () => {
@@ -166,6 +199,26 @@ describe('GalleryComponent', () => {
     expect(component['filteredGalleryDrawTable']).toContain(testDrawsTable[0]);
   });
 
+  it('#filterGalleryTable should apply an AND filter on galleryDrawTable when "searchToggle" is true.\nShould return nothing', () => {
+    testDrawsTable[0].header.tags = ['test1', 'test2'];
+    testDrawsTable[1].header.tags = ['test1', 'test3'];
+    testDrawsTable[2].header.tags = ['test3', 'test4'];
+
+    component['galleryDrawTable'] = Array.from(testDrawsTable);
+
+    component['filterGalleryTable']([['test3', 'test2'], true]);
+
+    expect(component['filteredGalleryDrawTable']).toEqual([]);
+  });
+
+  it('#findDraw should return the correct draw from "id"', () => {
+    component['galleryDrawTable'] = Array.from(testDrawsTable);
+
+    const draw = component['findDraw'](1);
+
+    expect(draw.header.id).toEqual(1);
+  });
+
   it('#deleteDraw should call deleteCloseHandler() with "id" when dialogRefs.delete is closed', () => {
     // const spy = spyOn<any>(component, 'deleteCloseHandler');
 
@@ -177,7 +230,8 @@ describe('GalleryComponent', () => {
   });
 
   it('#deleteCloseHandler shoul call communicationService.delete() with "id" when result is true', () => {
-    const spy = spyOn(component['communicationService'], 'delete').and.callFake(() => {
+    const spy = spyOn(component['communicationService'], 'delete')
+    .and.callFake(async () => {
       return new Promise<null>((resolve) => {
         resolve();
       });

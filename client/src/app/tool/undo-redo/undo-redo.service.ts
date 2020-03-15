@@ -13,7 +13,6 @@ export interface PostAction {
   function?: () => void;
 }
 
-
 export interface PreAction {
   enabled: boolean;
   overrideDefaultBehaviour: boolean;

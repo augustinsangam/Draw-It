@@ -1,13 +1,8 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { SvgService } from 'src/app/svg/svg.service';
-import { Dimension } from '../shape/common/rectangle';
+import { Dimension } from '../shape/common/dimension';
 import { ToolService } from '../tool.service';
-
-enum gridKeys {
-  G = 'g',
-  plus = '+',
-  minus = '-',
-}
+import { GridKeys } from './grid-keys';
 
 @Injectable({
   providedIn: 'root'
@@ -42,20 +37,20 @@ export class GridService extends ToolService {
 
   keyEvHandler(keyCode: string): void {
     switch (keyCode) {
-      case gridKeys.G: {
+      case GridKeys.G: {
         this.active = !this.active;
         break;
       }
-      case gridKeys.plus: {
+      case GridKeys.plus: {
         if (this.active && this.squareSize < this.MAX_SQUARESIZE) {
           this.squareSize += this.SQUARESIZE_INCREMENT - (this.squareSize % this.SQUARESIZE_INCREMENT);
         }
         break;
       }
-      case gridKeys.minus: {
+      case GridKeys.minus: {
         if (this.active && this.squareSize > this.MIN_SQUARESIZE) {
-          this.squareSize % this.SQUARESIZE_INCREMENT === 0 ?
-            this.squareSize -= this.SQUARESIZE_INCREMENT : this.squareSize -= this.squareSize % this.SQUARESIZE_INCREMENT;
+          this.squareSize -= this.squareSize % this.SQUARESIZE_INCREMENT === 0 ?
+            this.SQUARESIZE_INCREMENT : this.squareSize % this.SQUARESIZE_INCREMENT;
         }
         break;
       }
@@ -66,15 +61,10 @@ export class GridService extends ToolService {
   }
 
   handleGrid(): void {
-    // TODO is it possible to use renderer ?
-    const width = this.svg.structure.root.getAttribute('width');
-    const height = this.svg.structure.root.getAttribute('height');
-    if (width != null && height != null) {
-      this.svgDimensions = {
-        width: +width,
-        height: +height
-      };
-    }
+    this.svgDimensions = {
+      width: this.svg.shape.width,
+      height: this.svg.shape.height
+    };
 
     if (!!this.grid) {
       this.grid.remove();

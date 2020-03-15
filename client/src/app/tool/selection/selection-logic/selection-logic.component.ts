@@ -8,8 +8,7 @@ import * as Util from './selection-logic-util';
 
 @Component({
   selector: 'app-selection-logic',
-  template: '',
-  styleUrls: ['./selection-logic.component.scss']
+  template: ''
 })
 export class SelectionLogicComponent
   extends SelectionLogicBase implements OnInit {
@@ -23,22 +22,28 @@ export class SelectionLogicComponent
     super(renderer, svgService, undoRedoService);
     this.initialiseHandlers();
   }
-  // TODO: NESTING
+
   private initialiseHandlers(): void {
     this.mouseHandlers = new Map<string, Map<string, Util.MouseEventCallBack>>([
       ['leftButton', new Map<string, Util.MouseEventCallBack>([
         ['mousedown', ($event: MouseEvent) => {
-          if ($event.button === 0) {
-            this.mouse.left.startPoint =
-              new Point($event.offsetX, $event.offsetY);
-            this.mouse.left.currentPoint =
-              new Point($event.offsetX, $event.offsetY);
-            this.mouse.left.mouseIsDown = true;
-            this.mouse.left.selectedElement = this.elementSelectedType(
-              $event.target as SVGElement
-            );
-            this.mouse.left.onDrag =
-              this.isInTheVisualisationZone($event.offsetX, $event.offsetY);
+          if ($event.button !== 0) {
+            return;
+          }
+          this.mouse.left.startPoint =
+            new Point($event.offsetX, $event.offsetY);
+          this.mouse.left.currentPoint =
+            new Point($event.offsetX, $event.offsetY);
+          this.mouse.left.mouseIsDown = true;
+          this.mouse.left.selectedElement = this.elementSelectedType(
+            $event.target as SVGElement
+          );
+          this.mouse.left.onDrag = this.isInTheVisualisationZone(
+            $event.offsetX,
+            $event.offsetY
+          );
+          if (this.svgStructure.drawZone.contains($event.target as SVGElement)) {
+            this.applySingleSelection($event.target as SVGElement);
           }
         }],
         ['mousemove', ($event: MouseEvent) => {
@@ -61,28 +66,25 @@ export class SelectionLogicComponent
           }
         }],
         ['mouseup', ($event: MouseEvent) => {
-          if ($event.button === 0) {
-            if (this.mouse.left.onDrag &&
-              !this.mouse.left.startPoint.equals(this.mouse.left.currentPoint)) {
-                this.undoRedoService.saveState();
-            }
-            this.mouse.left.endPoint = new Point($event.offsetX, $event.offsetY);
-            this.mouse.left.mouseIsDown = false;
-            this.mouse.left.onDrag = false;
-            this.deleteSelection();
+          if ($event.button !== 0) {
+            return ;
           }
+          if (this.mouse.left.onDrag &&
+            !this.mouse.left.startPoint.equals(this.mouse.left.currentPoint)) {
+            this.undoRedoService.saveState();
+          }
+          this.mouse.left.endPoint = new Point($event.offsetX, $event.offsetY);
+          this.mouse.left.mouseIsDown = false;
+          this.mouse.left.onDrag = false;
+          this.deleteSelection();
         }],
         ['click', ($event: MouseEvent) => {
-          if ($event.button === 0) {
-            // TODO : Double nesting
-            const type = this.elementSelectedType($event.target as SVGElement);
-            if (this.mouse.left.startPoint.equals(this.mouse.left.endPoint)) {
-              if (type === BasicSelectionType.DRAW_ELEMENT) {
-                this.applySingleSelection($event.target as SVGElement);
-              } else if (type === BasicSelectionType.NOTHING) {
-                this.deleteVisualisation();
-              }
-            }
+          if ($event.button !== 0) {
+            return ;
+          }
+          if (this.mouse.left.startPoint.equals(this.mouse.left.endPoint)
+            && this.elementSelectedType($event.target as SVGElement) === BasicSelectionType.NOTHING) {
+            this.deleteVisualisation();
           }
         }]
       ])],
@@ -107,7 +109,8 @@ export class SelectionLogicComponent
             this.drawInversion(this.mouse.right.startPoint,
               this.mouse.right.currentPoint);
             const [startPoint, currentPoint] = Util.SelectionLogicUtil.orderPoint(
-              this.mouse.right.startPoint, this.mouse.right.currentPoint
+              this.mouse.right.startPoint,
+              this.mouse.right.currentPoint
             );
             this.applyMultipleInversion(startPoint, currentPoint);
           }
@@ -145,10 +148,10 @@ export class SelectionLogicComponent
       });
     this.allListenners.push(
       this.renderer.listen(document, 'keydown',
-      this.keyManager.handlers.keydown));
+        this.keyManager.handlers.keydown));
     this.allListenners.push(
       this.renderer.listen(document, 'keyup',
-      this.keyManager.handlers.keyup));
+        this.keyManager.handlers.keyup));
   }
 
 }

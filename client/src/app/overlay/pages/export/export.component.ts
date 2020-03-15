@@ -39,6 +39,7 @@ export class ExportComponent implements AfterViewInit {
   innerSVG: SVGSVGElement;
   svgShape: SvgShape;
   pictureView: SVGImageElement;
+  // private filtersChooser: Map<string, string>;
   protected form: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
@@ -47,6 +48,7 @@ export class ExportComponent implements AfterViewInit {
               private filterService: FilterService,
               private svgService: SvgService
   ) {
+
     this.form = this.formBuilder.group({
       name: ['', [Validators.required, (control: FormControl) => {
         const input = (control.value as string).trim();
@@ -100,12 +102,21 @@ export class ExportComponent implements AfterViewInit {
     this.createView(FilterChoice.None);
   }
 
+  // initializeFiltersChooser(): void {
+  //   this.filtersChooser.set(FilterChoice.None, '');
+  //   this.filtersChooser.set(FilterChoice.Saturate, 'url(#saturate)');
+  //   this.filtersChooser.set( FilterChoice.BlackWhite,'url(#blackWhite)' );
+  //   this.filtersChooser.set(FilterChoice.Sepia, 'url(#sepia)');
+  //   this.filtersChooser.set(FilterChoice.Inverse , 'url(#invertion)');
+  //   this.filtersChooser.set(FilterChoice.Grey, 'url(#greyscale)');
+  // }
+
   initializeElements(): void {
     this.svgShape = this.svgService.shape;
     this.innerSVG = this.renderer.createElement('svg', SVG_NS);
     Array.from(this.svgService.structure.defsZone.children)
-      .forEach((element: SVGElement) => {
-        this.renderer.appendChild(this.innerSVG, element.cloneNode(true));
+    .forEach((element: SVGElement) => {
+      this.renderer.appendChild(this.innerSVG, element.cloneNode(true));
     });
     this.renderer.appendChild(this.innerSVG, this.generateBackground());
     Array.from(this.svgService.structure.drawZone.children)
@@ -178,7 +189,7 @@ export class ExportComponent implements AfterViewInit {
     return canvas;
   }
 
-  createView(filterName: string): void {
+  createView(filterName: string): boolean {
     this.pictureView = this.renderer.createElement('image', SVG_NS);
     const viewZone = this.svgView.nativeElement;
     this.configurePicture(this.pictureView, filterName);
@@ -188,7 +199,10 @@ export class ExportComponent implements AfterViewInit {
         viewZone.removeChild(child);
       }
       this.renderer.appendChild(viewZone, this.pictureView);
+      return true;
     }
+    return false;
+
   }
 
   configurePicture(picture: SVGImageElement, filterName: string ): void {
@@ -252,9 +266,8 @@ export class ExportComponent implements AfterViewInit {
   }
 
   configureSize(element: SVGElement, shape: SvgShape): void {
-    // TODO : Use renderer
-    this.innerSVG.setAttribute('width', String(shape.width));
-    this.innerSVG.setAttribute('height', String(shape.height));
+    element.setAttribute('width', String(shape.width));
+    element.setAttribute('height', String(shape.height));
   }
 
   generateBackground(): SVGRectElement {

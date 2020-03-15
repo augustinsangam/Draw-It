@@ -3,7 +3,7 @@ import { Path } from '../../common/path';
 import { Point } from '../../common/point';
 import { LineLogicComponent } from './line-logic.component';
 
-// tslint:disable:no-string-literal
+// tslint:disable:no-string-literal no-any no-magic-numbers
 describe('LineLogicComponent', () => {
   let component: LineLogicComponent;
   let fixture: ComponentFixture<LineLogicComponent>;
@@ -508,3 +508,4 @@ describe('LineLogicComponent', () => {
   });
 
 });
+// tslint:disable-next-line: max-file-line-count

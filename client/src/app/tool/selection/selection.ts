@@ -11,7 +11,6 @@ export abstract class Selection {
     this.svgOffset = svgOffset;
   }
 
-
   protected getZone(element: SVGElement): Zone {
     const thikness = this.getThikness(element);
     const domRectangle = element.getBoundingClientRect();

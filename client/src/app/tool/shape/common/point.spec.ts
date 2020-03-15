@@ -17,7 +17,7 @@ describe('Point', () => {
       [new Point(0, 10),  false],
       [new Point(5, 0),   false],
       [new Point(5, 10),  true],
-    ]
+    ];
     testCases.forEach((test) => {
       expect(targetPoint.equals(test[0])).toEqual(test[1]);
     });

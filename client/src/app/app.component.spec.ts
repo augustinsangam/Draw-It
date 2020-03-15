@@ -19,9 +19,7 @@ import { HomeComponent } from './overlay/pages/home/home.component';
 import { NewDrawComponent } from './overlay/pages/new-draw/new-draw.component';
 import { SaveComponent } from './overlay/pages/save/save.component';
 import { PanelComponent } from './panel/panel.component';
-import {
-  Shortcut
-} from './shortcut-handler/shortcut';
+import { Shortcut } from './shortcut-handler/shortcut';
 import {
   ShortcutHandlerService
 } from './shortcut-handler/shortcut-handler.service';
@@ -38,8 +36,7 @@ import {
 import { Tool } from './tool/tool.enum';
 import { UndoRedoService } from './tool/undo-redo/undo-redo.service';
 
-// Test Also OverlayService
-// tslint:disable: no-string-literal
+// tslint:disable: no-string-literal no-any no-magic-numbers
 describe('AppComponent', () => {
   let component: AppComponent;
   let service: OverlayService;
@@ -350,7 +347,7 @@ describe('AppComponent', () => {
     const eventOWithControl = {
       code: 'KeyO',
       ctrlKey: true,
-      preventDefault: () => { }
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     const spy = spyOn<any>(service, 'openNewDrawDialog');
     service['initialiseShortcuts']();
@@ -368,7 +365,7 @@ describe('AppComponent', () => {
     const eventOWithControl = {
       code: 'KeyO',
       ctrlKey: false,
-      preventDefault: () => { }
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     const spy = spyOn(eventOWithControl, 'preventDefault');
     service['initialiseShortcuts']();
@@ -387,7 +384,7 @@ describe('AppComponent', () => {
     const eventOWithControl = {
       code: 'KeyA',
       ctrlKey: true,
-      preventDefault: () => { }
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     const spyPrevent = spyOn(eventOWithControl, 'preventDefault');
     const spyTool = spyOn(service['toolSelectorService'], 'set');
@@ -407,7 +404,7 @@ describe('AppComponent', () => {
     const eventOWithControl = {
       code: 'KeyA',
       ctrlKey: false,
-      preventDefault: () => { }
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     const spyTool = spyOn(service['toolSelectorService'], 'set');
     service['initialiseShortcuts']();
@@ -434,3 +431,4 @@ describe('AppComponent', () => {
   });
 
 });
+// tslint:disable-next-line: max-file-line-count

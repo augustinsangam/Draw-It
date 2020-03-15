@@ -5,9 +5,7 @@ import { Point } from '../../shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { CONSTANTS, EraserLogicComponent } from './eraser-logic.component';
 
-// TODO : Ask the chargé de lab
-// tslint:disable: no-any
-// tslint:disable: no-string-literal
+// tslint:disable: no-string-literal no-any no-magic-numbers
 describe('EraserLogicComponent', () => {
   let component: EraserLogicComponent;
   let fixture: ComponentFixture<EraserLogicComponent>;
@@ -367,3 +365,4 @@ describe('EraserLogicComponent', () => {
   });
 
 });
+// tslint:disable-next-line: max-file-line-count

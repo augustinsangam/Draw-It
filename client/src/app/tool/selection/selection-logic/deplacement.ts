@@ -1,11 +1,15 @@
+import { Renderer2 } from '@angular/core';
 
-// TODO : RENDERER
 export class Deplacement {
 
-  static translate(element: SVGElement, x: number, y: number): void {
+  static translate(element: SVGElement,
+                   x: number,
+                   y: number,
+                   renderer: Renderer2
+  ): void {
     let [dx, dy] = this.getTransformTranslate(element);
     [dx, dy] = [x + dx, y + dy];
-    element.setAttribute('transform', `translate(${dx},${dy})`);
+    renderer.setAttribute(element, 'transform', `translate(${dx},${dy})`);
   }
 
   static getTransformTranslate(element: SVGElement): [number, number] {
@@ -15,9 +19,13 @@ export class Deplacement {
       [parseInt(result[1], 10), parseInt(result[2], 10)] : [0, 0];
   }
 
-  static translateAll(elements: Iterable<SVGElement>, x: number, y: number): void {
+  static translateAll(elements: Iterable<SVGElement>,
+                      x: number,
+                      y: number,
+                      renderer: Renderer2
+  ): void {
     for (const element of elements) {
-      this.translate(element, x, y);
+      this.translate(element, x, y, renderer);
     }
   }
 

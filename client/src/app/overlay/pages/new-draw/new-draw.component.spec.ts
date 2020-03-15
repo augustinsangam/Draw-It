@@ -31,6 +31,7 @@ import {
 } from '@angular/platform-browser-dynamic/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { ElementRef } from '@angular/core';
 import { HAMMER_LOADER } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import {
@@ -43,10 +44,8 @@ import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 import { NewDrawComponent } from './new-draw.component';
 import { PaletteDialogComponent } from './palette-dialog.component';
 import { ScreenService } from './sreen-service/screen.service';
-import { ElementRef } from '@angular/core';
 
-// TODO : Ask the chargé de lab
-// tslint:disable: no-string-literal
+// tslint:disable: no-string-literal no-any no-magic-numbers
 describe('NewDrawComponent', () => {
   let component: NewDrawComponent;
   let fixture: ComponentFixture<NewDrawComponent>;
@@ -93,7 +92,7 @@ describe('NewDrawComponent', () => {
         },
         {
           provide: HAMMER_LOADER,
-          useValue: async () => new Promise(() => {})
+          useValue: async () => new Promise(() => { return ; })
         }
       ],
       schemas: []
@@ -240,7 +239,7 @@ describe('NewDrawComponent', () => {
         ): MatDialogRef<PaletteDialogComponent> {
           return ({
             afterClosed: () => new Observable<boolean>(),
-            close: (result: boolean) => { },
+            close: (result: boolean) => { return ; },
             disableclose: Boolean
           } as unknown) as MatDialogRef<PaletteDialogComponent>;
         }
