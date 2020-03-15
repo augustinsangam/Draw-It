@@ -82,7 +82,7 @@ class MongoDbMock {
 	}
 }
 
-describe('all', () => {
+describe('database', () => {
 	let db: Database;
 	let dbMock: MongoDbMock;
 

@@ -30,7 +30,8 @@
     "all": true,
     "exclude": [
       "**/__tests__/**",
-      "**/*_generated.[jt]s"
+      "**/*_generated.[jt]s",
+      "**/index.[jt]s"
     ]
   },
   "eslintConfig": {

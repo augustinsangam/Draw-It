@@ -12,7 +12,9 @@ import { myContainer } from '../inversify.config';
 
 const TIMEOUT = 100;
 
-describe('all', () => {
+describe('application', () => {
+	before(() => log.setLevel('silent'));
+
 	it('callback should return express app', () => {
 		const app = myContainer.get<Application>(TYPES.Application);
 		chai.expect(app.callback()).to.equal(app['app']);

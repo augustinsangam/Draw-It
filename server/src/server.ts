@@ -24,6 +24,9 @@ class Server {
 		};
 		this.openedSockets = new Set();
 		this.server = createServer();
+	}
+
+	private setupServer(): void {
 		this.server.on('request', this.app.callback());
 		this.server.on('connection', socket => {
 			this.openedSockets.add(socket);
@@ -32,21 +35,29 @@ class Server {
 	}
 
 	async launch(): Promise<void> {
+		this.setupServer();
 		await this.db.connect();
 		this.server.listen(this.listenOptions);
 	}
 
+	private async promisifyServerClose(): Promise<void> {
+		return promisify(this.server.close).bind(this.server)();
+	}
+
 	async close(): Promise<void> {
+		// Source: nodejs.org/api/util.html#util_util_promisify_original
 		const timer = setTimeout(
 			() => this.openedSockets.forEach(socket => socket.destroy()),
 			TIMEOUT,
 		);
-		// Source: nodejs.org/api/util.html#util_util_promisify_original
-		const closePromise = promisify(this.server.close).bind(this.server);
-		await closePromise();
+		await this.promisifyServerClose();
 		clearTimeout(timer);
 		return this.db.close();
 	}
 }
 
+// Due to a bug, c8 reports the export line as uncovered even tho
+// it’s used outside of the current file
+// See the bug submission https://github.com/bcoe/c8/issues/196
+/* c8 ignore next */
 export { Server };
