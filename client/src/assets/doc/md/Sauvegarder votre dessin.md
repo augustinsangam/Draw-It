@@ -10,3 +10,5 @@ Un panneau apparaîtra alors, dans lequel vous pourrez modifier les options de s
 </video>
 
 Lorsque vous êtes satisfaits de vos réglages, cliquez sur `Sauvegarder` pour sauvegarder votre dessin dans la base de données.
+
+Pour ouvrir un dessin précédemment sauvegardé, référez vous à la section `Commencer > Reprendre un dessin`.

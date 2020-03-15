@@ -1,5 +1,9 @@
 Si vous avez déjà utilisé DrawIt auparavant, vous aurez accès à deux options supplémentaires sur le menu principal : `Aller à la Gallerie` et `Continuer un ancien dessin`. 
 
- Le premier bouton affichera les anciens dessins que vous avez pu créer précédemment, en vous présentant un aperçu pour chacun d’eux. Cliquez sur un aperçu pour l’ouvrir et le modifier.
+ Le premier bouton ouvrira la gallerie de dessin, présentant tous les dessins stockés sur le serveur. Vous pouvez filtrer les dessins en entrant une ou plusieurs étiquettes dans le champ prévu à cet effet, et ainsi ne voir que les dessins répondant à vos critères.
 
- Le second bouton chargera automatiquement le dernier dessin modifié.
+<video width="70%" height="70%" class="doc-fig" autoplay loop>
+    <source src="/assets/doc/vid/gallerie_trctd.webm" type="video/webm">
+</video>
+
+Pour charger un dessin, cliquez sur le bouton `Charger` du dessin en question. Vous pouvez aussi le supprimer du serveur.
