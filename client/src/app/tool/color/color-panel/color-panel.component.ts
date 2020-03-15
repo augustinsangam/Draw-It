@@ -75,7 +75,7 @@ export class ColorPanelComponent extends ToolPanelDirective
   ) {
     super(elementRef);
     this.colorOption = ColorOption.Primary;
-    this.showPalette = false;
+    this.showPalette = true;
 
     this.colorChange = this.colorService.change.subscribe(() => {
       this.ngOnInit();

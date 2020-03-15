@@ -142,6 +142,7 @@ import {
 import {
   RectanglePanelComponent
 } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
+import { ColorBoxComponent } from './tool/color/color-box/color-box.component';
 
 @NgModule({
   declarations: [
@@ -188,7 +189,8 @@ import {
     GridLogicComponent,
     GridPanelComponent,
     SaveComponent,
-    TagsFilterComponent
+    TagsFilterComponent,
+    ColorBoxComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -211,6 +213,7 @@ import {
     ApplicatorPanelComponent,
     BrushLogicComponent,
     BrushPanelComponent,
+    ColorBoxComponent,
     ColorPanelComponent,
     EraserLogicComponent,
     EraserPanelComponent,

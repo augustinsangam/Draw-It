@@ -1,4 +1,10 @@
 :host {
-  /* transition: .3s width; */
   overflow-x: hidden;
+}
+
+.end {
+  position: fixed;
+  bottom: 0;
+  width: 320px;
+  padding-left: 10px;
 }
