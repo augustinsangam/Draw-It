@@ -1,6 +1,7 @@
 :host {
   display: flex;
   justify-content: center;
+  overflow-x: hidden;
 }
 
 main {
@@ -25,4 +26,8 @@ mat-icon {
 
 header :hover {
   cursor: pointer;
+}
+
+app-color-panel {
+  padding-bottom: 10px;
 }
