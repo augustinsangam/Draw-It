@@ -30,8 +30,8 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.overlayService.intialise(this.dialog, this.svgService);
-    this.overlayService.start();
     this.shortcutManager.initialiseShortcuts();
+    this.overlayService.start();
   }
 
 }
