@@ -5,8 +5,8 @@ import log from 'loglevel';
 import mongodb from 'mongodb';
 
 import { COLORS, ContentType, StatusCode, TextLen, TYPES } from './constants';
+import { Database, Entry } from './database';
 import { Draw, DrawBuffer, Draws } from './data_generated';
-import { Database, Entry } from './database'; // TODO
 
 // Source: zellwk.com/blog/async-await-express/
 @inversify.injectable()
@@ -59,14 +59,14 @@ class Router {
 			}
 			const fbBuilder = new flatbuffers.flatbuffers.Builder();
 			const drawBufferOffsets = entries
-				.filter(entry => !!entry.data)
-				.map(entry => {
+				.filter((entry) => !!entry.data)
+				.map((entry) => {
 					const bufOffset = DrawBuffer.createBufVector(
 						fbBuilder,
 						// I am guaranteed the data proprety is not undefined
 						// because of the filter instruction above
 						// tslint:disable-next-line: no-non-null-assertion
-						entry.data!.buffer as Buffer,
+						entry.data!.buffer,
 					);
 					return DrawBuffer.create(fbBuilder, entry._id, bufOffset);
 				});

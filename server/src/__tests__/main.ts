@@ -15,7 +15,7 @@ describe('index', () => {
 	before(() => (server = myContainer.get<Server>(TYPES.Server)));
 
 	it('main should launch all application', async () =>
-		main(server)(new Promise(resolve => setTimeout(resolve, 5000)))).timeout(
+		main(server)(new Promise((resolve) => setTimeout(resolve, 5000)))).timeout(
 		7000,
 	);
 

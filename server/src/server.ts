@@ -28,7 +28,7 @@ class Server {
 
 	private setupServer(): void {
 		this.server.on('request', this.app.callback());
-		this.server.on('connection', socket => {
+		this.server.on('connection', (socket) => {
 			this.openedSockets.add(socket);
 			socket.on('close', () => this.openedSockets.delete(socket));
 		});
@@ -47,7 +47,7 @@ class Server {
 	async close(): Promise<void> {
 		// Source: nodejs.org/api/util.html#util_util_promisify_original
 		const timer = setTimeout(
-			() => this.openedSockets.forEach(socket => socket.destroy()),
+			() => this.openedSockets.forEach((socket) => socket.destroy()),
 			TIMEOUT,
 		);
 		await this.promisifyServerClose();

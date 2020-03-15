@@ -1,4 +1,4 @@
-// tslint:disable: no-string-literal max-classes-per-file no-unused-expression
+// tslint:disable: no-string-literal max-classes-per-file no-unused-expression no-magic-numbers no-any
 
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -41,7 +41,7 @@ describe('server', () => {
 
 		const serverStub = sinon.stub(server as any, 'promisifyServerClose');
 		serverStub.returns(
-			new Promise(resolve => setTimeout(resolve, TIMEOUT + 200)),
+			new Promise((resolve) => setTimeout(resolve, TIMEOUT + 200)),
 		);
 
 		await server.close();

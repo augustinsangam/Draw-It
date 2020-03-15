@@ -45,7 +45,7 @@ const ERRORS = {
 };
 
 const promisifiedTimeout = async (timeout: number): Promise<void> =>
-	new Promise(resolve => setTimeout(resolve, timeout));
+	new Promise((resolve) => setTimeout(resolve, timeout));
 
 enum StatusCode {
 	OK = 200,

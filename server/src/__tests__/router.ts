@@ -13,8 +13,8 @@ import supertest from 'supertest';
 
 import { Application } from '../application';
 import { ANSWER_TO_LIFE, ContentType, StatusCode, TYPES } from '../constants';
-import { Draw, Draws } from '../data_generated';
 import { Database, Entry } from '../database';
+import { Draw, Draws } from '../data_generated';
 import { myContainer } from '../inversify.config';
 import { Router } from '../router';
 
@@ -30,72 +30,6 @@ describe('router', () => {
 		router = myContainer.get<Router>(TYPES.Router);
 		app.use(router.router);
 		log.setLevel('silent');
-	});
-
-	it('verify should invalidate short name', () => {
-		const fbb = new flatbuffers.flatbuffers.Builder();
-		const name = 'yo';
-		const nameOffset = fbb.createString(name);
-		Draw.start(fbb);
-		Draw.addName(fbb, nameOffset);
-		fbb.finish(Draw.end(fbb));
-		const errMsg = router['verify'](fbb.asUint8Array());
-		chai.expect(errMsg).to.be.equal(`Nom “${name}” invalide`);
-	});
-
-	it('verify should invalidate long name', () => {
-		const fbb = new flatbuffers.flatbuffers.Builder();
-		const name = 'this is more than 21 characters';
-		const nameOffset = fbb.createString(name);
-		Draw.start(fbb);
-		Draw.addName(fbb, nameOffset);
-		fbb.finish(Draw.end(fbb));
-		const errMsg = router['verify'](fbb.asUint8Array());
-		chai.expect(errMsg).to.be.equal(`Nom “${name}” invalide`);
-	});
-
-	it('verify should invalidate short tag', () => {
-		const fbb = new flatbuffers.flatbuffers.Builder();
-		const tag = 'yo';
-		const nameOffset = fbb.createString('correct name');
-		const tagOffset1 = fbb.createString('correct tag');
-		const tagOffset2 = fbb.createString(tag);
-		const tags = Draw.createTagsVector(fbb, [tagOffset1, tagOffset2]);
-		Draw.start(fbb);
-		Draw.addName(fbb, nameOffset);
-		Draw.addTags(fbb, tags);
-		fbb.finish(Draw.end(fbb));
-		const errMsg = router['verify'](fbb.asUint8Array());
-		chai.expect(errMsg).to.be.equal(`Étiquette “${tag}” invalide`);
-	});
-
-	it('verify should invalidate long tag', () => {
-		const fbb = new flatbuffers.flatbuffers.Builder();
-		const nameOffset = fbb.createString('correct name');
-		const tag = 'this is more than 21 characters';
-		const tag1 = fbb.createString('correct tag');
-		const tag2 = fbb.createString(tag);
-		const tags = Draw.createTagsVector(fbb, [tag1, tag2]);
-		Draw.start(fbb);
-		Draw.addName(fbb, nameOffset);
-		Draw.addTags(fbb, tags);
-		fbb.finish(Draw.end(fbb));
-		const errMsg = router['verify'](fbb.asUint8Array());
-		chai.expect(errMsg).to.be.equal(`Étiquette “${tag}” invalide`);
-	});
-
-	it('verify should return null', () => {
-		const fbb = new flatbuffers.flatbuffers.Builder();
-		const nameOffset = fbb.createString('correct name');
-		const tag1 = fbb.createString('correct tag #1');
-		const tag2 = fbb.createString('correct tag #2');
-		const tags = Draw.createTagsVector(fbb, [tag1, tag2]);
-		Draw.start(fbb);
-		Draw.addName(fbb, nameOffset);
-		Draw.addTags(fbb, tags);
-		fbb.finish(Draw.end(fbb));
-		const errMsg = router['verify'](fbb.asUint8Array());
-		chai.expect(errMsg).to.be.null;
 	});
 
 	it('methodGet should fail on db.all error', async () => {
@@ -219,7 +153,7 @@ describe('router', () => {
 
 		let entry: Entry | undefined;
 		const stubDbInsert = sinon.stub(db, 'insert');
-		stubDbInsert.callsFake(async localEntry => {
+		stubDbInsert.callsFake(async (localEntry) => {
 			entry = localEntry;
 			return Promise.resolve({} as any);
 		});
