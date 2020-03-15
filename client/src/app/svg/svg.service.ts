@@ -1,6 +1,8 @@
 import { EventEmitter, Injectable } from '@angular/core';
-import { SVGStructure } from '../tool/tool-logic/tool-logic.directive';
+import { SVGStructure } from "./svg-structure";
 import {UndoRedoService} from '../tool/undo-redo/undo-redo.service';
+import { SvgShape } from './svg-shape';
+import { SvgHeader } from './svg-header';
 
 @Injectable({
   providedIn: 'root'
@@ -34,26 +36,13 @@ export class SvgService {
   }
 
   clearDom(): void {
-    [this.structure.drawZone, this.structure.temporaryZone,
-      this.structure.endZone].forEach((zone: SVGGElement) => {
+    [this.structure.drawZone, this.structure.temporaryZone]
+    .forEach((zone: SVGGElement) => {
         Array.from(zone.children).forEach((children: SVGElement) => {
           children.remove();
         });
     });
     this.undoRedoService.clearUndoRedo();
-    // TODO setter la variable gridService.active à false sans cyclic imports
   }
 
-}
-
-export interface SvgShape {
-  width: number;
-  height: number;
-  color: string;
-}
-
-export interface SvgHeader {
-  id: number;
-  name: string;
-  tags: string[];
 }

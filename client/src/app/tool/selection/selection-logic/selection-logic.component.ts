@@ -23,7 +23,7 @@ export class SelectionLogicComponent
     super(renderer, svgService, undoRedoService);
     this.initialiseHandlers();
   }
-
+  // TODO: NESTING
   private initialiseHandlers(): void {
     this.mouseHandlers = new Map<string, Map<string, Util.MouseEventCallBack>>([
       ['leftButton', new Map<string, Util.MouseEventCallBack>([
@@ -37,8 +37,13 @@ export class SelectionLogicComponent
             this.mouse.left.selectedElement = this.elementSelectedType(
               $event.target as SVGElement
             );
-            this.mouse.left.onDrag =
-              this.isInTheVisualisationZone($event.offsetX, $event.offsetY);
+            this.mouse.left.onDrag = this.isInTheVisualisationZone(
+              $event.offsetX,
+              $event.offsetY
+            );
+            if (this.svgStructure.drawZone.contains($event.target as SVGElement)) {
+              this.applySingleSelection($event.target as SVGElement);
+            }
           }
         }],
         ['mousemove', ($event: MouseEvent) => {
@@ -64,7 +69,7 @@ export class SelectionLogicComponent
           if ($event.button === 0) {
             if (this.mouse.left.onDrag &&
               !this.mouse.left.startPoint.equals(this.mouse.left.currentPoint)) {
-                this.undoRedoService.saveState();
+              this.undoRedoService.saveState();
             }
             this.mouse.left.endPoint = new Point($event.offsetX, $event.offsetY);
             this.mouse.left.mouseIsDown = false;
@@ -74,13 +79,10 @@ export class SelectionLogicComponent
         }],
         ['click', ($event: MouseEvent) => {
           if ($event.button === 0) {
-            const type = this.elementSelectedType($event.target as SVGElement);
-            if (this.mouse.left.startPoint.equals(this.mouse.left.endPoint)) {
-              if (type === BasicSelectionType.DRAW_ELEMENT) {
-                this.applySingleSelection($event.target as SVGElement);
-              } else if (type === BasicSelectionType.NOTHING) {
-                this.deleteVisualisation();
-              }
+            // TODO : Double nesting
+            if (this.mouse.left.startPoint.equals(this.mouse.left.endPoint)
+              && this.elementSelectedType($event.target as SVGElement) === BasicSelectionType.NOTHING) {
+              this.deleteVisualisation();
             }
           }
         }]
@@ -144,10 +146,10 @@ export class SelectionLogicComponent
       });
     this.allListenners.push(
       this.renderer.listen(document, 'keydown',
-      this.keyManager.handlers.keydown));
+        this.keyManager.handlers.keydown));
     this.allListenners.push(
       this.renderer.listen(document, 'keyup',
-      this.keyManager.handlers.keyup));
+        this.keyManager.handlers.keyup));
   }
 
 }

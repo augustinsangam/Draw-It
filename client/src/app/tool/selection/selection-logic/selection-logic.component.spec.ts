@@ -12,7 +12,7 @@ import { SelectionLogicComponent } from './selection-logic.component';
 // tslint:disable: no-magic-numbers
 // tslint:disable: no-string-literal
 // tslint:disable: no-any
-fdescribe('SelectionLogicComponent', () => {
+describe('SelectionLogicComponent', () => {
   let component: SelectionLogicComponent;
   let fixture: ComponentFixture<SelectionLogicComponent>;
 
@@ -244,7 +244,7 @@ fdescribe('SelectionLogicComponent', () => {
 
   it('contextmenu handler should at least prevent default action', () => {
     const fakeEvent = {
-      preventDefault: () => { },
+      preventDefault: () => {return ; },
     } as unknown as MouseEvent;
 
     const spy = spyOn(fakeEvent, 'preventDefault');

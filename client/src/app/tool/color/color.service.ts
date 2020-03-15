@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
+export interface RGBColor {
+  r: number;
+  g: number;
+  b: number;
+}
+
 const HEXADECIMAL_BASE = 16;
 
 @Injectable({
@@ -69,10 +75,11 @@ export class ColorService {
     this.pushColor(color);
   }
 
+  // TODO : ternaire moins long (ajouter variables)
+
   hexToRgb(hex: string): RGBColor {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result
-      ? {
+    return result ? {
           r: parseInt(result[1], HEXADECIMAL_BASE),
           g: parseInt(result[2], HEXADECIMAL_BASE),
           b: parseInt(result[1 + 2], HEXADECIMAL_BASE)
@@ -83,7 +90,7 @@ export class ColorService {
   rgbToHex(rgb: RGBColor): string {
     const valueToHex = (value: number) => {
       const hex = value.toString(HEXADECIMAL_BASE);
-      return hex.length === 1 ? '0' + hex : hex;
+      return hex.length === 1 ? `0${hex}` : hex;
     };
     return (
       valueToHex(rgb.r) +
@@ -96,12 +103,12 @@ export class ColorService {
     const result = rgba.match(
       /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d*(?:\.\d+)?)\)$/i
     );
-    // TODO : Ask the chargé de lab
     return result
       ? {
           r: Number(result[1]),
           g: Number(result[2]),
-          b: Number(result[1 + 2])
+          // tslint:disable-next-line: no-magic-numbers
+          b: Number(result[3])
         }
       : { r: -1, g: -1, b: -1 };
   }
@@ -113,10 +120,4 @@ export class ColorService {
   private rgbEqual(rgb1: RGBColor, rgb2: RGBColor): boolean {
     return rgb1.r === rgb2.r && rgb1.g === rgb2.g && rgb1.b === rgb2.b;
   }
-}
-
-export interface RGBColor {
-  r: number;
-  g: number;
-  b: number;
 }

@@ -21,11 +21,9 @@ import {EllipseService} from '../ellipse.service';
 export class EllipsePanelComponent
   extends ToolPanelDirective implements AfterViewChecked {
 
-  private ellipseForm: FormGroup;
-
   @ViewChild('fillOptionRef', {
-    static: false,
-    read: MatSlideToggle
+      static: false,
+      read: MatSlideToggle
   }) protected fillOptionRef: MatSlideToggle;
 
   @ViewChild('borderOptionRef', {
@@ -37,6 +35,8 @@ export class EllipsePanelComponent
     static: false,
     read: MatSlider
   }) protected thicknessSlider: MatSlider;
+
+  private ellipseForm: FormGroup;
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: EllipseService,

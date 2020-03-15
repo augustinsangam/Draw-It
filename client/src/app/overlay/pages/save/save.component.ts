@@ -35,22 +35,29 @@ export class SaveComponent implements OnInit {
     this.addOnBlur = true;
     this.separatorKeysCodes = [ENTER, COMMA];
     this.form = this.formBuilder.group({
-      name: [this.svgService.header.name, [Validators.required, Validators.pattern(`.{${MIN_LETTERS},${MAX_LETTERS}}`)]]
+      name: [
+        this.svgService.header.name,
+        [
+          Validators.required,
+          Validators.pattern(`.{${MIN_LETTERS},${MAX_LETTERS}}`)
+        ]
+      ]
     });
     this.tags = (this.svgService.header.tags.length === 0) ? ['Mes dessins'] :
                 this.svgService.header.tags;
   }
 
   ngOnInit(): void {
+    // TODO : Renderer ISS
     const clone = this.svgService.structure.drawZone.cloneNode(true);
-    const h = this.svgService.shape.height;
-    const w = this.svgService.shape.width;
-    if (h > w) {
+    const height = this.svgService.shape.height;
+    const width = this.svgService.shape.width;
+    if (height > width) {
       const max = 400;
-      this.elementRef.nativeElement.setAttribute('width', (max*w/h).toString());
+      this.elementRef.nativeElement.setAttribute('width', (max * width / height).toString());
       this.elementRef.nativeElement.setAttribute('height', max.toString());
     }
-    this.elementRef.nativeElement.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    this.elementRef.nativeElement.setAttribute('viewBox', `0 0 ${width} ${height}`);
     this.elementRef.nativeElement.style.backgroundColor = this.svgService.shape.color;
     this.renderer.appendChild(this.elementRef.nativeElement, clone);
     this.communicationService.clear();
@@ -86,7 +93,7 @@ export class SaveComponent implements OnInit {
       this.svgService.header,
       this.svgService.shape,
       this.gElOffset);
-    if (this.svgService.header.id) {
+    if (this.svgService.header.id !== 0) {
       this.communicationService.put(this.svgService.header.id)
         .then(() => this.dialogRef.close())
         .catch((err) => this.dialogRef.close(err));

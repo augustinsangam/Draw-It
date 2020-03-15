@@ -2,6 +2,7 @@ import { Renderer2 } from '@angular/core';
 import { MathService } from '../../mathematics/tool.math-service.service';
 import { AbstractShape } from './abstract-shape';
 import { Point } from './point';
+import { Dimension } from './dimension';
 
 // Class tested in ../Rectangle/rectangle-logic.component.spec.ts
 export class Rectangle extends AbstractShape {
@@ -60,9 +61,4 @@ export class Rectangle extends AbstractShape {
     );
     this.insertRectangleInSVG(finalPoint, squareDimension);
   }
-}
-
-export interface Dimension {
-  width: number;
-  height: number;
 }

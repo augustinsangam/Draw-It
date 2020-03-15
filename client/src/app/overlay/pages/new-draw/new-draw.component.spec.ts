@@ -31,6 +31,7 @@ import {
 } from '@angular/platform-browser-dynamic/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { ElementRef } from '@angular/core';
 import { HAMMER_LOADER } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
 import {
@@ -43,7 +44,6 @@ import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 import { NewDrawComponent } from './new-draw.component';
 import { PaletteDialogComponent } from './palette-dialog.component';
 import { ScreenService } from './sreen-service/screen.service';
-import { ElementRef } from '@angular/core';
 
 // TODO : Ask the chargé de lab
 // tslint:disable: no-string-literal

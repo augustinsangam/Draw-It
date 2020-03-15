@@ -76,7 +76,7 @@ export class BrushLogicComponent extends PencilBrushCommon
       mouseUpListen,
       mouseLeaveListen
     ];
-
+    // TODO renderer partout
     this.svgStructure.root.style.cursor = 'crosshair';
 
   }
@@ -99,7 +99,7 @@ export class BrushLogicComponent extends PencilBrushCommon
     this.configureSvgElement(this.svgPath);
     this.renderer.appendChild(this.svgStructure.drawZone, this.svgPath);
   }
-
+  // TODO : DRY avec overridefuction
   ngOnDestroy(): void {
     this.listeners.forEach((end) => { end(); });
     this.undoRedoService.resetActions();

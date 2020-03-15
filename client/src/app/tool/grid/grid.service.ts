@@ -1,16 +1,19 @@
 import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { SvgService } from 'src/app/svg/svg.service';
-import { Dimension } from '../shape/common/rectangle';
+import { Dimension } from '../shape/common/dimension';
 import { ToolService } from '../tool.service';
+import { GridKeys } from './grid-keys';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GridService extends ToolService {
 
-  readonly MAX_SQUARESIZE: number = 400;
   readonly MIN_SQUARESIZE: number = 5;
-  protected readonly DEFAULT_OPACITY: number = 0.4;
+  readonly MAX_SQUARESIZE: number = 400;
+  readonly MIN_OPACITY: number = 5;
+  readonly MAX_OPACITY: number = 100;
+  protected readonly DEFAULT_OPACITY: number = 40;
   protected readonly DEFAULT_SQUARESIZE: number = 100;
   protected readonly SQUARESIZE_INCREMENT: number = 5;
 
@@ -34,20 +37,20 @@ export class GridService extends ToolService {
 
   keyEvHandler(keyCode: string): void {
     switch (keyCode) {
-      case 'g': {
+      case GridKeys.G: {
         this.active = !this.active;
         break;
       }
-      case '+': {
+      case GridKeys.plus: {
         if (this.active && this.squareSize < this.MAX_SQUARESIZE) {
           this.squareSize += this.SQUARESIZE_INCREMENT - (this.squareSize % this.SQUARESIZE_INCREMENT);
         }
         break;
       }
-      case '-': {
+      case GridKeys.minus: {
         if (this.active && this.squareSize > this.MIN_SQUARESIZE) {
-          this.squareSize % this.SQUARESIZE_INCREMENT === 0 ?
-            this.squareSize -= this.SQUARESIZE_INCREMENT : this.squareSize -= this.squareSize % this.SQUARESIZE_INCREMENT;
+          this.squareSize -= this.squareSize % this.SQUARESIZE_INCREMENT === 0 ?
+            this.SQUARESIZE_INCREMENT : this.squareSize % this.SQUARESIZE_INCREMENT;
         }
         break;
       }
@@ -58,14 +61,10 @@ export class GridService extends ToolService {
   }
 
   handleGrid(): void {
-    const width = this.svg.structure.root.getAttribute('width');
-    const height = this.svg.structure.root.getAttribute('height');
-    if (width != null && height != null) {
-      this.svgDimensions = {
-        width: +width,
-        height: +height
-      };
-    }
+    this.svgDimensions = {
+      width: this.svg.shape.width,
+      height: this.svg.shape.height
+    };
 
     if (!!this.grid) {
       this.grid.remove();
@@ -84,7 +83,7 @@ export class GridService extends ToolService {
 
       this.grid.setAttribute('d', this.generateGrid());
       this.grid.setAttribute('stroke', 'black');
-      this.grid.setAttribute('opacity', this.opacity.toString());
+      this.grid.setAttribute('opacity', (this.opacity / this.MAX_OPACITY).toString());
       this.renderer.appendChild(this.svg.structure.endZone, this.grid);
     }
   }
@@ -92,17 +91,13 @@ export class GridService extends ToolService {
   protected generateGrid(): string {
     let stringPath = '';
 
-    // lignes verticales
     for (let i = 0; i < this.svgDimensions.width;
       i += this.squareSize) {
-      stringPath += ' M ' + i.toString() + ',0'
-        + ' L' + i.toString() + ',' + this.svgDimensions.height;
+      stringPath += ` M ${i},0 L ${i},${this.svgDimensions.height}`;
     }
-    // lignes horizontales
     for (let i = 0; i < this.svgDimensions.height;
       i += this.squareSize) {
-      stringPath += ' M 0' + ',' + i.toString()
-        + ' L ' + this.svgDimensions.width + ',' + i.toString();
+      stringPath += ` M 0,${i} L ${this.svgDimensions.width},${i}`;
     }
 
     return stringPath;

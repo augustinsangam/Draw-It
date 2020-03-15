@@ -17,8 +17,6 @@ import {GridService} from '../grid.service';
 
 export class GridPanelComponent extends ToolPanelDirective {
 
-  private gridForm: FormGroup;
-
   @ViewChild('activeToggle', {
     static: false,
     read: MatSlideToggle
@@ -31,6 +29,8 @@ export class GridPanelComponent extends ToolPanelDirective {
   @ViewChild('opacitySlider', {
     static: false,
   }) private opacitySlider: MatSlider;
+
+  private gridForm: FormGroup;
 
   constructor(
     elementRef: ElementRef<HTMLElement>,

@@ -7,6 +7,8 @@ export class Zone {
   private top: number;
   private bottom: number;
 
+
+  // TODO : private dans les parhrir
   constructor(left: number, right: number, top: number, bottom: number) {
     this.left = left;
     this.right = right;

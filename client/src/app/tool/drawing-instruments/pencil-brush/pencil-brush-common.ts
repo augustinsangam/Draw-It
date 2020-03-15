@@ -19,6 +19,8 @@ export abstract class PencilBrushCommon extends ToolLogicDirective {
   protected abstract onMouseMove(mouseEv: MouseEvent): void;
   protected abstract configureSvgElement(element: SVGElement): void;
 
+  // TODO : utiliser `
+
   protected drawing(mouseEv: MouseEvent): void {
     if (mouseEv.button === 0) {
       this.stringPath += ' L' + mouseEv.offsetX + ',' + mouseEv.offsetY;

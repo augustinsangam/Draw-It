@@ -5,8 +5,7 @@ import {UndoRedoService} from '../../undo-redo/undo-redo.service';
 
 @Component({
   selector: 'app-applicator-logic',
-  templateUrl: './applicator-logic.component.html',
-  styleUrls: ['./applicator-logic.component.scss']
+  template: '',
 })
 export class ApplicatorLogicComponent
   extends ToolLogicDirective implements OnDestroy, OnInit {
@@ -30,33 +29,42 @@ export class ApplicatorLogicComponent
 
     this.handlers = {
       left: ($event: MouseEvent) => {
-        if (this.isADrawElement($event.target as SVGElement)) {
-          if ($event.target instanceof SVGPathElement) {
-              ($event.target as SVGElement)
-            .setAttribute('stroke', this.colorService.primaryColor);
-              this.undoRedoService.saveState();
-          } else {
-            const fill = ($event.target as SVGElement).getAttribute('fill');
-            const isFilled = (fill !== null && fill !== 'none');
-            if (isFilled) {
-              ($event.target as SVGElement)
-              .setAttribute('fill', this.colorService.primaryColor);
-              this.undoRedoService.saveState();
-            }
+        if (!this.isADrawElement($event.target as SVGElement)) {
+          return ;
+        }
+        if ($event.target instanceof SVGPathElement) {
+          ($event.target as SVGElement).setAttribute(
+            'stroke',
+            this.colorService.primaryColor
+          );
+          this.undoRedoService.saveState();
+        } else {
+          const fill = ($event.target as SVGElement).getAttribute('fill');
+          const isFilled = (fill !== null && fill !== 'none');
+          if (isFilled) {
+            ($event.target as SVGElement).setAttribute(
+              'fill',
+              this.colorService.primaryColor
+            );
+            this.undoRedoService.saveState();
           }
         }
       },
       right: ($event: MouseEvent) => {
         $event.preventDefault();
         if (this.isADrawElement($event.target as SVGElement)
-          && !($event.target instanceof SVGPathElement)) {
-          ($event.target as SVGElement)
-          .setAttribute('stroke', this.colorService.secondaryColor);
+            && !($event.target instanceof SVGPathElement)) {
+          ($event.target as SVGElement).setAttribute(
+            'stroke',
+            this.colorService.secondaryColor
+          );
           this.undoRedoService.saveState();
         }
       }
     };
   }
+
+  // TODO : utiliser renderer
 
   ngOnInit(): void {
 
@@ -77,9 +85,7 @@ export class ApplicatorLogicComponent
   }
 
   ngOnDestroy(): void {
-    this.allListenners.forEach((end) => {
-      end();
-    });
+    this.allListenners.forEach((end) => end());
     this.undoRedoService.resetActions();
   }
 

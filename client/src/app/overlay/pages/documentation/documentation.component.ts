@@ -5,7 +5,7 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import marked from 'marked';
 
 import docs from '../../../../assets/docs.json';
-
+// TODO: attributes protected
 export interface Node {
   label: string;
   children?: Node[];
@@ -59,9 +59,9 @@ export class DocumentationComponent {
     }
   }
 
-  private leafNodeArrayContains(node: Node): boolean {
+  private leafNodeArrayContains(localNode: Node): boolean {
     for (const nodes of this.leafNodeArray) {
-      if (node.label === nodes.label) {
+      if (localNode.label === nodes.label) {
         return true;
       }
     }
@@ -109,7 +109,7 @@ export class DocumentationComponent {
       this.treeControl.collapseAll();
       this.expandParent(docs, node.id);
     }
-    fetch(encodeURI('/assets/doc/md/' + node.label + '.md'))
+    fetch(encodeURI(`/assets/doc/md/${node.label}.md`))
       .then((res) => res.text())
       .then((text) => {
         this.contentToDisplay.body = marked(text);

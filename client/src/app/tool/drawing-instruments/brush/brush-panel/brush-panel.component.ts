@@ -6,13 +6,18 @@ import { MatRadioButton } from '@angular/material/radio';
 import { ToolPanelDirective } from '../../../tool-panel/tool-panel.directive';
 import { BrushService, Texture } from '../brush.service';
 
+interface TextureItem {
+  value: Texture;
+  name: string;
+  src: string;
+}
+
 @Component({
   selector: 'app-brush-panel',
   templateUrl: './brush-panel.component.html',
   styleUrls: ['./brush-panel.component.scss']
 })
 export class BrushPanelComponent extends ToolPanelDirective {
-  private brushForm: FormGroup;
 
   @ViewChild('radioChoice', {
     static: false
@@ -24,6 +29,7 @@ export class BrushPanelComponent extends ToolPanelDirective {
   })
   private thicknessSlider: MatSlider;
 
+  private brushForm: FormGroup;
   protected textures: TextureItem[];
 
   constructor(
@@ -80,10 +86,4 @@ export class BrushPanelComponent extends ToolPanelDirective {
   protected onOptionChange($event: MatRadioChange): void {
     this.service.texture = $event.value;
   }
-}
-
-interface TextureItem {
-  value: Texture;
-  name: string;
-  src: string;
 }

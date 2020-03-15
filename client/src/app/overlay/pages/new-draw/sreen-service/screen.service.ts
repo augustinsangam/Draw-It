@@ -8,6 +8,7 @@ export const sideBarWidth = 68;
   providedIn: 'root'
 })
 export class ScreenService {
+
   size: Subject<ScreenSize>;
 
   constructor(private eventManager: EventManager) {
@@ -22,7 +23,7 @@ export class ScreenService {
     return {
       height: innerHeight,
       width: innerWidth - sideBarWidth,
-    }
+    };
   }
 
   onResize(): void {

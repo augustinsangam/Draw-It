@@ -13,8 +13,6 @@ import { LineService } from '../line.service';
 })
 export class LinePanelComponent extends ToolPanelDirective {
 
-  private lineForm: FormGroup;
-
   @ViewChild ('slideToggle', {
     static: false
   }) protected slideToggle: MatSlideToggle;
@@ -28,6 +26,8 @@ export class LinePanelComponent extends ToolPanelDirective {
     static: false,
     read: MatSlider
   }) private radiusSlider: MatSlider;
+
+  private lineForm: FormGroup;
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: LineService,
@@ -50,6 +50,14 @@ export class LinePanelComponent extends ToolPanelDirective {
     this.lineForm.patchValue
                  ({ thicknessFormField: this.thicknessSlider.value });
     this.service.thickness = this.thicknessSlider.value as number;
+  }
+
+  protected onThicknessValueChange(): void {
+    const newRadiusMin = Math.floor(this.service.thickness / 2);
+    this.service.radius = Math.max(this.radiusSlider.value as number, newRadiusMin);
+    this.radiusSlider.value = this.service.radius;
+    this.radiusSlider.min = newRadiusMin;
+    this.lineForm.patchValue({ radiusFormField: this.radiusSlider.value });
   }
 
   protected onRadiusChange(): void {

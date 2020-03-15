@@ -3,7 +3,7 @@
     <h1 class='title'>
       <mat-icon>photo_library</mat-icon> Gallerie
     </h1>
-    <app-tags-filter  [allTags]="allTags.asObservable()" 
+    <app-tags-filter  [tags]="allTags.asObservable()" 
                       [selectedTag]="selectedTag.asObservable()"
                       (filteredTagsChange)="filterGalleryTable($event)"></app-tags-filter>
   </mat-card-title>
@@ -15,8 +15,8 @@
                         (delete)="deleteDraw($event)"
                         (tagClick)="addTag($event)">
       </app-gallery-card>
-      <h1 class="loading" *ngIf="loading" color="warn">Chargement ... </h1>
-      <h1 class="allert" *ngIf="filteredGalleryDrawTable.length === 0 && !loading">Aucun dessin trouvé</h1>
     </div>
+    <h1 class="loading" *ngIf="loading" color="warn">Chargement ... </h1>
+    <h1 class="allert" *ngIf="filteredGalleryDrawTable.length === 0 && !loading">Aucun dessin trouvé</h1>
   </mat-card-content>
 </mat-card>
