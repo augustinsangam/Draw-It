@@ -44,7 +44,7 @@ const ERRORS = {
 	nullDb: new Error('database is null or undefined'),
 };
 
-const promisifyTimeout = async (timeout: number): Promise<void> =>
+const promisifiedTimeout = async (timeout: number): Promise<void> =>
 	new Promise(resolve => setTimeout(resolve, timeout));
 
 enum StatusCode {
@@ -78,7 +78,7 @@ export {
 	COLORS,
 	ContentType,
 	ERRORS,
-	promisifyTimeout,
+	promisifiedTimeout,
 	StatusCode,
 	TextLen,
 	TIMEOUT,

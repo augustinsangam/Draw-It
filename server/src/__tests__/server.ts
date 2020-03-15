@@ -6,7 +6,7 @@ import express from 'express';
 import sinon from 'sinon';
 import supertest from 'supertest';
 
-import { promisifyTimeout, StatusCode, TIMEOUT, TYPES } from '../constants';
+import { promisifiedTimeout, StatusCode, TIMEOUT, TYPES } from '../constants';
 import { myContainer } from '../inversify.config';
 import { Server } from '../server';
 
@@ -106,7 +106,7 @@ describe('server', () => {
 			.then();
 		server['server'].close();
 
-		await promisifyTimeout(100);
+		await promisifiedTimeout(100);
 
 		chai.expect(server['openedSockets'].size).to.equal(0);
 
