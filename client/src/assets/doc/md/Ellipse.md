@@ -1,9 +1,9 @@
 L’outil **Ellipse** est très similaire à l’outil Rectangle. Il permet le traçage d’ellipses ou de cercles dans la zone de dessin, ainsi que la configuration de leur remplissage et de leur contour. 
 
- Pour commencer à tracer une ellipse, cliquez sur l’icône ![icône doc](/assets/sidebar-icons/ellipse.png). Placez votre curseur sur la zone de dessin et effectuez un cliqué-glissé pour définir les extrémités de votre ellipse. Pendant que vous pressez le bouton gauche de votre souris, vous pouvez presser la touche `SHIFT` afin de transformer votre ellipse en cercle. Relâchez la touche `SHIFT` à tout moment pour revenir à une ellipse. 
+ Pour commencer à tracer une ellipse, cliquez sur l’icône ![icône doc](/assets/sidebar-icons/ellipse.png) ou pressez **`2`**. Placez votre curseur sur la zone de dessin et effectuez un cliqué-glissé pour définir les extrémités de votre ellipse. Pendant que vous pressez le bouton gauche de votre souris, vous pouvez presser la touche `SHIFT` afin de transformer votre ellipse en cercle. Relâchez la touche `SHIFT` à tout moment pour revenir à une ellipse. 
 
 <video width="70%" height="70%" class="doc-fig" autoplay loop>
-    <source src="/assets/ellipse_trctd.webm" type="video/webm">
+    <source src="/assets/doc/vid/ellipse_trctd.webm" type="video/webm">
 </video>
 
  Les options du panneau sont similaires à celles du rectangle : 
