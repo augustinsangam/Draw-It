@@ -8,7 +8,7 @@ import { SvgShape } from 'src/app/svg/svg-shape';
 import { SvgService} from 'src/app/svg/svg.service';
 import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.service';
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
-import { ExportComponent, FormatChoice, FilterChoice } from './export.component';
+import { ExportComponent, FilterChoice, FormatChoice } from './export.component';
 
 // tslint:disable: no-magic-numbers no-any no-string-literal
 describe('ExportComponent', () => {
@@ -226,7 +226,6 @@ describe('ExportComponent', () => {
     component['createView']('');
     const picture3 = theViewZone.lastElementChild as Element;
     expect(picture3.getAttribute('id')).toEqual('pictureView');
-    
   });
 
   it('#exportDrawing should call exportSVG when we export as SVG', fakeAsync(() => {

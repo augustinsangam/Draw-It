@@ -55,7 +55,7 @@ export class FilterService {
     const filterSvgEl: SVGFilterElement = renderer.createElement('filter', SVG_NS);
     renderer.setAttribute(filterSvgEl, 'id', 'filter2');
     renderer.setAttribute(filterSvgEl, 'filterUnits', 'userSpaceOnUse');
-    const feGaussianBlurSvgEl: SVGFEGaussianBlurElement = 
+    const feGaussianBlurSvgEl: SVGFEGaussianBlurElement =
       renderer.createElement('feGaussianBlur', SVG_NS);
     renderer.setAttribute(feGaussianBlurSvgEl, 'in', 'SourceGraphic');
     renderer.setAttribute(feGaussianBlurSvgEl, 'stdDeviation', '4');
@@ -157,7 +157,7 @@ export class FilterService {
 
     const feTurbulenceSvgEl: SVGFETurbulenceElement =
       renderer.createElement('feTurbulence', SVG_NS);
-      renderer.setAttribute(feTurbulenceSvgEl, 'baseFrequency', '0.7');
+    renderer.setAttribute(feTurbulenceSvgEl, 'baseFrequency', '0.7');
     renderer.appendChild(filterSvgEl, feTurbulenceSvgEl);
 
     const feDisplacementMapSvgEl: SVGFEDisplacementMapElement =
