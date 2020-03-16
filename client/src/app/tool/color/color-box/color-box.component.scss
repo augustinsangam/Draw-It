@@ -1,0 +1,33 @@
+:host {
+  display: flex;
+  justify-content: center;
+  overflow-x: hidden;
+}
+
+main {
+  width: 100%;
+  background-color: rgb(78, 77, 77);
+  border-radius: 5px;
+}
+
+header {
+  color: white;
+  display: flex;
+  justify-content: center;
+  height: 60px;
+  margin-top: -5px;
+}
+
+mat-icon {
+  vertical-align: middle;
+  width: 30px;
+  color: pink;
+}
+
+header :hover {
+  cursor: pointer;
+}
+
+app-color-panel {
+  padding-bottom: 10px;
+}
