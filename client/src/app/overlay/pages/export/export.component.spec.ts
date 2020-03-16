@@ -10,13 +10,14 @@ import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.ser
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ExportComponent, FormatChoice, FilterChoice } from './export.component';
 
-fdescribe('ExportComponent', () => {
+// tslint:disable: no-magic-numbers no-any no-string-literal
+describe('ExportComponent', () => {
   let component: ExportComponent;
   let fixture: ComponentFixture<ExportComponent>;
 
   const mockDialogRef = {
     close: jasmine.createSpy('close')
-  }
+  };
   const mockDownloadLink = {
     click: jasmine.createSpy('click')
   };
@@ -35,7 +36,7 @@ fdescribe('ExportComponent', () => {
       imports: [
         MaterialModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
       ],
       declarations: [
         ExportComponent
@@ -181,7 +182,7 @@ fdescribe('ExportComponent', () => {
     const downloadLink = {
       href: pictureUrl,
       download: '',
-      click: () => {}
+      click: () => { return ; }
     } as unknown as HTMLAnchorElement;
     spyOn(component['renderer'], 'createElement').and.callFake(() =>  downloadLink);
     const spy = spyOn(downloadLink, 'click');

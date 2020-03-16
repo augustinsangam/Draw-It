@@ -8,10 +8,7 @@ import { Offset } from '../offset';
 import * as Util from './selection-logic-util';
 import { SelectionLogicComponent } from './selection-logic.component';
 
-// TODO : Ask the chargé de lab
-// tslint:disable: no-magic-numbers
-// tslint:disable: no-string-literal
-// tslint:disable: no-any
+// tslint:disable: no-magic-numbers no-string-literal no-any
 describe('SelectionLogicComponent', () => {
   let component: SelectionLogicComponent;
   let fixture: ComponentFixture<SelectionLogicComponent>;
@@ -61,6 +58,7 @@ describe('SelectionLogicComponent', () => {
 
     (TestBed.get(UndoRedoService) as UndoRedoService)
     .intialise(component.svgStructure);
+
     fixture.detectChanges();
   });
 
@@ -260,7 +258,7 @@ describe('SelectionLogicComponent', () => {
   it('contextmenu handler should at apply a single inversion when target'
       + 'is a draw element', () => {
     const fakeEvent = {
-      preventDefault: () => { },
+      preventDefault: () => { return ; },
       target: component.svgStructure.drawZone.children.item(0)
     } as unknown as MouseEvent;
 
@@ -336,7 +334,7 @@ describe('SelectionLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('left click handler should apply single selection when'
+  it('left down handler should apply single selection when'
       + 'target is a draw and the click is real', () => {
     const fakeEvent = {
       button: 0,
@@ -344,7 +342,7 @@ describe('SelectionLogicComponent', () => {
     } as unknown as MouseEvent;
 
     const mouseClickHandler = (component['mouseHandlers'].get('leftButton') as
-      Map<string, Util.MouseEventCallBack>).get('click') as
+      Map<string, Util.MouseEventCallBack>).get('mousedown') as
       Util.MouseEventCallBack;
 
     const spy = spyOn<any>(component, 'applySingleSelection').and.callThrough();
@@ -486,13 +484,13 @@ describe('SelectionLogicComponent', () => {
   it('KeyManager should contain all keypressed', () => {
     let fakeKeyDownEvent = {
       key: 'ArrowUp',
-      preventDefault: () => {}
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     component['keyManager'].handlers.keydown(fakeKeyDownEvent);
     expect(component['keyManager'].keyPressed).toContain('ArrowUp');
     fakeKeyDownEvent = {
       key: 'ArrowDown',
-      preventDefault: () => {}
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     component['keyManager'].handlers.keydown(fakeKeyDownEvent);
     expect(component['keyManager'].keyPressed).toContain('ArrowUp');
@@ -502,7 +500,7 @@ describe('SelectionLogicComponent', () => {
   it('KeyDown manager should consider only arrows', () => {
     const fakeKeyDownEvent = {
       key: 'ArrowUppppp',
-      preventDefault: () => {}
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     const spy = spyOn(fakeKeyDownEvent, 'preventDefault');
     component['keyManager'].handlers.keydown(fakeKeyDownEvent);
@@ -513,7 +511,7 @@ describe('SelectionLogicComponent', () => {
     const spy = spyOn<any>(component, 'handleKey').and.callThrough();
     const fakeKeyDownEvent = {
       key: 'ArrowUp',
-      preventDefault: () => {}
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     component['keyManager'].handlers.keydown(fakeKeyDownEvent);
     expect(spy).not.toHaveBeenCalled();
@@ -530,11 +528,11 @@ describe('SelectionLogicComponent', () => {
     const spy = spyOn(component['undoRedoService'], 'saveState');
     const arrowUpEvent = {
       key: 'ArrowUp',
-      preventDefault: () => {}
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     const arrowDownEvent = {
       key: 'ArrowDown',
-      preventDefault: () => {}
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     component['keyManager'].handlers.keydown(arrowUpEvent);
     component['keyManager'].handlers.keydown(arrowDownEvent);
@@ -551,3 +549,4 @@ describe('SelectionLogicComponent', () => {
   });
 
 });
+// tslint:disable-next-line: max-file-line-count

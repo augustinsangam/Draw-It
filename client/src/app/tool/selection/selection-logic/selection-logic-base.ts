@@ -22,6 +22,8 @@ enum Arrow {
   Right = 'ArrowRight'
 }
 
+const NOT_FOUND = -1;
+
 export abstract class SelectionLogicBase extends ToolLogicDirective
   implements OnInit, OnDestroy {
 
@@ -48,8 +50,6 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.undoRedoService.setPostRedoAction(action);
   }
 
-  // TODO : Renderer
-
   ngOnInit(): void {
     this.mouse = Util.SelectionLogicUtil.initialiseMouse();
     this.rectangles = Util.SelectionLogicUtil.initialiseRectangles(
@@ -62,7 +62,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     });
     this.allListenners.push(() => subscription.unsubscribe());
     this.initialiseKeyManager();
-    this.svgStructure.root.style.cursor = 'default';
+    this.renderer.setStyle(this.svgStructure.root, 'cursor', 'default');
   }
 
   protected applySingleSelection(element: SVGElement): void {
@@ -146,8 +146,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
       opacity: '0'
     });
     if (dasharray) {
-      // TODO : Renderer
-      element.setAttribute('stroke-dasharray', Util.DASH_ARRAY);
+      this.renderer.setAttribute(element, 'stroke-dasharray', Util.DASH_ARRAY);
     }
   }
 
@@ -167,10 +166,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   private setCircle(center: Point, circle: SVGElement, radius: string): void {
-    // TODO : Méthode statique
-    // A la construction, tout est fait
-    // tslint:disable-next-line: no-unused-expression
-    new Circle(center, this.renderer, circle, radius, Util.COLORS.GRAY);
+    Circle.set(center, this.renderer, circle, radius, Util.COLORS.GRAY);
   }
 
   protected deleteVisualisation(): void {
@@ -198,12 +194,12 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   private resetRectangle(element: SVGElement): void {
-    element.setAttribute('width', '0');
-    element.setAttribute('height', '0');
+    this.renderer.setAttribute(element, 'width', '0');
+    this.renderer.setAttribute(element, 'height', '0');
   }
 
   private resetTranslate(element: SVGElement): void {
-    element.setAttribute('transform', 'translate(0,0)');
+    this.renderer.setAttribute(element, 'transform', 'translate(0,0)');
   }
 
   protected elementSelectedType(element: SVGElement)
@@ -215,7 +211,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
       return BasicSelectionType.DRAW_ELEMENT;
     }
     const indexOfCircle = this.circles.indexOf(element);
-    if (indexOfCircle !== -1) {
+    if (indexOfCircle !== NOT_FOUND) {
       return indexOfCircle as Util.CircleType;
     }
     return BasicSelectionType.NOTHING;
@@ -229,9 +225,9 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   protected translateAll(x: number, y: number): void {
-    Deplacement.translateAll(this.selectedElements, x, y);
-    Deplacement.translateAll(this.circles, x, y);
-    Deplacement.translate(this.rectangles.visualisation, x, y);
+    Deplacement.translateAll(this.selectedElements, x, y, this.renderer);
+    Deplacement.translateAll(this.circles, x, y, this.renderer);
+    Deplacement.translate(this.rectangles.visualisation, x, y, this.renderer);
   }
 
   private getSvgOffset(): Offset {

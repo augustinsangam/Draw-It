@@ -52,6 +52,14 @@ export class LinePanelComponent extends ToolPanelDirective {
     this.service.thickness = this.thicknessSlider.value as number;
   }
 
+  protected onThicknessValueChange(): void {
+    const newRadiusMin = Math.floor(this.service.thickness / 2);
+    this.service.radius = Math.max(this.radiusSlider.value as number, newRadiusMin);
+    this.radiusSlider.value = this.service.radius;
+    this.radiusSlider.min = newRadiusMin;
+    this.lineForm.patchValue({ radiusFormField: this.radiusSlider.value });
+  }
+
   protected onRadiusChange(): void {
     this.lineForm.patchValue({ radiusFormField: this.radiusSlider.value });
     this.service.radius = this.radiusSlider.value as number;

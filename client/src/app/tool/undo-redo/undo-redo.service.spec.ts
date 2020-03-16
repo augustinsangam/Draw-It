@@ -16,7 +16,7 @@ const createEllipse = (): SVGElement => {
   return ellipse;
 };
 
-// tslint:disable:no-string-literal
+// tslint:disable:no-string-literal no-any
 describe('UndoRedoService', () => {
   let service: UndoRedoService;
   let testSVGStructure: SVGStructure;
@@ -38,7 +38,7 @@ describe('UndoRedoService', () => {
 
     service = TestBed.get(UndoRedoService);
     service.intialise(testSVGStructure);
-    }
+  }
   );
 
   it('should be created', () => {
@@ -52,22 +52,22 @@ describe('UndoRedoService', () => {
 
   it('setStartingCommand should initialise the initialCommand ' +
     'as a SVGElement table', () => {
-    service.setStartingCommand();
-    expect(service['initialCommand']).toEqual(
-      Array.from(testSVGStructure.drawZone.children) as SVGElement[]
-    );
-  });
+      service.setStartingCommand();
+      expect(service['initialCommand']).toEqual(
+        Array.from(testSVGStructure.drawZone.children) as SVGElement[]
+      );
+    });
 
   it('resetActions should call 2 times createDefaultPreAction ' +
     'and createDefaultPostAction', () => {
-    const spyOnPre = spyOn<any>(service, 'createDefaultPreAction');
-    const spyOnPost = spyOn<any>(service, 'createDefaultPostAction');
-    service.resetActions();
-    expect(spyOnPre).toHaveBeenCalledTimes(2);
-    expect(spyOnPost).toHaveBeenCalledTimes(2);
-  });
+      const spyOnPre = spyOn<any>(service, 'createDefaultPreAction');
+      const spyOnPost = spyOn<any>(service, 'createDefaultPostAction');
+      service.resetActions();
+      expect(spyOnPre).toHaveBeenCalledTimes(2);
+      expect(spyOnPost).toHaveBeenCalledTimes(2);
+    });
 
-  it ('clearUndoRedo should assign empty arrays to the cmdDone ' +
+  it('clearUndoRedo should assign empty arrays to the cmdDone ' +
     'and cmdUndone attributes', () => {
       const ellipse = createEllipse();
       testSVGStructure.drawZone.appendChild(ellipse);
@@ -76,7 +76,7 @@ describe('UndoRedoService', () => {
       service.clearUndoRedo();
       expect(service['cmdDone']).toEqual([]);
       expect(service['cmdUndone']).toEqual([]);
-  });
+    });
 
   it('saveState should save the ellipses created in cmdDone', () => {
     service.clearUndoRedo();
@@ -94,30 +94,30 @@ describe('UndoRedoService', () => {
 
   it('cmdDone should contain an empty array if saveState is called' +
     ' while the drawZone is empty', () => {
-    service.clearUndoRedo();
-    service.saveState();
-    expect(service['cmdDone']).toEqual([[]]);
-  });
+      service.clearUndoRedo();
+      service.saveState();
+      expect(service['cmdDone']).toEqual([[]]);
+    });
 
   it('saveState should contain 2 arrays containing the ellipses when ' +
     'called two times with modifications in between', () => {
-    service.clearUndoRedo();
-    const ellipse1 = createEllipse();
-    const ellipse2 = createEllipse();
-    const ellipse3 = createEllipse();
-    const ellipse4 = createEllipse();
-    testSVGStructure.drawZone.appendChild(ellipse1);
-    testSVGStructure.drawZone.appendChild(ellipse2);
-    service.saveState();
-    testSVGStructure.drawZone.appendChild(ellipse3);
-    testSVGStructure.drawZone.appendChild(ellipse4);
-    service.saveState();
-    expect(service['cmdDone']).toEqual(
-      [
-        [ellipse1, ellipse2],
-        [ellipse1, ellipse2, ellipse3, ellipse4]
-      ]);
-  });
+      service.clearUndoRedo();
+      const ellipse1 = createEllipse();
+      const ellipse2 = createEllipse();
+      const ellipse3 = createEllipse();
+      const ellipse4 = createEllipse();
+      testSVGStructure.drawZone.appendChild(ellipse1);
+      testSVGStructure.drawZone.appendChild(ellipse2);
+      service.saveState();
+      testSVGStructure.drawZone.appendChild(ellipse3);
+      testSVGStructure.drawZone.appendChild(ellipse4);
+      service.saveState();
+      expect(service['cmdDone']).toEqual(
+        [
+          [ellipse1, ellipse2],
+          [ellipse1, ellipse2, ellipse3, ellipse4]
+        ]);
+    });
 
   it('saveState should empty the cmdUndone attribute', () => {
     service['cmdUndone'].push([createEllipse()]);
@@ -135,24 +135,24 @@ describe('UndoRedoService', () => {
 
   it('undoBase should not do anything if nothing has been saved ' +
     'i.e. if cmdDone is empty', () => {
-    service.clearUndoRedo();
-    const spy = spyOn(service, 'refresh');
-    service.undoBase();
-    expect(spy).not.toHaveBeenCalled();
-  });
+      service.clearUndoRedo();
+      const spy = spyOn(service, 'refresh');
+      service.undoBase();
+      expect(spy).not.toHaveBeenCalled();
+    });
 
   it('undoBase should move the last item of cmdDone into cmdUndone' +
     ' and call the refresh method', () => {
-    const spy = spyOn(service, 'refresh');
-    const ellipse1 = createEllipse();
-    testSVGStructure.drawZone.appendChild(ellipse1);
-    service.saveState();
-    expect(service['cmdDone']).toEqual([[ellipse1]]);
-    service.undoBase();
-    expect(spy).toHaveBeenCalledTimes(1);
-    expect(service['cmdUndone']).toEqual([[ellipse1]]);
-    expect(service['cmdDone']).toEqual([]);
-  });
+      const spy = spyOn(service, 'refresh');
+      const ellipse1 = createEllipse();
+      testSVGStructure.drawZone.appendChild(ellipse1);
+      service.saveState();
+      expect(service['cmdDone']).toEqual([[ellipse1]]);
+      service.undoBase();
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(service['cmdUndone']).toEqual([[ellipse1]]);
+      expect(service['cmdDone']).toEqual([]);
+    });
 
   it('redoBase should not do anything if cmdUndone is empty', () => {
     const spy = spyOn(service, 'refresh');
@@ -162,76 +162,77 @@ describe('UndoRedoService', () => {
 
   it('redoBase should move the last item of cmdDone ' +
     'to cmdUndone and call the refresh method', () => {
-    const spy = spyOn(service, 'refresh');
-    const ellipse1 = createEllipse();
-    testSVGStructure.drawZone.appendChild(ellipse1);
-    service.saveState();
-    service.undoBase();
-    expect(service['cmdDone']).toEqual([]);
-    service.redoBase();
-    expect(spy).toHaveBeenCalledTimes(2);
-    expect(service['cmdUndone']).toEqual([]);
-    expect(service['cmdDone']).toEqual([[ellipse1]]);
-  });
+      const spy = spyOn(service, 'refresh');
+      const ellipse1 = createEllipse();
+      testSVGStructure.drawZone.appendChild(ellipse1);
+      service.saveState();
+      service.undoBase();
+      expect(service['cmdDone']).toEqual([]);
+      service.redoBase();
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(service['cmdUndone']).toEqual([]);
+      expect(service['cmdDone']).toEqual([[ellipse1]]);
+    });
 
   it('canUndo should return false if cmdDone is empty, true ' +
     'if cmdDone is not empty', () => {
-    service.clearUndoRedo();
-    expect(service.canUndo()).toBeFalsy();
-    service['cmdDone'].push([createEllipse()]);
-    expect(service.canUndo()).toBeTruthy();
-  });
+      service.clearUndoRedo();
+      expect(service.canUndo()).toBeFalsy();
+      service['cmdDone'].push([createEllipse()]);
+      expect(service.canUndo()).toBeTruthy();
+    });
 
   it('canRedo should return false if cmdUndone is empty, true ' +
     'if cmdUndone is not empty', () => {
-    service.clearUndoRedo();
-    expect(service.canRedo()).toBeFalsy();
-    service['cmdUndone'].push([createEllipse()]);
-    expect(service.canRedo()).toBeTruthy();
-  });
+      service.clearUndoRedo();
+      expect(service.canRedo()).toBeFalsy();
+      service['cmdUndone'].push([createEllipse()]);
+      expect(service.canRedo()).toBeTruthy();
+    });
 
   it('refresh should append the childNodes of the nodes passed ' +
     'as a parameter to drawZone', () => {
-    const ellipse1 = createEllipse();
-    const ellipse2 = createEllipse();
-    testSVGStructure.drawZone.appendChild(ellipse1);
-    testSVGStructure.drawZone.appendChild(ellipse2);
-    service.saveState();
-    service.refresh([ellipse1]);
-    expect(
-      Array.from(testSVGStructure.drawZone.children) as SVGElement[]
-    ).toEqual([ellipse1]);  });
+      const ellipse1 = createEllipse();
+      const ellipse2 = createEllipse();
+      testSVGStructure.drawZone.appendChild(ellipse1);
+      testSVGStructure.drawZone.appendChild(ellipse2);
+      service.saveState();
+      service.refresh([ellipse1]);
+      expect(
+        Array.from(testSVGStructure.drawZone.children) as SVGElement[]
+      ).toEqual([ellipse1]);
+    });
 
   it('refresh should restore the initial command if an' +
     ' empty array is passed', () => {
-    const ellipse1 = createEllipse();
-    const ellipse2 = createEllipse();
-    const ellipse3 = createEllipse();
-    testSVGStructure.drawZone.appendChild(ellipse1);
-    testSVGStructure.drawZone.appendChild(ellipse2);
-    service['initialCommand'] = [ellipse3];
-    service.saveState();
-    service.refresh(undefined as unknown as ChildNode[]);
-    expect(
-      Array.from(testSVGStructure.drawZone.children) as SVGElement[]
-    ).toEqual([ellipse3]);
-  });
+      const ellipse1 = createEllipse();
+      const ellipse2 = createEllipse();
+      const ellipse3 = createEllipse();
+      testSVGStructure.drawZone.appendChild(ellipse1);
+      testSVGStructure.drawZone.appendChild(ellipse2);
+      service['initialCommand'] = [ellipse3];
+      service.saveState();
+      service.refresh(undefined as unknown as ChildNode[]);
+      expect(
+        Array.from(testSVGStructure.drawZone.children) as SVGElement[]
+      ).toEqual([ellipse3]);
+    });
 
   it('createDefaultPreActions should return a conform object with the default' +
     'options', () => {
-    expect(service['createDefaultPreAction']()).toEqual({
-      enabled: false,
-      overrideDefaultBehaviour: false,
-      overrideFunctionDefined: false
+      expect(service['createDefaultPreAction']()).toEqual({
+        enabled: false,
+        overrideDefaultBehaviour: false,
+        overrideFunctionDefined: false
+      });
     });
-  });
 
   it('createDefaultPostActions should return a conform object with the default' +
     'options', () => {
-    expect(service['createDefaultPostAction']()).toEqual({
-      functionDefined: false
+      expect(service['createDefaultPostAction']()).toEqual({
+        functionDefined: false
+      });
     });
-  });
 
   it('setPreUndoAction should set the parameter as the first item of undo', () => {
     const expectedAction = {
@@ -274,93 +275,94 @@ describe('UndoRedoService', () => {
   it('undo should call the overrideFunction of undo when it is defined, ' +
     'the function of PostAction when defined and not call undoBase if the preAction is' +
     ' set not to overrideDefaultBehaviour', () => {
-    let called = false;
-    const callback = jasmine.createSpy().and.callFake(() => { called = true; });
-    const spy = spyOn<any>(service, 'undoBase');
-    service['actions'].undo = [
-      {
-        enabled: true,
-        overrideDefaultBehaviour: true,
-        overrideFunctionDefined: true,
-        overrideFunction: callback
-      }, {
-        functionDefined: true,
-        function: callback
-      }
-     ];
-    service.undo();
-    expect(callback).toHaveBeenCalledTimes(2);
-    expect(spy).not.toHaveBeenCalled();
-    expect(called).toBeTruthy();
-  });
+      let called = false;
+      const callback = jasmine.createSpy().and.callFake(() => { called = true; });
+      const spy = spyOn<any>(service, 'undoBase');
+      service['actions'].undo = [
+        {
+          enabled: true,
+          overrideDefaultBehaviour: true,
+          overrideFunctionDefined: true,
+          overrideFunction: callback
+        }, {
+          functionDefined: true,
+          function: callback
+        }
+      ];
+      service.undo();
+      expect(callback).toHaveBeenCalledTimes(2);
+      expect(spy).not.toHaveBeenCalled();
+      expect(called).toBeTruthy();
+    });
 
   it('undo should not call the overrideFunction of undo when it is not defined, ' +
     'nor the function of PostAction when not defined and call undoBase if the preAction is' +
     ' set to overrideDefaultBehaviour', () => {
-    let called = false;
-    const callback = jasmine.createSpy().and.callFake(() => { called = true; });
-    const spy = spyOn<any>(service, 'undoBase');
-    service['actions'].undo = [
-      {
-        enabled: false,
-        overrideDefaultBehaviour: false,
-        overrideFunctionDefined: false,
-        overrideFunction: callback
-      }, {
-        functionDefined: false,
-        function: callback
-      }
-     ];
-    service.undo();
-    expect(callback).not.toHaveBeenCalled();
-    expect(spy).toHaveBeenCalled();
-    expect(called).toBeFalsy();
-  });
+      let called = false;
+      const callback = jasmine.createSpy().and.callFake(() => { called = true; });
+      const spy = spyOn<any>(service, 'undoBase');
+      service['actions'].undo = [
+        {
+          enabled: false,
+          overrideDefaultBehaviour: false,
+          overrideFunctionDefined: false,
+          overrideFunction: callback
+        }, {
+          functionDefined: false,
+          function: callback
+        }
+      ];
+      service.undo();
+      expect(callback).not.toHaveBeenCalled();
+      expect(spy).toHaveBeenCalled();
+      expect(called).toBeFalsy();
+    });
 
   it('redo should call the overrideFunction of redo when it is defined, ' +
     'the function of PostAction when defined and not call redoBase if the preAction is' +
     ' set not to overrideDefaultBehaviour', () => {
-    let called = false;
-    const callback = jasmine.createSpy().and.callFake(() => { called = true; });
-    const spy = spyOn<any>(service, 'redoBase');
-    service['actions'].redo = [
-      {
-        enabled: true,
-        overrideDefaultBehaviour: true,
-        overrideFunctionDefined: true,
-        overrideFunction: callback
-      }, {
-        functionDefined: true,
-        function: callback
-      }
-     ];
-    service.redo();
-    expect(callback).toHaveBeenCalledTimes(2);
-    expect(spy).not.toHaveBeenCalled();
-    expect(called).toBeTruthy();
-  });
+      let called = false;
+      const callback = jasmine.createSpy().and.callFake(() => { called = true; });
+      const spy = spyOn<any>(service, 'redoBase');
+      service['actions'].redo = [
+        {
+          enabled: true,
+          overrideDefaultBehaviour: true,
+          overrideFunctionDefined: true,
+          overrideFunction: callback
+        }, {
+          functionDefined: true,
+          function: callback
+        }
+      ];
+      service.redo();
+      expect(callback).toHaveBeenCalledTimes(2);
+      expect(spy).not.toHaveBeenCalled();
+      expect(called).toBeTruthy();
+    });
 
   it('redo should not call the overrideFunction of redo when it is not defined, ' +
     'nor the function of PostAction when not defined and call redoBase if the preAction is' +
     ' set to overrideDefaultBehaviour', () => {
-    let called = false;
-    const callback = jasmine.createSpy().and.callFake(() => { called = true; });
-    const spy = spyOn<any>(service, 'redoBase');
-    service['actions'].redo = [
-      {
-        enabled: false,
-        overrideDefaultBehaviour: false,
-        overrideFunctionDefined: false,
-        overrideFunction: callback
-      }, {
-        functionDefined: false,
-        function: callback
-      }
-     ];
-    service.redo();
-    expect(callback).not.toHaveBeenCalled();
-    expect(spy).toHaveBeenCalled();
-    expect(called).toBeFalsy();
-  });
+      let called = false;
+      const callback = jasmine.createSpy().and.callFake(() => { called = true; });
+      const spy = spyOn<any>(service, 'redoBase');
+      service['actions'].redo = [
+        {
+          enabled: false,
+          overrideDefaultBehaviour: false,
+          overrideFunctionDefined: false,
+          overrideFunction: callback
+        }, {
+          functionDefined: false,
+          function: callback
+        }
+      ];
+      service.redo();
+      expect(callback).not.toHaveBeenCalled();
+      expect(spy).toHaveBeenCalled();
+      expect(called).toBeFalsy();
+    });
 
-  });
+});
+// tslint:disable-next-line: max-file-line-count

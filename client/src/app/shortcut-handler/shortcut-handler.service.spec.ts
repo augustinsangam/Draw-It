@@ -7,7 +7,7 @@ import {
   ShortcutHandlerService
 } from './shortcut-handler.service';
 
-// tslint:disable no-string-literal
+// tslint:disable no-string-literal no-any no-magic-numbers
 describe('ShortcutHandlerService', () => {
   let service: ShortcutHandlerService;
   let debugVariable = 1;

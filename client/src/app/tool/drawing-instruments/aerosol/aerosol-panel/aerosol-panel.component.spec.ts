@@ -16,8 +16,7 @@ import {ColorPickerContentComponent} from '../../../color/color-panel/color-pick
 import {ColorPickerItemComponent} from '../../../color/color-panel/color-picker-item/color-picker-item.component';
 import { AerosolPanelComponent } from './aerosol-panel.component';
 
-// tslint:disable:no-string-literal
-// tslint:disable:no-magic-numbers
+// tslint:disable:no-string-literal no-any disable:no-magic-numbers
 describe('AerosolPanelComponent', () => {
   let component: AerosolPanelComponent;
   let fixture: ComponentFixture<AerosolPanelComponent>;

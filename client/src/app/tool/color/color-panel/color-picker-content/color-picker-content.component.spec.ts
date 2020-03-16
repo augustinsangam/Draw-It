@@ -24,7 +24,7 @@ import {
 } from '../color-picker-item/color-picker-item.component';
 import { ColorPickerContentComponent } from './color-picker-content.component';
 
-/* tslint:disable:no-string-literal */
+// tslint:disable:no-string-literal no-magic-numbers no-any
 describe('ColorPickerContentComponent', () => {
   let component: ColorPickerContentComponent;
   let fixture: ComponentFixture<ColorPickerContentComponent>;

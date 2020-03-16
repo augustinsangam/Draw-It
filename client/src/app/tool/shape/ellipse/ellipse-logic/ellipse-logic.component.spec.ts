@@ -6,13 +6,12 @@ import {
   TestBed,
   tick
 } from '@angular/core/testing';
+import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
 import { Point } from '../../common/point';
 import { EllipseService } from '../ellipse.service';
 import { EllipseLogicComponent } from './ellipse-logic.component';
-import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
-// import {BackGroundProperties} from '../../common/AbstractShape';
 
 const createClickMouseEvent = (event: string): MouseEvent => {
   return new MouseEvent(event, {
@@ -22,7 +21,7 @@ const createClickMouseEvent = (event: string): MouseEvent => {
   } as MouseEventInit);
 };
 
-// tslint:disable:no-string-literal
+// tslint:disable:no-string-literal no-any no-magic-numbers
 describe('EllipseLogicComponent', () => {
   let component: EllipseLogicComponent;
   let fixture: ComponentFixture<EllipseLogicComponent>;

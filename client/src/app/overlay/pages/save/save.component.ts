@@ -48,17 +48,34 @@ export class SaveComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // TODO : Renderer ISS
     const clone = this.svgService.structure.drawZone.cloneNode(true);
     const height = this.svgService.shape.height;
     const width = this.svgService.shape.width;
+
     if (height > width) {
       const max = 400;
-      this.elementRef.nativeElement.setAttribute('width', (max * width / height).toString());
-      this.elementRef.nativeElement.setAttribute('height', max.toString());
+      this.renderer.setAttribute(
+        this.elementRef.nativeElement,
+        'width',
+        (max * width / height).toString()
+      );
+      this.renderer.setAttribute(
+        this.elementRef.nativeElement,
+        'height',
+        max.toString()
+      );
     }
-    this.elementRef.nativeElement.setAttribute('viewBox', `0 0 ${width} ${height}`);
-    this.elementRef.nativeElement.style.backgroundColor = this.svgService.shape.color;
+
+    this.renderer.setAttribute(
+      this.elementRef.nativeElement,
+      'viewBox',
+      `0 0 ${width} ${height}`
+    );
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'background-color',
+      this.svgService.shape.color
+    );
     this.renderer.appendChild(this.elementRef.nativeElement, clone);
     this.communicationService.clear();
     this.gElOffset = this.communicationService

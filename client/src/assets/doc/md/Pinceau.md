@@ -10,5 +10,5 @@ Le panneau d'options de l'outil pinceau permet la configuration de deux paramèt
 Les 5 textures sont présentées ici :
 
 <video width="70%" height="70%" class="doc-fig" autoplay loop>
-    <source src="/assets/pinceau_trctd.webm" type="video/webm">
+    <source src="/assets/doc/vid/pinceau_trctd.webm" type="video/webm">
 </video>

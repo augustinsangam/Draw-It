@@ -105,30 +105,6 @@ describe('SidebarComponent', () => {
     expect(newHtmlEl.classList.contains('selected')).toBeTruthy();
   });
 
-  const functions = [
-    ['selectLine', Tool.Line],
-    ['selectEraser', Tool.Eraser],
-    ['selectRectangle', Tool.Rectangle],
-    ['selectPolygone', Tool.Polygone],
-    ['selectPencil', Tool.Pencil],
-    ['selectBrush', Tool.Brush],
-    ['selectSelection', Tool.Selection],
-    ['selectEllipse', Tool.Ellipse],
-    ['selectPipette', Tool.Pipette],
-    ['selectAerosol', Tool.Aerosol],
-    ['selectApplicator', Tool.Applicator],
-    ['selectGrid', Tool.Grid],
-  ];
-
-  functions.forEach((func) => {
-    it(`${func[0]} should call toolSelectorService.set`, () => {
-      const spy = spyOn(component['toolSelectorService'], 'set');
-      // TODO : Ask the chargé de lab
-      (component as any)[func[0]]();
-      expect(spy).toHaveBeenCalledWith(func[1]);
-    });
-  });
-
   it('#ngAfterViewChecked should not do anything when canUndo or canRedo'
       + 'is unchanged', () => {
     component['canUndo'] = false;
