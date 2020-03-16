@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Dimension } from '../shape/common/dimension';
 import { Radius } from '../shape/common/ellipse';
 import { Point } from '../shape/common/point';
-
+import { Dimension } from '../shape/common/rectangle';
 // tslint:disable:no-magic-numbers
 // cette regle est desactiviee car toutes les constantes sont utilisee pour que
 // les polygones garde toujours l'air maximale du rectangle inscrit.
@@ -28,7 +27,7 @@ const FACTEUR_TRANSITION: number[] =
 const FACTEUR_DECALAGE_X: number[] =
   [0, 0, 1.0, 1.0, 1.0, 0.9, 1.0, 1.0, 1.0, 0.95, 1.0, 1.0];
 const FACTEUR_DECALAGE_Y: number[] =
-  [0, 0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
+  [0, 0, 1.0, 1.0, 1.0, 0.92, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
 const FACTEUR_BORDER_X: number[] =
   [0, 0, 1.8, 1.38, 1.2, 1.0, 1.0, 1.1, 1.05, 1.0, 1.3, 1.01];
 const FACTEUR_BORDER_Y: number[] =
@@ -37,12 +36,11 @@ const RATIO_TRANSITION_HEIGHT = 0.9;
 const TRIANGLE_SIDES = 3;
 const HEXAGONE_SIDES = 6;
 const DECAGONE_SIDES = 10;
-interface PolygonCoords {
+interface PolygonProperties {
   radius: number;
   deltaX: number;
   deltaY: number;
   sides: number;
-  sideLength: number;
   angle: number;
   deltaBorderX: number;
   deltaBorderY: number;
@@ -94,54 +92,50 @@ export class MathService {
     }
     return new Point(deltaX + initialPoint.x, deltaY + initialPoint.y);
   }
-  computePolygonRadius(rectDim: Dimension, properties: PolygonCoords): void {
+  computePolygonRadius(rectDim: Dimension, properties: PolygonProperties): void {
     const minSide = Math.min(rectDim.width, rectDim.height);
     const ratio = rectDim.width / rectDim.height;
-
-    if (rectDim.width === minSide) {
-      properties.radius = Math.max((minSide - properties.deltaBorderX) * MULTIPLICATEUR_X[properties.sides - 1], 0);
-      properties.deltaY = DECALAGE_Y[properties.sides - 1];
-      if (ratio >= RATIO_TRANSITION_HEIGHT && (properties.sides === HEXAGONE_SIDES || properties.sides === DECAGONE_SIDES)) {
+    const exeptionalCase = properties.sides === HEXAGONE_SIDES || properties.sides === DECAGONE_SIDES;
+    properties.radius = Math.max((minSide - properties.deltaBorderX) * MULTIPLICATEUR_X[properties.sides - 1], 0);
+    properties.deltaY = DECALAGE_Y[properties.sides - 1];
+    properties.deltaX = FACTEUR_DECALAGE_X[properties.sides - 1];
+    if (ratio >= RATIO_TRANSITION_HEIGHT && exeptionalCase && rectDim.width === minSide ) {
         properties.radius = minSide - properties.deltaBorderX;
         properties.deltaY *= FACTEUR_DECALAGE_Y[properties.sides - 1];
-        properties.deltaX = FACTEUR_DECALAGE_X[properties.sides - 1];
-      }
-    } else {
-      if (ratio <= RATIO_TRANSITION_WIDTH[properties.sides  - 1]) {
+    }
+    if (ratio <= RATIO_TRANSITION_WIDTH[properties.sides  - 1] && rectDim.width !== minSide) {
         const expansionX =  MULTIPLICATEUR_X[properties.sides - 1] * FACTEUR_TRANSITION[properties.sides - 1];
         properties.radius = Math.max((minSide - properties.deltaBorderX) * expansionX, 0);
         properties.deltaY = DECALAGE_Y[properties.sides  - 1] * FACTEUR_DECALAGE_Y[properties.sides - 1];
-        properties.deltaX = FACTEUR_DECALAGE_X[properties.sides  - 1];
 
         if (properties.sides  === TRIANGLE_SIDES) {
           properties.deltaX = ratio * FACTEUR_TRANSITION[properties.sides  - 1];
           properties.radius = Math.max((minSide - properties.deltaBorderX) * MULTIPLICATEUR_X[properties.sides  - 1] * (ratio), 0);
         }
-      } else {
+    }
+    if (ratio > RATIO_TRANSITION_WIDTH[properties.sides  - 1] && rectDim.width !== minSide) {
         properties.radius = Math.max((minSide - properties.deltaBorderX) * (MULTIPLICATEURY[properties.sides  - 1]), 0);
         properties.deltaX = ((DECALAGE_X[properties.sides  - 1]));
-      }
     }
   }
 
   computeInitialPointPosition(dimension: Dimension, mouseDownPoint: Point,
-                              upLeftCorner: Point, properties: PolygonCoords): void {
+                              upLeftCorner: Point, properties: PolygonProperties): void {
     const minSide = Math.min(dimension.width, dimension.height);
-    properties.sideLength = properties.radius * Math.sin(Math.PI / properties.sides);
-    const distanceFromCenterX = (properties.sides % 2 === 0) ? 0 : properties.sideLength / 2;
-    const centerTranslation = minSide * properties.deltaX / 2 - distanceFromCenterX;
-    properties.initialPoint.x = (upLeftCorner.x < mouseDownPoint.x) ? mouseDownPoint.x - centerTranslation :
-                                                                      mouseDownPoint.x + centerTranslation;
-    properties.initialPoint.y = mouseDownPoint.y - properties.deltaBorderY  / 2;
-
+    const sideLength = properties.radius * Math.sin(Math.PI / properties.sides);
+    const translation = (properties.sides % 2 === 0) ? 0 : sideLength / 2;
+    properties.initialPoint.x = upLeftCorner.x < mouseDownPoint.x ? mouseDownPoint.x - minSide * properties.deltaX / 2 - translation :
+                                                                    mouseDownPoint.x + minSide * properties.deltaX / 2 - translation;
     if (upLeftCorner.y !== mouseDownPoint.y) {
-      return;
+      properties.initialPoint.y = mouseDownPoint.y - properties.deltaBorderY  / 2;
+      return ;
     }
+
     let index = 1;
     let decalage = upLeftCorner.y;
     let angleY = (Math.PI * 2) / properties.sides;
     while ((index <= Math.floor(properties.sides / 2)) && (properties.sides % 2 !== 0)) {
-      decalage += properties.sideLength * Math.sin(angleY);
+      decalage += sideLength * Math.sin(angleY);
       angleY += (Math.PI * 2) / properties.sides;
       index += 1;
     }
@@ -149,20 +143,20 @@ export class MathService {
     properties.initialPoint.y = (properties.sides % 2 === 0) ? evenPointY - properties.deltaBorderY / 2 :
                                                                decalage + properties.deltaBorderY  / 2;
   }
-  computeAllPoints(properties: PolygonCoords): Point[] {
+  computeAllPolygonPoints(properties: PolygonProperties): Point [] {
+    const sideLength = properties.radius * Math.sin(Math.PI / properties.sides);
     const points: Point[] = [];
     points.push(properties.initialPoint);
     let i = 1;
 
     while (i < properties.sides) {
       const lastPoint = { x: 0, y: 0 };
-      lastPoint.x = points[i - 1].x + properties.sideLength * Math.cos(properties.angle);
-      lastPoint.y = points[i - 1].y - properties.sideLength * Math.sin(properties.angle);
+      lastPoint.x = points[i - 1].x + sideLength * Math.cos(properties.angle);
+      lastPoint.y = points[i - 1].y - sideLength * Math.sin(properties.angle);
       points.push(new Point(lastPoint.x, lastPoint.y));
       properties.angle += (Math.PI * 2) / properties.sides;
       i += 1;
     }
-
     return points;
   }
 
@@ -174,14 +168,14 @@ export class MathService {
     strokeWidth: number): Point[] {
 
     const initialAngle = (sidesCount % 2 === 0) ? (Math.PI) / sidesCount : 0;
-    const properties: PolygonCoords = {deltaX: 1.0, deltaY: 1.0,
-                                      sides: sidesCount, sideLength: 1,
-                                      angle: initialAngle, radius: 0, initialPoint: new Point(0, 0),
-                                      deltaBorderX: strokeWidth * FACTEUR_BORDER_X[sidesCount - 1],
-                                      deltaBorderY: strokeWidth * FACTEUR_BORDER_Y[sidesCount - 1]};
+    const properties = {deltaX: 1.0, deltaY: 1.0,
+                        sides: sidesCount, angle: initialAngle,
+                        radius: 0, initialPoint: new Point(0, 0),
+                        deltaBorderX: strokeWidth * FACTEUR_BORDER_X[sidesCount - 1],
+                        deltaBorderY: strokeWidth * FACTEUR_BORDER_Y[sidesCount - 1]};
     this.computePolygonRadius(dimension, properties);
     this.computeInitialPointPosition(dimension, mouseDownPoint, upLeftCorner, properties);
-    return this.computeAllPoints(properties);
+    return this.computeAllPolygonPoints(properties);
   }
 
   getRectangleUpLeftCorner(initialPoint: Point, oppositePoint: Point, strokeWidth?: number): Point {
@@ -199,7 +193,6 @@ export class MathService {
     }
     return new Point(initialPoint.x + border, initialPoint.y + border);
   }
-
 
   getEllipseRadius(initialPoint: Point, oppositePoint: Point, border: number): Radius {
     const rectDims = this.getRectangleSize(initialPoint, oppositePoint);
