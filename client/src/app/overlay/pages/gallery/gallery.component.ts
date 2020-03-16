@@ -127,7 +127,6 @@ export class GalleryComponent implements AfterViewInit {
       const tag = draw.tags(i);
       newTagArray.push(tag);
       tempsAllTags.add(tag);
-      console.log('tag: ' + tag);
     }
 
     const svgElement = draw.svg();

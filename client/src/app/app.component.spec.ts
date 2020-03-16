@@ -26,6 +26,7 @@ import {
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { SvgShape } from './svg/svg-shape';
 import { SvgService } from './svg/svg.service';
+import { ColorBoxComponent } from './tool/color/color-box/color-box.component';
 import { ColorPanelComponent } from './tool/color/color-panel/color-panel.component';
 import { ColorPickerContentComponent } from './tool/color/color-panel/color-picker-content/color-picker-content.component';
 import { ColorPickerItemComponent } from './tool/color/color-panel/color-picker-item/color-picker-item.component';
@@ -35,7 +36,6 @@ import {
 } from './tool/tool-selector/tool-selector.service';
 import { Tool } from './tool/tool.enum';
 import { UndoRedoService } from './tool/undo-redo/undo-redo.service';
-import { ColorBoxComponent } from './tool/color/color-box/color-box.component';
 
 // tslint:disable: no-string-literal no-any no-magic-numbers
 describe('AppComponent', () => {

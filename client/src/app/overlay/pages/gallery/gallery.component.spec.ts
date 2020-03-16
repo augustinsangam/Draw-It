@@ -411,3 +411,4 @@ describe('GalleryComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 });
+// tslint:disable-next-line: max-file-line-count

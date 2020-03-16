@@ -114,7 +114,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
   }
 
   private onKeyUp(keyEv: KeyboardEvent): void {
-    if ((keyEv.code === KEYBOARDTOUCH.SHIFTLEFT || keyEv.code === KEYBOARDTOUCH.SHIFTRIGHT) && this.onDrag){
+    if ((keyEv.code === KEYBOARDTOUCH.SHIFTLEFT || keyEv.code === KEYBOARDTOUCH.SHIFTRIGHT) && this.onDrag) {
       this.getRectangle().dragRectangle(this.mouseDownPoint, this.currentPoint, this.service.thickness);
     }
   }
