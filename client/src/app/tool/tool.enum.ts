@@ -7,6 +7,7 @@ export enum Tool {
   Ellipse,
   Grid,
   Line,
+  PaintSeal,
   Pencil,
   Polygone,
   Rectangle,

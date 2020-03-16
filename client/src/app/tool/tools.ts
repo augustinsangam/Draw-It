@@ -1,4 +1,6 @@
-import { Type } from '@angular/core';
+import {
+  Type
+} from '@angular/core';
 import {
   ApplicatorLogicComponent
 } from './applicator/applicator-logic/applicator-logic.component';
@@ -36,6 +38,12 @@ import {
   GridPanelComponent
 } from './grid/grid-panel/grid-panel.component';
 import {
+  PaintSealLogicComponent
+} from './paint-seal/paint-seal-logic/paint-seal-logic.component';
+import {
+  PaintSealPanelComponent
+} from './paint-seal/paint-seal-panel/paint-seal-panel.component';
+import {
   PipetteLogicComponent
 } from './pipette/pipette-logic/pipette-logic.component';
 import {
@@ -71,9 +79,15 @@ import {
 import {
   RectanglePanelComponent
 } from './shape/rectangle/rectangle-panel/rectangle-panel.component';
-import { ToolLogicDirective } from './tool-logic/tool-logic.directive';
-import { ToolPanelDirective } from './tool-panel/tool-panel.directive';
-import { Tool } from './tool.enum';
+import {
+  ToolLogicDirective
+} from './tool-logic/tool-logic.directive';
+import {
+  ToolPanelDirective
+} from './tool-panel/tool-panel.directive';
+import {
+  Tool
+} from './tool.enum';
 
 export const TOOL_MANAGER =
   new Map<Tool, [Type<ToolPanelDirective>, Type<ToolLogicDirective>]>();
@@ -102,3 +116,5 @@ TOOL_MANAGER.set(Tool.Aerosol,
   [AerosolPanelComponent, AerosolLogicComponent]);
 TOOL_MANAGER.set(Tool.Grid,
   [GridPanelComponent, GridLogicComponent]);
+TOOL_MANAGER.set(Tool.PaintSeal,
+    [PaintSealPanelComponent, PaintSealLogicComponent]);

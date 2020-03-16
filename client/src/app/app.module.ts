@@ -142,6 +142,8 @@ import {
 import {
   RectanglePanelComponent
 } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
+import { PaintSealLogicComponent } from './tool/paint-seal/paint-seal-logic/paint-seal-logic.component';
+import { PaintSealPanelComponent } from './tool/paint-seal/paint-seal-panel/paint-seal-panel.component';
 
 @NgModule({
   declarations: [
@@ -188,7 +190,9 @@ import {
     GridLogicComponent,
     GridPanelComponent,
     SaveComponent,
-    TagsFilterComponent
+    TagsFilterComponent,
+    PaintSealLogicComponent,
+    PaintSealPanelComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -226,6 +230,8 @@ import {
     LineLogicComponent,
     LinePanelComponent,
     NewDrawComponent,
+    PaintSealLogicComponent,
+    PaintSealPanelComponent,
     PencilLogicComponent,
     PencilPanelComponent,
     PipetteLogicComponent,
