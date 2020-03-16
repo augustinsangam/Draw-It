@@ -29,18 +29,18 @@ describe('GridService', () => {
 
   });
 
-  it('should be createdd', () => {
+  it('#should be createdd', () => {
     expect(service).toBeTruthy();
   });
 
-  it('keyEvHandler should invert the "active" attribute when called with g', () => {
+  it('#keyEvHandler should invert the "active" attribute when called with g', () => {
     const expected = false;
     service.active = expected;
     service.keyEvHandler(GridKeys.G);
     expect(service.active).not.toEqual(expected);
   });
 
-  it('keyEvHandler should increase to the next multiple of 5 the value of squareSize if it is not ' +
+  it('#keyEvHandler should increase to the next multiple of 5 the value of squareSize if it is not ' +
     'superior or equal to the max squareSize', () => {
     const intialized = 42;
     const expected = 45;
@@ -50,7 +50,7 @@ describe('GridService', () => {
     expect(service.squareSize).toEqual(expected);
   });
 
-  it('keyEvHandler should not increase the value of squareSize if it is already at' +
+  it('#keyEvHandler should not increase the value of squareSize if it is already at' +
     'max square size', () => {
     const expected = service.MAX_SQUARESIZE;
     service.active = true;
@@ -59,7 +59,7 @@ describe('GridService', () => {
     expect(service.squareSize).toEqual(expected);
   });
 
-  it('keyEvHandler should decrease to the previous multiple of 5 the value of squareSize if it is ' +
+  it('#keyEvHandler should decrease to the previous multiple of 5 the value of squareSize if it is ' +
     'already a multiple of 5', () => {
     const intialized = 40;
     const expected = 35;
@@ -69,7 +69,7 @@ describe('GridService', () => {
     expect(service.squareSize).toEqual(expected);
   });
 
-  it('keyEvHandler should not decrease the value of squareSize if it is already at' +
+  it('#keyEvHandler should not decrease the value of squareSize if it is already at' +
     'min square size', () => {
     const expected = service.MIN_SQUARESIZE;
     service.active = true;
@@ -78,7 +78,7 @@ describe('GridService', () => {
     expect(service.squareSize).toEqual(expected);
   });
 
-  it('keyEvHandler should not decrease the value of squareSize if it is already at' +
+  it('#keyEvHandler should not decrease the value of squareSize if it is already at' +
     'not a multiple of 5', () => {
     const intialized = 42;
     const expected = 40;
@@ -88,7 +88,7 @@ describe('GridService', () => {
     expect(service.squareSize).toEqual(expected);
   });
 
-  it('keyEvHandler should not do anything if a key that is not a ' +
+  it('#keyEvHandler should not do anything if a key that is not a ' +
     'gridKey', () => {
     const expActive = true;
     const expSquareSize = 42;
@@ -99,7 +99,7 @@ describe('GridService', () => {
     expect(service.squareSize).toEqual(expSquareSize);
   });
 
-  it('handleGrid should remove the grid if it is not undefined, ' +
+  it('#handleGrid should remove the grid if it is not undefined, ' +
     'in order to refresh the grid', () => {
     service.grid = service['renderer'].createElement(
       'path',

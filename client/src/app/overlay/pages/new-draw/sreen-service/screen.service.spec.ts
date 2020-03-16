@@ -14,7 +14,7 @@ describe('ScreenService', () => {
     service = getTestBed().get(ScreenServiceModule.ScreenService);
   });
 
-  it('should be created', () => {
+  it('#should be created', () => {
     expect(service).toBeTruthy();
   });
 

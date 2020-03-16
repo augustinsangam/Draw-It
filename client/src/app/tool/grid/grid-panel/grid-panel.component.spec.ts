@@ -65,11 +65,11 @@ describe('GridPanelComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('onSquareSizeChange should call the pacthValue and handleGrid methods', () => {
+  it('#onSquareSizeChange should call the pacthValue and handleGrid methods', () => {
     component['squareSizeSlider'] = { value: 5 } as unknown as MatSlider;
     const spyOnHandle = spyOn(component['service'], 'handleGrid');
     const spyOnPatch = spyOn(component['gridForm'], 'patchValue');
@@ -78,7 +78,7 @@ describe('GridPanelComponent', () => {
     expect(spyOnPatch).toHaveBeenCalled();
   });
 
-  it('onOpacityChange should call the patchValue and handleGrid methods', () => {
+  it('#onOpacityChange should call the patchValue and handleGrid methods', () => {
     component['opacitySlider'] = { value: 5 } as unknown as MatSlider;
     const spyOnHandle = spyOn(component['service'], 'handleGrid');
     const spyOnPatch = spyOn(component['gridForm'], 'patchValue');
@@ -87,7 +87,7 @@ describe('GridPanelComponent', () => {
     expect(spyOnPatch).toHaveBeenCalled();
   });
 
-  it('onActiveChange should call the patchValue and handleGrid methods', () => {
+  it('#onActiveChange should call the patchValue and handleGrid methods', () => {
     component['activeToggleRef'] = { checked: true } as unknown as MatSlideToggle;
     const spyOnHandle = spyOn(component['service'], 'handleGrid');
     const spyOnPatch = spyOn(component['gridForm'], 'patchValue');

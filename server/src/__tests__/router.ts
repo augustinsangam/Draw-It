@@ -32,7 +32,7 @@ describe('router', () => {
 		log.setLevel('silent');
 	});
 
-	it('methodGet should fail on db.all error', async () => {
+	it('#methodGet should fail on db.all error', async () => {
 		const errMsg = 'foobar';
 
 		const dbAllStub = sinon.stub(db, 'all');
@@ -47,7 +47,7 @@ describe('router', () => {
 		dbAllStub.restore();
 	});
 
-	it('methodGet should returns all entries', async () => {
+	it('#methodGet should returns all entries', async () => {
 		const dbAllStub = sinon.stub(db, 'all');
 		const name = 'correct name';
 		const tag = 'correct tag';
@@ -98,14 +98,14 @@ describe('router', () => {
 		dbAllStub.restore();
 	});
 
-	it('methodPost should reject non-binary request', async () =>
+	it('#methodPost should reject non-binary request', async () =>
 		supertest(app)
 			.post('/draw')
 			.expect(StatusCode.BAD_REQUEST)
 			.expect('Content-Type', ContentType.PLAIN_UTF8)
 			.then(({ text }) => chai.expect(text).to.equal('Requète incorrecte')));
 
-	it('methodPost should reject wrong request', async () => {
+	it('#methodPost should reject wrong request', async () => {
 		const errMsg = 'foobar';
 
 		const verifyStub = sinon.stub(router as any, 'verify');
@@ -123,7 +123,7 @@ describe('router', () => {
 		verifyStub.restore();
 	});
 
-	it('methodPost should fail on nextID error', async () => {
+	it('#methodPost should fail on nextID error', async () => {
 		const stubVerify = sinon.stub(router as any, 'verify');
 		stubVerify.returns(null);
 
@@ -144,7 +144,7 @@ describe('router', () => {
 		stubDbNext.restore();
 	});
 
-	it('methodPost should insert', async () => {
+	it('#methodPost should insert', async () => {
 		const stubVerify = sinon.stub(router as any, 'verify');
 		stubVerify.returns(null);
 
@@ -177,13 +177,13 @@ describe('router', () => {
 		stubDbInsert.restore();
 	});
 
-	it('methodPut should reject non-binary request', async () =>
+	it('#methodPut should reject non-binary request', async () =>
 		supertest(app)
 			.put(`/draw/${ANSWER_TO_LIFE}`)
 			.expect('Content-Type', ContentType.PLAIN_UTF8)
 			.then(({ text }) => chai.expect(text).to.equal('Requète incorrecte')));
 
-	it('methodPut should reject id zero', async () => {
+	it('#methodPut should reject id zero', async () => {
 		const stubVerify = sinon.stub(router as any, 'verify');
 		stubVerify.returns(null);
 
@@ -194,7 +194,7 @@ describe('router', () => {
 			.then(() => stubVerify.restore());
 	});
 
-	it('methodPut should reject negative id', async () => {
+	it('#methodPut should reject negative id', async () => {
 		const stubVerify = sinon.stub(router as any, 'verify');
 		stubVerify.returns(null);
 
@@ -205,7 +205,7 @@ describe('router', () => {
 			.then(() => stubVerify.restore());
 	});
 
-	it('methodPut should reject wrong request', async () => {
+	it('#methodPut should reject wrong request', async () => {
 		const errMsg = 'foobar';
 
 		const verifyStub = sinon.stub(router as any, 'verify');
@@ -223,7 +223,7 @@ describe('router', () => {
 		verifyStub.restore();
 	});
 
-	it('methodPut should fail on replace error', async () => {
+	it('#methodPut should fail on replace error', async () => {
 		const stubVerify = sinon.stub(router as any, 'verify');
 		stubVerify.returns(null);
 
@@ -241,7 +241,7 @@ describe('router', () => {
 		stubDbReplace.restore();
 	});
 
-	it('methodPut should replace', async () => {
+	it('#methodPut should replace', async () => {
 		const stubVerify = sinon.stub(router as any, 'verify');
 		stubVerify.returns(null);
 
@@ -263,7 +263,7 @@ describe('router', () => {
 		stubDbReplace.restore();
 	});
 
-	it('methodDelete should fail on delete error', async () => {
+	it('#methodDelete should fail on delete error', async () => {
 		const stubDbDelete = sinon.stub(db, 'delete');
 		stubDbDelete.rejects('foobar');
 
@@ -279,7 +279,7 @@ describe('router', () => {
 		stubDbDelete.restore();
 	});
 
-	it('methodDelete should delete', async () => {
+	it('#methodDelete should delete', async () => {
 		const stubDbDelete = sinon.stub(db, 'delete');
 
 		await supertest(app)

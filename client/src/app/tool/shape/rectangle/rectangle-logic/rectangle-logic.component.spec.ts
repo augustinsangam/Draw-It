@@ -51,11 +51,11 @@ describe('RectangleLogicComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  // it('mousedown should call the initRectangle function', fakeAsync(() => {
+  // it('#mousedown should call the initRectangle function', fakeAsync(() => {
   //   const spy1 = spyOn<any>(component, 'initRectangle').and.callThrough();
   //   component.svgStructure.root.dispatchEvent(
   //     createClickMouseEvent('mousedown')
@@ -66,7 +66,7 @@ describe('RectangleLogicComponent', () => {
   //   tick(500);
   // }));
 
-  // it('initRectangle should initialise all the atributes ', () => {
+  // it('#initRectangle should initialise all the atributes ', () => {
   //   expect(component['rectangles']).toEqual([]);
   //   expect(component['onDrag']).toBeFalsy();
   //   const event = createClickMouseEvent('mousedown');
@@ -79,7 +79,7 @@ describe('RectangleLogicComponent', () => {
   //   expect(component['mouseDownPoint']).toEqual(pointExpected);
   // });
 
-  // it('the atributes are not initialised when the wrong button is clicked',
+  // it('#the atributes are not initialised when the wrong button is clicked',
   //   () => {
   //     expect(component['rectangles']).toEqual([]);
   //     expect(component['onDrag']).toBeFalsy();
@@ -97,7 +97,7 @@ describe('RectangleLogicComponent', () => {
   //     expect(component['onDrag']).toBeFalsy();
   //   });
 
-  // it('the listeners should handle key downs', () => {
+  // it('#the listeners should handle key downs', () => {
   //   const globKeyEv = new KeyboardEvent('keydown');
   //   spyOn<any>(component, 'onKeyDown').and.callFake((keyEv: KeyboardEvent) =>
   //     expect(keyEv).toBe(globKeyEv)
@@ -106,7 +106,7 @@ describe('RectangleLogicComponent', () => {
   //   component.svgStructure.root.dispatchEvent(globKeyEv);
   // });
 
-  // it('the listeners should handle key ups', () => {
+  // it('#the listeners should handle key ups', () => {
   //   const globKeyEv = new KeyboardEvent('keyup');
   //   spyOn<any>(component, 'onKeyUp').and.callFake((keyEv: KeyboardEvent) =>
   //     expect(keyEv).toBe(globKeyEv)
@@ -115,18 +115,18 @@ describe('RectangleLogicComponent', () => {
   //   component.svgStructure.root.dispatchEvent(globKeyEv);
   // });
 
-  // it('the ngOnInit initialise the arrow of listeners', () => {
+  // it('#the ngOnInit initialise the arrow of listeners', () => {
   //   component.ngOnInit();
   //   expect(component['allListeners'].length).toEqual(5);
   // });
 
-  // it('the getPath() should return undifined if the index is out of bound',
+  // it('#the getPath() should return undifined if the index is out of bound',
   //   () => {
   //     component['initRectangle'](createClickMouseEvent('mousedown'));
   //     expect(component['getRectangle']()).toBeUndefined();
   //   });
 
-  // it('the rectangle css is only defined by the rectangleService'
+  // it('#the rectangle css is only defined by the rectangleService'
   //   + 'and the colorService', () => {
   //     const event = createClickMouseEvent('mousedown');
   //     component['initRectangle'](event);
@@ -145,7 +145,7 @@ describe('RectangleLogicComponent', () => {
   //     expect(spy).not.toHaveBeenCalledWith(style);
   //   });
 
-  // it('mouseMove should call the viewTemporaryForm function', fakeAsync(() => {
+  // it('#mouseMove should call the viewTemporaryForm function', fakeAsync(() => {
   //   const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
   //   component.svgStructure.root.dispatchEvent(
   //     createClickMouseEvent('mousedown')
@@ -159,7 +159,7 @@ describe('RectangleLogicComponent', () => {
   //   tick(1000);
   // }));
 
-  // it('mouseMove should not do anything if not on drag', fakeAsync(() => {
+  // it('#mouseMove should not do anything if not on drag', fakeAsync(() => {
   //   const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
   //   component.svgStructure.root.dispatchEvent(
   //     createClickMouseEvent('mousedown')
@@ -174,7 +174,7 @@ describe('RectangleLogicComponent', () => {
   //   tick(500);
   // }));
 
-  // it('viewTemporaryForm should call the function simulateRectangle'
+  // it('#viewTemporaryForm should call the function simulateRectangle'
   //   + 'on mouseMove', fakeAsync(() => {
   //     component['initRectangle'](createClickMouseEvent('mousedown'));
   //     component.svgStructure.root.dispatchEvent(
@@ -193,7 +193,7 @@ describe('RectangleLogicComponent', () => {
   //     tick(500);
   //   }));
 
-  // it('viewTemporaryForm should call the function simulateSquare'
+  // it('#viewTemporaryForm should call the function simulateSquare'
   //   + 'when shift is pressed ', fakeAsync(() => {
   //     component['initRectangle'](createClickMouseEvent('mousedown'));
   //     // On a explicitement besoin du any car la méthode est privée
@@ -209,7 +209,7 @@ describe('RectangleLogicComponent', () => {
   //     expect(spy1).toHaveBeenCalled();
   //   }));
 
-  // it('a pressed shift should call simulateSquare', () => {
+  // it('#a pressed shift should call simulateSquare', () => {
   //   component['initRectangle'](createClickMouseEvent('mousedown'));
   //   const event = new KeyboardEvent('window:keydown', {
   //     code: 'ShiftRight',
@@ -278,7 +278,7 @@ describe('RectangleLogicComponent', () => {
   //   expect(spy).toHaveBeenCalled();
   // });
 
-  // it('mouseUp should call viewTemporaryForm and setOpacity', fakeAsync(() => {
+  // it('#mouseUp should call viewTemporaryForm and setOpacity', fakeAsync(() => {
   //   component['initRectangle'](createClickMouseEvent('mousedown'));
   //   const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
   //   spyOn<any>(component, 'getRectangle').and.callThrough();
@@ -296,7 +296,7 @@ describe('RectangleLogicComponent', () => {
   //   tick(500);
   // }));
 
-  // it('mouseUp should not do anything if its not on drag', fakeAsync(() => {
+  // it('#mouseUp should not do anything if its not on drag', fakeAsync(() => {
   //   component['initRectangle'](createClickMouseEvent('mousedown'));
   //   const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
   //   spyOn<any>(component, 'getRectangle').and.callThrough();
@@ -315,7 +315,7 @@ describe('RectangleLogicComponent', () => {
   //   tick(500);
   // }));
 
-  // it('if the fill atribute is off, the opacity is null', fakeAsync(() => {
+  // it('#if the fill atribute is off, the opacity is null', fakeAsync(() => {
   //   component['initRectangle'](createClickMouseEvent('mousedown'));
   //   spyOn<any>(component, 'getRectangle').and.callThrough();
   //   const spy1 = spyOn<any>(
@@ -345,7 +345,7 @@ describe('RectangleLogicComponent', () => {
   //   expect(spy).toHaveBeenCalled();
   // });
 
-  // it('ngOnDestroy should set "called" to true ' +
+  // it('#ngOnDestroy should set "called" to true ' +
   //   '(= call every listener´s functions)',
   //   () => {
   //     let called = false;

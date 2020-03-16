@@ -29,12 +29,12 @@ describe('server', () => {
 		server = myContainer.get<Server>(TYPES.Server);
 	});
 
-	it('promisifyServerClose should return a promise', async () =>
+	it('#promisifyServerClose should return a promise', async () =>
 		chai
 			.expect(server['promisifyServerClose']())
 			.to.eventually.be.rejectedWith('Server is not running.'));
 
-	it('close should destroy all active sockets', async () => {
+	it('#close should destroy all active sockets', async () => {
 		const openedSockets = [new SocketMock(), new SocketMock()];
 		const openedSocketsMock = sinon.stub(server as any, 'openedSockets');
 		openedSocketsMock.value(openedSockets);
@@ -52,7 +52,7 @@ describe('server', () => {
 		openedSocketsMock.restore();
 	});
 
-	it('launch should call db.connect', async () => {
+	it('#launch should call db.connect', async () => {
 		const dbConnectStub = sinon.stub(server['db'], 'connect');
 		dbConnectStub.resolves();
 
@@ -65,7 +65,7 @@ describe('server', () => {
 		dbConnectStub.restore();
 	});
 
-	it('launch should call server.listen', async () => {
+	it('#launch should call server.listen', async () => {
 		const dbConnectStub = sinon.stub(server['db'], 'connect');
 		dbConnectStub.resolves();
 
@@ -78,7 +78,7 @@ describe('server', () => {
 		dbConnectStub.restore();
 	});
 
-	it('should add socket on connection', async () => {
+	it('#should add socket on connection', async () => {
 		const app = express();
 		app.get('/', (_, res) => res.sendStatus(StatusCode.OK));
 		const appCallbackStub = sinon.stub(server['app'], 'callback');
@@ -94,7 +94,7 @@ describe('server', () => {
 		appCallbackStub.restore();
 	});
 
-	it('should remove socket on close', async () => {
+	it('#should remove socket on close', async () => {
 		const app = express();
 		app.get('/', (_, res) => res.sendStatus(StatusCode.OK));
 		const appCallbackStub = sinon.stub(server['app'], 'callback');

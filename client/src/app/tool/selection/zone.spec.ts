@@ -9,7 +9,7 @@ describe('Zone', () => {
     instance = new Zone(5, 10, 5, 10);
   });
 
-  it('should be created', () => {
+  it('#should be created', () => {
     expect(instance).toBeTruthy();
   });
 

@@ -14,12 +14,12 @@ describe('main', () => {
 
 	before(() => (server = myContainer.get<Server>(TYPES.Server)));
 
-	it('main should launch all application', async () =>
+	it('#main should launch all application', async () =>
 		main(server)(new Promise((resolve) => setTimeout(resolve, 5000)))).timeout(
 		7000,
 	);
 
-	it('main should not abort program on launch fail', async () => {
+	it('#main should not abort program on launch fail', async () => {
 		const serverLaunchStub = sinon.stub(server, 'launch');
 		serverLaunchStub.rejects('foobar');
 

@@ -9,7 +9,7 @@ describe('Point', () => {
     expect(point).toBeTruthy();
   });
 
-  it('Equals works well', () => {
+  it('#Equals works well', () => {
     const targetPoint = new Point(5 , 10);
     expect(targetPoint).toBeTruthy();
     const testCases: [Point, boolean][] = [

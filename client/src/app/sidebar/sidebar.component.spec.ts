@@ -41,11 +41,11 @@ describe('SidebarComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call setTool on tool change', () => {
+  it('#should call setTool on tool change', () => {
     // NOTE: Asynchronous call of callback is handled
     // automatically because the spy will wait until
     // the function is executed.
@@ -59,7 +59,7 @@ describe('SidebarComponent', () => {
     component['toolSelectorService'].set(Tool.Line);
   });
 
-  it('setTool with second argument null should do nothing', () => {
+  it('#setTool with second argument null should do nothing', () => {
     const oldHtmlEl = document.createElement('a');
     oldHtmlEl.classList.add('selected');
     const oldElRef = new ElementRef(oldHtmlEl);
@@ -74,7 +74,7 @@ describe('SidebarComponent', () => {
     expect(newHtmlEl.classList.contains('selected')).toBeFalsy();
   });
 
-  it('setTool with tools none should do nothing', () => {
+  it('#setTool with tools none should do nothing', () => {
     const oldHtmlEl = document.createElement('a');
     oldHtmlEl.classList.add('selected');
     const oldElRef = new ElementRef(oldHtmlEl);
@@ -89,7 +89,7 @@ describe('SidebarComponent', () => {
     expect(newHtmlEl.classList.contains('selected')).toBeFalsy();
   });
 
-  it('setTool should remove .selected from old element' +
+  it('#setTool should remove .selected from old element' +
     'and append .selected to new element', () => {
     const oldHtmlEl = document.createElement('a');
     oldHtmlEl.classList.add('selected');
