@@ -10,7 +10,7 @@ import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.ser
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ExportComponent, FormatChoice, FilterChoice } from './export.component';
 
-fdescribe('ExportComponent', () => {
+describe('ExportComponent', () => {
   let component: ExportComponent;
   let fixture: ComponentFixture<ExportComponent>;
 
@@ -80,6 +80,11 @@ fdescribe('ExportComponent', () => {
     const spy = spyOn<any>(component, 'createView');
     component.ngAfterViewInit();
     expect(spy).toHaveBeenCalledTimes(1);
+  }));
+
+  it('#initializeFiltersChooser should add 6 entry to the map', fakeAsync(() => {
+    component.initializeFiltersChooser();
+    expect(component['filtersChooser'].size).toEqual(6);
   }));
 
   it('#getFormats() should return an array of FormatChoice', fakeAsync(() => {
@@ -193,16 +198,46 @@ fdescribe('ExportComponent', () => {
     expect(spy).toHaveBeenCalledTimes(1);
   }));
 
-  it('#createView return true when the viewZone exist', fakeAsync(() => {
-    const creationResult = component.createView('');
-    expect(creationResult).toBeTruthy();
+  it('#createView should add element into to the viewZone', () => {
+    component.createView('');
+    const theViewZone = component['svgView'].nativeElement;
+    const picture = theViewZone.lastElementChild as Element;
+    expect(picture.getAttribute('id')).toEqual('pictureView');
+  });
+
+  it('#createView should add without removing when the element isnt the picture', () => {
+    component.createView('');
+    const theViewZone = component['svgView'].nativeElement;
+    const picture = theViewZone.lastElementChild as Element;
+    picture.setAttribute('id', 'test');
+    const picture2 = theViewZone.lastElementChild as Element;
+    picture2.setAttribute('id', 'test');
+    theViewZone.appendChild(picture2);
+    component.createView('');
+    const picture3 = theViewZone.lastElementChild as Element;
+    expect(picture3.getAttribute('id')).toEqual('pictureView');
+    
+  });
+
+  it('#exportDrawing should call exportSVG when we export as SVG', fakeAsync(() => {
+    const spy = spyOn<any>(component, 'exportSVG');
+    component.exportDrawing(FormatChoice.Svg);
+    expect(spy).toHaveBeenCalled();
   }));
 
-  // it('#createView return false when the viewZone didnt exist', fakeAsync(() => {
-  //   component['svgView'].nativeElement = null;
-  //   const creationResult = component.createView('');
-  //   expect(creationResult).toBeTruthy();
-  // }));
+  it('#exportDrawing shouldnt call exportSVG when we export as png', fakeAsync(() => {
+    // const spy = spyOn<any>(component, 'exportSVG');
+    // spyOn<any>(component, 'downloadImage');
+    // const pictureUrl = 'url';
+    // const image = {
+    //   src: pictureUrl,
+    //   onload: () => {}
+    // } as unknown as HTMLImageElement;
+    // spyOn(component['renderer'], 'createElement').and.callFake(() =>  image);
+    
+    // component.exportDrawing(FormatChoice.Png);
+    // expect(spy).toHaveBeenCalledTimes(0);
+  }));
 
   it('#configurePicture should make good id configuration', fakeAsync(() => {
     const picture = component['renderer'].createElement('picture', 'http://www.w3.org/2000/svg');

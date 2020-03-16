@@ -88,7 +88,7 @@ export class ExportComponent implements AfterViewInit {
   }
 
   protected onConfirm(): void {
-    this.exportDrawing();
+    this.exportDrawing(this.form.controls.format.value);
     this.dialogRef.close();
   }
 
@@ -165,19 +165,19 @@ export class ExportComponent implements AfterViewInit {
     this.downloadImage(uri);
   }
 
-  exportDrawing(): HTMLCanvasElement {
+  exportDrawing(format: FormatChoice): void {
     this.resetInnerSVG();
     const canvas: HTMLCanvasElement = this.generateCanvas();
-    const format = this.form.controls.format.value;
     if (format as FormatChoice === FormatChoice.Svg) {
       this.exportSVG();
     } else {
       const canvasContext = canvas.getContext('2d');
       const URL = self.URL || self;
-      const img = new Image();
+      // const img = new Image();
+      const img: HTMLImageElement = this.renderer.createElement('img');
       const svgBlob = this.convertToBlob();
       const url = URL.createObjectURL(svgBlob);
-
+      img.src = url;
       img.onload = () => {
         if (canvasContext) {
           canvasContext.drawImage(img, 0, 0);
@@ -186,12 +186,10 @@ export class ExportComponent implements AfterViewInit {
           URL.revokeObjectURL(url);
         }
       };
-      img.src = url;
     }
-    return canvas;
   }
 
-  createView(filterName: string): boolean {
+  createView(filterName: string): void {
     this.pictureView = this.renderer.createElement('image', SVG_NS);
     const viewZone = this.svgView.nativeElement;
     this.configurePicture(this.pictureView, filterName);
@@ -201,9 +199,7 @@ export class ExportComponent implements AfterViewInit {
         viewZone.removeChild(child);
       }
       this.renderer.appendChild(viewZone, this.pictureView);
-      return true;
     }
-    return false;
 
   }
 
