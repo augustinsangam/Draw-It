@@ -2,7 +2,6 @@ import {
   Component,
   ComponentFactoryResolver,
   ComponentRef,
-  ElementRef,
   HostBinding,
   OnInit,
   Type,
@@ -16,7 +15,6 @@ import {
   ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
 
-import { EventManager } from '@angular/platform-browser';
 import { ColorBoxComponent } from '../tool/color/color-box/color-box.component';
 import * as Tools from '../tool/tools';
 
@@ -41,13 +39,10 @@ export class PanelComponent implements OnInit {
 
   private readonly components: Type<ToolPanelDirective>[];
   private childWidth: number;
-  private currentTool: Tool;
 
   constructor(
-    private elRef: ElementRef,
     private readonly componentFactoryResolver: ComponentFactoryResolver,
     private readonly toolSelectorService: ToolSelectorService,
-    private readonly eventManager: EventManager
   ) {
     this.components = new Array(Tool._Len);
     for ( const entry of Tools.TOOL_MANAGER ) {
@@ -60,15 +55,6 @@ export class PanelComponent implements OnInit {
   ngOnInit(): void {
     this.toolSelectorService.onSame(() => this.toggle());
     this.toolSelectorService.onChange((tool: Tool) => this.setTool(tool));
-    this.eventManager.addEventListener(
-      this.elRef.nativeElement,
-      'click',
-      (event: MouseEvent) => {
-        if (event.target === this.elRef.nativeElement) {
-          this.onBoxClicked(false);
-        }
-      }
-    );
   }
 
   private toggle(): void {
@@ -80,7 +66,6 @@ export class PanelComponent implements OnInit {
   }
 
   private setTool(tool: Tool): ComponentRef<ToolPanelDirective> | null {
-    this.currentTool = tool;
     if (tool < Tool._Len) {
       this.viewContainerRef.clear();
       const component = this.components[tool];
@@ -99,18 +84,7 @@ export class PanelComponent implements OnInit {
 
   addColorBox(): void {
     const factory = this.componentFactoryResolver.resolveComponentFactory(ColorBoxComponent);
-    const componentInstance = this.chatBoxRef.createComponent(factory).instance;
-    componentInstance.expandStatus.subscribe((value) => {
-      this.onBoxClicked(value);
-    });
-  }
-
-  onBoxClicked(isExpanded: boolean): void {
-    if (isExpanded) {
-      this.viewContainerRef.clear();
-    } else {
-      this.setTool(this.currentTool);
-    }
+    this.chatBoxRef.createComponent(factory);
   }
 
   private setWidthOfChild(width: number): void {
