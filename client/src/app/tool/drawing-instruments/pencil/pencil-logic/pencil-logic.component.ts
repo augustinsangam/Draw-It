@@ -42,15 +42,12 @@ export class PencilLogicComponent extends PencilBrushCommon
     this.svgStructure.root.style.cursor = 'crosshair';
   }
 
-  // TODO : RENDERER
-
   protected configureSvgElement(element: SVGElement): void {
-    element.setAttribute('d', this.stringPath);
-    element.setAttribute('stroke', this.colorService.primaryColor);
-    element.setAttribute('fill', this.colorService.primaryColor);
-    element.setAttribute('stroke-linecap', this.strokeLineCap);
-    element.setAttribute(
-      'stroke-width', this.pencilService.thickness.toString()
+    this.renderer.setAttribute(element, 'd', this.stringPath);
+    this.renderer.setAttribute(element, 'stroke', this.colorService.primaryColor);
+    this.renderer.setAttribute(element, 'fill', this.colorService.primaryColor);
+    this.renderer.setAttribute(element, 'stroke-linecap', this.strokeLineCap);
+    this.renderer.setAttribute(element, 'stroke-width', this.pencilService.thickness.toString()
     );
   }
 
