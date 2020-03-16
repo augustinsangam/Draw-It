@@ -4,7 +4,8 @@ import { Overlay } from '@angular/cdk/overlay';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { Draw } from 'src/app/communication/data_generated';
+import { flatbuffers } from 'flatbuffers';
+import { Draw, DrawBuffer, Draws } from 'src/app/communication/data_generated';
 import { MaterialModule } from 'src/app/material.module';
 import { ConfirmationDialogComponent } from '../new-draw/confirmation-dialog.component';
 import { DeleteConfirmationDialogComponent } from './deleteconfirmation-dialog.component';
@@ -97,7 +98,81 @@ describe('GalleryComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('#newDraw should return tempsAllTags with added tags ad add the draw to galleryDrawTable', () => {
+  it('#ResponsePromiseHandler should call createGalleryDrawsTable', () => {
+    // Creer dessin 1
+    const fbBuilder1 = new flatbuffers.Builder();
+    const nameOffset = fbBuilder1.createString('test1');
+    const tagOffset = fbBuilder1.createString('tag1');
+    const tagsOffset = Draw.createTagsVector(fbBuilder1, [tagOffset]);
+    Draw.start(fbBuilder1);
+    Draw.addName(fbBuilder1, nameOffset);
+    Draw.addTags(fbBuilder1, tagsOffset);
+    fbBuilder1.finish(Draw.end(fbBuilder1));
+
+    // Creer buffer du dessin 1
+    const fbBuilder = new flatbuffers.Builder();
+    const bufOffset = DrawBuffer.createBufVector(
+        fbBuilder,
+        fbBuilder1.asUint8Array(),
+    );
+    const drawBufOffset1 = DrawBuffer.create(fbBuilder, 0, bufOffset);
+
+    // create Draws.drawBuffers
+    const drawBuffers = Draws.createDrawBuffersVector(
+        fbBuilder,
+        [drawBufOffset1],
+    );
+    // create Draws
+    const draws = Draws.create(fbBuilder, drawBuffers);
+    fbBuilder.finish(draws);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+
+    const spy = spyOn<any>(component, 'createGalleryDrawsTable');
+
+    component['responsePromiseHandler'](fbByteBuffer);
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  fit('#createGalleryDrawsTable should call allTags.next() with "[\'tag1\']"', () => {
+     // Creer dessin 1
+    const fbBuilder1 = new flatbuffers.Builder();
+    const nameOffset = fbBuilder1.createString('test1');
+    const tagOffset = fbBuilder1.createString('tag1');
+    const tagsOffset = Draw.createTagsVector(fbBuilder1, [tagOffset]);
+    Draw.start(fbBuilder1);
+    Draw.addName(fbBuilder1, nameOffset);
+    Draw.addTags(fbBuilder1, tagsOffset);
+    fbBuilder1.finish(Draw.end(fbBuilder1));
+
+    // Creer buffer du dessin 1
+    const fbBuilder = new flatbuffers.Builder();
+    const bufOffset = DrawBuffer.createBufVector(
+        fbBuilder,
+        fbBuilder1.asUint8Array(),
+    );
+    const drawBufOffset1 = DrawBuffer.create(fbBuilder, 0, bufOffset);
+
+    // create Draws.drawBuffers
+    const drawBuffers = Draws.createDrawBuffersVector(
+        fbBuilder,
+        [drawBufOffset1],
+    );
+    // create Draws
+    const draws = Draws.create(fbBuilder, drawBuffers);
+    fbBuilder.finish(draws);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+
+    const spy = spyOn(component['allTags'], 'next');
+
+    component['createGalleryDrawsTable'](Draws.getRoot(fbByteBuffer));
+
+    expect(spy).toHaveBeenCalledWith(['tag1']);
+  });
+
+  it('#newDraw should return tempsAllTags with added tags and add the draw to galleryDrawTable', () => {
 
     const draw = {
       name: () => 'test',
@@ -137,6 +212,33 @@ describe('GalleryComponent', () => {
 
     expect(arrayTempsAllTags).toEqual(['test1', 'test4', 'test2', 'test3']);
     expect(component['galleryDrawTable']).toContain(expectedDraw);
+  });
+
+  it('#newDraw should return tempsAllTags with added tags but don\'t add the draw to galleryDrawTable', () => {
+    const draw = {
+      name: () => 'test',
+      height: () => 150,
+      width: () => 300,
+      color: () => '#420069',
+      svg: () => null,
+      tagsLength: () => 3,
+      tags: (index: number) => ['test1', 'test2', 'test3'][index]
+    } as unknown as Draw;
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg',
+    'svg:g') as SVGGElement;
+    spyOn(component['communicationService'], 'decodeElementRecursively').and.callFake(() => {
+      return svg;
+    });
+
+    let tempsAllTags = new Set<string>(['test1', 'test4']);
+
+    tempsAllTags = component['newDraw'](draw, 0, tempsAllTags);
+
+    const arrayTempsAllTags = Array.from(tempsAllTags);
+
+    expect(arrayTempsAllTags).toEqual(['test1', 'test4', 'test2', 'test3']);
+    expect(component['galleryDrawTable']).toEqual([]);
   });
 
   it('#ngAfterViewInit should call ajustImagesWidth when screenService.size changes', () => {
