@@ -70,20 +70,16 @@ export class BrushLogicComponent extends PencilBrushCommon
       mouseUpListen,
       mouseLeaveListen
     ];
-    // TODO renderer partout
     this.svgStructure.root.style.cursor = 'crosshair';
-
   }
 
   protected configureSvgElement(element: SVGElement): void {
-    element.setAttribute('d', this.stringPath);
-    element.setAttribute('stroke', this.colorService.primaryColor);
-    element.setAttribute('fill', this.colorService.primaryColor);
-    element.setAttribute('filter', `url(#${this.brushService.texture})`);
-    element.setAttribute('stroke-linecap', this.strokeLineCap);
-    element.setAttribute(
-      'stroke-width', this.brushService.thickness.toString()
-    );
+    this.renderer.setAttribute(element, 'd', this.stringPath);
+    this.renderer.setAttribute(element, 'stroke', this.colorService.primaryColor);
+    this.renderer.setAttribute(element, 'fill', this.colorService.primaryColor);
+    this.renderer.setAttribute(element, 'filter', `url(#${this.brushService.texture})`);
+    this.renderer.setAttribute(element, 'stroke-linecap', this.strokeLineCap);
+    this.renderer.setAttribute(element, 'stroke-width', this.brushService.thickness.toString());
     element.classList.add(this.brushService.texture);
   }
 

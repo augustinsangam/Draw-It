@@ -200,7 +200,6 @@ export class MathService {
     return new Point(initialPoint.x + border, initialPoint.y + border);
   }
 
-
   getEllipseRadius(initialPoint: Point, oppositePoint: Point, border: number): Radius {
     const rectDims = this.getRectangleSize(initialPoint, oppositePoint);
     let radius = {
