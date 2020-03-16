@@ -10,7 +10,7 @@ import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.ser
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ExportComponent, FormatChoice, FilterChoice } from './export.component';
 
-describe('ExportComponent', () => {
+fdescribe('ExportComponent', () => {
   let component: ExportComponent;
   let fixture: ComponentFixture<ExportComponent>;
 
@@ -83,7 +83,7 @@ describe('ExportComponent', () => {
   }));
 
   it('#initializeFiltersChooser should add 6 entry to the map', fakeAsync(() => {
-    component.initializeFiltersChooser();
+    component['initializeFiltersChooser']();
     expect(component['filtersChooser'].size).toEqual(6);
   }));
 
@@ -105,7 +105,7 @@ describe('ExportComponent', () => {
   }));
 
   it('#onConfirm should close the dialogRef', () => {
-    spyOn(component, 'exportDrawing');
+    spyOn<any>(component, 'exportDrawing');
     component['onConfirm']();
     expect(mockDialogRef.close).toHaveBeenCalled();
   });
@@ -129,10 +129,10 @@ describe('ExportComponent', () => {
       height: 245
     };
     component['svgService'].shape = svgShapeTest;
-    component.initializeElements();
-    expect(component.svgShape.color).toEqual(svgShapeTest.color);
-    expect(component.svgShape.width).toEqual(svgShapeTest.width);
-    expect(component.svgShape.height).toEqual(svgShapeTest.height);
+    component['initializeElements']();
+    expect(component['svgShape'].color).toEqual(svgShapeTest.color);
+    expect(component['svgShape'].width).toEqual(svgShapeTest.width);
+    expect(component['svgShape'].height).toEqual(svgShapeTest.height);
   }));
 
   it('#InitialzeElements should set the good values to innerSvg', fakeAsync(() => {
@@ -142,29 +142,29 @@ describe('ExportComponent', () => {
       height: 245
     };
     component['svgService'].shape = svgShapeTest;
-    component.initializeElements();
-    expect(component.innerSVG.getAttribute('width')).toEqual(svgShapeTest.width.toString());
-    expect(component.innerSVG.getAttribute('height')).toEqual(svgShapeTest.height.toString());
+    component['initializeElements']();
+    expect(component['innerSVG'].getAttribute('width')).toEqual(svgShapeTest.width.toString());
+    expect(component['innerSVG'].getAttribute('height')).toEqual(svgShapeTest.height.toString());
   }));
 
   it('#SerializeSVG is making a good serialization', fakeAsync(() => {
-    component.initializeElements();
+    component['initializeElements']();
     const serializer: XMLSerializer = new XMLSerializer();
-    expect(component.serializeSVG()).toEqual(serializer.serializeToString(component.innerSVG));
+    expect(component['serializeSVG']()).toEqual(serializer.serializeToString(component['innerSVG']));
   }));
 
   it('#convertSVGToBase64 is making a good conversion', fakeAsync(() => {
-    component.initializeElements();
-    const expected: string = 'data:image/svg+xml;base64,' + btoa(component.serializeSVG());
-    expect(component.convertSVGToBase64()).toEqual(expected);
+    component['initializeElements']();
+    const expected: string = 'data:image/svg+xml;base64,' + btoa(component['serializeSVG']());
+    expect(component['convertSVGToBase64']()).toEqual(expected);
   }));
 
   it('#convertToBlob is making a good conversion', fakeAsync(() => {
-    component.initializeElements();
-    component.innerSVG.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    const blobExpected: Blob = new Blob([component.serializeSVG()], {type: 'image/svg+xml;charset=utf-8'});
+    component['initializeElements']();
+    component['innerSVG'].setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    const blobExpected: Blob = new Blob([component['serializeSVG']()], {type: 'image/svg+xml;charset=utf-8'});
 
-    expect(component.convertToBlob()).toEqual(blobExpected);
+    expect(component['convertToBlob']()).toEqual(blobExpected);
   }));
 
   it('#downloadImage should call the click method of the anchor', () => {
@@ -186,34 +186,34 @@ describe('ExportComponent', () => {
       width: 1345,
       height: 245
     };
-    component.svgShape = svgShapeTest;
-    const canvas: HTMLCanvasElement =  component.generateCanvas();
+    component['svgShape'] = svgShapeTest;
+    const canvas: HTMLCanvasElement =  component['generateCanvas']();
     expect(canvas.height).toEqual(svgShapeTest.height);
     expect(canvas.width).toEqual(svgShapeTest.width);
   }));
 
   it('#exportSvg should call our download method', fakeAsync(() => {
     const spy = spyOn<any>(component, 'downloadImage');
-    component.exportSVG();
+    component['exportSVG']();
     expect(spy).toHaveBeenCalledTimes(1);
   }));
 
   it('#createView should add element into to the viewZone', () => {
-    component.createView('');
+    component['createView']('');
     const theViewZone = component['svgView'].nativeElement;
     const picture = theViewZone.lastElementChild as Element;
     expect(picture.getAttribute('id')).toEqual('pictureView');
   });
 
   it('#createView should add without removing when the element isnt the picture', () => {
-    component.createView('');
+    component['createView']('');
     const theViewZone = component['svgView'].nativeElement;
     const picture = theViewZone.lastElementChild as Element;
     picture.setAttribute('id', 'test');
     const picture2 = theViewZone.lastElementChild as Element;
     picture2.setAttribute('id', 'test');
     theViewZone.appendChild(picture2);
-    component.createView('');
+    component['createView']('');
     const picture3 = theViewZone.lastElementChild as Element;
     expect(picture3.getAttribute('id')).toEqual('pictureView');
     
@@ -221,7 +221,7 @@ describe('ExportComponent', () => {
 
   it('#exportDrawing should call exportSVG when we export as SVG', fakeAsync(() => {
     const spy = spyOn<any>(component, 'exportSVG');
-    component.exportDrawing(FormatChoice.Svg);
+    component['exportDrawing'](FormatChoice.Svg);
     expect(spy).toHaveBeenCalled();
   }));
 
@@ -241,13 +241,13 @@ describe('ExportComponent', () => {
 
   it('#configurePicture should make good id configuration', fakeAsync(() => {
     const picture = component['renderer'].createElement('picture', 'http://www.w3.org/2000/svg');
-    component.configurePicture(picture, '');
+    component['configurePicture'](picture, '');
     expect(picture.getAttribute('id')).toEqual('pictureView');
   }));
 
   it('#configurePicture should make good filter configuration', fakeAsync(() => {
     const picture = component['renderer'].createElement('picture', 'http://www.w3.org/2000/svg');
-    component.configurePicture(picture, '');
+    component['configurePicture'](picture, '');
     expect(picture.getAttribute('filter')).toEqual('');
   }));
 
@@ -258,24 +258,24 @@ describe('ExportComponent', () => {
 
   it('#resetInnerSVG should set good width and height value to innerSvg', fakeAsync(() => {
     const svgShapeTest: SvgShape = {color: 'blue', width: 1345, height: 245};
-    component.svgShape = svgShapeTest;
-    component.resetInnerSVG();
-    expect(component.innerSVG.getAttribute('width')).toEqual(svgShapeTest.width.toString());
-    expect(component.innerSVG.getAttribute('height')).toEqual(svgShapeTest.height.toString());
+    component['svgShape'] = svgShapeTest;
+    component['resetInnerSVG']();
+    expect(component['innerSVG'].getAttribute('width')).toEqual(svgShapeTest.width.toString());
+    expect(component['innerSVG'].getAttribute('height')).toEqual(svgShapeTest.height.toString());
   }));
 
   it('#configureSize is making good configuration', fakeAsync(() => {
     const svgShapeTest: SvgShape = {color: 'blue', width: 1345, height: 245};
     const picture: SVGImageElement  = component['renderer'].createElement('image', 'http://www.w3.org/2000/svg');
-    component.configureSize(picture, svgShapeTest);
+    component['configureSize'](picture, svgShapeTest);
     expect(picture.getAttribute('width')).toEqual(svgShapeTest.width.toString());
     expect(picture.getAttribute('height')).toEqual(svgShapeTest.height.toString());
   }));
 
   it('#generateBackground return a good rectangle configu', fakeAsync(() => {
     const svgShapeTest: SvgShape = {color: 'blue', width: 1345, height: 245};
-    component.svgShape = svgShapeTest;
-    const background = component.generateBackground();
+    component['svgShape'] = svgShapeTest;
+    const background = component['generateBackground']();
     expect(background.getAttribute('width')).toEqual(svgShapeTest.width.toString());
     expect(background.getAttribute('height')).toEqual(svgShapeTest.height.toString());
     expect(background.getAttribute('fill')).toEqual(svgShapeTest.color);
