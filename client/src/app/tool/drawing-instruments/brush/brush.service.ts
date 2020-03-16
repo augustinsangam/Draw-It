@@ -16,14 +16,13 @@ const DEFAULT_THIKCNESS = 20;
   providedIn: 'root'
 })
 export class BrushService extends ToolService {
-  isFirstLoaded: boolean;
+
   thickness: number;
   texture: Texture ;
 
   constructor() {
     super();
     this.thickness = DEFAULT_THIKCNESS;
-    this.isFirstLoaded = true;
     this.texture = Texture.Texture2;
   }
 
