@@ -1,75 +1,155 @@
+// tslint:disable:no-magic-numbers
+// we disable it because it is already a file of constants
+export enum Shape {
+  TRIANGLE = 3,
+  SQUARE,
+  PENTAGONE,
+  HEXAGONE,
+  HEPTAGONE,
+  OCTAGONE,
+  NONAGONE,
+  DECAGONE,
+  HANDECAGONE,
+  DODECAGONE
+}
+export const RATIO_TRANSITION_HEIGHT = 0.9;
+export const MINIMAL_3PX_DISTANCE = 3;
+export const MINIMAL_ALIGN_ANGLE = Math.PI / 8;
+export const MAXIMAL_ALIGN_ANGLE = 3 * Math.PI / 8;
 
-// enum Shape {
-//   TRIANGLE = 3,
-//   SQUARE
-// }
+export interface ShapeConstants {
+  MULTIPLICATOR_X: number;
+  MULTIPLICATOR_Y: number;
+  TRANSLATION_X: number;
+  TRANSLATION_Y: number;
+  RATIO_TRANSITION_WIDTH: number;
+  FACTOR_TRANSITION: number;
+  FACTOR_TRANSLATION_X: number;
+  FACTOR_TRANSLATION_Y: number;
+  FACTOR_BORDER_X: number;
+  FACTOR_BORDER_Y: number;
+}
 
-// interface ShapeConstants {
-//   MULTIPLICATEUR_X: number;
-//   MULTIPLICATEURY: number;
-//   DECALAGE_X: number;
-//   DECALAGE_Y: number;
-//   RATIO_TRANSITION_WIDTH: number;
-//   FACTEUR_TRANSITION: number;
-//   FACTEUR_DECALAGE_X: number;
-//   FACTEUR_DECALAGE_Y: number;
-//   FACTEUR_BORDER_Y: number;
-// }
+export const CONSTANTS: Map<Shape, ShapeConstants> = new Map ([
+  [Shape.TRIANGLE, {
+    MULTIPLICATOR_X: 1.15,
+    MULTIPLICATOR_Y: 1.32,
+    TRANSLATION_X: 1.15,
+    TRANSLATION_Y: 0.88,
 
-// export const CONSTANTS: Map<Shape, ShapeConstants> = new Map ([
-//   [Shape.TRIANGLE, {
-//     MULTIPLICATEUR_X: 0,
-//     MULTIPLICATEURY: 0,
-//     DECALAGE_X: 0,
-//     DECALAGE_Y: 0,
-
-//     RATIO_TRANSITION_WIDTH: 0,
-//     FACTEUR_TRANSITION: 0,
-//     FACTEUR_DECALAGE_X: 0,
-//     FACTEUR_DECALAGE_Y: 0,
-//     FACTEUR_BORDER_Y: 0,
-//   }],
-//   [Shape.SQUARE, {
-//     MULTIPLICATEUR_X: 0,
-//     MULTIPLICATEURY: 0,
-//     DECALAGE_X: 0,
-//     DECALAGE_Y: 0,
-//     RATIO_TRANSITION_WIDTH: 0,
-//     FACTEUR_TRANSITION: 0,
-//     FACTEUR_DECALAGE_X: 0,
-//     FACTEUR_DECALAGE_Y: 0,
-//     FACTEUR_BORDER_Y: 0,
-//   }],
-// ]);
-
-// CONSTANTS.get(service.side as Shape)
-
-// // const MINIMAL_3PX_DISTANCE = 3;
-// // const MINIMAL_ALIGN_ANGLE =  Math.PI / 8;
-// // const MAXIMAL_ALIGN_ANGLE =  3 * Math.PI / 8;
-
-// // // polygone constants
-// // const MULTIPLICATEUR_X: number[] =
-// // [0, 0, 1.15, 1.0, 1.05, 1.1, 1.015, 1.0, 1.01, 1.0, 1.01, 1.0];
-// // const MULTIPLICATEURY: number[] =
-// //   [0, 0, 1.32, 1.0, 1.1, 1.0, 1.05, 1.0, 1.027, 1.0, 1.02, 1.0];
-// // const DECALAGE_X: number[] =
-// //   [0, 0, 1.15, 1.0, 1.05, 0.9, 1.025, 1.0, 1.0, 1.0, 1.02, 1.0];
-// // const DECALAGE_Y: number[] =
-// //   [0, 0, 0.88, 1.0, 0.97, 1.1, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
-// // const RATIO_TRANSITION_WIDTH: number[] =
-// //   [0, 0, 1.15, 1.0, 1.04, 1.1, 1.08, 1.0, 1.04, 1.06, 1.08, 1.0];
-// // const FACTEUR_TRANSITION: number[] =
-// //   [0, 0, 1.0, 1.0, 1.01, 0.909, 1.02, 1.0, 1.0, 1.0, 1.0, 1.0];
-// // const FACTEUR_DECALAGE_X: number[] =
-// //   [0, 0, 1.0, 1.0, 1.0, 0.9, 1.0, 1.0, 1.0, 0.95, 1.0, 1.0];
-// // const FACTEUR_DECALAGE_Y: number[] =
-// //   [0, 0, 1.0, 1.0, 1.0, 0.92, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
-// // const FACTEUR_BORDER_X: number[] =
-// //   [0, 0, 1.8, 1.38, 1.2, 1.0, 1.0, 1.1, 1.05, 1.0, 1.3, 1.01];
-// // const FACTEUR_BORDER_Y: number[] =
-// //   [0, 0, 2.0, 1.38, 1.2, 1.0, 1.0, 1.1, 1.05, 1.0, 1.03, 1.01];
-// // const RATIO_TRANSITION_HEIGHT = 0.9;
-// // const TRIANGLE_SIDES = 3;
-// // const HEXAGONE_SIDES = 6;
-// // const DECAGONE_SIDES = 10;
+    RATIO_TRANSITION_WIDTH: 1.15,
+    FACTOR_TRANSITION: 1.0,
+    FACTOR_TRANSLATION_X: 1.0,
+    FACTOR_TRANSLATION_Y: 1.0,
+    FACTOR_BORDER_X: 1.8,
+    FACTOR_BORDER_Y: 2.0
+  }],
+  [Shape.SQUARE, {
+    MULTIPLICATOR_X: 1.0,
+    MULTIPLICATOR_Y: 1.0,
+    TRANSLATION_X: 1.0,
+    TRANSLATION_Y: 1.0,
+    RATIO_TRANSITION_WIDTH: 1.0,
+    FACTOR_TRANSITION: 1.0,
+    FACTOR_TRANSLATION_X: 1.0,
+    FACTOR_TRANSLATION_Y: 1.0,
+    FACTOR_BORDER_X: 1.38,
+    FACTOR_BORDER_Y: 1.38,
+  }],
+  [Shape.PENTAGONE, {
+    MULTIPLICATOR_X: 1.05,
+    MULTIPLICATOR_Y: 1.1,
+    TRANSLATION_X: 1.05,
+    TRANSLATION_Y: 0.97,
+    RATIO_TRANSITION_WIDTH: 1.04,
+    FACTOR_TRANSITION: 1.01,
+    FACTOR_TRANSLATION_X: 1.0,
+    FACTOR_TRANSLATION_Y: 1.0,
+    FACTOR_BORDER_X: 1.2,
+    FACTOR_BORDER_Y: 1.2,
+  }],
+  [Shape.HEXAGONE, {
+    MULTIPLICATOR_X: 1.1,
+    MULTIPLICATOR_Y: 1.0,
+    TRANSLATION_X: 0.9,
+    TRANSLATION_Y: 1.1,
+    RATIO_TRANSITION_WIDTH: 1.1,
+    FACTOR_TRANSITION: 0.909,
+    FACTOR_TRANSLATION_X: 0.9,
+    FACTOR_TRANSLATION_Y: 0.92,
+    FACTOR_BORDER_X: 1.0,
+    FACTOR_BORDER_Y: 1.0,
+  }],
+  [Shape.HEPTAGONE, {
+    MULTIPLICATOR_X: 1.015,
+    MULTIPLICATOR_Y: 1.05,
+    TRANSLATION_X: 1.025,
+    TRANSLATION_Y: 1.08,
+    RATIO_TRANSITION_WIDTH: 1.1,
+    FACTOR_TRANSITION: 1.02,
+    FACTOR_TRANSLATION_X: 1.0,
+    FACTOR_TRANSLATION_Y: 1.0,
+    FACTOR_BORDER_X: 1.0,
+    FACTOR_BORDER_Y: 1.0,
+  }],
+  [Shape.OCTAGONE, {
+    MULTIPLICATOR_X: 1.0,
+    MULTIPLICATOR_Y: 1.0,
+    TRANSLATION_X: 1.0,
+    TRANSLATION_Y: 1.0,
+    RATIO_TRANSITION_WIDTH: 1.0,
+    FACTOR_TRANSITION: 1.0,
+    FACTOR_TRANSLATION_X: 1.0,
+    FACTOR_TRANSLATION_Y: 1.0,
+    FACTOR_BORDER_X: 1.1,
+    FACTOR_BORDER_Y: 1.1,
+  }],
+  [Shape.NONAGONE, {
+    MULTIPLICATOR_X: 1.01,
+    MULTIPLICATOR_Y: 1.027,
+    TRANSLATION_X: 1.0,
+    TRANSLATION_Y: 1.0,
+    RATIO_TRANSITION_WIDTH: 1.04,
+    FACTOR_TRANSITION: 1.0,
+    FACTOR_TRANSLATION_X: 1.0,
+    FACTOR_TRANSLATION_Y: 1.0,
+    FACTOR_BORDER_X: 1.05,
+    FACTOR_BORDER_Y: 1.05,
+  }],
+  [Shape.DECAGONE, {
+    MULTIPLICATOR_X: 1.0,
+    MULTIPLICATOR_Y: 1.0,
+    TRANSLATION_X: 1.0,
+    TRANSLATION_Y: 1.0,
+    RATIO_TRANSITION_WIDTH: 1.06,
+    FACTOR_TRANSITION: 1.0,
+    FACTOR_TRANSLATION_X: 0.95,
+    FACTOR_TRANSLATION_Y: 1.0,
+    FACTOR_BORDER_X: 1.0,
+    FACTOR_BORDER_Y: 1.0,
+  }],
+  [Shape.HANDECAGONE, {
+    MULTIPLICATOR_X: 1.01,
+    MULTIPLICATOR_Y: 1.02,
+    TRANSLATION_X: 1.02,
+    TRANSLATION_Y: 1.0,
+    RATIO_TRANSITION_WIDTH: 1.08,
+    FACTOR_TRANSITION: 1.0,
+    FACTOR_TRANSLATION_X: 1.0,
+    FACTOR_TRANSLATION_Y: 1.0,
+    FACTOR_BORDER_X: 1.3,
+    FACTOR_BORDER_Y: 1.03,
+  }],
+  [Shape.DODECAGONE, {
+    MULTIPLICATOR_X: 1.0,
+    MULTIPLICATOR_Y: 1.0,
+    TRANSLATION_X: 1.0,
+    TRANSLATION_Y: 1.0,
+    RATIO_TRANSITION_WIDTH: 1.0,
+    FACTOR_TRANSITION: 1.0,
+    FACTOR_TRANSLATION_X: 1.0,
+    FACTOR_TRANSLATION_Y: 1.0,
+    FACTOR_BORDER_X: 1.01,
+    FACTOR_BORDER_Y: 1.01,
+  }],
+]);

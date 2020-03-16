@@ -11,7 +11,6 @@ interface JonctionOption {
   radius: number;
   color: string;
 }
-
 @Component({
   selector: 'app-line-logic',
   template: ''

@@ -2,51 +2,19 @@ import { Injectable } from '@angular/core';
 import { Dimension } from '../shape/common/dimension';
 import { Radius } from '../shape/common/ellipse';
 import { Point } from '../shape/common/point';
+import {CONSTANTS, MAXIMAL_ALIGN_ANGLE, MINIMAL_3PX_DISTANCE, MINIMAL_ALIGN_ANGLE,
+        RATIO_TRANSITION_HEIGHT , Shape, ShapeConstants} from './tool.math-service-util';
 
-// tslint:disable:no-magic-numbers
-// cette regle est desactiviee car toutes les constantes sont utilisee pour que
-// les polygones garde toujours l'air maximale du rectangle inscrit.
-
-// line constants
-const MINIMAL_3PX_DISTANCE = 3;
-const MINIMAL_ALIGN_ANGLE = Math.PI / 8;
-const MAXIMAL_ALIGN_ANGLE = 3 * Math.PI / 8;
-
-// polygone constants
-const MULTIPLICATEUR_X: number[] =
-  [0, 0, 1.15, 1.0, 1.05, 1.1, 1.015, 1.0, 1.01, 1.0, 1.01, 1.0];
-const MULTIPLICATEURY: number[] =
-  [0, 0, 1.32, 1.0, 1.1, 1.0, 1.05, 1.0, 1.027, 1.0, 1.02, 1.0];
-const DECALAGE_X: number[] =
-  [0, 0, 1.15, 1.0, 1.05, 0.9, 1.025, 1.0, 1.0, 1.0, 1.02, 1.0];
-const DECALAGE_Y: number[] =
-  [0, 0, 0.88, 1.0, 0.97, 1.1, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
-const RATIO_TRANSITION_WIDTH: number[] =
-  [0, 0, 1.15, 1.0, 1.04, 1.1, 1.08, 1.0, 1.04, 1.06, 1.08, 1.0];
-const FACTEUR_TRANSITION: number[] =
-  [0, 0, 1.0, 1.0, 1.01, 0.909, 1.02, 1.0, 1.0, 1.0, 1.0, 1.0];
-const FACTEUR_DECALAGE_X: number[] =
-  [0, 0, 1.0, 1.0, 1.0, 0.9, 1.0, 1.0, 1.0, 0.95, 1.0, 1.0];
-const FACTEUR_DECALAGE_Y: number[] =
-  [0, 0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
-const FACTEUR_BORDER_X: number[] =
-  [0, 0, 1.8, 1.38, 1.2, 1.0, 1.0, 1.1, 1.05, 1.0, 1.3, 1.01];
-const FACTEUR_BORDER_Y: number[] =
-  [0, 0, 2.0, 1.38, 1.2, 1.0, 1.0, 1.1, 1.05, 1.0, 1.03, 1.01];
-const RATIO_TRANSITION_HEIGHT = 0.9;
-const TRIANGLE_SIDES = 3;
-const HEXAGONE_SIDES = 6;
-const DECAGONE_SIDES = 10;
-interface PolygonCoords {
+interface PolygonProperties {
   radius: number;
   deltaX: number;
   deltaY: number;
   sides: number;
-  sideLength: number;
   angle: number;
   deltaBorderX: number;
   deltaBorderY: number;
   initialPoint: Point;
+  constants: ShapeConstants;
 }
 
 @Injectable({
@@ -94,54 +62,52 @@ export class MathService {
     }
     return new Point(deltaX + initialPoint.x, deltaY + initialPoint.y);
   }
-  computePolygonRadius(rectDim: Dimension, properties: PolygonCoords): void {
+
+  computePolygonRadius(rectDim: Dimension, properties: PolygonProperties): void {
     const minSide = Math.min(rectDim.width, rectDim.height);
     const ratio = rectDim.width / rectDim.height;
+    const exeptionalCase = properties.sides === Shape.HEXAGONE || properties.sides === Shape.DECAGONE;
+    properties.radius = Math.max((minSide - properties.deltaBorderX) * properties.constants.MULTIPLICATOR_X, 0);
+    properties.deltaY = properties.constants.TRANSLATION_Y;
 
-    if (rectDim.width === minSide) {
-      properties.radius = Math.max((minSide - properties.deltaBorderX) * MULTIPLICATEUR_X[properties.sides - 1], 0);
-      properties.deltaY = DECALAGE_Y[properties.sides - 1];
-      if (ratio >= RATIO_TRANSITION_HEIGHT && (properties.sides === HEXAGONE_SIDES || properties.sides === DECAGONE_SIDES)) {
+    if (ratio >= RATIO_TRANSITION_HEIGHT && exeptionalCase && rectDim.width === minSide ) {
         properties.radius = minSide - properties.deltaBorderX;
-        properties.deltaY *= FACTEUR_DECALAGE_Y[properties.sides - 1];
-        properties.deltaX = FACTEUR_DECALAGE_X[properties.sides - 1];
-      }
-    } else {
-      if (ratio <= RATIO_TRANSITION_WIDTH[properties.sides  - 1]) {
-        const expansionX =  MULTIPLICATEUR_X[properties.sides - 1] * FACTEUR_TRANSITION[properties.sides - 1];
+        properties.deltaY *= properties.constants.FACTOR_TRANSLATION_Y;
+        properties.deltaX = properties.constants.FACTOR_TRANSLATION_X;
+    }
+    if (ratio <= properties.constants.RATIO_TRANSITION_WIDTH && rectDim.width !== minSide) {
+        const expansionX =  properties.constants.MULTIPLICATOR_X * properties.constants.FACTOR_TRANSITION;
         properties.radius = Math.max((minSide - properties.deltaBorderX) * expansionX, 0);
-        properties.deltaY = DECALAGE_Y[properties.sides  - 1] * FACTEUR_DECALAGE_Y[properties.sides - 1];
-        properties.deltaX = FACTEUR_DECALAGE_X[properties.sides  - 1];
-
-        if (properties.sides  === TRIANGLE_SIDES) {
-          properties.deltaX = ratio * FACTEUR_TRANSITION[properties.sides  - 1];
-          properties.radius = Math.max((minSide - properties.deltaBorderX) * MULTIPLICATEUR_X[properties.sides  - 1] * (ratio), 0);
+        properties.deltaY = properties.constants.TRANSLATION_Y * properties.constants.FACTOR_TRANSLATION_Y;
+        properties.deltaX = properties.constants.FACTOR_TRANSLATION_X;
+        if (properties.sides  === Shape.TRIANGLE) {
+          properties.deltaX = ratio * properties.constants.FACTOR_TRANSITION;
+          properties.radius = Math.max((minSide - properties.deltaBorderX) * properties.constants.MULTIPLICATOR_X * (ratio), 0);
         }
-      } else {
-        properties.radius = Math.max((minSide - properties.deltaBorderX) * (MULTIPLICATEURY[properties.sides  - 1]), 0);
-        properties.deltaX = ((DECALAGE_X[properties.sides  - 1]));
-      }
+    }
+    if (ratio > properties.constants.RATIO_TRANSITION_WIDTH && rectDim.width !== minSide) {
+        properties.radius = Math.max((minSide - properties.deltaBorderX) * (properties.constants.MULTIPLICATOR_Y), 0);
+        properties.deltaX = properties.constants.TRANSLATION_X;
     }
   }
 
   computeInitialPointPosition(dimension: Dimension, mouseDownPoint: Point,
-                              upLeftCorner: Point, properties: PolygonCoords): void {
+                              upLeftCorner: Point, properties: PolygonProperties): void {
     const minSide = Math.min(dimension.width, dimension.height);
-    properties.sideLength = properties.radius * Math.sin(Math.PI / properties.sides);
-    const distanceFromCenterX = (properties.sides % 2 === 0) ? 0 : properties.sideLength / 2;
-    const centerTranslation = minSide * properties.deltaX / 2 - distanceFromCenterX;
-    properties.initialPoint.x = (upLeftCorner.x < mouseDownPoint.x) ? mouseDownPoint.x - centerTranslation :
-                                                                      mouseDownPoint.x + centerTranslation;
-    properties.initialPoint.y = mouseDownPoint.y - properties.deltaBorderY  / 2;
-
+    const sideLength = properties.radius * Math.sin(Math.PI / properties.sides);
+    const translation = (properties.sides % 2 === 0) ? 0 : sideLength / 2;
+    properties.initialPoint.x = upLeftCorner.x < mouseDownPoint.x ? mouseDownPoint.x - minSide * properties.deltaX / 2 - translation :
+                                                                    mouseDownPoint.x + minSide * properties.deltaX / 2 - translation;
     if (upLeftCorner.y !== mouseDownPoint.y) {
-      return;
+      properties.initialPoint.y = mouseDownPoint.y - properties.deltaBorderY  / 2;
+      return ;
     }
+
     let index = 1;
     let decalage = upLeftCorner.y;
     let angleY = (Math.PI * 2) / properties.sides;
     while ((index <= Math.floor(properties.sides / 2)) && (properties.sides % 2 !== 0)) {
-      decalage += properties.sideLength * Math.sin(angleY);
+      decalage += sideLength * Math.sin(angleY);
       angleY += (Math.PI * 2) / properties.sides;
       index += 1;
     }
@@ -149,20 +115,21 @@ export class MathService {
     properties.initialPoint.y = (properties.sides % 2 === 0) ? evenPointY - properties.deltaBorderY / 2 :
                                                                decalage + properties.deltaBorderY  / 2;
   }
-  computeAllPoints(properties: PolygonCoords): Point[] {
+
+  computeAllPolygonPoints(properties: PolygonProperties): Point [] {
+    const sideLength = properties.radius * Math.sin(Math.PI / properties.sides);
     const points: Point[] = [];
     points.push(properties.initialPoint);
     let i = 1;
 
     while (i < properties.sides) {
       const lastPoint = { x: 0, y: 0 };
-      lastPoint.x = points[i - 1].x + properties.sideLength * Math.cos(properties.angle);
-      lastPoint.y = points[i - 1].y - properties.sideLength * Math.sin(properties.angle);
+      lastPoint.x = points[i - 1].x + sideLength * Math.cos(properties.angle);
+      lastPoint.y = points[i - 1].y - sideLength * Math.sin(properties.angle);
       points.push(new Point(lastPoint.x, lastPoint.y));
       properties.angle += (Math.PI * 2) / properties.sides;
       i += 1;
     }
-
     return points;
   }
 
@@ -174,14 +141,15 @@ export class MathService {
     strokeWidth: number): Point[] {
 
     const initialAngle = (sidesCount % 2 === 0) ? (Math.PI) / sidesCount : 0;
-    const properties: PolygonCoords = {deltaX: 1.0, deltaY: 1.0,
-                                      sides: sidesCount, sideLength: 1,
-                                      angle: initialAngle, radius: 0, initialPoint: new Point(0, 0),
-                                      deltaBorderX: strokeWidth * FACTEUR_BORDER_X[sidesCount - 1],
-                                      deltaBorderY: strokeWidth * FACTEUR_BORDER_Y[sidesCount - 1]};
+    const properties = {deltaX: 1.0, deltaY: 1.0,
+                        sides: sidesCount, angle: initialAngle,
+                        radius: 0, initialPoint: new Point(0, 0),
+                        deltaBorderX: strokeWidth * (CONSTANTS.get(sidesCount as Shape) as ShapeConstants).FACTOR_BORDER_X,
+                        deltaBorderY: strokeWidth * (CONSTANTS.get(sidesCount as Shape) as ShapeConstants).FACTOR_BORDER_Y,
+                        constants: CONSTANTS.get(sidesCount as Shape) as ShapeConstants};
     this.computePolygonRadius(dimension, properties);
     this.computeInitialPointPosition(dimension, mouseDownPoint, upLeftCorner, properties);
-    return this.computeAllPoints(properties);
+    return this.computeAllPolygonPoints(properties);
   }
 
   getRectangleUpLeftCorner(initialPoint: Point, oppositePoint: Point, strokeWidth?: number): Point {
@@ -206,7 +174,6 @@ export class MathService {
       rx: Math.max(rectDims.width / 2 - border / 2, 0),
       ry: Math.max(rectDims.height / 2 - border / 2, 0)
     };
-
     // TODO : variables
 
     if (radius.rx + border / 2 < 0
