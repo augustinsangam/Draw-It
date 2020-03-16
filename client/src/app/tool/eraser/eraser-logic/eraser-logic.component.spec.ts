@@ -354,7 +354,7 @@ describe('EraserLogicComponent', () => {
     expect(markedElements.size).toEqual(0);
   });
 
-  it('#restoreMarkedElements put back the originsl color!', () => {
+  it('#restoreMarkedElements put back the original stroke color!', () => {
     const element = component.svgStructure.drawZone.children.item(0) as SVGElement;
     element.setAttribute('stroke', '#FFFFFF');
     spyOn(document, 'elementFromPoint').and.callFake(() => {
@@ -363,6 +363,18 @@ describe('EraserLogicComponent', () => {
     component['markElementsInZone'](0, 0);
     component['restoreMarkedElements']();
     expect(element.getAttribute('stroke')).toEqual('#FFFFFF');
+  });
+
+  it('#restoreMarkedElements put back the original fill color!', () => {
+    const element = component.svgStructure.drawZone.children.item(0) as SVGElement;
+    element.setAttribute('fill', '#FFFFFF');
+    element.setAttribute('stroke', 'none');
+    spyOn(document, 'elementFromPoint').and.callFake(() => {
+      return component.svgStructure.drawZone.children.item(0);
+    });
+    component['markElementsInZone'](0, 0);
+    component['restoreMarkedElements']();
+    expect(element.getAttribute('fill')).toEqual('#FFFFFF');
   });
 
 });

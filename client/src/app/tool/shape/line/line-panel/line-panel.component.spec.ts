@@ -1,8 +1,16 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  async,
+  ComponentFixture,
+  TestBed
+} from '@angular/core/testing';
+import {
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
 
-import { CdkObserveContent } from '@angular/cdk/observers';
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
+import {
+  CdkObserveContent
+} from '@angular/cdk/observers';
 import {
   MatCard,
   MatCardContent,
@@ -17,28 +25,34 @@ import {
   MatSlideToggle,
   MatSlideToggleChange
 } from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {
+  BrowserAnimationsModule
+} from '@angular/platform-browser/animations';
 import {
   ColorPanelComponent
 } from '../../../color/color-panel/color-panel.component';
 import {
   ColorPickerContentComponent
-// tslint:disable-next-line: max-line-length
 } from '../../../color/color-panel/color-picker-content/color-picker-content.component';
 import {
   ColorPickerItemComponent
-// tslint:disable-next-line: max-line-length
 } from '../../../color/color-panel/color-picker-item/color-picker-item.component';
-import { LinePanelComponent } from './line-panel.component';
+import {
+  LinePanelComponent
+} from './line-panel.component';
 
-// tslint:disable: no-string-literal
+// tslint:disable: no-string-literal no-magic-numbers
 describe('LinePanelComponent', () => {
   let component: LinePanelComponent;
   let fixture: ComponentFixture<LinePanelComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [FormsModule, ReactiveFormsModule, BrowserAnimationsModule],
+      imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule
+      ],
       declarations: [
         LinePanelComponent,
         MatSlider,
@@ -57,8 +71,6 @@ describe('LinePanelComponent', () => {
         MatCardContent,
         MatCard
       ],
-      schemas: [NO_ERRORS_SCHEMA, CUSTOM_ELEMENTS_SCHEMA],
-      providers: []
     }).compileComponents();
   }));
 
@@ -72,7 +84,8 @@ describe('LinePanelComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it("devrait changer l'attribut withJonction du service à false", () => {
+  it('#onChangeJonctionOption replace withJonction by'
+    + 'event.checked', () => {
     component['service'].withJonction = true;
     component['onChangeJonctionOption'](
       new MatSlideToggleChange(component['slideToggle'], false)
@@ -80,15 +93,25 @@ describe('LinePanelComponent', () => {
     expect(component['service'].withJonction).toBeFalsy();
   });
 
-  it('onThicknessChange devrait appeler la fonction patchValue', () => {
+  it('#onThicknessChange should call patchValue', () => {
     const spy = spyOn(component['lineForm'], 'patchValue');
     component['onThicknessChange']();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('onRadiusChange devrait appeler la fonction patchValue', () => {
+  it('#onRadiusChange should call patchValue', () => {
     const spy = spyOn(component['lineForm'], 'patchValue');
     component['onRadiusChange']();
     expect(spy).toHaveBeenCalled();
   });
+
+  it('#onThicknessValueChange should change the radius'
+    +   'minimum size to the half of the thikness', () => {
+    spyOn(component['lineForm'], 'patchValue');
+    component['radiusSlider'].min = 10;
+    component['service'].thickness = 40;
+    component['onThicknessValueChange']();
+    expect(component['radiusSlider'].min).toEqual(20);
+  });
+
 });
