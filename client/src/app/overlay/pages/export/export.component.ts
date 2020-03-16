@@ -106,7 +106,7 @@ export class ExportComponent implements AfterViewInit {
   private initializeFiltersChooser(): void {
     this.filtersChooser.set(FilterChoice.None, '');
     this.filtersChooser.set(FilterChoice.Saturate, 'url(#saturate)');
-    this.filtersChooser.set( FilterChoice.BlackWhite,'url(#blackWhite)' );
+    this.filtersChooser.set( FilterChoice.BlackWhite, 'url(#blackWhite)' );
     this.filtersChooser.set(FilterChoice.Sepia, 'url(#sepia)');
     this.filtersChooser.set(FilterChoice.Inverse , 'url(#invertion)');
     this.filtersChooser.set(FilterChoice.Grey, 'url(#greyscale)');

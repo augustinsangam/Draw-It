@@ -1,7 +1,7 @@
+import { Renderer2 } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
 import { FilterService } from './filter.service';
-import { Renderer2 } from '@angular/core';
 
 describe('FilterService', () => {
   // const renderer: Renderer2 = {
@@ -13,7 +13,6 @@ describe('FilterService', () => {
   //   }
   // } as unknown as Renderer2;
 
-  
   beforeEach(() => TestBed.configureTestingModule({
     providers: [
       Renderer2
