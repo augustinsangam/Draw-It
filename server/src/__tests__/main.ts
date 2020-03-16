@@ -9,7 +9,7 @@ import { myContainer } from '../inversify.config';
 import { main } from '../main';
 import { Server } from '../server';
 
-describe('index', () => {
+describe('main', () => {
 	let server: Server;
 
 	before(() => (server = myContainer.get<Server>(TYPES.Server)));
