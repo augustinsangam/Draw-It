@@ -18,7 +18,10 @@ const FULLOPACITY = '1';
 enum ClickType {
   CLICKGAUCHE,
 }
-
+enum KEYBOARDTOUCH {
+  SHIFTLEFT = 'ShiftLeft',
+  SHIFTRIGHT = 'ShiftRight'
+}
 @Component({
   selector: 'app-rectangle-logic',
   template: ''
@@ -104,16 +107,14 @@ export class RectangleLogicComponent extends ToolLogicDirective
 
   }
 
-  // TODO : Enum ?
-
   private onKeyDown(keyEv: KeyboardEvent): void {
-    if ((keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') && this.onDrag) {
+    if ((keyEv.code === KEYBOARDTOUCH.SHIFTLEFT || keyEv.code === KEYBOARDTOUCH.SHIFTRIGHT) && this.onDrag) {
       this.getRectangle().dragSquare(this.mouseDownPoint, this.currentPoint, this.service.thickness);
     }
   }
 
   private onKeyUp(keyEv: KeyboardEvent): void {
-    if ((keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight') && this.onDrag) {
+    if ((keyEv.code === KEYBOARDTOUCH.SHIFTLEFT || keyEv.code === KEYBOARDTOUCH.SHIFTRIGHT) && this.onDrag){
       this.getRectangle().dragRectangle(this.mouseDownPoint, this.currentPoint, this.service.thickness);
     }
   }

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
+import { Dimension } from '../shape/common/dimension';
 import { Radius } from '../shape/common/ellipse';
 import { Point } from '../shape/common/point';
-import { Dimension } from '../shape/common/rectangle';
+import {CONSTANTS, Shape, ShapeConstants} from './tool.math-service-util';
 // tslint:disable:no-magic-numbers
 // cette regle est desactiviee car toutes les constantes sont utilisee pour que
 // les polygones garde toujours l'air maximale du rectangle inscrit.
@@ -10,32 +11,7 @@ import { Dimension } from '../shape/common/rectangle';
 const MINIMAL_3PX_DISTANCE = 3;
 const MINIMAL_ALIGN_ANGLE = Math.PI / 8;
 const MAXIMAL_ALIGN_ANGLE = 3 * Math.PI / 8;
-
-// polygone constants
-const MULTIPLICATEUR_X: number[] =
-  [0, 0, 1.15, 1.0, 1.05, 1.1, 1.015, 1.0, 1.01, 1.0, 1.01, 1.0];
-const MULTIPLICATEURY: number[] =
-  [0, 0, 1.32, 1.0, 1.1, 1.0, 1.05, 1.0, 1.027, 1.0, 1.02, 1.0];
-const DECALAGE_X: number[] =
-  [0, 0, 1.15, 1.0, 1.05, 0.9, 1.025, 1.0, 1.0, 1.0, 1.02, 1.0];
-const DECALAGE_Y: number[] =
-  [0, 0, 0.88, 1.0, 0.97, 1.1, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
-const RATIO_TRANSITION_WIDTH: number[] =
-  [0, 0, 1.15, 1.0, 1.04, 1.1, 1.08, 1.0, 1.04, 1.06, 1.08, 1.0];
-const FACTEUR_TRANSITION: number[] =
-  [0, 0, 1.0, 1.0, 1.01, 0.909, 1.02, 1.0, 1.0, 1.0, 1.0, 1.0];
-const FACTEUR_DECALAGE_X: number[] =
-  [0, 0, 1.0, 1.0, 1.0, 0.9, 1.0, 1.0, 1.0, 0.95, 1.0, 1.0];
-const FACTEUR_DECALAGE_Y: number[] =
-  [0, 0, 1.0, 1.0, 1.0, 0.92, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0];
-const FACTEUR_BORDER_X: number[] =
-  [0, 0, 1.8, 1.38, 1.2, 1.0, 1.0, 1.1, 1.05, 1.0, 1.3, 1.01];
-const FACTEUR_BORDER_Y: number[] =
-  [0, 0, 2.0, 1.38, 1.2, 1.0, 1.0, 1.1, 1.05, 1.0, 1.03, 1.01];
 const RATIO_TRANSITION_HEIGHT = 0.9;
-const TRIANGLE_SIDES = 3;
-const HEXAGONE_SIDES = 6;
-const DECAGONE_SIDES = 10;
 interface PolygonProperties {
   radius: number;
   deltaX: number;
@@ -45,6 +21,7 @@ interface PolygonProperties {
   deltaBorderX: number;
   deltaBorderY: number;
   initialPoint: Point;
+  constants: ShapeConstants;
 }
 
 @Injectable({
@@ -95,27 +72,28 @@ export class MathService {
   computePolygonRadius(rectDim: Dimension, properties: PolygonProperties): void {
     const minSide = Math.min(rectDim.width, rectDim.height);
     const ratio = rectDim.width / rectDim.height;
-    const exeptionalCase = properties.sides === HEXAGONE_SIDES || properties.sides === DECAGONE_SIDES;
-    properties.radius = Math.max((minSide - properties.deltaBorderX) * MULTIPLICATEUR_X[properties.sides - 1], 0);
-    properties.deltaY = DECALAGE_Y[properties.sides - 1];
-    properties.deltaX = FACTEUR_DECALAGE_X[properties.sides - 1];
+    const exeptionalCase = properties.sides === Shape.HEXAGONE || properties.sides === Shape.DECAGONE;
+    properties.radius = Math.max((minSide - properties.deltaBorderX) * properties.constants.MULTIPLICATEUR_X, 0);
+    properties.deltaY = properties.constants.DECALAGE_Y;
+
     if (ratio >= RATIO_TRANSITION_HEIGHT && exeptionalCase && rectDim.width === minSide ) {
         properties.radius = minSide - properties.deltaBorderX;
-        properties.deltaY *= FACTEUR_DECALAGE_Y[properties.sides - 1];
+        properties.deltaY *= properties.constants.FACTEUR_DECALAGE_Y;
+        properties.deltaX = properties.constants.FACTEUR_DECALAGE_X;
     }
-    if (ratio <= RATIO_TRANSITION_WIDTH[properties.sides  - 1] && rectDim.width !== minSide) {
-        const expansionX =  MULTIPLICATEUR_X[properties.sides - 1] * FACTEUR_TRANSITION[properties.sides - 1];
+    if (ratio <= properties.constants.RATIO_TRANSITION_WIDTH && rectDim.width !== minSide) {
+        const expansionX =  properties.constants.MULTIPLICATEUR_X * properties.constants.FACTEUR_TRANSITION;
         properties.radius = Math.max((minSide - properties.deltaBorderX) * expansionX, 0);
-        properties.deltaY = DECALAGE_Y[properties.sides  - 1] * FACTEUR_DECALAGE_Y[properties.sides - 1];
-
-        if (properties.sides  === TRIANGLE_SIDES) {
-          properties.deltaX = ratio * FACTEUR_TRANSITION[properties.sides  - 1];
-          properties.radius = Math.max((minSide - properties.deltaBorderX) * MULTIPLICATEUR_X[properties.sides  - 1] * (ratio), 0);
+        properties.deltaY = properties.constants.DECALAGE_Y * properties.constants.FACTEUR_DECALAGE_Y;
+        properties.deltaX = properties.constants.FACTEUR_DECALAGE_X;
+        if (properties.sides  === Shape.TRIANGLE) {
+          properties.deltaX = ratio * properties.constants.FACTEUR_TRANSITION;
+          properties.radius = Math.max((minSide - properties.deltaBorderX) * properties.constants.MULTIPLICATEUR_X * (ratio), 0);
         }
     }
-    if (ratio > RATIO_TRANSITION_WIDTH[properties.sides  - 1] && rectDim.width !== minSide) {
-        properties.radius = Math.max((minSide - properties.deltaBorderX) * (MULTIPLICATEURY[properties.sides  - 1]), 0);
-        properties.deltaX = ((DECALAGE_X[properties.sides  - 1]));
+    if (ratio > properties.constants.RATIO_TRANSITION_WIDTH && rectDim.width !== minSide) {
+        properties.radius = Math.max((minSide - properties.deltaBorderX) * (properties.constants.MULTIPLICATEURY), 0);
+        properties.deltaX = properties.constants.DECALAGE_X;
     }
   }
 
@@ -171,8 +149,9 @@ export class MathService {
     const properties = {deltaX: 1.0, deltaY: 1.0,
                         sides: sidesCount, angle: initialAngle,
                         radius: 0, initialPoint: new Point(0, 0),
-                        deltaBorderX: strokeWidth * FACTEUR_BORDER_X[sidesCount - 1],
-                        deltaBorderY: strokeWidth * FACTEUR_BORDER_Y[sidesCount - 1]};
+                        deltaBorderX: strokeWidth * (CONSTANTS.get(sidesCount as Shape) as ShapeConstants).FACTEUR_BORDER_X,
+                        deltaBorderY: strokeWidth * (CONSTANTS.get(sidesCount as Shape) as ShapeConstants).FACTEUR_BORDER_Y,
+                        constants: CONSTANTS.get(sidesCount as Shape) as ShapeConstants};
     this.computePolygonRadius(dimension, properties);
     this.computeInitialPointPosition(dimension, mouseDownPoint, upLeftCorner, properties);
     return this.computeAllPolygonPoints(properties);
