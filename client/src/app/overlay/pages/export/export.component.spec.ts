@@ -1,4 +1,4 @@
-import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed} from '@angular/core/testing';
 
 import { Renderer2 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,7 +10,7 @@ import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.ser
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ExportComponent, FormatChoice, FilterChoice } from './export.component';
 
-describe('ExportComponent', () => {
+fdescribe('ExportComponent', () => {
   let component: ExportComponent;
   let fixture: ComponentFixture<ExportComponent>;
 
@@ -20,6 +20,15 @@ describe('ExportComponent', () => {
   const mockDownloadLink = {
     click: jasmine.createSpy('click')
   };
+
+  // const renderer: Renderer2 = {
+  //   setAttribute: ( element: SVGElement, attribute: string, value: string ) => {
+  //     element.setAttribute( attribute, value);
+  //   },
+  //   createElement: (value: string ) => {
+  //     document.createElement(value);
+  //   }
+  // } as unknown as Renderer2;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -226,17 +235,19 @@ describe('ExportComponent', () => {
   }));
 
   it('#exportDrawing shouldnt call exportSVG when we export as png', fakeAsync(() => {
-    // const spy = spyOn<any>(component, 'exportSVG');
-    // spyOn<any>(component, 'downloadImage');
-    // const pictureUrl = 'url';
-    // const image = {
-    //   src: pictureUrl,
-    //   onload: () => {}
-    // } as unknown as HTMLImageElement;
-    // spyOn(component['renderer'], 'createElement').and.callFake(() =>  image);
-    
-    // component.exportDrawing(FormatChoice.Png);
-    // expect(spy).toHaveBeenCalledTimes(0);
+    const pictureUrl = 'url';
+    const image = {
+      src: pictureUrl,
+    } as unknown as HTMLImageElement;
+    spyOn(component['renderer'], 'setAttribute').and.callFake(() =>  image);
+    const spy = spyOn<any>(component, 'exportSVG');
+    // const spyDownload = spyOn<any>(component, 'downloadImage');
+    // setTimeout(() => {
+    //   component['exportDrawing'](FormatChoice.Jpeg);
+    // }, 500);
+    // tick(500);
+    expect(spy).toHaveBeenCalledTimes(0);
+    // expect(spyDownload).toHaveBeenCalledTimes(1);
   }));
 
   it('#configurePicture should make good id configuration', fakeAsync(() => {

@@ -138,9 +138,7 @@ export class ExportComponent implements AfterViewInit {
 
   private convertToBlob(): Blob {
     this.innerSVG.setAttribute('xmlns', SVG_NS);
-    return new Blob([this.serializeSVG()], {
-      type: 'image/svg+xml;charset=utf-8'
-    });
+    return new Blob([this.serializeSVG()], {type: 'image/svg+xml;charset=utf-8'});
   }
 
   private downloadImage(pictureUrl: string): void {
@@ -170,19 +168,17 @@ export class ExportComponent implements AfterViewInit {
     if (format as FormatChoice === FormatChoice.Svg) {
       this.exportSVG();
     } else {
-      const canvasContext = canvas.getContext('2d');
+      const canvasContext = canvas.getContext('2d') as CanvasRenderingContext2D;
       const URL = self.URL || self;
       const img: HTMLImageElement = this.renderer.createElement('img');
       const svgBlob = this.convertToBlob();
       const url = URL.createObjectURL(svgBlob);
-      img.src = url;
+      this.renderer.setAttribute(img, 'src', url);
       img.onload = () => {
-        if (canvasContext) {
-          canvasContext.drawImage(img, 0, 0);
-          const pictureUrl = canvas.toDataURL(`image/${format}`);
-          this.downloadImage(pictureUrl);
-          URL.revokeObjectURL(url);
-        }
+        canvasContext.drawImage(img, 0, 0);
+        const pictureUrl = canvas.toDataURL(`image/${format}`);
+        this.downloadImage(pictureUrl);
+        URL.revokeObjectURL(url);
       };
     }
   }
@@ -191,13 +187,11 @@ export class ExportComponent implements AfterViewInit {
     this.pictureView = this.renderer.createElement('image', SVG_NS);
     const viewZone = this.svgView.nativeElement;
     this.configurePicture(this.pictureView, filterName);
-    if (viewZone) {
-      const child = viewZone.lastElementChild;
-      if (child && (child.getAttribute('id') === 'pictureView')) {
-        viewZone.removeChild(child);
-      }
-      this.renderer.appendChild(viewZone, this.pictureView);
+    const child = viewZone.lastElementChild;
+    if (child && (child.getAttribute('id') === 'pictureView')) {
+      viewZone.removeChild(child);
     }
+    this.renderer.appendChild(viewZone, this.pictureView);
 
   }
 
