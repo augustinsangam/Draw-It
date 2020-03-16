@@ -35,6 +35,7 @@ import {
 } from './tool/tool-selector/tool-selector.service';
 import { Tool } from './tool/tool.enum';
 import { UndoRedoService } from './tool/undo-redo/undo-redo.service';
+import { ColorBoxComponent } from './tool/color/color-box/color-box.component';
 
 // tslint:disable: no-string-literal no-any no-magic-numbers
 describe('AppComponent', () => {
@@ -47,19 +48,20 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
-        PanelComponent,
-        SidebarComponent,
-        HomeComponent,
-        NewDrawComponent,
-        DocumentationComponent,
-        ColorPickerItemComponent,
-        PencilPanelComponent,
+        ColorBoxComponent,
         ColorPanelComponent,
         ColorPickerContentComponent,
+        ColorPickerItemComponent,
+        DocumentationComponent,
+        ExportComponent,
         GalleryComponent,
         GalleryCardComponent,
-        ExportComponent,
+        HomeComponent,
+        NewDrawComponent,
+        PanelComponent,
+        PencilPanelComponent,
         SaveComponent,
+        SidebarComponent,
         TagsFilterComponent
       ],
       imports: [
@@ -82,6 +84,7 @@ describe('AppComponent', () => {
     .overrideModule(BrowserDynamicTestingModule, {
       set: {
         entryComponents: [
+          ColorBoxComponent,
           HomeComponent,
           NewDrawComponent,
           DocumentationComponent,

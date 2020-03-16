@@ -1,5 +1,4 @@
-import { Component, Output } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-color-box',
@@ -9,16 +8,9 @@ import { Subject } from 'rxjs';
 export class ColorBoxComponent {
 
   protected isExpanded: boolean;
-  @Output() expandStatus: Subject<boolean>;
 
   constructor() {
     this.isExpanded = false;
-    this.expandStatus = new Subject();
-  }
-
-  protected onClick(): void {
-    this.isExpanded = !this.isExpanded;
-    this.expandStatus.next(this.isExpanded);
   }
 
 }

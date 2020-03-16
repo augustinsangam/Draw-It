@@ -7,6 +7,7 @@ import {
 } from '@angular/platform-browser-dynamic/testing';
 
 import { MaterialModule } from '../material.module';
+import { ColorBoxComponent } from '../tool/color/color-box/color-box.component';
 import {
   ColorPanelComponent } from '../tool/color/color-panel/color-panel.component';
 import {
@@ -21,10 +22,7 @@ import {
 import { Tool } from '../tool/tool.enum';
 import { PanelComponent } from './panel.component';
 
-// TODO : Ask the chargé de lab
-
-// tslint:disable: no-magic-numbers
-// tslint:disable: no-any
+// tslint:disable: no-any no-magic-numbers
 describe('PanelComponent', () => {
   let component: PanelComponent;
   let fixture: ComponentFixture<PanelComponent>;
@@ -32,6 +30,7 @@ describe('PanelComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
+        ColorBoxComponent,
         ColorPanelComponent,
         ColorPickerItemComponent,
         ColorPickerContentComponent,
@@ -47,6 +46,7 @@ describe('PanelComponent', () => {
       set: {
         entryComponents: [
           LinePanelComponent,
+          ColorBoxComponent
         ],
       },
     });
