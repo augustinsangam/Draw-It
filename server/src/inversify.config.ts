@@ -1,6 +1,5 @@
+import inversify, { Container } from 'inversify';
 import 'reflect-metadata';
-
-import inversify from 'inversify';
 
 import { Application } from './application';
 import { TYPES } from './constants';
@@ -8,13 +7,17 @@ import { Database } from './database';
 import { Router } from './router';
 import { Server } from './server';
 
+const setupContainer = (container: Container): void => {
+	container.bind<Application>(TYPES.Application).to(Application);
+	container
+		.bind<Database>(TYPES.Database)
+		.to(Database)
+		.inSingletonScope();
+	container.bind<Router>(TYPES.Router).to(Router);
+	container.bind<Server>(TYPES.Server).to(Server);
+};
+
 const myContainer = new inversify.Container();
-myContainer.bind<Application>(TYPES.Application).to(Application);
-myContainer
-	.bind<Database>(TYPES.Database)
-	.to(Database)
-	.inSingletonScope();
-myContainer.bind<Router>(TYPES.Router).to(Router);
-myContainer.bind<Server>(TYPES.Server).to(Server);
+setupContainer(myContainer);
 
 export { myContainer };
