@@ -12,6 +12,7 @@ export class BrushLogicComponent extends PencilBrushCommon
   implements OnInit, OnDestroy {
 
   private listeners: (() => void)[];
+  private readonly undoRedoOverride: (() => void);
 
   constructor(private readonly renderer: Renderer2,
               private readonly colorService: ColorService,
@@ -21,16 +22,17 @@ export class BrushLogicComponent extends PencilBrushCommon
     super();
     this.listeners = [];
     this.undoRedoService.resetActions();
+    this.undoRedoOverride = () => {
+        if (this.mouseOnHold) {
+        this.stopDrawing();
+        this.undoRedoService.saveState();
+      }
+    };
     this.undoRedoService.setPreUndoAction({
       enabled: true,
       overrideDefaultBehaviour: false,
       overrideFunctionDefined: true,
-      overrideFunction: () => {
-        if (this.mouseOnHold) {
-          this.stopDrawing();
-          this.undoRedoService.saveState();
-        }
-      }
+      overrideFunction: this.undoRedoOverride
     });
   }
 
@@ -89,14 +91,10 @@ export class BrushLogicComponent extends PencilBrushCommon
     this.configureSvgElement(this.svgPath);
     this.renderer.appendChild(this.svgStructure.drawZone, this.svgPath);
   }
-  // TODO : DRY avec overridefuction
   ngOnDestroy(): void {
     this.listeners.forEach((end) => { end(); });
     this.undoRedoService.resetActions();
-    if (this.mouseOnHold) {
-      this.stopDrawing();
-      this.undoRedoService.saveState();
-    }
+    this.undoRedoOverride();
   }
 
   protected onMouseMove(mouseEv: MouseEvent): void {

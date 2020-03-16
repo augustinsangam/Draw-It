@@ -17,7 +17,7 @@ const createClickMouseEvent = (event: string): MouseEvent =>  new MouseEvent(
 );
 
 // tslint:disable:no-string-literal no-any no-magic-numbers
-fdescribe('AerosolLogicComponent', () => {
+describe('AerosolLogicComponent', () => {
   let component: AerosolLogicComponent;
   let fixture: ComponentFixture<AerosolLogicComponent>;
 
