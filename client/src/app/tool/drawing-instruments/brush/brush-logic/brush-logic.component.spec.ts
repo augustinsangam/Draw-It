@@ -89,16 +89,6 @@ describe('BrushLogicComponent', () => {
     expect(component.svgPath.getAttribute('d')).toEqual(component.stringPath);
   }));
 
-  it('#we shouldnt recreate defs the second loading', fakeAsync(() => {
-    component['brushService'].isFirstLoaded = false;
-    component.ngOnInit();
-    fixture.detectChanges();
-    fixture.whenStable().then(() => {
-      const nbChild = component.svgStructure.root.childElementCount;
-      expect(nbChild).toEqual(1);
-    });
-  }));
-
   it('#should trigger onMouseDown method when mouse is down', fakeAsync(() => {
     const spy = spyOn<any>(component, 'onMouseDown');
     component.svgStructure.root.dispatchEvent(mouseEvLeft);
