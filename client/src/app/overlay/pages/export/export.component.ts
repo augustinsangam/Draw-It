@@ -8,7 +8,7 @@ import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.ser
 
 const SVG_NS = 'http://www.w3.org/2000/svg' ;
 
-enum FilterChoice {
+export enum FilterChoice {
   None = 'Aucun',
   Saturate = 'Saturation',
   BlackWhite = 'Noir et blanc',
@@ -17,7 +17,7 @@ enum FilterChoice {
   Grey = 'Gris épatant',
 }
 
-enum FormatChoice {
+export enum FormatChoice {
   Svg = 'SVG',
   Png = 'PNG',
   Jpeg = 'JPEG',
@@ -28,18 +28,17 @@ enum FormatChoice {
   templateUrl: './export.component.html',
   styleUrls: ['./export.component.scss']
 })
-// TODO: protected atributes, utilisation du renderer partout, map pour le grand
-// switch case
+
 export class ExportComponent implements AfterViewInit {
 
   @ViewChild('svgView', {
     static: false
   }) protected svgView: ElementRef<SVGSVGElement>;
 
-  innerSVG: SVGSVGElement;
-  svgShape: SvgShape;
-  pictureView: SVGImageElement;
-  // private filtersChooser: Map<string, string>;
+  protected innerSVG: SVGSVGElement;
+  protected svgShape: SvgShape;
+  protected pictureView: SVGImageElement;
+  private filtersChooser: Map<string, string>;
   protected form: FormGroup;
 
   constructor(private formBuilder: FormBuilder,
@@ -49,6 +48,7 @@ export class ExportComponent implements AfterViewInit {
               private svgService: SvgService
   ) {
 
+    this.filtersChooser = new Map<string, string>();
     this.form = this.formBuilder.group({
       name: ['', [Validators.required, (control: FormControl) => {
         const input = (control.value as string).trim();
@@ -87,7 +87,7 @@ export class ExportComponent implements AfterViewInit {
   }
 
   protected onConfirm(): void {
-    this.exportDrawing();
+    this.exportDrawing(this.form.controls.format.value);
     this.dialogRef.close();
   }
 
@@ -99,19 +99,20 @@ export class ExportComponent implements AfterViewInit {
     const filterZone = this.filterService.generateExportFilters(this.renderer);
     this.renderer.appendChild(this.svgView.nativeElement, filterZone);
     this.initializeElements();
+    this.initializeFiltersChooser();
     this.createView(FilterChoice.None);
   }
 
-  // initializeFiltersChooser(): void {
-  //   this.filtersChooser.set(FilterChoice.None, '');
-  //   this.filtersChooser.set(FilterChoice.Saturate, 'url(#saturate)');
-  //   this.filtersChooser.set( FilterChoice.BlackWhite,'url(#blackWhite)' );
-  //   this.filtersChooser.set(FilterChoice.Sepia, 'url(#sepia)');
-  //   this.filtersChooser.set(FilterChoice.Inverse , 'url(#invertion)');
-  //   this.filtersChooser.set(FilterChoice.Grey, 'url(#greyscale)');
-  // }
+  private initializeFiltersChooser(): void {
+    this.filtersChooser.set(FilterChoice.None, '');
+    this.filtersChooser.set(FilterChoice.Saturate, 'url(#saturate)');
+    this.filtersChooser.set( FilterChoice.BlackWhite, 'url(#blackWhite)' );
+    this.filtersChooser.set(FilterChoice.Sepia, 'url(#sepia)');
+    this.filtersChooser.set(FilterChoice.Inverse , 'url(#invertion)');
+    this.filtersChooser.set(FilterChoice.Grey, 'url(#greyscale)');
+  }
 
-  initializeElements(): void {
+  private initializeElements(): void {
     this.svgShape = this.svgService.shape;
     this.innerSVG = this.renderer.createElement('svg', SVG_NS);
     Array.from(this.svgService.structure.defsZone.children)
@@ -127,22 +128,20 @@ export class ExportComponent implements AfterViewInit {
     this.renderer.setAttribute(this.innerSVG, 'height', this.svgShape.height.toString());
   }
 
-  serializeSVG(): string {
+  private serializeSVG(): string {
     return (new XMLSerializer().serializeToString(this.innerSVG));
   }
 
-  convertSVGToBase64(): string {
+  private convertSVGToBase64(): string {
     return `data:image/svg+xml;base64,${btoa(this.serializeSVG())}`;
   }
 
-  convertToBlob(): Blob {
+  private convertToBlob(): Blob {
     this.innerSVG.setAttribute('xmlns', SVG_NS);
-    return new Blob([this.serializeSVG()], {
-      type: 'image/svg+xml;charset=utf-8'
-    });
+    return new Blob([this.serializeSVG()], {type: 'image/svg+xml;charset=utf-8'});
   }
 
-  downloadImage(pictureUrl: string): void {
+  private downloadImage(pictureUrl: string): void {
     const downloadLink: HTMLAnchorElement = this.renderer.createElement('a');
     const format = this.form.controls.format.value.toLocaleLowerCase();
     downloadLink.href = pictureUrl;
@@ -151,62 +150,52 @@ export class ExportComponent implements AfterViewInit {
     downloadLink.click();
   }
 
-  generateCanvas(): HTMLCanvasElement {
+  private generateCanvas(): HTMLCanvasElement {
     const canvas: HTMLCanvasElement = this.renderer.createElement('canvas');
     canvas.height = this.svgShape.height;
     canvas.width = this.svgShape.width;
     return canvas;
   }
 
-  exportSVG(): void {
+  private exportSVG(): void {
     const uri = `data:image/svg+xml,${encodeURIComponent(this.serializeSVG())}`;
     this.downloadImage(uri);
   }
 
-  exportDrawing(): HTMLCanvasElement {
+  private exportDrawing(format: FormatChoice): void {
     this.resetInnerSVG();
     const canvas: HTMLCanvasElement = this.generateCanvas();
-    const format = this.form.controls.format.value;
     if (format as FormatChoice === FormatChoice.Svg) {
       this.exportSVG();
     } else {
-      const canvasContext = canvas.getContext('2d');
+      const canvasContext = canvas.getContext('2d') as CanvasRenderingContext2D;
       const URL = self.URL || self;
-      const img = new Image();
+      const img: HTMLImageElement = this.renderer.createElement('img');
       const svgBlob = this.convertToBlob();
       const url = URL.createObjectURL(svgBlob);
-
+      this.renderer.setAttribute(img, 'src', url);
       img.onload = () => {
-        if (canvasContext) {
-          canvasContext.drawImage(img, 0, 0);
-          const pictureUrl = canvas.toDataURL(`image/${format}`);
-          this.downloadImage(pictureUrl);
-          URL.revokeObjectURL(url);
-        }
+        canvasContext.drawImage(img, 0, 0);
+        const pictureUrl = canvas.toDataURL(`image/${format}`);
+        this.downloadImage(pictureUrl);
+        URL.revokeObjectURL(url);
       };
-      img.src = url;
     }
-    return canvas;
   }
 
-  createView(filterName: string): boolean {
+  private createView(filterName: string): void {
     this.pictureView = this.renderer.createElement('image', SVG_NS);
     const viewZone = this.svgView.nativeElement;
     this.configurePicture(this.pictureView, filterName);
-    if (viewZone) {
-      const child = viewZone.lastElementChild;
-      if (child && (child.getAttribute('id') === 'pictureView')) {
-        viewZone.removeChild(child);
-      }
-      this.renderer.appendChild(viewZone, this.pictureView);
-      return true;
+    const child = viewZone.lastElementChild;
+    if (child && (child.getAttribute('id') === 'pictureView')) {
+      viewZone.removeChild(child);
     }
-    return false;
+    this.renderer.appendChild(viewZone, this.pictureView);
 
   }
 
-  configurePicture(picture: SVGImageElement, filterName: string ): void {
-    // TODO: Use renderer
+  private configurePicture(picture: SVGImageElement, filterName: string ): void {
     const viewZoneHeigth = Number(this.svgView.nativeElement.getAttribute('height'));
     const viewZoneWidth = Number(this.svgView.nativeElement.getAttribute('width'));
 
@@ -215,45 +204,18 @@ export class ExportComponent implements AfterViewInit {
     const pictureHeigth = this.svgShape.height / factor;
     const pictureWidth = this.svgShape.width / factor;
 
-    picture.setAttribute('id', 'pictureView');
-    picture.setAttribute('href', this.convertSVGToBase64());
-    picture.setAttribute('width', pictureWidth.toString());
-    picture.setAttribute('height', pictureHeigth.toString());
-    picture.setAttribute('filter', this.chooseFilter(filterName));
+    this.renderer.setAttribute(picture, 'id', 'pictureView');
+    this.renderer.setAttribute(picture, 'href', this.convertSVGToBase64());
+    this.renderer.setAttribute(picture, 'width', pictureWidth.toString());
+    this.renderer.setAttribute(picture, 'height', pictureHeigth.toString());
+    const filter = this.filtersChooser.get(this.form.controls.filter.value.toString()) as string;
+    picture.setAttribute('filter', filter);
   }
 
-  chooseFilter(filter: string): string {
-    let filterName: string;
-    switch (filter) {
-      case FilterChoice.None:
-        filterName = '';
-        break;
-      case FilterChoice.Saturate:
-        filterName = 'url(#saturate)';
-        break;
-      case FilterChoice.BlackWhite:
-        filterName = 'url(#blackWhite)';
-        break;
-      case FilterChoice.Inverse:
-        filterName = 'url(#invertion)';
-        break;
-      case FilterChoice.Sepia:
-        filterName = 'url(#sepia)';
-        break;
-      case FilterChoice.Grey:
-        filterName = 'url(#greyscale)';
-        break;
-      default:
-        filterName = '';
-    }
-    return filterName;
-  }
-
-  resetInnerSVG(): void {
-
-    // TODO : Use renderer everywhere
+  private resetInnerSVG(): void {
     const filterZone: SVGGElement = this.renderer.createElement('g', SVG_NS);
-    this.innerSVG.setAttribute('filter', this.chooseFilter(this.form.controls.filter.value.toString()));
+    const filter = this.filtersChooser.get(this.form.controls.filter.value.toString()) as string;
+    this.renderer.setAttribute(this.innerSVG, 'filter', filter);
     this.configureSize(filterZone, this.svgShape);
     this.renderer.removeChild(this.svgView, this.pictureView);
     Array.from(this.svgView.nativeElement.children).forEach((element: SVGElement) => {
@@ -265,19 +227,18 @@ export class ExportComponent implements AfterViewInit {
     this.renderer.appendChild(this.innerSVG, filterZone);
   }
 
-  configureSize(element: SVGElement, shape: SvgShape): void {
-    element.setAttribute('width', String(shape.width));
-    element.setAttribute('height', String(shape.height));
+  private configureSize(element: SVGElement, shape: SvgShape): void {
+    this.renderer.setAttribute(element, 'width', String(shape.width));
+    this.renderer.setAttribute(element, 'height', String(shape.height));
   }
 
-  generateBackground(): SVGRectElement {
+  private generateBackground(): SVGRectElement {
     const rect: SVGRectElement = this.renderer.createElement('rect', SVG_NS);
-    // TODO : Use renderer
-    rect.setAttribute('x', '0');
-    rect.setAttribute('y', '0');
-    rect.setAttribute('height', String(this.svgShape.height));
-    rect.setAttribute('width', String(this.svgShape.width));
-    rect.setAttribute('fill', this.svgShape.color);
+    this.renderer.setAttribute(rect, 'y', '0');
+    this.renderer.setAttribute(rect, 'x', '0');
+    this.renderer.setAttribute(rect, 'height', String(this.svgShape.height));
+    this.renderer.setAttribute(rect, 'width', String(this.svgShape.width));
+    this.renderer.setAttribute(rect, 'fill', this.svgShape.color);
     return rect;
   }
 }

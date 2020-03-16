@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, } from '@angular/core';
+import { AfterViewInit, Component, HostListener, Renderer2, } from '@angular/core';
 import { OverlayManager } from './overlay/overlay-manager';
 import { OverlayService } from './overlay/overlay.service';
 import {
@@ -8,6 +8,7 @@ import {
   ShortcutHandlerService
 } from './shortcut-handler/shortcut-handler.service';
 import { SvgService } from './svg/svg.service';
+import { FilterService } from './tool/drawing-instruments/brush/filter.service';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,8 @@ export class AppComponent implements AfterViewInit {
               private shortcutHanler: ShortcutHandlerService,
               private shortcutManager: ShortcutHandlerManagerService,
               private overlayService: OverlayService,
+              private filterService: FilterService,
+              private renderer: Renderer2
   ) { }
 
   @HostListener('window:keydown', ['$event'])
@@ -29,6 +32,8 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    const svgDefsEl: SVGDefsElement = this.filterService.generateBrushFilters(this.renderer);
+    this.renderer.appendChild(this.svgService.structure.defsZone, svgDefsEl);
     this.overlayService.intialise(this.dialog, this.svgService);
     this.overlayService.start();
     this.shortcutManager.initialiseShortcuts();

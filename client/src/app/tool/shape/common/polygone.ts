@@ -6,7 +6,6 @@ import { Point } from './point';
 // Class tested in ../Polygone/polygone-logic.component.spec.ts
 export class Polygone extends AbstractShape {
 
-
   constructor(
     protected renderer: Renderer2,
     public element: SVGElement,
