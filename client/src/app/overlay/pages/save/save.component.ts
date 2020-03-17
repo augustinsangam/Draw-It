@@ -43,8 +43,7 @@ export class SaveComponent implements OnInit {
         ]
       ]
     });
-    this.tags = (this.svgService.header.tags.length === 0) ? ['Mes dessins'] :
-                this.svgService.header.tags;
+    this.tags = this.svgService.header.tags;
   }
 
   ngOnInit(): void {
@@ -82,7 +81,7 @@ export class SaveComponent implements OnInit {
       .encodeElementRecursively(clone as Element);
   }
 
-  add(event: MatChipInputEvent): void {
+  protected add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
     const toAdd = (value || '').trim();
@@ -92,14 +91,14 @@ export class SaveComponent implements OnInit {
     }
   }
 
-  remove(tag: string): void {
+  protected remove(tag: string): void {
     const index = this.tags.indexOf(tag);
     if (index >= 0) {
       this.tags.splice(index, 1);
     }
   }
 
-  onSubmit(): void {
+  protected onSubmit(): void {
     if (this.gElOffset == null) {
       return;
     }
@@ -124,7 +123,7 @@ export class SaveComponent implements OnInit {
     }
   }
 
-  onCancel(): void {
+  protected onCancel(): void {
     this.dialogRef.close('Opération annulée');
   }
 
