@@ -92,7 +92,7 @@ describe('database', () => {
 		chai.use(chaiAsPromised);
 	});
 
-	it('connect should throw on connection fail', async () => {
+	it('#connect should throw on connection fail', async () => {
 		const errMessage = 'foobar';
 		const clientConnectStub = sinon.stub(db['client'], 'connect');
 		clientConnectStub.rejects(errMessage);
@@ -108,7 +108,7 @@ describe('database', () => {
 		chai.assert.fail('did not throw');
 	});
 
-	it('connect should setup collection', async () => {
+	it('#connect should setup collection', async () => {
 		const client = db['client'];
 
 		const clientConnectStub = sinon.stub(client, 'connect');
@@ -132,7 +132,7 @@ describe('database', () => {
 		db['_collection'] = undefined;
 	});
 
-	it('close should call close of client', () => {
+	it('#close should call close of client', () => {
 		const clientCLoseStub = sinon.stub(db['client'], 'close');
 
 		db.close();
@@ -142,7 +142,7 @@ describe('database', () => {
 		clientCLoseStub.restore();
 	});
 
-	it('nextID should reject with error', () =>
+	it('#nextID should reject with error', () =>
 		chai.expect(db.nextID()).to.eventually.be.rejectedWith(ERRORS.nullDb));
 
 	it(`nextID should return ${ANSWER_TO_LIFE}`, async () => {
@@ -154,10 +154,10 @@ describe('database', () => {
 		dbStub.restore();
 	});
 
-	it('all should reject with error', () =>
+	it('#all should reject with error', () =>
 		chai.expect(db.all()).to.eventually.be.rejectedWith(ERRORS.nullCollection));
 
-	it('all should returns a promise of entry array', async () => {
+	it('#all should returns a promise of entry array', async () => {
 		const collectionStub = sinon.stub(db, 'collection');
 		collectionStub.get(() => dbMock.internalCollection);
 
@@ -168,12 +168,12 @@ describe('database', () => {
 		collectionStub.restore();
 	});
 
-	it('insert should reject with error', () =>
+	it('#insert should reject with error', () =>
 		chai
 			.expect(db.insert({ _id: ANSWER_TO_LIFE }))
 			.to.eventually.be.rejectedWith(ERRORS.nullCollection));
 
-	it('insert should return number of inserted', async () => {
+	it('#insert should return number of inserted', async () => {
 		const collectionStub = sinon.stub(db, 'collection');
 		collectionStub.get(() => dbMock.internalCollection);
 
@@ -183,12 +183,12 @@ describe('database', () => {
 		collectionStub.restore();
 	});
 
-	it('replace should reject with error', () =>
+	it('#replace should reject with error', () =>
 		chai
 			.expect(db.replace({ _id: ANSWER_TO_LIFE }, true))
 			.to.eventually.be.rejectedWith(ERRORS.nullCollection));
 
-	it('replace should call replaceOne', () => {
+	it('#replace should call replaceOne', () => {
 		const collectionStub = sinon.stub(db, 'collection');
 		collectionStub.get(() => dbMock.internalCollection);
 
@@ -202,12 +202,12 @@ describe('database', () => {
 		collectionStub.restore();
 	});
 
-	it('delete should reject with error', () =>
+	it('#delete should reject with error', () =>
 		chai
 			.expect(db.delete({ _id: ANSWER_TO_LIFE }))
 			.to.eventually.be.rejectedWith(ERRORS.nullCollection));
 
-	it('delete should return 1', async () => {
+	it('#delete should return 1', async () => {
 		const collectionStub = sinon.stub(db, 'collection');
 		collectionStub.get(() => dbMock.internalCollection);
 

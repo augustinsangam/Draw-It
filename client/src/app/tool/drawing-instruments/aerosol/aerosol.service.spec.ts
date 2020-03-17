@@ -14,11 +14,11 @@ describe('AerosolService', () => {
     }
   );
 
-  it('should be created', () => {
+  it('#should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('generatePoints should return a non empty string', () => {
+  it('#generatePoints should return a non empty string', () => {
     expect(service.generatePoints(new Point(42, 42))).not.toEqual('');
   });
 });

@@ -19,12 +19,12 @@ describe('FilterService', () => {
     ]
   }));
 
-  it('should be created', () => {
+  it('#should be created', () => {
     const service: FilterService = TestBed.get(FilterService);
     expect(service).toBeTruthy();
   });
 
-  // it('generateBrushFilters should return a defZone with 5 elements', () => {
+  // it('#generateBrushFilters should return a defZone with 5 elements', () => {
   //   const service: FilterService = TestBed.get(FilterService);
   //   const defZone: SVGDefsElement = service.generateBrushFilters(renderer);
   //   expect(defZone.children.length).toEqual(6);

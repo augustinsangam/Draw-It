@@ -15,12 +15,12 @@ const TIMEOUT = 100;
 describe('application', () => {
 	before(() => log.setLevel('silent'));
 
-	it('callback should return express app', () => {
+	it('#callback should return express app', () => {
 		const app = myContainer.get<Application>(TYPES.Application);
 		chai.expect(app.callback()).to.equal(app['app']);
 	});
 
-	it('log should pass to next middleware', async () => {
+	it('#log should pass to next middleware', async () => {
 		const app = express();
 		app.use(Application['log']);
 		app.get('/', (_, res) => res.sendStatus(StatusCode.OK));
@@ -32,7 +32,7 @@ describe('application', () => {
 			.then();
 	});
 
-	it('log should set Access-Control-Allow-Headers', async () => {
+	it('#log should set Access-Control-Allow-Headers', async () => {
 		const app = express();
 		app.use(Application['log']);
 		app.get('/', (_, res) => res.sendStatus(StatusCode.OK));
@@ -46,7 +46,7 @@ describe('application', () => {
 			.undefined;
 	});
 
-	it('log should set Access-Control-Allow-Methods', async () => {
+	it('#log should set Access-Control-Allow-Methods', async () => {
 		const app = express();
 		app.use(Application['log']);
 		app.get('/', (_, res) => res.sendStatus(StatusCode.OK));
@@ -60,7 +60,7 @@ describe('application', () => {
 			.undefined;
 	});
 
-	it('log should set Access-Control-Allow-Origin', async () => {
+	it('#log should set Access-Control-Allow-Origin', async () => {
 		const app = express();
 		app.use(Application['log']);
 		app.get('/', (_, res) => res.sendStatus(StatusCode.OK));

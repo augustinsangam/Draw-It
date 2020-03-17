@@ -47,6 +47,7 @@ export class AerosolLogicComponent
         }
       }
     });
+    this.periodicSplashAdder = Subscription.EMPTY;
   }
 
   ngOnInit(): void {

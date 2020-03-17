@@ -55,18 +55,18 @@ describe('EraserLogicComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('undo post action works well', () => {
+  it('#undo post action works well', () => {
     const spy = spyOn<any>(component, 'markElementsInZone');
     component['lastestMousePosition'] = new Point(0, 0);
     component['undoRedoService'].undo();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('mouse down handler should do nothing'
+  it('#mouse down handler should do nothing'
     + ' the clicked button is not the left button', () => {
       const fakeEvent = {
         button: 1,
@@ -82,7 +82,7 @@ describe('EraserLogicComponent', () => {
       expect(component['mouse'].mouseIsDown).not.toEqual(true);
     });
 
-  it('mouse down handler should shange starting point'
+  it('#mouse down handler should shange starting point'
     + ' and set mouseIsDown', () => {
       const fakeEvent = {
         button: 0,
@@ -98,7 +98,7 @@ describe('EraserLogicComponent', () => {
       expect(component['mouse'].mouseIsDown).toEqual(true);
     });
 
-  it('The eraser must be drawn when mouse move', () => {
+  it('#The eraser must be drawn when mouse move', () => {
     const fakeEvent = {
       button: 0,
       offsetX: 200,
@@ -114,7 +114,7 @@ describe('EraserLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('The eraser must be deleteElemts when mouse is on drag', () => {
+  it('#The eraser must be deleteElemts when mouse is on drag', () => {
     const fakeEvent = {
       button: 0,
       offsetX: 2,
@@ -131,7 +131,7 @@ describe('EraserLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('elementsDeletedInDrag should be set when elements'
+  it('#elementsDeletedInDrag should be set when elements'
     + 'element(s) have been deleted during the drag', () => {
       const fakeEvent = {
         button: 0,
@@ -154,7 +154,7 @@ describe('EraserLogicComponent', () => {
       expect(component['elementsDeletedInDrag']).toEqual(true);
     });
 
-  it('mouse up handler should do nothing'
+  it('#mouse up handler should do nothing'
     + ' the released button is not the left button', () => {
       const fakeEvent = {
         button: 1,
@@ -170,7 +170,7 @@ describe('EraserLogicComponent', () => {
       expect(component['mouse'].mouseIsDown).not.toEqual(true);
     });
 
-  it('mouse up handler should shange end point'
+  it('#mouse up handler should shange end point'
     + ' and reset mouseIsDown', () => {
       const fakeEvent = {
         button: 0,
@@ -186,7 +186,7 @@ describe('EraserLogicComponent', () => {
       expect(component['mouse'].mouseIsDown).toEqual(false);
     });
 
-  it('mouse up handler should save the draw state'
+  it('#mouse up handler should save the draw state'
     + ' if elements had been deleted during the drag', () => {
       const fakeEvent = {
         button: 0,
@@ -203,7 +203,7 @@ describe('EraserLogicComponent', () => {
       expect(spy).toHaveBeenCalled();
     });
 
-  it('mouse should be hide when the cursor leave the '
+  it('#mouse should be hide when the cursor leave the '
     + 'drawing zone', () => {
       const spy = spyOn<any>(component, 'hideEraser').and.callThrough();
       const mouseLeaveHandler = (component['handlers'].get('mouseleave')) as
@@ -212,7 +212,7 @@ describe('EraserLogicComponent', () => {
       expect(spy).toHaveBeenCalled();
     });
 
-  it('The draw state should be saved when mouse leave the draw area '
+  it('#The draw state should be saved when mouse leave the draw area '
     + 'and element had been deleted', () => {
       const spy = spyOn(component['undoRedoService'], 'saveState');
       component['elementsDeletedInDrag'] = true;
@@ -222,7 +222,7 @@ describe('EraserLogicComponent', () => {
       expect(spy).toHaveBeenCalled();
     });
 
-  it('Click handler works only '
+  it('#Click handler works only '
     + 'if the left button had been clicked', () => {
       const fakeEvent = {
         button: 1,
@@ -239,7 +239,7 @@ describe('EraserLogicComponent', () => {
       expect(spy).not.toHaveBeenCalled();
     });
 
-  it('Click handler works only for real clicks', () => {
+  it('#Click handler works only for real clicks', () => {
     const fakeEvent = {
       button: 0,
       offsetX: 200,
@@ -258,7 +258,7 @@ describe('EraserLogicComponent', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('Click handler can delete elements', () => {
+  it('#Click handler can delete elements', () => {
     const fakeEvent = {
       button: 0,
       offsetX: 200,
@@ -284,7 +284,7 @@ describe('EraserLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('Click handler delete elements only if there is some', () => {
+  it('#Click handler delete elements only if there is some', () => {
     const fakeEvent = {
       button: 0,
       offsetX: 200,

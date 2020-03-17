@@ -58,55 +58,55 @@ describe('PanelComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should toggle panel on same tool', () => {
+  it('#should toggle panel on same tool', () => {
     const spy = spyOn<any>(component, 'toggle');
     component.ngOnInit();
     component['toolSelectorService'].set(Tool._None);
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should toggle panel on change tool', () => {
+  it('#should toggle panel on change tool', () => {
     spyOn<any>(component, 'setTool').and.callFake(
       (tool: Tool) => expect(tool).toBe(Tool.Line));
     component.ngOnInit();
     component['toolSelectorService'].set(Tool.Line);
   });
 
-  it('should open panel', () => {
+  it('#should open panel', () => {
     component['childWidth'] = 42;
     component['toggle']();
     expect(component['hostWidth']).toBe(42);
   });
 
-  it('should close panel', () => {
+  it('#should close panel', () => {
     component['hostWidth'] = 42;
     component['toggle']();
     expect(component['hostWidth']).toBe(0);
   });
 
-  it('should do nothing when tool is none on setTool', () => {
+  it('#should do nothing when tool is none on setTool', () => {
     const spy = spyOn(component['viewContainerRef'], 'clear').and.callThrough();
     component['setTool'](Tool._None);
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('should clear ViewContainerRef', () => {
+  it('#should clear ViewContainerRef', () => {
     const spy = spyOn(component['viewContainerRef'], 'clear').and.callThrough();
     component['setTool'](Tool.Line);
     expect(spy).toHaveBeenCalled();
   });
 
-  it('should set width', () => {
+  it('#should set width', () => {
     component['setWidthOfChild'](42);
     expect(component['hostWidth']).toBe(42);
     expect(component['childWidth']).toBe(42);
   });
 
-  it('should set width from setTool', () => {
+  it('#should set width from setTool', () => {
     const refOrNull = component['setTool'](Tool.Line);
     if (!!refOrNull) {
       spyOn<any>(component, 'setWidthOfChild').and.callFake(

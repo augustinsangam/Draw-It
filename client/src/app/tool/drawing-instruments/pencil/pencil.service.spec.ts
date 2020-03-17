@@ -5,7 +5,7 @@ import { PencilService } from './pencil.service';
 describe('PencilService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
-  it('should be created', () => {
+  it('#should be created', () => {
     const service: PencilService = TestBed.get(PencilService);
     expect(service).toBeTruthy();
   });

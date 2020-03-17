@@ -50,11 +50,11 @@ describe('PipetteLogicComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('onMouseClick should set the colorService primary color  ' +
+  it('#onMouseClick should set the colorService primary color  ' +
     'if called with a left click', () => {
     const expected = 'rgba(42,42,42,1)';
     component['service'].currentColor = expected;
@@ -62,7 +62,7 @@ describe('PipetteLogicComponent', () => {
     expect(component['colorService'].primaryColor).toEqual(expected);
   });
 
-  it('onMouseClick should set the colorService secondaryCommand when called' +
+  it('#onMouseClick should set the colorService secondaryCommand when called' +
     ' with a right click', () => {
     const expected = 'rgba(42,42,42,1)';
     component['service'].currentColor = expected;
@@ -70,7 +70,7 @@ describe('PipetteLogicComponent', () => {
     expect(component['colorService'].secondaryColor).toEqual(expected);
   });
 
-  it('onMouseClick should not do anything when called with ' +
+  it('#onMouseClick should not do anything when called with ' +
     'an unknown click', () => {
     const spy1 = spyOn(component['colorService'], 'selectPrimaryColor');
     const spy2 = spyOn(component['colorService'], 'selectSecondaryColor');
@@ -79,14 +79,14 @@ describe('PipetteLogicComponent', () => {
     expect(spy2).not.toHaveBeenCalled();
   });
 
-  it('onMouseMove should call ngOnInit whent the background color has changed', () => {
+  it('#onMouseMove should call ngOnInit whent the background color has changed', () => {
     component['colorService'].backgroundColor = 'rgba(0,0,0,1)';
     const spy = spyOn(component, 'ngOnInit');
     component['onMouseMove'](createClickMouseEvent('mousemove', 0));
     expect(spy).toHaveBeenCalled();
   });
 
-  it('onMouseMove should read the pixel data whether it is a right or left click', () => {
+  it('#onMouseMove should read the pixel data whether it is a right or left click', () => {
     const spy = spyOn(component['image'], 'getImageData').and.callFake(() => {
       return {data: [1, 1, 1, 1]} as unknown as ImageData;
     });
@@ -95,7 +95,7 @@ describe('PipetteLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('ngOnDestroy should call the listeners and call resetActions of undoRedoService', () => {
+  it('#ngOnDestroy should call the listeners and call resetActions of undoRedoService', () => {
     let called = false;
     const spy = spyOn(component['undoRedoService'], 'resetActions');
     component['allListeners'] = [() => called = true];
@@ -104,13 +104,13 @@ describe('PipetteLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('ngOnInit should initialize the listeners properly', () => {
+  it('#ngOnInit should initialize the listeners properly', () => {
     component['allListeners'] = [];
     component.ngOnInit();
     expect(component['allListeners'].length).toEqual(3);
   });
 
-  it('the listeners should handle mouseclick', () => {
+  it('#the listeners should handle mouseclick', () => {
     const expectedMouseEv = createClickMouseEvent('click', 2);
     const spy = spyOn<any>(component, 'onMouseClick');
     component.ngOnInit();
@@ -118,7 +118,7 @@ describe('PipetteLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('the listeners should handle mousemove', () => {
+  it('#the listeners should handle mousemove', () => {
     const expectedMouseEv = createClickMouseEvent('mousemove', 2);
     const spy = spyOn<any>(component, 'onMouseMove');
     component.ngOnInit();
@@ -126,7 +126,7 @@ describe('PipetteLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('the listeners should handle mousemove', () => {
+  it('#the listeners should handle mousemove', () => {
     const expectedMouseEv = createClickMouseEvent('contextmenu', 2);
     const spy = spyOn<any>(component, 'onMouseClick');
     component.ngOnInit();
@@ -134,19 +134,19 @@ describe('PipetteLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('the post undo override function should call ngOnInit', () => {
+  it('#the post undo override function should call ngOnInit', () => {
     const spy = spyOn(component, 'ngOnInit');
     (component['undoRedoService']['actions'].undo[1].function as () => void)();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('the post redo override function should call ngOnInit', () => {
+  it('#the post redo override function should call ngOnInit', () => {
     const spy = spyOn(component, 'ngOnInit');
     (component['undoRedoService']['actions'].redo[1].function as () => void)();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('onMouseMove should not call getImageData if the image is null', () => {
+  it('#onMouseMove should not call getImageData if the image is null', () => {
     const spy = spyOn(component['image'], 'getImageData');
     component['image'] = null as unknown as CanvasRenderingContext2D;
     component['onMouseMove'](createClickMouseEvent('mousemove', 2));

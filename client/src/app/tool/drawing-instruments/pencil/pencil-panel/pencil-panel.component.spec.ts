@@ -30,15 +30,15 @@ describe('PencilPanelComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it ('pencilForm devrait avoir été créé correctement', () => {
+  it ('pencilForm have been created correctly', () => {
     expect(component['pencilForm']).toBeTruthy();
   });
 
-  it ('onThicknessCahange devrait appeler patchValue', () => {
+  it ('onThicknessCahange should call patchValue', () => {
     const spy = spyOn(component['pencilForm'], 'patchValue');
     component['onThicknessChange']();
     expect(spy).toHaveBeenCalled();
