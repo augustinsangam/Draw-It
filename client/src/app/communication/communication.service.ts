@@ -141,37 +141,40 @@ export class CommunicationService {
 
   decodeElementRecursively(element: ElementT, renderer: Renderer2): SVGElement | null {
     const name = element.name();
-    if (!!name) {
-      const svgEl: SVGElement = renderer.createElement(name, 'http://www.w3.org/2000/svg');
-      const attrsLen = element.attrsLength();
-      for (let i = 0; i < attrsLen; ++i) {
-        const attr = element.attrs(i);
-        if (attr == null) {
-          continue;
-        }
-
-        const [key, value] = [attr.k(), attr.v()];
-        // v may be empty, so !!v is not suitable
-        if (!!key && value != null) {
-          renderer.setAttribute(svgEl, key, value);
-          // svgEl.setAttribute(key, value);
-        }
-      }
-      const childrenLen = element.childrenLength();
-      for (let i = 0; i < childrenLen; ++i) {
-        const child = element.children(i);
-        if (child == null) {
-          continue;
-        }
-
-        const childElement = this.decodeElementRecursively(child, renderer);
-        if (!!childElement) {
-          renderer.appendChild(svgEl, childElement);
-        }
-      }
-      return svgEl;
+    if (name == null) {
+      return null;
     }
-    return null;
+
+    const svgEl: SVGElement = renderer.createElement(name, 'http://www.w3.org/2000/svg');
+
+    const attrsLen = element.attrsLength();
+    for (let i = 0; i < attrsLen; ++i) {
+      const attr = element.attrs(i);
+      if (attr == null) {
+        continue;
+      }
+
+      const [key, value] = [attr.k(), attr.v()];
+      // v may be empty, so !!v is not suitable
+      if (!!key && value != null) {
+        renderer.setAttribute(svgEl, key, value);
+      }
+    }
+
+    const childrenLen = element.childrenLength();
+    for (let i = 0; i < childrenLen; ++i) {
+      const child = element.children(i);
+      if (child == null) {
+        continue;
+      }
+
+      const childElement = this.decodeElementRecursively(child, renderer);
+      if (!!childElement) {
+        renderer.appendChild(svgEl, childElement);
+      }
+    }
+
+    return svgEl;
   }
 
   encodeElementRecursively(el: Element): flatbuffers.Offset {
@@ -180,13 +183,16 @@ export class CommunicationService {
       .map((node) => node as Element)
       .map((childEl) => this.encodeElementRecursively(childEl));
     const children = ElementT.createChildrenVector(this.fbBuilder, childrenList);
+
     const attrsList = Array.from(el.attributes)
       .filter((attr) => attr.name.charAt(0) !== '_')
       .map((attr) => AttrT.create(
         this.fbBuilder, this.fbBuilder.createString(attr.name),
         this.fbBuilder.createString(attr.value)));
     const attrs = ElementT.createAttrsVector(this.fbBuilder, attrsList);
+
     const name = this.fbBuilder.createString(el.tagName);
+
     return ElementT.create(this.fbBuilder, name, attrs, children);
   }
 
