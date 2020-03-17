@@ -1,8 +1,26 @@
- // tslint:disable: no-any no-string-literal
+ // tslint:disable: no-any no-string-literal no-magic-numbers max-classes-per-file max-file-line-count
 
+import { Component, Renderer2 } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { flatbuffers } from 'flatbuffers';
 
 import { CommunicationService, ContentType, StatusCode } from './communication.service';
+import {
+ Attr as AttrT,
+// Draw as DrawT,
+ Element as ElementT,
+} from './data_generated';
+
+@Component({
+  selector: 'stub',
+  template: '',
+})
+class StubComponent {
+  constructor(
+    readonly communication: CommunicationService,
+    readonly renderer: Renderer2,
+    ) {}
+}
 
 class XMLHttpRequestMock {
   method: string;
@@ -38,10 +56,18 @@ class XMLHttpRequestMock {
 fdescribe('CommunicationService', () => {
   let xhrMock: XMLHttpRequestMock;
   let service: CommunicationService;
+  let renderer: Renderer2;
 
   beforeAll(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.get(CommunicationService);
+    TestBed.configureTestingModule({
+      declarations: [
+        StubComponent,
+      ],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(StubComponent);
+    const component = fixture.componentInstance;
+    service = component.communication;
+    renderer = component.renderer;
     xhrMock = new XMLHttpRequestMock();
     service['xhr'] = xhrMock as any;
   });
@@ -170,5 +196,289 @@ fdescribe('CommunicationService', () => {
     xhrMock.onreadystatechange();
 
     await expectAsync(promise).toBeRejected();
+  });
+
+  it('put should use method PUT', () => {
+    service.put(42);
+
+    expect(xhrMock.method).toBe('PUT');
+  });
+
+  it('put should call send', () => {
+    const spy = spyOn(xhrMock, 'send');
+    service.put(42);
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('put should set Content-Type header', () => {
+    service.post();
+
+    expect(xhrMock.headers.get('Content-Type')).toBe(ContentType.OCTET_STREAM);
+  });
+
+  it('onreadystatechange from put should do nothing if not done', async () => {
+    let done = false;
+    const promise = service.put(42);
+    promise.then(() => done = true);
+
+    xhrMock.readyState = 1;
+    xhrMock.onreadystatechange();
+
+    expect(done).toBeFalsy();
+
+    xhrMock.status = StatusCode.ACCEPTED;
+    xhrMock.readyState = 4;
+    xhrMock.onreadystatechange();
+
+    await promise;
+  });
+
+  it('onreadystatechange from put should do nothing if status is zero', async () => {
+    let done = false;
+    const promise = service.put(42);
+    promise.then(() => done = true);
+
+    xhrMock.status = 0;
+    xhrMock.readyState = 4;
+    xhrMock.onreadystatechange();
+
+    expect(done).toBeFalsy();
+
+    xhrMock.status = StatusCode.ACCEPTED;
+    xhrMock.onreadystatechange();
+
+    await promise;
+  });
+
+  it('put should reject if INTERNAL SERVER ERROR', async () => {
+    const promise = service.put(42);
+    xhrMock.status = StatusCode.INTERNAL_SERVER_ERROR;
+    xhrMock.readyState = 4;
+    xhrMock.onreadystatechange();
+
+    await expectAsync(promise).toBeRejected();
+  });
+
+  it('delete should use method DELETE', () => {
+    service.delete(42);
+
+    expect(xhrMock.method).toBe('DELETE');
+  });
+
+  it('delete should call send', () => {
+    const spy = spyOn(xhrMock, 'send');
+    service.delete(42);
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('onreadystatechange from delete should do nothing if not done', async () => {
+    let done = false;
+    const promise = service.delete(42);
+    promise.then(() => done = true);
+
+    xhrMock.readyState = 1;
+    xhrMock.onreadystatechange();
+
+    expect(done).toBeFalsy();
+
+    xhrMock.status = StatusCode.ACCEPTED;
+    xhrMock.readyState = 4;
+    xhrMock.onreadystatechange();
+
+    await promise;
+  });
+
+  it('onreadystatechange from delete should do nothing if status is zero', async () => {
+    let done = false;
+    const promise = service.delete(42);
+    promise.then(() => done = true);
+
+    xhrMock.status = 0;
+    xhrMock.readyState = 4;
+    xhrMock.onreadystatechange();
+
+    expect(done).toBeFalsy();
+
+    xhrMock.status = StatusCode.ACCEPTED;
+    xhrMock.onreadystatechange();
+
+    await promise;
+  });
+
+  it('delete should reject if INTERNAL SERVER ERROR', async () => {
+    const promise = service.delete(42);
+    xhrMock.status = StatusCode.INTERNAL_SERVER_ERROR;
+    xhrMock.readyState = 4;
+    xhrMock.onreadystatechange();
+
+    await expectAsync(promise).toBeRejected();
+  });
+
+  it('decodeElementRecursively should return null if no name', () => {
+    const fbBuilder = new flatbuffers.Builder();
+    ElementT.start(fbBuilder);
+    const elementOffset = ElementT.end(fbBuilder);
+    fbBuilder.finish(elementOffset);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+    const val = service.decodeElementRecursively(ElementT.getRoot(fbByteBuffer), renderer);
+    expect(val).toBeNull();
+  });
+
+  it('decodeElementRecursively should return an element if name is set', () => {
+    const fbBuilder = new flatbuffers.Builder();
+    const nameOffset = fbBuilder.createString('foobar');
+    ElementT.start(fbBuilder);
+    ElementT.addName(fbBuilder, nameOffset);
+    const elementOffset = ElementT.end(fbBuilder);
+    fbBuilder.finish(elementOffset);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+    const svgEl = service.decodeElementRecursively(ElementT.getRoot(fbByteBuffer), renderer);
+    expect(svgEl).not.toBeNull();
+  });
+
+  it('decodeElementRecursively should return an element with no attribuutes if attribute is null', () => {
+    const fbBuilder = new flatbuffers.Builder();
+    const nameOffset = fbBuilder.createString('foobar');
+    ElementT.start(fbBuilder);
+    ElementT.addName(fbBuilder, nameOffset);
+    const elementOffset = ElementT.end(fbBuilder);
+    fbBuilder.finish(elementOffset);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+    const element = ElementT.getRoot(fbByteBuffer);
+    const elementAttrsLengthStub = spyOn(element, 'attrsLength');
+    elementAttrsLengthStub.and.returnValue(1);
+
+    const svgEl = service.decodeElementRecursively(element, renderer);
+    if (svgEl == null) {
+      fail('Element should not be null');
+      return;
+    }
+    expect(svgEl.attributes.length).toBe(0);
+  });
+
+  it('decodeElementRecursively should not set attributes if empty value', () => {
+    const fbBuilder = new flatbuffers.Builder();
+
+    const nameOffset = fbBuilder.createString('foobar');
+
+    const keyOffset = fbBuilder.createString('foo');
+    AttrT.start(fbBuilder);
+    AttrT.addK(fbBuilder, keyOffset);
+    const attrOffset = AttrT.end(fbBuilder);
+    const attrsOffset = ElementT.createAttrsVector(fbBuilder, [attrOffset]);
+
+    ElementT.start(fbBuilder);
+    ElementT.addName(fbBuilder, nameOffset);
+    ElementT.addAttrs(fbBuilder, attrsOffset);
+    const elementOffset = ElementT.end(fbBuilder);
+
+    fbBuilder.finish(elementOffset);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+    const svgEl = service.decodeElementRecursively(ElementT.getRoot(fbByteBuffer), renderer);
+    if (svgEl == null) {
+      fail('Element should not be null');
+      return;
+    }
+    expect(svgEl.getAttribute('foo')).toBeNull();
+  });
+
+  it('decodeElementRecursively should set attributes', () => {
+    const fbBuilder = new flatbuffers.Builder();
+    const nameOffset = fbBuilder.createString('foobar');
+    const keyOffset = fbBuilder.createString('foo');
+    const valOffset = fbBuilder.createString('bar');
+    const attrOffset = AttrT.create(fbBuilder, keyOffset, valOffset);
+    const attrsOffset = ElementT.createAttrsVector(fbBuilder, [attrOffset]);
+    ElementT.start(fbBuilder);
+    ElementT.addName(fbBuilder, nameOffset);
+    ElementT.addAttrs(fbBuilder, attrsOffset);
+    const elementOffset = ElementT.end(fbBuilder);
+    fbBuilder.finish(elementOffset);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+    const svgEl = service.decodeElementRecursively(ElementT.getRoot(fbByteBuffer), renderer);
+    if (svgEl == null) {
+      fail('Element should not be null');
+      return;
+    }
+    expect(svgEl.getAttribute('foo')).toEqual('bar');
+  });
+
+  it('decodeElementRecursively should return an element with no children if children is null', () => {
+    const fbBuilder = new flatbuffers.Builder();
+    const nameOffset = fbBuilder.createString('foobar');
+    ElementT.start(fbBuilder);
+    ElementT.addName(fbBuilder, nameOffset);
+    const elementOffset = ElementT.end(fbBuilder);
+    fbBuilder.finish(elementOffset);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+    const element = ElementT.getRoot(fbByteBuffer);
+    const elementChildrenLengthStub = spyOn(element, 'childrenLength');
+    elementChildrenLengthStub.and.returnValue(1);
+
+    const svgEl = service.decodeElementRecursively(element, renderer);
+    if (svgEl == null) {
+      fail('Element should not be null');
+      return;
+    }
+    expect(svgEl.childElementCount).toBe(0);
+  });
+
+  it('decodeElementRecursively should return an element with no children if children has no name', () => {
+    const fbBuilder = new flatbuffers.Builder();
+
+    const nameOffset = fbBuilder.createString('foobar');
+
+    ElementT.start(fbBuilder);
+    const childOffset = ElementT.end(fbBuilder);
+    const childrenOffset = ElementT.createChildrenVector(fbBuilder, [childOffset]);
+
+    ElementT.start(fbBuilder);
+    ElementT.addName(fbBuilder, nameOffset);
+    ElementT.addChildren(fbBuilder, childrenOffset);
+    const elementOffset = ElementT.end(fbBuilder);
+    fbBuilder.finish(elementOffset);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+    const svgEl = service.decodeElementRecursively(ElementT.getRoot(fbByteBuffer), renderer);
+    if (svgEl == null) {
+      fail('Element should not be null');
+      return;
+    }
+    expect(svgEl.childElementCount).toBe(0);
+  });
+
+  it('decodeElementRecursively should return an element with one child', () => {
+    const fbBuilder = new flatbuffers.Builder();
+
+    const nameOffset = fbBuilder.createString('foo');
+
+    const name2Offset = fbBuilder.createString('bar');
+
+    ElementT.start(fbBuilder);
+    ElementT.addName(fbBuilder, name2Offset);
+    const childOffset = ElementT.end(fbBuilder);
+    const childrenOffset = ElementT.createChildrenVector(fbBuilder, [childOffset]);
+
+    ElementT.start(fbBuilder);
+    ElementT.addName(fbBuilder, nameOffset);
+    ElementT.addChildren(fbBuilder, childrenOffset);
+    const elementOffset = ElementT.end(fbBuilder);
+    fbBuilder.finish(elementOffset);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+    const svgEl = service.decodeElementRecursively(ElementT.getRoot(fbByteBuffer), renderer);
+    if (svgEl == null) {
+      fail('Element should not be null');
+      return;
+    }
+    expect(svgEl.childElementCount).toBe(1);
   });
 });

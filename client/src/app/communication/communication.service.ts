@@ -123,12 +123,13 @@ export class CommunicationService {
     this.xhr.open('DELETE', `${this.host}/draw/${id}`);
     const promise = new Promise<null>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
-        if (this.xhr.readyState === DONE) {
-          if (this.xhr.status === StatusCode.ACCEPTED) {
-            resolve();
-          } else if (this.xhr.status) {
-            reject(this.xhr.responseText);
-          }
+        if (this.xhr.readyState !== DONE) {
+          return;
+        }
+        if (this.xhr.status === StatusCode.ACCEPTED) {
+          resolve();
+        } else if (this.xhr.status) {
+          reject(this.xhr.responseText);
         }
       };
       this.xhr.ontimeout = () => reject(TIMEOUT_ERROR_MESSAGE);
@@ -143,22 +144,29 @@ export class CommunicationService {
     if (!!name) {
       const svgEl: SVGElement = renderer.createElement(name, 'http://www.w3.org/2000/svg');
       const attrsLen = element.attrsLength();
-      for (let i = 0; i < attrsLen; i++) {
+      for (let i = 0; i < attrsLen; ++i) {
         const attr = element.attrs(i);
-        if (!!attr) {
-          const [key, value] = [attr.k(), attr.v()];
-          // v may be empty, so !!v is not suitable
-          if (!!key && value != null) {
-            svgEl.setAttribute(key, value);
-          }
+        if (attr == null) {
+          continue;
+        }
+
+        const [key, value] = [attr.k(), attr.v()];
+        // v may be empty, so !!v is not suitable
+        if (!!key && value != null) {
+          renderer.setAttribute(svgEl, key, value);
+          // svgEl.setAttribute(key, value);
         }
       }
       const childrenLen = element.childrenLength();
-      for (let i = 0; i < childrenLen; i++) {
+      for (let i = 0; i < childrenLen; ++i) {
         const child = element.children(i);
-        if (!!child) {
-          renderer.appendChild(svgEl,
-            this.decodeElementRecursively(child, renderer));
+        if (child == null) {
+          continue;
+        }
+
+        const childElement = this.decodeElementRecursively(child, renderer);
+        if (!!childElement) {
+          renderer.appendChild(svgEl, childElement);
         }
       }
       return svgEl;
