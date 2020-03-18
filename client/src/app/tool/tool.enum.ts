@@ -12,6 +12,7 @@ export enum Tool {
   Rectangle,
   Pipette,
   Selection,
+  Text,
   _Len,
   _None,
 }

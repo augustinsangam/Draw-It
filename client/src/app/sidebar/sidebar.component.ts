@@ -80,6 +80,11 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
   })
   protected gridElRef: ElementRef<HTMLElement>;
 
+  @ViewChild('text', {
+    static: false,
+  })
+  protected textElRef: ElementRef<HTMLElement>;
+
   @Output() protected documentationEvent: EventEmitter<null>;
   @Output() protected exportEvent: EventEmitter<null>;
   @Output() protected saveEvent: EventEmitter<null>;
@@ -120,6 +125,7 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
     this.toolToElRef[Tool.Ellipse]    = this.ellipseElRef;
     this.toolToElRef[Tool.Polygone]   = this.polygoneElRef;
     this.toolToElRef[Tool.Grid]       = this.gridElRef;
+    this.toolToElRef[Tool.Text]       = this.textElRef;
     this.toolSelectorService.onChange(
       (tool, old) => this.setTool(tool, old));
   }

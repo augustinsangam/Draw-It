@@ -145,6 +145,8 @@ import {
 import {
   RectanglePanelComponent
 } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
+import { TextLogicComponent } from './tool/text/text-logic/text-logic.component';
+import { TextPanelComponent } from './tool/text/text-panel/text-panel.component';
 
 @NgModule({
   declarations: [
@@ -192,7 +194,9 @@ import {
     GridPanelComponent,
     SaveComponent,
     TagsFilterComponent,
-    ColorBoxComponent
+    ColorBoxComponent,
+    TextLogicComponent,
+    TextPanelComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -246,6 +250,8 @@ import {
     GridLogicComponent,
     GridPanelComponent,
     SaveComponent,
+    TextLogicComponent,
+    TextPanelComponent
   ],
   bootstrap: [
     AppComponent,

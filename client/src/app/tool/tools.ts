@@ -71,6 +71,8 @@ import {
 import {
   RectanglePanelComponent
 } from './shape/rectangle/rectangle-panel/rectangle-panel.component';
+import {TextLogicComponent} from './text/text-logic/text-logic.component';
+import {TextPanelComponent} from './text/text-panel/text-panel.component';
 import { ToolLogicDirective } from './tool-logic/tool-logic.directive';
 import { ToolPanelDirective } from './tool-panel/tool-panel.directive';
 import { Tool } from './tool.enum';
@@ -102,3 +104,5 @@ TOOL_MANAGER.set(Tool.Aerosol,
   [AerosolPanelComponent, AerosolLogicComponent]);
 TOOL_MANAGER.set(Tool.Grid,
   [GridPanelComponent, GridLogicComponent]);
+TOOL_MANAGER.set(Tool.Text,
+  [TextPanelComponent, TextLogicComponent]);
