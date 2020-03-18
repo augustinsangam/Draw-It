@@ -82,7 +82,6 @@ describe('RectangleLogicComponent', () => {
     expect(component['mouseDownPoint']).toEqual(pointExpected);
   });
 
-
   it('#the atributes are not initialised when the wrong button is clicked',
     () => {
       expect(component['rectangles']).toEqual([]);

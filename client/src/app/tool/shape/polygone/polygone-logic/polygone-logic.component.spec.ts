@@ -110,8 +110,7 @@ describe('PolygoneLogicComponent', () => {
       expect(component['mouseDownPoint']).not.toEqual(pointExpected);
       expect(component['polygones'].length).not.toEqual(1);
       expect(component['onDrag']).not.toBeTruthy();
-    });
-
+  });
 
   it('#the polygone css is only defined by the polygoneService'
     + 'and the colorService', () => {

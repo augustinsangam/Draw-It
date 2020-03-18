@@ -1,7 +1,7 @@
  // tslint:disable: no-any no-string-literal no-magic-numbers max-classes-per-file max-file-line-count
 
 import { Component, Renderer2 } from '@angular/core';
-import { TestBed, async } from '@angular/core/testing';
+import { async, TestBed } from '@angular/core/testing';
 import { flatbuffers } from 'flatbuffers';
 
 import { SvgHeader } from '../svg/svg-header';
