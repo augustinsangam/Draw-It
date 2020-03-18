@@ -22,7 +22,7 @@ const createClickMouseEvent = (event: string): MouseEvent => {
 };
 
 // tslint:disable:no-string-literal no-any no-magic-numbers
-fdescribe('RectangleLogicComponent', () => {
+describe('RectangleLogicComponent', () => {
   let component: RectangleLogicComponent;
   let fixture: ComponentFixture<RectangleLogicComponent>;
 
@@ -50,7 +50,6 @@ fdescribe('RectangleLogicComponent', () => {
 
     (TestBed.get(UndoRedoService) as UndoRedoService)
     .intialise(component.svgStructure);
-
     fixture.detectChanges();
   });
 
@@ -73,6 +72,7 @@ fdescribe('RectangleLogicComponent', () => {
     expect(component['rectangles']).toEqual([]);
     expect(component['onDrag']).toBeFalsy();
     const event = createClickMouseEvent('mousedown');
+    component['service'].fillOption = false;
     component['initRectangle'](event);
     const pointExpected = new Point(event.offsetX, event.offsetY);
     expect(component['currentPoint']).toEqual(pointExpected);
@@ -81,6 +81,7 @@ fdescribe('RectangleLogicComponent', () => {
     expect(component['style']).toBeTruthy();
     expect(component['mouseDownPoint']).toEqual(pointExpected);
   });
+
 
   it('#the atributes are not initialised when the wrong button is clicked',
     () => {
@@ -122,7 +123,6 @@ fdescribe('RectangleLogicComponent', () => {
     component.ngOnInit();
     expect(component['allListeners'].length).toEqual(5);
   });
-
 
   it('#the rectangle css is only defined by the rectangleService'
     + 'and the colorService', () => {

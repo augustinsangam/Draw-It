@@ -168,7 +168,6 @@ export class LineLogicComponent extends ToolLogicDirective
     const maxRemovableInstruction = this.service.withJonction ? 2 * 2 : 2; // TODO : Magie
     const shouldConnect = this.getPath().datas.instructions.length >= maxRemovableInstruction;
     if (keyEv.code === 'Backspace' && shouldConnect) {
-      console.log('ici');
       this.removeLine();
       this.getPath().simulateNewLine(this.getPath().lastPoint);
     }
