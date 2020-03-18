@@ -76,14 +76,22 @@ export class GalleryComponent implements AfterViewInit {
         (undefined as unknown) as MatDialogRef<DeleteConfirmationDialogComponent>,
       load: (undefined as unknown) as MatDialogRef<ConfirmationDialogComponent>,
     };
+  }
 
-    this.communicationService.get().then((fbbb) => {
-      this.responsePromiseHandler(fbbb);
-    }).catch((err: string) => {
+  ngAfterViewInit(): void {
+    this.screenService.size.subscribe(() => this.ajustImagesWidth());
+
+    this.getAll().catch((err: string) => {
       this.loading = false;
       this.snackBar.open(err, 'Ok', {
         duration: SNACKBAR_DURATION
       });
+    });
+  }
+
+  async getAll(): Promise<void> {
+    return this.communicationService.get().then((fbbb) => {
+      this.responsePromiseHandler(fbbb);
     });
   }
 
@@ -97,7 +105,7 @@ export class GalleryComponent implements AfterViewInit {
     const drawsLenght = draws.drawBuffersLength();
     let tempsAllTags = new Set<string>();
 
-    for (let i = drawsLenght - 1; i !== 0; i--) {
+    for (let i = drawsLenght - 1; i >= 0; --i) {
 
       const drawBuffer = draws.drawBuffers(i);
       if (drawBuffer == null) {
@@ -105,7 +113,6 @@ export class GalleryComponent implements AfterViewInit {
       }
 
       const serializedDraw = drawBuffer.bufArray();
-
       if (serializedDraw == null) {
         continue;
       }
@@ -127,7 +134,6 @@ export class GalleryComponent implements AfterViewInit {
       const tag = draw.tags(i);
       newTagArray.push(tag);
       tempsAllTags.add(tag);
-      console.log('tag: ' + tag);
     }
 
     const svgElement = draw.svg();
@@ -155,10 +161,6 @@ export class GalleryComponent implements AfterViewInit {
     }
 
     return tempsAllTags;
-  }
-
-  ngAfterViewInit(): void {
-    this.screenService.size.subscribe(() => this.ajustImagesWidth());
   }
 
   protected ajustImagesWidth(): void {
