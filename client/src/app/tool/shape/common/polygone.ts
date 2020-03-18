@@ -15,12 +15,10 @@ export class Polygone extends AbstractShape {
       super(renderer, element);
     }
 
-    // TODO : `
-
   insertPolygonInSVG(points: Point []): void {
     let atribute = '';
     for (const point of points) {
-      atribute += point.x.toString() + ',' + point.y.toString() + ' ';
+      atribute += `${point.x} ${point.y} `;
     }
     this.renderer.setAttribute(this.element, 'points', atribute);
   }
