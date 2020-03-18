@@ -81,26 +81,26 @@ describe('CommunicationService', () => {
     service['xhr'] = xhrMock as any;
   });
 
-  it('get should use method GET', () => {
+  it('#get should use method GET', () => {
     service.get();
 
     expect(xhrMock.method).toBe('GET');
   });
 
-  it('get should expect arraybuffer response type', () => {
+  it('#get should expect arraybuffer response type', () => {
     service.get();
 
     expect(xhrMock.responseType).toBe('arraybuffer');
   });
 
-  it('get should call send', () => {
+  it('#get should call send', () => {
     const spy = spyOn(xhrMock, 'send');
     service.get();
 
     expect(spy).toHaveBeenCalled();
   });
 
-  it('onreadystatechange from get should do nothing if not done', async () => {
+  it('onreadystatechange from #get should do nothing if not done', async () => {
     let done = false;
     const promise = service.get();
     promise.then(() => done = true);
@@ -117,7 +117,7 @@ describe('CommunicationService', () => {
     await promise;
   });
 
-  it('onreadystatechange from get should do nothing if status is zero', async () => {
+  it('onreadystatechange from #get should do nothing if status is zero', async () => {
     let done = false;
     const promise = service.get();
     promise.then(() => done = true);
@@ -134,7 +134,7 @@ describe('CommunicationService', () => {
     await promise;
   });
 
-  it('get should reject if INTERNAL SERVER ERROR', async () => {
+  it('#get should reject if INTERNAL SERVER ERROR', async () => {
     const promise = service.get();
     xhrMock.status = StatusCode.INTERNAL_SERVER_ERROR;
     xhrMock.readyState = 4;
@@ -143,40 +143,40 @@ describe('CommunicationService', () => {
     return expectAsync(promise).toBeRejected();
   });
 
-  it('get should reject if timeout', async () => {
+  it('#get should reject if timeout', async () => {
     const promise = service.get();
     xhrMock.ontimeout();
 
     return expectAsync(promise).toBeRejected();
   });
 
-  it('get should reject if error', async () => {
+  it('#get should reject if error', async () => {
     const promise = service.get();
     xhrMock.onerror();
 
     return expectAsync(promise).toBeRejected();
   });
 
-  it('post should use method POST', () => {
+  it('#post should use method POST', () => {
     service.post();
 
     expect(xhrMock.method).toBe('POST');
   });
 
-  it('post should call send', () => {
+  it('#post should call send', () => {
     const spy = spyOn(xhrMock, 'send');
     service.post();
 
     expect(spy).toHaveBeenCalled();
   });
 
-  it('post should set Content-Type header', () => {
+  it('#post should set Content-Type header', () => {
     service.post();
 
     expect(xhrMock.headers.get('Content-Type')).toBe(ContentType.OCTET_STREAM);
   });
 
-  it('onreadystatechange from post should do nothing if not done', async () => {
+  it('onreadystatechange from #post should do nothing if not done', async () => {
     let done = false;
     const promise = service.post();
     promise.then(() => done = true);
@@ -194,7 +194,7 @@ describe('CommunicationService', () => {
     await promise;
   });
 
-  it('onreadystatechange from post should do nothing if status is zero', async () => {
+  it('onreadystatechange from #post should do nothing if status is zero', async () => {
     let done = false;
     const promise = service.post();
     promise.then(() => done = true);
@@ -212,7 +212,7 @@ describe('CommunicationService', () => {
     await promise;
   });
 
-  it('post should reject if INTERNAL SERVER ERROR', async () => {
+  it('#post should reject if INTERNAL SERVER ERROR', async () => {
     const promise = service.post();
     xhrMock.status = StatusCode.INTERNAL_SERVER_ERROR;
     xhrMock.readyState = 4;
@@ -221,40 +221,40 @@ describe('CommunicationService', () => {
     return expectAsync(promise).toBeRejected();
   });
 
-  it('post should reject if timeout', async () => {
+  it('#post should reject if timeout', async () => {
     const promise = service.post();
     xhrMock.ontimeout();
 
     return expectAsync(promise).toBeRejected();
   });
 
-  it('post should reject if error', async () => {
+  it('#post should reject if error', async () => {
     const promise = service.post();
     xhrMock.onerror();
 
     return expectAsync(promise).toBeRejected();
   });
 
-  it('put should use method PUT', () => {
+  it('#put should use method PUT', () => {
     service.put(42);
 
     expect(xhrMock.method).toBe('PUT');
   });
 
-  it('put should call send', () => {
+  it('#put should call send', () => {
     const spy = spyOn(xhrMock, 'send');
     service.put(42);
 
     expect(spy).toHaveBeenCalled();
   });
 
-  it('put should set Content-Type header', () => {
+  it('#put should set Content-Type header', () => {
     service.post();
 
     expect(xhrMock.headers.get('Content-Type')).toBe(ContentType.OCTET_STREAM);
   });
 
-  it('onreadystatechange from put should do nothing if not done', async () => {
+  it('onreadystatechange from #put should do nothing if not done', async () => {
     let done = false;
     const promise = service.put(42);
     promise.then(() => done = true);
@@ -271,7 +271,7 @@ describe('CommunicationService', () => {
     await promise;
   });
 
-  it('onreadystatechange from put should do nothing if status is zero', async () => {
+  it('onreadystatechange from #put should do nothing if status is zero', async () => {
     let done = false;
     const promise = service.put(42);
     promise.then(() => done = true);
@@ -288,7 +288,7 @@ describe('CommunicationService', () => {
     await promise;
   });
 
-  it('put should reject if INTERNAL SERVER ERROR', async () => {
+  it('#put should reject if INTERNAL SERVER ERROR', async () => {
     const promise = service.put(42);
     xhrMock.status = StatusCode.INTERNAL_SERVER_ERROR;
     xhrMock.readyState = 4;
@@ -297,34 +297,34 @@ describe('CommunicationService', () => {
     return expectAsync(promise).toBeRejected();
   });
 
-  it('put should reject if timeout', async () => {
+  it('#put should reject if timeout', async () => {
     const promise = service.put(42);
     xhrMock.ontimeout();
 
     return expectAsync(promise).toBeRejected();
   });
 
-  it('put should reject if error', async () => {
+  it('#put should reject if error', async () => {
     const promise = service.put(42);
     xhrMock.onerror();
 
     return expectAsync(promise).toBeRejected();
   });
 
-  it('delete should use method DELETE', () => {
+  it('#delete should use method DELETE', () => {
     service.delete(42);
 
     expect(xhrMock.method).toBe('DELETE');
   });
 
-  it('delete should call send', () => {
+  it('#delete should call send', () => {
     const spy = spyOn(xhrMock, 'send');
     service.delete(42);
 
     expect(spy).toHaveBeenCalled();
   });
 
-  it('onreadystatechange from delete should do nothing if not done', async () => {
+  it('onreadystatechange from #delete should do nothing if not done', async () => {
     let done = false;
     const promise = service.delete(42);
     promise.then(() => done = true);
@@ -341,7 +341,7 @@ describe('CommunicationService', () => {
     await promise;
   });
 
-  it('onreadystatechange from delete should do nothing if status is zero', async () => {
+  it('onreadystatechange from #delete should do nothing if status is zero', async () => {
     let done = false;
     const promise = service.delete(42);
     promise.then(() => done = true);
@@ -358,7 +358,7 @@ describe('CommunicationService', () => {
     await promise;
   });
 
-  it('delete should reject if INTERNAL SERVER ERROR', async () => {
+  it('#delete should reject if INTERNAL SERVER ERROR', async () => {
     const promise = service.delete(42);
     xhrMock.status = StatusCode.INTERNAL_SERVER_ERROR;
     xhrMock.readyState = 4;
@@ -367,21 +367,21 @@ describe('CommunicationService', () => {
     return expectAsync(promise).toBeRejected();
   });
 
-  it('delete should reject if timeout', async () => {
+  it('#delete should reject if timeout', async () => {
     const promise = service.delete(42);
     xhrMock.ontimeout();
 
     return expectAsync(promise).toBeRejected();
   });
 
-  it('delete should reject if error', async () => {
+  it('#delete should reject if error', async () => {
     const promise = service.delete(42);
     xhrMock.onerror();
 
     return expectAsync(promise).toBeRejected();
   });
 
-  it('decodeElementRecursively should return null if no name', () => {
+  it('#decodeElementRecursively should return null if no name', () => {
     const fbBuilder = new flatbuffers.Builder();
     ElementT.start(fbBuilder);
     const elementOffset = ElementT.end(fbBuilder);
@@ -392,7 +392,7 @@ describe('CommunicationService', () => {
     expect(val).toBeNull();
   });
 
-  it('decodeElementRecursively should return an element if name is set', () => {
+  it('#decodeElementRecursively should return an element if name is set', () => {
     const fbBuilder = new flatbuffers.Builder();
     const nameOffset = fbBuilder.createString('foobar');
     ElementT.start(fbBuilder);
@@ -405,7 +405,7 @@ describe('CommunicationService', () => {
     expect(svgEl).not.toBeNull();
   });
 
-  it('decodeElementRecursively should return an element with no attribuutes if attribute is null', () => {
+  it('#decodeElementRecursively should return an element with no attribuutes if attribute is null', () => {
     const fbBuilder = new flatbuffers.Builder();
     const nameOffset = fbBuilder.createString('foobar');
     ElementT.start(fbBuilder);
@@ -426,7 +426,7 @@ describe('CommunicationService', () => {
     expect(svgEl.attributes.length).toBe(0);
   });
 
-  it('decodeElementRecursively should not set attributes if empty value', () => {
+  it('#decodeElementRecursively should not set attributes if empty value', () => {
     const fbBuilder = new flatbuffers.Builder();
 
     const nameOffset = fbBuilder.createString('foobar');
@@ -453,7 +453,7 @@ describe('CommunicationService', () => {
     expect(svgEl.getAttribute('foo')).toBeNull();
   });
 
-  it('decodeElementRecursively should set attributes', () => {
+  it('#decodeElementRecursively should set attributes', () => {
     const fbBuilder = new flatbuffers.Builder();
     const nameOffset = fbBuilder.createString('foobar');
     const keyOffset = fbBuilder.createString('foo');
@@ -475,7 +475,7 @@ describe('CommunicationService', () => {
     expect(svgEl.getAttribute('foo')).toEqual('bar');
   });
 
-  it('decodeElementRecursively should return an element with no children if children is null', () => {
+  it('#decodeElementRecursively should return an element with no children if children is null', () => {
     const fbBuilder = new flatbuffers.Builder();
     const nameOffset = fbBuilder.createString('foobar');
     ElementT.start(fbBuilder);
@@ -496,7 +496,7 @@ describe('CommunicationService', () => {
     expect(svgEl.childElementCount).toBe(0);
   });
 
-  it('decodeElementRecursively should return an element with no children if children has no name', () => {
+  it('#decodeElementRecursively should return an element with no children if children has no name', () => {
     const fbBuilder = new flatbuffers.Builder();
 
     const nameOffset = fbBuilder.createString('foobar');
@@ -520,7 +520,7 @@ describe('CommunicationService', () => {
     expect(svgEl.childElementCount).toBe(0);
   });
 
-  it('decodeElementRecursively should return an element with one child', () => {
+  it('#decodeElementRecursively should return an element with one child', () => {
     const fbBuilder = new flatbuffers.Builder();
 
     const nameOffset = fbBuilder.createString('foo');
@@ -547,7 +547,7 @@ describe('CommunicationService', () => {
     expect(svgEl.childElementCount).toBe(1);
   });
 
-  it('encodeElementRecursively should create an element with only a name', () => {
+  it('#encodeElementRecursively should create an element with only a name', () => {
     const divElement = renderer.createElement('DIV') as HTMLDivElement;
 
     service.clear();
@@ -561,7 +561,7 @@ describe('CommunicationService', () => {
     expect(elementT.childrenLength()).toEqual(0);
   });
 
-  it('encodeElementRecursively should create an element without tags starting with underscore', () => {
+  it('#encodeElementRecursively should create an element without tags starting with underscore', () => {
     const divElement = renderer.createElement('DIV') as HTMLDivElement;
     divElement.setAttribute('_foo', 'bar');
 
@@ -574,7 +574,7 @@ describe('CommunicationService', () => {
     expect(elementT.attrsLength()).toEqual(0);
   });
 
-  it('encodeElementRecursively should create an element without tags', () => {
+  it('#encodeElementRecursively should create an element without tags', () => {
     const divElement = renderer.createElement('DIV') as HTMLDivElement;
     divElement.setAttribute('foo', 'bar');
 
@@ -596,7 +596,7 @@ describe('CommunicationService', () => {
     expect(attr.v()).toEqual('bar');
   });
 
-  it('encodeElementRecursively should create an element with a child', () => {
+  it('#encodeElementRecursively should create an element with a child', () => {
     const divElement = renderer.createElement('DIV') as HTMLDivElement;
     const pElement = renderer.createElement('P') as HTMLParagraphElement;
     divElement.appendChild(pElement);
@@ -618,7 +618,7 @@ describe('CommunicationService', () => {
     expect(childElement.name()).toEqual('P');
   });
 
-  it('encode should call encodeTags', () => {
+  it('#encode should call encodeTags', () => {
     const serviceEncodeTagsStub = spyOn<any>(service, 'encodeTags');
     serviceEncodeTagsStub.and.callThrough();
 
