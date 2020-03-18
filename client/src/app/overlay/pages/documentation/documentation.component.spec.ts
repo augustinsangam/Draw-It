@@ -39,7 +39,7 @@ describe('DocumentationComponent', () => {
   });
 
   // tslint:disable:no-string-literal
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 

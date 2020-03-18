@@ -26,7 +26,7 @@ describe('ColorService', () => {
     service = TestBed.get(ColorService);
   });
 
-  it('should be created', () => {
+  it('#should be created', () => {
     expect(service).toBeTruthy();
   });
 

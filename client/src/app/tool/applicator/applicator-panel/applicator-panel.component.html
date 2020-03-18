@@ -1,16 +1,15 @@
 <h2>Applicateur de couleur</h2>
-<div class="preview-text"><h3>Primaire</h3></div>
-<div class="preview-text"><h3>Secondaire</h3></div>
-  <svg width="320" height="150">
-    <circle cx="80"
-            cy="50"
-            r="50"
-            [ngStyle]="{'fill': this.colorService.primaryColor, 'stroke-width': 3, 'stroke': 'rgb(0, 0, 0)'}">
-    </circle>
-    <circle cx="240"
-            cy="50"
-            r="50"
-            [ngStyle]="{'fill': this.colorService.secondaryColor, 'stroke-width': 3, 'stroke': 'rgb(0, 0, 0)'}">
-    </circle>
-  </svg>
-<app-color-panel></app-color-panel>
+<div class="preview-text">
+  <h3>Primaire</h3>
+</div>
+<div class="preview-text">
+  <h3>Secondaire</h3>
+</div>
+<svg width="320" height="150">
+  <circle cx="80" cy="50" r="50"
+    [ngStyle]="{'fill': this.colorService.primaryColor, 'stroke-width': 3, 'stroke': 'rgb(0, 0, 0)'}">
+  </circle>
+  <circle cx="240" cy="50" r="50"
+    [ngStyle]="{'fill': this.colorService.secondaryColor, 'stroke-width': 3, 'stroke': 'rgb(0, 0, 0)'}">
+  </circle>
+</svg>

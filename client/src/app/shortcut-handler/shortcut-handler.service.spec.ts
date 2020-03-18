@@ -24,7 +24,7 @@ describe('ShortcutHandlerService', () => {
     debugVariable = 1;
   });
 
-  it('should be created', () => {
+  it('#should be created', () => {
     expect(service).toBeTruthy();
   });
 

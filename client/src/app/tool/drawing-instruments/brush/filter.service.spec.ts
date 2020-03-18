@@ -11,7 +11,7 @@ describe('FilterService', () => {
     ]
   }));
 
-  it('should be created', () => {
+  it('#should be created', () => {
     const service: FilterService = TestBed.get(FilterService);
     expect(service).toBeTruthy();
   });

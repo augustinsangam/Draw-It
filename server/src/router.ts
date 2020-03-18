@@ -4,89 +4,109 @@ import inversify from 'inversify';
 import log from 'loglevel';
 import mongodb from 'mongodb';
 
-import { COLORS, StatusCode, TYPES } from './constants';
-import { Draw, DrawBuffer, Draws } from './data_generated';
+import { COLORS, ContentType, StatusCode, TextLen, TYPES } from './constants';
 import { Database, Entry } from './database';
+import { Draw, DrawBuffer, Draws } from './data_generated';
 
-// zellwk.com/blog/async-await-express/
+// Source: zellwk.com/blog/async-await-express/
 @inversify.injectable()
 class Router {
-	private readonly _router: express.Router;
+	readonly router: express.Router;
 
 	constructor(@inversify.inject(TYPES.Database) private readonly db: Database) {
-		this._router = express.Router();
+		this.router = express.Router();
 		this.router.get('/draw', this.methodGet());
 		this.router.post('/draw', this.methodPost());
 		this.router.put('/draw/:id', this.methodPut());
 		this.router.delete('/draw/:id', this.methodDelete());
-		this.router.get('/ping', (_req, res) =>
-			res.sendStatus(StatusCode.NO_CONTENT),
-		);
-		this.router.get('/brew-coffee', (_req, res) =>
+		this.router.get('/ping', (_, res) => res.sendStatus(StatusCode.NO_CONTENT));
+		this.router.get('/brew-coffee', (_, res) =>
 			res.sendStatus(StatusCode.IM_A_TEAPOT),
 		);
 	}
 
-	get router(): express.Router {
-		return this._router;
-	}
-
 	private verify(buf: Uint8Array): string | null {
-		const fbBB = new flatbuffers.flatbuffers.ByteBuffer(buf);
-		const draw = Draw.getRoot(fbBB);
+		const fbByteBuffer = new flatbuffers.flatbuffers.ByteBuffer(buf);
+		const draw = Draw.getRoot(fbByteBuffer);
+
 		const name = draw.name();
-		if (name == null || name.length < 3 || name.length > 21) {
-			return `nom “${name}” invalide`;
+		if (
+			name == null ||
+			name.length < TextLen.MIN ||
+			name.length > TextLen.MAX
+		) {
+			return `Nom “${name}” invalide`;
 		}
-		for (let i = draw.tagsLength(); i--; ) {
+
+		const tagsLen = draw.tagsLength();
+		for (let i = 0; i < tagsLen; ++i) {
 			const tag = draw.tags(i);
-			if (tag.length < 3 || tag.length > 21) {
-				return `étiquette “${tag}” invalide`;
+			if (tag.length < TextLen.MIN || tag.length > TextLen.MAX) {
+				return `Étiquette “${tag}” invalide`;
 			}
 		}
+
 		return null;
 	}
 
 	private methodGet(): express.RequestHandler {
-		return async (_req, res, next): Promise<void> => {
+		return async (_, res, next): Promise<void> => {
 			let entries: Entry[];
 			try {
 				entries = await this.db.all();
 			} catch (err) {
 				return next(err);
 			}
-			const fbb = new flatbuffers.flatbuffers.Builder();
-			const drawBufferOffsets = entries.map(entry => {
-				const bufOffset = DrawBuffer.createBufVector(fbb, entry.data.buffer);
-				return DrawBuffer.create(fbb, entry._id, bufOffset);
-			});
-			const drawBuffers = Draws.createDrawBuffersVector(fbb, drawBufferOffsets);
-			const draws = Draws.create(fbb, drawBuffers);
-			fbb.finish(draws);
-			//setTimeout(() =>
-			res.send(Buffer.from(fbb.asUint8Array()));
-			//, 7000);
+			const fbBuilder = new flatbuffers.flatbuffers.Builder();
+			const drawBufferOffsets = entries
+				.filter((entry) => !!entry.data)
+				.map((entry) => {
+					const bufOffset = DrawBuffer.createBufVector(
+						fbBuilder,
+						// I am guaranteed the data proprety is not undefined
+						// because of the filter instruction above
+						// tslint:disable-next-line: no-non-null-assertion
+						entry.data!.buffer,
+					);
+					return DrawBuffer.create(fbBuilder, entry._id, bufOffset);
+				});
+			const drawBuffers = Draws.createDrawBuffersVector(
+				fbBuilder,
+				drawBufferOffsets,
+			);
+			const draws = Draws.create(fbBuilder, drawBuffers);
+			fbBuilder.finish(draws);
+			res.send(Buffer.from(fbBuilder.asUint8Array()));
 		};
 	}
 
-	// medium.com/@dineshuthakota/how-to-save-file-in-mongodb-usipostDatang-node
-	//  -js-1a9d09b019c1
+	// Source: medium.com/@dineshuthakota/how-to-save-file-in-mongodb-usipostDatang-node-js-1a9d09b019c1
 	private methodPost(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
-			// req.body is a Buffer (which extends Uint8Array)
-			const errMsg = this.verify(req.body);
-			if (!!errMsg) {
-				res.status(StatusCode.NOT_ACCEPTABLE).send(errMsg);
+			res.type(ContentType.PLAIN_UTF8);
+
+			if (!req.is(ContentType.OCTET_STREAM)) {
+				res.status(StatusCode.BAD_REQUEST).send('Requète incorrecte');
 				return;
 			}
+
+			const buffer = req.body as Buffer;
+
+			const errMessage = this.verify(buffer);
+			if (!!errMessage) {
+				res.status(StatusCode.NOT_ACCEPTABLE);
+				res.send(errMessage);
+				return;
+			}
+
 			try {
-				const _id = await this.db.nextID();
+				const id = await this.db.nextID();
 				await this.db.insert({
-					_id,
-					data: new mongodb.Binary(req.body),
+					_id: id,
+					data: new mongodb.Binary(buffer),
 				});
-				log.info(`${COLORS.fg.yellow}ID${COLORS.reset}: ${_id}`);
-				res.status(StatusCode.CREATED).send(_id.toString());
+				log.info(`${COLORS.fg.yellow}ID${COLORS.reset}: ${id}`);
+				res.status(StatusCode.CREATED).send(id.toString());
 			} catch (err) {
 				next(err);
 			}
@@ -95,15 +115,30 @@ class Router {
 
 	private methodPut(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
-			const errMsg = this.verify(req.body);
-			if (!!errMsg) {
-				res.status(StatusCode.NOT_ACCEPTABLE).send(errMsg);
+			res.type(ContentType.PLAIN_UTF8);
+
+			if (!req.is(ContentType.OCTET_STREAM)) {
+				res.status(StatusCode.BAD_REQUEST).send('Requète incorrecte');
+				return;
+			}
+
+			const id = Number(req.params.id);
+			if (id < 1) {
+				res
+					.status(StatusCode.BAD_REQUEST)
+					.send(`${id} doit être suppérieur à zéro`);
+				return;
+			}
+
+			const errMessage = this.verify(req.body);
+			if (!!errMessage) {
+				res.status(StatusCode.NOT_ACCEPTABLE).send(errMessage);
 				return;
 			}
 			try {
 				await this.db.replace(
 					{
-						_id: Number(req.params.id),
+						_id: id,
 						data: new mongodb.Binary(req.body),
 					},
 					true,
@@ -118,8 +153,7 @@ class Router {
 	private methodDelete(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
 			try {
-				// delRes.deletedCount == delRes.result.n
-				await this.db.delete(Number(req.params.id));
+				await this.db.delete({ _id: Number(req.params.id) });
 			} catch (err) {
 				return next(err);
 			}
@@ -128,4 +162,8 @@ class Router {
 	}
 }
 
+// Due to a bug, c8 reports the export line as uncovered even tho
+// it’s used outside of the current file
+// See the bug submission https://github.com/bcoe/c8/issues/196
+/* c8 ignore next */
 export { Router };

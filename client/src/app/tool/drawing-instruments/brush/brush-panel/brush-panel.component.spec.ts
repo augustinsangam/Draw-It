@@ -71,18 +71,18 @@ describe('BrushPanelComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('onThicknessChange devrait appeler la méthode'
-    + 'patchValue de brushForm', () => {
+  it('#onThicknessChange should call the method'
+    + 'patchValue of brushForm', () => {
       const spy = spyOn(component['brushForm'], 'patchValue');
       component['onThicknessChange']();
       expect(spy).toHaveBeenCalled();
     });
 
-  it('onOptionChange devrait changer la valeur de la texture du service',
+  it('#onOptionChange should change the texture value in the service',
     () => {
       component['onOptionChange'](
         new MatRadioChange(component['radioChoice'], 'filter2')

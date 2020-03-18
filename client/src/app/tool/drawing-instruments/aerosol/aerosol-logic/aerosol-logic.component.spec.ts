@@ -1,12 +1,10 @@
 import {
   async,
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick
+  ComponentFixture, fakeAsync,
+  TestBed, tick,
 } from '@angular/core/testing';
 
-import { Point } from 'src/app/tool/shape/common/point';
+import {Point} from '../../../shape/common/point';
 import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import { AerosolLogicComponent } from './aerosol-logic.component';
 
@@ -49,11 +47,11 @@ describe('AerosolLogicComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('onMouseDown should subscribe the frequency to the' +
+  it('#onMouseDown should subscribe the frequency to the' +
     ' periodicSplashAdder of the component, and start splashing',  fakeAsync(() => {
     component['service'].frequency = 100;
     const spy = spyOn<any>(component, 'addSplash');
@@ -67,7 +65,7 @@ describe('AerosolLogicComponent', () => {
     tick(100);
   }));
 
-  it('onMouseMove should update currentMousePos if onDrag', () => {
+  it('#onMouseMove should update currentMousePos if onDrag', () => {
     component['onDrag'] = true;
     const mouseEv = createClickMouseEvent('mousemove');
     const expectedPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
@@ -83,17 +81,16 @@ describe('AerosolLogicComponent', () => {
     expect(component['currentMousePos']).toEqual(expectedPoint);
   });
 
-  // TODO : Fix. Creating blue errors
-  // it ('onMouseUp should stop the splash if onDrag and to call' +
-  //   ' saveState from undoRedoService', () => {
-  //   component['onMouseDown'](createClickMouseEvent('mousedown'));
-  //   expect(component['onDrag']).toBeTruthy();
-  //   const spy = spyOn(component['undoRedoService'], 'saveState');
-  //   component['onMouseUp']();
-  //   expect(component['onDrag']).toBeFalsy();
-  //   expect(component['stringPath']).toEqual('');
-  //   expect(spy).toHaveBeenCalledTimes(1);
-  // });
+  it ('onMouseUp should stop the splash if onDrag and to call' +
+    ' saveState from undoRedoService', () => {
+    component['onMouseDown'](createClickMouseEvent('mousedown'));
+    expect(component['onDrag']).toBeTruthy();
+    const spy = spyOn(component['undoRedoService'], 'saveState');
+    component['onMouseUp']();
+    expect(component['onDrag']).toBeFalsy();
+    expect(component['stringPath']).toEqual('');
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
 
   it ('onMouseUp should not do anything if not onDrag', fakeAsync(() => {
     const spy = spyOn(component['undoRedoService'], 'saveState');
@@ -111,7 +108,7 @@ describe('AerosolLogicComponent', () => {
     expect(spy).toHaveBeenCalledTimes(0);
   }));
 
-  it('addSplash should call generatePoint and add the result ' +
+  it('#addSplash should call generatePoint and add the result ' +
     'in the currentPath', () => {
     const dummyPath = 'M 190.1649298384418, 139.4657776162013 ' +
       'a 1, 1 0 1, 0 2,0 a 1, 1 0 1, 0 -2,0';
@@ -124,40 +121,39 @@ describe('AerosolLogicComponent', () => {
     expect(component['currentPath'].getAttribute('d')).toEqual(dummyPath);
   });
 
-  it('the ngOnInit should initialise the arrow of' +
+  it('#the ngOnInit should initialise the arrow of' +
     ' listeners', () => {
     component.ngOnInit();
     expect(component['listeners'].length).toEqual(4);
   });
 
-  it('A mouseleave should call onMouseUp function', () => {
+  it('#A mouseleave should call onMouseUp function', () => {
     const spy = spyOn<any>(component, 'onMouseUp');
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mouseleave'));
     expect(spy).toHaveBeenCalled();
   });
 
-  it('A mouseup should call onMouseUp function', () => {
+  it('#A mouseup should call onMouseUp function', () => {
     const spy = spyOn<any>(component, 'onMouseUp');
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mouseup'));
     expect(spy).toHaveBeenCalled();
   });
 
-  it('A mousemove should call onMouseMove function', () => {
+  it('#A mousemove should call onMouseMove function', () => {
     const spy = spyOn<any>(component, 'onMouseMove');
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mousemove'));
     expect(spy).toHaveBeenCalled();
   });
 
-  // TODO : Fix. Creating blue errors
-  // it('Undo redo override function should remove current path the drawing is not finished', () => {
-  //   component['onDrag'] = true;
-  //   component['currentPath'] = { remove: () => { return ; } } as SVGElement;
-  //   const spy = spyOn(component['currentPath'], 'remove');
-  //   (component['undoRedoService']['actions'].undo[0].overrideFunction as () => void)();
-  //   expect(spy).toHaveBeenCalled();
-  // });
+  it('#Undo redo override function should remove current path the drawing is not finished', () => {
+    component['onDrag'] = true;
+    component['currentPath'] = { remove: () => { return ; } } as SVGElement;
+    const spy = spyOn(component['currentPath'], 'remove');
+    (component['undoRedoService']['actions'].undo[0].overrideFunction as () => void)();
+    expect(spy).toHaveBeenCalled();
+  });
 
-  it('Undo redo override function should not do anything if the drawing is finished', () => {
+  it('#Undo redo override function should not do anything if the drawing is finished', () => {
     component['onDrag'] = false;
     component['currentPath'] = { remove: () => { return ; } } as SVGElement;
     const spy = spyOn(component['currentPath'], 'remove');
@@ -165,7 +161,7 @@ describe('AerosolLogicComponent', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('Mouse down event handler consider only left mouse actions', fakeAsync(() => {
+  it('#Mouse down event handler consider only left mouse actions', fakeAsync(() => {
     component['service'].frequency = 100;
     const spy = spyOn<any>(component, 'onMouseDown');
     component.svgStructure.root.dispatchEvent(new MouseEvent(

@@ -80,10 +80,7 @@ export class Path {
     }
     for (let i = 0; i < instructionToRemove; i++) {
       const lengthToRemove = String(this.datas.instructions.pop()).length;
-      this.pathAtribute = this.pathAtribute.substr(
-        0,
-        this.pathAtribute.length - lengthToRemove
-      );
+      this.pathAtribute = this.pathAtribute.substr(0, this.pathAtribute.length - lengthToRemove);
       this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
     }
   }

@@ -55,7 +55,7 @@ describe('ColorPickerContentComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
@@ -216,7 +216,7 @@ describe('ColorPickerContentComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('focusing in handler works', () => {
+  it('#focusing in handler works', () => {
     const spyDesactivate =
       spyOn(component['shortcutHandler'], 'desactivateAll');
     const spyPush = spyOn(component['shortcutHandler'], 'push');
@@ -225,7 +225,7 @@ describe('ColorPickerContentComponent', () => {
     expect(spyPush).toHaveBeenCalled();
   });
 
-  it('focusing out handler works', () => {
+  it('#focusing out handler works', () => {
     const spy = spyOn(component['shortcutHandler'], 'pop');
     component['focusHandlers'].out();
     expect(spy).toHaveBeenCalled();

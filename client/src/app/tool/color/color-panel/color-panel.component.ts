@@ -75,7 +75,7 @@ export class ColorPanelComponent extends ToolPanelDirective
   ) {
     super(elementRef);
     this.colorOption = ColorOption.Primary;
-    this.showPalette = false;
+    this.showPalette = true;
 
     this.colorChange = this.colorService.change.subscribe(() => {
       this.ngOnInit();
@@ -133,12 +133,10 @@ export class ColorPanelComponent extends ToolPanelDirective
 
   private promoteColor(index: number): void {
     this.colorService.secondaryColor = this.colorsItemsArray[index].color;
-    if (this.colorPalette) {
-      this.colorPalette.startColor = this.colorService.hexFormRgba(
-        this.colorsItemsArray[index].color
-      );
-      this.colorPalette.initialiseStartingColor();
-    }
+    this.colorPalette.startColor = this.colorService.hexFormRgba(
+      this.colorsItemsArray[index].color
+    );
+    this.colorPalette.initialiseStartingColor();
     this.colorService.promote(index);
     this.updateRecentColors();
   }

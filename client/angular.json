@@ -96,6 +96,10 @@
             ],
             "scripts": [
               "node_modules/hammerjs/hammer.min.js"
+            ],
+            // ADDED
+            "codeCoverageExclude": [
+              "**/*_generated.[jt]s"
             ]
           }
         },
