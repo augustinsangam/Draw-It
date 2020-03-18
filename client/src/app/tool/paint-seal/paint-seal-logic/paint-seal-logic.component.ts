@@ -4,6 +4,7 @@ import { ColorService } from '../../color/color.service';
 import { RGBAColor } from '../../color/rgba-color';
 import { Point } from '../../shape/common/point';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
+
 const MAX_RGBA = 255;
 
 @Component({
@@ -36,7 +37,6 @@ export class PaintSealLogicComponent
       ));
 
     this.initiliseCanavas();
-
   }
 
   private initiliseCanavas(): void {
@@ -70,11 +70,13 @@ export class PaintSealLogicComponent
       this.colorService.primaryColor
     );
 
+    this.stack = [];
+    this.visited = new Set();
     this.stack.push(new Point(startingX, startingY));
 
     while (this.stack.length !== 0) {
-      const newPoint = this.stack.pop() as Point;
-      const [x, y] = [newPoint.x, newPoint.y];
+      const point = this.stack.pop() as Point;
+      const [x, y] = [point.x, point.y];
       this.replaceColor(x, y, newColor);
       this.markVisited(x, y);
 
@@ -85,13 +87,12 @@ export class PaintSealLogicComponent
         new Point(x - 1, y)
       ];
 
-      possiblePoints.forEach((point) => {
-        if (!this.isAlreadyVisited(point.x, point.y) && isOldColor(point.x, point.y)) {
-          this.stack.p;
+      possiblePoints.forEach((p) => {
+        if (!this.isAlreadyVisited(p.x, p.y) && isOldColor(p.x, p.y)) {
+          this.stack.push(p);
         }
-      })
+      });
     }
-
   }
 
   private replaceColor(x: number, y: number, newColor: RGBAColor): void {
