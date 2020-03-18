@@ -1,1 +1,51 @@
 <h1>Texte</h1>
+<form [formGroup]="textForm">
+  <mat-button-toggle-group multiple>
+    <mat-button-toggle
+      value="bold"
+      (change)="onMutatorChange($event)">Gras</mat-button-toggle>
+    <mat-button-toggle
+      value="italic"
+      (change)="onMutatorChange($event)">Italique</mat-button-toggle>
+    <mat-button-toggle
+      value="underline"
+      (change)="onMutatorChange($event)">Souligné</mat-button-toggle>
+  </mat-button-toggle-group>
+  <p>Taille de la police</p>
+  <div class="fontSize">
+    <mat-slider min="{{service.MIN_FONTSIZE}}" max="{{service.MAX_FONTSIZE}}" step=1
+                value="{{service.fontSize}}"
+                (input)="onFontSizeChange()"
+                (change)="onFontSizeChange()"
+                formControlName="fontSizeSlider"
+                #fontSizeSlider>
+    </mat-slider>
+    <mat-form-field>
+      <input readonly matInput formControlName="fontSizeFormField" value="{{service.fontSize}}"/>
+      <span matSuffix>px</span>
+    </mat-form-field>
+  </div>
+  <p>
+    Montrer les polices
+    <mat-slide-toggle [checked]="service.showFonts" (change)="onShowFontsChange()" formControlName="showFontsToggleForm" #fontsToggle>
+    </mat-slide-toggle>
+  </p>
+  <mat-action-list *ngIf="service.showFonts">
+    <button mat-list-item *ngFor="let font of service.fontsList" (click)="onFontSelected(font)"> {{font.substring(0, font.indexOf(','))}} </button>
+  </mat-action-list>
+
+</form>
+
+<svg width="320" height="200">
+  <text
+    [ngStyle]="{
+      'font-size': service.fontSize.toString(),
+      'fill': 'rgba(255,255,255,1)',
+      'font-family': service.font,
+      'text-anchor': 'middle',
+      'font-weight': service.textMutators.bold ? 'bold' : 'normal',
+      'font-style': service.textMutators.italic ? 'italic' : 'normal',
+      'text-decoration': service.textMutators.underline ? 'underline' : 'none'
+    }"
+    x="160" y="100">HEY</text>
+</svg>
