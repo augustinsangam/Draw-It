@@ -639,7 +639,7 @@ describe('CommunicationService', () => {
     const divElement = renderer.createElement('DIV') as HTMLDivElement;
     const elementOffset = service.encodeElementRecursively(divElement);
 
-    service.encode(svgHeader, svgShape, elementOffset);
+    service.encode(svgHeader, svgShape, elementOffset, ['foobar']);
 
     expect(serviceEncodeTagsStub).toHaveBeenCalled();
   });
