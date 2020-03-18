@@ -6,7 +6,7 @@ import { MaterialModule } from 'src/app/material.module';
 import { SaveComponent } from './save.component';
 
 // tslint:disable: no-string-literal no-magic-numbers
-fdescribe('SaveComponent', () => {
+describe('SaveComponent', () => {
   let component: SaveComponent;
   let fixture: ComponentFixture<SaveComponent>;
 
