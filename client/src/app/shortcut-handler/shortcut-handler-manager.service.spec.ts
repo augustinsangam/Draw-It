@@ -6,7 +6,6 @@ import { Shortcut } from './shortcut';
 import { ShortcutHandlerManagerService } from './shortcut-handler-manager.service';
 import { Handler } from './shortcut-handler.service';
 
-// TODO : Ask the chargé de lab
 // tslint:disable: no-string-literal no-any no-empty
 describe('ShortcutHandlerManagerService', () => {
 

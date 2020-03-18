@@ -1,6 +1,5 @@
 import { Point } from './point';
 
-// TODO : Ask the chargé de lab
 // tslint:disable: no-magic-numbers
 describe('Point', () => {
 
