@@ -11,7 +11,7 @@ import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ExportComponent, FilterChoice, FormatChoice } from './export.component';
 
 // tslint:disable: no-magic-numbers no-any no-string-literal
-describe('ExportComponent', () => {
+fdescribe('ExportComponent', () => {
   let component: ExportComponent;
   let fixture: ComponentFixture<ExportComponent>;
 
