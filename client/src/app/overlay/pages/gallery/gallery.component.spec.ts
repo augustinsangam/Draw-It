@@ -30,7 +30,8 @@ describe('GalleryComponent', () => {
         color: '#FFFFFF'
       },
       svg: document.createElementNS('http://www.w3.org/2000/svg',
-        'svg:g') as SVGGElement
+        'svg:g') as SVGGElement,
+      colors: ['rgba(0, 0, 0, 1)'],
     };
     return draw;
   };
@@ -174,7 +175,9 @@ describe('GalleryComponent', () => {
       color: () => '#420069',
       svg: () => 'unused' as unknown as Element,
       tagsLength: () => 3,
-      tags: (index: number) => ['test1', 'test2', 'test3'][index]
+      tags: (index: number) => ['test1', 'test2', 'test3'][index],
+      colorsLength: () => 1,
+      colors: (index: number) => ['rgba(0, 0, 0, 1)'][index]
     } as unknown as Draw;
 
     const svg = document.createElementNS('http://www.w3.org/2000/svg',
@@ -200,14 +203,15 @@ describe('GalleryComponent', () => {
         width: 300,
         color: '#420069'
       },
-      svg
+      svg,
+      colors: ['rgba(0, 0, 0, 1)'],
     };
 
     expect(arrayTempsAllTags).toEqual(['test1', 'test4', 'test2', 'test3']);
     expect(component['galleryDrawTable']).toContain(expectedDraw);
   });
 
-  it('#newDraw should return tempsAllTags with added tags but don\'t add the draw to galleryDrawTable', () => {
+  it('#newDraw should return tempsAllTags with added tags but don’t add the draw to galleryDrawTable', () => {
     const draw = {
       name: () => 'test',
       height: () => 150,
@@ -215,7 +219,9 @@ describe('GalleryComponent', () => {
       color: () => '#420069',
       svg: () => null,
       tagsLength: () => 3,
-      tags: (index: number) => ['test1', 'test2', 'test3'][index]
+      tags: (index: number) => ['test1', 'test2', 'test3'][index],
+      colorsLength: () => 1,
+      colors: (index: number) => ['rgba(0, 0, 0, 1)'][index]
     } as unknown as Draw;
 
     const svg = document.createElementNS('http://www.w3.org/2000/svg',

@@ -239,6 +239,7 @@ export class OverlayService {
   }
 
   private loadDraw(draw: GalleryDraw): void {
+    this.colorService.recentColors = draw.colors;
     this.svgService.clearDom();
     this.svgService.shape = draw.shape;
     Array.from(draw.svg.children).forEach((element: SVGGElement) => {

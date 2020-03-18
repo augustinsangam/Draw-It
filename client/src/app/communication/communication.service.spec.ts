@@ -631,7 +631,7 @@ describe('CommunicationService', () => {
     const svgShape: SvgShape = {
       width: 42,
       height: 42,
-      color: 'white',
+      color: 'rgba(0, 0, 0, 1)',
     };
 
     service.clear();
