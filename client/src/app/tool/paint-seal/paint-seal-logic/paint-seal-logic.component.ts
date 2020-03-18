@@ -17,6 +17,8 @@ export class PaintSealLogicComponent
   private canvasContext: CanvasRenderingContext2D;
   private imageData: ImageData;
   private allListeners: (() => void)[] = [];
+  private stack: Point[];
+  private visited: Set<string>;
 
   constructor(private readonly svgToCanvas: SvgToCanvasService,
               private renderer: Renderer2,
@@ -64,54 +66,30 @@ export class PaintSealLogicComponent
       return this.colorService.rgbaEqual(oldColor, this.getColor(x, y));
     };
 
-    const replaceColor = this.colorService.rgbaFromString(
+    const newColor = this.colorService.rgbaFromString(
       this.colorService.primaryColor
     );
 
-    const h = this.svgShape.height;
-    const w = this.svgShape.width;
+    this.stack.push(new Point(startingX, startingY));
 
-    let x1: number;
-    let spanAbove: boolean;
-    let spanBelow: boolean;
+    while (this.stack.length !== 0) {
+      const newPoint = this.stack.pop() as Point;
+      const [x, y] = [newPoint.x, newPoint.y];
+      this.replaceColor(x, y, newColor);
+      this.markVisited(x, y);
 
-    const stack: Point[] = [];
+      const possiblePoints = [
+        new Point(x, y + 1),
+        new Point(x, y - 1),
+        new Point(x + 1, y),
+        new Point(x - 1, y)
+      ];
 
-    stack.push(new Point(startingX, startingY));
-
-    while (stack.length !== 0) {
-
-      if (stack.length > 100000) {
-        break;
-      }
-
-      const currentPoint = stack.pop() as Point;
-      const [x, y] = [currentPoint.x, currentPoint.y];
-
-      x1 = x;
-      while (x1 >= 0 && isOldColor(x1, y)) {
-        x1--;
-      }
-
-      x1++;
-      spanAbove = spanBelow = false;
-      while (x1 < w && isOldColor(x1, y)) {
-        this.replaceColor(x1, y, replaceColor);
-        if (!spanAbove && y > 0 && isOldColor(x1, y - 1)) {
-          stack.push(new Point(x1, y - 1));
-          spanAbove = true;
-        } else if (spanAbove && y > 0 && isOldColor(x1, y - 1)) {
-          spanAbove = false;
+      possiblePoints.forEach((point) => {
+        if (!this.isAlreadyVisited(point.x, point.y) && isOldColor(point.x, point.y)) {
+          this.stack.p;
         }
-        if (!spanBelow && y < h - 1 && isOldColor(x1, y + 1)) {
-          stack.push(new Point(x1, y + 1));
-          spanBelow = true;
-        } else if (spanBelow && y < h - 1 && isOldColor(x1, y + 1)) {
-          spanBelow = false;
-        }
-        x1++;
-      }
-
+      })
     }
 
   }
@@ -138,6 +116,14 @@ export class PaintSealLogicComponent
       // tslint:disable-next-line:no-magic-numbers
       a: pixel[3] / MAX_RGBA,
     };
+  }
+
+  private markVisited(x: number, y: number): void {
+    this.visited.add(`${x} ${y}`);
+  }
+
+  private isAlreadyVisited(x: number, y: number): boolean {
+    return this.visited.has(`${x} ${y}`);
   }
 
 }
