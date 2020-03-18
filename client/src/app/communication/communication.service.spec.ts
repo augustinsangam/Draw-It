@@ -10,6 +10,8 @@ import {
 // Draw as DrawT,
  Element as ElementT,
 } from './data_generated';
+import { SvgHeader } from '../svg/svg-header';
+import { SvgShape } from '../svg/svg-shape';
 
 @Component({
   selector: 'stub',
@@ -131,7 +133,21 @@ fdescribe('CommunicationService', () => {
     xhrMock.readyState = 4;
     xhrMock.onreadystatechange();
 
-    await expectAsync(promise).toBeRejected();
+    return expectAsync(promise).toBeRejected();
+  });
+
+  it('get should reject if timeout', async () => {
+    const promise = service.get();
+    xhrMock.ontimeout();
+
+    return expectAsync(promise).toBeRejected();
+  });
+
+  it('get should reject if error', async () => {
+    const promise = service.get();
+    xhrMock.onerror();
+
+    return expectAsync(promise).toBeRejected();
   });
 
   it('post should use method POST', () => {
@@ -195,7 +211,21 @@ fdescribe('CommunicationService', () => {
     xhrMock.readyState = 4;
     xhrMock.onreadystatechange();
 
-    await expectAsync(promise).toBeRejected();
+    return expectAsync(promise).toBeRejected();
+  });
+
+  it('post should reject if timeout', async () => {
+    const promise = service.post();
+    xhrMock.ontimeout();
+
+    return expectAsync(promise).toBeRejected();
+  });
+
+  it('post should reject if error', async () => {
+    const promise = service.post();
+    xhrMock.onerror();
+
+    return expectAsync(promise).toBeRejected();
   });
 
   it('put should use method PUT', () => {
@@ -257,7 +287,21 @@ fdescribe('CommunicationService', () => {
     xhrMock.readyState = 4;
     xhrMock.onreadystatechange();
 
-    await expectAsync(promise).toBeRejected();
+    return expectAsync(promise).toBeRejected();
+  });
+
+  it('put should reject if timeout', async () => {
+    const promise = service.put(42);
+    xhrMock.ontimeout();
+
+    return expectAsync(promise).toBeRejected();
+  });
+
+  it('put should reject if error', async () => {
+    const promise = service.put(42);
+    xhrMock.onerror();
+
+    return expectAsync(promise).toBeRejected();
   });
 
   it('delete should use method DELETE', () => {
@@ -313,7 +357,21 @@ fdescribe('CommunicationService', () => {
     xhrMock.readyState = 4;
     xhrMock.onreadystatechange();
 
-    await expectAsync(promise).toBeRejected();
+    return expectAsync(promise).toBeRejected();
+  });
+
+  it('delete should reject if timeout', async () => {
+    const promise = service.delete(42);
+    xhrMock.ontimeout();
+
+    return expectAsync(promise).toBeRejected();
+  });
+
+  it('delete should reject if error', async () => {
+    const promise = service.delete(42);
+    xhrMock.onerror();
+
+    return expectAsync(promise).toBeRejected();
   });
 
   it('decodeElementRecursively should return null if no name', () => {
@@ -480,5 +538,102 @@ fdescribe('CommunicationService', () => {
       return;
     }
     expect(svgEl.childElementCount).toBe(1);
+  });
+
+  it('encodeElementRecursively should create an element with only a name', () => {
+    const divElement = renderer.createElement('DIV') as HTMLDivElement;
+
+    service.clear();
+    const elementOffset = service.encodeElementRecursively(divElement);
+    service['fbBuilder'].finish(elementOffset);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(service['fbBuilder'].asUint8Array());
+    const elementT = ElementT.getRoot(fbByteBuffer);
+    expect(elementT.name()).toEqual('DIV');
+    expect(elementT.attrsLength()).toEqual(0);
+    expect(elementT.childrenLength()).toEqual(0);
+  });
+
+  it('encodeElementRecursively should create an element without tags starting with underscore', () => {
+    const divElement = renderer.createElement('DIV') as HTMLDivElement;
+    divElement.setAttribute('_foo', 'bar');
+
+    service.clear();
+    const elementOffset = service.encodeElementRecursively(divElement);
+    service['fbBuilder'].finish(elementOffset);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(service['fbBuilder'].asUint8Array());
+    const elementT = ElementT.getRoot(fbByteBuffer);
+    expect(elementT.attrsLength()).toEqual(0);
+  });
+
+  it('encodeElementRecursively should create an element without tags', () => {
+    const divElement = renderer.createElement('DIV') as HTMLDivElement;
+    divElement.setAttribute('foo', 'bar');
+
+    service.clear();
+    const elementOffset = service.encodeElementRecursively(divElement);
+    service['fbBuilder'].finish(elementOffset);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(service['fbBuilder'].asUint8Array());
+    const elementT = ElementT.getRoot(fbByteBuffer);
+    expect(elementT.attrsLength()).toEqual(1);
+
+    const attr = elementT.attrs(0);
+    if (attr == null) {
+      fail('Attribute 0 should not be null');
+      return;
+    }
+
+    expect(attr.k()).toEqual('foo');
+    expect(attr.v()).toEqual('bar');
+  });
+
+  it('encodeElementRecursively should create an element with a child', () => {
+    const divElement = renderer.createElement('DIV') as HTMLDivElement;
+    const pElement = renderer.createElement('P') as HTMLParagraphElement;
+    divElement.appendChild(pElement);
+
+    service.clear();
+    const elementOffset = service.encodeElementRecursively(divElement);
+    service['fbBuilder'].finish(elementOffset);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(service['fbBuilder'].asUint8Array());
+    const elementT = ElementT.getRoot(fbByteBuffer);
+    expect(elementT.childrenLength()).toEqual(1);
+
+    const childElement = elementT.children(0);
+    if (childElement == null) {
+      fail('Child 0 should not be null');
+      return;
+    }
+
+    expect(childElement.name()).toEqual('P');
+  });
+
+  it('encode should call encodeTags', () => {
+    const serviceEncodeTagsStub = spyOn<any>(service, 'encodeTags');
+    serviceEncodeTagsStub.and.callThrough();
+
+    const svgHeader: SvgHeader = {
+      id: 42,
+      name: 'foobar',
+      tags: ['foo', 'bar'],
+    };
+
+    const svgShape: SvgShape = {
+      width: 42,
+      height: 42,
+      color: 'white',
+    };
+
+    service.clear();
+
+    const divElement = renderer.createElement('DIV') as HTMLDivElement;
+    const elementOffset = service.encodeElementRecursively(divElement);
+
+    service.encode(svgHeader, svgShape, elementOffset);
+
+    expect(serviceEncodeTagsStub).toHaveBeenCalled();
   });
 });
