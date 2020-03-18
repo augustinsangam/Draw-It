@@ -4,14 +4,13 @@ import { Component, Renderer2 } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { flatbuffers } from 'flatbuffers';
 
+import { SvgHeader } from '../svg/svg-header';
+import { SvgShape } from '../svg/svg-shape';
 import { CommunicationService, ContentType, StatusCode } from './communication.service';
 import {
  Attr as AttrT,
-// Draw as DrawT,
  Element as ElementT,
 } from './data_generated';
-import { SvgHeader } from '../svg/svg-header';
-import { SvgShape } from '../svg/svg-shape';
 
 @Component({
   selector: 'stub',
@@ -55,7 +54,7 @@ class XMLHttpRequestMock {
   }
 }
 
-fdescribe('CommunicationService', () => {
+describe('CommunicationService', () => {
   let xhrMock: XMLHttpRequestMock;
   let service: CommunicationService;
   let renderer: Renderer2;
