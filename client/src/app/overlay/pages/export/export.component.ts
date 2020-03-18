@@ -115,13 +115,11 @@ export class ExportComponent implements AfterViewInit {
   private initializeElements(): void {
     this.svgShape = this.svgService.shape;
     this.innerSVG = this.renderer.createElement('svg', SVG_NS);
-    Array.from(this.svgService.structure.defsZone.children)
-    .forEach((element: SVGElement) => {
+    Array.from(this.svgService.structure.defsZone.children).forEach((element: SVGElement) => {
       this.renderer.appendChild(this.innerSVG, element.cloneNode(true));
     });
     this.renderer.appendChild(this.innerSVG, this.generateBackground());
-    Array.from(this.svgService.structure.drawZone.children)
-      .forEach((element: SVGElement) => {
+    Array.from(this.svgService.structure.drawZone.children).forEach((element: SVGElement) => {
         this.renderer.appendChild(this.innerSVG, element.cloneNode(true));
     });
     this.renderer.setAttribute(this.innerSVG, 'width', this.svgShape.width.toString());
