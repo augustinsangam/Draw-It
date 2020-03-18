@@ -41,6 +41,15 @@ export class ExportComponent implements AfterViewInit {
   private filtersChooser: Map<string, string>;
   protected form: FormGroup;
 
+  static validator(control: FormControl): null | { spaceError: { value: string}} {
+    const input = (control.value as string).trim();
+    const NOT_FOUND = -1;
+    if (input.indexOf(' ') === NOT_FOUND && input !== '') {
+      return null;
+    }
+    return {spaceError: { value: 'No whitespace allowed' }};
+  }
+
   constructor(private formBuilder: FormBuilder,
               @Optional() public dialogRef: MatDialogRef<ExportComponent>,
               private renderer: Renderer2,
@@ -50,14 +59,7 @@ export class ExportComponent implements AfterViewInit {
 
     this.filtersChooser = new Map<string, string>();
     this.form = this.formBuilder.group({
-      name: ['', [Validators.required, (control: FormControl) => {
-        const input = (control.value as string).trim();
-        const NOT_FOUND = -1;
-        if (input.indexOf(' ') === NOT_FOUND && input !== '') {
-          return null;
-        }
-        return {spaceError: { value: 'No whitespace allowed' }};
-      }]],
+      name: ['', [Validators.required, ExportComponent.validator]],
       filter: [FilterChoice.None, [Validators.required]],
       format: [FormatChoice.Png, [Validators.required]]
     });

@@ -11,6 +11,12 @@ interface JonctionOption {
   radius: number;
   color: string;
 }
+enum ShortcutName {
+  SHIFTLEFT = 'ShiftLeft',
+  SHIFTRIGHT = 'ShiftRight',
+  ESCAPE = 'Escape',
+  BACKSPACE = 'Backspace',
+}
 @Component({
   selector: 'app-line-logic',
   template: ''
@@ -154,20 +160,20 @@ export class LineLogicComponent extends ToolLogicDirective
     this.getPath().simulateNewLine(point);
   }
 
-  // TODO : enumeration shortcut
   private onKeyDown(keyEv: KeyboardEvent): void {
     const shiftIsPressed =
-      keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight';
+      keyEv.code === ShortcutName.SHIFTLEFT || keyEv.code === ShortcutName.SHIFTRIGHT;
     if (this.isNewPath) {
       return;
     }
-    if (keyEv.code === 'Escape') {
+    if (keyEv.code === ShortcutName.ESCAPE) {
       this.getPath().removePath();
       this.isNewPath = true;
     }
-    const maxRemovableInstruction = this.service.withJonction ? 2 * 2 : 2; // TODO : Magie
+    const MAXTOREMOVE = 4;
+    const maxRemovableInstruction = this.service.withJonction ? MAXTOREMOVE : 2;
     const shouldConnect = this.getPath().datas.instructions.length >= maxRemovableInstruction;
-    if (keyEv.code === 'Backspace' && shouldConnect) {
+    if (keyEv.code === ShortcutName.BACKSPACE && shouldConnect) {
       this.removeLine();
       this.getPath().simulateNewLine(this.getPath().lastPoint);
     }
@@ -178,7 +184,7 @@ export class LineLogicComponent extends ToolLogicDirective
   }
 
   private onKeyUp(keyEv: KeyboardEvent): void {
-    const shiftIsPressed = keyEv.code === 'ShiftLeft' || keyEv.code === 'ShiftRight';
+    const shiftIsPressed =  keyEv.code === ShortcutName.SHIFTLEFT || keyEv.code === ShortcutName.SHIFTRIGHT;
     if (shiftIsPressed && !this.isNewPath) {
       this.getPath().simulateNewLine(this.mousePosition);
     }
