@@ -15,7 +15,7 @@ import { TagsFilterComponent } from './tags-filter/tags-filter.component';
 
 // tslint:disable: no-string-literal
 // tslint:disable: no-magic-numbers
-fdescribe('GalleryComponent', () => {
+describe('GalleryComponent', () => {
   let component: GalleryComponent;
   let fixture: ComponentFixture<GalleryComponent>;
   const createDraw = () => {
@@ -43,14 +43,6 @@ fdescribe('GalleryComponent', () => {
   const mockDialogRef = {
     close: jasmine.createSpy('close')
   };
-
-  // const mockCommunicationService = {
-  //   getAll: jasmine.createSpy('getAll').and.callFake(() => {
-  //     return new Promise<flatbuffers.ByteBuffer>((resolve) => {
-  //       return resolve();
-  //     });
-  //   })
-  // };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -97,10 +89,6 @@ fdescribe('GalleryComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  // it('#constructor should call responsePromiseHandler when he get a response from the com service', () => {
-    
-  // });
 
   it('#ResponsePromiseHandler should call createGalleryDrawsTable', () => {
     // Creer dessin 1
