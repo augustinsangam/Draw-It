@@ -2,9 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Point } from '../shape/common/point';
 import { MathService } from './tool.math-service.service';
 
-// TODO : Ask the chargé de lab
 // tslint:disable: no-magic-numbers
-
 describe('MathService', () => {
   let service: MathService;
 

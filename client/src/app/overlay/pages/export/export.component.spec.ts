@@ -254,6 +254,24 @@ fdescribe('ExportComponent', () => {
     expect(spy).toHaveBeenCalledTimes(0);
   }));
 
+  // TODO : Augustin
+  it('The image should download the image', fakeAsync(() => {
+    component['innerSVG'] = component['svgService'].structure.root;
+    const pictureUrl = 'url';
+    const image: HTMLImageElement = {
+      src: pictureUrl,
+      onload: () => { return ; }
+    } as unknown as HTMLImageElement;
+    spyOn(component['renderer'], 'setAttribute').and.callFake(() =>  image);
+    const spy = spyOn<any>(component, 'exportSVG');
+    setTimeout(() => {
+      component['exportDrawing'](FormatChoice.Jpeg);
+    }, 500);
+    tick(500);
+    (image as any).onload();
+    expect(spy).toHaveBeenCalledTimes(0);
+  }));
+
   it('#configurePicture should make good id configuration', fakeAsync(() => {
     const picture = component['renderer'].createElement('picture', 'http://www.w3.org/2000/svg');
     component['configurePicture'](picture, '');

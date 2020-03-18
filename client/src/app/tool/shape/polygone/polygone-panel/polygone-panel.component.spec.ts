@@ -17,7 +17,6 @@ import {
 } from '../../../color/color-panel/color-picker-item/color-picker-item.component';
 import { PolygonePanelComponent } from './polygone-panel.component';
 
-// TODO : Ask the chargé de lab
 // tslint:disable: no-string-literal
 describe('PolygonePanelComponent', () => {
   let component: PolygonePanelComponent;
