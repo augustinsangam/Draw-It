@@ -5,9 +5,7 @@ import { Point } from '../../shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { CONSTANTS, EraserLogicComponent } from './eraser-logic.component';
 
-// TODO : Ask the chargé de lab
-// tslint:disable: no-any
-// tslint:disable: no-string-literal
+// tslint:disable: no-string-literal no-any no-magic-numbers
 describe('EraserLogicComponent', () => {
   let component: EraserLogicComponent;
   let fixture: ComponentFixture<EraserLogicComponent>;
@@ -57,18 +55,18 @@ describe('EraserLogicComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('undo post action works well', () => {
+  it('#undo post action works well', () => {
     const spy = spyOn<any>(component, 'markElementsInZone');
     component['lastestMousePosition'] = new Point(0, 0);
     component['undoRedoService'].undo();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('mouse down handler should do nothing'
+  it('#mouse down handler should do nothing'
     + ' the clicked button is not the left button', () => {
       const fakeEvent = {
         button: 1,
@@ -84,7 +82,7 @@ describe('EraserLogicComponent', () => {
       expect(component['mouse'].mouseIsDown).not.toEqual(true);
     });
 
-  it('mouse down handler should shange starting point'
+  it('#mouse down handler should shange starting point'
     + ' and set mouseIsDown', () => {
       const fakeEvent = {
         button: 0,
@@ -100,7 +98,7 @@ describe('EraserLogicComponent', () => {
       expect(component['mouse'].mouseIsDown).toEqual(true);
     });
 
-  it('The eraser must be drawn when mouse move', () => {
+  it('#The eraser must be drawn when mouse move', () => {
     const fakeEvent = {
       button: 0,
       offsetX: 200,
@@ -116,7 +114,7 @@ describe('EraserLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('The eraser must be deleteElemts when mouse is on drag', () => {
+  it('#The eraser must be deleteElemts when mouse is on drag', () => {
     const fakeEvent = {
       button: 0,
       offsetX: 2,
@@ -133,7 +131,7 @@ describe('EraserLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('elementsDeletedInDrag should be set when elements'
+  it('#elementsDeletedInDrag should be set when elements'
     + 'element(s) have been deleted during the drag', () => {
       const fakeEvent = {
         button: 0,
@@ -156,7 +154,7 @@ describe('EraserLogicComponent', () => {
       expect(component['elementsDeletedInDrag']).toEqual(true);
     });
 
-  it('mouse up handler should do nothing'
+  it('#mouse up handler should do nothing'
     + ' the released button is not the left button', () => {
       const fakeEvent = {
         button: 1,
@@ -172,7 +170,7 @@ describe('EraserLogicComponent', () => {
       expect(component['mouse'].mouseIsDown).not.toEqual(true);
     });
 
-  it('mouse up handler should shange end point'
+  it('#mouse up handler should shange end point'
     + ' and reset mouseIsDown', () => {
       const fakeEvent = {
         button: 0,
@@ -188,7 +186,7 @@ describe('EraserLogicComponent', () => {
       expect(component['mouse'].mouseIsDown).toEqual(false);
     });
 
-  it('mouse up handler should save the draw state'
+  it('#mouse up handler should save the draw state'
     + ' if elements had been deleted during the drag', () => {
       const fakeEvent = {
         button: 0,
@@ -205,7 +203,7 @@ describe('EraserLogicComponent', () => {
       expect(spy).toHaveBeenCalled();
     });
 
-  it('mouse should be hide when the cursor leave the '
+  it('#mouse should be hide when the cursor leave the '
     + 'drawing zone', () => {
       const spy = spyOn<any>(component, 'hideEraser').and.callThrough();
       const mouseLeaveHandler = (component['handlers'].get('mouseleave')) as
@@ -214,7 +212,7 @@ describe('EraserLogicComponent', () => {
       expect(spy).toHaveBeenCalled();
     });
 
-  it('The draw state should be saved when mouse leave the draw area '
+  it('#The draw state should be saved when mouse leave the draw area '
     + 'and element had been deleted', () => {
       const spy = spyOn(component['undoRedoService'], 'saveState');
       component['elementsDeletedInDrag'] = true;
@@ -224,7 +222,7 @@ describe('EraserLogicComponent', () => {
       expect(spy).toHaveBeenCalled();
     });
 
-  it('Click handler works only '
+  it('#Click handler works only '
     + 'if the left button had been clicked', () => {
       const fakeEvent = {
         button: 1,
@@ -241,7 +239,7 @@ describe('EraserLogicComponent', () => {
       expect(spy).not.toHaveBeenCalled();
     });
 
-  it('Click handler works only for real clicks', () => {
+  it('#Click handler works only for real clicks', () => {
     const fakeEvent = {
       button: 0,
       offsetX: 200,
@@ -260,7 +258,7 @@ describe('EraserLogicComponent', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('Click handler can delete elements', () => {
+  it('#Click handler can delete elements', () => {
     const fakeEvent = {
       button: 0,
       offsetX: 200,
@@ -286,7 +284,7 @@ describe('EraserLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('Click handler delete elements only if there is some', () => {
+  it('#Click handler delete elements only if there is some', () => {
     const fakeEvent = {
       button: 0,
       offsetX: 200,
@@ -332,16 +330,17 @@ describe('EraserLogicComponent', () => {
     .toEqual(`rgba(${255 - CONSTANTS.FACTOR}, 0, 0, 1)`);
   });
 
-  it('#markElementsInZone should do nothing for non-stroke draw elements!', () => {
+  it('#markElementsInZone should use fill for non-stroke draw elements!', () => {
     const element = component.svgStructure.drawZone.children.item(0) as SVGElement;
     element.setAttribute('stroke', 'none');
+    element.setAttribute('fill', 'rgba(255, 255, 255, 1)');
     spyOn(document, 'elementFromPoint').and.callFake(() => {
       return component.svgStructure.drawZone.children.item(0);
     });
     const markedElements = component['markElementsInZone'](0, 0);
     expect(markedElements).toContain(element);
-    expect(element.getAttribute('stroke'))
-    .toEqual('none');
+    expect(element.getAttribute('fill'))
+    .toEqual('rgba(255, 0, 0, 1)');
   });
 
   it('#markElementsInZone should not do anything when there is no'
@@ -355,7 +354,7 @@ describe('EraserLogicComponent', () => {
     expect(markedElements.size).toEqual(0);
   });
 
-  it('#restoreMarkedElements put back the originsl color!', () => {
+  it('#restoreMarkedElements put back the original stroke color!', () => {
     const element = component.svgStructure.drawZone.children.item(0) as SVGElement;
     element.setAttribute('stroke', '#FFFFFF');
     spyOn(document, 'elementFromPoint').and.callFake(() => {
@@ -366,4 +365,17 @@ describe('EraserLogicComponent', () => {
     expect(element.getAttribute('stroke')).toEqual('#FFFFFF');
   });
 
+  it('#restoreMarkedElements put back the original fill color!', () => {
+    const element = component.svgStructure.drawZone.children.item(0) as SVGElement;
+    element.setAttribute('fill', '#FFFFFF');
+    element.setAttribute('stroke', 'none');
+    spyOn(document, 'elementFromPoint').and.callFake(() => {
+      return component.svgStructure.drawZone.children.item(0);
+    });
+    component['markElementsInZone'](0, 0);
+    component['restoreMarkedElements']();
+    expect(element.getAttribute('fill')).toEqual('#FFFFFF');
+  });
+
 });
+// tslint:disable-next-line: max-file-line-count

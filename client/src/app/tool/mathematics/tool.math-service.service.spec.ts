@@ -13,7 +13,7 @@ describe('MathService', () => {
     service = TestBed.get(MathService);
   });
 
-  it('should be created', () => {
+  it('#should be created', () => {
     expect(service).toBeTruthy();
   });
 
@@ -131,7 +131,7 @@ describe('MathService', () => {
 
     const result = service.getRectangleUpLeftCorner(initPoint, oppositePoint);
 
-    expect(result).toEqual(new Point(initPoint.x + (-69),initPoint.y + (-42)));
+    expect(result).toEqual(new Point(initPoint.x + (-69), initPoint.y + (-42)));
   });
 
   it('#getRectangleUpLeftCorner should return '

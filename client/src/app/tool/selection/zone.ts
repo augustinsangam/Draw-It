@@ -2,14 +2,11 @@ import { Point } from '../shape/common/point';
 
 export class Zone {
 
-  private left: number;
-  private right: number;
-  private top: number;
-  private bottom: number;
-
-
-  // TODO : private dans les parhrir
-  constructor(left: number, right: number, top: number, bottom: number) {
+  constructor(private left: number,
+              private right: number,
+              private top: number,
+              private bottom: number
+  ) {
     this.left = left;
     this.right = right;
     this.top = top;

@@ -6,10 +6,10 @@
   },
   "scripts": {
     "clean": "rimraf coverage/ lib/ tsconfig.tsbuildinfo",
-    "start": "nodemon --es-module-specifier-resolution=node --unhandled-rejections=strict --require=source-map-support/register",
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "test": "node --es-module-specifier-resolution=node node_modules/.bin/mocha",
+    "start": "nodemon --es-module-specifier-resolution=node --unhandled-rejections=strict --require=source-map-support/register",
+    "test": "node --experimental-specifier-resolution=node node_modules/.bin/mocha",
     "test:watch": "npm start node_modules/.bin/mocha",
     "coverage": "c8 npm t",
     "lint": "tslint --project .",
@@ -25,6 +25,14 @@
   },
   "mocha": {
     "spec": "lib/__tests__/"
+  },
+  "c8": {
+    "all": true,
+    "exclude": [
+      "**/__tests__/**",
+      "**/*_generated.[jt]s",
+      "**/index.[jt]s"
+    ]
   },
   "eslintConfig": {
     "root": true,
@@ -45,6 +53,7 @@
     ],
     "parserOptions": {
       "ecmaVersion": 2020,
+      "project": "tsconfig.json",
       "sourceType": "module"
     },
     "rules": {
@@ -74,8 +83,20 @@
         {
           "argsignorepattern": "^_"
         }
-      ]
-    }
+      ],
+      "@typescript-eslint/promise-function-async": 1,
+      "@typescript-eslint/return-await": 1
+    },
+    "overrides": [
+      {
+        "files": [
+          "**/__tests__/**"
+        ],
+        "rules": {
+          "@typescript-eslint/no-explicit-any": 0
+        }
+      }
+    ]
   },
   "prettier": {
     "singleQuote": true,
@@ -87,31 +108,35 @@
     "flatbuffers": "^1.11.0",
     "inversify": "^5.0.1",
     "loglevel": "^1.6.7",
-    "mongodb": "^3.5.3",
+    "mongodb": "^3.5.4",
     "nodemon": "^2.0.2",
     "reflect-metadata": "^0.1.13",
     "source-map-support": "^0.5.16"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.8",
-    "@types/express": "^4.17.2",
+    "@types/chai": "^4.2.10",
+    "@types/chai-as-promised": "^7.1.2",
+    "@types/express": "^4.17.3",
     "@types/flatbuffers": "^1.10.0",
-    "@types/mocha": "^7.0.1",
-    "@types/mongodb": "^3.3.16",
+    "@types/mocha": "^7.0.2",
+    "@types/mongodb": "^3.5.2",
     "@types/sinon": "^7.5.2",
-    "@typescript-eslint/eslint-plugin": "^2.17.0",
-    "@typescript-eslint/parser": "^2.17.0",
+    "@types/supertest": "^2.0.8",
+    "@typescript-eslint/eslint-plugin": "^2.23.0",
+    "@typescript-eslint/parser": "^2.23.0",
     "c8": "^7.0.1",
     "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
     "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.9.0",
+    "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-simple-import-sort": "^5.0.1",
-    "mocha": "7.0.0-esm1",
+    "mocha": "^7.1.0",
     "prettier": "^1.19.1",
-    "rimraf": "^3.0.1",
-    "sinon": "^9.0.0",
+    "rimraf": "^3.0.2",
+    "sinon": "^9.0.1",
+    "supertest": "^4.0.2",
     "tslint": "^6.0.0",
-    "typescript": "^3.7.5"
+    "typescript": "^3.8.3"
   }
 }

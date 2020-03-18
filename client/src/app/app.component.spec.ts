@@ -19,11 +19,14 @@ import { HomeComponent } from './overlay/pages/home/home.component';
 import { NewDrawComponent } from './overlay/pages/new-draw/new-draw.component';
 import { SaveComponent } from './overlay/pages/save/save.component';
 import { PanelComponent } from './panel/panel.component';
+import { Shortcut } from './shortcut-handler/shortcut';
 import {
   ShortcutHandlerService
 } from './shortcut-handler/shortcut-handler.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { SvgShape } from './svg/svg-shape';
 import { SvgService } from './svg/svg.service';
+import { ColorBoxComponent } from './tool/color/color-box/color-box.component';
 import { ColorPanelComponent } from './tool/color/color-panel/color-panel.component';
 import { ColorPickerContentComponent } from './tool/color/color-panel/color-picker-content/color-picker-content.component';
 import { ColorPickerItemComponent } from './tool/color/color-panel/color-picker-item/color-picker-item.component';
@@ -33,11 +36,8 @@ import {
 } from './tool/tool-selector/tool-selector.service';
 import { Tool } from './tool/tool.enum';
 import { UndoRedoService } from './tool/undo-redo/undo-redo.service';
-import { SvgShape } from './svg/svg-shape';
-import { Shortcut } from './shortcut-handler/shortcut';
 
-// Test Also OverlayService
-// tslint:disable: no-string-literal
+// tslint:disable: no-string-literal no-any no-magic-numbers
 describe('AppComponent', () => {
   let component: AppComponent;
   let service: OverlayService;
@@ -48,19 +48,20 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
-        PanelComponent,
-        SidebarComponent,
-        HomeComponent,
-        NewDrawComponent,
-        DocumentationComponent,
-        ColorPickerItemComponent,
-        PencilPanelComponent,
+        ColorBoxComponent,
         ColorPanelComponent,
         ColorPickerContentComponent,
+        ColorPickerItemComponent,
+        DocumentationComponent,
+        ExportComponent,
         GalleryComponent,
         GalleryCardComponent,
-        ExportComponent,
+        HomeComponent,
+        NewDrawComponent,
+        PanelComponent,
+        PencilPanelComponent,
         SaveComponent,
+        SidebarComponent,
         TagsFilterComponent
       ],
       imports: [
@@ -83,6 +84,7 @@ describe('AppComponent', () => {
     .overrideModule(BrowserDynamicTestingModule, {
       set: {
         entryComponents: [
+          ColorBoxComponent,
           HomeComponent,
           NewDrawComponent,
           DocumentationComponent,
@@ -121,7 +123,7 @@ describe('AppComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
@@ -185,8 +187,8 @@ describe('AppComponent', () => {
       expect(spy2).toHaveBeenCalledTimes(0);
     });
 
-  it('#openNewDrawDialog should call getCommomDialogOptions.', () => {
-    const spy = spyOn<any>(service, 'getCommomDialogOptions').and.callThrough();
+  it('#openNewDrawDialog should call getCommonDialogOptions.', () => {
+    const spy = spyOn<any>(service, 'getCommonDialogOptions').and.callThrough();
 
     service['openNewDrawDialog']();
 
@@ -272,22 +274,22 @@ describe('AppComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#openSaveDialog and #openExportDialog should not call getCommomDialogOptions.', () => {
-    const spy = spyOn<any>(service, 'getCommomDialogOptions');
+  it('#openSaveDialog and #openExportDialog should not call getCommonDialogOptions.', () => {
+    const spy = spyOn<any>(service, 'getCommonDialogOptions');
     service['openSaveDialog']();
     service['dialogRefs'].save.close();
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('#openExportDialog should not call getCommomDialogOptions.', () => {
-    const spy = spyOn<any>(service, 'getCommomDialogOptions');
+  it('#openExportDialog should not call getCommonDialogOptions.', () => {
+    const spy = spyOn<any>(service, 'getCommonDialogOptions');
     service['openExportDialog']();
     service['dialogRefs'].export.close();
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('#openGalleryDialog should not call getCommomDialogOptions.', () => {
-    const spy = spyOn<any>(service, 'getCommomDialogOptions');
+  it('#openGalleryDialog should not call getCommonDialogOptions.', () => {
+    const spy = spyOn<any>(service, 'getCommonDialogOptions');
     service['openGalleryDialog'](true);
     service['dialogRefs'].gallery.close();
     expect(spy).not.toHaveBeenCalled();
@@ -348,7 +350,7 @@ describe('AppComponent', () => {
     const eventOWithControl = {
       code: 'KeyO',
       ctrlKey: true,
-      preventDefault: () => { }
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     const spy = spyOn<any>(service, 'openNewDrawDialog');
     service['initialiseShortcuts']();
@@ -366,7 +368,7 @@ describe('AppComponent', () => {
     const eventOWithControl = {
       code: 'KeyO',
       ctrlKey: false,
-      preventDefault: () => { }
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     const spy = spyOn(eventOWithControl, 'preventDefault');
     service['initialiseShortcuts']();
@@ -385,7 +387,7 @@ describe('AppComponent', () => {
     const eventOWithControl = {
       code: 'KeyA',
       ctrlKey: true,
-      preventDefault: () => { }
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     const spyPrevent = spyOn(eventOWithControl, 'preventDefault');
     const spyTool = spyOn(service['toolSelectorService'], 'set');
@@ -405,7 +407,7 @@ describe('AppComponent', () => {
     const eventOWithControl = {
       code: 'KeyA',
       ctrlKey: false,
-      preventDefault: () => { }
+      preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     const spyTool = spyOn(service['toolSelectorService'], 'set');
     service['initialiseShortcuts']();
@@ -432,3 +434,4 @@ describe('AppComponent', () => {
   });
 
 });
+// tslint:disable-next-line: max-file-line-count

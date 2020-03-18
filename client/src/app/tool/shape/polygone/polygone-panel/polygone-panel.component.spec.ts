@@ -60,27 +60,27 @@ describe('PolygonePanelComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('onThicknessChange devrait appeler la \
-    méthode patchValue de rectangleForm', () => {
+  it('#onThicknessChange should call the patchValue method ' +
+    'of polygoneForm', () => {
     const spy = spyOn(component['polygoneForm'], 'patchValue');
     component['onThicknessChange']();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('onSidesChange devrait appeler la \
-    méthode patchValue de rectangleForm', () => {
+  it('#onSidesChange should call the method patcHvalue ' +
+    'of polygoneForm', () => {
     const spy = spyOn(component['polygoneForm'], 'patchValue');
     component['onSidesChange']();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('ngAfterViewChecked devrait avoir subscribed' +
-    'borderOption et fillOption, et ces valeurs devraient ' +
-    'changer dans le service lorsqu\'on émet un MatSlideToggleChange en false',
+  it('#ngAfterViewChecked should have subscribed' +
+    'borderOption and fillOption, and these values should ' +
+    'change when MatSlideToggle changes to false',
   () => {
     component.ngAfterViewChecked();
     component['borderOptionRef'].change.emit(
@@ -93,9 +93,9 @@ describe('PolygonePanelComponent', () => {
     expect(component['service'].fillOption).toBeFalsy();
   });
 
-  it('ngAfterViewChecked devrait avoir subscribed borderOption'
-  + ' et fillOption, et ces valeurs devraient ' +
-    'changer dans le service lorsqu\'on émet un MatSlideToggleChange en true',
+  it('#ngAfterViewChecked should have subscribed' +
+    'borderOption and fillOption, and these values should ' +
+    'change when MatSlideToggle changes to true',
   () => {
     component.ngAfterViewChecked();
     component['borderOptionRef'].change.emit(

@@ -37,25 +37,16 @@ export class MultipleSelection extends Selection {
       const intersection = this.compareZone.intersection(elementZone);
       if (intersection[0]) {
         this.selectedElements.add(element);
-        if (!!this.zone) {
-          this.zone = this.zone.union(elementZone);
-        } else {
-          this.zone = elementZone;
-        }
+        this.zone = (!!this.zone) ? this.zone.union(elementZone) : elementZone;
       }
     });
   }
 
-
-  // TODO : ternaire
   private selectAll(elements: Set<SVGElement>): void {
     this.selectedElements = elements;
     elements.forEach((element) => {
-      if (!!this.zone) {
-        this.zone = this.zone.union(this.getZone(element));
-      } else {
-        this.zone = this.getZone(element);
-      }
+      const zone = this.getZone(element);
+      this.zone = (!!this.zone) ? this.zone.union(zone) : zone;
     });
   }
 

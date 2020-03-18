@@ -1,0 +1,10 @@
+<main>
+  <header (click)="this.isExpanded = !this.isExpanded">
+    <h2>
+      <mat-icon>color_lens</mat-icon>
+      Couleurs
+      <mat-icon>unfold_more</mat-icon>
+    </h2>
+  </header>
+  <app-color-panel *ngIf="isExpanded"></app-color-panel>
+</main>

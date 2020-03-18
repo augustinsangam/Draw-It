@@ -1,13 +1,11 @@
 import {
   async,
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick
+  ComponentFixture, fakeAsync,
+  TestBed, tick,
 } from '@angular/core/testing';
 
 import {Point} from '../../../shape/common/point';
-import {UndoRedoService} from '../../../undo-redo/undo-redo.service';
+import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import { AerosolLogicComponent } from './aerosol-logic.component';
 
 const createClickMouseEvent = (event: string): MouseEvent =>  new MouseEvent(
@@ -18,8 +16,7 @@ const createClickMouseEvent = (event: string): MouseEvent =>  new MouseEvent(
   } as MouseEventInit
 );
 
-// tslint:disable:no-string-literal
-// tslint:disable:no-magic-numbers
+// tslint:disable:no-string-literal no-any no-magic-numbers
 describe('AerosolLogicComponent', () => {
   let component: AerosolLogicComponent;
   let fixture: ComponentFixture<AerosolLogicComponent>;
@@ -45,16 +42,16 @@ describe('AerosolLogicComponent', () => {
     component.svgStructure.root.appendChild(component.svgStructure.drawZone);
     component.svgStructure.root.appendChild(component.svgStructure.temporaryZone);
     component.svgStructure.root.appendChild(component.svgStructure.endZone);
-    (TestBed.get(UndoRedoService) as UndoRedoService).intialise(component.svgStructure);
 
+    (TestBed.get(UndoRedoService) as UndoRedoService).intialise(component.svgStructure);
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('onMouseDown should subscribe the frequency to the' +
+  it('#onMouseDown should subscribe the frequency to the' +
     ' periodicSplashAdder of the component, and start splashing',  fakeAsync(() => {
     component['service'].frequency = 100;
     const spy = spyOn<any>(component, 'addSplash');
@@ -68,7 +65,7 @@ describe('AerosolLogicComponent', () => {
     tick(100);
   }));
 
-  it('onMouseMove should update currentMousePos if onDrag', () => {
+  it('#onMouseMove should update currentMousePos if onDrag', () => {
     component['onDrag'] = true;
     const mouseEv = createClickMouseEvent('mousemove');
     const expectedPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
@@ -103,6 +100,7 @@ describe('AerosolLogicComponent', () => {
       component['periodicSplashAdder'].unsubscribe();
     }, 200);
     tick(200);
+    spyOn(component['periodicSplashAdder'], 'unsubscribe');
     component['onMouseUp']();
     expect(component['periodicSplashAdder']).not.toBeUndefined();
     expect(component['onDrag']).toBeFalsy();
@@ -110,7 +108,7 @@ describe('AerosolLogicComponent', () => {
     expect(spy).toHaveBeenCalledTimes(0);
   }));
 
-  it('addSplash should call generatePoint and add the result ' +
+  it('#addSplash should call generatePoint and add the result ' +
     'in the currentPath', () => {
     const dummyPath = 'M 190.1649298384418, 139.4657776162013 ' +
       'a 1, 1 0 1, 0 2,0 a 1, 1 0 1, 0 -2,0';
@@ -123,48 +121,60 @@ describe('AerosolLogicComponent', () => {
     expect(component['currentPath'].getAttribute('d')).toEqual(dummyPath);
   });
 
-  it('the ngOnInit should initialise the arrow of' +
+  it('#the ngOnInit should initialise the arrow of' +
     ' listeners', () => {
     component.ngOnInit();
     expect(component['listeners'].length).toEqual(4);
   });
 
-  it('A mouseleave should call onMouseUp function', () => {
+  it('#A mouseleave should call onMouseUp function', () => {
     const spy = spyOn<any>(component, 'onMouseUp');
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mouseleave'));
     expect(spy).toHaveBeenCalled();
   });
 
-  it('A mouseup should call onMouseUp function', () => {
+  it('#A mouseup should call onMouseUp function', () => {
     const spy = spyOn<any>(component, 'onMouseUp');
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mouseup'));
     expect(spy).toHaveBeenCalled();
   });
 
-  it('A mousemove should call onMouseMove function', () => {
+  it('#A mousemove should call onMouseMove function', () => {
     const spy = spyOn<any>(component, 'onMouseMove');
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mousemove'));
     expect(spy).toHaveBeenCalled();
   });
 
-  // TODO find a way to generate a CTRL + Z
+  it('#Undo redo override function should remove current path the drawing is not finished', () => {
+    component['onDrag'] = true;
+    component['currentPath'] = { remove: () => { return ; } } as SVGElement;
+    const spy = spyOn(component['currentPath'], 'remove');
+    (component['undoRedoService']['actions'].undo[0].overrideFunction as () => void)();
+    expect(spy).toHaveBeenCalled();
+  });
 
-  // it('if we are on drag and a mouseUp is launched, the override function of' +
-  //   ' the undoRedoService should be called and should call call remove on ' +
-  //   'currentPath before saving', () => {
-  //   const spyOnMouseUp = spyOn<any>(component, 'onMouseUp').and.callThrough();
-  //   component['onMouseDown'](createClickMouseEvent('mousedown'));
-  //   component['onMouseMove'](createClickMouseEvent('mousemove'));
-  //   const spyRemove = spyOn<any>(component['currentPath'], 'remove').and.callThrough();
-  //   const keyboardEvent = new KeyboardEvent(
-  //     'window:keydown',
-  //     {
-  //       key: 'z',
-  //       ctrlKey: true
-  //     });
-  //   component.svgStructure.root.dispatchEvent(keyboardEvent);
-  //   expect(spyRemove).toHaveBeenCalledTimes(1);
-  //   expect(spyOnMouseUp).toHaveBeenCalledTimes(1);
-  // });
+  it('#Undo redo override function should not do anything if the drawing is finished', () => {
+    component['onDrag'] = false;
+    component['currentPath'] = { remove: () => { return ; } } as SVGElement;
+    const spy = spyOn(component['currentPath'], 'remove');
+    (component['undoRedoService']['actions'].undo[0].overrideFunction as () => void)();
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('#Mouse down event handler consider only left mouse actions', fakeAsync(() => {
+    component['service'].frequency = 100;
+    const spy = spyOn<any>(component, 'onMouseDown');
+    component.svgStructure.root.dispatchEvent(new MouseEvent(
+      'mousedown', {
+        offsetX: 420,
+        offsetY: 420,
+        button: 1
+      } as MouseEventInit)
+    );
+    setTimeout(() => {
+      expect(spy).not.toHaveBeenCalled();
+    }, 100);
+    tick(100);
+  }));
 
 });

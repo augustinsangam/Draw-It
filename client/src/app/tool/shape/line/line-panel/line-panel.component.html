@@ -4,7 +4,7 @@
   <div class="thickness">
     <mat-slider min=1 max=100 step=1
       (input)="onThicknessChange()"
-      (change)="onThicknessChange()"
+      (change)="onThicknessValueChange()"
       formControlName="thicknessSlider"
       #thicknessSlider>
     </mat-slider>
@@ -23,7 +23,6 @@
         <mat-slider min="1"
                 max="100" step="1"
                 (input)="onRadiusChange()"
-                (change)="onRadiusChange()"
                 formControlName="radiusSlider"
                 #radiusSlider>
         </mat-slider>
@@ -36,5 +35,3 @@
     </div>
   </div>
 </form>
-<hr>
-<app-color-panel></app-color-panel>

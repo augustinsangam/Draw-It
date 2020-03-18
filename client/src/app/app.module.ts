@@ -68,6 +68,9 @@ import {
   ApplicatorPanelComponent
 } from './tool/applicator/applicator-panel/applicator-panel.component';
 import {
+  ColorBoxComponent
+} from './tool/color/color-box/color-box.component';
+import {
   ColorPanelComponent
 } from './tool/color/color-panel/color-panel.component';
 import {
@@ -188,7 +191,8 @@ import {
     GridLogicComponent,
     GridPanelComponent,
     SaveComponent,
-    TagsFilterComponent
+    TagsFilterComponent,
+    ColorBoxComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -211,6 +215,7 @@ import {
     ApplicatorPanelComponent,
     BrushLogicComponent,
     BrushPanelComponent,
+    ColorBoxComponent,
     ColorPanelComponent,
     EraserLogicComponent,
     EraserPanelComponent,

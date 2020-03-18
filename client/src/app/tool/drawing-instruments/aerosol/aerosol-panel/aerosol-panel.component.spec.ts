@@ -16,8 +16,7 @@ import {ColorPickerContentComponent} from '../../../color/color-panel/color-pick
 import {ColorPickerItemComponent} from '../../../color/color-panel/color-picker-item/color-picker-item.component';
 import { AerosolPanelComponent } from './aerosol-panel.component';
 
-// tslint:disable:no-string-literal
-// tslint:disable:no-magic-numbers
+// tslint:disable:no-string-literal no-any disable:no-magic-numbers
 describe('AerosolPanelComponent', () => {
   let component: AerosolPanelComponent;
   let fixture: ComponentFixture<AerosolPanelComponent>;
@@ -57,7 +56,7 @@ describe('AerosolPanelComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
@@ -83,7 +82,7 @@ describe('AerosolPanelComponent', () => {
       .toEqual(expectedValue);
   });
 
-  it('ngAfterViewInit should update the thumbnail', () => {
+  it('#ngAfterViewInit should update the thumbnail', () => {
     const spyOnUpdate = spyOn<any>(component, 'updateThumbnail');
     component['ngAfterViewInit']();
     expect(spyOnUpdate).toHaveBeenCalled();

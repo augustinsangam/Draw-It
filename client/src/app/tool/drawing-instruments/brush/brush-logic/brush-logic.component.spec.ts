@@ -7,11 +7,12 @@ import {
 } from '@angular/core/testing';
 
 import { Renderer2 } from '@angular/core';
+import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { BrushService } from '../brush.service';
 import { BrushLogicComponent } from './brush-logic.component';
 
-// tslint:disable:no-string-literal
+// tslint:disable:no-string-literal no-magic-numbers no-any
 describe('BrushLogicComponent', () => {
   let component: BrushLogicComponent;
   let fixture: ComponentFixture<BrushLogicComponent>;
@@ -58,15 +59,19 @@ describe('BrushLogicComponent', () => {
     component.svgStructure.root.appendChild(component.svgStructure.drawZone);
     component.svgStructure.root.appendChild(component.svgStructure.temporaryZone);
     component.svgStructure.root.appendChild(component.svgStructure.endZone);
+
+    (TestBed.get(UndoRedoService) as UndoRedoService)
+    .intialise(component.svgStructure);
+
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('#ConfigureSVGPath should set the good value', fakeAsync(() => {
-    const pathExpected: string = 'M' + 13 + ',' + 15 + ' h0';
+    const pathExpected = 'M13,15 h0';
     component.stringPath = pathExpected;
     const anPathElement: SVGPathElement = document.createElementNS(
       'http://www.w3.org/2000/svg',
@@ -80,16 +85,6 @@ describe('BrushLogicComponent', () => {
     component.svgStructure.root.dispatchEvent(mouseEvLeft);
     component['onMouseMove'](mouseMoveEvLeft);
     expect(component.svgPath.getAttribute('d')).toEqual(component.stringPath);
-  }));
-
-  it('#we shouldnt recreate defs the second loading', fakeAsync(() => {
-    component['brushService'].isFirstLoaded = false;
-    component.ngOnInit();
-    fixture.detectChanges();
-    fixture.whenStable().then(() => {
-      const nbChild = component.svgStructure.root.childElementCount;
-      expect(nbChild).toEqual(1);
-    });
   }));
 
   it('#should trigger onMouseDown method when mouse is down', fakeAsync(() => {
@@ -216,4 +211,11 @@ describe('BrushLogicComponent', () => {
       tick(1000);
     })
   );
+
+  it('#the undo redo override function should call stopDrawing and saveState', () => {
+    const spy1 = spyOn(component['undoRedoService'], 'saveState');
+    component['mouseOnHold'] = true;
+    component['undoRedoOverride']();
+    expect(spy1).toHaveBeenCalled();
+  });
 });

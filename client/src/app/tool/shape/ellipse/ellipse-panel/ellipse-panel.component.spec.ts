@@ -62,20 +62,20 @@ describe('EllipsePanelComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('onThicknessChange devrait appeler la \
-    méthode patchValue de ellipseForm', () => {
+  it('#onThicknessChange should call ' +
+    'patchValue method of ellipseForm', () => {
     const spy = spyOn(component['ellipseForm'], 'patchValue');
     component['onThicknessChange']();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('ngAfterViewChecked devrait avoir subscribed' +
-    'borderOption et fillOption, et ces valeurs devraient ' +
-    'changer dans le service lorsqu\'on émet un MatSlideToggleChange en false',
+  it('#ngAfterViewChecked should have subscribed' +
+    'borderOption and fillOption, and these values should ' +
+    'change when MatSlideToggle changes to false',
     () => {
       component.ngAfterViewChecked();
       component['borderOptionRef'].change.emit(
@@ -88,9 +88,9 @@ describe('EllipsePanelComponent', () => {
       expect(component['service'].fillOption).toBeFalsy();
     });
 
-  it('ngAfterViewChecked devrait avoir subscribed borderOption'
-    + ' et fillOption, et ces valeurs devraient ' +
-    'changer dans le service lorsqu\'on émet un MatSlideToggleChange en true',
+  it('#ngAfterViewChecked should have subscribed' +
+    'borderOption and fillOption, and these values should ' +
+    'change when MatSlideToggle changes to true',
     () => {
       component.ngAfterViewChecked();
       component['borderOptionRef'].change.emit(

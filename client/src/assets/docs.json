@@ -1,5 +1,8 @@
 [
   {
+    "label": "Bienvenue"
+  },
+  {
     "label": "Commencer",
     "children": [
       {
@@ -68,7 +71,7 @@
         "label": "Sceau de peinture"
       },
       {
-        "label": "Efface - Gomme"
+        "label": "Efface"
       },
       {
         "label": "Étampe"
@@ -82,7 +85,7 @@
     "label": "Les sélections",
     "children": [
       {
-        "label": "Sélection rectangulaire"
+        "label": "Rectangle de sélection"
       },
       {
         "label": "Désélection"

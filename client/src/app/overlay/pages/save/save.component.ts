@@ -43,29 +43,45 @@ export class SaveComponent implements OnInit {
         ]
       ]
     });
-    this.tags = (this.svgService.header.tags.length === 0) ? ['Mes dessins'] :
-                this.svgService.header.tags;
+    this.tags = this.svgService.header.tags;
   }
 
   ngOnInit(): void {
-    // TODO : Renderer ISS
     const clone = this.svgService.structure.drawZone.cloneNode(true);
     const height = this.svgService.shape.height;
     const width = this.svgService.shape.width;
+
     if (height > width) {
       const max = 400;
-      this.elementRef.nativeElement.setAttribute('width', (max * width / height).toString());
-      this.elementRef.nativeElement.setAttribute('height', max.toString());
+      this.renderer.setAttribute(
+        this.elementRef.nativeElement,
+        'width',
+        (max * width / height).toString()
+      );
+      this.renderer.setAttribute(
+        this.elementRef.nativeElement,
+        'height',
+        max.toString()
+      );
     }
-    this.elementRef.nativeElement.setAttribute('viewBox', `0 0 ${width} ${height}`);
-    this.elementRef.nativeElement.style.backgroundColor = this.svgService.shape.color;
+
+    this.renderer.setAttribute(
+      this.elementRef.nativeElement,
+      'viewBox',
+      `0 0 ${width} ${height}`
+    );
+    this.renderer.setStyle(
+      this.elementRef.nativeElement,
+      'background-color',
+      this.svgService.shape.color
+    );
     this.renderer.appendChild(this.elementRef.nativeElement, clone);
     this.communicationService.clear();
     this.gElOffset = this.communicationService
       .encodeElementRecursively(clone as Element);
   }
 
-  add(event: MatChipInputEvent): void {
+  protected add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
     const toAdd = (value || '').trim();
@@ -75,14 +91,14 @@ export class SaveComponent implements OnInit {
     }
   }
 
-  remove(tag: string): void {
+  protected remove(tag: string): void {
     const index = this.tags.indexOf(tag);
     if (index >= 0) {
       this.tags.splice(index, 1);
     }
   }
 
-  onSubmit(): void {
+  protected onSubmit(): void {
     if (this.gElOffset == null) {
       return;
     }
@@ -107,7 +123,7 @@ export class SaveComponent implements OnInit {
     }
   }
 
-  onCancel(): void {
+  protected onCancel(): void {
     this.dialogRef.close('Opération annulée');
   }
 

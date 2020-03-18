@@ -57,7 +57,7 @@ describe('ColorPanelComponent', () => {
     component = fixture.componentInstance;
   }));
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
@@ -70,7 +70,7 @@ describe('ColorPanelComponent', () => {
   // tslint:disable: no-string-literal
   it('#onKeydownHandler should be call after pressing enter key', () => {
     component['palette'] =
-    { onConfirm: () => { } } as unknown as ColorPickerContentComponent;
+    { onConfirm: () => { return ; } } as unknown as ColorPickerContentComponent;
 
     const spy = spyOn(component['palette'], 'onConfirm');
     document.dispatchEvent(new KeyboardEvent('keydown', {

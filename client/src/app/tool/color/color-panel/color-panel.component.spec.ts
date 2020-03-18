@@ -1,26 +1,23 @@
 import {
+  EventEmitter
+} from '@angular/core';
+import {
   async,
   ComponentFixture,
   fakeAsync,
   TestBed,
   tick
 } from '@angular/core/testing';
-
-import { CdkObserveContent } from '@angular/cdk/observers';
-import { EventEmitter, NO_ERRORS_SCHEMA } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
-  MatCard,
-  MatCardContent,
-  MatCardTitle,
-  MatFormField,
-  MatIcon,
-  MatRadioButton,
-  MatRadioGroup,
-  MatRipple,
-  MatSlider
-} from '@angular/material';
-import { ColorOption, ColorPanelComponent } from './color-panel.component';
+  FormsModule, ReactiveFormsModule
+} from '@angular/forms';
+import {
+  MaterialModule
+} from 'src/app/material.module';
+import {
+  ColorOption,
+  ColorPanelComponent
+} from './color-panel.component';
 import {
   ColorPickerContentComponent
 } from './color-picker-content/color-picker-content.component';
@@ -31,7 +28,7 @@ import {
   ColorPickerItemComponent
 } from './color-picker-item/color-picker-item.component';
 
-// tslint:disable: no-string-literal
+// tslint:disable: no-string-literal no-any no-magic-numbers
 describe('ColorPanelComponent', () => {
   let component: ColorPanelComponent;
   let fixture: ComponentFixture<ColorPanelComponent>;
@@ -40,23 +37,15 @@ describe('ColorPanelComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        CdkObserveContent,
         ColorPanelComponent,
         ColorPickerContentComponent,
         ColorPickerItemComponent,
-        MatCard,
-        MatCardTitle,
-        MatCardContent,
-        MatIcon,
-        MatFormField,
-        MatRadioButton,
-        MatRadioGroup,
-        MatRipple,
-        MatSlider
       ],
-      imports: [FormsModule, ReactiveFormsModule],
-      schemas: [NO_ERRORS_SCHEMA],
-      providers: []
+      imports: [
+        MaterialModule,
+        FormsModule,
+        ReactiveFormsModule
+      ],
     }).compileComponents();
   }));
 
@@ -71,13 +60,11 @@ describe('ColorPanelComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('#Button Palette should call swapColors() method', fakeAsync(() => {
-    // Synthaxe pour appeler une méthode privée.
-    // Le any est necessaire pour acceder a la methode prive.
     const spy = spyOn<any>(component, 'swapColors');
     const swapButton = fixture.debugElement.nativeElement.querySelector(
       '#swapButton'
@@ -180,24 +167,23 @@ describe('ColorPanelComponent', () => {
     const spyUpdateRecentColors = spyOn<any>(component, 'updateRecentColors');
     component['addEvents']();
     component['colorsItemsArray'][2].button.nativeElement.click();
-    fixture.whenStable().then(() => {
-      setTimeout(() => {
-        expect(spyUpdateRecentColors).toHaveBeenCalled();
-      }, 500);
-      tick(500);
-    });
+
+    setTimeout(() => {
+      expect(spyUpdateRecentColors).toHaveBeenCalled();
+    }, 500);
+    tick(500);
 
     const rightClickEvent = document.createEvent('HTMLEvents');
     rightClickEvent.initEvent('contextmenu', true, false);
     component['colorsItemsArray'][2].button.nativeElement.dispatchEvent(
       rightClickEvent
     );
-    fixture.whenStable().then(() => {
-      setTimeout(() => {
-        expect(spyUpdateRecentColors).toHaveBeenCalled();
-      }, 500);
-      tick(500);
-    });
+
+    setTimeout(() => {
+      expect(spyUpdateRecentColors).toHaveBeenCalled();
+    }, 500);
+    tick(500);
+
   }));
 
   it('#getStartColor() works !', () => {

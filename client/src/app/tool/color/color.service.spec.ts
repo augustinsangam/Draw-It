@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { ColorService } from './color.service';
 
+// tslint:disable:no-magic-numbers
 describe('ColorService', () => {
   let service: ColorService;
 
@@ -25,7 +26,7 @@ describe('ColorService', () => {
     service = TestBed.get(ColorService);
   });
 
-  it('should be created', () => {
+  it('#should be created', () => {
     expect(service).toBeTruthy();
   });
 

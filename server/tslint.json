@@ -2,10 +2,7 @@
     "extends": "../common/tslint.json",
     "rulesDirectory": [],
     "defaultSeverity": "error",
-    "rules": {
-      // REMOVE NEXT LINE BEFORE RELEASE
-      "arrow-parens": false
-    },
+    "rules": {},
     "linterOptions": {
       "exclude": [
         "**/*_generated.[jt]s"

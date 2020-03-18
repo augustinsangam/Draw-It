@@ -11,7 +11,6 @@ interface JonctionOption {
   radius: number;
   color: string;
 }
-
 @Component({
   selector: 'app-line-logic',
   template: ''
@@ -155,7 +154,6 @@ export class LineLogicComponent extends ToolLogicDirective
     this.getPath().simulateNewLine(point);
   }
 
-
   // TODO : enumeration shortcut
   private onKeyDown(keyEv: KeyboardEvent): void {
     const shiftIsPressed =
@@ -200,7 +198,7 @@ export class LineLogicComponent extends ToolLogicDirective
 
   private createJonction(center: Point): void {
     this.getPath().addJonction(center,
-      this.currentJonctionOptions.radius);
+      this.currentJonctionOptions.radius / 2);
   }
 
   private addNewLine(currentPoint: Point): void {

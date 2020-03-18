@@ -13,6 +13,17 @@ export interface PostAction {
   function?: () => void;
 }
 
+export interface PreAction {
+  enabled: boolean;
+  overrideDefaultBehaviour: boolean;
+  overrideFunctionDefined: boolean;
+  overrideFunction?: () => void;
+}
+
+export interface PostAction {
+  functionDefined: boolean;
+  function?: () => void;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -68,7 +79,6 @@ export class UndoRedoService {
   }
 
   undo(): void {
-
     if (this.actions.undo[0].enabled
       && this.actions.undo[0].overrideFunctionDefined) {
       (this.actions.undo[0].overrideFunction as () => void)();

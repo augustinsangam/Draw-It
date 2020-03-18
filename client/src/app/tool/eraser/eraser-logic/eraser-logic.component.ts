@@ -20,6 +20,7 @@ export const CONSTANTS = {
   FACTOR: 50,
   RED: 'rgba(255, 0, 0, 1)',
   RED_TRANSPARENT: 'rgba(255, 0, 0, 0.7)',
+  FILL_COLOR: 'white',
   STROKE_WIDTH: '2',
   PIXEL_INCREMENT: 3
 };
@@ -34,7 +35,7 @@ export class EraserLogicComponent
   private mouse: MouseTracking;
   private eraser: SVGRectElement;
   private allListeners: (() => void)[];
-  private markedElements: Map<SVGElement, string>;
+  private markedElements: Map<SVGElement, [boolean, string]>;
   private elementsDeletedInDrag: boolean;
   private lastestMousePosition: Point;
   private handlers: Map<string, Util.MouseEventCallBack>;
@@ -132,7 +133,7 @@ export class EraserLogicComponent
             this.handlers.get(event) as Util.MouseEventCallBack)
         );
       });
-    this.svgStructure.root.style.cursor = 'none';
+    this.renderer.setStyle(this.svgStructure.root, 'cursor', 'none');
     this.renderer.appendChild(this.svgStructure.temporaryZone, this.eraser);
   }
 
@@ -140,27 +141,60 @@ export class EraserLogicComponent
     const [startPoint, endPoint] = this.getCorners();
     const rectangleObject =
       new Rectangle(this.renderer, this.eraser, new MathService());
-    rectangleObject.setParameters(BackGroundProperties.None,
+    rectangleObject.setParameters(BackGroundProperties.Filled,
       StrokeProperties.Filled);
     rectangleObject.dragRectangle(startPoint, endPoint);
     rectangleObject.setCss({
       strokeWidth: CONSTANTS.STROKE_WIDTH,
       strokeColor: CONSTANTS.RED_TRANSPARENT,
-      fillColor: 'none',
-      opacity: '0'
+      fillColor: CONSTANTS.FILL_COLOR,
+      opacity: '1'
     });
   }
 
-  // TODO : RENDERER, separer la logique en deux
-
   private hideEraser(): void {
-    this.eraser.setAttribute('width', '0');
-    this.eraser.setAttribute('height', '0');
+    this.renderer.setAttribute(this.eraser, 'width', '0');
+    this.renderer.setAttribute(this.eraser, 'height', '0');
+  }
+
+  private removeFill(): void {
+    this.renderer.setAttribute(this.eraser, 'fill', 'none');
+  }
+
+  private addFill(): void {
+    this.renderer.setAttribute(this.eraser, 'fill', CONSTANTS.FILL_COLOR);
   }
 
   private markElementsInZone(x: number, y: number): Set<SVGElement> {
+    const selectedElements = this.findElementsInZone(x, y);
+    this.markedElements.clear();
+    selectedElements.forEach((element: SVGElement) => {
+      let stroke = element.getAttribute('stroke');
+      let strokeModified = CONSTANTS.RED;
+      const hasStroke = !(stroke == null || stroke === 'none');
+      if (!hasStroke) {
+        stroke = element.getAttribute('fill') as string;
+      }
+      const rgb = this.colorService.rgbFormRgba(stroke as string);
+      if (rgb.r > CONSTANTS.MAX_RED && rgb.g < CONSTANTS.MIN_GREEN
+        && rgb.b < CONSTANTS.MIN_BLUE) {
+        rgb.r = rgb.r - CONSTANTS.FACTOR;
+        strokeModified = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
+      }
+      this.markedElements.set(element, [hasStroke, stroke as string]);
+      this.renderer.setAttribute(
+        element,
+        hasStroke ? 'stroke' : 'fill',
+        strokeModified
+      );
+    });
+    return selectedElements;
+  }
+
+  private findElementsInZone(x: number, y: number): Set<SVGElement> {
     const selectedElements = new Set<SVGElement>();
     const halfSize = this.service.size / 2;
+    this.removeFill();
     for (let i = x - halfSize; i <= x + halfSize; i += CONSTANTS.PIXEL_INCREMENT) {
       for (let j = y - halfSize; j <= y + halfSize; j += CONSTANTS.PIXEL_INCREMENT) {
         const element = document.elementFromPoint(i, j);
@@ -170,22 +204,7 @@ export class EraserLogicComponent
         }
       }
     }
-    this.markedElements.clear();
-    selectedElements.forEach((element: SVGElement) => {
-      const stroke = element.getAttribute('stroke');
-      let strokeModified = CONSTANTS.RED;
-      if (stroke == null || stroke === 'none') {
-        return;
-      }
-      const rgb = this.colorService.rgbFormRgba(stroke);
-      if (rgb.r > CONSTANTS.MAX_RED && rgb.g < CONSTANTS.MIN_GREEN
-        && rgb.b < CONSTANTS.MIN_BLUE) {
-        rgb.r = rgb.r - CONSTANTS.FACTOR;
-        strokeModified = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
-      }
-      this.markedElements.set(element, stroke as string);
-      element.setAttribute('stroke', strokeModified);
-    });
+    this.addFill();
     return selectedElements;
   }
 
@@ -198,7 +217,11 @@ export class EraserLogicComponent
 
   private restoreMarkedElements(): void {
     for (const entry of this.markedElements) {
-      entry[0].setAttribute('stroke', entry[1]);
+      this.renderer.setAttribute(
+        entry[0],
+        entry[1][0] ? 'stroke' : 'fill',
+        entry[1][1]
+      );
     }
     this.markedElements.clear();
   }

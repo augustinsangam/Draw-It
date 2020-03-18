@@ -47,6 +47,7 @@ export class AerosolLogicComponent
         }
       }
     });
+    this.periodicSplashAdder = Subscription.EMPTY;
   }
 
   ngOnInit(): void {
@@ -98,6 +99,7 @@ export class AerosolLogicComponent
     this.currentMousePos = new Point(mouseEv.offsetX, mouseEv.offsetY);
 
     this.currentPath = this.renderer.createElement('path', this.svgNS);
+
     this.currentPath.setAttribute(
       'fill',
       this.colorService.primaryColor

@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MaterialModule } from 'src/app/material.module';
 import { DocumentationComponent, Node } from './documentation.component';
 
+// tslint:disable: no-magic-numbers
 describe('DocumentationComponent', () => {
   let component: DocumentationComponent;
   let fixture: ComponentFixture<DocumentationComponent>;
@@ -38,7 +39,7 @@ describe('DocumentationComponent', () => {
   });
 
   // tslint:disable:no-string-literal
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 

@@ -59,11 +59,11 @@ describe('EraserPanelComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('onThicknessChange should change the slider and'
+  it('#onThicknessChange should change the slider and'
     + 'update the service', () => {
     // tslint:disable: no-string-literal
     const spy = spyOn(component['eraserForm'], 'patchValue');

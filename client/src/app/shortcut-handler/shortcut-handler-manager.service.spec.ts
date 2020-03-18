@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 
 import { MaterialModule } from '../material.module';
 import { Tool } from '../tool/tool.enum';
+import { Shortcut } from './shortcut';
 import { ShortcutHandlerManagerService } from './shortcut-handler-manager.service';
 import { Handler } from './shortcut-handler.service';
-import { Shortcut } from './shortcut';
 
 // TODO : Ask the chargé de lab
 // tslint:disable: no-string-literal no-any no-empty
@@ -25,7 +25,7 @@ describe('ShortcutHandlerManagerService', () => {
     service.initialiseShortcuts();
   });
 
-  it('should be created', () => {
+  it('#should be created', () => {
     expect(service).toBeTruthy();
   });
 

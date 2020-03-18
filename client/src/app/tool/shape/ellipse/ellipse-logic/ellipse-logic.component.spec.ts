@@ -6,13 +6,12 @@ import {
   TestBed,
   tick
 } from '@angular/core/testing';
+import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
 import { Point } from '../../common/point';
 import { EllipseService } from '../ellipse.service';
 import { EllipseLogicComponent } from './ellipse-logic.component';
-import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
-// import {BackGroundProperties} from '../../common/AbstractShape';
 
 const createClickMouseEvent = (event: string): MouseEvent => {
   return new MouseEvent(event, {
@@ -22,7 +21,7 @@ const createClickMouseEvent = (event: string): MouseEvent => {
   } as MouseEventInit);
 };
 
-// tslint:disable:no-string-literal
+// tslint:disable:no-string-literal no-any no-magic-numbers max-file-line-count
 describe('EllipseLogicComponent', () => {
   let component: EllipseLogicComponent;
   let fixture: ComponentFixture<EllipseLogicComponent>;
@@ -55,11 +54,11 @@ describe('EllipseLogicComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should created', () => {
     expect(component).toBeTruthy();
   });
 
-  it('mousedown should call the initEllipse function', fakeAsync(() => {
+  it('#mousedown should call the initEllipse function', fakeAsync(() => {
     const spy1 = spyOn<any>(component, 'initEllipse').and.callThrough();
     component.svgStructure.root.dispatchEvent(
       createClickMouseEvent('mousedown')
@@ -70,9 +69,18 @@ describe('EllipseLogicComponent', () => {
     tick(500);
   }));
 
-  it('initEllipse should initialise all the atributes ', () => {
+  it('#mouseup event should call the onMouseUp function', () => {
+    const spy1 = spyOn<any>(component, 'onMouseUp');
+    document.dispatchEvent(
+      createClickMouseEvent('mouseup')
+    );
+    expect(spy1).toHaveBeenCalled();
+  });
+
+  it('#initEllipse should initialise all the atributes ', () => {
     expect(component['ellipses']).toEqual([]);
     expect(component['onDrag']).toBeFalsy();
+    component['service'].fillOption = false;
     const event = createClickMouseEvent('mousedown');
     component['initEllipse'](event);
     const pointExpected = new Point(event.offsetX, event.offsetY);
@@ -83,7 +91,7 @@ describe('EllipseLogicComponent', () => {
     expect(component['style']).toBeTruthy();
   });
 
-  it('the attributes are not initialised when the wrong button is clicked',
+  it('#the attributes are not initialised when the wrong button is clicked',
     () => {
       expect(component['ellipses']).toEqual([]);
       expect(component['onDrag']).toBeFalsy();
@@ -101,7 +109,7 @@ describe('EllipseLogicComponent', () => {
       expect(component['onDrag']).toBeFalsy();
     });
 
-  it('the listeners should handle key downs', () => {
+  it('#the listeners should handle key downs', () => {
     const globKeyEv = new KeyboardEvent('keydown');
     spyOn<any>(component, 'onKeyDown').and.callFake((keyEv: KeyboardEvent) =>
       expect(keyEv).toBe(globKeyEv)
@@ -110,7 +118,7 @@ describe('EllipseLogicComponent', () => {
     component.svgStructure.root.dispatchEvent(globKeyEv);
   });
 
-  it('the listeners should handle key ups', () => {
+  it('#the listenerss should handle key ups', () => {
     const globKeyEv = new KeyboardEvent('keyup');
     spyOn<any>(component, 'onKeyUp').and.callFake((keyEv: KeyboardEvent) =>
       expect(keyEv).toBe(globKeyEv)
@@ -119,12 +127,12 @@ describe('EllipseLogicComponent', () => {
     component.svgStructure.root.dispatchEvent(globKeyEv);
   });
 
-  it('the ngOnInit initialise the arrow of listeners', () => {
+  it('#the ngOnInit initialise the arrow of listeners', () => {
     component.ngOnInit();
     expect(component['allListeners'].length).toEqual(5);
   });
 
-  it('the ellipse css is only defined by the ellipseService'
+  it('#the ellipse css is only defined by the ellipseService'
     + 'and the colorService', () => {
       const event = createClickMouseEvent('mousedown');
       component['initEllipse'](event);
@@ -143,7 +151,13 @@ describe('EllipseLogicComponent', () => {
       expect(spy).not.toHaveBeenCalledWith(style);
     });
 
-  it('mouseMove should call the viewTemporaryForm function', fakeAsync(() => {
+  it('#initRectangleVisu should not do anything if called with a non left click', () => {
+    const spy = spyOn(component['renderer'], 'appendChild');
+    component['initRectangleVisu'](new MouseEvent('mousedown',  {button: 2}));
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('#mouseMove should call the viewTemporaryForm function', fakeAsync(() => {
     const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
     component.svgStructure.root.dispatchEvent(
       createClickMouseEvent('mousedown')
@@ -157,7 +171,7 @@ describe('EllipseLogicComponent', () => {
     tick(1000);
   }));
 
-  it('mouseMove should not do anything if not on drag', fakeAsync(() => {
+  it('#mouseMove should not do anything if not on drag', fakeAsync(() => {
     const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
     component.svgStructure.root.dispatchEvent(
       createClickMouseEvent('mousedown')
@@ -172,7 +186,7 @@ describe('EllipseLogicComponent', () => {
     tick(500);
   }));
 
-  it('viewTemporaryForm should call the function simulateEllipse'
+  it('#viewTemporaryForm should call the function simulateEllipse'
     + 'on mouseMove', fakeAsync(() => {
       component['initEllipse'](createClickMouseEvent('mousedown'));
       component.svgStructure.root.dispatchEvent(
@@ -191,7 +205,7 @@ describe('EllipseLogicComponent', () => {
       tick(500);
     }));
 
-  it('viewTemporaryForm should call the function simulateCircle'
+  it('#viewTemporaryForm should call the function simulateCircle'
     + 'when shift is pressed ', fakeAsync(() => {
       component['initEllipse'](createClickMouseEvent('mousedown'));
       const spy1 = spyOn<any>(component['getEllipse'](), 'simulateCircle');
@@ -205,7 +219,7 @@ describe('EllipseLogicComponent', () => {
       expect(spy1).toHaveBeenCalled();
     }));
 
-  it('a pressed shift should call simulateCircle', () => {
+  it('#a pressed shift should call simulateCircle', () => {
     component['initEllipse'](createClickMouseEvent('mousedown'));
     const event = new KeyboardEvent('window:keydown', {
       code: 'ShiftRight',
@@ -274,35 +288,24 @@ describe('EllipseLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  // it('mouseUp should call viewTemporaryForm and ' +
-  //   'set style opacity', fakeAsync(() => {
-  //     component['initEllipse'](createClickMouseEvent('mousedown'));
-  //     const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
-  //     spyOn<any>(component, 'getEllipse').and.callThrough();
-  //     document.dispatchEvent(
-  //       new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
-  //     );
-  //     setTimeout(() => {
-  //       expect(spy1).toHaveBeenCalled();
-  //       expect(component['style'].opacity).toEqual('1');
-  //     }, 500);
-  //     tick(500);
-  //   }));
+  it('#mouseUp should call saveState and ' +
+    'set style opacity', () => {
+      const spy1 = spyOn(component['undoRedoService'], 'saveState');
+      component['initEllipse'](createClickMouseEvent('mousedown'));
+      // spyOn<any>(component, 'initEllipse').and.callThrough();
+      component['onMouseUp'](createClickMouseEvent('mouseup'));
+      expect(spy1).toHaveBeenCalled();
+      expect(component['style'].opacity).toEqual('1');
+    });
 
-  // it('mouseUp should not do anything if its not on drag', fakeAsync(() => {
-  //   component['initEllipse'](createClickMouseEvent('mousedown'));
-  //   const spy1 = spyOn<any>(component, 'viewTemporaryForm').and.callThrough();
-  //   spyOn<any>(component, 'getEllipse').and.callThrough();
-  //   document.dispatchEvent(
-  //     new MouseEvent('mouseup', { button: 0 } as MouseEventInit)
-  //   );
-  //   component['onDrag'] = false;
-  //   setTimeout(() => {
-  //     expect(spy1).toHaveBeenCalled();
-  //     expect(component['style'].opacity).toEqual('1');
-  //   }, 500);
-  //   tick(500);
-  // }));
+  it('#mouseUp should not do anything if its not on drag', () => {
+    component['initEllipse'](createClickMouseEvent('mousedown'));
+    const spy1 = spyOn<any>(component['undoRedoService'], 'saveState');
+    spyOn<any>(component, 'getEllipse').and.callThrough();
+    component['onDrag'] = false;
+    component['onMouseUp'](new MouseEvent('mousedown', {button: 2}));
+    expect(spy1).not.toHaveBeenCalled();
+  });
 
   it('#onKeyUp should call simulateEllipse', () => {
     component['initEllipse'](createClickMouseEvent('mousedown'));
@@ -318,7 +321,7 @@ describe('EllipseLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('ngOnDestroy should set "called" to true ' +
+  it('#ngOnDestroy should set "called" to true ' +
     '(= call every listener´s functions)',
     () => {
       let called = false;
@@ -327,5 +330,25 @@ describe('EllipseLogicComponent', () => {
       expect(called).toBeTruthy();
     }
   );
+
+  it('#the override function should call undoBase and onMouseUp if onDrag', () => {
+    const spyMouseUp = spyOn<any>(component, 'onMouseUp');
+    const spyUndoBase = spyOn(component['undoRedoService'], 'undoBase');
+    component['initEllipse'](createClickMouseEvent('mousedown'));
+    component['onDrag'] = true;
+    (component['undoRedoService']['actions'].undo[0].overrideFunction as () => void)();
+    expect(spyMouseUp).toHaveBeenCalled();
+    expect(spyUndoBase).toHaveBeenCalled();
+  });
+
+  it('#the override function should call undoBase but not onMouseUp if not onDrag', () => {
+    const spyMouseUp = spyOn<any>(component, 'onMouseUp');
+    const spyUndoBase = spyOn(component['undoRedoService'], 'undoBase');
+    component['initEllipse'](createClickMouseEvent('mousedown'));
+    component['onDrag'] = false;
+    (component['undoRedoService']['actions'].undo[0].overrideFunction as () => void)();
+    expect(spyMouseUp).not.toHaveBeenCalled();
+    expect(spyUndoBase).toHaveBeenCalled();
+  });
 
 });

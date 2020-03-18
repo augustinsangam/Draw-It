@@ -11,8 +11,7 @@ import { ColorService } from '../../../color/color.service';
 import { PencilService } from '../pencil.service';
 import { PencilLogicComponent } from './pencil-logic.component';
 
-// TODO : Ask the chargé de lab
-// tslint:disable:no-string-literal no-any
+// tslint:disable:no-string-literal no-any no-magic-numbers
 describe('PencilLogicComponent', () => {
   let component: PencilLogicComponent;
   let fixture: ComponentFixture<PencilLogicComponent>;
@@ -75,7 +74,7 @@ describe('PencilLogicComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 

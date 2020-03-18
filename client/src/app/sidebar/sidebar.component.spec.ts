@@ -41,11 +41,11 @@ describe('SidebarComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call setTool on tool change', () => {
+  it('#should call setTool on tool change', () => {
     // NOTE: Asynchronous call of callback is handled
     // automatically because the spy will wait until
     // the function is executed.
@@ -59,7 +59,7 @@ describe('SidebarComponent', () => {
     component['toolSelectorService'].set(Tool.Line);
   });
 
-  it('setTool with second argument null should do nothing', () => {
+  it('#setTool with second argument null should do nothing', () => {
     const oldHtmlEl = document.createElement('a');
     oldHtmlEl.classList.add('selected');
     const oldElRef = new ElementRef(oldHtmlEl);
@@ -74,7 +74,7 @@ describe('SidebarComponent', () => {
     expect(newHtmlEl.classList.contains('selected')).toBeFalsy();
   });
 
-  it('setTool with tools none should do nothing', () => {
+  it('#setTool with tools none should do nothing', () => {
     const oldHtmlEl = document.createElement('a');
     oldHtmlEl.classList.add('selected');
     const oldElRef = new ElementRef(oldHtmlEl);
@@ -89,7 +89,7 @@ describe('SidebarComponent', () => {
     expect(newHtmlEl.classList.contains('selected')).toBeFalsy();
   });
 
-  it('setTool should remove .selected from old element' +
+  it('#setTool should remove .selected from old element' +
     'and append .selected to new element', () => {
     const oldHtmlEl = document.createElement('a');
     oldHtmlEl.classList.add('selected');
@@ -103,30 +103,6 @@ describe('SidebarComponent', () => {
     component['setTool'](Tool.Rectangle, Tool.Line);
     expect(oldHtmlEl.classList.contains('selected')).toBeFalsy();
     expect(newHtmlEl.classList.contains('selected')).toBeTruthy();
-  });
-
-  const functions = [
-    ['selectLine', Tool.Line],
-    ['selectEraser', Tool.Eraser],
-    ['selectRectangle', Tool.Rectangle],
-    ['selectPolygone', Tool.Polygone],
-    ['selectPencil', Tool.Pencil],
-    ['selectBrush', Tool.Brush],
-    ['selectSelection', Tool.Selection],
-    ['selectEllipse', Tool.Ellipse],
-    ['selectPipette', Tool.Pipette],
-    ['selectAerosol', Tool.Aerosol],
-    ['selectApplicator', Tool.Applicator],
-    ['selectGrid', Tool.Grid],
-  ];
-
-  functions.forEach((func) => {
-    it(`${func[0]} should call toolSelectorService.set`, () => {
-      const spy = spyOn(component['toolSelectorService'], 'set');
-      // TODO : Ask the chargé de lab
-      (component as any)[func[0]]();
-      expect(spy).toHaveBeenCalledWith(func[1]);
-    });
   });
 
   it('#ngAfterViewChecked should not do anything when canUndo or canRedo'

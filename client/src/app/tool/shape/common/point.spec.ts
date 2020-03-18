@@ -9,7 +9,7 @@ describe('Point', () => {
     expect(point).toBeTruthy();
   });
 
-  it('Equals works well', () => {
+  it('#Equals works well', () => {
     const targetPoint = new Point(5 , 10);
     expect(targetPoint).toBeTruthy();
     const testCases: [Point, boolean][] = [
@@ -17,7 +17,7 @@ describe('Point', () => {
       [new Point(0, 10),  false],
       [new Point(5, 0),   false],
       [new Point(5, 10),  true],
-    ]
+    ];
     testCases.forEach((test) => {
       expect(targetPoint.equals(test[0])).toEqual(test[1]);
     });

@@ -13,10 +13,10 @@ import {
 import {
   ToolLogicDirective
 } from '../tool/tool-logic/tool-logic.directive';
-import { SVGStructure } from "./svg-structure";
 import {
   ToolSelectorService } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
+import { SVGStructure } from './svg-structure';
 
 import * as Tools from '../tool/tools';
 import { UndoRedoService } from '../tool/undo-redo/undo-redo.service';
