@@ -22,6 +22,7 @@ import { flatbuffers } from 'flatbuffers';
 import { Subject } from 'rxjs';
 import { SvgHeader } from 'src/app/svg/svg-header';
 import { SvgShape } from 'src/app/svg/svg-shape';
+import { ColorService } from 'src/app/tool/color/color.service';
 import { ScreenService } from '../new-draw/sreen-service/screen.service';
 
 const CARD_WIDTH = 342;
@@ -58,6 +59,7 @@ export class GalleryComponent implements AfterViewInit {
   }) private cardContent: ElementRef<HTMLElement>;
 
   constructor(
+    private colorService: ColorService,
     private communicationService: CommunicationService,
     private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -121,13 +123,20 @@ export class GalleryComponent implements AfterViewInit {
   }
 
   private newDraw(draw: Draw, id: number, tempsAllTags: Set<string>): Set<string> {
-    const newTagArray = new Array<string>();
-
-    for (let i = 0; i < draw.tagsLength(); i++) {
+    const tagsLength = draw.tagsLength();
+    const newTagArray = new Array<string>(tagsLength);
+    for (let i = 0; i < tagsLength; ++i) {
       const tag = draw.tags(i);
       newTagArray.push(tag);
       tempsAllTags.add(tag);
     }
+
+    const colorsLength = draw.colorsLength();
+    const colors = new Array<string>(colorsLength);
+    for (let i = 0; i < colorsLength; ++i) {
+      colors[i] = draw.colors(i);
+    }
+    this.colorService.recentColors = colors;
 
     const svgElement = draw.svg();
 

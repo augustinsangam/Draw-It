@@ -196,16 +196,17 @@ export class CommunicationService {
     return ElementT.create(this.fbBuilder, name, attrs, children);
   }
 
-  encode(header: SvgHeader, shape: SvgShape, elOffset: flatbuffers.Offset): void {
+  encode(header: SvgHeader, shape: SvgShape, elOffset: flatbuffers.Offset, colors: string[]): void {
     const tagsOffset = this.encodeTags(header.tags);
     const nameOffset = this.fbBuilder.createString(header.name);
     const colorOffset = this.fbBuilder.createString(shape.color);
-    // TODO: colors
+    const colorsOffsest = this.encodeColors(colors);
     DrawT.start(this.fbBuilder);
     DrawT.addSvg(this.fbBuilder, elOffset);
     DrawT.addTags(this.fbBuilder, tagsOffset);
     DrawT.addName(this.fbBuilder, nameOffset);
     DrawT.addColor(this.fbBuilder, colorOffset);
+    DrawT.addColors(this.fbBuilder, colorsOffsest);
     DrawT.addWidth(this.fbBuilder, shape.width);
     DrawT.addHeight(this.fbBuilder, shape.height);
     const draw = DrawT.end(this.fbBuilder);
@@ -215,5 +216,10 @@ export class CommunicationService {
   private encodeTags(tags: string[]): number {
     const tagsOffsets = tags.map((tag) => this.fbBuilder.createString(tag));
     return DrawT.createTagsVector(this.fbBuilder, tagsOffsets);
+  }
+
+  private encodeColors(colors: string[]): number {
+    const colorsOffsets = colors.map((color) => this.fbBuilder.createString(color));
+    return DrawT.createColorsVector(this.fbBuilder, colorsOffsets);
   }
 }
