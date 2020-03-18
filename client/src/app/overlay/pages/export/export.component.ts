@@ -41,6 +41,15 @@ export class ExportComponent implements AfterViewInit {
   private filtersChooser: Map<string, string>;
   protected form: FormGroup;
 
+  static validator(control: FormControl): null | { spaceError: { value: string}} {
+    const input = (control.value as string).trim();
+    const NOT_FOUND = -1;
+    if (input.indexOf(' ') === NOT_FOUND && input !== '') {
+      return null;
+    }
+    return {spaceError: { value: 'No whitespace allowed' }};
+  }
+
   constructor(private formBuilder: FormBuilder,
               @Optional() public dialogRef: MatDialogRef<ExportComponent>,
               private renderer: Renderer2,
@@ -50,14 +59,7 @@ export class ExportComponent implements AfterViewInit {
 
     this.filtersChooser = new Map<string, string>();
     this.form = this.formBuilder.group({
-      name: ['', [Validators.required, (control: FormControl) => {
-        const input = (control.value as string).trim();
-        const NOT_FOUND = -1;
-        if (input.indexOf(' ') === NOT_FOUND && input !== '') {
-          return null;
-        }
-        return {spaceError: { value: 'No whitespace allowed' }};
-      }]],
+      name: ['', [Validators.required, ExportComponent.validator]],
       filter: [FilterChoice.None, [Validators.required]],
       format: [FormatChoice.Png, [Validators.required]]
     });
@@ -115,13 +117,11 @@ export class ExportComponent implements AfterViewInit {
   private initializeElements(): void {
     this.svgShape = this.svgService.shape;
     this.innerSVG = this.renderer.createElement('svg', SVG_NS);
-    Array.from(this.svgService.structure.defsZone.children)
-    .forEach((element: SVGElement) => {
+    Array.from(this.svgService.structure.defsZone.children).forEach((element: SVGElement) => {
       this.renderer.appendChild(this.innerSVG, element.cloneNode(true));
     });
     this.renderer.appendChild(this.innerSVG, this.generateBackground());
-    Array.from(this.svgService.structure.drawZone.children)
-      .forEach((element: SVGElement) => {
+    Array.from(this.svgService.structure.drawZone.children).forEach((element: SVGElement) => {
         this.renderer.appendChild(this.innerSVG, element.cloneNode(true));
     });
     this.renderer.setAttribute(this.innerSVG, 'width', this.svgShape.width.toString());
