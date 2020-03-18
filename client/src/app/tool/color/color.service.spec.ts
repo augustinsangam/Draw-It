@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { ColorService } from './color.service';
 
 // tslint:disable:no-magic-numbers
-describe('ColorService', () => {
+fdescribe('ColorService', () => {
   let service: ColorService;
 
   const initialiseArray = () => {
@@ -26,7 +26,7 @@ describe('ColorService', () => {
     service = TestBed.get(ColorService);
   });
 
-  it('should be created', () => {
+  it('#should be created', () => {
     expect(service).toBeTruthy();
   });
 
@@ -110,5 +110,26 @@ describe('ColorService', () => {
     service.selectBackgroundColor('rgba(8, 8, 8, 1)');
     expect(service.recentColors[0]).toEqual('rgba(8, 8, 8, 1)');
     expect(service.backgroundColor).toEqual('rgba(8, 8, 8, 1)');
+  });
+
+  it('#method rgbaFromString()', () => {
+    expect(service.rgbaFromString('rgba(1, 2, 3, 1)')).toEqual({
+      r: 1,
+      g: 2,
+      b: 3,
+      a: 1
+    });
+    expect(service.rgbaFromString('rgba(1, 2, 3, 0.666)')).toEqual({
+      r: 1,
+      g: 2,
+      b: 3,
+      a: 0.666
+    });
+    expect(service.rgbaFromString('rgba(1555, 2, 3, 0.666)')).toEqual({
+      r: -1,
+      g: -1,
+      b: -1,
+      a: -1
+    });
   });
 });

@@ -99,8 +99,7 @@ export class PolygoneLogicComponent extends ToolLogicDirective
       onMouseUp
     ];
 
-    // TODO : Renderer
-    this.svgStructure.root.style.cursor = 'crosshair';
+    this.renderer.setStyle(this.svgStructure.root, 'cursor', 'crosshair');
 
   }
 

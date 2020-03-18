@@ -25,8 +25,12 @@ import {
   BrowserAnimationsModule,
   NoopAnimationsModule
 } from '@angular/platform-browser/animations';
-import { AppComponent } from './app.component';
-import { MaterialModule } from './material.module';
+import {
+  AppComponent
+} from './app.component';
+import {
+  MaterialModule
+} from './material.module';
 import {
   DocumentationComponent
 } from './overlay/pages/documentation/documentation.component';
@@ -39,15 +43,21 @@ import {
 import {
   GalleryCardComponent
 } from './overlay/pages/gallery/gallery-card/gallery-card.component';
-import { GalleryComponent } from './overlay/pages/gallery/gallery.component';
-import { TagsFilterComponent } from './overlay/pages/gallery/tags-filter/tags-filter.component';
+import {
+  GalleryComponent
+} from './overlay/pages/gallery/gallery.component';
+import {
+  TagsFilterComponent
+} from './overlay/pages/gallery/tags-filter/tags-filter.component';
 import {
   HomeComponent
 } from './overlay/pages/home/home.component';
 import {
   ConfirmationDialogComponent
 } from './overlay/pages/new-draw/confirmation-dialog.component';
-import { NewDrawComponent } from './overlay/pages/new-draw/new-draw.component';
+import {
+  NewDrawComponent
+} from './overlay/pages/new-draw/new-draw.component';
 import {
   PaletteDialogComponent
 } from './overlay/pages/new-draw/palette-dialog.component';
@@ -67,6 +77,9 @@ import {
 import {
   ApplicatorPanelComponent
 } from './tool/applicator/applicator-panel/applicator-panel.component';
+import {
+  ColorBoxComponent
+} from './tool/color/color-box/color-box.component';
 import {
   ColorPanelComponent
 } from './tool/color/color-panel/color-panel.component';
@@ -107,6 +120,12 @@ import {
   GridPanelComponent
 } from './tool/grid/grid-panel/grid-panel.component';
 import {
+  PaintSealLogicComponent
+} from './tool/paint-seal/paint-seal-logic/paint-seal-logic.component';
+import {
+  PaintSealPanelComponent
+} from './tool/paint-seal/paint-seal-panel/paint-seal-panel.component';
+import {
   PipetteLogicComponent
 } from './tool/pipette/pipette-logic/pipette-logic.component';
 import {
@@ -142,14 +161,13 @@ import {
 import {
   RectanglePanelComponent
 } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
-import { PaintSealLogicComponent } from './tool/paint-seal/paint-seal-logic/paint-seal-logic.component';
-import { PaintSealPanelComponent } from './tool/paint-seal/paint-seal-panel/paint-seal-panel.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BrushLogicComponent,
     BrushPanelComponent,
+    ColorBoxComponent,
     ColorPanelComponent,
     ColorPickerContentComponent,
     ColorPickerItemComponent,
@@ -215,6 +233,7 @@ import { PaintSealPanelComponent } from './tool/paint-seal/paint-seal-panel/pain
     ApplicatorPanelComponent,
     BrushLogicComponent,
     BrushPanelComponent,
+    ColorBoxComponent,
     ColorPanelComponent,
     EraserLogicComponent,
     EraserPanelComponent,

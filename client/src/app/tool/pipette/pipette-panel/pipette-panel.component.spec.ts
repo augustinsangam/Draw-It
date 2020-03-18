@@ -37,11 +37,11 @@ describe('PipettePanelComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('getHex should return the color of the service in Hex by calling ' +
+  it('#getHex should return the color of the service in Hex by calling ' +
     'the hexFromRgba method', () => {
     component['pipService'].currentColor = 'rgba(127, 127, 127, 255)';
     const spy = spyOn(component['colorService'], 'hexFormRgba').and.callThrough();

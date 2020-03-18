@@ -96,7 +96,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
       ).data;
       // simplement pour accéder à la 4è valeur du pixel[3] qui correspond au alpha
       // tslint:disable-next-line:no-magic-numbers
-      this.service.currentColor = `rgba(${pixel[0]},${pixel[1]},${pixel[2]},${pixel[3]})`;
+      this.service.currentColor = `rgba(${pixel[0]},${pixel[1]},${pixel[2]},${pixel[3] / 255})`;
     }
   }
 

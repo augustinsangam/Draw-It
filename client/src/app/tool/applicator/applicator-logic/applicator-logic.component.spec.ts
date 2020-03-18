@@ -54,11 +54,11 @@ describe('ApplicatorLogicComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('right click can change the stroke color '
+  it('#right click can change the stroke color '
     + 'to the general secondary color', () => {
     const target = component.svgStructure.drawZone.children.item(0) as
       SVGElement;
@@ -71,7 +71,7 @@ describe('ApplicatorLogicComponent', () => {
       .toEqual(component['colorService'].secondaryColor);
   });
 
-  it('right click should not do anything'
+  it('#right click should not do anything'
     + 'when the target is not a draw', () => {
     const target = component.svgStructure.endZone as
       SVGElement;
@@ -84,7 +84,7 @@ describe('ApplicatorLogicComponent', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('left click should not do anything'
+  it('#left click should not do anything'
     + 'when the target is not a draw', () => {
     const target = component.svgStructure.endZone as
       SVGElement;
@@ -97,7 +97,7 @@ describe('ApplicatorLogicComponent', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('left click can change the stroke color to the general'
+  it('#left click can change the stroke color to the general'
     + ' secondary color for non path filled SVGElement', () => {
     const target = component.svgStructure.drawZone.children.item(0) as
       SVGElement;
@@ -110,7 +110,7 @@ describe('ApplicatorLogicComponent', () => {
       .toEqual(component['colorService'].primaryColor);
   });
 
-  it('left click cannot change the stroke color to the general'
+  it('#left click cannot change the stroke color to the general'
     + ' secondary color for non path non-filled SVGElement', () => {
     const target = component.svgStructure.drawZone.children.item(0) as
       SVGElement;
@@ -122,7 +122,7 @@ describe('ApplicatorLogicComponent', () => {
       .not.toEqual(component['colorService'].primaryColor);
   });
 
-  it('left click can change the stroke color '
+  it('#left click can change the stroke color '
     + 'to the general secondary color SVGPathElement', () => {
     const target = document.createElementNS(
       'http://www.w3.org/2000/svg', 'svg:path');

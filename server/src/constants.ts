@@ -1,3 +1,5 @@
+const ANSWER_TO_LIFE = 42;
+
 const COLORS = {
 	reset: '\x1b[0m',
 	bright: '\x1b[1m',
@@ -32,15 +34,37 @@ const COLORS = {
 	},
 };
 
+enum ContentType {
+	OCTET_STREAM = 'application/octet-stream',
+	PLAIN_UTF8 = 'text/plain; charset=utf-8',
+}
+
+const ERRORS = {
+	nullCollection: new Error('collection is null or undefined'),
+	nullDb: new Error('database is null or undefined'),
+};
+
+const promisifiedTimeout = async (timeout: number): Promise<void> =>
+	new Promise((resolve) => setTimeout(resolve, timeout));
+
 enum StatusCode {
-	CREATED = 201,
+	OK = 200,
+	CREATED,
 	ACCEPTED,
 	NO_CONTENT = 204,
+	BAD_REQUEST = 400,
 	NOT_ACCEPTABLE = 406,
 	GONE = 410,
 	IM_A_TEAPOT = 418,
 	INTERNAL_SERVER_ERROR = 500,
 }
+
+enum TextLen {
+	MIN = 3,
+	MAX = 21,
+}
+
+const TIMEOUT = 1500;
 
 const TYPES = {
 	Application: Symbol.for('Application'),
@@ -49,4 +73,14 @@ const TYPES = {
 	Server: Symbol.for('Server'),
 };
 
-export { COLORS, StatusCode, TYPES };
+export {
+	ANSWER_TO_LIFE,
+	COLORS,
+	ContentType,
+	ERRORS,
+	promisifiedTimeout,
+	StatusCode,
+	TextLen,
+	TIMEOUT,
+	TYPES,
+};

@@ -1,33 +1,32 @@
 import inversify from 'inversify';
 import mongodb from 'mongodb';
 
+import { ERRORS } from './constants.js';
 import secrets from './secrets.json';
 
 interface Entry {
 	_id: number;
-	data: mongodb.Binary;
+	data?: mongodb.Binary;
 }
 
 @inversify.injectable()
 class Database {
 	private readonly client: mongodb.MongoClient;
+
+	// TODO: No underscore
+	// tslint:disable-next-line: variable-name
 	private _db?: mongodb.Db;
+	// tslint:disable-next-line: variable-name
 	private _collection?: mongodb.Collection;
 
-	// mongodb.github.io/node-mongodb-native/3.5/api/MongoClient.html
-	// nodejs.org/api/url.html
-	// mongodb.github.io/mongo-java-driver/3.8/javadoc/com/mongodb/ConnectionString.html
 	constructor() {
-		const uri = new URL('mongodb+srv://cluster0-5pews.mongodb.net');
-		// const uri = new URL('mongodb://127.0.0.1');
+		const uri = new URL(secrets.mongodb.uri);
 		uri.pathname = 'log2990';
 		uri.searchParams.append('serverSelectionTimeoutMS', '3000');
 		uri.searchParams.append('retryWrites', 'true');
 		uri.searchParams.append('w', 'majority');
-		// this._db = await mongodb.MongoClient.connect(uri.href, {
 		this.client = new mongodb.MongoClient(uri.href, {
 			auth: secrets.mongodb.auth,
-			// Next does not work with IPv6
 			useUnifiedTopology: true,
 		});
 	}
@@ -40,11 +39,11 @@ class Database {
 		return this._collection;
 	}
 
-	// docs.mongodb.com/manual/reference/operator/update/setOnInsert/#example
+	// Source: docs.mongodb.com/manual/reference/operator/update/setOnInsert/#example
 	async connect(dbName?: string): Promise<mongodb.Db> {
 		await this.client.connect();
-		this._db = this.client.db(dbName);
-		await this._db.collection('counter').updateOne(
+		const db = this.client.db(dbName);
+		await db.collection('counter').updateOne(
 			{
 				_id: 'productid',
 			},
@@ -57,76 +56,88 @@ class Database {
 				upsert: true,
 			},
 		);
-		this._collection = this._db?.collection('drawings');
-		return this._db;
+		this._collection = db.collection('drawings');
+		return (this._db = db);
 	}
 
-	close(force?: boolean): Promise<void> {
+	async close(force?: boolean): Promise<void> {
 		return this.client.close(force);
 	}
 
 	async nextID(): Promise<number> {
-		if (!!this.db) {
-			const obj = await this.db.collection('counter').findOneAndUpdate(
-				{
-					_id: 'productid',
-				},
-				{
-					$inc: {
-						seq: 1,
-					},
-				},
-				{
-					returnOriginal: false,
-				},
-			);
-			return obj.value.seq;
+		if (this.db == null) {
+			return Promise.reject(ERRORS.nullDb);
 		}
-		return Promise.reject('database is null');
+
+		const obj = await this.db.collection('counter').findOneAndUpdate(
+			{
+				_id: 'productid',
+			},
+			{
+				$inc: {
+					seq: 1,
+				},
+			},
+			{
+				returnOriginal: false,
+			},
+		);
+		return obj.value.seq;
 	}
 
-	all(): Promise<Entry[]> {
+	async all(): Promise<Entry[]> {
 		if (!!this.collection) {
 			return this.collection.find<Entry>().toArray();
 		}
-		return Promise.reject('collection is null');
+
+		return Promise.reject(ERRORS.nullCollection);
 	}
 
-	insert(entry: Entry): Promise<mongodb.InsertOneWriteOpResult<Entry>> {
+	async insert(entry: Entry): Promise<mongodb.InsertOneWriteOpResult<Entry>> {
 		if (!!this.collection) {
 			return this.collection.insertOne(entry);
 		}
-		return Promise.reject('collection is null');
+
+		return Promise.reject(ERRORS.nullCollection);
 	}
 
-	replace(
+	async replace(
 		entry: Entry,
 		upsert: boolean,
 	): Promise<mongodb.ReplaceWriteOpResult> {
-		if (!!this.collection) {
-			return this.collection.replaceOne(
-				{
-					_id: entry._id,
-				},
-				{
-					data: entry.data,
-				},
-				{
-					upsert,
-				},
-			);
+		if (this.collection == null) {
+			return Promise.reject(ERRORS.nullCollection);
 		}
-		return Promise.reject('collection is null');
+
+		return this.collection.replaceOne(
+			{
+				_id: entry._id,
+			},
+			{
+				data: entry.data,
+			},
+			{
+				upsert,
+			},
+		);
 	}
 
-	delete(_id: number): Promise<mongodb.DeleteWriteOpResultObject> {
-		if (!!this.collection) {
-			return this.collection.deleteOne({
-				_id,
-			});
+	async delete(entry: Entry): Promise<mongodb.DeleteWriteOpResultObject> {
+		if (this.collection == null) {
+			return Promise.reject(ERRORS.nullCollection);
 		}
-		return Promise.reject('collection is null');
+
+		/*
+		return this.collection.deleteOne({
+			_id: entry._id,
+		});
+		*/
+		return this.collection.deleteOne(entry);
 	}
 }
 
+// Due to a bug, c8 reports the export line as uncovered even tho
+// it’s used outside of the current file
+// See the bug submission https://github.com/bcoe/c8/issues/196
+/* c8 ignore next */
 export { Database, Entry };

@@ -62,11 +62,11 @@ describe('SelectionLogicComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('left mouse down handler should do nothing'
+  it('#left mouse down handler should do nothing'
    + ' the clicked button is not the left button', () => {
     const fakeEvent = {
       button: 1,
@@ -83,7 +83,7 @@ describe('SelectionLogicComponent', () => {
     expect(component['mouse'].left.mouseIsDown).not.toEqual(true);
   });
 
-  it('right mouse down handler should do nothing'
+  it('#right mouse down handler should do nothing'
    + ' the clicked button is not the right button', () => {
     const fakeEvent = {
       button: 1,
@@ -100,7 +100,7 @@ describe('SelectionLogicComponent', () => {
     expect(component['mouse'].right.mouseIsDown).not.toEqual(true);
   });
 
-  it('left mouse down handler should at least modifiy left'
+  it('#left mouse down handler should at least modifiy left'
    + ' starting point and set mouseIsDown', () => {
     const fakeEvent = {
       button: 0,
@@ -117,7 +117,7 @@ describe('SelectionLogicComponent', () => {
     expect(component['mouse'].left.mouseIsDown).toEqual(true);
   });
 
-  it('left mouse move handler should at least modifiy left'
+  it('#left mouse move handler should at least modifiy left'
    + ' current point when mouse in down', () => {
     const fakeEvent = {
       offsetX: 200,
@@ -132,7 +132,7 @@ describe('SelectionLogicComponent', () => {
     expect(component['mouse'].left.currentPoint).toEqual(new Point(200, 200));
   });
 
-  it('left mouse move handler should do nothing when mouse is up', () => {
+  it('#left mouse move handler should do nothing when mouse is up', () => {
     const fakeEvent = {
       offsetX: 200,
       offsetY: 200
@@ -145,7 +145,7 @@ describe('SelectionLogicComponent', () => {
     expect(component['mouse'].left.currentPoint).toEqual(new Point(150, 150));
   });
 
-  it('left mouse up handler should at least modifiy left'
+  it('#left mouse up handler should at least modifiy left'
    + ' end point and reset mouseIsDown', () => {
     const fakeEvent = {
       button: 0,
@@ -162,7 +162,7 @@ describe('SelectionLogicComponent', () => {
     expect(component['mouse'].left.mouseIsDown).toEqual(false);
   });
 
-  it('left mouse up handler should do nothing'
+  it('#left mouse up handler should do nothing'
    + ' when the button released is not the left one', () => {
     const fakeEvent = {
       button: 1,
@@ -178,7 +178,7 @@ describe('SelectionLogicComponent', () => {
     expect(component['mouse'].left.endPoint).not.toEqual(new Point(200, 200));
   });
 
-  it('right mouse down handler should at least modifiy right'
+  it('#right mouse down handler should at least modifiy right'
    + ' starting point and set mouseIsDown', () => {
     const fakeEvent = {
       button: 2,
@@ -195,7 +195,7 @@ describe('SelectionLogicComponent', () => {
     expect(component['mouse'].right.mouseIsDown).toEqual(true);
   });
 
-  it('right mouse move handler should at least modifiy right'
+  it('#right mouse move handler should at least modifiy right'
    + ' current point when mouse in down', () => {
     const fakeEvent = {
       offsetX: 200,
@@ -210,7 +210,7 @@ describe('SelectionLogicComponent', () => {
     expect(component['mouse'].right.currentPoint).toEqual(new Point(200, 200));
   });
 
-  it('right mouse move handler should do nothing when mouse is up', () => {
+  it('#right mouse move handler should do nothing when mouse is up', () => {
     const fakeEvent = {
       offsetX: 200,
       offsetY: 200
@@ -223,7 +223,7 @@ describe('SelectionLogicComponent', () => {
     expect(component['mouse'].right.currentPoint).toEqual(new Point(150, 150));
   });
 
-  it('right mouse up handler should at least modifiy right'
+  it('#right mouse up handler should at least modifiy right'
    + ' end point and reset mouseIsDown', () => {
     const fakeEvent = {
       button: 2,
@@ -240,7 +240,7 @@ describe('SelectionLogicComponent', () => {
     expect(component['mouse'].right.mouseIsDown).toEqual(false);
   });
 
-  it('contextmenu handler should at least prevent default action', () => {
+  it('#contextmenu handler should at least prevent default action', () => {
     const fakeEvent = {
       preventDefault: () => {return ; },
     } as unknown as MouseEvent;
@@ -255,7 +255,7 @@ describe('SelectionLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('contextmenu handler should at apply a single inversion when target'
+  it('#contextmenu handler should at apply a single inversion when target'
       + 'is a draw element', () => {
     const fakeEvent = {
       preventDefault: () => { return ; },
@@ -274,7 +274,7 @@ describe('SelectionLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('left mouse move handler should translate all shapes'
+  it('#left mouse move handler should translate all shapes'
       + 'when draging', () => {
     const fakeEvent = {
       offsetX: 200,
@@ -294,7 +294,7 @@ describe('SelectionLogicComponent', () => {
 
   });
 
-  it('left mouse move handler should drawSelection'
+  it('#left mouse move handler should drawSelection'
       + 'when not draging', () => {
     const fakeEvent = {
       offsetX: 200,
@@ -314,7 +314,7 @@ describe('SelectionLogicComponent', () => {
 
   });
 
-  it('left mouse up should save the draw state draging is over', () => {
+  it('#left mouse up should save the draw state draging is over', () => {
     const fakeEvent = {
       button: 0,
       offsetX: 200,
@@ -334,7 +334,7 @@ describe('SelectionLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('left down handler should apply single selection when'
+  it('#left down handler should apply single selection when'
       + 'target is a draw and the click is real', () => {
     const fakeEvent = {
       button: 0,
@@ -354,7 +354,7 @@ describe('SelectionLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('left click handler should deleteVisualisation when'
+  it('#left click handler should deleteVisualisation when'
       + 'target is not a draw element and it is a real click', () => {
     const fakeEvent = {
       button: 0,
@@ -374,7 +374,7 @@ describe('SelectionLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('left click handler should do nothing'
+  it('#left click handler should do nothing'
       + 'when the click is not real', () => {
     const fakeEvent = {
       button: 0,
@@ -396,7 +396,7 @@ describe('SelectionLogicComponent', () => {
     expect(spyVisualisation).not.toHaveBeenCalled();
   });
 
-  it('left click handler should do nothing'
+  it('#left click handler should do nothing'
     + 'the click is not on the left button', () => {
       const fakeEvent = {
         button: 1,
@@ -418,7 +418,7 @@ describe('SelectionLogicComponent', () => {
       expect(spyVisualisation).not.toHaveBeenCalled();
   });
 
-  it('left click handler should do nothing when'
+  it('#left click handler should do nothing when'
     + 'target is a control point', () => {
       const fakeEvent = {
         button: 0,
@@ -440,7 +440,7 @@ describe('SelectionLogicComponent', () => {
       expect(spyVisualisation).not.toHaveBeenCalled();
     });
 
-  it('right mouse up handler should do nothing '
+  it('#right mouse up handler should do nothing '
     + ' when the button released is not the right one', () => {
       const fakeEvent = {
         button: 0,
@@ -456,13 +456,13 @@ describe('SelectionLogicComponent', () => {
       expect(component['mouse'].right.endPoint).not.toEqual(new Point(200, 200));
     });
 
-  it('overrided function in undo redo service function works well', () => {
+  it('#overrided function in undo redo service function works well', () => {
     const spy = spyOn<any>(component, 'deleteVisualisation');
     component['undoRedoService'].undo();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('A multiple selection is perfomed when user use Ctrl + A', () => {
+  it('#A multiple selection is perfomed when user use Ctrl + A', () => {
     const spy = spyOn<any>(component, 'applyMultipleSelection');
     component['svgService'].selectAllElements.next();
     expect(spy).toHaveBeenCalled();
@@ -481,7 +481,7 @@ describe('SelectionLogicComponent', () => {
     expect(component['selectedElements']).not.toContain(selectedElement);
   });
 
-  it('KeyManager should contain all keypressed', () => {
+  it('#KeyManager should contain all keypressed', () => {
     let fakeKeyDownEvent = {
       key: 'ArrowUp',
       preventDefault: () => { return ; }
@@ -497,7 +497,7 @@ describe('SelectionLogicComponent', () => {
     expect(component['keyManager'].keyPressed).toContain('ArrowDown');
   });
 
-  it('KeyDown manager should consider only arrows', () => {
+  it('#KeyDown manager should consider only arrows', () => {
     const fakeKeyDownEvent = {
       key: 'ArrowUppppp',
       preventDefault: () => { return ; }
@@ -507,7 +507,7 @@ describe('SelectionLogicComponent', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('Translate should be done only after each 100 ms', fakeAsync(() => {
+  it('#Translate should be done only after each 100 ms', fakeAsync(() => {
     const spy = spyOn<any>(component, 'handleKey').and.callThrough();
     const fakeKeyDownEvent = {
       key: 'ArrowUp',
@@ -523,7 +523,7 @@ describe('SelectionLogicComponent', () => {
     component['keyManager'].handlers.keydown(fakeKeyDownEvent);
   }));
 
-  it('KeyUp handler should save the state only'
+  it('#KeyUp handler should save the state only'
        + ' all arrows are released', fakeAsync(() => {
     const spy = spyOn(component['undoRedoService'], 'saveState');
     const arrowUpEvent = {

@@ -73,7 +73,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
     );
 
     const onMouseUp = this.renderer.listen(
-      this.svgStructure.root,
+      'document',
       'mouseup',
       (mouseEv: MouseEvent) => this.onMouseUp(mouseEv)
     );

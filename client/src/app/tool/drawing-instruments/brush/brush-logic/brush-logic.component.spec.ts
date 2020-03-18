@@ -66,13 +66,11 @@ describe('BrushLogicComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
   it('#ConfigureSVGPath should set the good value', fakeAsync(() => {
-    // TODO : Check if expression is valid
-    // const pathExpected: string = 'M' + 13 + ',' + 15 + ' h0';
     const pathExpected = 'M13,15 h0';
     component.stringPath = pathExpected;
     const anPathElement: SVGPathElement = document.createElementNS(
@@ -87,16 +85,6 @@ describe('BrushLogicComponent', () => {
     component.svgStructure.root.dispatchEvent(mouseEvLeft);
     component['onMouseMove'](mouseMoveEvLeft);
     expect(component.svgPath.getAttribute('d')).toEqual(component.stringPath);
-  }));
-
-  it('#we shouldnt recreate defs the second loading', fakeAsync(() => {
-    component['brushService'].isFirstLoaded = false;
-    component.ngOnInit();
-    fixture.detectChanges();
-    fixture.whenStable().then(() => {
-      const nbChild = component.svgStructure.root.childElementCount;
-      expect(nbChild).toEqual(1);
-    });
   }));
 
   it('#should trigger onMouseDown method when mouse is down', fakeAsync(() => {
@@ -223,4 +211,11 @@ describe('BrushLogicComponent', () => {
       tick(1000);
     })
   );
+
+  it('#the undo redo override function should call stopDrawing and saveState', () => {
+    const spy1 = spyOn(component['undoRedoService'], 'saveState');
+    component['mouseOnHold'] = true;
+    component['undoRedoOverride']();
+    expect(spy1).toHaveBeenCalled();
+  });
 });

@@ -26,6 +26,7 @@ import {
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { SvgShape } from './svg/svg-shape';
 import { SvgService } from './svg/svg.service';
+import { ColorBoxComponent } from './tool/color/color-box/color-box.component';
 import { ColorPanelComponent } from './tool/color/color-panel/color-panel.component';
 import { ColorPickerContentComponent } from './tool/color/color-panel/color-picker-content/color-picker-content.component';
 import { ColorPickerItemComponent } from './tool/color/color-panel/color-picker-item/color-picker-item.component';
@@ -47,19 +48,20 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
-        PanelComponent,
-        SidebarComponent,
-        HomeComponent,
-        NewDrawComponent,
-        DocumentationComponent,
-        ColorPickerItemComponent,
-        PencilPanelComponent,
+        ColorBoxComponent,
         ColorPanelComponent,
         ColorPickerContentComponent,
+        ColorPickerItemComponent,
+        DocumentationComponent,
+        ExportComponent,
         GalleryComponent,
         GalleryCardComponent,
-        ExportComponent,
+        HomeComponent,
+        NewDrawComponent,
+        PanelComponent,
+        PencilPanelComponent,
         SaveComponent,
+        SidebarComponent,
         TagsFilterComponent
       ],
       imports: [
@@ -82,6 +84,7 @@ describe('AppComponent', () => {
     .overrideModule(BrowserDynamicTestingModule, {
       set: {
         entryComponents: [
+          ColorBoxComponent,
           HomeComponent,
           NewDrawComponent,
           DocumentationComponent,
@@ -120,7 +123,7 @@ describe('AppComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 

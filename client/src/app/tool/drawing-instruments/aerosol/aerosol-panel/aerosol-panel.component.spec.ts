@@ -56,7 +56,7 @@ describe('AerosolPanelComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
@@ -82,7 +82,7 @@ describe('AerosolPanelComponent', () => {
       .toEqual(expectedValue);
   });
 
-  it('ngAfterViewInit should update the thumbnail', () => {
+  it('#ngAfterViewInit should update the thumbnail', () => {
     const spyOnUpdate = spyOn<any>(component, 'updateThumbnail');
     component['ngAfterViewInit']();
     expect(spyOnUpdate).toHaveBeenCalled();

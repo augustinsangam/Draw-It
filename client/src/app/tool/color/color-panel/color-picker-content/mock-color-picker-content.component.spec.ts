@@ -22,7 +22,7 @@ describe('MockColorPickerContentComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create and Functions should at least launch', () => {
+  it('#should create and Functions should at least launch', () => {
     expect(component).toBeTruthy();
     component.initialiseStartingColor();
     component.buildCanvas(1);

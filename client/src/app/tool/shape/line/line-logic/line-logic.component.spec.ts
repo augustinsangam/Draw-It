@@ -50,11 +50,11 @@ describe('LineLogicComponent', () => {
     // );
   });
 
-  it('should create', () => {
+  it('#should create', () => {
     expect(component).toBeTruthy();
   });
 
-  // it('createNewPath should call getPath', () => {
+  // it('#createNewPath should call getPath', () => {
   //   const spy = spyOn<any>(component, 'getPath').and.callThrough();
   //   component['isNewPath'] = true;
   //   component['paths'] = [];
@@ -62,13 +62,13 @@ describe('LineLogicComponent', () => {
   //   expect(spy).toHaveBeenCalled();
   // });
 
-  // it('getPath should return the path containing' +
+  // it('#getPath should return the path containing' +
   //     'the Point passed as parameter', () => {
   //   component['paths'] = [defaultPath];
   //   expect(component['getPath']().datas.points).toEqual([new Point(42, 42)]);
   // });
 
-  // it('addNewLine should call addLine in Path', () => {
+  // it('#addNewLine should call addLine in Path', () => {
   //   component['onMouseClick'](
   //     new MouseEvent('mousedown', {
   //       button: 0,
@@ -81,7 +81,7 @@ describe('LineLogicComponent', () => {
   //   expect(spy).toHaveBeenCalled();
   // });
 
-  // it('addNewLine should not call createJonction if withJonction is false',
+  // it('#addNewLine should not call createJonction if withJonction is false',
   //   () => {
   //     component['onMouseClick'](
   //       new MouseEvent('mousedown', {
@@ -175,7 +175,7 @@ describe('LineLogicComponent', () => {
   //   }
   // );
 
-  // it('onMouseMove should not do anything if isNewPath is true', () => {
+  // it('#onMouseMove should not do anything if isNewPath is true', () => {
   //   component['isNewPath'] = true;
   //   const spy = spyOn<any>(component, 'getPath').and.callThrough();
   //   component['onMouseMove'](
@@ -274,7 +274,7 @@ describe('LineLogicComponent', () => {
   //   }
   // );
 
-  // it('onMouseDblClick should call getPath 5 times for a point less '
+  // it('#onMouseDblClick should call getPath 5 times for a point less '
   //   + 'far than 3 pixels', () => {
   //     component['isNewPath'] = false;
 
@@ -298,7 +298,7 @@ describe('LineLogicComponent', () => {
   //     expect(spy).toHaveBeenCalledTimes(4);
   //   });
 
-  // it('onKeyDown should call getPath 2 times '
+  // it('#onKeyDown should call getPath 2 times '
   //   + 'when called with shift pressed', () => {
   //     component['isNewPath'] = false;
   //     component['paths'] = [defaultPath];
@@ -315,7 +315,7 @@ describe('LineLogicComponent', () => {
   //     expect(spy).toHaveBeenCalledTimes(2);
   //   });
 
-  // it('onKeyDown shouldn´t do anything if isNewPath is true', () => {
+  // it('#onKeyDown shouldn´t do anything if isNewPath is true', () => {
   //   component['isNewPath'] = true;
   //   component['paths'] = [defaultPath];
   //   const spy = spyOn<any>(component['getPath'](), 'removePath')
@@ -396,7 +396,7 @@ describe('LineLogicComponent', () => {
   // //   }
   // // );
 
-  // it('onKeyUp should call simulateNewLine if it´s called with ShiftLeft',
+  // it('#onKeyUp should call simulateNewLine if it´s called with ShiftLeft',
   //   () => {
   //     component['isNewPath'] = false;
   //     const spy = spyOn<any>(component, 'getPath').and.callFake(
@@ -413,7 +413,7 @@ describe('LineLogicComponent', () => {
   //     expect(spy).toHaveBeenCalled();
   //   });
 
-  // it('onKeyUp should call simulateNewLine if it´s called with ShiftRight',
+  // it('#onKeyUp should call simulateNewLine if it´s called with ShiftRight',
   //   () => {
   //     component['isNewPath'] = false;
   //     const spy = spyOn<any>(component, 'getPath').and.callFake(
@@ -430,7 +430,7 @@ describe('LineLogicComponent', () => {
   //     expect(spy).toHaveBeenCalled();
   //   });
 
-  // it('onKeyUp shouldn´t do anything if isNewPath is true', () => {
+  // it('#onKeyUp shouldn´t do anything if isNewPath is true', () => {
   //   component['isNewPath'] = true;
   //   const spy = spyOn<any>(component, 'getPath');
   //   component['onKeyUp'](
@@ -453,7 +453,7 @@ describe('LineLogicComponent', () => {
   //   }
   // );
 
-  // it('a Path object should be created with is defalut parameters', () => {
+  // it('#a Path object should be created with is defalut parameters', () => {
   //   component['isNewPath'] = true;
   //   const spy = spyOn<any>(component, 'getPath');
   //   component['onKeyUp'](
@@ -464,7 +464,7 @@ describe('LineLogicComponent', () => {
   //   expect(spy).toHaveBeenCalledTimes(0);
   // });
 
-  // it('listeners should handle mouse click', () => {
+  // it('#listeners should handle mouse click', () => {
   //   const globMouseEv = new MouseEvent('click');
   //   spyOn<any>(component, 'onMouseClick').and.callFake((mouseEv: MouseEvent) =>
   //     expect(mouseEv).toBe(globMouseEv)
@@ -473,7 +473,7 @@ describe('LineLogicComponent', () => {
   //   component.svgStructure.root.dispatchEvent(globMouseEv);
   // });
 
-  // it('listeners should handle mouse double click', () => {
+  // it('#listeners should handle mouse double click', () => {
   //   const globMouseEv = new MouseEvent('dblclick');
   //   spyOn<any>(
   //     component,
@@ -483,7 +483,7 @@ describe('LineLogicComponent', () => {
   //   component.svgStructure.root.dispatchEvent(globMouseEv);
   // });
 
-  // it('listeners should handle mouse move', () => {
+  // it('#listeners should handle mouse move', () => {
   //   const globMouseEv = new MouseEvent('mousemove');
   //   spyOn<any>(component, 'onMouseMove').and.callFake((mouseEv: MouseEvent) =>
   //     expect(mouseEv).toBe(globMouseEv)
@@ -492,7 +492,7 @@ describe('LineLogicComponent', () => {
   //   component.svgStructure.root.dispatchEvent(globMouseEv);
   // });
 
-  // it('listeners should handle key downs', () => {
+  // it('#listeners should handle key downs', () => {
   //   const globKeyEv = new KeyboardEvent('keydown');
   //   spyOn<any>(component, 'onKeyDown').and.callFake((keyEv: KeyboardEvent) =>
   //     expect(keyEv).toBe(globKeyEv)
@@ -501,7 +501,7 @@ describe('LineLogicComponent', () => {
   //   component.svgStructure.root.dispatchEvent(globKeyEv);
   // });
 
-  // it('listeners should handle key ups', () => {
+  // it('#listeners should handle key ups', () => {
   //   const globKeyEv = new KeyboardEvent('keyup');
   //   spyOn<any>(component, 'onKeyUp').and.callFake((keyEv: KeyboardEvent) =>
   //     expect(keyEv).toBe(globKeyEv)

@@ -35,8 +35,8 @@ export class AppComponent implements AfterViewInit {
     const svgDefsEl: SVGDefsElement = this.filterService.generateBrushFilters(this.renderer);
     this.renderer.appendChild(this.svgService.structure.defsZone, svgDefsEl);
     this.overlayService.intialise(this.dialog, this.svgService);
-    this.overlayService.start();
     this.shortcutManager.initialiseShortcuts();
+    this.overlayService.start();
   }
 
 }

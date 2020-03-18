@@ -11,7 +11,6 @@ interface JonctionOption {
   radius: number;
   color: string;
 }
-
 @Component({
   selector: 'app-line-logic',
   template: ''
@@ -198,7 +197,6 @@ export class LineLogicComponent extends ToolLogicDirective
   }
 
   private createJonction(center: Point): void {
-    console.log(this.currentJonctionOptions.radius);
     this.getPath().addJonction(center,
       this.currentJonctionOptions.radius / 2);
   }
