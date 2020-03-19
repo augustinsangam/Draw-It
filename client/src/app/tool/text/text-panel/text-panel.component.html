@@ -1,16 +1,64 @@
-<h1>Texte</h1>
+<h1 xmlns="http://www.w3.org/1999/html">Texte</h1>
+<svg width="320" height="200">
+  <rect
+    [ngStyle]="{'fill': colorService.backgroundColor}"
+    width="320" height="200" x="0" y="0"
+    stroke="#FFFFFF" stroke-width="1px">
+  </rect>
+  <text
+    [ngStyle]="{
+      'font-size': service.fontSize.toString(),
+      'fill': colorService.primaryColor,
+      'font-family': service.currentFont,
+      'text-anchor': getTextAnchor(),
+      'font-weight': service.textMutators.bold ? 'bold' : 'normal',
+      'font-style': service.textMutators.italic ? 'italic' : 'normal',
+      'text-decoration': service.textMutators.underline ? 'underline' : 'none'
+    }"
+  >
+    <tspan
+      x= "10"
+      y= "55">Aa Bb Cc</tspan>
+    <tspan
+      x= "10"
+      y= "120">1 2 4 8 16</tspan>
+    <tspan
+      x= "10"
+      y= "190">$#@%!</tspan>
+  </text>
+</svg>
+<hr>
 <form [formGroup]="textForm">
+<!--  TODO add aria-label for each of these 6 buttons-->
   <mat-button-toggle-group multiple>
+<!--      matTooltip="Gras"-->
     <mat-button-toggle
       value="bold"
-      (change)="onMutatorChange($event)">Gras</mat-button-toggle>
+      (change)="onMutatorChange($event)"><mat-icon>format_bold</mat-icon></mat-button-toggle>
+<!--      matTooltip="Italique"-->
     <mat-button-toggle
       value="italic"
-      (change)="onMutatorChange($event)">Italique</mat-button-toggle>
+      (change)="onMutatorChange($event)"><mat-icon>format_italic</mat-icon></mat-button-toggle>
+<!--      matTooltip="Souligné"-->
     <mat-button-toggle
       value="underline"
-      (change)="onMutatorChange($event)">Souligné</mat-button-toggle>
+      (change)="onMutatorChange($event)"><mat-icon>format_underlined</mat-icon></mat-button-toggle>
   </mat-button-toggle-group>
+  <mat-button-toggle-group>
+<!--      matTooltip="Aligné à gauche"-->
+    <mat-button-toggle
+      value="left"
+      (change)="onAlignChange($event)"><mat-icon>format_align_left</mat-icon></mat-button-toggle>
+<!--      matTooltip="Centré"-->
+    <mat-button-toggle
+      value="center"
+      (change)="onAlignChange($event)"><mat-icon>format_align_center</mat-icon></mat-button-toggle>
+<!--      matTooltip="Aligné à droite"-->
+    <mat-button-toggle
+      value="right"
+      (change)="onAlignChange($event)"><mat-icon>format_align_right</mat-icon></mat-button-toggle>
+  </mat-button-toggle-group>
+  <hr>
   <p>Taille de la police</p>
   <div class="fontSize">
     <mat-slider min="{{service.MIN_FONTSIZE}}" max="{{service.MAX_FONTSIZE}}" step=1
@@ -27,25 +75,16 @@
   </div>
   <p>
     Montrer les polices
-    <mat-slide-toggle [checked]="service.showFonts" (change)="onShowFontsChange()" formControlName="showFontsToggleForm" #fontsToggle>
+    <mat-slide-toggle [checked]="showFonts" (change)="onShowFontsChange()" formControlName="showFontsToggleForm" #fontsToggle>
     </mat-slide-toggle>
   </p>
-  <mat-action-list *ngIf="service.showFonts">
-    <button mat-list-item *ngFor="let font of service.fontsList" (click)="onFontSelected(font)"> {{font.substring(0, font.indexOf(','))}} </button>
-  </mat-action-list>
-
+  <mat-grid-list cols="2" rowHeight="30px" *ngIf="showFonts">
+    <mat-grid-tile *ngFor="let font of service.fontsList">
+    <button mat-raised-button
+              (click)="onFontSelected(font)"
+              [ngStyle]="{'font-family': font}">
+        {{font.substring(0, font.indexOf(','))}}</button>
+    </mat-grid-tile>
+  </mat-grid-list>
 </form>
-
-<svg width="320" height="200">
-  <text
-    [ngStyle]="{
-      'font-size': service.fontSize.toString(),
-      'fill': 'rgba(255,255,255,1)',
-      'font-family': service.font,
-      'text-anchor': 'middle',
-      'font-weight': service.textMutators.bold ? 'bold' : 'normal',
-      'font-style': service.textMutators.italic ? 'italic' : 'normal',
-      'text-decoration': service.textMutators.underline ? 'underline' : 'none'
-    }"
-    x="160" y="100">HEY</text>
-</svg>
+<hr>

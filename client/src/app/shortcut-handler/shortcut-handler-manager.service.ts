@@ -1,16 +1,11 @@
-import { Injectable } from '@angular/core';
-import { OverlayService } from '../overlay/overlay.service';
-import { GridService } from '../tool/grid/grid.service';
-import {
-  ToolSelectorService
-} from '../tool/tool-selector/tool-selector.service';
-import { Tool } from '../tool/tool.enum';
-import { UndoRedoService } from '../tool/undo-redo/undo-redo.service';
-import { Shortcut } from './shortcut';
-import {
-  ShortcutCallBack,
-  ShortcutHandlerService
-} from './shortcut-handler.service';
+import {Injectable} from '@angular/core';
+import {OverlayService} from '../overlay/overlay.service';
+import {GridService} from '../tool/grid/grid.service';
+import {ToolSelectorService} from '../tool/tool-selector/tool-selector.service';
+import {Tool} from '../tool/tool.enum';
+import {UndoRedoService} from '../tool/undo-redo/undo-redo.service';
+import {Shortcut} from './shortcut';
+import {ShortcutCallBack, ShortcutHandlerService} from './shortcut-handler.service';
 
 @Injectable({
   providedIn: 'root'
@@ -111,6 +106,10 @@ export class ShortcutHandlerManagerService {
         this.undoRedoService.redo();
       }
     });
+
+    this.handlersFunc.set(Shortcut.T, () =>
+      this.toolSelectorService.set(Tool.Text)
+    );
 
     for (const entry of this.handlersFunc) {
       this.shortcutHanler.set(

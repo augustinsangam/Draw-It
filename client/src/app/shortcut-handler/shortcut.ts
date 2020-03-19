@@ -15,5 +15,6 @@ export enum Shortcut {
   R = 'r',
   G = 'g',
   PLUS = '+',
-  MINUS = '-'
+  MINUS = '-',
+  T = 't',
 }

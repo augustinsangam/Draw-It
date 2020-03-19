@@ -1,26 +1,27 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ToolService} from '../tool.service';
+import {TextAlignement} from './text-alignement';
 import {TextMutators} from './text-mutators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TextService extends ToolService {
-  readonly MAX_FONTSIZE: number = 96;
+  readonly MAX_FONTSIZE: number = 80;
   readonly MIN_FONTSIZE: number = 4;
   readonly DEFAULT_FONTSIZE: number = 50;
 
-  showFonts: boolean;
-  font: string;
+  currentFont: string;
   textMutators: TextMutators;
+  textAlignement: TextAlignement;
   fontSize: number;
   fontsList: string[];
 
   constructor() {
     super();
-    this.showFonts = false;
     this.textMutators = {bold: false, italic: false, underline: false};
-    this.font = 'Times New Roman';
+    this.textAlignement = TextAlignement.left;
+    this.currentFont = 'Times New Roman';
     this.fontsList = [
       // sans serif
       'Arial, sans-serif',
