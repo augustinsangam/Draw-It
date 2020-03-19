@@ -1,7 +1,6 @@
 import { Point } from '../shape/common/point';
 import { Zone } from './zone';
 
-// TODO : Ask the chargé de lab
 // tslint:disable: no-magic-numbers
 describe('Zone', () => {
   let instance: Zone;

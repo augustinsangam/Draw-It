@@ -8,7 +8,6 @@ interface PathData {
 }
 
 // Class tested in ../Line/line-logic.component.spec.ts
-// TODO: les strings bizares
 export class Path {
   private pathAtribute: string;
   private mathService: MathService;
@@ -26,17 +25,14 @@ export class Path {
     this.mathService = new MathService();
     this.datas = { points: [], instructions: [] };
     this.datas.points.push(initialPoint);
-    const instruction =
-      'M ' + initialPoint.x.toString() + ' ' + initialPoint.y.toString() + ' ';
-
+    const instruction = `M ${initialPoint.x} ${initialPoint.y} `;
     this.addInstruction(instruction);
   }
 
   addLine(point: Point): void {
     this.renderer.setAttribute(this.element, 'stroke-width', this.strokeWidth);
     this.datas.points.push(point);
-    const instruction =
-      'L ' + point.x.toString() + ' ' + point.y.toString() + ' ';
+    const instruction = `L ${point.x} ${point.y} `;
     this.addInstruction(instruction);
   }
 
@@ -61,13 +57,7 @@ export class Path {
   }
 
   simulateNewLine(point: Point): void {
-    const temp =
-      this.pathAtribute +
-      'L ' +
-      point.x.toString() +
-      ' ' +
-      point.y.toString() +
-      ' ';
+    const temp = this.pathAtribute + `L ${point.x} ${point.y} `;
     this.lastPoint = point;
     this.renderer.setAttribute(this.element, 'd', temp);
   }
@@ -80,10 +70,7 @@ export class Path {
     }
     for (let i = 0; i < instructionToRemove; i++) {
       const lengthToRemove = String(this.datas.instructions.pop()).length;
-      this.pathAtribute = this.pathAtribute.substr(
-        0,
-        this.pathAtribute.length - lengthToRemove
-      );
+      this.pathAtribute = this.pathAtribute.substr(0, this.pathAtribute.length - lengthToRemove);
       this.renderer.setAttribute(this.element, 'd', this.pathAtribute);
     }
   }

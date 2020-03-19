@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { ApplicatorLogicComponent } from './applicator-logic.component';
 
-// TODO : Ask the chargé de lab
 // tslint:disable: no-string-literal
 describe('ApplicatorLogicComponent', () => {
   let component: ApplicatorLogicComponent;

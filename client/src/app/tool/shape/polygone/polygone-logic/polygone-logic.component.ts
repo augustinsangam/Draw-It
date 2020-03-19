@@ -80,7 +80,6 @@ export class PolygoneLogicComponent extends ToolLogicDirective
           const currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
           this.visualisationRectangle.dragRectangle(
             this.mouseDownPoint, currentPoint);
-
           this.getPolygone().drawPolygonFromRectangle(
             this.mouseDownPoint, currentPoint, this.service.thickness);
         }
@@ -135,8 +134,8 @@ export class PolygoneLogicComponent extends ToolLogicDirective
         this.renderer,
         polygon,
         this.mathService, this.service.sides));
+      this.setPolygoneProperties();
     }
-    this.setPolygoneProperties();
   }
 
   private initRectangle(mouseEv: MouseEvent): void {

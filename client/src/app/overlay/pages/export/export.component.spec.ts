@@ -1,4 +1,4 @@
-import { async, ComponentFixture, fakeAsync, TestBed} from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick} from '@angular/core/testing';
 
 import { Renderer2 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -11,7 +11,7 @@ import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ExportComponent, FilterChoice, FormatChoice } from './export.component';
 
 // tslint:disable: no-magic-numbers no-any no-string-literal
-describe('ExportComponent', () => {
+fdescribe('ExportComponent', () => {
   let component: ExportComponent;
   let fixture: ComponentFixture<ExportComponent>;
 
@@ -21,15 +21,6 @@ describe('ExportComponent', () => {
   const mockDownloadLink = {
     click: jasmine.createSpy('click')
   };
-
-  // const renderer: Renderer2 = {
-  //   setAttribute: ( element: SVGElement, attribute: string, value: string ) => {
-  //     element.setAttribute( attribute, value);
-  //   },
-  //   createElement: (value: string ) => {
-  //     document.createElement(value);
-  //   }
-  // } as unknown as Renderer2;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -71,6 +62,11 @@ describe('ExportComponent', () => {
       temporaryZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
       endZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement
     };
+    const filter1 = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+    const element1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    svgService.structure.defsZone.appendChild(filter1);
+    svgService.structure.drawZone.appendChild(element1);
+
     svgService.structure.root.appendChild(svgService.structure.defsZone);
     svgService.structure.root.appendChild(svgService.structure.drawZone);
     svgService.structure.root.appendChild(svgService.structure.temporaryZone);
@@ -216,16 +212,25 @@ describe('ExportComponent', () => {
   });
 
   it('#createView should add without removing when the element isnt the picture', () => {
-    component['createView']('');
     const theViewZone = component['svgView'].nativeElement;
-    const picture = theViewZone.lastElementChild as Element;
+    const picture = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     picture.setAttribute('id', 'test');
-    const picture2 = theViewZone.lastElementChild as Element;
-    picture2.setAttribute('id', 'test');
-    theViewZone.appendChild(picture2);
+    theViewZone.appendChild(picture);
+    const spy = spyOn<any>(theViewZone, 'removeChild');
     component['createView']('');
-    const picture3 = theViewZone.lastElementChild as Element;
-    expect(picture3.getAttribute('id')).toEqual('pictureView');
+    expect(spy).toHaveBeenCalledTimes(0);
+
+  });
+
+  it('#createView should add after removing the picture', () => {
+    const theViewZone = component['svgView'].nativeElement;
+    const picture = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    picture.setAttribute('id', 'pictureView');
+    theViewZone.appendChild(picture);
+    const spy = spyOn<any>(theViewZone, 'removeChild');
+    component['createView']('');
+    expect(spy).toHaveBeenCalledTimes(1);
+
   });
 
   it('#exportDrawing should call exportSVG when we export as SVG', fakeAsync(() => {
@@ -235,19 +240,36 @@ describe('ExportComponent', () => {
   }));
 
   it('#exportDrawing shouldnt call exportSVG when we export as png', fakeAsync(() => {
+    component['innerSVG'] = component['svgService'].structure.root;
     const pictureUrl = 'url';
-    const image = {
+    const image: HTMLImageElement = {
       src: pictureUrl,
     } as unknown as HTMLImageElement;
     spyOn(component['renderer'], 'setAttribute').and.callFake(() =>  image);
     const spy = spyOn<any>(component, 'exportSVG');
-    // const spyDownload = spyOn<any>(component, 'downloadImage');
-    // setTimeout(() => {
-    //   component['exportDrawing'](FormatChoice.Jpeg);
-    // }, 500);
-    // tick(500);
+    setTimeout(() => {
+      component['exportDrawing'](FormatChoice.Jpeg);
+    }, 500);
+    tick(500);
     expect(spy).toHaveBeenCalledTimes(0);
-    // expect(spyDownload).toHaveBeenCalledTimes(1);
+  }));
+
+  // TODO : Augustin
+  it('The image should download the image', fakeAsync(() => {
+    component['innerSVG'] = component['svgService'].structure.root;
+    const pictureUrl = 'url';
+    const image: HTMLImageElement = {
+      src: pictureUrl,
+      onload: () => { return ; }
+    } as unknown as HTMLImageElement;
+    spyOn(component['renderer'], 'setAttribute').and.callFake(() =>  image);
+    const spy = spyOn<any>(component, 'exportSVG');
+    setTimeout(() => {
+      component['exportDrawing'](FormatChoice.Jpeg);
+    }, 500);
+    tick(500);
+    (image as any).onload();
+    expect(spy).toHaveBeenCalledTimes(0);
   }));
 
   it('#configurePicture should make good id configuration', fakeAsync(() => {
