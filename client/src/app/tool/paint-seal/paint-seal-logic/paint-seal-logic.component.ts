@@ -14,9 +14,7 @@ const MAX_RGBA = 255;
 export class PaintSealLogicComponent
   extends ToolLogicDirective implements OnInit, OnDestroy {
 
-  private canvas: HTMLCanvasElement;
   private canvasContext: CanvasRenderingContext2D;
-  private imageData: ImageData;
   private allListeners: (() => void)[] = [];
   private stack: Point[];
   private visited: Set<string>;
@@ -36,49 +34,33 @@ export class PaintSealLogicComponent
         ($event: MouseEvent) => this.onMouseClick($event)
       ));
 
-    this.initiliseCanavas();
-  }
-
-  private initiliseCanavas(): void {
-    this.canvas = this.svgToCanvas.getCanvas(this.renderer);
-    this.canvasContext = this.canvas.getContext('2d') as CanvasRenderingContext2D;
-  }
+    }
 
   ngOnDestroy(): void {
     this.allListeners.forEach((end) => end());
   }
 
   private onMouseClick($event: MouseEvent): void {
-    this.imageData = this.canvasContext.getImageData(0, 0, this.svgShape.width, this.svgShape.height);
-    const oldColor = this.getColor($event.offsetX, $event.offsetY);
-    this.fill($event.offsetX, $event.offsetY, oldColor);
-    this.canvasContext.putImageData(this.imageData, 0, 0);
-    this.renderer.appendChild(this.svgStructure.root.parentNode, this.canvas);
+    this.svgToCanvas.getCanvas(this.renderer).then((canvas) => {
+      this.canvasContext = canvas.getContext('2d') as CanvasRenderingContext2D;
+      const startingPoint = new Point($event.offsetX, $event.offsetY);
+      const oldColor = this.getColor(startingPoint);
+      this.fill(startingPoint, oldColor);
+      this.drawSvg();
+    });
   }
 
-  // tslint:disable-next-line: cyclomatic-complexity
-  private fill(startingX: number, startingY: number, oldColor: RGBAColor): void {
-
-    const isOldColor: (x: number, y: number) => boolean = (x: number, y: number) => {
-      if (!this.isValidCoordinates(x, y)) {
-        return false;
-      }
-      return this.colorService.rgbaEqual(oldColor, this.getColor(x, y));
-    };
-
-    const newColor = this.colorService.rgbaFromString(
-      this.colorService.primaryColor
-    );
+  private fill(startingPoint: Point, oldColor: RGBAColor): void {
 
     this.stack = [];
     this.visited = new Set();
-    this.stack.push(new Point(startingX, startingY));
+    this.stack.push(new Point(startingPoint.x, startingPoint.y));
 
     while (this.stack.length !== 0) {
+
       const point = this.stack.pop() as Point;
+      this.markVisited(point);
       const [x, y] = [point.x, point.y];
-      this.replaceColor(x, y, newColor);
-      this.markVisited(x, y);
 
       const possiblePoints = [
         new Point(x, y + 1),
@@ -87,29 +69,23 @@ export class PaintSealLogicComponent
         new Point(x - 1, y)
       ];
 
-      possiblePoints.forEach((p) => {
-        if (!this.isAlreadyVisited(p.x, p.y) && isOldColor(p.x, p.y)) {
-          this.stack.push(p);
+      possiblePoints.forEach((newPoint) => {
+        if (!this.isAlreadyVisited(newPoint)
+            && this.isSameColor(newPoint, oldColor)) {
+          this.stack.push(newPoint);
         }
       });
     }
   }
 
-  private replaceColor(x: number, y: number, newColor: RGBAColor): void {
-    let position = ( y * this.svgShape.width + x ) * 4 ;
-    this.imageData.data[position++] = newColor.r;
-    this.imageData.data[position++] = newColor.g;
-    this.imageData.data[position++] = newColor.b;
-    this.imageData.data[position++] = newColor.a * MAX_RGBA;
-  }
-
-  private isValidCoordinates(x: number, y: number): boolean {
+  private isValidCoordinates(point: Point): boolean {
+    const [x, y] = [point.x, point.y];
     return 0 <= x && x <= this.svgShape.width
       && 0 <= y && y <= this.svgShape.height;
   }
 
-  private getColor(x: number, y: number): RGBAColor {
-    const pixel = this.canvasContext.getImageData(x, y, 1, 1).data;
+  private getColor(point: Point): RGBAColor {
+    const pixel = this.canvasContext.getImageData(point.x, point.y, 1, 1).data;
     return {
       r: pixel[0],
       g: pixel[1],
@@ -119,12 +95,32 @@ export class PaintSealLogicComponent
     };
   }
 
-  private markVisited(x: number, y: number): void {
-    this.visited.add(`${x} ${y}`);
+  private isSameColor(point: Point, color: RGBAColor): boolean {
+    if (!this.isValidCoordinates(point)) {
+      return false;
+    }
+    return this.colorService.rgbaEqual(color, this.getColor(point));
   }
 
-  private isAlreadyVisited(x: number, y: number): boolean {
-    return this.visited.has(`${x} ${y}`);
+  private markVisited(point: Point): void {
+    this.visited.add(`${point.x} ${point.y}`);
+  }
+
+  private isAlreadyVisited(point: Point): boolean {
+    return this.visited.has(`${point.x} ${point.y}`);
+  }
+
+  private drawSvg(): void {
+    let pathDAttribute = '';
+    this.visited.forEach((point) => {
+      const [x, y] = point.split(' ').map((value) => Number(value));
+      pathDAttribute += `M ${x - 1}, ${y} a 1, 1 0 1, 0 2,0 a 1, 1 0 1, 0 -2,0 `;
+    });
+    const path = this.renderer.createElement('path', this.svgNS);
+    this.renderer.setAttribute(path, 'stroke', this.colorService.primaryColor);
+    this.renderer.setAttribute(path, 'stroke-width', '2');
+    this.renderer.setAttribute(path, 'd', pathDAttribute);
+    this.renderer.appendChild(this.svgStructure.drawZone, path);
   }
 
 }

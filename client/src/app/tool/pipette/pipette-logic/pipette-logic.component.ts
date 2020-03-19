@@ -41,8 +41,9 @@ export class PipetteLogicComponent extends ToolLogicDirective
   ngOnInit(): void {
     this.renderer.setStyle(this.svgStructure.root, 'cursor', 'wait');
 
-    this.image = this.svgToCanvas.getCanvas(this.renderer)
-                    .getContext('2d') as CanvasRenderingContext2D;
+    this.svgToCanvas.getCanvas(this.renderer).then((canvas) => {
+      this.image = canvas.getContext('2d') as CanvasRenderingContext2D;
+    });
 
     const onLeftClick = this.renderer.listen(
       this.svgStructure.root,
@@ -70,7 +71,6 @@ export class PipetteLogicComponent extends ToolLogicDirective
 
     this.backgroundColorOnInit = this.colorService.backgroundColor;
     this.renderer.setStyle(this.svgStructure.root, 'cursor', 'crosshair');
-
   }
 
   private onMouseClick(mouseEv: MouseEvent): void {
