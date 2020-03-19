@@ -2,14 +2,14 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSlider } from '@angular/material';
 import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
-import { PaintSealService } from '../paint-seal.service';
+import { BucketService } from '../bucket.service';
 
 @Component({
-  selector: 'app-paint-seal-panel',
-  templateUrl: './paint-seal-panel.component.html',
-  styleUrls: ['./paint-seal-panel.component.scss']
+  selector: 'app-bucket-panel',
+  templateUrl: './bucket-panel.component.html',
+  styleUrls: ['./bucket-panel.component.scss']
 })
-export class PaintSealPanelComponent extends ToolPanelDirective {
+export class BucketPanelComponent extends ToolPanelDirective {
 
   private paintSealForm: FormGroup;
 
@@ -18,7 +18,7 @@ export class PaintSealPanelComponent extends ToolPanelDirective {
   }) private toleranceSlider: MatSlider;
 
   constructor(elementRef: ElementRef<HTMLElement>,
-              private readonly service: PaintSealService,
+              private readonly service: BucketService,
               private readonly formBuilder: FormBuilder) {
     super(elementRef);
     this.paintSealForm = this.formBuilder.group({

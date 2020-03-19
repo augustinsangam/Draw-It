@@ -38,11 +38,11 @@ import {
   GridPanelComponent
 } from './grid/grid-panel/grid-panel.component';
 import {
-  PaintSealLogicComponent
-} from './paint-seal/paint-seal-logic/paint-seal-logic.component';
+  BucketLogicComponent
+} from './bucket/bucket-logic/bucket-logic.component';
 import {
-  PaintSealPanelComponent
-} from './paint-seal/paint-seal-panel/paint-seal-panel.component';
+  BucketPanelComponent
+} from './bucket/bucket-panel/bucket-panel.component';
 import {
   PipetteLogicComponent
 } from './pipette/pipette-logic/pipette-logic.component';
@@ -117,4 +117,4 @@ TOOL_MANAGER.set(Tool.Aerosol,
 TOOL_MANAGER.set(Tool.Grid,
   [GridPanelComponent, GridLogicComponent]);
 TOOL_MANAGER.set(Tool.PaintSeal,
-    [PaintSealPanelComponent, PaintSealLogicComponent]);
+    [BucketPanelComponent, BucketLogicComponent]);

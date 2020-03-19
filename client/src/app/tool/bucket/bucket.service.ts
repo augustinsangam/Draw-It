@@ -5,7 +5,7 @@ const DEFAULT_TOLERANCE = 50;
 @Injectable({
   providedIn: 'root'
 })
-export class PaintSealService {
+export class BucketService {
 
   tolerance: number;
 

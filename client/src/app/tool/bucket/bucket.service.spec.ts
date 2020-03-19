@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { PaintSealService } from './paint-seal.service';
+import { BucketService } from './bucket.service';
 
-describe('PaintSealService', () => {
+describe('BucketService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: PaintSealService = TestBed.get(PaintSealService);
+    const service: BucketService = TestBed.get(BucketService);
     expect(service).toBeTruthy();
   });
 });

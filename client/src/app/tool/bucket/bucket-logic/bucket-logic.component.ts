@@ -4,6 +4,7 @@ import { ColorService } from '../../color/color.service';
 import { RGBAColor } from '../../color/rgba-color';
 import { Point } from '../../shape/common/point';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
+import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 
 const MAX_RGBA = 255;
 
@@ -11,7 +12,7 @@ const MAX_RGBA = 255;
   selector: 'app-paint-seal-logic',
   template: ''
 })
-export class PaintSealLogicComponent
+export class BucketLogicComponent
   extends ToolLogicDirective implements OnInit, OnDestroy {
 
   private canvasContext: CanvasRenderingContext2D;
@@ -22,6 +23,7 @@ export class PaintSealLogicComponent
   constructor(private readonly svgToCanvas: SvgToCanvasService,
               private renderer: Renderer2,
               private colorService: ColorService,
+              private undoRedo: UndoRedoService
   ) {
     super();
   }
@@ -44,17 +46,18 @@ export class PaintSealLogicComponent
     this.svgToCanvas.getCanvas(this.renderer).then((canvas) => {
       this.canvasContext = canvas.getContext('2d') as CanvasRenderingContext2D;
       const startingPoint = new Point($event.offsetX, $event.offsetY);
-      const oldColor = this.getColor(startingPoint);
-      this.fill(startingPoint, oldColor);
+      this.fill(startingPoint);
       this.drawSvg();
+      this.undoRedo.saveState();
     });
   }
 
-  private fill(startingPoint: Point, oldColor: RGBAColor): void {
+  private fill(startingPoint: Point): void {
 
     this.stack = [];
     this.visited = new Set();
     this.stack.push(new Point(startingPoint.x, startingPoint.y));
+    const oldColor = this.getColor(startingPoint);
 
     while (this.stack.length !== 0) {
 
@@ -118,7 +121,7 @@ export class PaintSealLogicComponent
     });
     const path = this.renderer.createElement('path', this.svgNS);
     this.renderer.setAttribute(path, 'stroke', this.colorService.primaryColor);
-    this.renderer.setAttribute(path, 'stroke-width', '2');
+    this.renderer.setAttribute(path, 'stroke-width', '1');
     this.renderer.setAttribute(path, 'd', pathDAttribute);
     this.renderer.appendChild(this.svgStructure.drawZone, path);
   }

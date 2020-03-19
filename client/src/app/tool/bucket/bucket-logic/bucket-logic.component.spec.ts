@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PaintSealPanelComponent } from './paint-seal-panel.component';
+import { BucketLogicComponent } from './bucket-logic.component';
 
-describe('PaintSealPanelComponent', () => {
-  let component: PaintSealPanelComponent;
-  let fixture: ComponentFixture<PaintSealPanelComponent>;
+describe('BucketLogicComponent', () => {
+  let component: BucketLogicComponent;
+  let fixture: ComponentFixture<BucketLogicComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PaintSealPanelComponent ]
+      declarations: [ BucketLogicComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PaintSealPanelComponent);
+    fixture = TestBed.createComponent(BucketLogicComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -120,11 +120,11 @@ import {
   GridPanelComponent
 } from './tool/grid/grid-panel/grid-panel.component';
 import {
-  PaintSealLogicComponent
-} from './tool/paint-seal/paint-seal-logic/paint-seal-logic.component';
+  BucketLogicComponent
+} from './tool/bucket/bucket-logic/bucket-logic.component';
 import {
-  PaintSealPanelComponent
-} from './tool/paint-seal/paint-seal-panel/paint-seal-panel.component';
+  BucketPanelComponent
+} from './tool/bucket/bucket-panel/bucket-panel.component';
 import {
   PipetteLogicComponent
 } from './tool/pipette/pipette-logic/pipette-logic.component';
@@ -209,8 +209,8 @@ import {
     GridPanelComponent,
     SaveComponent,
     TagsFilterComponent,
-    PaintSealLogicComponent,
-    PaintSealPanelComponent
+    BucketLogicComponent,
+    BucketPanelComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -249,8 +249,8 @@ import {
     LineLogicComponent,
     LinePanelComponent,
     NewDrawComponent,
-    PaintSealLogicComponent,
-    PaintSealPanelComponent,
+    BucketLogicComponent,
+    BucketPanelComponent,
     PencilLogicComponent,
     PencilPanelComponent,
     PipetteLogicComponent,
