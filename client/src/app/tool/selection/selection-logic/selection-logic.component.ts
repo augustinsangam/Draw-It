@@ -42,7 +42,8 @@ export class SelectionLogicComponent
             $event.offsetX,
             $event.offsetY
           );
-          if (this.svgStructure.drawZone.contains($event.target as SVGElement)) {
+          if (this.svgStructure.drawZone.contains($event.target as SVGElement)
+            && !this.selectedElements.has($event.target as SVGElement)) {
             this.applySingleSelection($event.target as SVGElement);
           }
         }],
