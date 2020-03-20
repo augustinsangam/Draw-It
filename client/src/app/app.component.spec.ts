@@ -336,6 +336,7 @@ describe('AppComponent', () => {
         color: '#FFFFFF'
       },
       svg: drawElements,
+      colors: ['rgba(0, 0, 0, 1)'],
     };
 
     service['loadDraw'](draw);
