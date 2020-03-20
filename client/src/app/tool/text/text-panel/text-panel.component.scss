@@ -36,3 +36,19 @@ mat-form-field {
 mat-button-toggle-group {
   align-content: center;
 }
+
+.fonts {
+  margin-bottom: 10px;
+  width: auto;
+  color: #FFFFFF;
+}
+
+mat-option {
+  background-color: #4e4d4d;
+  color: #FFFFFF;
+}
+
+::ng-deep .mat-select-value-text {
+  color: #FFFFFF;
+  background-color: #4e4d4d;
+}

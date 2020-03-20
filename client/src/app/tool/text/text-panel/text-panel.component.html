@@ -17,13 +17,13 @@
     }"
   >
     <tspan
-      x= "10"
+      [attr.x]= "getTextAlign(previewDims.width, previewDims.height)"
       y= "55">Aa Bb Cc</tspan>
     <tspan
-      x= "10"
+      [attr.x]= "getTextAlign(previewDims.width, previewDims.height)"
       y= "120">1 2 4 8 16</tspan>
     <tspan
-      x= "10"
+      [attr.x]= "getTextAlign(previewDims.width, previewDims.height)"
       y= "190">$#@%!</tspan>
   </text>
 </svg>
@@ -73,18 +73,15 @@
       <span matSuffix>px</span>
     </mat-form-field>
   </div>
-  <p>
-    Montrer les polices
-    <mat-slide-toggle [checked]="showFonts" (change)="onShowFontsChange()" formControlName="showFontsToggleForm" #fontsToggle>
-    </mat-slide-toggle>
-  </p>
-  <mat-grid-list cols="2" rowHeight="30px" *ngIf="showFonts">
-    <mat-grid-tile *ngFor="let font of service.fontsList">
-    <button mat-raised-button
-              (click)="onFontSelected(font)"
-              [ngStyle]="{'font-family': font}">
-        {{font.substring(0, font.indexOf(','))}}</button>
-    </mat-grid-tile>
-  </mat-grid-list>
+  <p>Police</p>
+  <mat-form-field class="fonts">
+    <div class="mat-select-value-text">
+    <mat-select [(value)]="service.currentFont" class="mat-select-value-text">
+      <mat-option *ngFor="let font of service.fontsList" [value]="font.value">
+        {{font.viewValue}}
+      </mat-option>
+    </mat-select>
+    </div>
+  </mat-form-field>
 </form>
 <hr>

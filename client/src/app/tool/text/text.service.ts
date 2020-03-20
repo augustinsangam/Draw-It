@@ -3,6 +3,11 @@ import {ToolService} from '../tool.service';
 import {TextAlignement} from './text-alignement';
 import {TextMutators} from './text-mutators';
 
+interface Font {
+  value: string;
+  viewValue: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,7 +20,7 @@ export class TextService extends ToolService {
   textMutators: TextMutators;
   textAlignement: TextAlignement;
   fontSize: number;
-  fontsList: string[];
+  fontsList: Font[];
 
   constructor() {
     super();
@@ -24,35 +29,35 @@ export class TextService extends ToolService {
     this.currentFont = 'Times New Roman';
     this.fontsList = [
       // sans serif
-      'Arial, sans-serif',
-      'Helvetica, sans-serif',
-      'Gill Sans, sans-serif',
-      'Lucida, sans-serif',
-      'Helvetica Narrow, sans-serif',
+      {value: 'Arial, sans-serif', viewValue: 'Arial'},
+      {value: 'Helvetica, sans-serif', viewValue: 'Helvetica'},
+      {value: 'Gill Sans, sans-serif', viewValue: 'Gill Sans'},
+      {value: 'Lucida, sans-serif', viewValue: 'Lucida'},
+      {value: 'Helvetica Narrow, sans-serif', viewValue: 'Helvetica Narrow'},
       // serif
-      'Times, serif',
-      'Times New Roman, serif',
-      'Palatino, serif',
-      'Bookman, serif',
-      'New Century Schoolbook, serif',
+      {value: 'Times, serif', viewValue: 'Times'},
+      {value: 'Times New Roman, serif', viewValue: 'Times New Roman'},
+      {value: 'Palatino, serif', viewValue: 'Palatino'},
+      {value: 'Bookman, serif', viewValue: 'Bookman'},
+      {value: 'New Century Schoolbook, serif', viewValue: 'New Century Schoolbook'},
       // monospace
-      'Andale Mono, monospace',
-      'Courier New, monospace',
-      'Courier, monospace',
-      'Lucidatypewriter, monospace',
-      'Fixed, monospace',
+      {value: 'Andale Mono, monospace', viewValue: 'Andale Mono'},
+      {value: 'Courier New, monospace', viewValue: 'Courier New'},
+      {value: 'Courier, monospace', viewValue: 'Courier'},
+      {value: 'Lucidatypewriter, monospace', viewValue: 'Lucidatypewriter'},
+      {value: 'Fixed, monospace', viewValue: 'Fixed'},
       // cursive
-      'Comic Sans, Comic Sans MS, cursive',
-      'Zapf Chancery, cursive',
-      'Coronetscript, cursive',
-      'Florence, cursive',
-      'Parkavenue, cursive',
+      {value: 'Comic Sans, Comic Sans MS, cursive', viewValue: 'Comic Sans'},
+      {value: 'Zapf Chancery, cursive', viewValue: 'Zapf Chancery'},
+      {value: 'Coronetscript, cursive', viewValue: 'Coronetscript'},
+      {value: 'Florence, cursive', viewValue: 'Florence'},
+      {value: 'Parkavenue, cursive', viewValue: 'Parkavenue'},
       // fantasy
-      'Impact, fantasy',
-      'Arnoldboecklin, fantasy',
-      'Oldtown, fantasy',
-      'Blippo, fantasy',
-      'Brushstroke, fantasy'
+      {value: 'Impact, fantasy', viewValue: 'Impact'},
+      {value: 'Arnoldboecklin, fantasy', viewValue: 'Arnoldboecklin'},
+      {value: 'Oldtown, fantasy', viewValue: 'Oldtown'},
+      {value: 'Blippo, fantasy', viewValue: 'Blippo'},
+      {value: 'Brushstroke, fantasy', viewValue: 'Brushstroke'}
     ];
     this.fontSize = this.DEFAULT_FONTSIZE;
   }

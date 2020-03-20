@@ -52,21 +52,6 @@ implements OnInit {
     this.previewDims = {width: 320, height: 200};
   }
 
-  onShowFontsChange(): void {
-    this.textForm.patchValue({
-      showFontsToggleForm: this.fontsToggleRef.checked
-    });
-    this.showFonts = this.fontsToggleRef.checked;
-  }
-
-  onFontSelected(font: string): void {
-    this.textForm.patchValue({
-      fontForm: font
-    });
-    this.service.currentFont = font;
-    console.log(this.service.currentFont);
-  }
-
   onMutatorChange(event: MatButtonToggleChange): void {
     const newMutators: TextMutators = {
       bold: event.value === 'bold' ? !this.service.textMutators.bold : this.service.textMutators.bold,
@@ -77,7 +62,6 @@ implements OnInit {
       mutatorsForm: newMutators
     });
     this.service.textMutators = newMutators;
-    console.log(this.service.textMutators);
   }
 
   getTextAlign(width: number, height: number): string {
@@ -96,7 +80,6 @@ implements OnInit {
     this.textForm.patchValue({
       alignementForm: event.value
     });
-    console.log(this.service.textAlignement);
   }
 
   onFontSizeChange(): void {
