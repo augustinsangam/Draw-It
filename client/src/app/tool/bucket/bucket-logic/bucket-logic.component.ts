@@ -25,8 +25,7 @@ export class BucketLogicComponent
   private allListeners: (() => void)[] = [];
   private fillQueue: PointQueue;
   private fillVisited: PointSet;
-  private bordersQueue: PointQueue;
-  private bordersVisited: PointSet;
+  private borders: PointSet;
 
   constructor(private readonly svgToCanvas: SvgToCanvasService,
               private renderer: Renderer2,
@@ -55,7 +54,9 @@ export class BucketLogicComponent
     this.svgToCanvas.getCanvas(this.renderer).then((canvas) => {
       this.canvasContext = canvas.getContext('2d') as CanvasRenderingContext2D;
       const startingPoint = new Point($event.offsetX, $event.offsetY);
+      const startingTime = new Date().getTime();
       this.fill(startingPoint);
+      console.log(`Time : ${new Date().getTime() - startingTime}`);
       this.drawSvg();
       this.undoRedo.saveState();
     });
@@ -64,6 +65,7 @@ export class BucketLogicComponent
   private fill(startingPoint: Point): void {
 
     this.fillQueue = [];
+    this.borders = new PointSet();
     this.fillVisited = new PointSet();
     this.fillQueue.push(new Point(startingPoint.x, startingPoint.y));
     const oldColor = this.getColor(startingPoint);
@@ -71,26 +73,35 @@ export class BucketLogicComponent
     while (this.fillQueue.length !== 0) {
 
       const currentPoint = this.fillQueue.pop() as Point;
-      this.fillVisited.add(currentPoint);
+
       const [x, y] = [currentPoint.x, currentPoint.y];
 
       const connectedPoints = [
-        new Point(x, y + 1),
-        new Point(x, y - 1),
+        new Point(x - 1, y),
         new Point(x + 1, y),
-        new Point(x - 1, y)
+        new Point(x, y - 1),
+        new Point(x, y + 1),
       ];
 
-      connectedPoints.forEach((connectedPoint) => {
-        if (!this.fillVisited.has(connectedPoint)
-            && this.isSameColor(connectedPoint, oldColor)) {
-          this.fillQueue.push(connectedPoint);
+      for (const connectedPoint of connectedPoints) {
+        if (this.fillVisited.has(connectedPoint)) {
+          continue ;
         }
-      });
+        if (!this.isValidPoint(connectedPoint)) {
+          this.borders.add(currentPoint);
+          continue ;
+        }
+        if (this.isSameColor(connectedPoint, oldColor)) {
+          this.fillQueue.push(connectedPoint);
+          this.fillVisited.add(connectedPoint);
+        } else {
+          this.borders.add(connectedPoint);
+        }
+      }
     }
   }
 
-  private isValidCoordinates(point: Point): boolean {
+  private isValidPoint(point: Point): boolean {
     const [x, y] = [point.x, point.y];
     return 0 <= x && x <= this.svgShape.width
       && 0 <= y && y <= this.svgShape.height;
@@ -108,23 +119,20 @@ export class BucketLogicComponent
   }
 
   private isSameColor(point: Point, color: RGBAColor): boolean {
-    if (!this.isValidCoordinates(point)) {
-      return false;
-    }
     const diffferenceNormalized = this.difference(color, this.getColor(point)) / MAX_DIFFERENCE;
     return (diffferenceNormalized * MAX_TOLERANCE) <= this.service.tolerance;
   }
 
   private drawSvg(): void {
-    let pathDAttribute = '';
-    this.fillVisited.forEach((point) => {
-      pathDAttribute += `M ${point.x - 1}, ${point.y} a 1, 1 0 1, 0 2,0 a 1, 1 0 1, 0 -2,0 `;
-    });
-    const path = this.renderer.createElement('path', this.svgNS);
-    this.renderer.setAttribute(path, 'stroke', this.colorService.primaryColor);
-    this.renderer.setAttribute(path, 'stroke-width', '1');
-    this.renderer.setAttribute(path, 'd', pathDAttribute);
-    this.renderer.appendChild(this.svgStructure.drawZone, path);
+    // let pathDAttribute = '';
+    // this.fillVisited.forEach((point) => {
+    //   pathDAttribute += `M ${point.x - 1}, ${point.y} a 1, 1 0 1, 0 2,0 a 1, 1 0 1, 0 -2,0 `;
+    // });
+    // const path = this.renderer.createElement('path', this.svgNS);
+    // this.renderer.setAttribute(path, 'stroke', this.colorService.primaryColor);
+    // this.renderer.setAttribute(path, 'stroke-width', '1');
+    // this.renderer.setAttribute(path, 'd', pathDAttribute);
+    // this.renderer.appendChild(this.svgStructure.drawZone, path);
   }
 
   private difference(color1: RGBAColor, color2: RGBAColor): number {
