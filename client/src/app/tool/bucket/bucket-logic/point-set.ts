@@ -4,8 +4,16 @@ export class PointSet {
 
   private set: Set<string>;
 
-  constructor() {
-    this.set = new Set();
+  constructor(pointSet?: PointSet) {
+    if (!!pointSet) {
+      this.set = new Set(pointSet.set);
+    } else {
+      this.set = new Set();
+    }
+  }
+
+  size(): number {
+    return this.set.size;
   }
 
   add(point: Point): this {
@@ -21,10 +29,29 @@ export class PointSet {
     return this.set.has(point.freeze());
   }
 
+  randomPoint(): Point | null {
+    for ( const pointFreezed of this.set) {
+      return Point.unfreeze(pointFreezed);
+    }
+    return null;
+  }
+
+  nearestPoint(point: Point): Point | null {
+    let nearest: Point | null = null;
+    let distance = Number.MAX_SAFE_INTEGER;
+    this.forEach((borderPoint) => {
+      const newDistance = point.squareDistanceTo(borderPoint);
+      if (newDistance > distance) {
+        distance = newDistance;
+        nearest = borderPoint;
+      }
+    });
+    return nearest;
+  }
+
   forEach(callbackfn: (value: Point) => void): void {
     return this.set.forEach((pointFreezed) => {
-      const [x, y] = pointFreezed.split(' ').map((value) => Number(value));
-      callbackfn(new Point(x, y));
+      callbackfn(Point.unfreeze(pointFreezed));
     });
   }
 

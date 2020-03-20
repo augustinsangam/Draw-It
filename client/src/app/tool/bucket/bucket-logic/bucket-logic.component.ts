@@ -9,7 +9,8 @@ import { BucketService } from '../bucket.service';
 import { PointSet } from './point-set';
 
 const MAX_RGBA = 255;
-const MAX_DIFFERENCE = (MAX_RGBA * MAX_RGBA) * 4;
+const NUMBER_OF_DIMENSIONS = 4;
+const MAX_DIFFERENCE = (MAX_RGBA * MAX_RGBA) * NUMBER_OF_DIMENSIONS;
 const MAX_TOLERANCE = 100;
 
 type PointQueue = Point[];
@@ -43,7 +44,6 @@ export class BucketLogicComponent
         'click',
         ($event: MouseEvent) => this.onMouseClick($event)
       ));
-    this.test();
   }
 
   ngOnDestroy(): void {
@@ -54,15 +54,16 @@ export class BucketLogicComponent
     this.svgToCanvas.getCanvas(this.renderer).then((canvas) => {
       this.canvasContext = canvas.getContext('2d') as CanvasRenderingContext2D;
       const startingPoint = new Point($event.offsetX, $event.offsetY);
-      const startingTime = new Date().getTime();
-      this.fill(startingPoint);
-      console.log(`Time : ${new Date().getTime() - startingTime}`);
-      this.drawSvg();
+      this.findBorders(startingPoint);
+      const shapes = this.separateShapes();
+      console.log(shapes);
+      console.log(shapes.length);
+      this.drawSvg(shapes);
       this.undoRedo.saveState();
     });
   }
 
-  private fill(startingPoint: Point): void {
+  private findBorders(startingPoint: Point): void {
 
     this.fillQueue = [];
     this.borders = new PointSet();
@@ -74,13 +75,17 @@ export class BucketLogicComponent
 
       const currentPoint = this.fillQueue.pop() as Point;
 
+      if (!this.isSameColor(currentPoint, oldColor)) {
+        continue;
+      }
+
       const [x, y] = [currentPoint.x, currentPoint.y];
 
       const connectedPoints = [
-        new Point(x - 1, y),
-        new Point(x + 1, y),
-        new Point(x, y - 1),
-        new Point(x, y + 1),
+        new Point(x - 1, y    ),
+        new Point(x + 1, y    ),
+        new Point(x    , y - 1),
+        new Point(x    , y + 1),
       ];
 
       for (const connectedPoint of connectedPoints) {
@@ -89,7 +94,7 @@ export class BucketLogicComponent
         }
         if (!this.isValidPoint(connectedPoint)) {
           this.borders.add(currentPoint);
-          continue ;
+          break ;
         }
         if (this.isSameColor(connectedPoint, oldColor)) {
           this.fillQueue.push(connectedPoint);
@@ -99,6 +104,56 @@ export class BucketLogicComponent
         }
       }
     }
+  }
+
+  private separateShapes(): Point[][] {
+    const shapes: (Point[])[] = [];
+    let shape: Point[];
+    while (true) {
+      const startPoint = this.borders.randomPoint();
+      if (startPoint == null) {
+        break;
+      }
+      shape = [];
+      shape.push(startPoint);
+      while (true) {
+        const lastPoint = shape[shape.length - 1];
+        const [x, y] = [lastPoint.x, lastPoint.y];
+        const connectedPoints = [
+          new Point(x - 1, y    ),
+          new Point(x + 1, y    ),
+          new Point(x    , y - 1),
+          new Point(x    , y + 1),
+          new Point(x - 1, y - 1),
+          new Point(x - 1, y + 1),
+          new Point(x + 1, y - 1),
+          new Point(x + 1, y + 1),
+        ];
+        let nearestPoint: Point | null = null;
+        for (const connectedPoint of connectedPoints) {
+          if (this.borders.has(connectedPoint)) {
+            nearestPoint = connectedPoint;
+            break;
+          }
+        }
+        if (nearestPoint == null) {
+          nearestPoint = this.borders.nearestPoint(lastPoint as Point);
+          console.log(lastPoint);
+          console.log(nearestPoint);
+          console.log(shape);
+          if (nearestPoint == null) {
+            throw new Error('On ne devrait pas arriver ici une deuxieme fois. Prenez une photo de la forme');
+          }
+        }
+        shape.push(nearestPoint as Point);
+        this.borders.delete(nearestPoint as Point);
+        if ((nearestPoint as Point).equals(shape[0])) {
+          break;
+        }
+      }
+      shapes.push(shape);
+    }
+    return shapes;
   }
 
   private isValidPoint(point: Point): boolean {
@@ -113,26 +168,38 @@ export class BucketLogicComponent
       r: pixel[0],
       g: pixel[1],
       b: pixel[2],
-      // tslint:disable-next-line:no-magic-numbers
-      a: pixel[3],
+      a: pixel[NUMBER_OF_DIMENSIONS - 1],
     };
   }
 
   private isSameColor(point: Point, color: RGBAColor): boolean {
-    const diffferenceNormalized = this.difference(color, this.getColor(point)) / MAX_DIFFERENCE;
+    const diffferenceNormalized =
+      this.difference(color, this.getColor(point)) / MAX_DIFFERENCE;
     return (diffferenceNormalized * MAX_TOLERANCE) <= this.service.tolerance;
   }
 
-  private drawSvg(): void {
-    // let pathDAttribute = '';
-    // this.fillVisited.forEach((point) => {
-    //   pathDAttribute += `M ${point.x - 1}, ${point.y} a 1, 1 0 1, 0 2,0 a 1, 1 0 1, 0 -2,0 `;
-    // });
-    // const path = this.renderer.createElement('path', this.svgNS);
-    // this.renderer.setAttribute(path, 'stroke', this.colorService.primaryColor);
-    // this.renderer.setAttribute(path, 'stroke-width', '1');
-    // this.renderer.setAttribute(path, 'd', pathDAttribute);
-    // this.renderer.appendChild(this.svgStructure.drawZone, path);
+  private drawSvg(shapes: Point[][]): void {
+
+    let pathDAttribute = '';
+    shapes.forEach((shape) => {
+      let pathString = '';
+      shape.forEach((point) => {
+        if (pathString === '') {
+          pathString += `M${point.x}, ${point.y} `;
+        } else {
+          pathString += `L${point.x}, ${point.y} `;
+        }
+      });
+      pathString += 'z ';
+      pathDAttribute += pathString;
+    });
+
+    const path = this.renderer.createElement('path', this.svgNS);
+    this.renderer.setAttribute(path, 'fill-rule', 'evenodd');
+    this.renderer.setAttribute(path, 'fill', this.colorService.primaryColor);
+    this.renderer.setAttribute(path, 'stroke-width', '0');
+    this.renderer.setAttribute(path, 'd', pathDAttribute);
+    this.renderer.appendChild(this.svgStructure.drawZone, path);
   }
 
   private difference(color1: RGBAColor, color2: RGBAColor): number {
@@ -140,83 +207,6 @@ export class BucketLogicComponent
           + (color1.g - color2.g) * (color1.g - color2.g)
           + (color1.b - color2.b) * (color1.b - color2.b)
           + (color1.a - color2.a) * (color1.a - color2.a);
-  }
-
-  // tslint:disable no-magic-numbers
-  private test(): void {
-    let pathDAttribute = '' ;
-    let pathString = '';
-    this.createSquare(new Point(100, 100), 500).forEach((point) => {
-      if (pathString === '') {
-        pathString += `M${point.x}, ${point.y} `;
-      } else {
-        pathString += `L${point.x}, ${point.y} `;
-      }
-    });
-    pathString += 'z ';
-    pathDAttribute += pathString;
-
-    pathString = '';
-    this.createSquare(new Point(200, 200), 50).forEach((point) => {
-      if (pathString === '') {
-        pathString += `M${point.x}, ${point.y} `;
-      } else {
-        pathString += `L${point.x}, ${point.y} `;
-      }
-    });
-    pathString += 'z ';
-    pathDAttribute += pathString;
-    pathString = '';
-
-    pathString = '';
-    this.createSquare(new Point(300, 300), 50).forEach((point) => {
-      if (pathString === '') {
-        pathString += `M${point.x}, ${point.y} `;
-      } else {
-        pathString += `L${point.x}, ${point.y} `;
-      }
-    });
-    pathString += 'z ';
-    pathDAttribute += pathString;
-    pathString = '';
-
-    pathString = '';
-    this.createSquare(new Point(220, 220), 10).forEach((point) => {
-      if (pathString === '') {
-        pathString += `M${point.x}, ${point.y} `;
-      } else {
-        pathString += `L${point.x}, ${point.y} `;
-      }
-    });
-    pathString += 'z ';
-    pathDAttribute += pathString;
-    pathString = '';
-
-    const path = this.renderer.createElement('path', this.svgNS);
-    this.renderer.setAttribute(path, 'stroke', this.colorService.secondaryColor);
-    this.renderer.setAttribute(path, 'fill-rule', 'evenodd');
-    this.renderer.setAttribute(path, 'fill', this.colorService.primaryColor);
-    this.renderer.setAttribute(path, 'stroke-width', '1');
-    this.renderer.setAttribute(path, 'd', pathDAttribute);
-    this.renderer.appendChild(this.svgStructure.drawZone, path);
-  }
-
-  private createSquare(depart: Point, cote: number): Point[] {
-    const points: Point[] = [];
-    const [x, y] = [depart.x, depart.y];
-    for (let i = x; i < x + cote; i++) {
-      points.push(new Point(i, y));
-    }
-    for (let i = y; i < y + cote; i++) {
-      points.push(new Point(x + cote, i));
-    }
-    for (let i = x + cote; i > x; i--) {
-      points.push(new Point(i, y + cote));
-    }
-    for (let i = y + cote; i > y; i--) {
-      points.push(new Point(x, i));
-    }
-    return points;
   }
 
 }
