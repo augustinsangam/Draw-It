@@ -10,6 +10,7 @@ import { PostAction, UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { MultipleSelection } from '../multiple-selection';
 import { Offset } from '../offset';
 import { SelectionReturn } from '../selection-return';
+import { SelectionService } from '../selection.service';
 import { SingleSelection } from '../single-selection';
 import { Deplacement } from './deplacement';
 import { BasicSelectionType, ElementSelectedType } from './element-selected-type';
@@ -29,17 +30,16 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   protected circles: SVGElement[];
   protected allListenners: (() => void)[];
-  protected selectedElements: Set<SVGElement>;
   protected selectedElementsFreezed: Set<SVGElement>;
   protected mouse: Util.Mouse;
   protected rectangles: Util.SelectionRectangles;
   protected keyManager: Util.KeyManager;
 
   constructor(protected renderer: Renderer2, protected svgService: SvgService,
-              protected undoRedoService: UndoRedoService) {
+              protected undoRedoService: UndoRedoService,
+              protected service: SelectionService) {
     super();
     this.allListenners = [];
-    this.selectedElements = new Set();
     const action: PostAction = {
       functionDefined: true,
       function: () => {
@@ -57,7 +57,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.circles = Util.SelectionLogicUtil.initialiseCircles(
       this.renderer, this.svgStructure.temporaryZone, this.svgNS
     );
-    const subscription = this.svgService.selectAllElements.subscribe(() => {
+    const subscription = this.service.selectAllElements.subscribe(() => {
       this.applyMultipleSelection();
     });
     this.allListenners.push(() => subscription.unsubscribe());
@@ -67,7 +67,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   protected applySingleSelection(element: SVGElement): void {
     this.deleteVisualisation();
-    this.selectedElements = new Set([element]);
+    this.service.selectedElements = new Set([element]);
     const points = new SingleSelection(element, this.getSvgOffset()).points();
     this.drawVisualisation(points[0], points[1]);
   }
@@ -85,14 +85,14 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
                                    elements?: Set<SVGElement>): void {
     this.deleteVisualisation();
     const selection = this.getMultipleSelection(startPoint, endPoint, elements);
-    this.selectedElements = selection.selectedElements;
+    this.service.selectedElements = selection.selectedElements;
     this.drawVisualisation(selection.points[0], selection.points[1]);
   }
 
   private getMultipleSelection(startPoint?: Point, endPoint?: Point,
                                elements?: Set<SVGElement>)
     : SelectionReturn {
-    this.selectedElements = new Set();
+    this.service.selectedElements = new Set();
     if (elements === undefined) {
       const allElements = Array.from(
         this.svgStructure.drawZone.children
@@ -173,7 +173,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.resetRectangle(this.rectangles.visualisation);
     this.resetTranslate(this.rectangles.visualisation);
     this.deleteCircles();
-    this.selectedElements = new Set();
+    this.service.selectedElements = new Set();
   }
 
   private deleteCircles(): void {
@@ -225,7 +225,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   protected translateAll(x: number, y: number): void {
-    Deplacement.translateAll(this.selectedElements, x, y, this.renderer);
+    Deplacement.translateAll(this.service.selectedElements, x, y, this.renderer);
     Deplacement.translateAll(this.circles, x, y, this.renderer);
     Deplacement.translate(this.rectangles.visualisation, x, y, this.renderer);
   }

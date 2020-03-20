@@ -23,6 +23,7 @@ import { GalleryComponent, GalleryDraw } from './pages/gallery/gallery.component
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { SaveComponent } from './pages/save/save.component';
+import { SelectionService } from '../tool/selection/selection.service';
 
 interface DialogRefs {
   home: MatDialogRef<HomeComponent>;
@@ -58,7 +59,8 @@ export class OverlayService {
               private toolSelectorService: ToolSelectorService,
               private readonly snackBar: MatSnackBar,
               private undoRedo: UndoRedoService,
-              private gridService: GridService
+              private gridService: GridService,
+              private selectionService: SelectionService
   ) {
     this.initialiseShortcuts();
   }
@@ -88,7 +90,7 @@ export class OverlayService {
     this.shortcutHanler.set(Shortcut.A, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
-        this.svgService.selectAllElements.emit(null);
+        this.selectionService.selectAllElements.emit(null);
       } else {
         this.toolSelectorService.set(Tool.Aerosol);
       }
