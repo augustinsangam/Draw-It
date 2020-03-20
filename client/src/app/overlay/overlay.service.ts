@@ -88,8 +88,6 @@ export class OverlayService {
     this.shortcutHanler.set(Shortcut.A, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
-        this.toolSelectorService.set(Tool.Selection);
-        this.toolSelectorService.set(Tool.Selection); // To close the panel
         this.svgService.selectAllElements.emit(null);
       } else {
         this.toolSelectorService.set(Tool.Aerosol);
