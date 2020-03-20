@@ -29,7 +29,7 @@ export class BucketPanelComponent extends ToolPanelDirective {
 
   protected onToleranceChange(): void {
     this.paintSealForm.patchValue
-              ({ sizeFormField: this.toleranceSlider.value });
+              ({ toleranceFormField: this.toleranceSlider.value });
     this.service.tolerance = this.toleranceSlider.value as number;
   }
 

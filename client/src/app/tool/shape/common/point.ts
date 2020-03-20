@@ -13,4 +13,8 @@ export class Point {
     return this.x === point.x && this.y === point.y;
   }
 
+  freeze(): string {
+    return `${this.x} ${this.y}`;
+  }
+
 }

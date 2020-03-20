@@ -5,8 +5,12 @@ import { RGBAColor } from '../../color/rgba-color';
 import { Point } from '../../shape/common/point';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
+import { BucketService } from '../bucket.service';
+import { PointSet } from './point-set';
 
 const MAX_RGBA = 255;
+const MAX_DIFFERENCE = (MAX_RGBA * MAX_RGBA) * 4;
+const MAX_TOLERANCE = 100;
 
 @Component({
   selector: 'app-paint-seal-logic',
@@ -18,12 +22,13 @@ export class BucketLogicComponent
   private canvasContext: CanvasRenderingContext2D;
   private allListeners: (() => void)[] = [];
   private stack: Point[];
-  private visited: Set<string>;
+  private visited: PointSet;
 
   constructor(private readonly svgToCanvas: SvgToCanvasService,
               private renderer: Renderer2,
               private colorService: ColorService,
-              private undoRedo: UndoRedoService
+              private undoRedo: UndoRedoService,
+              private service: BucketService
   ) {
     super();
   }
@@ -55,27 +60,27 @@ export class BucketLogicComponent
   private fill(startingPoint: Point): void {
 
     this.stack = [];
-    this.visited = new Set();
+    this.visited = new PointSet();
     this.stack.push(new Point(startingPoint.x, startingPoint.y));
     const oldColor = this.getColor(startingPoint);
 
     while (this.stack.length !== 0) {
 
-      const point = this.stack.pop() as Point;
-      this.markVisited(point);
-      const [x, y] = [point.x, point.y];
+      const currentPoint = this.stack.pop() as Point;
+      this.visited.add(currentPoint);
+      const [x, y] = [currentPoint.x, currentPoint.y];
 
-      const possiblePoints = [
+      const connectedPoints = [
         new Point(x, y + 1),
         new Point(x, y - 1),
         new Point(x + 1, y),
         new Point(x - 1, y)
       ];
 
-      possiblePoints.forEach((newPoint) => {
-        if (!this.isAlreadyVisited(newPoint)
-            && this.isSameColor(newPoint, oldColor)) {
-          this.stack.push(newPoint);
+      connectedPoints.forEach((connectedPoint) => {
+        if (!this.visited.has(connectedPoint)
+            && this.isSameColor(connectedPoint, oldColor)) {
+          this.stack.push(connectedPoint);
         }
       });
     }
@@ -94,7 +99,7 @@ export class BucketLogicComponent
       g: pixel[1],
       b: pixel[2],
       // tslint:disable-next-line:no-magic-numbers
-      a: pixel[3] / MAX_RGBA,
+      a: pixel[3],
     };
   }
 
@@ -102,28 +107,27 @@ export class BucketLogicComponent
     if (!this.isValidCoordinates(point)) {
       return false;
     }
-    return this.colorService.rgbaEqual(color, this.getColor(point));
-  }
-
-  private markVisited(point: Point): void {
-    this.visited.add(`${point.x} ${point.y}`);
-  }
-
-  private isAlreadyVisited(point: Point): boolean {
-    return this.visited.has(`${point.x} ${point.y}`);
+    const diffferenceNormalized = this.difference(color, this.getColor(point)) / MAX_DIFFERENCE;
+    return (diffferenceNormalized * MAX_TOLERANCE) <= this.service.tolerance;
   }
 
   private drawSvg(): void {
     let pathDAttribute = '';
     this.visited.forEach((point) => {
-      const [x, y] = point.split(' ').map((value) => Number(value));
-      pathDAttribute += `M ${x - 1}, ${y} a 1, 1 0 1, 0 2,0 a 1, 1 0 1, 0 -2,0 `;
+      pathDAttribute += `M ${point.x - 1}, ${point.y} a 1, 1 0 1, 0 2,0 a 1, 1 0 1, 0 -2,0 `;
     });
     const path = this.renderer.createElement('path', this.svgNS);
     this.renderer.setAttribute(path, 'stroke', this.colorService.primaryColor);
     this.renderer.setAttribute(path, 'stroke-width', '1');
     this.renderer.setAttribute(path, 'd', pathDAttribute);
     this.renderer.appendChild(this.svgStructure.drawZone, path);
+  }
+
+  private difference(color1: RGBAColor, color2: RGBAColor): number {
+    return  (color1.r - color2.r) * (color1.r - color2.r)
+          + (color1.g - color2.g) * (color1.g - color2.g)
+          + (color1.b - color2.b) * (color1.b - color2.b)
+          + (color1.a - color2.a) * (color1.a - color2.a);
   }
 
 }

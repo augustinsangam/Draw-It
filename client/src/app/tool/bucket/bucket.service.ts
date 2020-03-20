@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-const DEFAULT_TOLERANCE = 50;
+const DEFAULT_TOLERANCE = 0;
 
 @Injectable({
   providedIn: 'root'
