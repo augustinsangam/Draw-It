@@ -8,6 +8,7 @@ import { SvgShape } from '../svg/svg-shape';
 import { SvgService } from '../svg/svg.service';
 import { ColorService } from '../tool/color/color.service';
 import { GridService } from '../tool/grid/grid.service';
+import { SelectionService } from '../tool/selection/selection.service';
 import {
   ToolSelectorService
 } from '../tool/tool-selector/tool-selector.service';
@@ -23,7 +24,6 @@ import { GalleryComponent, GalleryDraw } from './pages/gallery/gallery.component
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { SaveComponent } from './pages/save/save.component';
-import { SelectionService } from '../tool/selection/selection.service';
 
 interface DialogRefs {
   home: MatDialogRef<HomeComponent>;
