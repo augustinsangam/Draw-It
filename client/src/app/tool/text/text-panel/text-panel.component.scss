@@ -38,7 +38,6 @@ mat-button-toggle-group {
 }
 
 .fonts {
-  margin-bottom: 10px;
   width: auto;
   color: #FFFFFF;
 }
@@ -50,5 +49,9 @@ mat-option {
 
 ::ng-deep .mat-select-value-text {
   color: #FFFFFF;
-  background-color: #4e4d4d;
+}
+
+.panelClass {
+  background: #4e4d4d;
+  color: #FFFFFF;
 }

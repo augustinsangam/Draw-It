@@ -1,7 +1,7 @@
 <h1 xmlns="http://www.w3.org/1999/html">Texte</h1>
 <svg width="320" height="200">
   <rect
-    [ngStyle]="{'fill': colorService.backgroundColor}"
+    [ngStyle]="{'fill': colorService.backgroundColor, 'stroke': 'rgba(255,255,255,1)', 'stroke-width': '3px'}"
     width="320" height="200" x="0" y="0"
     stroke="#FFFFFF" stroke-width="1px">
   </rect>
@@ -17,48 +17,73 @@
     }"
   >
     <tspan
-      [attr.x]= "getTextAlign(previewDims.width, previewDims.height)"
-      y= "55">Aa Bb Cc</tspan>
+      [attr.x]="getTextAlign(previewDims.width, previewDims.height)"
+      y="55">Aa Bb Cc
+    </tspan>
     <tspan
-      [attr.x]= "getTextAlign(previewDims.width, previewDims.height)"
-      y= "120">1 2 4 8 16</tspan>
+      [attr.x]="getTextAlign(previewDims.width, previewDims.height)"
+      y="117">1 2 4 8 16
+    </tspan>
     <tspan
-      [attr.x]= "getTextAlign(previewDims.width, previewDims.height)"
-      y= "190">$#@%!</tspan>
+      [attr.x]="getTextAlign(previewDims.width, previewDims.height)"
+      y="180">$#@%!
+    </tspan>
   </text>
 </svg>
 <hr>
 <form [formGroup]="textForm">
-<!--  TODO add aria-label for each of these 6 buttons-->
+  <!--  TODO add aria-label for each of these 6 buttons-->
   <mat-button-toggle-group multiple>
-<!--      matTooltip="Gras"-->
+    <!--      matTooltip="Gras"-->
     <mat-button-toggle
       value="bold"
-      (change)="onMutatorChange($event)"><mat-icon>format_bold</mat-icon></mat-button-toggle>
-<!--      matTooltip="Italique"-->
+      (change)="onMutatorChange($event)">
+      <mat-icon>format_bold</mat-icon>
+    </mat-button-toggle>
+    <!--      matTooltip="Italique"-->
     <mat-button-toggle
       value="italic"
-      (change)="onMutatorChange($event)"><mat-icon>format_italic</mat-icon></mat-button-toggle>
-<!--      matTooltip="Souligné"-->
+      (change)="onMutatorChange($event)">
+      <mat-icon>format_italic</mat-icon>
+    </mat-button-toggle>
+    <!--      matTooltip="Souligné"-->
     <mat-button-toggle
       value="underline"
-      (change)="onMutatorChange($event)"><mat-icon>format_underlined</mat-icon></mat-button-toggle>
+      (change)="onMutatorChange($event)">
+      <mat-icon>format_underlined</mat-icon>
+    </mat-button-toggle>
   </mat-button-toggle-group>
   <mat-button-toggle-group>
-<!--      matTooltip="Aligné à gauche"-->
+    <!--      matTooltip="Aligné à gauche"-->
     <mat-button-toggle
       value="left"
-      (change)="onAlignChange($event)"><mat-icon>format_align_left</mat-icon></mat-button-toggle>
-<!--      matTooltip="Centré"-->
+      (change)="onAlignChange($event)">
+      <mat-icon>format_align_left</mat-icon>
+    </mat-button-toggle>
+    <!--      matTooltip="Centré"-->
     <mat-button-toggle
       value="center"
-      (change)="onAlignChange($event)"><mat-icon>format_align_center</mat-icon></mat-button-toggle>
-<!--      matTooltip="Aligné à droite"-->
+      (change)="onAlignChange($event)">
+      <mat-icon>format_align_center</mat-icon>
+    </mat-button-toggle>
+    <!--      matTooltip="Aligné à droite"-->
     <mat-button-toggle
       value="right"
-      (change)="onAlignChange($event)"><mat-icon>format_align_right</mat-icon></mat-button-toggle>
+      (change)="onAlignChange($event)">
+      <mat-icon>format_align_right</mat-icon>
+    </mat-button-toggle>
   </mat-button-toggle-group>
   <hr>
+  <p>Police</p>
+  <mat-form-field class="fonts">
+    <div class="mat-select-value-text">
+      <mat-select [(value)]="service.currentFont" class="mat-select-value-text" disableRipple panelClass="panelClass">
+        <mat-option *ngFor="let font of service.fontsList" [value]="font.value">
+          {{font.viewValue}}
+        </mat-option>
+      </mat-select>
+    </div>
+  </mat-form-field>
   <p>Taille de la police</p>
   <div class="fontSize">
     <mat-slider min="{{service.MIN_FONTSIZE}}" max="{{service.MAX_FONTSIZE}}" step=1
@@ -73,15 +98,5 @@
       <span matSuffix>px</span>
     </mat-form-field>
   </div>
-  <p>Police</p>
-  <mat-form-field class="fonts">
-    <div class="mat-select-value-text">
-    <mat-select [(value)]="service.currentFont" class="mat-select-value-text">
-      <mat-option *ngFor="let font of service.fontsList" [value]="font.value">
-        {{font.viewValue}}
-      </mat-option>
-    </mat-select>
-    </div>
-  </mat-form-field>
 </form>
 <hr>
