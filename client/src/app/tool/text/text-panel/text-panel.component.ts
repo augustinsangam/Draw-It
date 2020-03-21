@@ -1,22 +1,20 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
-import {ToolPanelDirective} from '../../tool-panel/tool-panel.directive';
-import {TextService} from '../text.service';
 import {MatButtonToggleChange} from '@angular/material/button-toggle';
-import {TextMutators} from '../text-mutators';
+import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatSlider} from '@angular/material/slider';
 import {ColorService} from '../../color/color.service';
 import {Dimension} from '../../shape/common/dimension';
-import {TextAlignement} from '../text-alignement';
+import {ToolPanelDirective} from '../../tool-panel/tool-panel.directive';
+import {TextMutators} from '../text-mutators';
+import {TextService} from '../text.service';
 
 @Component({
   selector: 'app-text-panel',
   templateUrl: './text-panel.component.html',
   styleUrls: ['./text-panel.component.scss']
 })
-export class TextPanelComponent extends ToolPanelDirective
-implements OnInit {
+export class TextPanelComponent extends ToolPanelDirective {
 
   private textForm: FormGroup;
   private showFonts: boolean;
@@ -46,9 +44,6 @@ implements OnInit {
       fontSizeFormField: [this.service.fontSize, [Validators.required]],
       alignementForm: [this.service.textAlignement, []],
     });
-  }
-
-  ngOnInit(): void {
     this.previewDims = {width: 320, height: 200};
   }
 

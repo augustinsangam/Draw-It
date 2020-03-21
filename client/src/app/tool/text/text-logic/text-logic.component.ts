@@ -29,6 +29,7 @@ implements OnDestroy {
   currentTspan: SVGElement;
   initialPoint: Point;
   typedLetters: string[];
+  onDrag: boolean;
 
   constructor(private readonly service: TextService,
               private readonly renderer: Renderer2,
@@ -39,6 +40,7 @@ implements OnDestroy {
     super();
     this.listeners = [];
     this.typedLetters = [];
+    this.onDrag = false;
   }
 
   ngOnInit(): void {
@@ -47,7 +49,33 @@ implements OnDestroy {
       'mousedown',
       (mouseEv: MouseEvent) => {
         if (!this.onType) {
+          this.onDrag = true;
           this.onMouseDown(mouseEv);
+        }
+      }
+    );
+
+    const onMouseUp = this.renderer.listen(
+      this.svgStructure.root,
+      'mouseup',
+      (mouseEv: MouseEvent) => {
+        this.onDrag = false;
+        this.initialPoint = this.mathService.getRectangleUpLeftCorner(
+          this.initialPoint,
+          new Point(mouseEv.offsetX, mouseEv.offsetY)
+        );
+        if (!this.onType) {
+          this.startTyping(mouseEv);
+        }
+      }
+    );
+
+    const onMouseMove = this.renderer.listen(
+      this.svgStructure.root,
+      'mousemove',
+      (mouseEv: MouseEvent) => {
+        if (this.onDrag) {
+          this.textZoneRect.dragRectangle(this.initialPoint, new Point(mouseEv.offsetX, mouseEv.offsetY));
         }
       }
     );
@@ -64,7 +92,9 @@ implements OnDestroy {
 
     this.listeners = [
       onMouseDown,
-      onKeyDown
+      onKeyDown,
+      onMouseUp,
+      onMouseMove,
     ];
   }
 
@@ -72,19 +102,20 @@ implements OnDestroy {
     this.listeners.forEach((listener) => listener());
   }
 
-  private initTextZoneVisu(mouseEv: MouseEvent): void {
-    this.initialPoint = new Point(mouseEv.offsetX, mouseEv.offsetY + this.service.fontSize + 10);
+  private initRectVisu(mouseEv: MouseEvent): void {
+    this.initialPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
     const textZoneRect = this.renderer.createElement('rect', this.svgNS);
     this.renderer.appendChild(this.svgStructure.temporaryZone, textZoneRect);
     this.textZoneRect = new Rectangle(this.renderer, textZoneRect, this.mathService);
     this.textZoneRect.setParameters(BackGroundProperties.None, StrokeProperties.Dashed);
     this.renderer.setStyle(textZoneRect, 'stroke', 'rgba(87,87,87,0.5)');
+  }
 
-    this.textZoneRect.dragRectangle(
-      new Point(mouseEv.offsetX, mouseEv.offsetY),
-      new Point(mouseEv.offsetX + this.TEXTZONESIZE_X, mouseEv.offsetY + this.service.fontSize + this.TEXTZONEOFFSET_Y)
-    );
+  private onMouseDown(mouseEv: MouseEvent): void {
+    this.initRectVisu(mouseEv);
+  }
 
+  private initCursor(mouseEv: MouseEvent): void {
     const cursor = this.renderer.createElement('path', this.svgNS);
     this.renderer.appendChild(this.svgStructure.temporaryZone, cursor);
     this.cursor = new Cursor(
@@ -92,20 +123,20 @@ implements OnDestroy {
       this.service,
       cursor,
       new Point(
-        mouseEv.offsetX + 10,
-        mouseEv.offsetY + 10 + this.service.fontSize
+        this.initialPoint.x + 10,
+        this.initialPoint.y + 10 + this.service.fontSize
       )
     );
-    this.renderer.setAttribute(cursor, 'd', `M ${mouseEv.offsetX + 10} ${mouseEv.offsetY + 10} v ${this.service.fontSize}`);
+    this.renderer.setAttribute(cursor, 'd', `M ${this.initialPoint.x + 10} ${this.initialPoint.y + 10} v ${this.service.fontSize}`);
     this.renderer.setAttribute(cursor, 'stroke', 'rgba(1,1,1,1)');
     this.cursor.initBlink();
   }
 
-  private onMouseDown(mouseEv: MouseEvent): void {
+  private startTyping(mouseEv: MouseEvent): void {
     this.onType = true;
     this.shortcutService.desactivateAll();
     this.initSVGText();
-    this.initTextZoneVisu(mouseEv);
+    this.initCursor(mouseEv);
   }
 
   private initSVGText(): void {
@@ -143,12 +174,18 @@ implements OnDestroy {
         break;
 
       case 'Enter':
-        console.log('Enter');
         this.addLine();
         break;
 
+      case 'ArrowLeft':
+        console.log('ArrowLeft');
+        break;
+
+      case 'ArrowRight':
+        console.log('ArrowRight');
+        break;
+
       case 'Backspace':
-        console.log('Backspace');
         this.removeLastLetter();
         break;
 
@@ -163,19 +200,25 @@ implements OnDestroy {
     console.log('adding line');
   }
 
-  private addLetter(letter: string): void {
-    console.log('adding letter');
-    this.typedLetters.push(letter);
-    const svgLetter = this.renderer.createText(letter);
+  private updateText(): void {
+    const svgLetter = this.renderer.createText(this.typedLetters.join(''));
     this.renderer.appendChild(this.currentTspan, svgLetter);
     this.renderer.setAttribute(this.currentTspan, 'x', (+this.service.getTextAlign(this.TEXTZONESIZE_X) + this.initialPoint.x).toString());
     this.renderer.setAttribute(this.currentTspan, 'y', `${this.cursor.currentPosition.y - 10}`);
-    this.cursor.moveLeft(+this.service.getTextAlign(this.TEXTZONESIZE_X) + this.initialPoint.x + this.currentTspan.getBoundingClientRect().width);
+    this.cursor.moveLeft(
+      +this.service.getTextAlign(this.TEXTZONESIZE_X) + this.initialPoint.x + this.currentTspan.getBoundingClientRect().width
+    );
+  }
+
+  private addLetter(letter: string): void {
+    this.currentTspan.textContent = '';
+    this.typedLetters.push(letter);
+    this.updateText();
   }
 
   private removeLastLetter(): void {
+    this.currentTspan.textContent = '';
     this.typedLetters.pop();
-
-    console.log('removing last letter');
+    this.updateText();
   }
 }
