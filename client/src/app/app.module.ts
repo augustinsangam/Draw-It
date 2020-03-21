@@ -78,6 +78,12 @@ import {
   ApplicatorPanelComponent
 } from './tool/applicator/applicator-panel/applicator-panel.component';
 import {
+  BucketLogicComponent
+} from './tool/bucket/bucket-logic/bucket-logic.component';
+import {
+  BucketPanelComponent
+} from './tool/bucket/bucket-panel/bucket-panel.component';
+import {
   ColorBoxComponent
 } from './tool/color/color-box/color-box.component';
 import {
@@ -119,12 +125,6 @@ import {
 import {
   GridPanelComponent
 } from './tool/grid/grid-panel/grid-panel.component';
-import {
-  BucketLogicComponent
-} from './tool/bucket/bucket-logic/bucket-logic.component';
-import {
-  BucketPanelComponent
-} from './tool/bucket/bucket-panel/bucket-panel.component';
 import {
   PipetteLogicComponent
 } from './tool/pipette/pipette-logic/pipette-logic.component';
