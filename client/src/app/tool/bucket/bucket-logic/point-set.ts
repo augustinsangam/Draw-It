@@ -36,17 +36,17 @@ export class PointSet {
     return null;
   }
 
-  nearestPoint(point: Point): Point | null {
+  nearestPoint(point: Point): [Point | null, number] {
     let nearest: Point | null = null;
     let distance = Number.MAX_SAFE_INTEGER;
     this.forEach((borderPoint) => {
       const newDistance = point.squareDistanceTo(borderPoint);
-      if (newDistance > distance) {
+      if (newDistance < distance) {
         distance = newDistance;
         nearest = borderPoint;
       }
     });
-    return nearest;
+    return [nearest, distance];
   }
 
   forEach(callbackfn: (value: Point) => void): void {

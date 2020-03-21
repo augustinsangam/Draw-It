@@ -12,6 +12,7 @@ const MAX_RGBA = 255;
 const NUMBER_OF_DIMENSIONS = 4;
 const MAX_DIFFERENCE = (MAX_RGBA * MAX_RGBA) * NUMBER_OF_DIMENSIONS;
 const MAX_TOLERANCE = 100;
+const NOT_TO_FAR = 100;
 
 type PointQueue = Point[];
 
@@ -22,11 +23,8 @@ type PointQueue = Point[];
 export class BucketLogicComponent
   extends ToolLogicDirective implements OnInit, OnDestroy {
 
-  private canvasContext: CanvasRenderingContext2D;
+  private image: ImageData;
   private allListeners: (() => void)[] = [];
-  private fillQueue: PointQueue;
-  private fillVisited: PointSet;
-  private borders: PointSet;
 
   constructor(private readonly svgToCanvas: SvgToCanvasService,
               private renderer: Renderer2,
@@ -52,106 +50,77 @@ export class BucketLogicComponent
 
   private onMouseClick($event: MouseEvent): void {
     this.svgToCanvas.getCanvas(this.renderer).then((canvas) => {
-      this.canvasContext = canvas.getContext('2d') as CanvasRenderingContext2D;
+      this.image = (canvas.getContext('2d') as CanvasRenderingContext2D)
+          .getImageData(0, 0, this.svgShape.width, this.svgShape.height);
       const startingPoint = new Point($event.offsetX, $event.offsetY);
-      this.findBorders(startingPoint);
-      const shapes = this.separateShapes();
-      console.log(shapes);
-      console.log(shapes.length);
+      const borders = this.findBorders(startingPoint);
+      const shapes = this.separateShapes(borders);
       this.drawSvg(shapes);
       this.undoRedo.saveState();
     });
   }
 
-  private findBorders(startingPoint: Point): void {
+  private findBorders(startingPoint: Point): PointSet {
+    const borders = new PointSet();
+    const fillQueue: PointQueue = [];
+    const fillVisited = new PointSet();
 
-    this.fillQueue = [];
-    this.borders = new PointSet();
-    this.fillVisited = new PointSet();
-    this.fillQueue.push(new Point(startingPoint.x, startingPoint.y));
+    fillQueue.push(new Point(startingPoint.x, startingPoint.y));
     const oldColor = this.getColor(startingPoint);
 
-    while (this.fillQueue.length !== 0) {
-
-      const currentPoint = this.fillQueue.pop() as Point;
-
+    while (fillQueue.length !== 0) {
+      const currentPoint = fillQueue.pop() as Point;
       if (!this.isSameColor(currentPoint, oldColor)) {
         continue;
       }
-
-      const [x, y] = [currentPoint.x, currentPoint.y];
-
-      const connectedPoints = [
-        new Point(x - 1, y    ),
-        new Point(x + 1, y    ),
-        new Point(x    , y - 1),
-        new Point(x    , y + 1),
-      ];
-
+      const connectedPoints = this.fourConnectedPoint(currentPoint);
       for (const connectedPoint of connectedPoints) {
-        if (this.fillVisited.has(connectedPoint)) {
+        if (fillVisited.has(connectedPoint)) {
           continue ;
         }
         if (!this.isValidPoint(connectedPoint)) {
-          this.borders.add(currentPoint);
+          borders.add(currentPoint);
           break ;
         }
         if (this.isSameColor(connectedPoint, oldColor)) {
-          this.fillQueue.push(connectedPoint);
-          this.fillVisited.add(connectedPoint);
+          fillQueue.push(connectedPoint);
+          fillVisited.add(connectedPoint);
         } else {
-          this.borders.add(connectedPoint);
+          borders.add(connectedPoint);
         }
       }
     }
+
+    return borders;
   }
 
-  private separateShapes(): Point[][] {
+  private separateShapes(borders: PointSet): Point[][] {
     const shapes: (Point[])[] = [];
-    let shape: Point[];
-    while (true) {
-      const startPoint = this.borders.randomPoint();
-      if (startPoint == null) {
-        break;
-      }
-      shape = [];
-      shape.push(startPoint);
-      while (true) {
-        const lastPoint = shape[shape.length - 1];
-        const [x, y] = [lastPoint.x, lastPoint.y];
-        const connectedPoints = [
-          new Point(x - 1, y    ),
-          new Point(x + 1, y    ),
-          new Point(x    , y - 1),
-          new Point(x    , y + 1),
-          new Point(x - 1, y - 1),
-          new Point(x - 1, y + 1),
-          new Point(x + 1, y - 1),
-          new Point(x + 1, y + 1),
-        ];
-        let nearestPoint: Point | null = null;
-        for (const connectedPoint of connectedPoints) {
-          if (this.borders.has(connectedPoint)) {
-            nearestPoint = connectedPoint;
-            break;
-          }
-        }
-        if (nearestPoint == null) {
-          nearestPoint = this.borders.nearestPoint(lastPoint as Point);
-          console.log(lastPoint);
-          console.log(nearestPoint);
-          console.log(shape);
-          if (nearestPoint == null) {
-            throw new Error('On ne devrait pas arriver ici une deuxieme fois. Prenez une photo de la forme');
-          }
-        }
-        shape.push(nearestPoint as Point);
-        this.borders.delete(nearestPoint as Point);
-        if ((nearestPoint as Point).equals(shape[0])) {
+    let shape: Point[] = [];
+    let lastPoint = borders.randomPoint();
+    borders.delete(lastPoint as Point);
+    while (lastPoint !== null) {
+      shape.push(lastPoint);
+      const connectedPoints = this.eightConnectedPoints(lastPoint);
+      let nextBorder: Point | null = null;
+      for (const connectedPoint of connectedPoints) {
+        if (borders.has(connectedPoint)) {
+          nextBorder = connectedPoint;
           break;
         }
       }
-      shapes.push(shape);
+      if (nextBorder == null) {
+        let distance: number;
+        [nextBorder, distance] = borders.nearestPoint(lastPoint);
+        if (distance > NOT_TO_FAR) {
+          shapes.push(shape);
+          shape = [];
+        }
+      }
+      lastPoint = nextBorder;
+      if (lastPoint !== null) {
+        borders.delete(lastPoint as Point);
+      }
     }
     return shapes;
   }
@@ -163,12 +132,13 @@ export class BucketLogicComponent
   }
 
   private getColor(point: Point): RGBAColor {
-    const pixel = this.canvasContext.getImageData(point.x, point.y, 1, 1).data;
+    let position = (point.y * this.svgShape.width + point.x) * NUMBER_OF_DIMENSIONS;
+    const pixel = this.image.data;
     return {
-      r: pixel[0],
-      g: pixel[1],
-      b: pixel[2],
-      a: pixel[NUMBER_OF_DIMENSIONS - 1],
+      r: pixel[position++],
+      g: pixel[position++],
+      b: pixel[position++],
+      a: pixel[position],
     };
   }
 
@@ -200,6 +170,26 @@ export class BucketLogicComponent
     this.renderer.setAttribute(path, 'stroke-width', '0');
     this.renderer.setAttribute(path, 'd', pathDAttribute);
     this.renderer.appendChild(this.svgStructure.drawZone, path);
+  }
+
+  private fourConnectedPoint(point: Point): Point[] {
+    const [x, y] = [point.x, point.y];
+    return [
+      new Point(x - 1, y    ),
+      new Point(x + 1, y    ),
+      new Point(x    , y - 1),
+      new Point(x    , y + 1),
+    ];
+  }
+
+  private eightConnectedPoints(point: Point): Point[] {
+    const [x, y] = [point.x, point.y];
+    return this.fourConnectedPoint(point).concat([
+      new Point(x - 1, y - 1),
+      new Point(x - 1, y + 1),
+      new Point(x + 1, y - 1),
+      new Point(x + 1, y + 1),
+    ]);
   }
 
   private difference(color1: RGBAColor, color2: RGBAColor): number {
