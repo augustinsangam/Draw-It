@@ -1,26 +1,26 @@
 import {Renderer2} from '@angular/core';
 import {interval, Observable, Subscription} from 'rxjs';
-import {ToolLogicDirective} from '../tool-logic/tool-logic.directive';
 import {TextService} from './text.service';
+import {Point} from '../shape/common/point';
 
 // tslint:disable:use-lifecycle-interface
-export class Cursor extends ToolLogicDirective {
+export class Cursor {
 
   frequency: Observable<number>;
   blinker: Subscription;
   visible: boolean;
+  currentPosition: Point;
+  readonly LETTER_OFFSET_X: number = 31;
   readonly CURSOR_INTERVAL: number = 500;
 
   constructor(private readonly renderer: Renderer2,
               private readonly service: TextService,
               private element: SVGElement,
+              initialPoint: Point,
   ) {
-    super();
     this.visible = true;
-  }
-
-  ngOnInit(): void {
-
+    this.currentPosition = initialPoint;
+    this.blinker = Subscription.EMPTY;
   }
 
   initBlink(): void {
@@ -44,5 +44,12 @@ export class Cursor extends ToolLogicDirective {
   removeCursor(): void {
     this.stopBlink();
     this.element.remove();
+  }
+
+  moveLeft(newXPos: number): void {
+    this.currentPosition.x = newXPos;
+    this.renderer.setAttribute(this.element, 'd',
+      `M ${this.currentPosition.x} ${this.currentPosition.y} v ${-this.service.fontSize}`
+    );
   }
 }

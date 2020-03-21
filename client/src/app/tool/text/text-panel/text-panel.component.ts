@@ -64,17 +64,6 @@ implements OnInit {
     this.service.textMutators = newMutators;
   }
 
-  getTextAlign(width: number, height: number): string {
-    return this.service.textAlignement === TextAlignement.left ? '0' : (
-      this.service.textAlignement === TextAlignement.center ? `${width / 2}` : `${width}`
-    );
-  }
-
-  getTextAnchor(): string {
-    return this.service.textAlignement === 'left' ? 'start' : (
-      this.service.textAlignement === 'center' ? 'middle' : 'end'
-    );
-  }
   onAlignChange(event: MatButtonToggleChange): void {
     this.service.textAlignement = event.value;
     this.textForm.patchValue({

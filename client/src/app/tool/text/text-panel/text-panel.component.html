@@ -10,22 +10,22 @@
       'font-size': service.fontSize.toString(),
       'fill': colorService.primaryColor,
       'font-family': service.currentFont,
-      'text-anchor': getTextAnchor(),
+      'text-anchor': service.getTextAnchor(),
       'font-weight': service.textMutators.bold ? 'bold' : 'normal',
       'font-style': service.textMutators.italic ? 'italic' : 'normal',
       'text-decoration': service.textMutators.underline ? 'underline' : 'none'
     }"
   >
     <tspan
-      [attr.x]="getTextAlign(previewDims.width, previewDims.height)"
+      [attr.x]="service.getTextAlign(previewDims.width)"
       y="55">Aa Bb Cc
     </tspan>
     <tspan
-      [attr.x]="getTextAlign(previewDims.width, previewDims.height)"
+      [attr.x]="service.getTextAlign(previewDims.width)"
       y="117">1 2 4 8 16
     </tspan>
     <tspan
-      [attr.x]="getTextAlign(previewDims.width, previewDims.height)"
+      [attr.x]="service.getTextAlign(previewDims.width)"
       y="180">$#@%!
     </tspan>
   </text>
