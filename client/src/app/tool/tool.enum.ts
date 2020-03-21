@@ -2,12 +2,12 @@
 export enum Tool {
   Aerosol,
   Applicator,
+  Bucket,
   Brush,
   Eraser,
   Ellipse,
   Grid,
   Line,
-  PaintSeal,
   Pencil,
   Polygone,
   Rectangle,

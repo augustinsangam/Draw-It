@@ -75,10 +75,10 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
   })
   protected applicatorElRef: ElementRef<HTMLElement>;
 
-  @ViewChild('paintSeal', {
+  @ViewChild('bucket', {
     static: false,
   })
-  protected paintSealElRef: ElementRef<HTMLElement>;
+  protected bucketElRef: ElementRef<HTMLElement>;
 
   @ViewChild('grid', {
     static: false,
@@ -118,7 +118,7 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
     this.toolToElRef[Tool.Eraser]     = this.eraserElRef;
     this.toolToElRef[Tool.Line]       = this.lineElRef;
     this.toolToElRef[Tool.Pencil]     = this.pencilElRef;
-    this.toolToElRef[Tool.PaintSeal]  = this.paintSealElRef;
+    this.toolToElRef[Tool.Bucket]     = this.bucketElRef;
     this.toolToElRef[Tool.Pipette]    = this.pipetteElRef;
     this.toolToElRef[Tool.Polygone]   = this.polygoneElRef;
     this.toolToElRef[Tool.Rectangle]  = this.rectangleElRef;

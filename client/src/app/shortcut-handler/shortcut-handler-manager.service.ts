@@ -32,6 +32,10 @@ export class ShortcutHandlerManagerService {
 
     this.handlersFunc = new Map();
 
+    this.handlersFunc.set(Shortcut.B, () =>
+      this.toolSelectorService.set(Tool.Bucket)
+    );
+
     this.handlersFunc.set(Shortcut.C, () =>
       this.toolSelectorService.set(Tool.Pencil)
     );
