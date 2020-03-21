@@ -25,6 +25,9 @@ import {
   GridService
 } from '../tool/grid/grid.service';
 import {
+  SelectionService
+} from '../tool/selection/selection.service';
+import {
   ToolSelectorService
 } from '../tool/tool-selector/tool-selector.service';
 import {
@@ -93,7 +96,8 @@ export class OverlayService {
               private toolSelectorService: ToolSelectorService,
               private readonly snackBar: MatSnackBar,
               private undoRedo: UndoRedoService,
-              private gridService: GridService
+              private gridService: GridService,
+              private selectionService: SelectionService
   ) {
     this.initialiseShortcuts();
   }
@@ -123,9 +127,7 @@ export class OverlayService {
     this.shortcutHanler.set(Shortcut.A, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
-        this.toolSelectorService.set(Tool.Selection);
-        this.toolSelectorService.set(Tool.Selection); // To close the panel
-        this.svgService.selectAllElements.emit(null);
+        this.selectionService.selectAllElements.emit(null);
       } else {
         this.toolSelectorService.set(Tool.Aerosol);
       }
@@ -274,6 +276,7 @@ export class OverlayService {
   }
 
   private loadDraw(draw: GalleryDraw): void {
+    this.colorService.recentColors = draw.colors;
     this.svgService.clearDom();
     this.svgService.shape = draw.shape;
     Array.from(draw.svg.children).forEach((element: SVGGElement) => {

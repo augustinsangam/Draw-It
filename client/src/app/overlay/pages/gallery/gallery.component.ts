@@ -22,7 +22,6 @@ import { flatbuffers } from 'flatbuffers';
 import { Subject } from 'rxjs';
 import { SvgHeader } from 'src/app/svg/svg-header';
 import { SvgShape } from 'src/app/svg/svg-shape';
-import { ColorService } from 'src/app/tool/color/color.service';
 import { ScreenService } from '../new-draw/sreen-service/screen.service';
 
 const CARD_WIDTH = 342;
@@ -38,6 +37,7 @@ export interface GalleryDraw {
   svg: SVGGElement;
   header: SvgHeader;
   shape: SvgShape;
+  colors: string[];
 }
 
 @Component({
@@ -59,7 +59,6 @@ export class GalleryComponent implements AfterViewInit {
   }) private cardContent: ElementRef<HTMLElement>;
 
   constructor(
-    private colorService: ColorService,
     private communicationService: CommunicationService,
     private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
@@ -99,7 +98,7 @@ export class GalleryComponent implements AfterViewInit {
     const drawsLenght = draws.drawBuffersLength();
     let tempsAllTags = new Set<string>();
 
-    for (let i = drawsLenght - 1; i !== 0; i--) {
+    for (let i = drawsLenght; i-- !== 0; ) {
 
       const drawBuffer = draws.drawBuffers(i);
       if (drawBuffer == null) {
@@ -127,7 +126,7 @@ export class GalleryComponent implements AfterViewInit {
     const newTagArray = new Array<string>(tagsLength);
     for (let i = 0; i < tagsLength; ++i) {
       const tag = draw.tags(i);
-      newTagArray.push(tag);
+      newTagArray[i] = tag;
       tempsAllTags.add(tag);
     }
 
@@ -136,7 +135,6 @@ export class GalleryComponent implements AfterViewInit {
     for (let i = 0; i < colorsLength; ++i) {
       colors[i] = draw.colors(i);
     }
-    this.colorService.recentColors = colors;
 
     const svgElement = draw.svg();
 
@@ -158,6 +156,7 @@ export class GalleryComponent implements AfterViewInit {
           color: draw.color() as string
         },
         svg,
+        colors,
       };
       this.galleryDrawTable.push(newGalleryDraw);
     }
