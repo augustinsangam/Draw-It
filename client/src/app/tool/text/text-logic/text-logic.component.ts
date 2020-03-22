@@ -1,13 +1,19 @@
 import {Component, OnDestroy, Renderer2} from '@angular/core';
+import {ShortcutHandlerService} from '../../../shortcut-handler/shortcut-handler.service';
+import {ColorService} from '../../color/color.service';
 import {MathService} from '../../mathematics/tool.math-service.service';
 import {BackGroundProperties, StrokeProperties} from '../../shape/common/abstract-shape';
 import {Point} from '../../shape/common/point';
 import {Rectangle} from '../../shape/common/rectangle';
 import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
-import {TextService} from '../text.service';
 import {Cursor} from '../cursor';
-import {ShortcutHandlerService} from '../../../shortcut-handler/shortcut-handler.service';
-import {ColorService} from '../../color/color.service';
+import {TextService} from '../text.service';
+import {Dimension} from '../../shape/common/dimension';
+
+interface TextLine {
+  tspan: SVGElement;
+  letters: string[];
+}
 
 @Component({
   selector: 'app-text-logic',
@@ -23,12 +29,13 @@ implements OnDestroy {
 
   listeners: (() => void)[];
   textZoneRect: Rectangle;
+  zoneDims: Dimension;
   cursor: Cursor;
   onType: boolean;
-  textElement: SVGElement;
-  currentTspan: SVGElement;
+  lines: TextLine[];
+  currentLine: TextLine;
+  textElement: SVGTSpanElement;
   initialPoint: Point;
-  typedLetters: string[];
   onDrag: boolean;
 
   constructor(private readonly service: TextService,
@@ -39,8 +46,9 @@ implements OnDestroy {
   ) {
     super();
     this.listeners = [];
-    this.typedLetters = [];
     this.onDrag = false;
+    this.lines = [];
+    // this.currentLine = {tspan: undefined as unknown as SVGElement, letters: []};
   }
 
   ngOnInit(): void {
@@ -58,16 +66,7 @@ implements OnDestroy {
     const onMouseUp = this.renderer.listen(
       this.svgStructure.root,
       'mouseup',
-      (mouseEv: MouseEvent) => {
-        this.onDrag = false;
-        this.initialPoint = this.mathService.getRectangleUpLeftCorner(
-          this.initialPoint,
-          new Point(mouseEv.offsetX, mouseEv.offsetY)
-        );
-        if (!this.onType) {
-          this.startTyping(mouseEv);
-        }
-      }
+      (mouseEv: MouseEvent) => this.onMouseUp(mouseEv)
     );
 
     const onMouseMove = this.renderer.listen(
@@ -102,65 +101,6 @@ implements OnDestroy {
     this.listeners.forEach((listener) => listener());
   }
 
-  private initRectVisu(mouseEv: MouseEvent): void {
-    this.initialPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
-    const textZoneRect = this.renderer.createElement('rect', this.svgNS);
-    this.renderer.appendChild(this.svgStructure.temporaryZone, textZoneRect);
-    this.textZoneRect = new Rectangle(this.renderer, textZoneRect, this.mathService);
-    this.textZoneRect.setParameters(BackGroundProperties.None, StrokeProperties.Dashed);
-    this.renderer.setStyle(textZoneRect, 'stroke', 'rgba(87,87,87,0.5)');
-  }
-
-  private onMouseDown(mouseEv: MouseEvent): void {
-    this.initRectVisu(mouseEv);
-  }
-
-  private initCursor(mouseEv: MouseEvent): void {
-    const cursor = this.renderer.createElement('path', this.svgNS);
-    this.renderer.appendChild(this.svgStructure.temporaryZone, cursor);
-    this.cursor = new Cursor(
-      this.renderer,
-      this.service,
-      cursor,
-      new Point(
-        this.initialPoint.x + 10,
-        this.initialPoint.y + 10 + this.service.fontSize
-      )
-    );
-    this.renderer.setAttribute(cursor, 'd', `M ${this.initialPoint.x + 10} ${this.initialPoint.y + 10} v ${this.service.fontSize}`);
-    this.renderer.setAttribute(cursor, 'stroke', 'rgba(1,1,1,1)');
-    this.cursor.initBlink();
-  }
-
-  private startTyping(mouseEv: MouseEvent): void {
-    this.onType = true;
-    this.shortcutService.desactivateAll();
-    this.initSVGText();
-    this.initCursor(mouseEv);
-  }
-
-  private initSVGText(): void {
-    this.textElement = this.renderer.createElement('text', this.svgNS);
-    this.renderer.appendChild(this.svgStructure.drawZone, this.textElement);
-    this.setTextStyle();
-
-    this.currentTspan = this.renderer.createElement('tspan', this.svgNS);
-    this.renderer.appendChild(this.textElement, this.currentTspan);
-  }
-
-  private setTextStyle(): void {
-    this.textElement.setAttribute('fill', this.colorService.primaryColor);
-
-    this.textElement.setAttribute('font-family', this.service.currentFont);
-    this.textElement.setAttribute('font-size', this.service.fontSize.toString());
-
-    this.textElement.setAttribute('text-anchor', this.service.getTextAnchor());
-
-    this.textElement.setAttribute('font-weight', this.service.textMutators.bold ? 'bold' : 'normal');
-    this.textElement.setAttribute('font-style', this.service.textMutators.italic ? 'italic' : 'normal');
-    this.textElement.setAttribute('text-decoration', this.service.textMutators.underline ? 'underline' : 'none');
-  }
-
   private onKeyDown(keyEv: KeyboardEvent): void {
     switch (keyEv.key) {
 
@@ -170,7 +110,7 @@ implements OnDestroy {
         this.textZoneRect.element.remove();
         this.onType = false;
         this.shortcutService.activateAll();
-        this.typedLetters = [];
+        this.currentLine.letters = [];
         break;
 
       case 'Enter':
@@ -196,29 +136,117 @@ implements OnDestroy {
     }
   }
 
-  private addLine(): void {
-    console.log('adding line');
+  private onMouseDown(mouseEv: MouseEvent): void {
+    mouseEv.preventDefault();
+    mouseEv.cancelBubble = true;
+    this.initRectVisu(mouseEv);
   }
 
-  private updateText(): void {
-    const svgLetter = this.renderer.createText(this.typedLetters.join(''));
-    this.renderer.appendChild(this.currentTspan, svgLetter);
-    this.renderer.setAttribute(this.currentTspan, 'x', (+this.service.getTextAlign(this.TEXTZONESIZE_X) + this.initialPoint.x).toString());
-    this.renderer.setAttribute(this.currentTspan, 'y', `${this.cursor.currentPosition.y - 10}`);
-    this.cursor.moveLeft(
-      +this.service.getTextAlign(this.TEXTZONESIZE_X) + this.initialPoint.x + this.currentTspan.getBoundingClientRect().width
+  private onMouseUp(mouseEv: MouseEvent): void {
+    mouseEv.cancelBubble = false;
+    this.onDrag = false;
+    this.initialPoint = this.mathService.getRectangleUpLeftCorner(
+      this.initialPoint,
+      new Point(mouseEv.offsetX, mouseEv.offsetY)
     );
+    this.zoneDims = this.mathService.getRectangleSize(this.initialPoint, new Point(mouseEv.offsetX, mouseEv.offsetY));
+    if (!this.onType) {
+      this.startTyping(mouseEv);
+    }
+  }
+
+  private initRectVisu(mouseEv: MouseEvent): void {
+    this.initialPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+    const textZoneRect = this.renderer.createElement('rect', this.svgNS);
+    this.renderer.appendChild(this.svgStructure.temporaryZone, textZoneRect);
+    this.textZoneRect = new Rectangle(this.renderer, textZoneRect, this.mathService);
+    this.textZoneRect.setParameters(BackGroundProperties.None, StrokeProperties.Dashed);
+    this.renderer.setStyle(textZoneRect, 'stroke', 'rgba(87,87,87,0.5)');
+  }
+
+  private initCursor(): void {
+    const cursor = this.renderer.createElement('path', this.svgNS);
+    this.renderer.appendChild(this.svgStructure.temporaryZone, cursor);
+    this.cursor = new Cursor(
+      this.renderer,
+      this.service,
+      cursor,
+      new Point(
+        this.initialPoint.x + 10,
+        this.initialPoint.y + 10 + this.service.fontSize
+      )
+    );
+    this.renderer.setAttribute(cursor, 'd', `M ${this.initialPoint.x + 10} ${this.initialPoint.y + 10} v ${this.service.fontSize}`);
+    this.renderer.setAttribute(cursor, 'stroke', 'rgba(1,1,1,1)');
+    this.cursor.initBlink();
+  }
+
+  private initSVGText(): void {
+    this.textElement = this.renderer.createElement('text', this.svgNS);
+    this.renderer.appendChild(this.svgStructure.drawZone, this.textElement);
+    this.setTextStyle();
+
+    this.addTspan();
+  }
+
+  private startTyping(mouseEv: MouseEvent): void {
+    this.onType = true;
+    this.shortcutService.desactivateAll();
+    this.initSVGText();
+    this.initCursor();
+  }
+
+  private addTspan(): void {
+    this.currentLine = {tspan: this.renderer.createElement('tspan', this.svgNS), letters: []};
+    this.renderer.appendChild(this.textElement, this.currentLine.tspan);
+    this.lines.push(this.currentLine);
+    console.log('newtspan');
+    console.log(this.currentLine.tspan);
+  }
+
+  private addLine(): void {
+    this.addTspan();
+    this.cursor.nextLine(this.initialPoint);
+    this.renderer.setAttribute(this.currentLine.tspan, 'x', `${+this.service.getTextAlign(this.zoneDims.width) + this.initialPoint.x}`);
+    this.renderer.setAttribute(this.currentLine.tspan, 'y', `${this.cursor.currentPosition.y - 10}`);
   }
 
   private addLetter(letter: string): void {
-    this.currentTspan.textContent = '';
-    this.typedLetters.push(letter);
+    this.currentLine.tspan.textContent = '';
+    this.currentLine.letters.push(letter);
     this.updateText();
   }
 
+  private setTextStyle(): void {
+    this.textElement.setAttribute('fill', this.colorService.primaryColor);
+
+    this.textElement.setAttribute('font-family', this.service.currentFont);
+    this.textElement.setAttribute('font-size', this.service.fontSize.toString());
+
+    this.textElement.setAttribute('text-anchor', this.service.getTextAnchor());
+
+    this.textElement.setAttribute('font-weight', this.service.textMutators.bold ? 'bold' : 'normal');
+    this.textElement.setAttribute('font-style', this.service.textMutators.italic ? 'italic' : 'normal');
+    this.textElement.setAttribute('text-decoration', this.service.textMutators.underline ? 'underline' : 'none');
+  }
+
+  private getCurrentLineWidth(): number {
+    return (this.currentLine.tspan as SVGTextContentElement).getComputedTextLength();
+  }
+
+  private updateText(): void {
+    const svgLetter = this.renderer.createText(this.currentLine.letters.join(''));
+    this.renderer.appendChild(this.currentLine.tspan, svgLetter);
+    this.renderer.setAttribute(this.currentLine.tspan, 'x', `${+this.service.getTextAlign(this.zoneDims.width) + this.initialPoint.x}`);
+    this.renderer.setAttribute(this.currentLine.tspan, 'y', `${this.cursor.currentPosition.y - 10}`);
+    this.cursor.moveRight(
+      this.service.getTextAlign(this.zoneDims.width) + this.initialPoint.x + this.getCurrentLineWidth()
+    );
+  }
+
   private removeLastLetter(): void {
-    this.currentTspan.textContent = '';
-    this.typedLetters.pop();
+    this.currentLine.tspan.textContent = '';
+    this.currentLine.letters.pop();
     this.updateText();
   }
 }

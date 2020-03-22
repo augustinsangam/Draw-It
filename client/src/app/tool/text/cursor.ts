@@ -46,8 +46,16 @@ export class Cursor {
     this.element.remove();
   }
 
-  moveLeft(newXPos: number): void {
+  moveRight(newXPos: number): void {
     this.currentPosition.x = newXPos;
+    this.renderer.setAttribute(this.element, 'd',
+      `M ${this.currentPosition.x} ${this.currentPosition.y} v ${-this.service.fontSize}`
+    );
+  }
+
+  nextLine(initialPoint: Point): void {
+    this.currentPosition.y += this.service.fontSize + 10;
+    this.currentPosition.x = initialPoint.x + 10;
     this.renderer.setAttribute(this.element, 'd',
       `M ${this.currentPosition.x} ${this.currentPosition.y} v ${-this.service.fontSize}`
     );
