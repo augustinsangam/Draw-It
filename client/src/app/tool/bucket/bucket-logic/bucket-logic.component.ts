@@ -41,6 +41,7 @@ export class BucketLogicComponent
         'click',
         ($event: MouseEvent) => this.onMouseClick($event)
       ));
+    this.renderer.setStyle(this.svgStructure.root, 'cursor', 'crosshair');
   }
 
   ngOnDestroy(): void {
@@ -48,8 +49,8 @@ export class BucketLogicComponent
   }
 
   private onMouseClick($event: MouseEvent): void {
-    new SvgToCanvas(this.svgStructure, this.svgShape, this.renderer)
-    .getCanvas(this.renderer).then((canvas) => {
+    new SvgToCanvas(this.svgStructure.root, this.svgShape, this.renderer)
+    .getCanvas().then((canvas) => {
       this.image = (canvas.getContext('2d') as CanvasRenderingContext2D)
           .getImageData(0, 0, this.svgShape.width, this.svgShape.height);
       const startingPoint = new Point($event.offsetX, $event.offsetY);

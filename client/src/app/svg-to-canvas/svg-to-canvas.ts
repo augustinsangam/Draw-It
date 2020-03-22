@@ -1,6 +1,5 @@
 import { Renderer2 } from '@angular/core';
 import { SvgShape } from '../svg/svg-shape';
-import { SVGStructure } from '../svg/svg-structure';
 
 export class SvgToCanvas {
 
@@ -8,7 +7,7 @@ export class SvgToCanvas {
   height: string;
   color: string;
 
-  constructor(private svgStructure: SVGStructure,
+  constructor(private svg: SVGSVGElement,
               svgShape: SvgShape,
               private renderer: Renderer2) {
     this.width = svgShape.width.toString();
@@ -16,14 +15,14 @@ export class SvgToCanvas {
     this.color = svgShape.color;
   }
 
-  async getCanvas(renderer: Renderer2): Promise<HTMLCanvasElement> {
+  async getCanvas(): Promise<HTMLCanvasElement> {
 
     return new Promise<HTMLCanvasElement>((resolve) => {
 
-      const canvas = renderer.createElement('canvas') as HTMLCanvasElement;
-      renderer.setAttribute(canvas, 'height', this.height);
-      renderer.setAttribute(canvas, 'width', this.width);
-      renderer.setStyle(canvas, 'background-color', this.color);
+      const canvas = this.renderer.createElement('canvas') as HTMLCanvasElement;
+      this.renderer.setAttribute(canvas, 'height', this.height);
+      this.renderer.setAttribute(canvas, 'width', this.width);
+      this.renderer.setStyle(canvas, 'background-color', this.color);
 
       const svgSerialized = this.serialiseSvg();
       const img = new Image();
@@ -38,13 +37,7 @@ export class SvgToCanvas {
   }
 
   private serialiseSvg(): string {
-    const svg = this.renderer.createElement('svg', 'http://www.w3.org/2000/svg') as SVGSVGElement;
-    this.renderer.setAttribute(svg, 'height', this.height);
-    this.renderer.setAttribute(svg, 'width', this.width);
-    this.renderer.setStyle(svg, 'background-color', this.color);
-    this.renderer.appendChild(svg, this.svgStructure.defsZone.cloneNode(true));
-    this.renderer.appendChild(svg, this.svgStructure.drawZone.cloneNode(true));
-    return new XMLSerializer().serializeToString(svg);
+    return new XMLSerializer().serializeToString(this.svg);
   }
 
 }

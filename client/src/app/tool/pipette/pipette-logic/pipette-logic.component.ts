@@ -40,11 +40,16 @@ export class PipetteLogicComponent extends ToolLogicDirective
   ngOnInit(): void {
     this.renderer.setStyle(this.svgStructure.root, 'cursor', 'wait');
 
-    const svgToCanvas = new SvgToCanvas(this.svgStructure, this.svgShape, this.renderer);
+    const svg = this.renderer.createElement('svg', this.svgNS);
+    this.renderer.setAttribute(svg, 'height', this.svgShape.height.toString());
+    this.renderer.setAttribute(svg, 'width', this.svgShape.width.toString());
+    this.renderer.setStyle(svg, 'background-color', this.svgShape.color);
+    this.renderer.appendChild(svg, this.svgStructure.defsZone.cloneNode(true));
+    this.renderer.appendChild(svg, this.svgStructure.drawZone.cloneNode(true));
 
-    svgToCanvas.getCanvas(this.renderer).then((canvas) => {
+    new SvgToCanvas(svg, this.svgShape, this.renderer).getCanvas()
+    .then((canvas) => {
       this.image = canvas.getContext('2d') as CanvasRenderingContext2D;
-      document.body.appendChild(canvas);
     });
 
     const onLeftClick = this.renderer.listen(
