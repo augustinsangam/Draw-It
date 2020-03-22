@@ -60,6 +60,18 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     const subscription = this.service.selectAllElements.subscribe(() => {
       this.applyMultipleSelection();
     });
+
+    this.service.disableSelectionObservable$.subscribe(
+      () => {
+        this.applyMultipleSelection(undefined as unknown as Point, undefined as unknown as Point);
+      }
+    );
+
+    this.service.enableSelectionObservable$.subscribe(
+      (elements) => {
+        this.applyMultipleSelection(undefined as unknown as Point, undefined as unknown as Point, elements );
+      }
+    );
     this.allListenners.push(() => subscription.unsubscribe());
     this.initialiseKeyManager();
     this.renderer.setStyle(this.svgStructure.root, 'cursor', 'default');
