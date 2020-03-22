@@ -1,7 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {SvgToCanvas} from '../../../svg-to-canvas/svg-to-canvas';
-import {SvgService} from '../../../svg/svg.service';
 import { PipetteLogicComponent } from './pipette-logic.component';
 
 const createClickMouseEvent = (event: string, button: number): MouseEvent => {
@@ -16,8 +14,6 @@ const createClickMouseEvent = (event: string, button: number): MouseEvent => {
 describe('PipetteLogicComponent', () => {
   let component: PipetteLogicComponent;
   let fixture: ComponentFixture<PipetteLogicComponent>;
-  let svgService: SvgService;
-  let svgToCanvas: SvgToCanvas;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -29,8 +25,6 @@ describe('PipetteLogicComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PipetteLogicComponent);
     component = fixture.componentInstance;
-    svgToCanvas = TestBed.get(SvgToCanvas);
-    svgService = svgToCanvas['svgService'];
 
     const testSvgStructure = {
       root: document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
@@ -44,7 +38,6 @@ describe('PipetteLogicComponent', () => {
     testSvgStructure.root.appendChild(testSvgStructure.temporaryZone);
     testSvgStructure.root.appendChild(testSvgStructure.endZone);
 
-    svgService.structure = testSvgStructure;
     component.svgStructure = testSvgStructure;
 
     fixture.detectChanges();

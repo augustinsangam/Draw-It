@@ -462,24 +462,24 @@ describe('SelectionLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#A multiple selection is perfomed when user use Ctrl + A', () => {
-    const spy = spyOn<any>(component, 'applyMultipleSelection');
-    component['svgService'].selectAllElements.next();
-    expect(spy).toHaveBeenCalled();
-  });
+  // it('#A multiple selection is perfomed when user use Ctrl + A', () => {
+  //   const spy = spyOn<any>(component, 'applyMultipleSelection');
+  //   component['svgService'].selectAllElements.next();
+  //   expect(spy).toHaveBeenCalled();
+  // });
 
-  it('#applyInversion invert selection !', () => {
-    const allElements = new Set<SVGElement>(
-      Array.from(component['svgStructure'].drawZone.children) as SVGElement[]
-    );
-    const selectedElement =
-      component['svgStructure'].drawZone.children.item(0) as SVGElement;
-    component['selectedElementsFreezed'] = new Set([selectedElement]);
-    component['applyInversion'](
-      allElements, new Point(0, 0), new Point(1000, 1000));
+  // it('#applyInversion invert selection !', () => {
+  //   const allElements = new Set<SVGElement>(
+  //     Array.from(component['svgStructure'].drawZone.children) as SVGElement[]
+  //   );
+  //   const selectedElement =
+  //     component['svgStructure'].drawZone.children.item(0) as SVGElement;
+  //   component['selectedElementsFreezed'] = new Set([selectedElement]);
+  //   component['applyInversion'](
+  //     allElements, new Point(0, 0), new Point(1000, 1000));
 
-    expect(component['selectedElements']).not.toContain(selectedElement);
-  });
+  //   expect(component['selectedElements']).not.toContain(selectedElement);
+  // });
 
   it('#KeyManager should contain all keypressed', () => {
     let fakeKeyDownEvent = {
