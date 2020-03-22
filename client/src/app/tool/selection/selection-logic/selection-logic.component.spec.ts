@@ -9,7 +9,7 @@ import * as Util from './selection-logic-util';
 import { SelectionLogicComponent } from './selection-logic.component';
 
 // tslint:disable: no-magic-numbers no-string-literal no-any
-describe('SelectionLogicComponent', () => {
+fdescribe('SelectionLogicComponent', () => {
   let component: SelectionLogicComponent;
   let fixture: ComponentFixture<SelectionLogicComponent>;
 
@@ -565,6 +565,30 @@ describe('SelectionLogicComponent', () => {
 
     mouseClickHandler(fakeEvent);
     expect(spy).toHaveBeenCalled();
+  });
+
+  it('#applyMultipleIversion should not perform any inversion if there is no'
+    + 'elements in the inversion zone', () => {
+      const undefinedPoint = undefined as unknown as Point;
+      component['svgStructure'].drawZone = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'svg:g'
+      ) as SVGGElement;
+      const spy = spyOn<any>(component, 'applyInversion');
+      component['applyMultipleInversion'](undefinedPoint, undefinedPoint);
+      expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('#applyMultipleSelection should draw any visualisation if there is no'
+    + 'elements in the inversion zone', () => {
+      const undefinedPoint = undefined as unknown as Point;
+      component['svgStructure'].drawZone = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'svg:g'
+      ) as SVGGElement;
+      const spy = spyOn<any>(component, 'drawVisualisation');
+      component['applyMultipleSelection'](undefinedPoint, undefinedPoint);
+      expect(spy).not.toHaveBeenCalled();
   });
 
 });
