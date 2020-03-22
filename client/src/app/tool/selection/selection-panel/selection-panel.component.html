@@ -1,4 +1,16 @@
-<h1>Sélection</h1>
-<p>Disponible très bientôt ... </p>
-<p>Restez branchés</p>
-
+<h1>Selection</h1>
+  <p>
+    <button mat-stroked-button (click)="service.onCopy()"> copier</button>
+  </p>
+  <p>
+    <button mat-stroked-button  (click)="service.onCut()"> couper</button>
+  </p>
+  <p>
+    <button mat-stroked-button (click)="service.onPaste()"> coller</button>
+  </p>
+  <p>
+    <button mat-stroked-button (click)="service.onDuplicate()"> dupliquer</button>
+  </p>
+  <p>
+    <button mat-stroked-button (click)="service.onDelete()"> supprimer</button>
+  </p>
