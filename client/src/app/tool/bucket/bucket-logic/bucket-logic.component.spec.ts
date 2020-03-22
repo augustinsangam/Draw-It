@@ -66,29 +66,25 @@ describe('BucketLogicComponent', () => {
     return rect;
   };
 
-  it('all the svg is colorized when the tolerance is at 100%', async(() => {
+  it('all the svg is colorized when the tolerance is at 100%', (done: DoneFn) => {
 
     component.svgStructure.drawZone.appendChild(
       createRectangle('100', '100', '500', '500')
     );
-
     component['service'].tolerance = 100;
     component['colorService'].primaryColor = 'rgba(0, 0, 255, 1)';
-    component['onMouseClick']({offsetX: 5, offsetY: 5} as unknown as MouseEvent);
-
-    let allPixelsAreBlue = true;
-
-    setTimeout(() => {
+    component['onMouseClick'](
+      {offsetX: 5, offsetY: 5} as unknown as MouseEvent
+    ).then(() => {
+      let allPixelsAreBlue = true;
       new SvgToCanvas(component['svgStructure'].root,
         component['svgShape'],
         component['renderer']
       ).getCanvas().then((canvas) => {
-        document.body.appendChild(canvas);
         const width = component['svgShape'].width;
         const height = component['svgShape'].height;
         const imageData = (canvas.getContext('2d') as CanvasRenderingContext2D)
           .getImageData(0, 0, width, height);
-
         for (let i = 0; i < width * height * 4; i += 4) {
           if (imageData.data[i] !== 0
             || imageData.data[i + 1] !== 0
@@ -99,81 +95,91 @@ describe('BucketLogicComponent', () => {
           }
         }
         expect(allPixelsAreBlue).toEqual(true);
+        done();
       });
-    }, 200);
+    });
+  });
 
-  }));
+  it('Outside shapes should not be colorized when the tolerance is at 0%',
+     (done: DoneFn) => {
 
-  it('Inside shapes should not be colorized when the tolerance is at 0%',
-      async(() => {
-
-    // Creating this form
     /*
+    Creating this form and clicking two
+    times inside the triangle
     **************************************
     *                                    *
-    *   *****   ************      *****  *
-    *   *   *   *          *      *   *  *
-    *   *   *   ************      *   *  *
-    *   *   *                     *   *  *
-    *   *   *   ****************  *   *  *
-    *   *   *   *              *  *   *  *
-    *   *   *   ****************  *   *  *
-    *   *****                     *****  *
+    *                                    *
+    *                *                   *
+    *               * *                  *
+    *              *   *                 *
+    *             *     *                *
+    *            *       *               *
+    *           ***********              *
+    *                                    *
+    *                                    *
     **************************************
     */
     component.svgStructure.drawZone.appendChild(
-      createRectangle('0', '0', '990', '990')
+      createRectangle('10', '10', '600', '600')
     );
-    component.svgStructure.drawZone.appendChild(
-      createRectangle('100', '100', '100', '600')
-    );
-    component.svgStructure.drawZone.appendChild(
-      createRectangle('250', '100', '400', '200')
-    );
-    component.svgStructure.drawZone.appendChild(
-      createRectangle('250', '400', '500', '200')
-    );
-    component.svgStructure.drawZone.appendChild(
-      createRectangle('760', '200', '190', '600')
-    );
+    component.svgStructure.drawZone.innerHTML +=
+      '<polygon fill-opacity="1"'
+              + 'fill="rgba(230, 25, 75, 1)"'
+              + 'stroke-width="2"'
+              + 'stroke="rgba(240, 50, 230, 1)"'
+              + 'points="157 279 361 279 259 102 "'
+    + '></polygon>';
     component['service'].tolerance = 0;
-    component['colorService'].primaryColor = 'rgba(0, 0, 255, 1)';
-    component['onMouseClick']({offsetX: 10, offsetY: 10} as unknown as MouseEvent);
+    component['colorService'].primaryColor = 'rgba(255, 255, 25, 1)';
 
-    let allPixelsAreBlue = true;
-
-    setTimeout(() => {
-      new SvgToCanvas(component['svgStructure'].root,
-        component['svgShape'],
-        component['renderer']
-      ).getCanvas().then((canvas) => {
-        document.body.appendChild(canvas);
-        const width = component['svgShape'].width;
-        const height = component['svgShape'].height;
-        const imageData = (canvas.getContext('2d') as CanvasRenderingContext2D)
-          .getImageData(0, 0, width, height);
-
-        const centers = [
-          new Point(150, 400),
-          new Point(325, 150),
-          new Point(375, 500),
-          new Point(800, 700),
-        ];
-
-        for ( const point of centers) {
-          const position = (point.y * width + point.x) * 4;
-          if (imageData.data[position] === 0
-            && imageData.data[position + 1] === 0
-            && imageData.data[position + 2] === 255
-            && imageData.data[position + 3] === 255) {
-            allPixelsAreBlue = false;
-            break;
-          }
-        }
-
-        expect(allPixelsAreBlue).toEqual(true);
+    component['onMouseClick'](
+      { offsetX: 275, offsetY: 250 } as unknown as MouseEvent
+    ).then(() => {
+      component['onMouseClick'](
+        { offsetX: 275, offsetY: 250 } as unknown as MouseEvent
+      ).then(() => {
+        new SvgToCanvas(component['svgStructure'].root,
+          component['svgShape'],
+          component['renderer']
+        ).getCanvas().then((canvas) => {
+          const width = component['svgShape'].width;
+          const height = component['svgShape'].height;
+          const imageData = (canvas.getContext('2d') as CanvasRenderingContext2D)
+            .getImageData(0, 0, width, height);
+          let point = new Point(275, 200);
+          let position = (point.y * width + point.x) * 4;
+          expect(
+            imageData.data[position] === 255
+            && imageData.data[position + 1] === 255
+            && imageData.data[position + 2] === 25
+            && imageData.data[position + 3] === 255
+          ).toBeTruthy();
+          point = new Point(20, 20);
+          position = (point.y * width + point.x) * 4;
+          expect(
+            imageData.data[position] === 255
+            && imageData.data[position + 1] === 255
+            && imageData.data[position + 2] === 25
+            && imageData.data[position + 3] === 255
+          ).toBeFalsy();
+          done();
+        });
       });
-    }, 200);
+    });
+  });
+
+  it('#onMouseClick should be call when a click is performed on the svg', async(() => {
+    const event = new MouseEvent('click', {
+      offsetX: 10,
+      offsetY: 30,
+      button: 0
+    } as MouseEventInit);
+    // tslint:disable-next-line: no-any
+    const spy = spyOn<any>(component, 'onMouseClick');
+    component.svgStructure.root.dispatchEvent(event);
+    setTimeout(() => {
+      expect(spy).toHaveBeenCalled();
+    }, 20);
   }));
 
 });

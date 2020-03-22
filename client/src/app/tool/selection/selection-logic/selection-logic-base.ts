@@ -78,7 +78,9 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   protected applyMultipleInversion(startPoint: Point, endPoint: Point): void {
     const inversion = this.getMultipleSelection(startPoint, endPoint);
-    this.applyInversion(inversion.selectedElements);
+    if (!inversion.empty) {
+      this.applyInversion(inversion.selectedElements);
+    }
   }
 
   protected applyMultipleSelection(startPoint?: Point, endPoint?: Point,
@@ -86,7 +88,9 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.deleteVisualisation();
     const selection = this.getMultipleSelection(startPoint, endPoint, elements);
     this.service.selectedElements = selection.selectedElements;
-    this.drawVisualisation(selection.points[0], selection.points[1]);
+    if (!selection.empty) {
+      this.drawVisualisation(selection.points[0], selection.points[1]);
+    }
   }
 
   private getMultipleSelection(startPoint?: Point, endPoint?: Point,
