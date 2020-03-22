@@ -39,7 +39,7 @@ export class BucketLogicComponent
       this.renderer.listen(
         this.svgStructure.root,
         'click',
-        ($event: MouseEvent) => this.onMouseClick($event)
+        ($event: MouseEvent) => { this.onMouseClick($event); }
       ));
     this.renderer.setStyle(this.svgStructure.root, 'cursor', 'crosshair');
   }
@@ -48,17 +48,16 @@ export class BucketLogicComponent
     this.allListeners.forEach((end) => end());
   }
 
-  private onMouseClick($event: MouseEvent): void {
-    new SvgToCanvas(this.svgStructure.root, this.svgShape, this.renderer)
-    .getCanvas().then((canvas) => {
-      this.image = (canvas.getContext('2d') as CanvasRenderingContext2D)
-          .getImageData(0, 0, this.svgShape.width, this.svgShape.height);
-      const startingPoint = new Point($event.offsetX, $event.offsetY);
-      const borders = this.findBorders(startingPoint);
-      const shapes = this.separateShapes(borders);
-      this.drawSvg(shapes);
-      this.undoRedo.saveState();
-    });
+  private async onMouseClick($event: MouseEvent): Promise<void> {
+    const canvas = await new SvgToCanvas(this.svgStructure.root, this.svgShape, this.renderer)
+    .getCanvas();
+    this.image = (canvas.getContext('2d') as CanvasRenderingContext2D)
+        .getImageData(0, 0, this.svgShape.width, this.svgShape.height);
+    const startingPoint = new Point($event.offsetX, $event.offsetY);
+    const borders = this.findBorders(startingPoint);
+    const shapes = this.separateShapes(borders);
+    this.drawSvg(shapes);
+    this.undoRedo.saveState();
   }
 
   private findBorders(startingPoint: Point): PointSet {
