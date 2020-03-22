@@ -1,12 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SvgToCanvas } from 'src/app/svg-to-canvas/svg-to-canvas';
+import { Point } from '../../shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { BucketLogicComponent } from './bucket-logic.component';
-import { Point } from '../../shape/common/point';
 
 // tslint:disable: no-string-literal no-magic-numbers
-fdescribe('BucketLogicComponent', () => {
+describe('BucketLogicComponent', () => {
   let component: BucketLogicComponent;
   let fixture: ComponentFixture<BucketLogicComponent>;
 
@@ -95,8 +95,6 @@ fdescribe('BucketLogicComponent', () => {
             || imageData.data[i + 2] !== 255
             || imageData.data[i + 3] !== 255) {
             allPixelsAreBlue = false;
-            console.log(`${imageData.data[i]} ${imageData.data[i + 1]} ${imageData.data[i + 2]} ${imageData.data[i + 3]}`)
-            console.log(`Breaked at ${i / 4}`);
             break;
           }
         }
@@ -169,8 +167,6 @@ fdescribe('BucketLogicComponent', () => {
             && imageData.data[position + 2] === 255
             && imageData.data[position + 3] === 255) {
             allPixelsAreBlue = false;
-            // console.log(`${imageData.data[i]} ${imageData.data[i + 1]} ${imageData.data[i + 2]} ${imageData.data[i + 3]}`)
-            // console.log(`Breaked at ${i / 4}`);
             break;
           }
         }
