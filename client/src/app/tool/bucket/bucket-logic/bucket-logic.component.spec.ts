@@ -5,7 +5,7 @@ import { BucketLogicComponent } from './bucket-logic.component';
 // import { SvgToCanvas } from 'src/app/svg-to-canvas/svg-to-canvas';
 
 // tslint:disable: no-string-literal no-magic-numbers
-fdescribe('BucketLogicComponent', () => {
+describe('BucketLogicComponent', () => {
   let component: BucketLogicComponent;
   let fixture: ComponentFixture<BucketLogicComponent>;
 
