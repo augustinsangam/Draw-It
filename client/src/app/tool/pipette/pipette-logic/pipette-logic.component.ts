@@ -1,5 +1,5 @@
 import { Component, OnDestroy, Renderer2 } from '@angular/core';
-import { SvgToCanvasService } from 'src/app/svg-to-canvas/svg-to-canvas.service';
+import { SvgToCanvas } from 'src/app/svg-to-canvas/svg-to-canvas';
 import { ColorService } from '../../color/color.service';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
@@ -22,7 +22,6 @@ export class PipetteLogicComponent extends ToolLogicDirective
     private readonly service: PipetteService,
     private readonly renderer: Renderer2,
     private readonly colorService: ColorService,
-    private readonly svgToCanvas: SvgToCanvasService,
     private readonly undoRedoService: UndoRedoService,
   ) {
     super();
@@ -41,8 +40,11 @@ export class PipetteLogicComponent extends ToolLogicDirective
   ngOnInit(): void {
     this.renderer.setStyle(this.svgStructure.root, 'cursor', 'wait');
 
-    this.svgToCanvas.getCanvas(this.renderer).then((canvas) => {
+    const svgToCanvas = new SvgToCanvas(this.svgStructure, this.svgShape, this.renderer);
+
+    svgToCanvas.getCanvas(this.renderer).then((canvas) => {
       this.image = canvas.getContext('2d') as CanvasRenderingContext2D;
+      document.body.appendChild(canvas);
     });
 
     const onLeftClick = this.renderer.listen(

@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SvgToCanvasService } from './svg-to-canvas.service';
+import { SvgToCanvas } from './svg-to-canvas';
 
-describe('SvgToCanvasService', () => {
+describe('SvgToCanvas', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('#should be created', () => {
-    const service: SvgToCanvasService = TestBed.get(SvgToCanvasService);
+    const service: SvgToCanvas = TestBed.get(SvgToCanvas);
     expect(service).toBeTruthy();
   });
 });

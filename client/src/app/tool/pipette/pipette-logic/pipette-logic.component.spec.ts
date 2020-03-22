@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {SvgToCanvasService} from '../../../svg-to-canvas/svg-to-canvas.service';
+import {SvgToCanvas} from '../../../svg-to-canvas/svg-to-canvas';
 import {SvgService} from '../../../svg/svg.service';
 import { PipetteLogicComponent } from './pipette-logic.component';
 
@@ -17,7 +17,7 @@ describe('PipetteLogicComponent', () => {
   let component: PipetteLogicComponent;
   let fixture: ComponentFixture<PipetteLogicComponent>;
   let svgService: SvgService;
-  let svgToCanvas: SvgToCanvasService;
+  let svgToCanvas: SvgToCanvas;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -29,7 +29,7 @@ describe('PipetteLogicComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PipetteLogicComponent);
     component = fixture.componentInstance;
-    svgToCanvas = TestBed.get(SvgToCanvasService);
+    svgToCanvas = TestBed.get(SvgToCanvas);
     svgService = svgToCanvas['svgService'];
 
     const testSvgStructure = {

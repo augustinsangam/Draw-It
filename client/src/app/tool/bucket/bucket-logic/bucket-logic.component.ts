@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { SvgToCanvasService } from 'src/app/svg-to-canvas/svg-to-canvas.service';
+import { SvgToCanvas } from 'src/app/svg-to-canvas/svg-to-canvas';
 import { ColorService } from '../../color/color.service';
 import { RGBAColor } from '../../color/rgba-color';
 import { Point } from '../../shape/common/point';
@@ -26,8 +26,7 @@ export class BucketLogicComponent
   private image: ImageData;
   private allListeners: (() => void)[] = [];
 
-  constructor(private readonly svgToCanvas: SvgToCanvasService,
-              private renderer: Renderer2,
+  constructor(private renderer: Renderer2,
               private colorService: ColorService,
               private undoRedo: UndoRedoService,
               private service: BucketService
@@ -49,7 +48,8 @@ export class BucketLogicComponent
   }
 
   private onMouseClick($event: MouseEvent): void {
-    this.svgToCanvas.getCanvas(this.renderer).then((canvas) => {
+    new SvgToCanvas(this.svgStructure, this.svgShape, this.renderer)
+    .getCanvas(this.renderer).then((canvas) => {
       this.image = (canvas.getContext('2d') as CanvasRenderingContext2D)
           .getImageData(0, 0, this.svgShape.width, this.svgShape.height);
       const startingPoint = new Point($event.offsetX, $event.offsetY);
@@ -70,9 +70,6 @@ export class BucketLogicComponent
 
     while (fillQueue.length !== 0) {
       const currentPoint = fillQueue.pop() as Point;
-      if (!this.isSameColor(currentPoint, oldColor)) {
-        continue;
-      }
       const connectedPoints = this.fourConnectedPoint(currentPoint);
       for (const connectedPoint of connectedPoints) {
         if (fillVisited.has(connectedPoint)) {
@@ -167,7 +164,8 @@ export class BucketLogicComponent
     const path = this.renderer.createElement('path', this.svgNS);
     this.renderer.setAttribute(path, 'fill-rule', 'evenodd');
     this.renderer.setAttribute(path, 'fill', this.colorService.primaryColor);
-    this.renderer.setAttribute(path, 'stroke-width', '0');
+    this.renderer.setAttribute(path, 'stroke', this.colorService.primaryColor);
+    this.renderer.setAttribute(path, 'stroke-width', '2');
     this.renderer.setAttribute(path, 'd', pathDAttribute);
     this.renderer.appendChild(this.svgStructure.drawZone, path);
   }
