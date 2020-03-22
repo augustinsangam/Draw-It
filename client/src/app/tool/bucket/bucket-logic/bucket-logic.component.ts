@@ -125,8 +125,8 @@ export class BucketLogicComponent
 
   private isValidPoint(point: Point): boolean {
     const [x, y] = [point.x, point.y];
-    return 0 <= x && x <= this.svgShape.width
-      && 0 <= y && y <= this.svgShape.height;
+    return 0 <= x && x < this.svgShape.width
+      && 0 <= y && y < this.svgShape.height;
   }
 
   private getColor(point: Point): RGBAColor {
