@@ -1,5 +1,5 @@
 import { Component, OnDestroy, Renderer2 } from '@angular/core';
-import { SvgToCanvasService } from 'src/app/svg-to-canvas/svg-to-canvas.service';
+import { SvgToCanvas } from 'src/app/svg-to-canvas/svg-to-canvas';
 import { ColorService } from '../../color/color.service';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
@@ -22,7 +22,6 @@ export class PipetteLogicComponent extends ToolLogicDirective
     private readonly service: PipetteService,
     private readonly renderer: Renderer2,
     private readonly colorService: ColorService,
-    private readonly svgToCanvas: SvgToCanvasService,
     private readonly undoRedoService: UndoRedoService,
   ) {
     super();
@@ -41,8 +40,17 @@ export class PipetteLogicComponent extends ToolLogicDirective
   ngOnInit(): void {
     this.renderer.setStyle(this.svgStructure.root, 'cursor', 'wait');
 
-    this.image = this.svgToCanvas.getCanvas(this.renderer)
-                    .getContext('2d') as CanvasRenderingContext2D;
+    const svg = this.renderer.createElement('svg', this.svgNS);
+    this.renderer.setAttribute(svg, 'height', this.svgShape.height.toString());
+    this.renderer.setAttribute(svg, 'width', this.svgShape.width.toString());
+    this.renderer.setStyle(svg, 'background-color', this.svgShape.color);
+    this.renderer.appendChild(svg, this.svgStructure.defsZone.cloneNode(true));
+    this.renderer.appendChild(svg, this.svgStructure.drawZone.cloneNode(true));
+
+    new SvgToCanvas(svg, this.svgShape, this.renderer).getCanvas()
+    .then((canvas) => {
+      this.image = canvas.getContext('2d') as CanvasRenderingContext2D;
+    });
 
     const onLeftClick = this.renderer.listen(
       this.svgStructure.root,
@@ -70,7 +78,6 @@ export class PipetteLogicComponent extends ToolLogicDirective
 
     this.backgroundColorOnInit = this.colorService.backgroundColor;
     this.renderer.setStyle(this.svgStructure.root, 'cursor', 'crosshair');
-
   }
 
   private onMouseClick(mouseEv: MouseEvent): void {
@@ -96,7 +103,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
       ).data;
       // simplement pour accéder à la 4è valeur du pixel[3] qui correspond au alpha
       // tslint:disable-next-line:no-magic-numbers
-      this.service.currentColor = `rgba(${pixel[0]},${pixel[1]},${pixel[2]},${pixel[3]})`;
+      this.service.currentColor = `rgba(${pixel[0]},${pixel[1]},${pixel[2]},${pixel[3] / 255})`;
     }
   }
 

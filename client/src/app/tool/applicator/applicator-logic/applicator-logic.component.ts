@@ -29,34 +29,25 @@ export class ApplicatorLogicComponent
 
     this.handlers = {
       left: ($event: MouseEvent) => {
-        if (!this.isADrawElement($event.target as SVGElement)) {
+        const target = $event.target as SVGElement;
+        if (!this.isADrawElement(target)) {
           return ;
         }
-        if ($event.target instanceof SVGPathElement) {
-          ($event.target as SVGElement).setAttribute(
-            'stroke',
-            this.colorService.primaryColor
-          );
-          this.undoRedoService.saveState();
-        } else {
-          const fill = ($event.target as SVGElement).getAttribute('fill');
-          const isFilled = (fill !== null && fill !== 'none');
-          if (isFilled) {
-            ($event.target as SVGElement).setAttribute(
-              'fill',
-              this.colorService.primaryColor
-            );
-            this.undoRedoService.saveState();
+        if (target instanceof SVGPathElement) {
+          for (const property of ['fill', 'stroke']) {
+            if (this.elementHasProperty(target, property)) {
+              target.setAttribute(property, this.colorService.primaryColor);
+            }
           }
         }
+        this.undoRedoService.saveState();
       },
       right: ($event: MouseEvent) => {
         $event.preventDefault();
-        if (this.isADrawElement($event.target as SVGElement)
-            && !($event.target instanceof SVGPathElement)) {
-          ($event.target as SVGElement).setAttribute(
-            'stroke',
-            this.colorService.secondaryColor
+        const target = $event.target as SVGElement;
+        if (this.isADrawElement(target)
+            && !(target instanceof SVGPathElement)) {
+          target.setAttribute('stroke', this.colorService.secondaryColor
           );
           this.undoRedoService.saveState();
         }
@@ -64,7 +55,12 @@ export class ApplicatorLogicComponent
     };
   }
 
-  // TODO : utiliser renderer
+  private elementHasProperty(element: SVGElement,
+                             property: string
+  ): boolean {
+    const propertyValue = element.getAttribute(property);
+    return (propertyValue !== null && propertyValue !== 'none');
+  }
 
   ngOnInit(): void {
 
@@ -77,7 +73,8 @@ export class ApplicatorLogicComponent
         this.handlers.right)
     );
 
-    this.svgStructure.root.style.cursor = 'crosshair';
+    this.renderer.setStyle(this.svgStructure.root,
+                           'cursor', 'crosshair');
   }
 
   private isADrawElement(element: SVGElement): boolean {

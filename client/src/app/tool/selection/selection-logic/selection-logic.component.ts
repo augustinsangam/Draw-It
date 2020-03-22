@@ -85,9 +85,13 @@ export class SelectionLogicComponent
           if ($event.button !== 0) {
             return ;
           }
-          if (this.mouse.left.startPoint.equals(this.mouse.left.endPoint)
-            && this.elementSelectedType($event.target as SVGElement) === BasicSelectionType.NOTHING) {
-            this.deleteVisualisation();
+          if (this.mouse.left.startPoint.equals(this.mouse.left.endPoint)) {
+            const elementType = this.elementSelectedType($event.target as SVGElement);
+            if (elementType === BasicSelectionType.DRAW_ELEMENT) {
+              this.applySingleSelection($event.target as SVGElement);
+            } else if (elementType === BasicSelectionType.NOTHING) {
+              this.deleteVisualisation();
+            }
           }
         }]
       ])],

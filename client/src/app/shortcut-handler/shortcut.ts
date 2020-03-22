@@ -7,6 +7,7 @@ export enum Shortcut {
   DIGIT_3 = '3',
   O = 'o',
   A = 'a',
+  B = 'b',
   S = 's',
   I = 'i',
   Z = 'z',

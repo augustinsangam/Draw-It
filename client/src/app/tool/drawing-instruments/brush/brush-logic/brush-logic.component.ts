@@ -78,7 +78,8 @@ export class BrushLogicComponent extends PencilBrushCommon
   protected configureSvgElement(element: SVGElement): void {
     this.renderer.setAttribute(element, 'd', this.stringPath);
     this.renderer.setAttribute(element, 'stroke', this.colorService.primaryColor);
-    this.renderer.setAttribute(element, 'fill', this.colorService.primaryColor);
+    // TODO : Augustin a enlevé ceci
+    // this.renderer.setAttribute(element, 'fill', this.colorService.primaryColor);
     this.renderer.setAttribute(element, 'filter', `url(#${this.brushService.texture})`);
     this.renderer.setAttribute(element, 'stroke-linecap', this.strokeLineCap);
     this.renderer.setAttribute(element, 'stroke-width', this.brushService.thickness.toString());

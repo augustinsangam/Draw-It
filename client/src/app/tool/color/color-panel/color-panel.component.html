@@ -44,7 +44,7 @@
   PALETTE
   <mat-icon>palette</mat-icon>
 </button>
-<app-color-picker-content [startColor]="getStartColor()"
+<app-color-picker-content   [startColor]="getStartColor()"
                             (colorChange)="onColorPicked($event)"
                             *ngIf="showPalette"
                             #colorPalette>

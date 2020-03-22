@@ -1,0 +1,15 @@
+<h1>Sceau de peinture</h1>
+<form [formGroup]="paintSealForm">
+  <p>Tolérance</p>
+  <div>
+    <mat-slider min=0 max=100 step=1
+      (input)="onToleranceChange()"
+      formControlName="toleranceSlider"
+      #toleranceSlider>
+    </mat-slider>
+    <mat-form-field>
+      <input readonly matInput formControlName="toleranceFormField" />
+      <span matSuffix>px</span>
+    </mat-form-field>
+  </div>
+</form>

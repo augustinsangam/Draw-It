@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { RGBColor } from './rgb-color';
+import { RGBAColor } from './rgba-color';
 
 const HEXADECIMAL_BASE = 16;
 
@@ -121,7 +122,34 @@ export class ColorService {
     return `#${this.rgbToHex(this.rgbFormRgba(rgba))}`;
   }
 
+  rgbaFromString(rgba: string): RGBAColor {
+    const result = rgba.match(
+      /^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d*(?:\.\d+)?)\)$/i
+    );
+    if (result) {
+      return {
+        r: Number(result[1]),
+        g: Number(result[2]),
+        // tslint:disable-next-line: no-magic-numbers
+        b: Number(result[3]),
+        // tslint:disable-next-line: no-magic-numbers
+        a: Number(result[4])
+      };
+    }
+    return {
+      r: -1,
+      g: -1,
+      b: -1,
+      a: -1
+    };
+  }
+
   private rgbEqual(rgb1: RGBColor, rgb2: RGBColor): boolean {
     return rgb1.r === rgb2.r && rgb1.g === rgb2.g && rgb1.b === rgb2.b;
+  }
+
+  rgbaEqual(rgb1: RGBAColor, rgb2: RGBAColor): boolean {
+    return rgb1.r === rgb2.r && rgb1.g === rgb2.g
+            && rgb1.b === rgb2.b && rgb1.a === rgb2.a;
   }
 }
