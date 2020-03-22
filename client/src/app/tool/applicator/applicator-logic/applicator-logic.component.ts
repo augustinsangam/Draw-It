@@ -33,12 +33,11 @@ export class ApplicatorLogicComponent
         if (!this.isADrawElement(target)) {
           return ;
         }
-        if (target instanceof SVGPathElement) {
-          for (const property of ['fill', 'stroke']) {
-            if (this.elementHasProperty(target, property)) {
-              target.setAttribute(property, this.colorService.primaryColor);
-            }
-          }
+        if (this.elementHasProperty(target, 'fill')) {
+          target.setAttribute('fill', this.colorService.primaryColor);
+        }
+        if (target instanceof SVGPathElement && this.elementHasProperty(target, 'stroke')) {
+          target.setAttribute('stroke', this.colorService.primaryColor);
         }
         this.undoRedoService.saveState();
       },

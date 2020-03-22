@@ -30,7 +30,8 @@ describe('EraserPanelComponent', () => {
       imports: [
         FormsModule,
         ReactiveFormsModule,
-        BrowserAnimationsModule],
+        BrowserAnimationsModule
+      ],
       declarations: [
         EraserPanelComponent,
         MatSlider,

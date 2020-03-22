@@ -1,5 +1,5 @@
 <h1>Sceau de peinture</h1>
-<form [formGroup]="paintSealForm">
+<form [formGroup]="bucketForm">
   <p>Tolérance</p>
   <div>
     <mat-slider min=0 max=100 step=1
@@ -9,7 +9,7 @@
     </mat-slider>
     <mat-form-field>
       <input readonly matInput formControlName="toleranceFormField" />
-      <span matSuffix>px</span>
+      <span matSuffix>%</span>
     </mat-form-field>
   </div>
 </form>
