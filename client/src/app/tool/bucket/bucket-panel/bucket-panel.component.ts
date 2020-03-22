@@ -11,7 +11,7 @@ import { BucketService } from '../bucket.service';
 })
 export class BucketPanelComponent extends ToolPanelDirective {
 
-  private paintSealForm: FormGroup;
+  private bucketForm: FormGroup;
 
   @ViewChild('toleranceSlider', {
     static: false,
@@ -21,14 +21,14 @@ export class BucketPanelComponent extends ToolPanelDirective {
               private readonly service: BucketService,
               private readonly formBuilder: FormBuilder) {
     super(elementRef);
-    this.paintSealForm = this.formBuilder.group({
+    this.bucketForm = this.formBuilder.group({
       toleranceFormField: [this.service.tolerance, [Validators.required]],
       toleranceSlider: [this.service.tolerance, []],
     });
   }
 
   protected onToleranceChange(): void {
-    this.paintSealForm.patchValue
+    this.bucketForm.patchValue
               ({ toleranceFormField: this.toleranceSlider.value });
     this.service.tolerance = this.toleranceSlider.value as number;
   }

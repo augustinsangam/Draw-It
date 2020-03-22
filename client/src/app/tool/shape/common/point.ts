@@ -14,6 +14,10 @@ export class Point {
     return new Point(x, y);
   }
 
+  freeze(): string {
+    return `${this.x} ${this.y}`;
+  }
+
   equals(point: Point): boolean {
     return this.x === point.x && this.y === point.y;
   }
@@ -21,10 +25,6 @@ export class Point {
   squareDistanceTo(point: Point): number {
     const [dx, dy] = [point.x - this.x, point.y - this.y];
     return dx * dx + dy * dy;
-  }
-
-  freeze(): string {
-    return `${this.x} ${this.y}`;
   }
 
 }

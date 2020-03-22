@@ -148,8 +148,4 @@ export class ColorService {
     return rgb1.r === rgb2.r && rgb1.g === rgb2.g && rgb1.b === rgb2.b;
   }
 
-  rgbaEqual(rgb1: RGBAColor, rgb2: RGBAColor): boolean {
-    return rgb1.r === rgb2.r && rgb1.g === rgb2.g
-            && rgb1.b === rgb2.b && rgb1.a === rgb2.a;
-  }
 }

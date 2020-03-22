@@ -33,12 +33,22 @@ describe('PipetteLogicComponent', () => {
       temporaryZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
       endZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement
     };
+
+    testSvgStructure.root.setAttribute('height', '500');
+    testSvgStructure.root.setAttribute('width', '500');
+    testSvgStructure.root.style.backgroundColor = 'rgba(255, 255, 255, 1)';
+
     testSvgStructure.root.appendChild(testSvgStructure.defsZone);
     testSvgStructure.root.appendChild(testSvgStructure.drawZone);
     testSvgStructure.root.appendChild(testSvgStructure.temporaryZone);
     testSvgStructure.root.appendChild(testSvgStructure.endZone);
 
     component.svgStructure = testSvgStructure;
+    component.svgShape = {
+      height: 500,
+      width: 200,
+      color: 'rgba(255, 255, 255, 1)'
+    };
 
     fixture.detectChanges();
   });
@@ -72,14 +82,22 @@ describe('PipetteLogicComponent', () => {
     expect(spy2).not.toHaveBeenCalled();
   });
 
-  it('#onMouseMove should call ngOnInit whent the background color has changed', () => {
+  it('#onMouseMove should reset the image whent the background color has changed', () => {
+    const canvas = document.createElement('canvas') as HTMLCanvasElement;
+    component['image'] = canvas.getContext('2d') as CanvasRenderingContext2D;
+    component['backgroundColorOnInit'] = 'rgba(255,0,0,1)';
     component['colorService'].backgroundColor = 'rgba(0,0,0,1)';
-    const spy = spyOn(component, 'ngOnInit');
+    spyOn(component['image'], 'getImageData').and.callFake(() => {
+      return {data: [1, 1, 1, 1]} as unknown as ImageData;
+    });
+    const spy = spyOn<any>(component, 'initialiseImage');
     component['onMouseMove'](createClickMouseEvent('mousemove', 0));
     expect(spy).toHaveBeenCalled();
   });
 
   it('#onMouseMove should read the pixel data whether it is a right or left click', () => {
+    const canvas = document.createElement('canvas') as HTMLCanvasElement;
+    component['image'] = canvas.getContext('2d') as CanvasRenderingContext2D;
     const spy = spyOn(component['image'], 'getImageData').and.callFake(() => {
       return {data: [1, 1, 1, 1]} as unknown as ImageData;
     });
@@ -127,23 +145,16 @@ describe('PipetteLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#the post undo override function should call ngOnInit', () => {
-    const spy = spyOn(component, 'ngOnInit');
+  it('#the post undo override function should reset the canvas image', () => {
+    const spy = spyOn<any>(component, 'initialiseImage');
     (component['undoRedoService']['actions'].undo[1].function as () => void)();
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#the post redo override function should call ngOnInit', () => {
-    const spy = spyOn(component, 'ngOnInit');
+  it('#the post redo override function should should reset the canvas image', () => {
+    const spy = spyOn<any>(component, 'initialiseImage');
     (component['undoRedoService']['actions'].redo[1].function as () => void)();
     expect(spy).toHaveBeenCalled();
-  });
-
-  it('#onMouseMove should not call getImageData if the image is null', () => {
-    const spy = spyOn(component['image'], 'getImageData');
-    component['image'] = null as unknown as CanvasRenderingContext2D;
-    component['onMouseMove'](createClickMouseEvent('mousemove', 2));
-    expect(spy).not.toHaveBeenCalled();
   });
 
 });

@@ -462,24 +462,24 @@ describe('SelectionLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  // it('#A multiple selection is perfomed when user use Ctrl + A', () => {
-  //   const spy = spyOn<any>(component, 'applyMultipleSelection');
-  //   component['svgService'].selectAllElements.next();
-  //   expect(spy).toHaveBeenCalled();
-  // });
+  it('#A multiple selection is perfomed when user use Ctrl + A', () => {
+    const spy = spyOn<any>(component, 'applyMultipleSelection');
+    component['service'].selectAllElements.next();
+    expect(spy).toHaveBeenCalled();
+  });
 
-  // it('#applyInversion invert selection !', () => {
-  //   const allElements = new Set<SVGElement>(
-  //     Array.from(component['svgStructure'].drawZone.children) as SVGElement[]
-  //   );
-  //   const selectedElement =
-  //     component['svgStructure'].drawZone.children.item(0) as SVGElement;
-  //   component['selectedElementsFreezed'] = new Set([selectedElement]);
-  //   component['applyInversion'](
-  //     allElements, new Point(0, 0), new Point(1000, 1000));
+  it('#applyInversion invert selection !', () => {
+    const allElements = new Set<SVGElement>(
+      Array.from(component['svgStructure'].drawZone.children) as SVGElement[]
+    );
+    const selectedElement =
+      component['svgStructure'].drawZone.children.item(0) as SVGElement;
+    component['selectedElementsFreezed'] = new Set([selectedElement]);
+    component['applyInversion'](
+      allElements, new Point(0, 0), new Point(1000, 1000));
 
-  //   expect(component['selectedElements']).not.toContain(selectedElement);
-  // });
+    expect(component['service'].selectedElements).not.toContain(selectedElement);
+  });
 
   it('#KeyManager should contain all keypressed', () => {
     let fakeKeyDownEvent = {
@@ -546,6 +546,25 @@ describe('SelectionLogicComponent', () => {
    + ' when no element is selected', () => {
     expect(new MultipleSelection(new Set(), undefined as unknown as Offset)
     .getSelection().points).toEqual([new Point(0, 0), new Point(0, 0)]);
+  });
+
+  it('#A simple click on en element should select it', () => {
+    const fakeEvent = {
+      button: 0,
+      target: component.svgStructure.drawZone.children.item(0)
+    } as unknown as MouseEvent;
+
+    const mouseClickHandler = (component['mouseHandlers'].get('leftButton') as
+      Map<string, Util.MouseEventCallBack>).get('click') as
+      Util.MouseEventCallBack;
+
+    const spy = spyOn<any>(component, 'applySingleSelection');
+
+    component['mouse'].left.startPoint = new Point(2, 3);
+    component['mouse'].left.endPoint = new Point(2, 3);
+
+    mouseClickHandler(fakeEvent);
+    expect(spy).toHaveBeenCalled();
   });
 
 });

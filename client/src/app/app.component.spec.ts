@@ -383,15 +383,13 @@ describe('AppComponent', () => {
     }, 500);
   });
 
-  it('#Handler for Ctrl + digit A should cancel default action and'
-    + 'selection Selection Tool', (done: DoneFn) => {
+  it('#Handler for Ctrl + digit A should cancel default action', (done: DoneFn) => {
     const eventOWithControl = {
       code: 'KeyA',
       ctrlKey: true,
       preventDefault: () => { return ; }
     } as unknown as KeyboardEvent;
     const spyPrevent = spyOn(eventOWithControl, 'preventDefault');
-    const spyTool = spyOn(service['toolSelectorService'], 'set');
     service['initialiseShortcuts']();
     const handlerDigitA = service['shortcutHanler']['manager'].get(Shortcut.A);
     if (!!handlerDigitA) {
@@ -399,7 +397,6 @@ describe('AppComponent', () => {
     }
     setTimeout(() => {
       expect(spyPrevent).toHaveBeenCalled();
-      expect(spyTool).toHaveBeenCalledWith(Tool.Selection);
       done();
     }, 500);
   });

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { SvgToCanvas } from 'src/app/svg-to-canvas/svg-to-canvas';
 import { ColorService } from '../../color/color.service';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
@@ -10,9 +10,8 @@ import { PipetteService } from '../pipette.service';
   template: ''
 })
 
-// tslint:disable:use-lifecycle-interface
 export class PipetteLogicComponent extends ToolLogicDirective
-  implements OnDestroy {
+  implements OnInit, OnDestroy {
 
   private allListeners: (() => void)[] = [];
   private image: CanvasRenderingContext2D;
@@ -29,28 +28,18 @@ export class PipetteLogicComponent extends ToolLogicDirective
     this.undoRedoService.resetActions();
     this.undoRedoService.setPostUndoAction({
       functionDefined: true,
-      function: () => this.ngOnInit()
+      function: () => this.initialiseImage()
     });
     this.undoRedoService.setPostRedoAction({
       functionDefined: true,
-      function: () => this.ngOnInit()
+      function: () => this.initialiseImage()
     });
   }
 
   ngOnInit(): void {
     this.renderer.setStyle(this.svgStructure.root, 'cursor', 'wait');
 
-    const svg = this.renderer.createElement('svg', this.svgNS);
-    this.renderer.setAttribute(svg, 'height', this.svgShape.height.toString());
-    this.renderer.setAttribute(svg, 'width', this.svgShape.width.toString());
-    this.renderer.setStyle(svg, 'background-color', this.svgShape.color);
-    this.renderer.appendChild(svg, this.svgStructure.defsZone.cloneNode(true));
-    this.renderer.appendChild(svg, this.svgStructure.drawZone.cloneNode(true));
-
-    new SvgToCanvas(svg, this.svgShape, this.renderer).getCanvas()
-    .then((canvas) => {
-      this.image = canvas.getContext('2d') as CanvasRenderingContext2D;
-    });
+    this.initialiseImage();
 
     const onLeftClick = this.renderer.listen(
       this.svgStructure.root,
@@ -69,15 +58,27 @@ export class PipetteLogicComponent extends ToolLogicDirective
       'mousemove',
       (mouseEv: MouseEvent) => this.onMouseMove(mouseEv)
     );
-
     this.allListeners = [
       onLeftClick,
       onMouseMove,
       onRightClick
     ];
-
     this.backgroundColorOnInit = this.colorService.backgroundColor;
     this.renderer.setStyle(this.svgStructure.root, 'cursor', 'crosshair');
+  }
+
+  private initialiseImage(): void {
+    const svg = this.renderer.createElement('svg', this.svgNS);
+    this.renderer.setAttribute(svg, 'height', this.svgShape.height.toString());
+    this.renderer.setAttribute(svg, 'width', this.svgShape.width.toString());
+    this.renderer.setStyle(svg, 'background-color', this.svgShape.color);
+    this.renderer.appendChild(svg, this.svgStructure.defsZone.cloneNode(true));
+    this.renderer.appendChild(svg, this.svgStructure.drawZone.cloneNode(true));
+
+    new SvgToCanvas(svg, this.svgShape, this.renderer).getCanvas()
+    .then((canvas) => {
+      this.image = canvas.getContext('2d') as CanvasRenderingContext2D;
+    });
   }
 
   private onMouseClick(mouseEv: MouseEvent): void {
@@ -90,21 +91,20 @@ export class PipetteLogicComponent extends ToolLogicDirective
   }
 
   private onMouseMove(mouseEv: MouseEvent): void {
+
     if (this.colorService.backgroundColor !== this.backgroundColorOnInit) {
-      this.ngOnInit();
+      this.initialiseImage();
     }
 
-    if (this.image != null) {
-      const pixel = this.image.getImageData(
-        mouseEv.offsetX,
-        mouseEv.offsetY,
-        1,
-        1
-      ).data;
-      // simplement pour accéder à la 4è valeur du pixel[3] qui correspond au alpha
-      // tslint:disable-next-line:no-magic-numbers
-      this.service.currentColor = `rgba(${pixel[0]},${pixel[1]},${pixel[2]},${pixel[3] / 255})`;
-    }
+    const pixel = this.image.getImageData(
+      mouseEv.offsetX,
+      mouseEv.offsetY,
+      1,
+      1
+    ).data;
+    // simplement pour accéder à la 4è valeur du pixel[3] qui correspond au alpha
+    // tslint:disable-next-line:no-magic-numbers
+    this.service.currentColor = `rgba(${pixel[0]},${pixel[1]},${pixel[2]},${pixel[3] / 255})`;
   }
 
   ngOnDestroy(): void {

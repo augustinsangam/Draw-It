@@ -97,7 +97,7 @@ describe('ApplicatorLogicComponent', () => {
   });
 
   it('#left click can change the stroke color to the general'
-    + ' secondary color for non path filled SVGElement', () => {
+    + ' primary color for non path filled SVGElement', () => {
     const target = component.svgStructure.drawZone.children.item(0) as
       SVGElement;
     target.setAttribute('fill', '#FFFFFF');
@@ -122,9 +122,10 @@ describe('ApplicatorLogicComponent', () => {
   });
 
   it('#left click can change the stroke color '
-    + 'to the general secondary color SVGPathElement', () => {
+    + 'to the general primary color', () => {
     const target = document.createElementNS(
       'http://www.w3.org/2000/svg', 'svg:path');
+    target.setAttribute('stroke', '#FFFFFF');
     component['svgStructure'].drawZone.appendChild(target);
     const fakeEvent = {
       target,

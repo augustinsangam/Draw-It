@@ -4,12 +4,8 @@ export class PointSet {
 
   private set: Set<string>;
 
-  constructor(pointSet?: PointSet) {
-    if (!!pointSet) {
-      this.set = new Set(pointSet.set);
-    } else {
-      this.set = new Set();
-    }
+  constructor() {
+    this.set = new Set();
   }
 
   size(): number {
