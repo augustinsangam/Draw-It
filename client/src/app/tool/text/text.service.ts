@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {ToolService} from '../tool.service';
 import {TextAlignement} from './text-alignement';
 import {TextMutators} from './text-mutators';
+import {TextLine} from './text-line';
 
 interface Font {
   value: string;
@@ -74,8 +75,12 @@ export class TextService extends ToolService {
     );
   }
 
-  getLetterOffset(textWidth: number, textLength: number): number {
-    console.log(textWidth / textLength)
-    return textWidth / textLength;
+  getLineWidth(line: TextLine): number {
+    return (line.tspan as SVGTextContentElement).getComputedTextLength();
   }
+
+  getLetterWidth(letter: string): number {
+    return 0;
+  }
+
 }

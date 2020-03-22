@@ -1,7 +1,8 @@
 import {Renderer2} from '@angular/core';
 import {interval, Observable, Subscription} from 'rxjs';
-import {TextService} from './text.service';
 import {Point} from '../shape/common/point';
+import {TextLine} from './text-line';
+import {TextService} from './text.service';
 
 // tslint:disable:use-lifecycle-interface
 export class Cursor {
@@ -9,8 +10,9 @@ export class Cursor {
   frequency: Observable<number>;
   blinker: Subscription;
   visible: boolean;
+  tmpTextZone: SVGElement;
   currentPosition: Point;
-  readonly LETTER_OFFSET_X: number = 31;
+  initialPoint: Point;
   readonly CURSOR_INTERVAL: number = 500;
 
   constructor(private readonly renderer: Renderer2,
@@ -20,7 +22,9 @@ export class Cursor {
   ) {
     this.visible = true;
     this.currentPosition = initialPoint;
+    this.initialPoint = initialPoint;
     this.blinker = Subscription.EMPTY;
+    this.tmpTextZone = this.renderer.createElement('text', 'http://www.w3.org/2000/svg');
   }
 
   initBlink(): void {
@@ -48,16 +52,29 @@ export class Cursor {
 
   moveRight(newXPos: number): void {
     this.currentPosition.x = newXPos;
+    this.updateVisual();
+  }
+
+  updateVisual(): void {
     this.renderer.setAttribute(this.element, 'd',
       `M ${this.currentPosition.x} ${this.currentPosition.y} v ${-this.service.fontSize}`
     );
   }
 
-  nextLine(initialPoint: Point): void {
+  nextLine(): void {
     this.currentPosition.y += this.service.fontSize + 10;
-    this.currentPosition.x = initialPoint.x + 10;
-    this.renderer.setAttribute(this.element, 'd',
-      `M ${this.currentPosition.x} ${this.currentPosition.y} v ${-this.service.fontSize}`
-    );
+    this.currentPosition.x = this.initialPoint.x + 10;
+    this.updateVisual();
+  }
+
+  moveLeft(lines: TextLine[], currentLine: TextLine): void {
+    if (currentLine.letters.length !== 0) {
+      const oldText = currentLine.tspan.textContent;
+      currentLine.letters.pop();
+      currentLine.tspan.textContent = currentLine.letters.join('');
+      this.currentPosition.x = +currentLine.tspan.getAttribute('x') + this.service.getLineWidth(currentLine);
+      currentLine.tspan.textContent = oldText;
+    }
+    this.updateVisual();
   }
 }

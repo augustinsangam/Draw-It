@@ -3,17 +3,13 @@ import {ShortcutHandlerService} from '../../../shortcut-handler/shortcut-handler
 import {ColorService} from '../../color/color.service';
 import {MathService} from '../../mathematics/tool.math-service.service';
 import {BackGroundProperties, StrokeProperties} from '../../shape/common/abstract-shape';
+import {Dimension} from '../../shape/common/dimension';
 import {Point} from '../../shape/common/point';
 import {Rectangle} from '../../shape/common/rectangle';
 import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
 import {Cursor} from '../cursor';
 import {TextService} from '../text.service';
-import {Dimension} from '../../shape/common/dimension';
-
-interface TextLine {
-  tspan: SVGElement;
-  letters: string[];
-}
+import {TextLine} from '../text-line';
 
 @Component({
   selector: 'app-text-logic',
@@ -23,9 +19,6 @@ interface TextLine {
 // tslint:disable:use-lifecycle-interface
 export class TextLogicComponent extends ToolLogicDirective
 implements OnDestroy {
-
-  readonly TEXTZONESIZE_X: number = 300;
-  readonly TEXTZONEOFFSET_Y: number = 20;
 
   listeners: (() => void)[];
   textZoneRect: Rectangle;
@@ -48,7 +41,6 @@ implements OnDestroy {
     this.listeners = [];
     this.onDrag = false;
     this.lines = [];
-    // this.currentLine = {tspan: undefined as unknown as SVGElement, letters: []};
   }
 
   ngOnInit(): void {
@@ -119,6 +111,7 @@ implements OnDestroy {
 
       case 'ArrowLeft':
         console.log('ArrowLeft');
+        this.cursor.moveLeft(this.lines, this.currentLine);
         break;
 
       case 'ArrowRight':
@@ -200,13 +193,11 @@ implements OnDestroy {
     this.currentLine = {tspan: this.renderer.createElement('tspan', this.svgNS), letters: []};
     this.renderer.appendChild(this.textElement, this.currentLine.tspan);
     this.lines.push(this.currentLine);
-    console.log('newtspan');
-    console.log(this.currentLine.tspan);
   }
 
   private addLine(): void {
     this.addTspan();
-    this.cursor.nextLine(this.initialPoint);
+    this.cursor.nextLine();
     this.renderer.setAttribute(this.currentLine.tspan, 'x', `${+this.service.getTextAlign(this.zoneDims.width) + this.initialPoint.x}`);
     this.renderer.setAttribute(this.currentLine.tspan, 'y', `${this.cursor.currentPosition.y - 10}`);
   }
@@ -230,17 +221,13 @@ implements OnDestroy {
     this.textElement.setAttribute('text-decoration', this.service.textMutators.underline ? 'underline' : 'none');
   }
 
-  private getCurrentLineWidth(): number {
-    return (this.currentLine.tspan as SVGTextContentElement).getComputedTextLength();
-  }
-
   private updateText(): void {
     const svgLetter = this.renderer.createText(this.currentLine.letters.join(''));
     this.renderer.appendChild(this.currentLine.tspan, svgLetter);
     this.renderer.setAttribute(this.currentLine.tspan, 'x', `${+this.service.getTextAlign(this.zoneDims.width) + this.initialPoint.x}`);
     this.renderer.setAttribute(this.currentLine.tspan, 'y', `${this.cursor.currentPosition.y - 10}`);
     this.cursor.moveRight(
-      this.service.getTextAlign(this.zoneDims.width) + this.initialPoint.x + this.getCurrentLineWidth()
+      this.service.getTextAlign(this.zoneDims.width) + this.initialPoint.x + this.service.getLineWidth(this.currentLine)
     );
   }
 
