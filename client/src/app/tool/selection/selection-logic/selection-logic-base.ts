@@ -63,12 +63,13 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
     this.service.disableSelectionObservable$.subscribe(
       () => {
-        this.applyMultipleSelection(undefined as unknown as Point, undefined as unknown as Point);
+        this.applyMultipleSelection(undefined as unknown as Point, undefined as unknown as Point, new Set());
       }
     );
 
     this.service.enableSelectionObservable$.subscribe(
       (elements) => {
+        console.log('la');
         this.applyMultipleSelection(undefined as unknown as Point, undefined as unknown as Point, elements );
       }
     );

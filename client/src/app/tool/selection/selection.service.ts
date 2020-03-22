@@ -35,8 +35,8 @@ export class SelectionService {
     for (const element of this.clipboard) {
       this.svgService.structure.drawZone.appendChild(element.cloneNode(true));
     }
-    this.callEnableSelectionMethod();
     this.selectedElements = new Set(this.clipboard);
+    this.callEnableSelectionMethod();
   }
 
   onDuplicate(): void {
@@ -46,19 +46,19 @@ export class SelectionService {
   }
 
   onDelete(): void {
-    this.callDisableSelectionMethod();
     for (const element of this.selectedElements) {
       element.remove();
     }
     this.selectedElements = new Set();
+    this.callDisableSelectionMethod();
   }
   onCut(): void {
     this.clipboard = new Set(this.selectedElements);
-    this.callDisableSelectionMethod();
     for (const element of this.selectedElements) {
       element.remove();
     }
     this.selectedElements = new Set();
+    this.callDisableSelectionMethod();
   }
 
 }
