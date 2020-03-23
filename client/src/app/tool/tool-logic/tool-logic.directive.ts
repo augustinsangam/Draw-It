@@ -3,6 +3,7 @@ import {
   Input,
   OnInit
 } from '@angular/core';
+import { SvgShape } from 'src/app/svg/svg-shape';
 import { SVGStructure } from '../../svg/svg-structure';
 
 @Directive({
@@ -11,6 +12,7 @@ import { SVGStructure } from '../../svg/svg-structure';
 export abstract class ToolLogicDirective implements OnInit {
 
   @Input() svgStructure: SVGStructure;
+  @Input() svgShape: SvgShape;
   readonly svgNS: string;
 
   protected constructor() {

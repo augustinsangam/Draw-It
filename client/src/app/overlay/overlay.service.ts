@@ -1,28 +1,66 @@
-import { Injectable } from '@angular/core';
-import { MatDialogConfig, MatDialogRef, MatSnackBar } from '@angular/material';
-import { Shortcut } from '../shortcut-handler/shortcut';
+import {
+  Injectable
+} from '@angular/core';
+import {
+  MatDialogConfig,
+  MatDialogRef,
+  MatSnackBar
+} from '@angular/material';
+import {
+  Shortcut
+} from '../shortcut-handler/shortcut';
 import {
   ShortcutHandlerService
 } from '../shortcut-handler/shortcut-handler.service';
-import { SvgShape } from '../svg/svg-shape';
-import { SvgService } from '../svg/svg.service';
-import { ColorService } from '../tool/color/color.service';
-import { GridService } from '../tool/grid/grid.service';
+import {
+  SvgShape
+} from '../svg/svg-shape';
+import {
+  SvgService
+} from '../svg/svg.service';
+import {
+  ColorService
+} from '../tool/color/color.service';
+import {
+  GridService
+} from '../tool/grid/grid.service';
+import {
+  SelectionService
+} from '../tool/selection/selection.service';
 import {
   ToolSelectorService
 } from '../tool/tool-selector/tool-selector.service';
-import { Tool } from '../tool/tool.enum';
-import { UndoRedoService } from '../tool/undo-redo/undo-redo.service';
-import { OverlayManager } from './overlay-manager';
-import { OverlayPages } from './overlay-pages';
+import {
+  Tool
+} from '../tool/tool.enum';
+import {
+  UndoRedoService
+} from '../tool/undo-redo/undo-redo.service';
+import {
+  OverlayManager
+} from './overlay-manager';
+import {
+  OverlayPages
+} from './overlay-pages';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
-import { ExportComponent } from './pages/export/export.component';
-import { GalleryComponent, GalleryDraw } from './pages/gallery/gallery.component';
-import { HomeComponent } from './pages/home/home.component';
-import { NewDrawComponent } from './pages/new-draw/new-draw.component';
-import { SaveComponent } from './pages/save/save.component';
+import {
+  ExportComponent
+} from './pages/export/export.component';
+import {
+  GalleryComponent,
+  GalleryDraw
+} from './pages/gallery/gallery.component';
+import {
+  HomeComponent
+} from './pages/home/home.component';
+import {
+  NewDrawComponent
+} from './pages/new-draw/new-draw.component';
+import {
+  SaveComponent
+} from './pages/save/save.component';
 
 interface DialogRefs {
   home: MatDialogRef<HomeComponent>;
@@ -58,7 +96,8 @@ export class OverlayService {
               private toolSelectorService: ToolSelectorService,
               private readonly snackBar: MatSnackBar,
               private undoRedo: UndoRedoService,
-              private gridService: GridService
+              private gridService: GridService,
+              private selectionService: SelectionService
   ) {
     this.initialiseShortcuts();
   }
@@ -88,9 +127,7 @@ export class OverlayService {
     this.shortcutHanler.set(Shortcut.A, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
-        this.toolSelectorService.set(Tool.Selection);
-        this.toolSelectorService.set(Tool.Selection); // To close the panel
-        this.svgService.selectAllElements.emit(null);
+        this.selectionService.selectAllElements.emit(null);
       } else {
         this.toolSelectorService.set(Tool.Aerosol);
       }
@@ -247,6 +284,8 @@ export class OverlayService {
     });
     this.svgService.header = draw.header;
     this.undoRedo.setStartingCommand();
+    this.toolSelectorService.set(Tool.Pencil);
+    this.toolSelectorService.set(Tool.Pencil);
     this.snackBar.open('Dessin chargé avec succès', 'Ok', {
       duration: CONSTANTS.LOAD_DURATION
     });

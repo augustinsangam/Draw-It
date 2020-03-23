@@ -52,7 +52,6 @@ export class Path {
 
   getAlignedPoint(newPoint: Point): Point {
     const lastPoint = this.datas.points[this.datas.points.length - 1];
-
     return this.mathService.findAlignedSegmentPoint(newPoint, lastPoint);
   }
 
@@ -86,6 +85,9 @@ export class Path {
     this.strokeWidth = strokewidth;
     this.renderer.setAttribute(this.element, 'stroke-width', strokewidth);
     this.renderer.setAttribute(this.element, 'stroke', strokeColor);
-    this.renderer.setAttribute(this.element, 'fill', strokeColor);
+    this.renderer.setAttribute(this.element, 'fill', 'none');
+    if (this.withJonctions) {
+      this.renderer.setAttribute(this.element, 'fill', strokeColor);
+    }
   }
 }

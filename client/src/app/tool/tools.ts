@@ -1,10 +1,18 @@
-import { Type } from '@angular/core';
+import {
+  Type
+} from '@angular/core';
 import {
   ApplicatorLogicComponent
 } from './applicator/applicator-logic/applicator-logic.component';
 import {
   ApplicatorPanelComponent
 } from './applicator/applicator-panel/applicator-panel.component';
+import {
+  BucketLogicComponent
+} from './bucket/bucket-logic/bucket-logic.component';
+import {
+  BucketPanelComponent
+} from './bucket/bucket-panel/bucket-panel.component';
 import {
   AerosolLogicComponent
 } from './drawing-instruments/aerosol/aerosol-logic/aerosol-logic.component';
@@ -71,9 +79,15 @@ import {
 import {
   RectanglePanelComponent
 } from './shape/rectangle/rectangle-panel/rectangle-panel.component';
-import { ToolLogicDirective } from './tool-logic/tool-logic.directive';
-import { ToolPanelDirective } from './tool-panel/tool-panel.directive';
-import { Tool } from './tool.enum';
+import {
+  ToolLogicDirective
+} from './tool-logic/tool-logic.directive';
+import {
+  ToolPanelDirective
+} from './tool-panel/tool-panel.directive';
+import {
+  Tool
+} from './tool.enum';
 
 export const TOOL_MANAGER =
   new Map<Tool, [Type<ToolPanelDirective>, Type<ToolLogicDirective>]>();
@@ -102,3 +116,5 @@ TOOL_MANAGER.set(Tool.Aerosol,
   [AerosolPanelComponent, AerosolLogicComponent]);
 TOOL_MANAGER.set(Tool.Grid,
   [GridPanelComponent, GridLogicComponent]);
+TOOL_MANAGER.set(Tool.Bucket,
+    [BucketPanelComponent, BucketLogicComponent]);

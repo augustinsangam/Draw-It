@@ -58,6 +58,16 @@ describe('ShortcutHandlerManagerService', () => {
     }, waitTime);
   });
 
+  it('#Handler for B should select Bucket', (done: DoneFn) => {
+    const spyTool = spyOn(service['toolSelectorService'], 'set');
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.B) as Handler;
+    handler.handlerFunction();
+    setTimeout(() => {
+      expect(spyTool).toHaveBeenCalledWith(Tool.Bucket);
+      done();
+    }, waitTime);
+  });
+
   it('#Handler for R should select applicator tool', (done: DoneFn) => {
     const spyTool = spyOn(service['toolSelectorService'], 'set');
     const handler = service['shortcutHanler']['manager'].get(Shortcut.R) as Handler;

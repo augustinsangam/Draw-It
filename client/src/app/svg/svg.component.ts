@@ -94,6 +94,7 @@ export class SvgComponent implements OnInit, AfterViewInit {
     let ref: ComponentRef<ToolLogicDirective>;
     ref = this.viewContainerRef.createComponent(factory);
     ref.instance.svgStructure = this.svgStructure;
+    ref.instance.svgShape = this.svgService.shape;
     ref.changeDetectorRef.detectChanges();
     return ref;
   }

@@ -2,6 +2,7 @@ import { Component, OnInit, Renderer2 } from '@angular/core';
 import { SvgService } from 'src/app/svg/svg.service';
 import { Point } from '../../shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
+import { SelectionService } from '../selection.service';
 import { BasicSelectionType } from './element-selected-type';
 import { SelectionLogicBase } from './selection-logic-base';
 import * as Util from './selection-logic-util';
@@ -17,9 +18,10 @@ export class SelectionLogicComponent
 
   constructor(protected renderer: Renderer2,
               protected svgService: SvgService,
-              protected undoRedoService: UndoRedoService
+              protected undoRedoService: UndoRedoService,
+              protected service: SelectionService
   ) {
-    super(renderer, svgService, undoRedoService);
+    super(renderer, svgService, undoRedoService, service);
     this.initialiseHandlers();
   }
 
@@ -42,7 +44,8 @@ export class SelectionLogicComponent
             $event.offsetX,
             $event.offsetY
           );
-          if (this.svgStructure.drawZone.contains($event.target as SVGElement)) {
+          if (this.svgStructure.drawZone.contains($event.target as SVGElement)
+            && !this.service.selectedElements.has($event.target as SVGElement)) {
             this.applySingleSelection($event.target as SVGElement);
           }
         }],
@@ -82,9 +85,13 @@ export class SelectionLogicComponent
           if ($event.button !== 0) {
             return ;
           }
-          if (this.mouse.left.startPoint.equals(this.mouse.left.endPoint)
-            && this.elementSelectedType($event.target as SVGElement) === BasicSelectionType.NOTHING) {
-            this.deleteVisualisation();
+          if (this.mouse.left.startPoint.equals(this.mouse.left.endPoint)) {
+            const elementType = this.elementSelectedType($event.target as SVGElement);
+            if (elementType === BasicSelectionType.DRAW_ELEMENT) {
+              this.applySingleSelection($event.target as SVGElement);
+            } else if (elementType === BasicSelectionType.NOTHING) {
+              this.deleteVisualisation();
+            }
           }
         }]
       ])],
@@ -99,7 +106,7 @@ export class SelectionLogicComponent
             this.mouse.right.selectedElement = this.elementSelectedType(
               $event.target as SVGElement
             );
-            this.selectedElementsFreezed = new Set(this.selectedElements);
+            this.selectedElementsFreezed = new Set(this.service.selectedElements);
           }
         }],
         ['mousemove', ($event: MouseEvent) => {
