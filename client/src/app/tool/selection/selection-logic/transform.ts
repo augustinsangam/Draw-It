@@ -1,6 +1,6 @@
 import { Renderer2 } from '@angular/core';
 
-export class Deplacement {
+export class Transform {
 
   static translate(element: SVGElement,
                    x: number,

@@ -12,7 +12,7 @@ import { Offset } from '../offset';
 import { SelectionReturn } from '../selection-return';
 import { SelectionService } from '../selection.service';
 import { SingleSelection } from '../single-selection';
-import { Deplacement } from './deplacement';
+import { Transform } from './transform';
 import { BasicSelectionType, ElementSelectedType } from './element-selected-type';
 import * as Util from './selection-logic-util';
 
@@ -223,15 +223,15 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   protected isInTheVisualisationZone(x: number, y: number): boolean {
     const point = this.svgStructure.root.createSVGPoint();
-    const [dx, dy] = Deplacement.getTransformTranslate(this.rectangles.visualisation);
+    const [dx, dy] = Transform.getTransformTranslate(this.rectangles.visualisation);
     [point.x, point.y] = [x - dx, y - dy];
     return (this.rectangles.visualisation as SVGGeometryElement).isPointInFill(point);
   }
 
   protected translateAll(x: number, y: number): void {
-    Deplacement.translateAll(this.service.selectedElements, x, y, this.renderer);
-    Deplacement.translateAll(this.circles, x, y, this.renderer);
-    Deplacement.translate(this.rectangles.visualisation, x, y, this.renderer);
+    Transform.translateAll(this.service.selectedElements, x, y, this.renderer);
+    Transform.translateAll(this.circles, x, y, this.renderer);
+    Transform.translate(this.rectangles.visualisation, x, y, this.renderer);
   }
 
   private getSvgOffset(): Offset {
