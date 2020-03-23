@@ -13,10 +13,8 @@ import {SelectionService} from '../selection.service';
 export class SelectionPanelComponent extends ToolPanelDirective {
 
   constructor(elementRef: ElementRef<HTMLElement>,
-              private readonly service: SelectionService) {
+              protected readonly service: SelectionService) {
     super(elementRef);
   }
-  onClick(): void {
-    this.service.onCopy();
-  }
+
 }

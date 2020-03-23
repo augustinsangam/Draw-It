@@ -1,16 +1,20 @@
 <h1>Selection</h1>
-  <p>
-    <button mat-stroked-button (click)="service.onCopy()"> copier</button>
-  </p>
-  <p>
-    <button mat-stroked-button  (click)="service.onCut()"> couper</button>
-  </p>
-  <p>
-    <button mat-stroked-button (click)="service.onPaste()"> coller</button>
-  </p>
-  <p>
-    <button mat-stroked-button (click)="service.onDuplicate()"> dupliquer</button>
-  </p>
-  <p>
-    <button mat-stroked-button (click)="service.onDelete()"> supprimer</button>
-  </p>
+<button mat-fab (click)="service.copy.next(null)" color="" title="Copier"
+  [disabled]="service.selectedElements.size === 0">
+  <img src="../../../../assets/selecton-icons/copy.svg" alt="Copier"></button>
+<button mat-fab (click)="service.cut.next(null)" color="" title="Couper"
+  [disabled]="service.selectedElements.size === 0">
+  <img src="../../../../assets/selecton-icons/cut.svg" alt="Couper">
+</button>
+<button mat-fab (click)="service.paste.next(null)" color="" title="Coller"
+  [disabled]="service.clipboard.size === 0">
+  <img src="../../../../assets/selecton-icons/paste.svg" alt="Coller">
+</button>
+<button mat-fab (click)="service.duplicate.next(null)" color="" title="Dupliquer"
+  [disabled]="service.selectedElements.size === 0">
+  <img src="../../../../assets/selecton-icons/duplicate.svg" alt="Dupliquer">
+</button>
+<button mat-fab (click)="service.delete.next(null)" color="" title="Supprimer"
+  [disabled]="service.selectedElements.size === 0">
+  <img src="../../../../assets/selecton-icons/delete.svg" alt="Supprimer">
+</button>
