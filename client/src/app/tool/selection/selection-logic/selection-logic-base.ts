@@ -12,9 +12,9 @@ import { Offset } from '../offset';
 import { SelectionReturn } from '../selection-return';
 import { SelectionService } from '../selection.service';
 import { SingleSelection } from '../single-selection';
-import { Transform } from './transform';
 import { BasicSelectionType, ElementSelectedType } from './element-selected-type';
 import * as Util from './selection-logic-util';
+import { Transform } from './transform';
 
 enum Arrow {
   Up = 'ArrowUp',
@@ -228,11 +228,36 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     return (this.rectangles.visualisation as SVGGeometryElement).isPointInFill(point);
   }
 
+  protected isOnControlCircle(x: number, y: number): number {
+    let retValue = 0;
+    let index = 0;
+    for (const circle of this.circles) {
+      const centerX = circle.getAttribute('cx');
+      const centerY = circle.getAttribute('cy');
+      // console.log('center: ' + centerX + ' ' + centerY);
+      // console.log('pos: ' + x + ' ' + y)
+      if (!!centerX && !!centerY) {
+        const distance = Math.sqrt(Math.pow(+centerX - x, 2) +  Math.pow(+centerY - y, 2));
+        retValue = distance < +Util.CIRCLE_RADIUS ? index : NOT_FOUND;
+      }
+      if (retValue !== NOT_FOUND) {
+        break;
+      }
+      index++;
+    }
+
+    return retValue;
+  }
+
   protected translateAll(x: number, y: number): void {
     Transform.translateAll(this.service.selectedElements, x, y, this.renderer);
     Transform.translateAll(this.circles, x, y, this.renderer);
     Transform.translate(this.rectangles.visualisation, x, y, this.renderer);
   }
+
+  // protected resizeAll(factor: number): void {
+  //   Transform.
+  // }
 
   private getSvgOffset(): Offset {
     const svgBoundingRect = this.svgStructure.root.getBoundingClientRect();

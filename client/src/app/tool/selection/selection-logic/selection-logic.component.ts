@@ -16,6 +16,9 @@ export class SelectionLogicComponent
 
   private mouseHandlers: Map<string, Map<string, Util.MouseEventCallBack>>;
 
+  private baseVisualisationRectangleDimension = {width: 0, height: 0};
+  private scaledRectangleDimension = {width: 0, height: 0};
+
   constructor(protected renderer: Renderer2,
               protected svgService: SvgService,
               protected undoRedoService: UndoRedoService,
@@ -44,9 +47,25 @@ export class SelectionLogicComponent
             $event.offsetX,
             $event.offsetY
           );
+          this.mouse.left.onResize = this.isOnControlCircle(
+            $event.offsetX,
+            $event.offsetY
+          );
+          // console.log('drag: ' + this.mouse.left.onDrag);
+          console.log('resize: ' + this.mouse.left.onResize);
           if (this.svgStructure.drawZone.contains($event.target as SVGElement)
             && !this.service.selectedElements.has($event.target as SVGElement)) {
             this.applySingleSelection($event.target as SVGElement);
+            const selectionWidth = this.rectangles.visualisation.getAttribute('width');
+            const selectionHeight = this.rectangles.visualisation.getAttribute('height');
+            if (!!selectionHeight && !!selectionWidth) {
+              this.baseVisualisationRectangleDimension = {
+                width: +selectionWidth,
+                height: + selectionHeight
+              };
+              this.scaledRectangleDimension = this.baseVisualisationRectangleDimension;
+            }
+            // console.log(this.baseSelectionRectangleDimension);
           }
         }],
         ['mousemove', ($event: MouseEvent) => {
@@ -54,10 +73,19 @@ export class SelectionLogicComponent
             const previousCurrentPoint = this.mouse.left.currentPoint;
             this.mouse.left.currentPoint = new Point($event.offsetX,
               $event.offsetY);
-            if (this.mouse.left.onDrag) {
+            if (this.mouse.left.onDrag && this.mouse.left.onResize < 0) {
               const offsetX = $event.offsetX - previousCurrentPoint.x;
               const offsetY = $event.offsetY - previousCurrentPoint.y;
               this.translateAll(offsetX, offsetY);
+            } else if (this.mouse.left.onResize >= 0) {
+              const offsetX = this.mouse.left.onResize % 3 === 0 ? $event.offsetX - previousCurrentPoint.x : 0;
+              const offsetY = this.mouse.left.onResize % 3 !== 0 ? $event.offsetY - previousCurrentPoint.y : 0;
+              this.scaledRectangleDimension.width += this.mouse.left.onResize > 1 ? offsetX : -offsetX;
+              this.scaledRectangleDimension.height += this.mouse.left.onResize > 1 ? offsetY : -offsetY;
+              // console.log(this.scaledRectangleDimension);
+              const factorX = this.scaledRectangleDimension.width / this.baseVisualisationRectangleDimension.width;
+              const factorY = this.scaledRectangleDimension.height / this.baseVisualisationRectangleDimension.height;
+              console.log(factorX.toString() + ' ' + factorY);
             } else {
               this.drawSelection(this.mouse.left.startPoint,
                 this.mouse.left.currentPoint);
