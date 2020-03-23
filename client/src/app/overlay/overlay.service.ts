@@ -97,9 +97,7 @@ export class OverlayService {
               private readonly snackBar: MatSnackBar,
               private undoRedo: UndoRedoService,
               private gridService: GridService,
-              private selectionService: SelectionService
   ) {
-    this.initialiseShortcuts();
   }
 
   intialise(dialog: OverlayManager, svgService: SvgService): void {
@@ -114,24 +112,6 @@ export class OverlayService {
       save: (undefined as unknown) as MatDialogRef<SaveComponent>,
     };
     this.svgService = svgService;
-  }
-
-  private initialiseShortcuts(): void {
-    this.shortcutHanler.set(Shortcut.O, (event: KeyboardEvent) => {
-      if (!!event && event.ctrlKey) {
-        event.preventDefault();
-        this.openNewDrawDialog();
-      }
-    });
-
-    this.shortcutHanler.set(Shortcut.A, (event: KeyboardEvent) => {
-      if (!!event && event.ctrlKey) {
-        event.preventDefault();
-        this.selectionService.selectAllElements.emit(null);
-      } else {
-        this.toolSelectorService.set(Tool.Aerosol);
-      }
-    });
   }
 
   start(): void {
@@ -165,7 +145,7 @@ export class OverlayService {
     }
   }
 
-  private openNewDrawDialog(): void {
+  openNewDrawDialog(): void {
     this.dialogRefs.newDraw = this.dialog.open(
       NewDrawComponent,
       this.getCommonDialogOptions()
