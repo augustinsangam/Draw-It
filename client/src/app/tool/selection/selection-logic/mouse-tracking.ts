@@ -8,5 +8,5 @@ export interface MouseTracking {
   mouseIsDown: boolean;
   selectedElement: ElementSelectedType;
   onDrag: boolean;
-  onResize: number;
+  onResize: boolean;
 }

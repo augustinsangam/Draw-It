@@ -223,7 +223,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   protected isInTheVisualisationZone(x: number, y: number): boolean {
     const point = this.svgStructure.root.createSVGPoint();
-    const [dx, dy] = Transform.getTransformTranslate(this.rectangles.visualisation);
+    const [dx, dy] = new Transform(this.rectangles.visualisation, this.renderer).getTransformTranslate();
     [point.x, point.y] = [x - dx, y - dy];
     return (this.rectangles.visualisation as SVGGeometryElement).isPointInFill(point);
   }
@@ -252,12 +252,12 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   protected translateAll(x: number, y: number): void {
     Transform.translateAll(this.service.selectedElements, x, y, this.renderer);
     Transform.translateAll(this.circles, x, y, this.renderer);
-    Transform.translate(this.rectangles.visualisation, x, y, this.renderer);
+    new Transform(this.rectangles.visualisation, this.renderer).translate(x, y);
   }
 
-  // protected resizeAll(factor: number): void {
-  //   Transform.
-  // }
+  protected resizeAll(factorX: number, factorY: number): void {
+    Transform.scaleAll(this.service.selectedElements, factorX, factorY, this.renderer);
+  }
 
   private getSvgOffset(): Offset {
     const svgBoundingRect = this.svgStructure.root.getBoundingClientRect();
