@@ -92,7 +92,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   private onPaste(): void {
     if (this.service.clipboard.size !== 0) {
-      Deplacement.translateAll(this.service.clipboard, 30, 30, this.renderer);
+      Transform.translateAll(this.service.clipboard, 30, 30, this.renderer);
       const clipBoardCloned = this.clone(this.service.clipboard);
       clipBoardCloned.forEach((element) => {
         this.renderer.appendChild(this.svgStructure.drawZone, element);

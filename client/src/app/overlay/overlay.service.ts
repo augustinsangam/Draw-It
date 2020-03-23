@@ -7,12 +7,6 @@ import {
   MatSnackBar
 } from '@angular/material';
 import {
-  Shortcut
-} from '../shortcut-handler/shortcut';
-import {
-  ShortcutHandlerService
-} from '../shortcut-handler/shortcut-handler.service';
-import {
   SvgShape
 } from '../svg/svg-shape';
 import {
@@ -24,9 +18,6 @@ import {
 import {
   GridService
 } from '../tool/grid/grid.service';
-import {
-  SelectionService
-} from '../tool/selection/selection.service';
 import {
   ToolSelectorService
 } from '../tool/tool-selector/tool-selector.service';
@@ -91,8 +82,7 @@ export class OverlayService {
   private dialogRefs: DialogRefs;
   private svgService: SvgService;
 
-  constructor(private shortcutHanler: ShortcutHandlerService,
-              private colorService: ColorService,
+  constructor(private colorService: ColorService,
               private toolSelectorService: ToolSelectorService,
               private readonly snackBar: MatSnackBar,
               private undoRedo: UndoRedoService,

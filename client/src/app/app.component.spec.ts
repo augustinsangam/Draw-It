@@ -19,7 +19,6 @@ import { HomeComponent } from './overlay/pages/home/home.component';
 import { NewDrawComponent } from './overlay/pages/new-draw/new-draw.component';
 import { SaveComponent } from './overlay/pages/save/save.component';
 import { PanelComponent } from './panel/panel.component';
-import { Shortcut } from './shortcut-handler/shortcut';
 import {
   ShortcutHandlerService
 } from './shortcut-handler/shortcut-handler.service';
@@ -34,7 +33,6 @@ import { PencilPanelComponent } from './tool/drawing-instruments/pencil/pencil-p
 import {
   ToolSelectorService
 } from './tool/tool-selector/tool-selector.service';
-import { Tool } from './tool/tool.enum';
 import { UndoRedoService } from './tool/undo-redo/undo-redo.service';
 
 // tslint:disable: no-string-literal no-any no-magic-numbers
@@ -254,13 +252,12 @@ describe('AppComponent', () => {
 
   it('#openDocumentationDialog should set '
     + 'dialogRefs.documentation.disableClose to false', () => {
-      const spy = spyOn(service['shortcutHanler'], 'desactivateAll');
 
       service['openDocumentationDialog'](true);
 
       service['dialogRefs'].documentation.close();
 
-      expect(spy).toHaveBeenCalled();
+      expect(service['dialogRefs'].documentation.disableClose).toBeFalsy();
     });
 
   it('#createNewDraw should clear the DOM', () => {
@@ -343,78 +340,6 @@ describe('AppComponent', () => {
     setTimeout(() => {
       expect(svgService.structure.drawZone.contains(rec1)).toBeTruthy();
       expect(svgService.structure.drawZone.contains(rec2)).toBeTruthy();
-      done();
-    }, 500);
-  });
-
-  it('#Handler for Ctrl + digit O should open new draw dialog', (done: DoneFn) => {
-    const eventOWithControl = {
-      code: 'KeyO',
-      ctrlKey: true,
-      preventDefault: () => { return ; }
-    } as unknown as KeyboardEvent;
-    const spy = spyOn<any>(service, 'openNewDrawDialog');
-    service['initialiseShortcuts']();
-    const handlerDigitO = service['shortcutHanler']['manager'].get(Shortcut.O);
-    if (!!handlerDigitO) {
-      handlerDigitO.handlerFunction(eventOWithControl);
-    }
-    setTimeout(() => {
-      expect(spy).toHaveBeenCalled();
-      done();
-    }, 500);
-  });
-
-  it('#Handler for digit O should not cancel default action', (done: DoneFn) => {
-    const eventOWithControl = {
-      code: 'KeyO',
-      ctrlKey: false,
-      preventDefault: () => { return ; }
-    } as unknown as KeyboardEvent;
-    const spy = spyOn(eventOWithControl, 'preventDefault');
-    service['initialiseShortcuts']();
-    const handlerDigitO = service['shortcutHanler']['manager'].get(Shortcut.O);
-    if (!!handlerDigitO) {
-      handlerDigitO.handlerFunction(eventOWithControl);
-    }
-    setTimeout(() => {
-      expect(spy).not.toHaveBeenCalled();
-      done();
-    }, 500);
-  });
-
-  it('#Handler for Ctrl + digit A should cancel default action', (done: DoneFn) => {
-    const eventOWithControl = {
-      code: 'KeyA',
-      ctrlKey: true,
-      preventDefault: () => { return ; }
-    } as unknown as KeyboardEvent;
-    const spyPrevent = spyOn(eventOWithControl, 'preventDefault');
-    service['initialiseShortcuts']();
-    const handlerDigitA = service['shortcutHanler']['manager'].get(Shortcut.A);
-    if (!!handlerDigitA) {
-      handlerDigitA.handlerFunction(eventOWithControl);
-    }
-    setTimeout(() => {
-      expect(spyPrevent).toHaveBeenCalled();
-      done();
-    }, 500);
-  });
-
-  it('#Handler for Digit A should select Aerosol', (done: DoneFn) => {
-    const eventOWithControl = {
-      code: 'KeyA',
-      ctrlKey: false,
-      preventDefault: () => { return ; }
-    } as unknown as KeyboardEvent;
-    const spyTool = spyOn(service['toolSelectorService'], 'set');
-    service['initialiseShortcuts']();
-    const handlerDigitA = service['shortcutHanler']['manager'].get(Shortcut.A);
-    if (!!handlerDigitA) {
-      handlerDigitA.handlerFunction(eventOWithControl);
-    }
-    setTimeout(() => {
-      expect(spyTool).toHaveBeenCalledWith(Tool.Aerosol);
       done();
     }, 500);
   });
