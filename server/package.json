@@ -100,7 +100,6 @@
   },
   "prettier": {
     "singleQuote": true,
-    "trailingComma": "all",
     "useTabs": true
   },
   "dependencies": {
