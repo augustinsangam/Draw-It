@@ -1,5 +1,6 @@
-import inversify, { Container } from 'inversify';
 import 'reflect-metadata';
+
+import inversify, { Container } from 'inversify';
 
 import { Application } from './application';
 import { TYPES } from './constants';
@@ -9,10 +10,7 @@ import { Server } from './server';
 
 const setupContainer = (container: Container): void => {
 	container.bind<Application>(TYPES.Application).to(Application);
-	container
-		.bind<Database>(TYPES.Database)
-		.to(Database)
-		.inSingletonScope();
+	container.bind<Database>(TYPES.Database).to(Database).inSingletonScope();
 	container.bind<Router>(TYPES.Router).to(Router);
 	container.bind<Server>(TYPES.Server).to(Server);
 };

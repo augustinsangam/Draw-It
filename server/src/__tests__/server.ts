@@ -85,9 +85,7 @@ describe('server', () => {
 		appCallbackStub.returns(app);
 
 		server['setupServer']();
-		await supertest(server['server'])
-			.get('/')
-			.then();
+		await supertest(server['server']).get('/').then();
 		chai.expect(server['openedSockets'].size).to.equal(1);
 		server['server'].close();
 
@@ -101,9 +99,7 @@ describe('server', () => {
 		appCallbackStub.returns(app);
 
 		server['setupServer']();
-		await supertest(server['server'])
-			.get('/')
-			.then();
+		await supertest(server['server']).get('/').then();
 		server['server'].close();
 
 		await promisifiedTimeout(100);
