@@ -7,12 +7,6 @@ import {
   MatSnackBar
 } from '@angular/material';
 import {
-  Shortcut
-} from '../shortcut-handler/shortcut';
-import {
-  ShortcutHandlerService
-} from '../shortcut-handler/shortcut-handler.service';
-import {
   SvgShape
 } from '../svg/svg-shape';
 import {
@@ -24,9 +18,6 @@ import {
 import {
   GridService
 } from '../tool/grid/grid.service';
-import {
-  SelectionService
-} from '../tool/selection/selection.service';
 import {
   ToolSelectorService
 } from '../tool/tool-selector/tool-selector.service';
@@ -91,15 +82,12 @@ export class OverlayService {
   private dialogRefs: DialogRefs;
   private svgService: SvgService;
 
-  constructor(private shortcutHanler: ShortcutHandlerService,
-              private colorService: ColorService,
+  constructor(private colorService: ColorService,
               private toolSelectorService: ToolSelectorService,
               private readonly snackBar: MatSnackBar,
               private undoRedo: UndoRedoService,
               private gridService: GridService,
-              private selectionService: SelectionService
   ) {
-    this.initialiseShortcuts();
   }
 
   intialise(dialog: OverlayManager, svgService: SvgService): void {
@@ -114,24 +102,6 @@ export class OverlayService {
       save: (undefined as unknown) as MatDialogRef<SaveComponent>,
     };
     this.svgService = svgService;
-  }
-
-  private initialiseShortcuts(): void {
-    this.shortcutHanler.set(Shortcut.O, (event: KeyboardEvent) => {
-      if (!!event && event.ctrlKey) {
-        event.preventDefault();
-        this.openNewDrawDialog();
-      }
-    });
-
-    this.shortcutHanler.set(Shortcut.A, (event: KeyboardEvent) => {
-      if (!!event && event.ctrlKey) {
-        event.preventDefault();
-        this.selectionService.selectAllElements.emit(null);
-      } else {
-        this.toolSelectorService.set(Tool.Aerosol);
-      }
-    });
   }
 
   start(): void {
@@ -165,7 +135,7 @@ export class OverlayService {
     }
   }
 
-  private openNewDrawDialog(): void {
+  openNewDrawDialog(): void {
     this.dialogRefs.newDraw = this.dialog.open(
       NewDrawComponent,
       this.getCommonDialogOptions()

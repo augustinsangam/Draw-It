@@ -60,9 +60,69 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     const subscription = this.service.selectAllElements.subscribe(() => {
       this.applyMultipleSelection();
     });
+    this.service.copy.subscribe(() => this.onCopy());
+    this.service.cut.subscribe(() => this.onCut());
+    this.service.paste.subscribe(() => this.onPaste());
+    this.service.delete.subscribe(() => this.onDelete());
+    this.service.duplicate.subscribe(() => this.onDuplicate());
     this.allListenners.push(() => subscription.unsubscribe());
     this.initialiseKeyManager();
     this.renderer.setStyle(this.svgStructure.root, 'cursor', 'default');
+  }
+
+  private onCopy(): void {
+    if (this.service.selectedElements.size !== 0) {
+      this.service.clipboard = this.clone(
+        this.service.selectedElements
+      );
+    }
+  }
+
+  private onCut(): void {
+    if (this.service.selectedElements.size !== 0) {
+      this.service.clipboard = this.clone(
+        this.service.selectedElements
+      );
+      this.service.selectedElements.forEach((element) => {
+        this.renderer.removeChild(this.svgStructure.drawZone, element);
+      });
+      this.deleteVisualisation();
+    }
+  }
+
+  private onPaste(): void {
+    if (this.service.clipboard.size !== 0) {
+      Transform.translateAll(this.service.clipboard, 30, 30, this.renderer);
+      const clipBoardCloned = this.clone(this.service.clipboard);
+      clipBoardCloned.forEach((element) => {
+        this.renderer.appendChild(this.svgStructure.drawZone, element);
+      });
+      this.applyMultipleSelection(undefined, undefined, clipBoardCloned);
+    }
+  }
+
+  private onDelete(): void {
+    if (this.service.selectedElements.size !== 0) {
+      this.service.selectedElements.forEach((element) => {
+        this.renderer.removeChild(this.svgStructure.drawZone, element);
+      });
+      this.deleteVisualisation();
+    }
+  }
+
+  private onDuplicate(): void {
+    if (this.service.selectedElements.size !== 0) {
+      this.onCopy();
+      this.onPaste();
+    }
+  }
+
+  private clone(elements: Set<SVGElement>): Set<SVGElement> {
+    const set = new Set<SVGElement>();
+    elements.forEach((element) => {
+      set.add(element.cloneNode(true) as SVGElement);
+    });
+    return set;
   }
 
   protected applySingleSelection(element: SVGElement): void {
