@@ -22,8 +22,7 @@ export class Cursor {
   ) {
     this.visible = true;
     this.currentPosition = initialPoint;
-    this.initialCursorPoint = initialPoint;
-    console.log(this.initialCursorPoint);
+    this.initialCursorPoint = new Point(initialPoint.x, initialPoint.y);
     this.blinker = Subscription.EMPTY;
     this.tmpTextZone = this.renderer.createElement('text', 'http://www.w3.org/2000/svg');
   }
@@ -57,28 +56,10 @@ export class Cursor {
     );
   }
 
-  nextLine(): void {
-    console.log(this.initialCursorPoint);
-    this.currentPosition.x = this.initialCursorPoint.x + 10;
-    this.currentPosition.y += this.service.fontSize + 10;
-    this.updateVisual();
-  }
-
-  moveLeft(lines: TextLine[], currentLine: TextLine): void {
-    if (currentLine.letters.length !== 0) {
-      const oldText = currentLine.tspan.textContent;
-      currentLine.letters.pop();
-      currentLine.tspan.textContent = currentLine.letters.join('');
-      this.currentPosition.x = +currentLine.tspan.getAttribute('x') + this.service.getLineWidth(currentLine);
-      currentLine.tspan.textContent = oldText;
-    } else {
-
-    }
-    this.updateVisual();
-  }
-
-  moveRight(newXPos: number): void {
-    this.currentPosition.x = newXPos;
+  move(currentLine: TextLine, lineIndex: number): void {
+    // console.log(`lineIndex = ${lineIndex}`);
+    this.currentPosition.x = this.initialCursorPoint.x + this.service.getTextAlign(this.service.currentZoneDims.width) / 2 +  this.service.getLineWidth(currentLine);
+    this.currentPosition.y = this.initialCursorPoint.y + ((lineIndex) * this.service.fontSize);
     this.updateVisual();
   }
 }

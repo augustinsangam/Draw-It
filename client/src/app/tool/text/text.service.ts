@@ -3,6 +3,7 @@ import {ToolService} from '../tool.service';
 import {TextAlignement} from './text-alignement';
 import {TextMutators} from './text-mutators';
 import {TextLine} from './text-line';
+import {Dimension} from '../shape/common/dimension';
 
 interface Font {
   value: string;
@@ -22,6 +23,7 @@ export class TextService extends ToolService {
   textAlignement: TextAlignement;
   fontSize: number;
   fontsList: Font[];
+  currentZoneDims: Dimension;
 
   constructor() {
     super();
@@ -58,7 +60,7 @@ export class TextService extends ToolService {
       // {value: 'Arnoldboecklin, fantasy', viewValue: 'Arnoldboecklin'},
       // {value: 'Oldtown, fantasy', viewValue: 'Oldtown'},
       // {value: 'Blippo, fantasy', viewValue: 'Blippo'},
-      //{value: 'Brushstroke, fantasy', viewValue: 'Brushstroke'}
+      // {value: 'Brushstroke, fantasy', viewValue: 'Brushstroke'}
     ];
     this.fontSize = this.DEFAULT_FONTSIZE;
   }
@@ -75,12 +77,14 @@ export class TextService extends ToolService {
     );
   }
 
-  getLineWidth(line: TextLine): number {
-    return (line.tspan as SVGTextContentElement).getComputedTextLength();
+  getLineWidth(currentLine: TextLine): number {
+    const oldText = currentLine.tspan.textContent;
+    if (!!currentLine.tspan.textContent && currentLine.tspan.textContent.length !== currentLine.cursorIndex) {
+      currentLine.tspan.textContent = currentLine.tspan.textContent.slice(0, currentLine.cursorIndex);
+    }
+    const xPos = (currentLine.tspan as SVGTextContentElement).getComputedTextLength();
+    currentLine.tspan.textContent = oldText;
+    // console.log(`cursor X pos = ${xPos}`);
+    return xPos;
   }
-
-  getLetterWidth(letter: string): number {
-    return 0;
-  }
-
 }
