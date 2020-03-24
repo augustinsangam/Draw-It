@@ -37,6 +37,7 @@ export interface GalleryDraw {
   svg: SVGGElement;
   header: SvgHeader;
   shape: SvgShape;
+  colors: string[];
 }
 
 @Component({
@@ -97,7 +98,7 @@ export class GalleryComponent implements AfterViewInit {
     const drawsLenght = draws.drawBuffersLength();
     let tempsAllTags = new Set<string>();
 
-    for (let i = drawsLenght - 1; i !== 0; i--) {
+    for (let i = drawsLenght; i-- !== 0; ) {
 
       const drawBuffer = draws.drawBuffers(i);
       if (drawBuffer == null) {
@@ -121,12 +122,18 @@ export class GalleryComponent implements AfterViewInit {
   }
 
   private newDraw(draw: Draw, id: number, tempsAllTags: Set<string>): Set<string> {
-    const newTagArray = new Array<string>();
-
-    for (let i = 0; i < draw.tagsLength(); i++) {
+    const tagsLength = draw.tagsLength();
+    const newTagArray = new Array<string>(tagsLength);
+    for (let i = 0; i < tagsLength; ++i) {
       const tag = draw.tags(i);
-      newTagArray.push(tag);
+      newTagArray[i] = tag;
       tempsAllTags.add(tag);
+    }
+
+    const colorsLength = draw.colorsLength();
+    const colors = new Array<string>(colorsLength);
+    for (let i = 0; i < colorsLength; ++i) {
+      colors[i] = draw.colors(i);
     }
 
     const svgElement = draw.svg();
@@ -149,6 +156,7 @@ export class GalleryComponent implements AfterViewInit {
           color: draw.color() as string
         },
         svg,
+        colors,
       };
       this.galleryDrawTable.push(newGalleryDraw);
     }

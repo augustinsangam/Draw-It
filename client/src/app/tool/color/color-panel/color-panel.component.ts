@@ -125,6 +125,7 @@ export class ColorPanelComponent extends ToolPanelDirective
           this.colorPreviewSecondary.updateColor(
             this.colorsItemsArray[i].color
           );
+          this.colorService.secondaryColor = this.colorsItemsArray[i].color;
           this.promoteColor(i);
         }
       );
@@ -132,13 +133,14 @@ export class ColorPanelComponent extends ToolPanelDirective
   }
 
   private promoteColor(index: number): void {
-    this.colorService.secondaryColor = this.colorsItemsArray[index].color;
-    this.colorPalette.startColor = this.colorService.hexFormRgba(
-      this.colorsItemsArray[index].color
-    );
-    this.colorPalette.initialiseStartingColor();
-    this.colorService.promote(index);
-    this.updateRecentColors();
+    if (this.colorPalette) {
+      this.colorPalette.startColor = this.colorService.hexFormRgba(
+        this.colorsItemsArray[index].color
+      );
+      this.colorPalette.initialiseStartingColor();
+      this.colorService.promote(index);
+      this.updateRecentColors();
+    }
   }
 
   private updateRecentColors(): void {

@@ -207,4 +207,14 @@ describe('ColorPanelComponent', () => {
     expect(spyOnInit).toHaveBeenCalled();
     expect(spyAfterViewInit).toHaveBeenCalled();
   });
+
+  it('#promoteColor update recent colors only when colorPalette'
+  + 'is initalized', () => {
+    component['colorPalette'] = undefined as
+      unknown as ColorPickerContentComponent;
+    const spy = spyOn<any>(component, 'updateRecentColors');
+    component['promoteColor'](3);
+    expect(spy).not.toHaveBeenCalled();
+  });
+
 });

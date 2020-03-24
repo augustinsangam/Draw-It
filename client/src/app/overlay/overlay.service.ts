@@ -1,28 +1,57 @@
-import { Injectable } from '@angular/core';
-import { MatDialogConfig, MatDialogRef, MatSnackBar } from '@angular/material';
-import { Shortcut } from '../shortcut-handler/shortcut';
 import {
-  ShortcutHandlerService
-} from '../shortcut-handler/shortcut-handler.service';
-import { SvgShape } from '../svg/svg-shape';
-import { SvgService } from '../svg/svg.service';
-import { ColorService } from '../tool/color/color.service';
-import { GridService } from '../tool/grid/grid.service';
+  Injectable
+} from '@angular/core';
+import {
+  MatDialogConfig,
+  MatDialogRef,
+  MatSnackBar
+} from '@angular/material';
+import {
+  SvgShape
+} from '../svg/svg-shape';
+import {
+  SvgService
+} from '../svg/svg.service';
+import {
+  ColorService
+} from '../tool/color/color.service';
+import {
+  GridService
+} from '../tool/grid/grid.service';
 import {
   ToolSelectorService
 } from '../tool/tool-selector/tool-selector.service';
-import { Tool } from '../tool/tool.enum';
-import { UndoRedoService } from '../tool/undo-redo/undo-redo.service';
-import { OverlayManager } from './overlay-manager';
-import { OverlayPages } from './overlay-pages';
+import {
+  Tool
+} from '../tool/tool.enum';
+import {
+  UndoRedoService
+} from '../tool/undo-redo/undo-redo.service';
+import {
+  OverlayManager
+} from './overlay-manager';
+import {
+  OverlayPages
+} from './overlay-pages';
 import {
   DocumentationComponent
 } from './pages/documentation/documentation.component';
-import { ExportComponent } from './pages/export/export.component';
-import { GalleryComponent, GalleryDraw } from './pages/gallery/gallery.component';
-import { HomeComponent } from './pages/home/home.component';
-import { NewDrawComponent } from './pages/new-draw/new-draw.component';
-import { SaveComponent } from './pages/save/save.component';
+import {
+  ExportComponent
+} from './pages/export/export.component';
+import {
+  GalleryComponent,
+  GalleryDraw
+} from './pages/gallery/gallery.component';
+import {
+  HomeComponent
+} from './pages/home/home.component';
+import {
+  NewDrawComponent
+} from './pages/new-draw/new-draw.component';
+import {
+  SaveComponent
+} from './pages/save/save.component';
 
 interface DialogRefs {
   home: MatDialogRef<HomeComponent>;
@@ -53,14 +82,12 @@ export class OverlayService {
   private dialogRefs: DialogRefs;
   private svgService: SvgService;
 
-  constructor(private shortcutHanler: ShortcutHandlerService,
-              private colorService: ColorService,
+  constructor(private colorService: ColorService,
               private toolSelectorService: ToolSelectorService,
               private readonly snackBar: MatSnackBar,
               private undoRedo: UndoRedoService,
-              private gridService: GridService
+              private gridService: GridService,
   ) {
-    this.initialiseShortcuts();
   }
 
   intialise(dialog: OverlayManager, svgService: SvgService): void {
@@ -75,26 +102,6 @@ export class OverlayService {
       save: (undefined as unknown) as MatDialogRef<SaveComponent>,
     };
     this.svgService = svgService;
-  }
-
-  private initialiseShortcuts(): void {
-    this.shortcutHanler.set(Shortcut.O, (event: KeyboardEvent) => {
-      if (!!event && event.ctrlKey) {
-        event.preventDefault();
-        this.openNewDrawDialog();
-      }
-    });
-
-    this.shortcutHanler.set(Shortcut.A, (event: KeyboardEvent) => {
-      if (!!event && event.ctrlKey) {
-        event.preventDefault();
-        this.toolSelectorService.set(Tool.Selection);
-        this.toolSelectorService.set(Tool.Selection); // To close the panel
-        this.svgService.selectAllElements.emit(null);
-      } else {
-        this.toolSelectorService.set(Tool.Aerosol);
-      }
-    });
   }
 
   start(): void {
@@ -128,7 +135,7 @@ export class OverlayService {
     }
   }
 
-  private openNewDrawDialog(): void {
+  openNewDrawDialog(): void {
     this.dialogRefs.newDraw = this.dialog.open(
       NewDrawComponent,
       this.getCommonDialogOptions()
@@ -239,6 +246,7 @@ export class OverlayService {
   }
 
   private loadDraw(draw: GalleryDraw): void {
+    this.colorService.recentColors = draw.colors;
     this.svgService.clearDom();
     this.svgService.shape = draw.shape;
     Array.from(draw.svg.children).forEach((element: SVGGElement) => {
@@ -246,6 +254,8 @@ export class OverlayService {
     });
     this.svgService.header = draw.header;
     this.undoRedo.setStartingCommand();
+    this.toolSelectorService.set(Tool.Pencil);
+    this.toolSelectorService.set(Tool.Pencil);
     this.snackBar.open('Dessin chargé avec succès', 'Ok', {
       duration: CONSTANTS.LOAD_DURATION
     });

@@ -111,4 +111,25 @@ describe('ColorService', () => {
     expect(service.recentColors[0]).toEqual('rgba(8, 8, 8, 1)');
     expect(service.backgroundColor).toEqual('rgba(8, 8, 8, 1)');
   });
+
+  it('#method rgbaFromString()', () => {
+    expect(service.rgbaFromString('rgba(1, 2, 3, 1)')).toEqual({
+      r: 1,
+      g: 2,
+      b: 3,
+      a: 1
+    });
+    expect(service.rgbaFromString('rgba(1, 2, 3, 0.666)')).toEqual({
+      r: 1,
+      g: 2,
+      b: 3,
+      a: 0.666
+    });
+    expect(service.rgbaFromString('rgba(1555, 2, 3, 0.666)')).toEqual({
+      r: -1,
+      g: -1,
+      b: -1,
+      a: -1
+    });
+  });
 });

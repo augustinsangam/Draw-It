@@ -1,5 +1,5 @@
 import { Renderer2 } from '@angular/core';
-import { Deplacement } from './deplacement';
+import { Transform } from './transform';
 
 // tslint:disable: no-magic-numbers
 describe('DeplacementUtil', () => {
@@ -13,18 +13,18 @@ describe('DeplacementUtil', () => {
   it('#getTransformTranslate works well', () => {
     const element = document.createElementNS(
       'http://www.w3.org/2000/svg', 'svg:rect');
-    expect(Deplacement.getTransformTranslate(element))
+    expect(Transform.getTransformTranslate(element))
       .toEqual([0, 0]);
   });
 
   it('#translate works well', () => {
     const element = document.createElementNS(
       'http://www.w3.org/2000/svg', 'svg:rect');
-    Deplacement.translate(element, -10, 2, renderer);
-    expect(Deplacement.getTransformTranslate(element))
+    Transform.translate(element, -10, 2, renderer);
+    expect(Transform.getTransformTranslate(element))
       .toEqual([-10, 2]);
-    Deplacement.translate(element, -10, 2, renderer);
-    expect(Deplacement.getTransformTranslate(element))
+    Transform.translate(element, -10, 2, renderer);
+    expect(Transform.getTransformTranslate(element))
       .toEqual([-20, 4]);
   });
 
@@ -35,9 +35,9 @@ describe('DeplacementUtil', () => {
       elements[index] = document.createElementNS(
         'http://www.w3.org/2000/svg', 'svg:rect');
     }
-    Deplacement.translateAll(elements, -10, 2, renderer);
+    Transform.translateAll(elements, -10, 2, renderer);
     for (let index = 0; index < nElement; index++) {
-      expect(Deplacement.getTransformTranslate(elements[index]))
+      expect(Transform.getTransformTranslate(elements[index]))
       .toEqual([-10, 2]);
     }
   });

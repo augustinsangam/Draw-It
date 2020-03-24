@@ -1,5 +1,9 @@
-import { Component, ElementRef } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+} from '@angular/core';
 import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
+import {SelectionService} from '../selection.service';
 
 @Component({
   selector: 'app-selection-panel',
@@ -8,8 +12,9 @@ import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
 })
 export class SelectionPanelComponent extends ToolPanelDirective {
 
-  constructor(elementRef: ElementRef<HTMLElement>) {
-      super(elementRef);
+  constructor(elementRef: ElementRef<HTMLElement>,
+              protected readonly service: SelectionService) {
+    super(elementRef);
   }
 
 }

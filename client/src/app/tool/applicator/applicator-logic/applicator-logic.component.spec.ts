@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { ApplicatorLogicComponent } from './applicator-logic.component';
 
-// TODO : Ask the chargé de lab
 // tslint:disable: no-string-literal
 describe('ApplicatorLogicComponent', () => {
   let component: ApplicatorLogicComponent;
@@ -98,7 +97,7 @@ describe('ApplicatorLogicComponent', () => {
   });
 
   it('#left click can change the stroke color to the general'
-    + ' secondary color for non path filled SVGElement', () => {
+    + ' primary color for non path filled SVGElement', () => {
     const target = component.svgStructure.drawZone.children.item(0) as
       SVGElement;
     target.setAttribute('fill', '#FFFFFF');
@@ -123,9 +122,10 @@ describe('ApplicatorLogicComponent', () => {
   });
 
   it('#left click can change the stroke color '
-    + 'to the general secondary color SVGPathElement', () => {
+    + 'to the general primary color', () => {
     const target = document.createElementNS(
       'http://www.w3.org/2000/svg', 'svg:path');
+    target.setAttribute('stroke', '#FFFFFF');
     component['svgStructure'].drawZone.appendChild(target);
     const fakeEvent = {
       target,

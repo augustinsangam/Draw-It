@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatChipInputEvent, MatDialogRef } from '@angular/material';
 import { CommunicationService } from 'src/app/communication/communication.service';
 import { SvgService } from 'src/app/svg/svg.service';
+import { ColorService } from 'src/app/tool/color/color.service';
 
 const MIN_LETTERS = 3;
 const MAX_LETTERS = 21;
@@ -29,6 +30,7 @@ export class SaveComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
               private svgService: SvgService,
               private renderer: Renderer2,
+              private colorService: ColorService,
               private communicationService: CommunicationService,
               @Optional() private dialogRef: MatDialogRef<SaveComponent>) {
     this.saving = false;
@@ -108,7 +110,8 @@ export class SaveComponent implements OnInit {
     this.communicationService.encode(
       this.svgService.header,
       this.svgService.shape,
-      this.gElOffset);
+      this.gElOffset,
+      this.colorService.recentColors);
     if (this.svgService.header.id !== 0) {
       this.communicationService.put(this.svgService.header.id)
         .then(() => this.dialogRef.close())

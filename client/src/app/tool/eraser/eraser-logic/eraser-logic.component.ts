@@ -51,7 +51,8 @@ export class EraserLogicComponent
     this.mouse = {
       startPoint: fakePoint, currentPoint: fakePoint, endPoint: fakePoint,
       mouseIsDown: false, selectedElement: BasicSelectionType.NOTHING,
-      onDrag: false
+      onDrag: false,
+      onResize: false
     };
     this.markedElements = new Map();
     this.undoRedoService.resetActions();

@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { UndoRedoService } from '../tool/undo-redo/undo-redo.service';
 import { SvgHeader } from './svg-header';
 import { SvgShape } from './svg-shape';
@@ -13,12 +13,10 @@ export class SvgService {
   shape: SvgShape;
   header: SvgHeader;
   drawInProgress: boolean;
-  selectAllElements: EventEmitter<null>;
 
   constructor(private readonly undoRedoService: UndoRedoService,
   ) {
     this.drawInProgress = false;
-    this.selectAllElements = new EventEmitter();
     this.header = {
       id: 0,
       name: '',

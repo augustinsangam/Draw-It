@@ -6,12 +6,11 @@ import { Shortcut } from './shortcut';
 import { ShortcutHandlerManagerService } from './shortcut-handler-manager.service';
 import { Handler } from './shortcut-handler.service';
 
-// TODO : Ask the chargé de lab
 // tslint:disable: no-string-literal no-any no-empty
 describe('ShortcutHandlerManagerService', () => {
 
   let service: ShortcutHandlerManagerService;
-  const waitTime = 5;
+  const waitTime = 10;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -30,9 +29,14 @@ describe('ShortcutHandlerManagerService', () => {
   });
 
   it('#Handler for C should select Pencil', (done: DoneFn) => {
+    const event = {
+      code: 'c',
+      ctrlKey: false,
+      preventDefault: () => { }
+    } as unknown as KeyboardEvent;
     const spyTool = spyOn(service['toolSelectorService'], 'set');
     const handler = service['shortcutHanler']['manager'].get(Shortcut.C) as Handler;
-    handler.handlerFunction();
+    handler.handlerFunction(event);
     setTimeout(() => {
       expect(spyTool).toHaveBeenCalledWith(Tool.Pencil);
       done();
@@ -55,6 +59,16 @@ describe('ShortcutHandlerManagerService', () => {
     handler.handlerFunction();
     setTimeout(() => {
       expect(spyTool).toHaveBeenCalledWith(Tool.Brush);
+      done();
+    }, waitTime);
+  });
+
+  it('#Handler for B should select Bucket', (done: DoneFn) => {
+    const spyTool = spyOn(service['toolSelectorService'], 'set');
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.B) as Handler;
+    handler.handlerFunction();
+    setTimeout(() => {
+      expect(spyTool).toHaveBeenCalledWith(Tool.Bucket);
       done();
     }, waitTime);
   });
@@ -197,6 +211,42 @@ describe('ShortcutHandlerManagerService', () => {
     }, waitTime);
   });
 
+  it('#Handler for Ctrl + digit A should cancel default action', (done: DoneFn) => {
+    const eventOWithControl = {
+      code: 'KeyA',
+      ctrlKey: true,
+      preventDefault: () => { return ; }
+    } as unknown as KeyboardEvent;
+    const spyPrevent = spyOn(eventOWithControl, 'preventDefault');
+    service['initialiseShortcuts']();
+    const handlerDigitA = service['shortcutHanler']['manager'].get(Shortcut.A);
+    if (!!handlerDigitA) {
+      handlerDigitA.handlerFunction(eventOWithControl);
+    }
+    setTimeout(() => {
+      expect(spyPrevent).toHaveBeenCalled();
+      done();
+    }, 500);
+  });
+
+  it('#Handler for Digit A should select Aerosol', (done: DoneFn) => {
+    const eventOWithControl = {
+      code: 'KeyA',
+      ctrlKey: false,
+      preventDefault: () => { return ; }
+    } as unknown as KeyboardEvent;
+    const spyTool = spyOn(service['toolSelectorService'], 'set');
+    service['initialiseShortcuts']();
+    const handlerDigitA = service['shortcutHanler']['manager'].get(Shortcut.A);
+    if (!!handlerDigitA) {
+      handlerDigitA.handlerFunction(eventOWithControl);
+    }
+    setTimeout(() => {
+      expect(spyTool).toHaveBeenCalledWith(Tool.Aerosol);
+      done();
+    }, 500);
+  });
+
   it('#Handler for Ctrl + S should open save dialog', (done: DoneFn) => {
     const event = {
       code: 's',
@@ -229,6 +279,42 @@ describe('ShortcutHandlerManagerService', () => {
       expect(spy).toHaveBeenCalledWith(Tool.Selection);
       done();
     }, waitTime);
+  });
+
+  it('#Handler for Ctrl + digit O should open new draw dialog', (done: DoneFn) => {
+    const eventOWithControl = {
+      code: 'KeyO',
+      ctrlKey: true,
+      preventDefault: () => { return ; }
+    } as unknown as KeyboardEvent;
+    const spy = spyOn(service['overlayService'], 'openNewDrawDialog');
+    service['initialiseShortcuts']();
+    const handlerDigitO = service['shortcutHanler']['manager'].get(Shortcut.O);
+    if (!!handlerDigitO) {
+      handlerDigitO.handlerFunction(eventOWithControl);
+    }
+    setTimeout(() => {
+      expect(spy).toHaveBeenCalled();
+      done();
+    }, 500);
+  });
+
+  it('#Handler for digit O should not cancel default action', (done: DoneFn) => {
+    const eventOWithControl = {
+      code: 'KeyO',
+      ctrlKey: false,
+      preventDefault: () => { return ; }
+    } as unknown as KeyboardEvent;
+    const spy = spyOn(eventOWithControl, 'preventDefault');
+    service['initialiseShortcuts']();
+    const handlerDigitO = service['shortcutHanler']['manager'].get(Shortcut.O);
+    if (!!handlerDigitO) {
+      handlerDigitO.handlerFunction(eventOWithControl);
+    }
+    setTimeout(() => {
+      expect(spy).not.toHaveBeenCalled();
+      done();
+    }, 500);
   });
 
   it('#Handler for Ctrl + Z do the undo action', (done: DoneFn) => {

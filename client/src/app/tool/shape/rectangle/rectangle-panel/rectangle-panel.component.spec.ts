@@ -18,7 +18,6 @@ import {
 } from '../../../color/color-panel/color-picker-item/color-picker-item.component';
 import { RectanglePanelComponent } from './rectangle-panel.component';
 
-// TODO : Ask the chargé de lab
 // tslint:disable: no-string-literal
 describe('RectanglePanelComponent', () => {
   let component: RectanglePanelComponent;

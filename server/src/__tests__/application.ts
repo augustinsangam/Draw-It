@@ -1,9 +1,10 @@
 // tslint:disable: no-string-literal no-unused-expression
 
+import 'reflect-metadata';
+
 import chai from 'chai';
 import express from 'express';
 import log from 'loglevel';
-import 'reflect-metadata';
 import supertest from 'supertest';
 
 import { Application } from '../application';
@@ -37,10 +38,7 @@ describe('application', () => {
 		app.use(Application['log']);
 		app.get('/', (_, res) => res.sendStatus(StatusCode.OK));
 
-		const httpRes = await supertest(app)
-			.get('/')
-			.expect(StatusCode.OK)
-			.then();
+		const httpRes = await supertest(app).get('/').expect(StatusCode.OK).then();
 
 		chai.expect(httpRes.header['access-control-allow-headers']).to.not.be
 			.undefined;
@@ -51,10 +49,7 @@ describe('application', () => {
 		app.use(Application['log']);
 		app.get('/', (_, res) => res.sendStatus(StatusCode.OK));
 
-		const httpRes = await supertest(app)
-			.get('/')
-			.expect(StatusCode.OK)
-			.then();
+		const httpRes = await supertest(app).get('/').expect(StatusCode.OK).then();
 
 		chai.expect(httpRes.header['access-control-allow-methods']).to.not.be
 			.undefined;
@@ -65,10 +60,7 @@ describe('application', () => {
 		app.use(Application['log']);
 		app.get('/', (_, res) => res.sendStatus(StatusCode.OK));
 
-		const httpRes = await supertest(app)
-			.get('/')
-			.expect(StatusCode.OK)
-			.then();
+		const httpRes = await supertest(app).get('/').expect(StatusCode.OK).then();
 
 		chai.expect(httpRes.header['access-control-allow-origin']).to.not.be
 			.undefined;

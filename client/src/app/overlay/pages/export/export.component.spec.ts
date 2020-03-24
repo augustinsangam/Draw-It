@@ -1,7 +1,7 @@
-import { async, ComponentFixture, fakeAsync, TestBed} from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 
 import { Renderer2 } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialogRef, MatRadioChange} from '@angular/material';
 import { MaterialModule } from 'src/app/material.module';
 import { SvgShape } from 'src/app/svg/svg-shape';
@@ -21,15 +21,6 @@ describe('ExportComponent', () => {
   const mockDownloadLink = {
     click: jasmine.createSpy('click')
   };
-
-  // const renderer: Renderer2 = {
-  //   setAttribute: ( element: SVGElement, attribute: string, value: string ) => {
-  //     element.setAttribute( attribute, value);
-  //   },
-  //   createElement: (value: string ) => {
-  //     document.createElement(value);
-  //   }
-  // } as unknown as Renderer2;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -71,6 +62,11 @@ describe('ExportComponent', () => {
       temporaryZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
       endZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement
     };
+    const filter1 = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+    const element1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    svgService.structure.defsZone.appendChild(filter1);
+    svgService.structure.drawZone.appendChild(element1);
+
     svgService.structure.root.appendChild(svgService.structure.defsZone);
     svgService.structure.root.appendChild(svgService.structure.drawZone);
     svgService.structure.root.appendChild(svgService.structure.temporaryZone);
@@ -169,14 +165,6 @@ describe('ExportComponent', () => {
     expect(component['convertSVGToBase64']()).toEqual(expected);
   }));
 
-  it('#convertToBlob is making a good conversion', fakeAsync(() => {
-    component['initializeElements']();
-    component['innerSVG'].setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    const blobExpected: Blob = new Blob([component['serializeSVG']()], {type: 'image/svg+xml;charset=utf-8'});
-
-    expect(component['convertToBlob']()).toEqual(blobExpected);
-  }));
-
   it('#downloadImage should call the click method of the anchor', () => {
     const pictureUrl = 'url';
     const downloadLink = {
@@ -190,24 +178,6 @@ describe('ExportComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#generateCanvas return a canvas with good configurations', fakeAsync(() => {
-    const svgShapeTest: SvgShape = {
-      color: 'blue',
-      width: 1345,
-      height: 245
-    };
-    component['svgShape'] = svgShapeTest;
-    const canvas: HTMLCanvasElement =  component['generateCanvas']();
-    expect(canvas.height).toEqual(svgShapeTest.height);
-    expect(canvas.width).toEqual(svgShapeTest.width);
-  }));
-
-  it('#exportSvg should call our download method', fakeAsync(() => {
-    const spy = spyOn<any>(component, 'downloadImage');
-    component['exportSVG']();
-    expect(spy).toHaveBeenCalledTimes(1);
-  }));
-
   it('#createView should add element into to the viewZone', () => {
     component['createView']('');
     const theViewZone = component['svgView'].nativeElement;
@@ -216,39 +186,37 @@ describe('ExportComponent', () => {
   });
 
   it('#createView should add without removing when the element isnt the picture', () => {
-    component['createView']('');
     const theViewZone = component['svgView'].nativeElement;
-    const picture = theViewZone.lastElementChild as Element;
+    const picture = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     picture.setAttribute('id', 'test');
-    const picture2 = theViewZone.lastElementChild as Element;
-    picture2.setAttribute('id', 'test');
-    theViewZone.appendChild(picture2);
+    theViewZone.appendChild(picture);
+    const spy = spyOn<any>(theViewZone, 'removeChild');
     component['createView']('');
-    const picture3 = theViewZone.lastElementChild as Element;
-    expect(picture3.getAttribute('id')).toEqual('pictureView');
+    expect(spy).toHaveBeenCalledTimes(0);
+
   });
 
-  it('#exportDrawing should call exportSVG when we export as SVG', fakeAsync(() => {
-    const spy = spyOn<any>(component, 'exportSVG');
-    component['exportDrawing'](FormatChoice.Svg);
-    expect(spy).toHaveBeenCalled();
-  }));
+  it('#createView should add after removing the picture', () => {
+    const theViewZone = component['svgView'].nativeElement;
+    const picture = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    picture.setAttribute('id', 'pictureView');
+    theViewZone.appendChild(picture);
+    const spy = spyOn<any>(theViewZone, 'removeChild');
+    component['createView']('');
+    expect(spy).toHaveBeenCalledTimes(1);
 
-  it('#exportDrawing shouldnt call exportSVG when we export as png', fakeAsync(() => {
-    const pictureUrl = 'url';
-    const image = {
-      src: pictureUrl,
-    } as unknown as HTMLImageElement;
-    spyOn(component['renderer'], 'setAttribute').and.callFake(() =>  image);
-    const spy = spyOn<any>(component, 'exportSVG');
-    // const spyDownload = spyOn<any>(component, 'downloadImage');
-    // setTimeout(() => {
-    //   component['exportDrawing'](FormatChoice.Jpeg);
-    // }, 500);
-    // tick(500);
-    expect(spy).toHaveBeenCalledTimes(0);
-    // expect(spyDownload).toHaveBeenCalledTimes(1);
-  }));
+  });
+
+  it('#exportDrawing should should always download the image', () => {
+    const spy = spyOn<any>(component, 'downloadImage');
+    component['exportDrawing'](FormatChoice.Svg);
+    expect(spy).toHaveBeenCalledTimes(1);
+    component['exportDrawing'](FormatChoice.Jpeg);
+    expect(spy).toHaveBeenCalledTimes(1);
+    component['exportDrawing'](FormatChoice.Png);
+    expect(spy).toHaveBeenCalledTimes(1);
+
+  });
 
   it('#configurePicture should make good id configuration', fakeAsync(() => {
     const picture = component['renderer'].createElement('picture', 'http://www.w3.org/2000/svg');
@@ -291,4 +259,10 @@ describe('ExportComponent', () => {
     expect(background.getAttribute('height')).toEqual(svgShapeTest.height.toString());
     expect(background.getAttribute('fill')).toEqual(svgShapeTest.color);
   }));
+
+  it('#validator should not retrun an error when the input is valid', () => {
+    expect(ExportComponent.validator({
+      value: 'aValidName'
+    } as unknown as FormControl)).toEqual(null);
+  });
 });

@@ -37,7 +37,8 @@ describe('GalleryCardComponent', () => {
         color: '#FFFFFF'
       },
       svg: document.createElementNS('http://www.w3.org/2000/svg',
-        'svg:g') as SVGGElement
+        'svg:g') as SVGGElement,
+      colors: ['rgba(0, 0, 0, 1)'],
     };
     fixture.detectChanges();
   });

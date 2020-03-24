@@ -25,8 +25,12 @@ import {
   BrowserAnimationsModule,
   NoopAnimationsModule
 } from '@angular/platform-browser/animations';
-import { AppComponent } from './app.component';
-import { MaterialModule } from './material.module';
+import {
+  AppComponent
+} from './app.component';
+import {
+  MaterialModule
+} from './material.module';
 import {
   DocumentationComponent
 } from './overlay/pages/documentation/documentation.component';
@@ -39,15 +43,21 @@ import {
 import {
   GalleryCardComponent
 } from './overlay/pages/gallery/gallery-card/gallery-card.component';
-import { GalleryComponent } from './overlay/pages/gallery/gallery.component';
-import { TagsFilterComponent } from './overlay/pages/gallery/tags-filter/tags-filter.component';
+import {
+  GalleryComponent
+} from './overlay/pages/gallery/gallery.component';
+import {
+  TagsFilterComponent
+} from './overlay/pages/gallery/tags-filter/tags-filter.component';
 import {
   HomeComponent
 } from './overlay/pages/home/home.component';
 import {
   ConfirmationDialogComponent
 } from './overlay/pages/new-draw/confirmation-dialog.component';
-import { NewDrawComponent } from './overlay/pages/new-draw/new-draw.component';
+import {
+  NewDrawComponent
+} from './overlay/pages/new-draw/new-draw.component';
 import {
   PaletteDialogComponent
 } from './overlay/pages/new-draw/palette-dialog.component';
@@ -67,6 +77,12 @@ import {
 import {
   ApplicatorPanelComponent
 } from './tool/applicator/applicator-panel/applicator-panel.component';
+import {
+  BucketLogicComponent
+} from './tool/bucket/bucket-logic/bucket-logic.component';
+import {
+  BucketPanelComponent
+} from './tool/bucket/bucket-panel/bucket-panel.component';
 import {
   ColorBoxComponent
 } from './tool/color/color-box/color-box.component';
@@ -145,14 +161,19 @@ import {
 import {
   RectanglePanelComponent
 } from './tool/shape/rectangle/rectangle-panel/rectangle-panel.component';
-import { TextLogicComponent } from './tool/text/text-logic/text-logic.component';
-import { TextPanelComponent } from './tool/text/text-panel/text-panel.component';
+import {
+  TextLogicComponent
+} from './tool/text/text-logic/text-logic.component';
+import {
+  TextPanelComponent
+} from './tool/text/text-panel/text-panel.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BrushLogicComponent,
     BrushPanelComponent,
+    ColorBoxComponent,
     ColorPanelComponent,
     ColorPickerContentComponent,
     ColorPickerItemComponent,
@@ -194,6 +215,8 @@ import { TextPanelComponent } from './tool/text/text-panel/text-panel.component'
     GridPanelComponent,
     SaveComponent,
     TagsFilterComponent,
+    BucketLogicComponent,
+    BucketPanelComponent,
     ColorBoxComponent,
     TextLogicComponent,
     TextPanelComponent
@@ -235,6 +258,8 @@ import { TextPanelComponent } from './tool/text/text-panel/text-panel.component'
     LineLogicComponent,
     LinePanelComponent,
     NewDrawComponent,
+    BucketLogicComponent,
+    BucketPanelComponent,
     PencilLogicComponent,
     PencilPanelComponent,
     PipetteLogicComponent,

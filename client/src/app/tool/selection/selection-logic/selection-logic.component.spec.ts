@@ -464,7 +464,7 @@ describe('SelectionLogicComponent', () => {
 
   it('#A multiple selection is perfomed when user use Ctrl + A', () => {
     const spy = spyOn<any>(component, 'applyMultipleSelection');
-    component['svgService'].selectAllElements.next();
+    component['service'].selectAllElements.next();
     expect(spy).toHaveBeenCalled();
   });
 
@@ -478,7 +478,7 @@ describe('SelectionLogicComponent', () => {
     component['applyInversion'](
       allElements, new Point(0, 0), new Point(1000, 1000));
 
-    expect(component['selectedElements']).not.toContain(selectedElement);
+    expect(component['service'].selectedElements).not.toContain(selectedElement);
   });
 
   it('#KeyManager should contain all keypressed', () => {
@@ -546,6 +546,49 @@ describe('SelectionLogicComponent', () => {
    + ' when no element is selected', () => {
     expect(new MultipleSelection(new Set(), undefined as unknown as Offset)
     .getSelection().points).toEqual([new Point(0, 0), new Point(0, 0)]);
+  });
+
+  it('#A simple click on en element should select it', () => {
+    const fakeEvent = {
+      button: 0,
+      target: component.svgStructure.drawZone.children.item(0)
+    } as unknown as MouseEvent;
+
+    const mouseClickHandler = (component['mouseHandlers'].get('leftButton') as
+      Map<string, Util.MouseEventCallBack>).get('click') as
+      Util.MouseEventCallBack;
+
+    const spy = spyOn<any>(component, 'applySingleSelection');
+
+    component['mouse'].left.startPoint = new Point(2, 3);
+    component['mouse'].left.endPoint = new Point(2, 3);
+
+    mouseClickHandler(fakeEvent);
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#applyMultipleIversion should not perform any inversion if there is no'
+    + 'elements in the inversion zone', () => {
+      const undefinedPoint = undefined as unknown as Point;
+      component['svgStructure'].drawZone = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'svg:g'
+      ) as SVGGElement;
+      const spy = spyOn<any>(component, 'applyInversion');
+      component['applyMultipleInversion'](undefinedPoint, undefinedPoint);
+      expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('#applyMultipleSelection should draw any visualisation if there is no'
+    + 'elements in the inversion zone', () => {
+      const undefinedPoint = undefined as unknown as Point;
+      component['svgStructure'].drawZone = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'svg:g'
+      ) as SVGGElement;
+      const spy = spyOn<any>(component, 'drawVisualisation');
+      component['applyMultipleSelection'](undefinedPoint, undefinedPoint);
+      expect(spy).not.toHaveBeenCalled();
   });
 
 });
