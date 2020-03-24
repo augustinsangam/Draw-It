@@ -58,7 +58,7 @@ export class TextService extends ToolService {
       // {value: 'Arnoldboecklin, fantasy', viewValue: 'Arnoldboecklin'},
       // {value: 'Oldtown, fantasy', viewValue: 'Oldtown'},
       // {value: 'Blippo, fantasy', viewValue: 'Blippo'},
-      // {value: 'Brushstroke, fantasy', viewValue: 'Brushstroke'}
+      //{value: 'Brushstroke, fantasy', viewValue: 'Brushstroke'}
     ];
     this.fontSize = this.DEFAULT_FONTSIZE;
   }

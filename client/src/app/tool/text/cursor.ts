@@ -12,7 +12,7 @@ export class Cursor {
   visible: boolean;
   tmpTextZone: SVGElement;
   currentPosition: Point;
-  initialPoint: Point;
+  initialCursorPoint: Point;
   readonly CURSOR_INTERVAL: number = 500;
 
   constructor(private readonly renderer: Renderer2,
@@ -22,7 +22,8 @@ export class Cursor {
   ) {
     this.visible = true;
     this.currentPosition = initialPoint;
-    this.initialPoint = initialPoint;
+    this.initialCursorPoint = initialPoint;
+    console.log(this.initialCursorPoint);
     this.blinker = Subscription.EMPTY;
     this.tmpTextZone = this.renderer.createElement('text', 'http://www.w3.org/2000/svg');
   }
@@ -50,11 +51,6 @@ export class Cursor {
     this.element.remove();
   }
 
-  moveRight(newXPos: number): void {
-    this.currentPosition.x = newXPos;
-    this.updateVisual();
-  }
-
   updateVisual(): void {
     this.renderer.setAttribute(this.element, 'd',
       `M ${this.currentPosition.x} ${this.currentPosition.y} v ${-this.service.fontSize}`
@@ -62,8 +58,9 @@ export class Cursor {
   }
 
   nextLine(): void {
+    console.log(this.initialCursorPoint);
+    this.currentPosition.x = this.initialCursorPoint.x + 10;
     this.currentPosition.y += this.service.fontSize + 10;
-    this.currentPosition.x = this.initialPoint.x + 10;
     this.updateVisual();
   }
 
@@ -74,7 +71,14 @@ export class Cursor {
       currentLine.tspan.textContent = currentLine.letters.join('');
       this.currentPosition.x = +currentLine.tspan.getAttribute('x') + this.service.getLineWidth(currentLine);
       currentLine.tspan.textContent = oldText;
+    } else {
+
     }
+    this.updateVisual();
+  }
+
+  moveRight(newXPos: number): void {
+    this.currentPosition.x = newXPos;
     this.updateVisual();
   }
 }

@@ -123,8 +123,10 @@ implements OnDestroy {
         break;
 
       default:
-        console.log(keyEv.key);
-        this.addLetter(keyEv.key);
+        // console.log(keyEv.key);
+        if (keyEv.key.length === 1) {
+          this.addLetter(keyEv.key);
+        }
         break;
     }
   }
@@ -137,12 +139,13 @@ implements OnDestroy {
 
   private onMouseUp(mouseEv: MouseEvent): void {
     mouseEv.cancelBubble = false;
+    const finalPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
     this.onDrag = false;
     this.initialPoint = this.mathService.getRectangleUpLeftCorner(
       this.initialPoint,
-      new Point(mouseEv.offsetX, mouseEv.offsetY)
+      finalPoint
     );
-    this.zoneDims = this.mathService.getRectangleSize(this.initialPoint, new Point(mouseEv.offsetX, mouseEv.offsetY));
+    this.zoneDims = this.mathService.getRectangleSize(this.initialPoint, finalPoint);
     if (!this.onType) {
       this.startTyping(mouseEv);
     }
@@ -197,13 +200,13 @@ implements OnDestroy {
 
   private addLine(): void {
     this.addTspan();
-    this.cursor.nextLine();
+    console.log(this.initialPoint)
     this.renderer.setAttribute(this.currentLine.tspan, 'x', `${+this.service.getTextAlign(this.zoneDims.width) + this.initialPoint.x}`);
-    this.renderer.setAttribute(this.currentLine.tspan, 'y', `${this.cursor.currentPosition.y - 10}`);
+    this.renderer.setAttribute(this.currentLine.tspan, 'y', `${this.cursor.currentPosition.y + 10}`);
+    this.cursor.nextLine();
   }
 
   private addLetter(letter: string): void {
-    this.currentLine.tspan.textContent = '';
     this.currentLine.letters.push(letter);
     this.updateText();
   }
@@ -222,6 +225,7 @@ implements OnDestroy {
   }
 
   private updateText(): void {
+    this.currentLine.tspan.textContent = '';
     const svgLetter = this.renderer.createText(this.currentLine.letters.join(''));
     this.renderer.appendChild(this.currentLine.tspan, svgLetter);
     this.renderer.setAttribute(this.currentLine.tspan, 'x', `${+this.service.getTextAlign(this.zoneDims.width) + this.initialPoint.x}`);
@@ -232,8 +236,12 @@ implements OnDestroy {
   }
 
   private removeLastLetter(): void {
-    this.currentLine.tspan.textContent = '';
-    this.currentLine.letters.pop();
+    if (this.currentLine.letters.length !== 0) {
+      this.currentLine.tspan.textContent = '';
+      this.currentLine.letters.pop();
+    } else {
+      this.currentLine = this.lines[this.lines.indexOf(this.currentLine) - 1];
+    }
     this.updateText();
   }
 }
