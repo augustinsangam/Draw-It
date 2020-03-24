@@ -32,10 +32,12 @@ export const CIRCLES = [
 
 export type MouseEventCallBack = ($event: MouseEvent) => void;
 export type KeyboardPressCallback = ($event: KeyboardEvent) => void;
+export type WheelEventCallback = ($event: WheelEvent) => void;
 
 export interface Mouse {
   left: MouseTracking;
   right: MouseTracking;
+  wheel?: WheelEvent;
 }
 
 export interface SelectionRectangles {
@@ -49,7 +51,7 @@ export interface KeyManager {
   lastTimeCheck: number;
   handlers: {
     keydown: KeyboardPressCallback,
-    keyup: KeyboardPressCallback
+    keyup: KeyboardPressCallback,
   };
 }
 
