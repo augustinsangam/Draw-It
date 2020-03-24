@@ -86,7 +86,7 @@ export class SelectionLogicComponent
               this.scaledRectangleDimension.height += this.mouse.left.selectedElement > 1 ? offsetY : -offsetY;
               const factorX = this.scaledRectangleDimension.width / this.baseVisualisationRectangleDimension.width;
               const factorY = this.scaledRectangleDimension.height / this.baseVisualisationRectangleDimension.height;
-              console.log(factorX + ' ' + factorY);
+              // console.log(factorX + ' ' + factorY);
               this.resizeAll(factorX, factorY);
             } else {
               this.drawSelection(this.mouse.left.startPoint,

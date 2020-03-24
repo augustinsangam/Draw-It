@@ -319,6 +319,10 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     Transform.scaleAll(this.service.selectedElements, factorX, factorY, this.renderer);
   }
 
+  protected rotateAll(point: Point, angle: number): void {
+    Transform.rotateAll(this.service.selectedElements, point, angle, this.renderer);
+  }
+
   private getSvgOffset(): Offset {
     const svgBoundingRect = this.svgStructure.root.getBoundingClientRect();
     return { top: svgBoundingRect.top, left: svgBoundingRect.left };
