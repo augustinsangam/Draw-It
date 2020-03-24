@@ -65,9 +65,9 @@ export class TextService extends ToolService {
     this.fontSize = this.DEFAULT_FONTSIZE;
   }
 
-  getTextAlign(width: number): number {
+  getTextAlign(): number {
     return this.textAlignement === TextAlignement.left ? 0 : (
-      this.textAlignement === TextAlignement.center ? width / 2 : width
+      this.textAlignement === TextAlignement.center ? this.currentZoneDims.width / 2 : this.currentZoneDims.width
     );
   }
 

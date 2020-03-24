@@ -3,7 +3,6 @@ import {ShortcutHandlerService} from '../../../shortcut-handler/shortcut-handler
 import {ColorService} from '../../color/color.service';
 import {MathService} from '../../mathematics/tool.math-service.service';
 import {BackGroundProperties, StrokeProperties} from '../../shape/common/abstract-shape';
-import {Dimension} from '../../shape/common/dimension';
 import {Point} from '../../shape/common/point';
 import {Rectangle} from '../../shape/common/rectangle';
 import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
@@ -270,7 +269,7 @@ implements OnDestroy {
     this.renderer.setAttribute(
       this.currentLine.tspan,
       'x',
-      `${+this.service.getTextAlign(this.service.currentZoneDims.width) + this.initialPoint.x}`
+      `${+this.service.getTextAlign() + this.initialPoint.x}`
     );
     this.renderer.setAttribute(this.currentLine.tspan, 'y', `${this.cursor.currentPosition.y + this.TEXT_OFFSET}`);
     this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
@@ -306,7 +305,7 @@ implements OnDestroy {
     this.renderer.setAttribute(
       this.currentLine.tspan,
       'x',
-      `${+this.service.getTextAlign(this.service.currentZoneDims.width) + this.initialPoint.x + this.TEXT_OFFSET}`
+      `${+this.service.getTextAlign() + this.initialPoint.x + this.TEXT_OFFSET}`
     );
     this.renderer.setAttribute(this.currentLine.tspan, 'y', `${this.cursor.currentPosition.y - this.TEXT_OFFSET}`);
     this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));

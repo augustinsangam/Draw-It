@@ -1,11 +1,11 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatButtonToggleChange} from '@angular/material/button-toggle';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatSlider} from '@angular/material/slider';
 import {ColorService} from '../../color/color.service';
 import {Dimension} from '../../shape/common/dimension';
 import {ToolPanelDirective} from '../../tool-panel/tool-panel.directive';
+import {TextAlignement} from '../text-alignement';
 import {TextMutators} from '../text-mutators';
 import {TextService} from '../text.service';
 
@@ -17,13 +17,7 @@ import {TextService} from '../text.service';
 export class TextPanelComponent extends ToolPanelDirective {
 
   private textForm: FormGroup;
-  private showFonts: boolean;
   private previewDims: Dimension;
-
-  @ViewChild('fontsToggle', {
-    static: false,
-    read: MatSlideToggle
-  }) private fontsToggleRef: MatSlideToggle;
 
   @ViewChild('fontSizeSlider', {
     static: false,
@@ -35,9 +29,7 @@ export class TextPanelComponent extends ToolPanelDirective {
               private readonly colorService: ColorService // value is only read in the html... ts-ignore ?
   ) {
     super(elementRef);
-    this.showFonts = false;
     this.textForm = this.formBuilder.group({
-      showFontsToggleForm: [this.showFonts, []],
       fontForm: [this.service.currentFont, []],
       mutatorsForm: [this.service.textMutators, []],
       fontSizeSlider: [this.service.fontSize, []],
@@ -71,6 +63,12 @@ export class TextPanelComponent extends ToolPanelDirective {
       fontSizeForm: this.fontSizeSlider.value
     });
     this.service.fontSize = this.fontSizeSlider.value as number;
+  }
+
+  getPreviewTextAlign(): number {
+    return this.service.textAlignement === TextAlignement.left ? 0 : (
+      this.service.textAlignement === TextAlignement.center ? this.previewDims.width / 2 : this.previewDims.width
+    );
   }
 
 }

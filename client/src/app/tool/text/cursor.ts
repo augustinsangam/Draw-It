@@ -58,7 +58,7 @@ export class Cursor {
 
   move(currentLine: TextLine, lineIndex: number): void {
     // console.log(`lineIndex = ${lineIndex}`);
-    this.currentPosition.x = this.initialCursorPoint.x + this.service.getTextAlign(this.service.currentZoneDims.width) / 2 +  this.service.getLineWidth(currentLine);
+    this.currentPosition.x = this.initialCursorPoint.x + this.service.getTextAlign() / 2 +  this.service.getLineWidth(currentLine);
     this.currentPosition.y = this.initialCursorPoint.y + ((lineIndex) * this.service.fontSize);
     this.updateVisual();
   }
