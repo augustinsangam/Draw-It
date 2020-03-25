@@ -10,6 +10,9 @@ export const COLORS = {
   GRAY: 'rgba(128, 128, 255, 1)'
 };
 
+export const ANGLE = 15;
+export const MOUSE_WHEEL_DELTA_Y = 53;
+
 export const RECTANGLE_STROKE = '2';
 export const CIRCLE_RADIUS = '8';
 export const TIME_INTERVAL = 100;
@@ -48,6 +51,8 @@ export interface SelectionRectangles {
 
 export interface KeyManager {
   keyPressed: Set<string>;
+  shift: boolean;
+  alt: boolean;
   lastTimeCheck: number;
   handlers: {
     keydown: KeyboardPressCallback,

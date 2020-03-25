@@ -6,6 +6,7 @@ export class Transform {
   private translateAttribute: [number, number];
   private rotateAttribute: [number, number, number];
   private scaleAttribute: [number, number];
+  private matrixAtribute: [number, number, number, number, number, number];
 
   constructor(private element: SVGElement, private renderer: Renderer2) {
     const transform = this.element.getAttribute('transform') as string;
@@ -22,6 +23,17 @@ export class Transform {
     result = /scale\(\s*([^\s,)]+)[ ,][ ]?([^\s,)]+)\)/.exec(transform);
     this.scaleAttribute = (result !== null) ?
         [parseInt(result[1], 10), parseInt(result[2], 10)] : [1, 1];
+
+    // tslint:disable-next-line: max-line-length
+    result = /matrix\(\s*([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)\)/.exec(transform);
+    this.matrixAtribute = (result !== null) ?
+      [parseInt(result[1], 10),
+        parseInt(result[2], 10),
+        parseInt(result[3], 10),
+        parseInt(result[4], 10),
+        parseInt(result[5], 10),
+        parseInt(result[6], 10)] : [1, 0, 0, 1, 0 , 0];
+
   }
 
   static translateAll(elements: Iterable<SVGElement>, dx: number, dy: number, renderer: Renderer2): void {
@@ -43,15 +55,20 @@ export class Transform {
   }
 
   translate(dx: number, dy: number): void {
-    this.translateAttribute[0] += dx;
-    this.translateAttribute[1] += dy;
+    // this.translateAttribute[0] += dx;
+    // this.translateAttribute[1] += dy;
+    this.matrixAtribute[4] += dx;
+    this.matrixAtribute[5] += dy;
+
     this.setAttributes();
   }
 
   rotate(point: Point, angle: number): void {
-    this.rotateAttribute[0] = point.x;
-    this.rotateAttribute[1] = point.y;
-    this.rotateAttribute[2] = angle;
+    // this.rotateAttribute[0] = angle;
+    // this.rotateAttribute[1] = point.x;
+    // this.rotateAttribute[2] = point.y;
+    this.matrixAtribute[0] = angle * Math.cos(1 * Math.PI / 180);
+    this.matrixAtribute[3] = angle * Math.sin(1 * Math.PI / 180);
     this.setAttributes();
   }
 
@@ -62,17 +79,24 @@ export class Transform {
   }
 
   getTransformTranslate(): [number, number] {
-    return [this.translateAttribute[0] , this.translateAttribute[1]];
+    // return [this.translateAttribute[0] , this.translateAttribute[1]];
+    return [this.matrixAtribute[4] , this.matrixAtribute[5]];
   }
 
   private setAttributes(): void {
     this.renderer.setAttribute(
       this.element,
       'transform',
-      `scale(${this.scaleAttribute[0]},${this.scaleAttribute[1]}) ` +
-      `translate(${this.translateAttribute[0]},${this.translateAttribute[1]}) ` +
-      `rotate(${this.rotateAttribute[0]},${this.rotateAttribute[1]},${this.rotateAttribute[2]}) `
-    );
+      // `scale(${this.scaleAttribute[0]},${this.scaleAttribute[1]}) ` +
+      // `translate(${this.translateAttribute[0]},${this.translateAttribute[1]}) ` +
+      // `rotate(${this.rotateAttribute[0]},${this.rotateAttribute[1]},${this.rotateAttribute[2]}) `
+      `matrix(${this.matrixAtribute[0]},` +
+      `${this.matrixAtribute[1]},` +
+      `${this.matrixAtribute[2]},` +
+      `${this.matrixAtribute[3]},` +
+      `${this.matrixAtribute[4]},` +
+      `${this.matrixAtribute[5]})`
+      );
   }
 
 }

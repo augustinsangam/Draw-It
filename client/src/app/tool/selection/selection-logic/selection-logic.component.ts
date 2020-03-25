@@ -17,10 +17,10 @@ export class SelectionLogicComponent
   extends SelectionLogicBase implements OnInit {
 
   private mouseHandlers: Map<string, Map<string, Util.MouseEventCallBack>>;
-  private wheelHandler: Map<string, Map<string, Util.WheelEventCallback>>;
 
   private baseVisualisationRectangleDimension: {width: number, height: number} = {width: 0, height: 0};
   private scaledRectangleDimension: {width: number, height: number} = {width: 0, height: 0};
+  private angle: number = 0;
 
   constructor(protected renderer: Renderer2,
               protected svgService: SvgService,
@@ -125,6 +125,19 @@ export class SelectionLogicComponent
           }
         }]
       ])],
+      ['centerButton', new Map<string, Util.WheelEventCallback>([
+        ['wheel', ($event: WheelEvent) => {
+          $event.preventDefault();
+          this.angle += this.keyManager.alt ?
+           $event.deltaY / Util.MOUSE_WHEEL_DELTA_Y : Util.ANGLE * ($event.deltaY / Util.MOUSE_WHEEL_DELTA_Y);
+          console.log(this.angle);
+          if (this.keyManager.shift) {
+            this.allSelfRotate(this.angle);
+          } else {
+            this.rotateAll(this.findElementCenter(this.rectangles.visualisation), this.angle);
+          }
+        }]
+      ])],
       ['rightButton', new Map<string, Util.MouseEventCallBack>([
         ['mousedown', ($event: MouseEvent) => {
           if ($event.button === 2) {
@@ -168,39 +181,21 @@ export class SelectionLogicComponent
         }]
       ])],
     ]);
-    this.wheelHandler = new Map<string, Map<string, Util.WheelEventCallback>>([
-      ['wheel', new Map<string, Util.WheelEventCallback>([
-        ['onwheel', ($event: WheelEvent) => {
-          console.log($event.deltaX);
-          console.log($event.deltaY);
-        }]
-      ])],
-    ]);
   }
 
   ngOnInit(): void {
     super.ngOnInit();
     [['leftButton', ['mousedown', 'mousemove', 'mouseup', 'click']],
-    ['rightButton', ['mousedown', 'mousemove', 'mouseup', 'contextmenu']]]
-      .forEach((side: [string, string[]]) => {
-        side[1].forEach((eventName: string) => {
-          this.allListenners.push(
-            this.renderer.listen(this.svgStructure.root, eventName,
-              (this.mouseHandlers.get(side[0]) as Map<string, Util.MouseEventCallBack>)
-                .get(eventName) as Util.MouseEventCallBack)
-          );
-        });
+    ['rightButton', ['mousedown', 'mousemove', 'mouseup', 'contextmenu']],
+    ['centerButton', ['wheel']]].forEach((side: [string, string[]]) => {
+      side[1].forEach((eventName: string) => {
+        this.allListenners.push(
+          this.renderer.listen(this.svgStructure.root, eventName,
+            (this.mouseHandlers.get(side[0]) as Map<string, Util.MouseEventCallBack>)
+              .get(eventName) as Util.MouseEventCallBack)
+        );
       });
-    [['wheel', ['onwheel']]]
-      .forEach((side: [string, string[]]) => {
-        side[1].forEach((eventName: string) => {
-          this.allListenners.push(
-            this.renderer.listen(this.svgStructure.root, eventName,
-              (this.wheelHandler.get(side[0]) as Map<string, Util.WheelEventCallback>)
-              .get(eventName) as Util.WheelEventCallback)
-          );
-        });
-      });
+    });
     this.allListenners.push(
       this.renderer.listen(document, 'keydown',
         this.keyManager.handlers.keydown));

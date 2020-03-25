@@ -321,6 +321,33 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   protected rotateAll(point: Point, angle: number): void {
     Transform.rotateAll(this.service.selectedElements, point, angle, this.renderer);
+    Transform.rotateAll(this.circles, point, angle, this.renderer);
+    new Transform(this.rectangles.visualisation, this.renderer).rotate(point, angle);
+  }
+
+  protected allSelfRotate(angle: number): void {
+    this.service.selectedElements.forEach((element) => {
+      console.log(element.getAttribute('x'));
+      const point = this.findElementCenter(element);
+      new Transform(element, this.renderer).rotate(point, angle);
+    });
+  }
+
+  protected findElementCenter(element: SVGElement): Point {
+    const test = element.getClientRects().item(0);
+    if (!!test) {
+      console.log('test= ' + test.width);
+    }
+    const x = element.getAttribute('x');
+    const y = element.getAttribute('y');
+    const width = element.getAttribute('width');
+    const height = element.getAttribute('height');
+    let point = new Point(0, 0);
+    if (!!x && !!y && !!width && !!height) {
+      point = new Point(+x + +width / 2, +y + +height / 2);
+    }
+    console.log('x= ' + x + ' y = ' + y + ' w= ' + width + ' h= ' + height);
+    return point;
   }
 
   private getSvgOffset(): Offset {
@@ -333,8 +360,13 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.keyManager = {
       keyPressed: new Set(),
       lastTimeCheck: new Date().getTime(),
+      shift: false,
+      alt: false,
       handlers: {
         keydown: ($event: KeyboardEvent) => {
+          this.keyManager.shift = $event.shiftKey;
+          this.keyManager.alt = $event.altKey;
+          console.log(this.keyManager.shift);
           if (!allArrows.has($event.key)) {
             return ;
           }
@@ -350,6 +382,9 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
           }
         },
         keyup: ($event: KeyboardEvent) => {
+          this.keyManager.shift = $event.shiftKey;
+          this.keyManager.alt = $event.altKey;
+          console.log(this.keyManager.shift);
           this.keyManager.keyPressed.delete($event.key);
           if (this.keyManager.keyPressed.size === 0 && allArrows.has($event.key)) {
             this.undoRedoService.saveState();
