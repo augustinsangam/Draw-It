@@ -13,11 +13,22 @@ mat-card-title {
   background-color: whitesmoke;
 }
 
+.header {
+  display: inline-flex;
+}
+
 .title {
-  text-align: center;
   margin-top: 0px;
   padding-top: 0.67em;
+  margin-left: 43%;
   color: #e91e63;
+}
+
+.close-button {
+  margin-left: 35%;
+  margin-top: 35px;
+  color: #e91e63;
+  background-color: whitesmoke;
 }
 
 .search-bar {
