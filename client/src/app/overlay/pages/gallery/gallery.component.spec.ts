@@ -127,8 +127,6 @@ fdescribe('GalleryComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  // TODO : Fails sometimes
-
   it('#createGalleryDrawsTable should call allTags.next() with "[\'tag1\']"', () => {
      // Creer dessin 1
     const fbBuilder1 = new flatbuffers.Builder();
@@ -164,6 +162,53 @@ fdescribe('GalleryComponent', () => {
     component['createGalleryDrawsTable'](Draws.getRoot(fbByteBuffer));
 
     expect(spy).toHaveBeenCalledWith(['tag1']);
+  });
+
+  it('#createGalleryDrawsTable should call allTags.next() with nothing', () => {
+   // Creer buffer du dessin 1
+   const fbBuilder = new flatbuffers.Builder();
+   DrawBuffer.start(fbBuilder);
+   DrawBuffer.addId(fbBuilder, 0);
+   const drawBufOffset1 = DrawBuffer.end(fbBuilder);
+
+   // create Draws.drawBuffers
+   const drawBuffers = Draws.createDrawBuffersVector(
+       fbBuilder,
+       [drawBufOffset1],
+   );
+   // create Draws
+   const draws = Draws.create(fbBuilder, drawBuffers);
+   fbBuilder.finish(draws);
+
+   const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+
+   const spy = spyOn(component['allTags'], 'next');
+   const tempDraws = Draws.getRoot(fbByteBuffer);
+
+   spyOn(tempDraws, 'drawBuffersLength').and.callFake(() => 2);
+
+   component['createGalleryDrawsTable'](tempDraws);
+
+   expect(spy).toHaveBeenCalledWith([]);
+ });
+
+  it('#createGalleryDrawsTable should call allTags.next() with nothing', () => {
+    // Creer buffer du dessin 1
+    const fbBuilder = new flatbuffers.Builder();
+    Draws.start(fbBuilder);
+    const draws = Draws.end(fbBuilder);
+    fbBuilder.finish(draws);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+
+    const spy = spyOn(component['allTags'], 'next');
+    const tempDraws = Draws.getRoot(fbByteBuffer);
+
+    spyOn(tempDraws, 'drawBuffersLength').and.callFake(() => 1);
+
+    component['createGalleryDrawsTable'](tempDraws);
+
+    expect(spy).toHaveBeenCalledWith([]);
   });
 
   it('#newDraw should return tempsAllTags with added tags and add the draw to galleryDrawTable', () => {
@@ -248,6 +293,16 @@ fdescribe('GalleryComponent', () => {
     component['screenService'].size.next({width: 400, height: 400});
 
     expect(spy).toHaveBeenCalled();
+  });
+
+  it('#getAll should call responsePromiseHandler when he get a response from the communication service', async () => {
+    spyOn(component['communicationService'], 'get').and.callFake(() =>
+      Promise.resolve(new flatbuffers.ByteBuffer(new Uint8Array()))
+    );
+
+    const spy = spyOn<any>(component, 'responsePromiseHandler');
+
+    return component.getAll().then(() => expect(spy).toHaveBeenCalled());
   });
 
   it('#ajustImageWidth should set the padding of cardContent to 29 when width of saved draws is less than the width', () => {
