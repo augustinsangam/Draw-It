@@ -14,7 +14,7 @@ import { GalleryComponent, GalleryDraw } from './gallery.component';
 import { TagsFilterComponent } from './tags-filter/tags-filter.component';
 
 // tslint:disable: no-magic-numbers no-any no-string-literal
-describe('GalleryComponent', () => {
+fdescribe('GalleryComponent', () => {
   let component: GalleryComponent;
   let fixture: ComponentFixture<GalleryComponent>;
   const createDraw = () => {
@@ -129,42 +129,42 @@ describe('GalleryComponent', () => {
 
   // TODO : Fails sometimes
 
-  // it('#createGalleryDrawsTable should call allTags.next() with "[\'tag1\']"', () => {
-  //    // Creer dessin 1
-  //   const fbBuilder1 = new flatbuffers.Builder();
-  //   const nameOffset = fbBuilder1.createString('test1');
-  //   const tagOffset = fbBuilder1.createString('tag1');
-  //   const tagsOffset = Draw.createTagsVector(fbBuilder1, [tagOffset]);
-  //   Draw.start(fbBuilder1);
-  //   Draw.addName(fbBuilder1, nameOffset);
-  //   Draw.addTags(fbBuilder1, tagsOffset);
-  //   fbBuilder1.finish(Draw.end(fbBuilder1));
+  it('#createGalleryDrawsTable should call allTags.next() with "[\'tag1\']"', () => {
+     // Creer dessin 1
+    const fbBuilder1 = new flatbuffers.Builder();
+    const nameOffset = fbBuilder1.createString('test1');
+    const tagOffset = fbBuilder1.createString('tag1');
+    const tagsOffset = Draw.createTagsVector(fbBuilder1, [tagOffset]);
+    Draw.start(fbBuilder1);
+    Draw.addName(fbBuilder1, nameOffset);
+    Draw.addTags(fbBuilder1, tagsOffset);
+    fbBuilder1.finish(Draw.end(fbBuilder1));
 
-  //   // Creer buffer du dessin 1
-  //   const fbBuilder = new flatbuffers.Builder();
-  //   const bufOffset = DrawBuffer.createBufVector(
-  //       fbBuilder,
-  //       fbBuilder1.asUint8Array(),
-  //   );
-  //   const drawBufOffset1 = DrawBuffer.create(fbBuilder, 0, bufOffset);
+    // Creer buffer du dessin 1
+    const fbBuilder = new flatbuffers.Builder();
+    const bufOffset = DrawBuffer.createBufVector(
+        fbBuilder,
+        fbBuilder1.asUint8Array(),
+    );
+    const drawBufOffset1 = DrawBuffer.create(fbBuilder, 0, bufOffset);
 
-  //   // create Draws.drawBuffers
-  //   const drawBuffers = Draws.createDrawBuffersVector(
-  //       fbBuilder,
-  //       [drawBufOffset1],
-  //   );
-  //   // create Draws
-  //   const draws = Draws.create(fbBuilder, drawBuffers);
-  //   fbBuilder.finish(draws);
+    // create Draws.drawBuffers
+    const drawBuffers = Draws.createDrawBuffersVector(
+        fbBuilder,
+        [drawBufOffset1],
+    );
+    // create Draws
+    const draws = Draws.create(fbBuilder, drawBuffers);
+    fbBuilder.finish(draws);
 
-  //   const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
 
-  //   const spy = spyOn(component['allTags'], 'next');
+    const spy = spyOn(component['allTags'], 'next');
 
-  //   component['createGalleryDrawsTable'](Draws.getRoot(fbByteBuffer));
+    component['createGalleryDrawsTable'](Draws.getRoot(fbByteBuffer));
 
-  //   expect(spy).toHaveBeenCalledWith(['tag1']);
-  // });
+    expect(spy).toHaveBeenCalledWith(['tag1']);
+  });
 
   it('#newDraw should return tempsAllTags with added tags and add the draw to galleryDrawTable', () => {
 

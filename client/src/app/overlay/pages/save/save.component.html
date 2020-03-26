@@ -14,14 +14,14 @@
         {{tag}}
         <mat-icon matChipRemove>cancel</mat-icon>
       </mat-chip>
-      <input placeholder="Nouveau tag..."
+      <input placeholder="Nouvelle étiquette..."
              [matChipInputFor]="chipList"
              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
              [matChipInputAddOnBlur]="addOnBlur"
              (matChipInputTokenEnd)="add($event)">
     </mat-chip-list>
     <mat-hint>
-      Le tag doit être en 3 et 21 caractères.
+      L'étiquette doit être en 3 et 21 caractères.
     </mat-hint>
   </mat-form-field>
   <button mat-raised-button
