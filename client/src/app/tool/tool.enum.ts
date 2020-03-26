@@ -2,7 +2,6 @@
 export enum Tool {
   Aerosol,
   Applicator,
-  Bucket,
   Brush,
   Eraser,
   Ellipse,

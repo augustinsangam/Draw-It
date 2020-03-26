@@ -78,12 +78,6 @@ import {
   ApplicatorPanelComponent
 } from './tool/applicator/applicator-panel/applicator-panel.component';
 import {
-  BucketLogicComponent
-} from './tool/bucket/bucket-logic/bucket-logic.component';
-import {
-  BucketPanelComponent
-} from './tool/bucket/bucket-panel/bucket-panel.component';
-import {
   ColorBoxComponent
 } from './tool/color/color-box/color-box.component';
 import {
@@ -209,8 +203,6 @@ import {
     GridPanelComponent,
     SaveComponent,
     TagsFilterComponent,
-    BucketLogicComponent,
-    BucketPanelComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -249,8 +241,6 @@ import {
     LineLogicComponent,
     LinePanelComponent,
     NewDrawComponent,
-    BucketLogicComponent,
-    BucketPanelComponent,
     PencilLogicComponent,
     PencilPanelComponent,
     PipetteLogicComponent,

@@ -6,7 +6,7 @@ import { Shortcut } from './shortcut';
 import { ShortcutHandlerManagerService } from './shortcut-handler-manager.service';
 import { Handler } from './shortcut-handler.service';
 
-// tslint:disable: no-string-literal no-any no-empty
+// tslint:disable: no-string-literal no-any no-empty no-magic-numbers
 describe('ShortcutHandlerManagerService', () => {
 
   let service: ShortcutHandlerManagerService;
@@ -390,5 +390,5 @@ describe('ShortcutHandlerManagerService', () => {
       done();
     }, waitTime);
   });
-
 });
+// tslint:disable-next-line: max-file-line-count

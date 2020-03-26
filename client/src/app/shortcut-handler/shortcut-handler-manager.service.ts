@@ -42,15 +42,8 @@ export class ShortcutHandlerManagerService {
       }
     });
 
-    this.handlersFunc.set(Shortcut.B, () =>
-      this.toolSelectorService.set(Tool.Bucket)
-    );
-
-    this.handlersFunc.set(Shortcut.C, (event: KeyboardEvent) => {
-      event.preventDefault();
-      if (!event.ctrlKey) {
-        this.toolSelectorService.set(Tool.Pencil);
-      }
+    this.handlersFunc.set(Shortcut.C, () => {
+      this.toolSelectorService.set(Tool.Pencil);
     });
 
     this.handlersFunc.set(Shortcut.E, (event: KeyboardEvent) => {
