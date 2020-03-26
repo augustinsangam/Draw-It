@@ -48,17 +48,8 @@ export class ShortcutHandlerManagerService {
 
     this.handlersFunc.set(Shortcut.C, (event: KeyboardEvent) => {
       event.preventDefault();
-      if (event.ctrlKey) {
-        this.selectionService.copy.next(null);
-      } else {
+      if (!event.ctrlKey) {
         this.toolSelectorService.set(Tool.Pencil);
-      }
-    });
-
-    this.handlersFunc.set(Shortcut.D, (event: KeyboardEvent) => {
-      event.preventDefault();
-      if ( event.ctrlKey ) {
-        this.selectionService.duplicate.emit(null);
       }
     });
 
@@ -104,20 +95,6 @@ export class ShortcutHandlerManagerService {
         this.toolSelectorService.set(Tool.Selection);
       } else {
         this.overlayService.openSaveDialog();
-      }
-    });
-
-    this.handlersFunc.set(Shortcut.V, (event: KeyboardEvent) => {
-      event.preventDefault();
-      if ( event.ctrlKey ) {
-        this.selectionService.paste.emit(null);
-      }
-    });
-
-    this.handlersFunc.set(Shortcut.X, (event: KeyboardEvent) => {
-      event.preventDefault();
-      if ( event.ctrlKey ) {
-        this.selectionService.cut.emit(null);
       }
     });
 

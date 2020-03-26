@@ -1,13 +1,10 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
-import { SvgService } from 'src/app/svg/svg.service';
 import { Point } from '../../shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { SelectionService } from '../selection.service';
 import { BasicSelectionType } from './element-selected-type';
 import { SelectionLogicBase } from './selection-logic-base';
 import * as Util from './selection-logic-util';
-
-const NOT_FOUND = -1;
 
 @Component({
   selector: 'app-selection-logic',
@@ -18,15 +15,11 @@ export class SelectionLogicComponent
 
   private mouseHandlers: Map<string, Map<string, Util.MouseEventCallBack>>;
 
-  private baseVisualisationRectangleDimension: {width: number, height: number} = {width: 0, height: 0};
-  private scaledRectangleDimension: {width: number, height: number} = {width: 0, height: 0};
-
   constructor(protected renderer: Renderer2,
-              protected svgService: SvgService,
               protected undoRedoService: UndoRedoService,
               protected service: SelectionService
   ) {
-    super(renderer, svgService, undoRedoService, service);
+    super(renderer, undoRedoService, service);
     this.initialiseHandlers();
   }
 
@@ -49,24 +42,9 @@ export class SelectionLogicComponent
             $event.offsetX,
             $event.offsetY
           );
-          this.mouse.left.onResize = Util.CIRCLES.indexOf(
-            this.mouse.left.selectedElement as Util.CircleType
-          ) !== NOT_FOUND;
-          if (this.mouse.left.onResize) {
-            console.log(`Resize ${this.mouse.left.selectedElement}`);
-          }
-          // console.log('drag: ' + this.mouse.left.onDrag);
-          // console.log('resize: ' + this.mouse.left.onResize);
           if (this.svgStructure.drawZone.contains($event.target as SVGElement)
             && !this.service.selectedElements.has($event.target as SVGElement)) {
             this.applySingleSelection($event.target as SVGElement);
-            const selectionWidth = this.rectangles.visualisation.getAttribute('width');
-            const selectionHeight = this.rectangles.visualisation.getAttribute('height');
-            if (!!selectionHeight && !!selectionWidth) {
-              const [width, height] = [+selectionWidth, +selectionHeight];
-              this.baseVisualisationRectangleDimension = { width, height};
-              this.scaledRectangleDimension =  { width, height };
-            }
           }
         }],
         ['mousemove', ($event: MouseEvent) => {
@@ -74,19 +52,10 @@ export class SelectionLogicComponent
             const previousCurrentPoint = this.mouse.left.currentPoint;
             this.mouse.left.currentPoint = new Point($event.offsetX,
               $event.offsetY);
-            if (this.mouse.left.onDrag && !this.mouse.left.onResize) {
+            if (this.mouse.left.onDrag) {
               const offsetX = $event.offsetX - previousCurrentPoint.x;
               const offsetY = $event.offsetY - previousCurrentPoint.y;
               this.translateAll(offsetX, offsetY);
-            } else if (this.mouse.left.onResize) {
-              const offsetX = +this.mouse.left.selectedElement % 3 === 0 ? $event.offsetX - previousCurrentPoint.x : 0;
-              const offsetY = +this.mouse.left.selectedElement % 3 !== 0 ? $event.offsetY - previousCurrentPoint.y : 0;
-              this.scaledRectangleDimension.width += this.mouse.left.selectedElement > 1 ? offsetX : -offsetX;
-              this.scaledRectangleDimension.height += this.mouse.left.selectedElement > 1 ? offsetY : -offsetY;
-              const factorX = this.scaledRectangleDimension.width / this.baseVisualisationRectangleDimension.width;
-              const factorY = this.scaledRectangleDimension.height / this.baseVisualisationRectangleDimension.height;
-              console.log(factorX + ' ' + factorY);
-              this.resizeAll(factorX, factorY);
             } else {
               this.drawSelection(this.mouse.left.startPoint,
                 this.mouse.left.currentPoint);

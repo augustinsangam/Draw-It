@@ -62,13 +62,11 @@ export class SelectionLogicUtil {
         startPoint: fakePoint, currentPoint: fakePoint, endPoint: fakePoint,
         mouseIsDown: false, selectedElement: BasicSelectionType.NOTHING,
         onDrag: false,
-        onResize: false
       },
       right: {
         startPoint: fakePoint, currentPoint: fakePoint, endPoint: fakePoint,
         mouseIsDown: false, selectedElement: BasicSelectionType.NOTHING,
         onDrag: false,
-        onResize: false
       }
     };
   }

@@ -1,5 +1,4 @@
 import { OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { SvgService } from 'src/app/svg/svg.service';
 import { MathService } from '../../mathematics/tool.math-service.service';
 import { BackGroundProperties, StrokeProperties } from '../../shape/common/abstract-shape';
 import { Circle } from '../../shape/common/circle';
@@ -35,7 +34,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   protected rectangles: Util.SelectionRectangles;
   protected keyManager: Util.KeyManager;
 
-  constructor(protected renderer: Renderer2, protected svgService: SvgService,
+  constructor(protected renderer: Renderer2,
               protected undoRedoService: UndoRedoService,
               protected service: SelectionService) {
     super();
@@ -60,69 +59,9 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     const subscription = this.service.selectAllElements.subscribe(() => {
       this.applyMultipleSelection();
     });
-    this.service.copy.subscribe(() => this.onCopy());
-    this.service.cut.subscribe(() => this.onCut());
-    this.service.paste.subscribe(() => this.onPaste());
-    this.service.delete.subscribe(() => this.onDelete());
-    this.service.duplicate.subscribe(() => this.onDuplicate());
     this.allListenners.push(() => subscription.unsubscribe());
     this.initialiseKeyManager();
     this.renderer.setStyle(this.svgStructure.root, 'cursor', 'default');
-  }
-
-  private onCopy(): void {
-    if (this.service.selectedElements.size !== 0) {
-      this.service.clipboard = this.clone(
-        this.service.selectedElements
-      );
-    }
-  }
-
-  private onCut(): void {
-    if (this.service.selectedElements.size !== 0) {
-      this.service.clipboard = this.clone(
-        this.service.selectedElements
-      );
-      this.service.selectedElements.forEach((element) => {
-        this.renderer.removeChild(this.svgStructure.drawZone, element);
-      });
-      this.deleteVisualisation();
-    }
-  }
-
-  private onPaste(): void {
-    if (this.service.clipboard.size !== 0) {
-      Transform.translateAll(this.service.clipboard, 30, 30, this.renderer);
-      const clipBoardCloned = this.clone(this.service.clipboard);
-      clipBoardCloned.forEach((element) => {
-        this.renderer.appendChild(this.svgStructure.drawZone, element);
-      });
-      this.applyMultipleSelection(undefined, undefined, clipBoardCloned);
-    }
-  }
-
-  private onDelete(): void {
-    if (this.service.selectedElements.size !== 0) {
-      this.service.selectedElements.forEach((element) => {
-        this.renderer.removeChild(this.svgStructure.drawZone, element);
-      });
-      this.deleteVisualisation();
-    }
-  }
-
-  private onDuplicate(): void {
-    if (this.service.selectedElements.size !== 0) {
-      this.onCopy();
-      this.onPaste();
-    }
-  }
-
-  private clone(elements: Set<SVGElement>): Set<SVGElement> {
-    const set = new Set<SVGElement>();
-    elements.forEach((element) => {
-      set.add(element.cloneNode(true) as SVGElement);
-    });
-    return set;
   }
 
   protected applySingleSelection(element: SVGElement): void {
@@ -288,35 +227,10 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     return (this.rectangles.visualisation as SVGGeometryElement).isPointInFill(point);
   }
 
-  protected isOnControlCircle(x: number, y: number): number {
-    let retValue = 0;
-    let index = 0;
-    for (const circle of this.circles) {
-      const centerX = circle.getAttribute('cx');
-      const centerY = circle.getAttribute('cy');
-      // console.log('center: ' + centerX + ' ' + centerY);
-      // console.log('pos: ' + x + ' ' + y)
-      if (!!centerX && !!centerY) {
-        const distance = Math.sqrt(Math.pow(+centerX - x, 2) +  Math.pow(+centerY - y, 2));
-        retValue = distance < +Util.CIRCLE_RADIUS ? index : NOT_FOUND;
-      }
-      if (retValue !== NOT_FOUND) {
-        break;
-      }
-      index++;
-    }
-
-    return retValue;
-  }
-
   protected translateAll(x: number, y: number): void {
     Transform.translateAll(this.service.selectedElements, x, y, this.renderer);
     Transform.translateAll(this.circles, x, y, this.renderer);
     new Transform(this.rectangles.visualisation, this.renderer).translate(x, y);
-  }
-
-  protected resizeAll(factorX: number, factorY: number): void {
-    Transform.scaleAll(this.service.selectedElements, factorX, factorY, this.renderer);
   }
 
   private getSvgOffset(): Offset {

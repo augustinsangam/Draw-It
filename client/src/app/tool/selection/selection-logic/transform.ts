@@ -1,5 +1,4 @@
 import { Renderer2 } from '@angular/core';
-import { Point } from '../../shape/common/point';
 
 export class Transform {
 
@@ -8,6 +7,7 @@ export class Transform {
   private scaleAttribute: [number, number];
 
   constructor(private element: SVGElement, private renderer: Renderer2) {
+
     const transform = this.element.getAttribute('transform') as string;
 
     let result = /translate\(\s*([^\s,)]+)[ ,][ ]?([^\s,)]+)\)/.exec(transform);
@@ -30,34 +30,9 @@ export class Transform {
     }
   }
 
-  static rotateAll(elements: Iterable<SVGElement>, point: Point, angle: number, renderer: Renderer2): void {
-    for (const element of elements) {
-      new Transform(element, renderer).rotate(point, angle);
-    }
-  }
-
-  static scaleAll(elements: Iterable<SVGElement>, x: number, y: number, renderer: Renderer2): void {
-    for (const element of elements) {
-      new Transform(element, renderer).scale(x, y);
-    }
-  }
-
   translate(dx: number, dy: number): void {
     this.translateAttribute[0] += dx;
     this.translateAttribute[1] += dy;
-    this.setAttributes();
-  }
-
-  rotate(point: Point, angle: number): void {
-    this.rotateAttribute[0] = point.x;
-    this.rotateAttribute[1] = point.y;
-    this.rotateAttribute[2] = angle;
-    this.setAttributes();
-  }
-
-  scale(x: number, y: number): void {
-    this.scaleAttribute[0] = x;
-    this.scaleAttribute[1] = y;
     this.setAttributes();
   }
 
