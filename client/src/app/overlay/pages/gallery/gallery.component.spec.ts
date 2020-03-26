@@ -14,7 +14,7 @@ import { GalleryComponent, GalleryDraw } from './gallery.component';
 import { TagsFilterComponent } from './tags-filter/tags-filter.component';
 
 // tslint:disable: no-magic-numbers no-any no-string-literal
-fdescribe('GalleryComponent', () => {
+describe('GalleryComponent', () => {
   let component: GalleryComponent;
   let fixture: ComponentFixture<GalleryComponent>;
   const createDraw = () => {
