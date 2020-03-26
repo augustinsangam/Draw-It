@@ -16,6 +16,7 @@ import { BasicSelectionType, ElementSelectedType } from './element-selected-type
 import * as Util from './selection-logic-util';
 import { Transform } from './transform';
 
+
 enum Arrow {
   Up = 'ArrowUp',
   Down = 'ArrowDown',
@@ -288,35 +289,50 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     return (this.rectangles.visualisation as SVGGeometryElement).isPointInFill(point);
   }
 
-  protected isOnControlCircle(x: number, y: number): number {
-    let retValue = 0;
-    let index = 0;
-    for (const circle of this.circles) {
-      const centerX = circle.getAttribute('cx');
-      const centerY = circle.getAttribute('cy');
-      // console.log('center: ' + centerX + ' ' + centerY);
-      // console.log('pos: ' + x + ' ' + y)
-      if (!!centerX && !!centerY) {
-        const distance = Math.sqrt(Math.pow(+centerX - x, 2) +  Math.pow(+centerY - y, 2));
-        retValue = distance < +Util.CIRCLE_RADIUS ? index : NOT_FOUND;
-      }
-      if (retValue !== NOT_FOUND) {
-        break;
-      }
-      index++;
-    }
-
-    return retValue;
-  }
-
   protected translateAll(x: number, y: number): void {
     Transform.translateAll(this.service.selectedElements, x, y, this.renderer);
     Transform.translateAll(this.circles, x, y, this.renderer);
     new Transform(this.rectangles.visualisation, this.renderer).translate(x, y);
   }
 
-  protected resizeAll(factorX: number, factorY: number): void {
-    Transform.scaleAll(this.service.selectedElements, factorX, factorY, this.renderer);
+  protected resizeAll(factorX: number, factorY: number, offsetX: number, offsetY: number): void {
+    Transform.scaleAll(this.service.selectedElements, factorX, factorY, offsetX, offsetY, this.renderer);
+    const x = this.rectangles.visualisation.getAttribute('x');
+    const y = this.rectangles.visualisation.getAttribute('y');
+    const width = this.rectangles.visualisation.getAttribute('width');
+    const height = this.rectangles.visualisation.getAttribute('height');
+    const refPoint1 = new Point(0, 0);
+    const refPoint2 = new Point(0, 0);
+    if (!!x && !!y && !!width && !!height) {
+      refPoint1.x = +x;
+      refPoint1.y = +y;
+      refPoint2.x = +x + +width;
+      refPoint2.y = +y + +height;
+    }
+    if (refPoint1.x < refPoint2.x) {
+      // this.mouse.left.selectedElement = this.mouse.left.selectedElement === Util.CIRCLES[0] ? Util.CIRCLES[3] : Util.CIRCLES[0];
+      this.mouse.left.selectedElement = this.mouse.left.selectedElement === Util.CIRCLES[0] || this.mouse.left.selectedElement === Util.CIRCLES[3] ? Util.CIRCLES[0] : this.mouse.left.selectedElement;
+    } else {
+      this.mouse.left.selectedElement = this.mouse.left.selectedElement === Util.CIRCLES[3] || this.mouse.left.selectedElement === Util.CIRCLES[0] ? Util.CIRCLES[3] : this.mouse.left.selectedElement;
+    }
+    const xP1 = Math.min( refPoint1.x + ((this.mouse.left.selectedElement < 2) ? offsetX : 0),
+                          // refPoint2.x + ((this.mouse.left.selectedElement < 2) ? offsetX : 0));
+                          refPoint2.x);
+    const xP2 = Math.max( refPoint2.x + ((this.mouse.left.selectedElement > 1) ? offsetX : 0),
+                          // refPoint1.x + ((this.mouse.left.selectedElement > 1) ? offsetX : 0));
+                          refPoint1.x);
+    const p1 = new Point(
+      // Math.min(refPoint1.x) + ((this.mouse.left.selectedElement < 2) ? offsetX : 0),
+      xP1,
+      refPoint1.y + ((this.mouse.left.selectedElement < 2) ? offsetY : 0),
+    );
+    const p2 = new Point(
+      // refPoint2.x + ((this.mouse.left.selectedElement > 1) ? offsetX : 0),
+      xP2,
+      refPoint2.y + ((this.mouse.left.selectedElement > 1) ? offsetY : 0),
+    );
+    console.log('p1= ' + p1.x + ' ' + p1.y + ' p2= ' + p2.x + ' ' + p2.y);
+    this.drawVisualisation(p1, p2);
   }
 
   protected rotateAll(point: Point, angle: number): void {
@@ -327,27 +343,19 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   protected allSelfRotate(angle: number): void {
     this.service.selectedElements.forEach((element) => {
-      console.log(element.getAttribute('x'));
+      // console.log(element.getAttribute('x'));
       const point = this.findElementCenter(element);
       new Transform(element, this.renderer).rotate(point, angle);
     });
   }
 
   protected findElementCenter(element: SVGElement): Point {
-    const test = element.getClientRects().item(0);
-    if (!!test) {
-      console.log('test= ' + test.width);
-    }
-    const x = element.getAttribute('x');
-    const y = element.getAttribute('y');
-    const width = element.getAttribute('width');
-    const height = element.getAttribute('height');
-    let point = new Point(0, 0);
-    if (!!x && !!y && !!width && !!height) {
-      point = new Point(+x + +width / 2, +y + +height / 2);
-    }
-    console.log('x= ' + x + ' y = ' + y + ' w= ' + width + ' h= ' + height);
-    return point;
+    const selection = new SingleSelection(element, this.getSvgOffset()).points();
+    const centerPoint = new Point(
+      (selection[0].x + selection[1].x ) / 2,
+      (selection[0].y + selection[1].y) / 2
+    );
+    return centerPoint;
   }
 
   private getSvgOffset(): Offset {
@@ -366,7 +374,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
         keydown: ($event: KeyboardEvent) => {
           this.keyManager.shift = $event.shiftKey;
           this.keyManager.alt = $event.altKey;
-          console.log(this.keyManager.shift);
+          // console.log(this.keyManager.shift);
           if (!allArrows.has($event.key)) {
             return ;
           }
@@ -384,7 +392,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
         keyup: ($event: KeyboardEvent) => {
           this.keyManager.shift = $event.shiftKey;
           this.keyManager.alt = $event.altKey;
-          console.log(this.keyManager.shift);
+          // console.log(this.keyManager.shift);
           this.keyManager.keyPressed.delete($event.key);
           if (this.keyManager.keyPressed.size === 0 && allArrows.has($event.key)) {
             this.undoRedoService.saveState();

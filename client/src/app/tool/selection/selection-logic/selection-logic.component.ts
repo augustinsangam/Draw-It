@@ -20,7 +20,7 @@ export class SelectionLogicComponent
 
   private baseVisualisationRectangleDimension: {width: number, height: number} = {width: 0, height: 0};
   private scaledRectangleDimension: {width: number, height: number} = {width: 0, height: 0};
-  private angle: number = 0;
+  // private angle: number = 0;
 
   constructor(protected renderer: Renderer2,
               protected svgService: SvgService,
@@ -54,7 +54,7 @@ export class SelectionLogicComponent
             this.mouse.left.selectedElement as Util.CircleType
           ) !== NOT_FOUND;
           if (this.mouse.left.onResize) {
-            console.log(`Resize ${this.mouse.left.selectedElement}`);
+            // console.log(`Resize ${this.mouse.left.selectedElement}`);
           }
           // console.log('drag: ' + this.mouse.left.onDrag);
           // console.log('resize: ' + this.mouse.left.onResize);
@@ -87,7 +87,7 @@ export class SelectionLogicComponent
               const factorX = this.scaledRectangleDimension.width / this.baseVisualisationRectangleDimension.width;
               const factorY = this.scaledRectangleDimension.height / this.baseVisualisationRectangleDimension.height;
               // console.log(factorX + ' ' + factorY);
-              this.resizeAll(factorX, factorY);
+              this.resizeAll(factorX, factorY, offsetX, offsetY);
             } else {
               this.drawSelection(this.mouse.left.startPoint,
                 this.mouse.left.currentPoint);
@@ -128,13 +128,13 @@ export class SelectionLogicComponent
       ['centerButton', new Map<string, Util.WheelEventCallback>([
         ['wheel', ($event: WheelEvent) => {
           $event.preventDefault();
-          this.angle += this.keyManager.alt ?
+          const angle = this.keyManager.alt ?
            $event.deltaY / Util.MOUSE_WHEEL_DELTA_Y : Util.ANGLE * ($event.deltaY / Util.MOUSE_WHEEL_DELTA_Y);
-          console.log(this.angle);
+          // console.log(this.angle);
           if (this.keyManager.shift) {
-            this.allSelfRotate(this.angle);
+            this.allSelfRotate(angle);
           } else {
-            this.rotateAll(this.findElementCenter(this.rectangles.visualisation), this.angle);
+            this.rotateAll(this.findElementCenter(this.rectangles.visualisation), angle);
           }
         }]
       ])],
