@@ -9,7 +9,7 @@ export class Transform {
   constructor(private element: SVGElement, private renderer: Renderer2) {
     const transform = this.element.getAttribute('transform') as string;
     const result = /matrix\(\s*([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)\)/.exec(transform);
-    console.log(result);
+    // console.log(result);
     const data = (result !== null) ?
       [[+result[1], +result[3], +result[5]],
        [+result[2], +result[4], +result[6]],
@@ -18,7 +18,7 @@ export class Transform {
     undefined;
 
     this.matrix = new Matrix(3, 3, data);
-    console.log(data);
+    // console.log(data);
   }
 
   static translateAll(elements: Iterable<SVGElement>, dx: number, dy: number, renderer: Renderer2): void {

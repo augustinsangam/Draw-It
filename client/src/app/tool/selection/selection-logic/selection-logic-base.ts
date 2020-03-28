@@ -264,7 +264,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   private resetTranslate(element: SVGElement): void {
-    this.renderer.setAttribute(element, 'transform', 'translate(0,0)');
+    this.renderer.setAttribute(element, 'transform', 'matrix(1,0,0,1,0,0)');
   }
 
   protected elementSelectedType(element: SVGElement)
