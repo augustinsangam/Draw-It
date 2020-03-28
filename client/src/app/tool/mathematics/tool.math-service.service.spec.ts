@@ -199,23 +199,6 @@ describe('MathService', () => {
     expect(result).toEqual(new Point(42, 42));
   });
 
-  // TODO : Fix the test
-  // it('#getEllipseRadius should return half of the' +
-  //   'getRectangleSize returned values', () => {
-  //   const initialPoint = new Point(0, 0);
-
-  //   const oppositePoint = new Point(42, 69);
-
-  //   const dimensions = service.getRectangleSize(initialPoint, oppositePoint);
-
-  //   expect(
-  //     service.getEllipseRadius(initialPoint, oppositePoint)
-  //   ).toEqual({
-  //       rx: dimensions.width / 2,
-  //       ry: dimensions.height / 2
-  //   });
-  // });
-
   it('#getEllipseCenter should return the coordinates ' +
     'of the center of the ellipse', () => {
     const initialPoint = new Point(1, 5);
