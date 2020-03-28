@@ -227,12 +227,6 @@ implements OnDestroy {
         this.initialPoint.y + this.TEXT_OFFSET + this.service.fontSize
       )
     );
-    this.renderer.setAttribute(
-      cursor,
-      'd',
-      `M ${this.initialPoint.x } ${this.initialPoint.y + this.TEXT_OFFSET} v ${this.service.fontSize}`
-    );
-    this.renderer.setAttribute(cursor, 'stroke', 'rgba(1,1,1,1)');
     this.cursor.initBlink();
   }
 

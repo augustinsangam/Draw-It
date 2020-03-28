@@ -11,7 +11,6 @@ export class Cursor {
   frequency: Observable<number>;
   blinker: Subscription;
   visible: boolean;
-  tmpTextZone: SVGElement;
   currentPosition: Point;
   initialCursorPoint: Point;
   readonly CURSOR_INTERVAL: number = 500;
@@ -23,9 +22,10 @@ export class Cursor {
   ) {
     this.visible = true;
     this.initialCursorPoint = new Point(initialPoint.x, initialPoint.y);
-    this.currentPosition = this.initialCursorPoint;
+    this.currentPosition = new Point(initialPoint.x, initialPoint.y);
     this.blinker = Subscription.EMPTY;
-    this.tmpTextZone = this.renderer.createElement('text', 'http://www.w3.org/2000/svg');
+    this.renderer.setAttribute(element, 'stroke', 'rgba(1,1,1,1)');
+    this.updateVisual();
   }
 
   initBlink(): void {
@@ -58,10 +58,29 @@ export class Cursor {
   }
 
   move(currentLine: TextLine, lineIndex: number): void {
-    // console.log(`lineIndex = ${lineIndex}`);
-    this.currentPosition.x = this.initialCursorPoint.x + this.service.getTextAlign() + this.service.getCursorAlign(currentLine);
-    this.currentPosition.y = this.initialCursorPoint.y + ((lineIndex) * this.service.fontSize);
+    switch (this.service.textAlignement) {
+      case TextAlignement.left:
+        this.currentPosition.x = this.initialCursorPoint.x + this.service.getTextAlign() + this.service.getLineWidth(currentLine);
+        this.currentPosition.y = this.initialCursorPoint.y + ((lineIndex) * this.service.fontSize);
+        console.log(`x_initialPoint = ${this.initialCursorPoint.x} + x_align = ${this.service.getTextAlign()} + x_cursorAlign = ${this.service.getCursorAlign(currentLine)}`);
+        break;
 
+      case TextAlignement.right:
+        const oldIndex = currentLine.cursorIndex;
+        // maybe utiliser currentline.tspan.textcontent.length ici
+        currentLine.cursorIndex = currentLine.tspan.textContent.length;
+        const textWidth = this.service.getLineWidth(currentLine);
+        currentLine.cursorIndex = oldIndex;
+        const lineAtCursor = this.service.getLineWidth(currentLine);
+        this.currentPosition.x = this.initialCursorPoint.x - (textWidth - lineAtCursor);
+        console.log(`x_initialPoint = ${this.initialCursorPoint.x} - (totalWidth = ${textWidth} - lineCursorWidth = ${lineAtCursor})`);
+        this.currentPosition.y = this.initialCursorPoint.y + ((lineIndex) * this.service.fontSize);
+        break;
+
+      default:
+        this.currentPosition.x = this.initialCursorPoint.x + this.service.getTextAlign() + this.service.getCursorAlign(currentLine);
+        this.currentPosition.y = this.initialCursorPoint.y + ((lineIndex) * this.service.fontSize);
+    }
     this.updateVisual();
   }
 }
