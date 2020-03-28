@@ -147,34 +147,11 @@ describe('DocumentationComponent', () => {
       { label: 'Parent3', id: 4 }
     );
 
-    const refNode1: Node = {
-      label: 'Enfant1',
-      children: [
-        { label: 'PetitEnfant1', id: 0 },
-        { label: 'petitEnfant2', id: 1 }
-      ]
-    };
+    const retNode = component['findParentNode'](refArray, 0);
+    const nullNode: Node = {label: 'NULL'};
+    const retValue = !!retNode ? retNode : nullNode;
 
-    const refNode2: Node = {
-      label: 'Parent1',
-      children: [
-        {
-          label: 'Enfant1',
-          children: [
-            { label: 'PetitEnfant1', id: 0 },
-            { label: 'petitEnfant2', id: 1 }
-          ]
-        },
-        { label: 'Enfant2', id: 2 }
-      ]
-    };
-
-    spyOn(component['treeControl'], 'expand');
-
-    component['expandParent'](refArray, 0);
-    expect(component['treeControl'].expand).toHaveBeenCalledTimes(2);
-    expect(component['treeControl'].expand).toHaveBeenCalledWith(refNode1);
-    expect(component['treeControl'].expand).toHaveBeenCalledWith(refNode2);
+    expect(retValue.label).toEqual('Parent1');
   });
 
   it('#expand shouldn´t expand anything if the note passed has no parents',
@@ -197,10 +174,11 @@ describe('DocumentationComponent', () => {
         { label: 'Parent3', id: 4 }
       );
 
-      spyOn(component['treeControl'], 'expand');
+      const retNode = component['findParentNode'](refArray, 4);
+      const nullNode: Node = {label: 'NULL'};
+      const retValue = !!retNode ? retNode : nullNode;
 
-      component['expandParent'](refArray, 4);
-      expect(component['treeControl'].expand).toHaveBeenCalledTimes(0);
+      expect(retValue.label).toEqual('Parent3');
     });
 
   it('#expand shouldn´t expand anything if the node passed doesn´t exist',
@@ -223,10 +201,11 @@ describe('DocumentationComponent', () => {
         { label: 'Parent3', id: 4 }
       );
 
-      spyOn(component['treeControl'], 'expand');
+      const retNode = component['findParentNode'](refArray, 5);
+      const nullNode: Node = {label: 'NULL'};
+      const retValue = !!retNode ? retNode : nullNode;
 
-      component['expandParent'](refArray, 5);
-      expect(component['treeControl'].expand).toHaveBeenCalledTimes(0);
+      expect(retValue.label).toEqual('NULL');
     });
 
   it('#hasChild should return true if the node has children', () => {
@@ -323,6 +302,32 @@ describe('DocumentationComponent', () => {
   it('#displayContent shouldn´t update contentNodeIndex'
   +  'if the node passed has no id', () => {
     component['displayNodeContent']({ label: 'nodeTest' });
+    component['currentNodeIndex'] = 0;
+    expect(component['currentNodeIndex']).toBe(0);
+  });
+
+  it('#displayContent should set treeControl.dataNode to an empty array', () => {
+    const refArray: Node[] = new Array<Node>(
+      {
+        label: 'Parent1',
+        children: [
+          {
+            label: 'Enfant1',
+            children: [
+              { label: 'PetitEnfant1', id: 0 },
+              { label: 'petitEnfant2', id: 1 }
+            ]
+          },
+          { label: 'Enfant2', id: 2 }
+        ]
+      },
+      { label: 'Parent2', id: 3 },
+      { label: 'Parent3', id: 4 }
+    );
+
+    component['doc'] = refArray;
+
+    component['displayNodeContent']({ label: 'nodeTest', id: 5});
     component['currentNodeIndex'] = 0;
     expect(component['currentNodeIndex']).toBe(0);
   });
