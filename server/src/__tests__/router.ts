@@ -13,8 +13,8 @@ import supertest from 'supertest';
 
 import { Application } from '../application';
 import { ANSWER_TO_LIFE, ContentType, StatusCode, TYPES } from '../constants';
-import { Database, Entry } from '../database';
 import { Draw, Draws } from '../data_generated';
+import { Database, Entry } from '../database';
 import { myContainer } from '../inversify.config';
 import { Router } from '../router';
 
@@ -108,8 +108,8 @@ describe('router', () => {
 	it('#methodPost should reject wrong request', async () => {
 		const errMsg = 'foobar';
 
-		const verifyStub = sinon.stub(router as any, 'verify');
-		verifyStub.returns(errMsg);
+		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
+		verifyBufferStub.returns(errMsg);
 
 		const res = await supertest(app)
 			.post('/draw')
@@ -120,15 +120,15 @@ describe('router', () => {
 
 		chai.expect(res.text).to.equal(errMsg);
 
-		verifyStub.restore();
+		verifyBufferStub.restore();
 	});
 
 	it('#methodPost should fail on nextID error', async () => {
-		const stubVerify = sinon.stub(router as any, 'verify');
-		stubVerify.returns(null);
+		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
+		verifyBufferStub.returns(null);
 
-		const stubDbNext = sinon.stub(db, 'nextID');
-		stubDbNext.rejects('foobar');
+		const dbNextStub = sinon.stub(db, 'nextID');
+		dbNextStub.rejects('foobar');
 
 		app.use(Application['err']);
 		await supertest(app)
@@ -138,22 +138,22 @@ describe('router', () => {
 			.expect('Content-Type', ContentType.PLAIN_UTF8)
 			.then();
 
-		chai.expect(stubDbNext.calledOnce).to.be.true;
+		chai.expect(dbNextStub.calledOnce).to.be.true;
 
-		stubVerify.restore();
-		stubDbNext.restore();
+		verifyBufferStub.restore();
+		dbNextStub.restore();
 	});
 
 	it('#methodPost should insert', async () => {
-		const stubVerify = sinon.stub(router as any, 'verify');
-		stubVerify.returns(null);
+		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
+		verifyBufferStub.returns(null);
 
-		const stubDbNext = sinon.stub(db, 'nextID');
-		stubDbNext.resolves(ANSWER_TO_LIFE);
+		const dbNextStub = sinon.stub(db, 'nextID');
+		dbNextStub.resolves(ANSWER_TO_LIFE);
 
 		let entry: Entry | undefined;
-		const stubDbInsert = sinon.stub(db, 'insert');
-		stubDbInsert.callsFake(async (localEntry) => {
+		const dbInsertStub = sinon.stub(db, 'insert');
+		dbInsertStub.callsFake(async (localEntry) => {
 			entry = localEntry;
 			return Promise.resolve({} as any);
 		});
@@ -168,13 +168,13 @@ describe('router', () => {
 		chai.expect(res.text).to.equal(ANSWER_TO_LIFE.toString());
 		chai.expect(entry?._id).to.equal(ANSWER_TO_LIFE);
 
-		chai.expect(stubVerify.calledOnce).to.be.true;
-		chai.expect(stubDbNext.calledOnce).to.be.true;
-		chai.expect(stubDbInsert.calledOnce).to.be.true;
+		chai.expect(verifyBufferStub.calledOnce).to.be.true;
+		chai.expect(dbNextStub.calledOnce).to.be.true;
+		chai.expect(dbInsertStub.calledOnce).to.be.true;
 
-		stubVerify.restore();
-		stubDbNext.restore();
-		stubDbInsert.restore();
+		verifyBufferStub.restore();
+		dbNextStub.restore();
+		dbInsertStub.restore();
 	});
 
 	it('#methodPut should reject non-binary request', async () =>
@@ -184,32 +184,32 @@ describe('router', () => {
 			.then(({ text }) => chai.expect(text).to.equal('Requète incorrecte')));
 
 	it('#methodPut should reject id zero', async () => {
-		const stubVerify = sinon.stub(router as any, 'verify');
-		stubVerify.returns(null);
+		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
+		verifyBufferStub.returns(null);
 
 		return supertest(app)
 			.put('/draw/0')
 			.set('Content-Type', ContentType.OCTET_STREAM)
 			.expect(StatusCode.BAD_REQUEST)
-			.then(() => stubVerify.restore());
+			.then(() => verifyBufferStub.restore());
 	});
 
 	it('#methodPut should reject negative id', async () => {
-		const stubVerify = sinon.stub(router as any, 'verify');
-		stubVerify.returns(null);
+		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
+		verifyBufferStub.returns(null);
 
 		return supertest(app)
 			.put(`/draw/-${ANSWER_TO_LIFE}`)
 			.set('Content-Type', ContentType.OCTET_STREAM)
 			.expect(StatusCode.BAD_REQUEST)
-			.then(() => stubVerify.restore());
+			.then(() => verifyBufferStub.restore());
 	});
 
 	it('#methodPut should reject wrong request', async () => {
 		const errMsg = 'foobar';
 
-		const verifyStub = sinon.stub(router as any, 'verify');
-		verifyStub.returns(errMsg);
+		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
+		verifyBufferStub.returns(errMsg);
 
 		const res = await supertest(app)
 			.put(`/draw/${ANSWER_TO_LIFE}`)
@@ -220,15 +220,15 @@ describe('router', () => {
 
 		chai.expect(res.text).to.equal(errMsg);
 
-		verifyStub.restore();
+		verifyBufferStub.restore();
 	});
 
 	it('#methodPut should fail on replace error', async () => {
-		const stubVerify = sinon.stub(router as any, 'verify');
-		stubVerify.returns(null);
+		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
+		verifyBufferStub.returns(null);
 
-		const stubDbReplace = sinon.stub(db, 'replace');
-		stubDbReplace.rejects('foobar');
+		const dbReplaceStub = sinon.stub(db, 'replace');
+		dbReplaceStub.rejects('foobar');
 
 		app.use(Application['err']);
 		await supertest(app)
@@ -237,15 +237,15 @@ describe('router', () => {
 			.expect(StatusCode.INTERNAL_SERVER_ERROR)
 			.then();
 
-		stubVerify.restore();
-		stubDbReplace.restore();
+		verifyBufferStub.restore();
+		dbReplaceStub.restore();
 	});
 
 	it('#methodPut should replace', async () => {
-		const stubVerify = sinon.stub(router as any, 'verify');
-		stubVerify.returns(null);
+		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
+		verifyBufferStub.returns(null);
 
-		const stubDbReplace = sinon.stub(db, 'replace');
+		const dbReplaceStub = sinon.stub(db, 'replace');
 
 		await supertest(app)
 			.put(`/draw/${ANSWER_TO_LIFE}`)
@@ -253,19 +253,33 @@ describe('router', () => {
 			.expect(StatusCode.ACCEPTED)
 			.then();
 
-		chai.expect(stubVerify.calledOnce).to.be.true;
-		chai.expect(stubDbReplace.calledOnce).to.be.true;
+		chai.expect(verifyBufferStub.calledOnce).to.be.true;
+		chai.expect(dbReplaceStub.calledOnce).to.be.true;
 
-		const entry = stubDbReplace.args[0][0];
+		const entry = dbReplaceStub.args[0][0];
 		chai.expect(entry._id).to.equal(ANSWER_TO_LIFE);
 
-		stubVerify.restore();
-		stubDbReplace.restore();
+		verifyBufferStub.restore();
+		dbReplaceStub.restore();
+	});
+
+	it('#methodDelete should fail on wrong id', async () => {
+		const verifyIDStub = sinon.stub(router as any, 'verifyID');
+		verifyIDStub.returns({
+			id: 0,
+			err: new Error('foobar'),
+		});
+
+		app.use(Application['err']);
+		return supertest(app)
+			.delete(`/draw/${ANSWER_TO_LIFE}`)
+			.expect(StatusCode.BAD_REQUEST)
+			.then(() => verifyIDStub.restore());
 	});
 
 	it('#methodDelete should fail on delete error', async () => {
-		const stubDbDelete = sinon.stub(db, 'delete');
-		stubDbDelete.rejects('foobar');
+		const dbDeleteStub = sinon.stub(db, 'delete');
+		dbDeleteStub.rejects('foobar');
 
 		app.use(Application['err']);
 		await supertest(app)
@@ -273,23 +287,23 @@ describe('router', () => {
 			.expect(StatusCode.INTERNAL_SERVER_ERROR)
 			.then();
 
-		chai.expect(stubDbDelete.calledOnce).to.be.true;
-		chai.expect(stubDbDelete.args[0][0]._id).to.equal(ANSWER_TO_LIFE);
+		chai.expect(dbDeleteStub.calledOnce).to.be.true;
+		chai.expect(dbDeleteStub.args[0][0]._id).to.equal(ANSWER_TO_LIFE);
 
-		stubDbDelete.restore();
+		dbDeleteStub.restore();
 	});
 
 	it('#methodDelete should delete', async () => {
-		const stubDbDelete = sinon.stub(db, 'delete');
+		const dbDeleteStub = sinon.stub(db, 'delete');
 
 		await supertest(app)
 			.delete(`/draw/${ANSWER_TO_LIFE}`)
 			.expect(StatusCode.ACCEPTED)
 			.then();
 
-		chai.expect(stubDbDelete.calledOnce).to.be.true;
-		chai.expect(stubDbDelete.args[0][0]._id).to.equal(ANSWER_TO_LIFE);
+		chai.expect(dbDeleteStub.calledOnce).to.be.true;
+		chai.expect(dbDeleteStub.args[0][0]._id).to.equal(ANSWER_TO_LIFE);
 
-		stubDbDelete.restore();
+		dbDeleteStub.restore();
 	});
 });
