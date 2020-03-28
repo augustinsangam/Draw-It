@@ -1,5 +1,6 @@
 import { Renderer2 } from '@angular/core';
 import { MathService } from '../../mathematics/tool.math-service.service';
+import { RectangleService } from '../rectangle/rectangle.service';
 import { AbstractShape } from './abstract-shape';
 import { Dimension } from './dimension';
 import { Point } from './point';
@@ -10,9 +11,10 @@ export class Rectangle extends AbstractShape {
   constructor(
     protected renderer: Renderer2,
     public element: SVGElement,
-    private mathService: MathService
+    private mathService: MathService,
+    protected rectangleService?: RectangleService
   ) {
-      super(renderer, element);
+      super(renderer, element, rectangleService);
     }
 
   insertRectangleInSVG(upLeftCorner: Point, dimension: Dimension): void {

@@ -111,7 +111,7 @@ describe('LinePanelComponent', () => {
     component['radiusSlider'].min = 10;
     component['service'].thickness = 40;
     component['onThicknessValueChange']();
-    expect(component['radiusSlider'].min).toEqual(20);
+    expect(component['radiusSlider'].min).toEqual(24);
   });
 
 });
