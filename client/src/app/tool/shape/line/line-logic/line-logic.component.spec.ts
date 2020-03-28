@@ -5,7 +5,7 @@ import { Point } from '../../common/point';
 import { LineLogicComponent } from './line-logic.component';
 
 // tslint:disable:no-string-literal no-any no-magic-numbers
-describe('LineLogicComponent', () => {
+fdescribe('LineLogicComponent', () => {
   let component: LineLogicComponent;
   let fixture: ComponentFixture<LineLogicComponent>;
   let defaultPath: Path;
@@ -55,6 +55,15 @@ describe('LineLogicComponent', () => {
     component['paths'] = [];
     component['createNewPath'](new Point(100, 100));
     expect(spy).toHaveBeenCalled();
+  });
+
+  it('#createNewPath should set the css depending on the service', () => {
+    component['serviceColor'].primaryColor = '';
+    component['isNewPath'] = true;
+    component['service'].withJonction = false;
+    component['paths'] = [];
+    component['createNewPath'](new Point(100, 100));
+    expect(component['paths'][0]['element'].style.fill).toEqual('');
   });
 
   it('#getPath should return the path containing' +
