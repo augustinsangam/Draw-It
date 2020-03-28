@@ -264,17 +264,11 @@ describe('router', () => {
 	});
 
 	it('#methodDelete should fail on wrong id', async () => {
-		const verifyIDStub = sinon.stub(router as any, 'verifyID');
-		verifyIDStub.returns({
-			id: 0,
-			err: new Error('foobar'),
-		});
-
 		app.use(Application['err']);
 		return supertest(app)
-			.delete(`/draw/${ANSWER_TO_LIFE}`)
+			.delete(`/draw/-${ANSWER_TO_LIFE}`)
 			.expect(StatusCode.BAD_REQUEST)
-			.then(() => verifyIDStub.restore());
+			.then();
 	});
 
 	it('#methodDelete should fail on delete error', async () => {
