@@ -155,7 +155,6 @@ export class CommunicationService {
       }
 
       const [key, value] = [attr.k(), attr.v()];
-      // v may be empty, so !!v is not suitable
       if (!!key && value != null) {
         renderer.setAttribute(svgEl, key, value);
       }
