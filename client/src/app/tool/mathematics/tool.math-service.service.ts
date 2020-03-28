@@ -5,7 +5,7 @@ import { Point } from '../shape/common/point';
 import {CONSTANTS, MAXIMAL_ALIGN_ANGLE, MINIMAL_3PX_DISTANCE, MINIMAL_ALIGN_ANGLE,
         RATIO_TRANSITION_HEIGHT , Shape, ShapeConstants} from './tool.math-service-util';
 
-interface PolygonProperties {
+export interface PolygonProperties {
   radius: number;
   deltaX: number;
   deltaY: number;
@@ -69,17 +69,16 @@ export class MathService {
     const exeptionalCase = properties.sides === Shape.HEXAGONE || properties.sides === Shape.DECAGONE;
     properties.radius = Math.max((minSide - properties.deltaBorderX) * properties.constants.MULTIPLICATOR_X, 0);
     properties.deltaY = properties.constants.TRANSLATION_Y;
+    properties.deltaX = properties.constants.FACTOR_TRANSLATION_X;
 
     if (ratio >= RATIO_TRANSITION_HEIGHT && exeptionalCase && rectDim.width === minSide ) {
         properties.radius = minSide - properties.deltaBorderX;
         properties.deltaY *= properties.constants.FACTOR_TRANSLATION_Y;
-        properties.deltaX = properties.constants.FACTOR_TRANSLATION_X;
     }
     if (ratio <= properties.constants.RATIO_TRANSITION_WIDTH && rectDim.width !== minSide) {
         const expansionX =  properties.constants.MULTIPLICATOR_X * properties.constants.FACTOR_TRANSITION;
         properties.radius = Math.max((minSide - properties.deltaBorderX) * expansionX, 0);
         properties.deltaY = properties.constants.TRANSLATION_Y * properties.constants.FACTOR_TRANSLATION_Y;
-        properties.deltaX = properties.constants.FACTOR_TRANSLATION_X;
         if (properties.sides  === Shape.TRIANGLE) {
           properties.deltaX = ratio * properties.constants.FACTOR_TRANSITION;
           properties.radius = Math.max((minSide - properties.deltaBorderX) * properties.constants.MULTIPLICATOR_X * (ratio), 0);

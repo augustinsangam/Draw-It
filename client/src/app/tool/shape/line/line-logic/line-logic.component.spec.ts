@@ -57,6 +57,15 @@ describe('LineLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
+  it('#createNewPath should set the css depending on the service', () => {
+    component['serviceColor'].primaryColor = '';
+    component['isNewPath'] = true;
+    component['service'].withJonction = false;
+    component['paths'] = [];
+    component['createNewPath'](new Point(100, 100));
+    expect(component['paths'][0]['element'].style.fill).toEqual('');
+  });
+
   it('#getPath should return the path containing' +
       'the Point passed as parameter', () => {
     component['paths'] = [defaultPath];
