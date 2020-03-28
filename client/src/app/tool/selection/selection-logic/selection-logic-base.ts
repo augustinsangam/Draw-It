@@ -124,17 +124,17 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   private drawVisualisation(p1: Point, p2: Point): void {
-    this.drawARectangle(this.rectangles.visualisation, p1, p2, Util.COLORS.GREEN, true);
+    this.drawARectangle(this.rectangles.visualisation, p1, p2, Util.COLORS.GREEN);
     this.drawCircles(p1, p2);
   }
 
   protected drawInversion(p1: Point, p2: Point): void {
     this.drawARectangle(this.rectangles.inversion, p1, p2,
-      Util.COLORS.RED, true);
+      Util.COLORS.RED);
   }
 
   private drawARectangle(element: SVGElement, p1: Point, p2: Point,
-                         color: string, dasharray: boolean = false): void {
+                         color: string): void {
     const [startPoint, endPoint] = Util.SelectionLogicUtil.orderPoint(p1, p2);
     const rectangleObject =
       new Rectangle(this.renderer, element, new MathService());
@@ -146,9 +146,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
       fillColor: 'none',
       opacity: '0'
     });
-    if (dasharray) {
-      this.renderer.setAttribute(element, 'stroke-dasharray', Util.DASH_ARRAY);
-    }
+    this.renderer.setAttribute(element, 'stroke-dasharray', Util.DASH_ARRAY);
   }
 
   protected drawCircles(p1: Point, p2: Point): void {
