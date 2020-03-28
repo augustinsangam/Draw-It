@@ -5,7 +5,7 @@ import { MatTreeNestedDataSource } from '@angular/material/tree';
 import marked from 'marked';
 
 import docs from '../../../../assets/docs.json';
-// TODO: attributes protected
+
 export interface Node {
   label: string;
   children?: Node[];
@@ -23,11 +23,11 @@ export interface Page {
   styleUrls: ['./documentation.component.scss']
 })
 export class DocumentationComponent {
-  treeControl: NestedTreeControl<Node>;
-  dataSource: MatTreeNestedDataSource<Node>;
-  leafNodeArray: Node[];
-  currentNodeIndex: number;
-  contentToDisplay: Page;
+  private treeControl: NestedTreeControl<Node>;
+  private dataSource: MatTreeNestedDataSource<Node>;
+  private leafNodeArray: Node[];
+  private currentNodeIndex: number;
+  protected contentToDisplay: Page;
 
   constructor() {
     this.treeControl = new NestedTreeControl<Node>((node) => node.children);

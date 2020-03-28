@@ -173,12 +173,10 @@ export class MathService {
       rx: Math.max(rectDims.width / 2 - border / 2, 0),
       ry: Math.max(rectDims.height / 2 - border / 2, 0)
     };
-    // TODO : variables
 
-    if (radius.rx + border / 2 < 0
-        || radius.ry + border / 2 < 0
-        || (radius.rx < border / 2 && radius.ry < border / 2)
-    ) {
+    const negativeRadius = (radius.rx + border / 2 < 0) || (radius.ry + border / 2 < 0);
+    const radiusBiggerThanBorder = radius.rx < border / 2 && radius.ry < border / 2;
+    if (negativeRadius || radiusBiggerThanBorder) {
       radius = { rx: 0, ry: 0 };
     }
     return radius;

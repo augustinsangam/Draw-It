@@ -13,7 +13,9 @@ interface Entry {
 class Database {
 	private readonly client: mongodb.MongoClient;
 
-	// TODO: No underscore
+	// LES UNDERSCORES SONT AUTORISÉS PAR LA SYNTAXE DE TYPESCRIPT
+	// VOIR: https://www.typescriptlang.org/docs/handbook/classes.html#accessors
+	// FORUM: https://moodle.polymtl.ca/mod/forum/discuss.php?d=73661
 	// tslint:disable-next-line: variable-name
 	private _db?: mongodb.Db;
 	// tslint:disable-next-line: variable-name
