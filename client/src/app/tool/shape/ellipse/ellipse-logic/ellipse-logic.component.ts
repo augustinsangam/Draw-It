@@ -154,6 +154,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
       this.renderer,
       ellipse,
       this.mathService,
+      this.service
     ));
     this.setEllipseProperties();
     this.onDrag = true;

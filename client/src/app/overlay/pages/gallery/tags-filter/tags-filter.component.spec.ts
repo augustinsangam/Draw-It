@@ -56,6 +56,7 @@ describe('TagsFilterComponent', () => {
   });
 
   it('#ngOnInit should call addTag with "test1" when the value of selectedTag changes', () => {
+    // tslint:disable-next-line: no-any
     const spy = spyOn<any>(component, 'addTag');
 
     const testSelectedTag = new Subject<string>();
