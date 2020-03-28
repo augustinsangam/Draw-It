@@ -91,7 +91,6 @@ describe('GalleryComponent', () => {
   });
 
   it('#ResponsePromiseHandler should call createGalleryDrawsTable', () => {
-    // Creer dessin 1
     const fbBuilder1 = new flatbuffers.Builder();
     const nameOffset = fbBuilder1.createString('test1');
     const tagOffset = fbBuilder1.createString('tag1');
@@ -101,7 +100,6 @@ describe('GalleryComponent', () => {
     Draw.addTags(fbBuilder1, tagsOffset);
     fbBuilder1.finish(Draw.end(fbBuilder1));
 
-    // Creer buffer du dessin 1
     const fbBuilder = new flatbuffers.Builder();
     const bufOffset = DrawBuffer.createBufVector(
         fbBuilder,
@@ -109,12 +107,10 @@ describe('GalleryComponent', () => {
     );
     const drawBufOffset1 = DrawBuffer.create(fbBuilder, 0, bufOffset);
 
-    // create Draws.drawBuffers
     const drawBuffers = Draws.createDrawBuffersVector(
         fbBuilder,
         [drawBufOffset1],
     );
-    // create Draws
     const draws = Draws.create(fbBuilder, drawBuffers);
     fbBuilder.finish(draws);
 
@@ -128,7 +124,6 @@ describe('GalleryComponent', () => {
   });
 
   it('#createGalleryDrawsTable should call allTags.next() with "[\'tag1\']"', () => {
-     // Creer dessin 1
     const fbBuilder1 = new flatbuffers.Builder();
     const nameOffset = fbBuilder1.createString('test1');
     const tagOffset = fbBuilder1.createString('tag1');
@@ -138,7 +133,6 @@ describe('GalleryComponent', () => {
     Draw.addTags(fbBuilder1, tagsOffset);
     fbBuilder1.finish(Draw.end(fbBuilder1));
 
-    // Creer buffer du dessin 1
     const fbBuilder = new flatbuffers.Builder();
     const bufOffset = DrawBuffer.createBufVector(
         fbBuilder,
@@ -146,12 +140,10 @@ describe('GalleryComponent', () => {
     );
     const drawBufOffset1 = DrawBuffer.create(fbBuilder, 0, bufOffset);
 
-    // create Draws.drawBuffers
     const drawBuffers = Draws.createDrawBuffersVector(
         fbBuilder,
         [drawBufOffset1],
     );
-    // create Draws
     const draws = Draws.create(fbBuilder, drawBuffers);
     fbBuilder.finish(draws);
 
@@ -165,18 +157,15 @@ describe('GalleryComponent', () => {
   });
 
   it('#createGalleryDrawsTable should call allTags.next() with nothing', () => {
-   // Creer buffer du dessin 1
    const fbBuilder = new flatbuffers.Builder();
    DrawBuffer.start(fbBuilder);
    DrawBuffer.addId(fbBuilder, 0);
    const drawBufOffset1 = DrawBuffer.end(fbBuilder);
 
-   // create Draws.drawBuffers
    const drawBuffers = Draws.createDrawBuffersVector(
        fbBuilder,
        [drawBufOffset1],
    );
-   // create Draws
    const draws = Draws.create(fbBuilder, drawBuffers);
    fbBuilder.finish(draws);
 
@@ -193,7 +182,6 @@ describe('GalleryComponent', () => {
  });
 
   it('#createGalleryDrawsTable should call allTags.next() with nothing', () => {
-    // Creer buffer du dessin 1
     const fbBuilder = new flatbuffers.Builder();
     Draws.start(fbBuilder);
     const draws = Draws.end(fbBuilder);
@@ -385,8 +373,6 @@ describe('GalleryComponent', () => {
   });
 
   it('#deleteDraw should call deleteCloseHandler() with "id" when dialogRefs.delete is closed', () => {
-    // const spy = spyOn<any>(component, 'deleteCloseHandler');
-
     component['deleteDraw'](0);
 
     component['dialogRefs'].delete.close(true);
