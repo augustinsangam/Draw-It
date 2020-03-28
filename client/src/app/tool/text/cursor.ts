@@ -3,6 +3,7 @@ import {interval, Observable, Subscription} from 'rxjs';
 import {Point} from '../shape/common/point';
 import {TextLine} from './text-line';
 import {TextService} from './text.service';
+import {TextAlignement} from './text-alignement';
 
 // tslint:disable:use-lifecycle-interface
 export class Cursor {
@@ -21,8 +22,8 @@ export class Cursor {
               initialPoint: Point,
   ) {
     this.visible = true;
-    this.currentPosition = initialPoint;
     this.initialCursorPoint = new Point(initialPoint.x, initialPoint.y);
+    this.currentPosition = this.initialCursorPoint;
     this.blinker = Subscription.EMPTY;
     this.tmpTextZone = this.renderer.createElement('text', 'http://www.w3.org/2000/svg');
   }
@@ -58,8 +59,9 @@ export class Cursor {
 
   move(currentLine: TextLine, lineIndex: number): void {
     // console.log(`lineIndex = ${lineIndex}`);
-    this.currentPosition.x = this.initialCursorPoint.x + this.service.getTextAlign() / 2 +  this.service.getLineWidth(currentLine);
+    this.currentPosition.x = this.initialCursorPoint.x + this.service.getTextAlign() + this.service.getCursorAlign(currentLine);
     this.currentPosition.y = this.initialCursorPoint.y + ((lineIndex) * this.service.fontSize);
+
     this.updateVisual();
   }
 }

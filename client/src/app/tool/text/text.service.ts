@@ -71,6 +71,12 @@ export class TextService extends ToolService {
     );
   }
 
+  getCursorAlign(currentLine: TextLine): number {
+    return this.textAlignement === TextAlignement.left ? this.getLineWidth(currentLine) : (
+      this.textAlignement === TextAlignement.center ? this.getLineWidth(currentLine) / 2 : 0
+    );
+  }
+
   getTextAnchor(): string {
     return this.textAlignement === 'left' ? 'start' : (
       this.textAlignement === 'center' ? 'middle' : 'end'
@@ -78,13 +84,14 @@ export class TextService extends ToolService {
   }
 
   getLineWidth(currentLine: TextLine): number {
+    console.log(`cursorIndex: ${currentLine.cursorIndex}`);
     const oldText = currentLine.tspan.textContent;
     if (!!currentLine.tspan.textContent && currentLine.tspan.textContent.length !== currentLine.cursorIndex) {
       currentLine.tspan.textContent = currentLine.tspan.textContent.slice(0, currentLine.cursorIndex);
     }
     const xPos = (currentLine.tspan as SVGTextContentElement).getComputedTextLength();
     currentLine.tspan.textContent = oldText;
-    // console.log(`cursor X pos = ${xPos}`);
+    console.log(`xPos = ${xPos}`);
     return xPos;
   }
 }

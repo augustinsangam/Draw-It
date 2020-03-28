@@ -9,6 +9,7 @@ import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
 import {Cursor} from '../cursor';
 import {TextLine} from '../text-line';
 import {TextService} from '../text.service';
+import {TextAlignement} from '../text-alignement';
 
 @Component({
   selector: 'app-text-logic',
@@ -221,14 +222,15 @@ implements OnDestroy {
       this.service,
       cursor,
       new Point(
-        this.initialPoint.x + this.TEXT_OFFSET,
+        this.service.textAlignement === TextAlignement.left ? this.initialPoint.x : (
+          this.service.textAlignement === TextAlignement.center ? this.initialPoint.x + this.service.currentZoneDims.width / 2 : this.initialPoint.x + this.service.currentZoneDims.width),
         this.initialPoint.y + this.TEXT_OFFSET + this.service.fontSize
       )
     );
     this.renderer.setAttribute(
       cursor,
       'd',
-      `M ${this.initialPoint.x + this.TEXT_OFFSET} ${this.initialPoint.y + this.TEXT_OFFSET} v ${this.service.fontSize}`
+      `M ${this.initialPoint.x } ${this.initialPoint.y + this.TEXT_OFFSET} v ${this.service.fontSize}`
     );
     this.renderer.setAttribute(cursor, 'stroke', 'rgba(1,1,1,1)');
     this.cursor.initBlink();
@@ -252,6 +254,7 @@ implements OnDestroy {
   private stopTyping(): void {
     this.cursor.removeCursor();
     this.textZoneRect.element.remove();
+    this.service.currentZoneDims = {height: 0, width: 0};
     this.onType = false;
     this.shortcutService.activateAll();
     this.currentLine = {tspan: undefined as unknown as SVGElement, letters: [], cursorIndex: 0};
@@ -305,7 +308,7 @@ implements OnDestroy {
     this.renderer.setAttribute(
       this.currentLine.tspan,
       'x',
-      `${+this.service.getTextAlign() + this.initialPoint.x + this.TEXT_OFFSET}`
+      `${+this.service.getTextAlign() + this.initialPoint.x }`
     );
     this.renderer.setAttribute(this.currentLine.tspan, 'y', `${this.cursor.currentPosition.y - this.TEXT_OFFSET}`);
     this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
@@ -321,7 +324,6 @@ implements OnDestroy {
     if (postCursor.length !== 0) {
       this.currentLine.letters = preCursor;
       postCursor.forEach((letter) => this.currentLine.letters.push(letter));
-      // --this.currentLine.cursorIndex;
     } else {
       this.currentLine.letters = preCursor;
       this.currentLine.cursorIndex = this.currentLine.letters.length;
