@@ -18,6 +18,13 @@ export enum ContentType {
   OCTET_STREAM = 'application/octet-stream',
 }
 
+export enum Method {
+  DELETE = 'DELETE',
+  GET = 'GET',
+  POST = 'POST',
+  PUT = 'PUT',
+}
+
 export enum StatusCode {
   OK = 200,
   CREATED,
@@ -56,7 +63,7 @@ export class CommunicationService {
   }
 
   async get(): Promise<flatbuffers.ByteBuffer> {
-    this.xhr.open('GET', `${this.host}/draw`);
+    this.xhr.open(Method.GET, `${this.host}/draw`);
     this.xhr.responseType = 'arraybuffer';
     const promise = new Promise<flatbuffers.ByteBuffer>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
@@ -78,7 +85,7 @@ export class CommunicationService {
   }
 
   async post(): Promise<number> {
-    this.xhr.open('POST', `${this.host}/draw`);
+    this.xhr.open(Method.POST, `${this.host}/draw`);
     this.xhr.setRequestHeader('Content-Type', ContentType.OCTET_STREAM);
     const promise = new Promise<number>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
@@ -99,7 +106,7 @@ export class CommunicationService {
   }
 
   async put(id: number): Promise<null> {
-    this.xhr.open('PUT', `${this.host}/draw/${id}`);
+    this.xhr.open(Method.PUT, `${this.host}/draw/${id}`);
     this.xhr.setRequestHeader('Content-Type', ContentType.OCTET_STREAM);
     const promise = new Promise<null>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
@@ -120,7 +127,7 @@ export class CommunicationService {
   }
 
   async delete(id: number): Promise<null> {
-    this.xhr.open('DELETE', `${this.host}/draw/${id}`);
+    this.xhr.open(Method.DELETE, `${this.host}/draw/${id}`);
     const promise = new Promise<null>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
         if (this.xhr.readyState !== DONE) {
@@ -136,6 +143,30 @@ export class CommunicationService {
       this.xhr.onerror = () => reject(ERROR_MESSAGE);
     });
     this.xhr.send();
+    return promise;
+  }
+
+  async sendEmail(name: string, email: string, blob: Blob): Promise<void> {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('recipient', email);
+    formData.append('media', blob);
+    this.xhr.open(Method.POST, `${this.host}/send`);
+    const promise = new Promise<void>((resolve, reject) => {
+      this.xhr.onreadystatechange = () => {
+        if (this.xhr.readyState !== DONE) {
+          return;
+        }
+        if (this.xhr.status === StatusCode.ACCEPTED) {
+          resolve();
+        } else if (this.xhr.status) {
+          reject(this.xhr.responseText);
+        }
+      };
+      this.xhr.ontimeout = () => reject(TIMEOUT_ERROR_MESSAGE);
+      this.xhr.onerror = () => reject(ERROR_MESSAGE);
+    });
+    this.xhr.send(formData);
     return promise;
   }
 
