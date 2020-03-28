@@ -4,6 +4,7 @@ import { IncomingMessage } from 'http';
 import { request, RequestOptions } from 'https';
 import inversify from 'inversify';
 
+import { EmailAPIHeaders } from './constants.js';
 import secrets from './secrets.json';
 
 @inversify.injectable()
@@ -30,22 +31,20 @@ class Email {
 
 		const form = new FormData();
 		form.append('to', recipient);
+		// form.append('address_validation', 'true');
+		form.append('quick_return', 'true');
 		form.append('payload', readStream, {
 			filename: file.filename,
 			contentType: file.mimetype,
 		});
-		console.log(file);
 
-		const headers = form.getHeaders();
-		headers['X-Team-Key'] = secrets.email.key;
-		this.options.headers = headers;
+		this.options.headers = form.getHeaders();
+		this.options.headers[EmailAPIHeaders.KEY] = secrets.email.key;
+		console.log(form);
 
 		const req = request(this.options);
 		form.pipe(req);
-		// TODO: cast relevance
-		return new Promise<IncomingMessage>((resolve) =>
-			req.on('response', resolve),
-		);
+		return new Promise((resolve) => req.on('response', resolve));
 	}
 }
 

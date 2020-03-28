@@ -39,6 +39,12 @@ enum ContentType {
 	PLAIN_UTF8 = 'text/plain; charset=utf-8',
 }
 
+enum EmailAPIHeaders {
+	COUNT = 'X-RateLimit-Remaining',
+	KEY = 'X-Team-Key',
+	MAX = 'X-RateLimit-Limit',
+}
+
 const ERRORS = {
 	nullCollection: new Error('collection is null or undefined'),
 	nullDb: new Error('database is null or undefined'),
@@ -78,6 +84,7 @@ export {
 	ANSWER_TO_LIFE,
 	COLORS,
 	ContentType,
+	EmailAPIHeaders,
 	ERRORS,
 	promisifiedTimeout,
 	StatusCode,

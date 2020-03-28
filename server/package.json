@@ -104,6 +104,7 @@
     "useTabs": true
   },
   "dependencies": {
+    "email-validator": "^2.0.4",
     "express": "^4.17.1",
     "flatbuffers": "^1.11.0",
     "form-data": "^3.0.0",

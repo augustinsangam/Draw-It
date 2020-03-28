@@ -1,11 +1,13 @@
+import EmailValidator from 'email-validator';
 import express from 'express';
 import flatbuffers from 'flatbuffers';
+import { IncomingMessage } from 'http';
 import inversify from 'inversify';
 import log from 'loglevel';
 import mongodb from 'mongodb';
 import multer from 'multer';
 
-import { COLORS, ContentType, StatusCode, TextLen, TYPES } from './constants';
+import { COLORS, ContentType, EmailAPIHeaders, StatusCode, TextLen, TYPES } from './constants';
 import { Database, Entry } from './database';
 import { Draw, DrawBuffer, Draws } from './data_generated';
 import { Email } from './email';
@@ -82,11 +84,39 @@ class Router {
 
 	private sendEmail(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
-			const res2 = await this.email.send(req.body.recipient, req.file);
-			console.log(res2.statusCode);
-			res2.on('data', (chunk) => {
-				console.log('BODY: ' + chunk);
-			});
+			const recipient = req.body.recipient;
+			if (!EmailValidator.validate(recipient)) {
+				res.status(StatusCode.NOT_ACCEPTABLE).send('Courriel invalide');
+				return;
+			}
+			console.log(recipient);
+
+			let resEmail: IncomingMessage;
+			try {
+				resEmail = await this.email.send(recipient, req.file);
+			} catch(err) {
+				return next(err);
+			}
+
+			const count = resEmail.headers[EmailAPIHeaders.COUNT];
+			const max = resEmail.headers[EmailAPIHeaders.MAX];
+
+			if (resEmail.statusCode === StatusCode.OK) {
+				console.log('OK');
+				res.status(StatusCode.OK).send(`Courriel envoyé (${count}/${max})`);
+				return;
+			}
+
+			const chunks = new Array();
+			resEmail.on('data', (chunk) => chunks.push(chunk));
+
+			const promise = new Promise((resolve) => resEmail.on('end', resolve));
+			await promise;
+
+			const result = Buffer.concat(chunks).toString();
+			console.log(result);
+			const json = JSON.parse(result);
+			console.log(json);
 			res.sendStatus(StatusCode.OK);
 		};
 	}
