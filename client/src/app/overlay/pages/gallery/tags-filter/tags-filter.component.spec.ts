@@ -9,7 +9,6 @@ import {
 import { Observable, Subject } from 'rxjs';
 import { MaterialModule } from 'src/app/material.module';
 import { TagsFilterComponent } from './tags-filter.component';
-// import { ElementRef, ChangeDetectorRef } from '@angular/core';
 
 // tslint:disable: no-string-literal
 
@@ -79,7 +78,6 @@ describe('TagsFilterComponent', () => {
   });
 
   it('#add should add nothing to addedTags if the event\'s value is empty', () => {
-    // const input = fixture.nativeElement.querySelector('');
     const event: MatChipInputEvent = {
       input: null as unknown as HTMLInputElement,
       value: '',
