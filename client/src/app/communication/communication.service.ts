@@ -25,9 +25,6 @@ export enum StatusCode {
   INTERNAL_SERVER_ERROR = 500,
 }
 
-// TODO: duplication message, decode element recursively reduire l imbrication,
-// enlever les abreviations
-
 // developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/
 //   Sending_and_Receiving_Binary_Data#Sending_typed_arrays_as_binary_data
 // gomakethings.com/promise-based-xhr/

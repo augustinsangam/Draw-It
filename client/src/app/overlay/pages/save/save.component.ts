@@ -87,10 +87,14 @@ export class SaveComponent implements OnInit {
     const input = event.input;
     const value = event.value;
     const toAdd = (value || '').trim();
-    if (toAdd.length >= MIN_LETTERS && toAdd.length <= MAX_LETTERS) {
-      this.tags.push(value.trim());
-      input.value = '';
+    if (toAdd.length < MIN_LETTERS || toAdd.length > MAX_LETTERS) {
+      return;
     }
+    if (this.tags.includes(toAdd)) {
+      return;
+    }
+    this.tags.push(toAdd);
+    input.value = '';
   }
 
   protected remove(tag: string): void {
