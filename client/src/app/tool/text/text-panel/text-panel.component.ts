@@ -2,7 +2,7 @@ import {Component, ElementRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatButtonToggleChange} from '@angular/material/button-toggle';
 import {MatSlider} from '@angular/material/slider';
-import {ColorService} from '../../color/color.service';
+// import {ColorService} from '../../color/color.service';
 import {Dimension} from '../../shape/common/dimension';
 import {ToolPanelDirective} from '../../tool-panel/tool-panel.directive';
 import {TextAlignement} from '../text-alignement';
@@ -26,7 +26,7 @@ export class TextPanelComponent extends ToolPanelDirective {
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly formBuilder: FormBuilder,
               private readonly service: TextService,
-              private readonly colorService: ColorService // value is only read in the html... ts-ignore ?
+              // private readonly colorService: ColorService // value is only read in the html... ts-ignore ?
   ) {
     super(elementRef);
     this.textForm = this.formBuilder.group({

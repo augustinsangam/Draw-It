@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SVGStructure } from '../../svg/svg-structure';
+import { LocalStorageHandlerService } from 'src/app/auto-save/local-storage-handler.service';
 
 export interface PreAction {
   enabled: boolean;
@@ -39,7 +40,7 @@ export class UndoRedoService {
     redo: [PreAction, PostAction],
   };
 
-  constructor() {
+  constructor(private autoSave: LocalStorageHandlerService) {
     this.cmdDone = [];
     this.cmdUndone = [];
     this.initialCommand = [];
@@ -48,6 +49,7 @@ export class UndoRedoService {
 
   intialise(svgStructure: SVGStructure): void {
     this.svgStructure = svgStructure;
+    this.autoSave.saveState(this.svgStructure.root);
   }
 
   setStartingCommand(): void {
@@ -76,6 +78,7 @@ export class UndoRedoService {
     }
     this.cmdDone.push(toPush);
     this.cmdUndone = [];
+    this.autoSave.saveState(this.svgStructure.root);
   }
 
   undo(): void {
@@ -89,7 +92,7 @@ export class UndoRedoService {
     if (this.actions.undo[1].functionDefined) {
       (this.actions.undo[1].function as () => void)();
     }
-
+    this.autoSave.saveState(this.svgStructure.root);
   }
 
   undoBase(): void {
@@ -113,6 +116,7 @@ export class UndoRedoService {
     if (this.actions.redo[1].functionDefined) {
       (this.actions.redo[1].function as () => void)();
     }
+    this.autoSave.saveState(this.svgStructure.root);
   }
 
   redoBase(): void {
