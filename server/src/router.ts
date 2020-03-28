@@ -43,7 +43,7 @@ class Router {
 			return `Nom “${name}” invalide`;
 		}
 
-		for (let i = draw.tagsLength(); i--; ) {
+		for (let i = draw.tagsLength(); i-- !== 0; ) {
 			const tag = draw.tags(i);
 			if (tag.length < TextLen.MIN || tag.length > TextLen.MAX) {
 				return `Étiquette “${tag}” invalide`;
