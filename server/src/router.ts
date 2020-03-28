@@ -43,8 +43,7 @@ class Router {
 			return `Nom “${name}” invalide`;
 		}
 
-		const tagsLen = draw.tagsLength();
-		for (let i = 0; i < tagsLen; ++i) {
+		for (let i = draw.tagsLength(); i--; ) {
 			const tag = draw.tags(i);
 			if (tag.length < TextLen.MIN || tag.length > TextLen.MAX) {
 				return `Étiquette “${tag}” invalide`;
@@ -82,6 +81,7 @@ class Router {
 			} catch (err) {
 				return next(err);
 			}
+
 			const fbBuilder = new flatbuffers.flatbuffers.Builder();
 			const drawBufferOffsets = entries
 				.filter((entry) => !!entry.data)
@@ -157,6 +157,7 @@ class Router {
 				res.status(StatusCode.NOT_ACCEPTABLE).send(errMessage);
 				return;
 			}
+
 			try {
 				await this.db.replace(
 					{
