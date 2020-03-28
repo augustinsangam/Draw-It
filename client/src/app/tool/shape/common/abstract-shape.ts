@@ -1,7 +1,7 @@
 import { Renderer2 } from '@angular/core';
+import { EllipseService } from '../ellipse/ellipse.service';
 import { PolygoneService } from '../polygone/polygone.service';
 import { RectangleService } from '../rectangle/rectangle.service';
-import { EllipseService } from '../ellipse/ellipse.service';
 
 export interface Style {
   strokeWidth: string;

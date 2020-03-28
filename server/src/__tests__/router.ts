@@ -13,8 +13,8 @@ import supertest from 'supertest';
 
 import { Application } from '../application';
 import { ANSWER_TO_LIFE, ContentType, StatusCode, TYPES } from '../constants';
-import { Draw, Draws } from '../data_generated';
 import { Database, Entry } from '../database';
+import { Draw, Draws } from '../data_generated';
 import { myContainer } from '../inversify.config';
 import { Router } from '../router';
 

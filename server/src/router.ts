@@ -5,8 +5,8 @@ import log from 'loglevel';
 import mongodb from 'mongodb';
 
 import { COLORS, ContentType, StatusCode, TextLen, TYPES } from './constants';
-import { Draw, DrawBuffer, Draws } from './data_generated';
 import { Database, Entry } from './database';
+import { Draw, DrawBuffer, Draws } from './data_generated';
 
 interface Id {
 	id: number;

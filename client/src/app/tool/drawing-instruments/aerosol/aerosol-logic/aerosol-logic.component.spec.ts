@@ -73,7 +73,7 @@ describe('AerosolLogicComponent', () => {
     expect(component['currentMousePos']).toEqual(expectedPoint);
   });
 
-  it ('onMouseMove should not update currentMousePos if not onDrag', () => {
+  it ('#onMouseMove should not update currentMousePos if not onDrag', () => {
     const expectedPoint = new Point(43, 43);
     component['currentMousePos'] = expectedPoint;
     component['onDrag'] = false;
@@ -81,7 +81,7 @@ describe('AerosolLogicComponent', () => {
     expect(component['currentMousePos']).toEqual(expectedPoint);
   });
 
-  it ('onMouseUp should stop the splash if onDrag and to call' +
+  it ('#onMouseUp should stop the splash if onDrag and to call' +
     ' saveState from undoRedoService', () => {
     component['onMouseDown'](createClickMouseEvent('mousedown'));
     expect(component['onDrag']).toBeTruthy();
@@ -92,7 +92,7 @@ describe('AerosolLogicComponent', () => {
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
-  it ('onMouseUp should not do anything if not onDrag', fakeAsync(() => {
+  it ('#onMouseUp should not do anything if not onDrag', fakeAsync(() => {
     const spy = spyOn(component['undoRedoService'], 'saveState');
     component['onMouseDown'](createClickMouseEvent('mousedown'));
     setTimeout(() => {
