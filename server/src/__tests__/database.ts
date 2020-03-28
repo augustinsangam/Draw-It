@@ -1,4 +1,3 @@
-// TODO: Pertinance du max-class
 // tslint:disable: no-any no-string-literal no-unused-expression max-classes-per-file
 
 import chai from 'chai';
