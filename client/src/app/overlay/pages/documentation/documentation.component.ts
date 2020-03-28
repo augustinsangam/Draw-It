@@ -99,7 +99,6 @@ export class DocumentationComponent {
     if (node.id != null) {
       this.currentNodeIndex = node.id;
       this.treeControl.collapseAll();
-      // this.expandParent(this.doc, node.id);
       const parentNode = this.findParentNode(this.doc, node.id);
       this.treeControl.dataNodes = parentNode !== null ? new Array<Node>(parentNode) : new Array<Node>();
       this.treeControl.expandAll();
