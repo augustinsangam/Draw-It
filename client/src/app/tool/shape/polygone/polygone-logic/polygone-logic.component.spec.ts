@@ -23,7 +23,7 @@ const createClickMouseEvent = (event: string): MouseEvent => {
     } as MouseEventInit);
   };
 // tslint:disable:no-string-literal no-any no-magic-numbers max-file-line-count
-fdescribe('PolygoneLogicComponent', () => {
+describe('PolygoneLogicComponent', () => {
   let component: PolygoneLogicComponent;
   let fixture: ComponentFixture<PolygoneLogicComponent>;
 
@@ -104,7 +104,7 @@ fdescribe('PolygoneLogicComponent', () => {
       const event = new MouseEvent('mousedown', {
         offsetX: 10,
         offsetY: 30,
-        button: 1 // right click.
+        button: 1
       } as MouseEventInit);
       component['service'].borderOption = false;
       component['initPolygone'](event);

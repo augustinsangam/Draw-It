@@ -6,7 +6,7 @@ import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { CONSTANTS, EraserLogicComponent } from './eraser-logic.component';
 
 // tslint:disable: no-string-literal no-any no-magic-numbers
-fdescribe('EraserLogicComponent', () => {
+describe('EraserLogicComponent', () => {
   let component: EraserLogicComponent;
   let fixture: ComponentFixture<EraserLogicComponent>;
 
@@ -220,81 +220,45 @@ fdescribe('EraserLogicComponent', () => {
         () => void;
       mouseLeaveHandler();
       expect(spy).toHaveBeenCalled();
-    });
-
-  it('#Click handler works only '
-    + 'if the left button had been clicked', () => {
-      const fakeEvent = {
-        button: 1,
-        offsetX: 200,
-        offsetY: 200
-      } as unknown as MouseEvent;
-
-      const mouseDownHandler = (component['handlers'].get('click')) as
-        Util.MouseEventCallBack;
-
-      const spy = spyOn<any>(component, 'deleteAll');
-
-      mouseDownHandler(fakeEvent);
-      expect(spy).not.toHaveBeenCalled();
-    });
-
-  it('#Click handler works only for real clicks', () => {
-    const fakeEvent = {
-      button: 0,
-      offsetX: 200,
-      offsetY: 200
-    } as unknown as MouseEvent;
-
-    component['mouse'].startPoint = new Point(0, 0);
-    component['mouse'].startPoint = new Point(0, 1);
-
-    const mouseDownHandler = (component['handlers'].get('click')) as
-      Util.MouseEventCallBack;
-
-    const spy = spyOn<any>(component, 'deleteAll');
-
-    mouseDownHandler(fakeEvent);
-    expect(spy).not.toHaveBeenCalled();
   });
 
-  it('#Click handler can delete elements', () => {
+  it('# A click can delete an elements', () => {
     const fakeEvent = {
       button: 0,
-      offsetX: 200,
-      offsetY: 200
+      offsetX: 0,
+      offsetY: 0
     } as unknown as MouseEvent;
 
     component['mouse'].startPoint = new Point(0, 0);
-    component['mouse'].startPoint = new Point(0, 0);
+    component['mouse'].endPoint = new Point(0, 0);
 
-    const mouseDownHandler = (component['handlers'].get('click')) as
+    const mouseUpHandler = (component['handlers'].get('mouseup')) as
       Util.MouseEventCallBack;
 
-    spyOn<any>(component, 'markElementsInZone').and.callFake(() => {
+    spyOn<any>(component, 'findElementsInZone').and.callFake(() => {
       return new Set<SVGGElement>([
-        component.svgStructure.drawZone.children.item(0) as SVGGElement,
-        undefined as unknown as SVGGElement
+        component.svgStructure.drawZone.children.item(0) as SVGGElement
       ]);
     });
 
     const spy = spyOn<any>(component, 'deleteAll');
 
-    mouseDownHandler(fakeEvent);
+    mouseUpHandler(fakeEvent);
+
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#Click handler delete elements only if there is some', () => {
+  it('#Click can delete elements only if there is some', () => {
     const fakeEvent = {
       button: 0,
-      offsetX: 200,
-      offsetY: 200
+      offsetX: 0,
+      offsetY: 0
     } as unknown as MouseEvent;
 
     component['mouse'].startPoint = new Point(0, 0);
     component['mouse'].startPoint = new Point(0, 0);
 
-    const mouseDownHandler = (component['handlers'].get('click')) as
+    const mouseDownHandler = (component['handlers'].get('mouseup')) as
       Util.MouseEventCallBack;
 
     spyOn<any>(component, 'markElementsInZone').and.callFake(() => {
