@@ -5,7 +5,7 @@ import { Point } from '../../common/point';
 import { LineLogicComponent } from './line-logic.component';
 
 // tslint:disable:no-string-literal no-any no-magic-numbers
-fdescribe('LineLogicComponent', () => {
+describe('LineLogicComponent', () => {
   let component: LineLogicComponent;
   let fixture: ComponentFixture<LineLogicComponent>;
   let defaultPath: Path;
