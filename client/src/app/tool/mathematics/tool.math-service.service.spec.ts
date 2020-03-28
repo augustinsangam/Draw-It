@@ -196,7 +196,7 @@ describe('MathService', () => {
 
   it('#computePolygonRadius should compute the correct radius for every polygon when the maximum sideLenght is the height' +
      ' and we are in the transition phase', () => {
-    const expectedResults = [0, 0, 0, 210.62249999999995, 178.62, 189.6174, 178.98210000000003, 
+    const expectedResults = [0, 0, 0, 210.62249999999995, 178.62, 189.6174, 178.98210000000003,
                             185.31869999999998, 178.9, 180.7395, 179, 180.487, 178.99];
     const dimension = {width: 185, height: 180};
     for (let i = 3; i < 13; i++) {

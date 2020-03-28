@@ -103,7 +103,7 @@ describe('SaveComponent', () => {
     expect(component['tags']).not.toContain('tag2');
   });
 
-  it('onCancel() should close the save dialog', () => {
+  it('#onCancel() should close the save dialog', () => {
     component['dialogRef'] = {
       close: () => {
         return ;
@@ -114,7 +114,7 @@ describe('SaveComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('Longer images are well resized to the maximum 400 pixels height', () => {
+  it('#Longer images are well resized to the maximum 400 pixels height', () => {
     component['svgService'].shape.height = 500;
     component['svgService'].shape.width = 470;
     component['ngOnInit']();
