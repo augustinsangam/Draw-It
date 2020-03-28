@@ -12,7 +12,7 @@ export class Polygone extends AbstractShape {
     public element: SVGElement,
     private mathService: MathService,
     private sides: number,
-    protected polygonService: PolygoneService
+    protected polygonService?: PolygoneService
   ) {
       super(renderer, element, polygonService);
     }

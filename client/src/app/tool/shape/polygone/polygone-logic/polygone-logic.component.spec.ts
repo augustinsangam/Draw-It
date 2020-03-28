@@ -9,7 +9,9 @@ import {
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
+import { BackGroundProperties, StrokeProperties } from '../../common/abstract-shape';
 import {Point} from '../../common/point';
+import { Polygone } from '../../common/polygone';
 import { PolygoneService } from '../polygone.service';
 import { PolygoneLogicComponent } from './polygone-logic.component';
 
@@ -21,7 +23,7 @@ const createClickMouseEvent = (event: string): MouseEvent => {
     } as MouseEventInit);
   };
 // tslint:disable:no-string-literal no-any no-magic-numbers max-file-line-count
-describe('PolygoneLogicComponent', () => {
+fdescribe('PolygoneLogicComponent', () => {
   let component: PolygoneLogicComponent;
   let fixture: ComponentFixture<PolygoneLogicComponent>;
 
@@ -111,6 +113,16 @@ describe('PolygoneLogicComponent', () => {
       expect(component['polygones'].length).not.toEqual(1);
       expect(component['onDrag']).not.toBeTruthy();
   });
+
+  it('#the polygone fill attribute can be set without the polygoneService'
+    , () => {
+      const event = createClickMouseEvent('mousedown');
+      component['initPolygone'](event);
+      const polygone = new Polygone(component['renderer'], component['getPolygone']().element, component['mathService'], 6);
+      polygone.setParameters(BackGroundProperties.None, StrokeProperties.None);
+      expect(component['getPolygone']().element.getAttribute('fill')).toEqual('none');
+      expect(component['getPolygone']().element.getAttribute('stroke')).toEqual('none');
+    });
 
   it('#the polygone css is only defined by the polygoneService'
     + 'and the colorService', () => {
