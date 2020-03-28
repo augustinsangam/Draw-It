@@ -83,6 +83,17 @@ export class TextService extends ToolService {
     );
   }
 
+  getFullTextWidth(currentLine: TextLine): number {
+    const oldIndex = currentLine.cursorIndex;
+    if (currentLine.tspan.textContent) {
+      currentLine.cursorIndex = currentLine.tspan.textContent.length;
+    }
+    const fullTextWidth = this.getLineWidth(currentLine);
+    currentLine.cursorIndex = oldIndex;
+
+    return fullTextWidth;
+  }
+
   getLineWidth(currentLine: TextLine): number {
     console.log(`cursorIndex: ${currentLine.cursorIndex}`);
     const oldText = currentLine.tspan.textContent;

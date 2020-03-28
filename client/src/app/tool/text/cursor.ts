@@ -62,24 +62,21 @@ export class Cursor {
       case TextAlignement.left:
         this.currentPosition.x = this.initialCursorPoint.x + this.service.getTextAlign() + this.service.getLineWidth(currentLine);
         this.currentPosition.y = this.initialCursorPoint.y + ((lineIndex) * this.service.fontSize);
-        console.log(`x_initialPoint = ${this.initialCursorPoint.x} + x_align = ${this.service.getTextAlign()} + x_cursorAlign = ${this.service.getCursorAlign(currentLine)}`);
+        break;
+
+      case TextAlignement.center:
+        const textStart = this.initialCursorPoint.x - this.service.getFullTextWidth(currentLine) / 2;
+
+        this.currentPosition.x = textStart + this.service.getLineWidth(currentLine);
+        this.currentPosition.y = this.initialCursorPoint.y + ((lineIndex) * this.service.fontSize);
         break;
 
       case TextAlignement.right:
-        const oldIndex = currentLine.cursorIndex;
-        // maybe utiliser currentline.tspan.textcontent.length ici
-        currentLine.cursorIndex = currentLine.tspan.textContent.length;
-        const textWidth = this.service.getLineWidth(currentLine);
-        currentLine.cursorIndex = oldIndex;
-        const lineAtCursor = this.service.getLineWidth(currentLine);
-        this.currentPosition.x = this.initialCursorPoint.x - (textWidth - lineAtCursor);
-        console.log(`x_initialPoint = ${this.initialCursorPoint.x} - (totalWidth = ${textWidth} - lineCursorWidth = ${lineAtCursor})`);
+        const textWidthAtCursor = this.service.getLineWidth(currentLine);
+
+        this.currentPosition.x = this.initialCursorPoint.x - (this.service.getFullTextWidth(currentLine) - textWidthAtCursor);
         this.currentPosition.y = this.initialCursorPoint.y + ((lineIndex) * this.service.fontSize);
         break;
-
-      default:
-        this.currentPosition.x = this.initialCursorPoint.x + this.service.getTextAlign() + this.service.getCursorAlign(currentLine);
-        this.currentPosition.y = this.initialCursorPoint.y + ((lineIndex) * this.service.fontSize);
     }
     this.updateVisual();
   }

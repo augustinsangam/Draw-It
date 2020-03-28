@@ -7,9 +7,9 @@ import {Point} from '../../shape/common/point';
 import {Rectangle} from '../../shape/common/rectangle';
 import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
 import {Cursor} from '../cursor';
+import {TextAlignement} from '../text-alignement';
 import {TextLine} from '../text-line';
 import {TextService} from '../text.service';
-import {TextAlignement} from '../text-alignement';
 
 @Component({
   selector: 'app-text-logic',
@@ -217,13 +217,19 @@ implements OnDestroy {
   private initCursor(): void {
     const cursor = this.renderer.createElement('path', this.svgNS);
     this.renderer.appendChild(this.svgStructure.temporaryZone, cursor);
+
+    const initialCursorXPos = (this.service.textAlignement === TextAlignement.left) ?
+      this.initialPoint.x :
+      (this.service.textAlignement === TextAlignement.center) ?
+        this.initialPoint.x + this.service.currentZoneDims.width / 2 :
+        this.initialPoint.x + this.service.currentZoneDims.width;
+
     this.cursor = new Cursor(
       this.renderer,
       this.service,
       cursor,
       new Point(
-        this.service.textAlignement === TextAlignement.left ? this.initialPoint.x : (
-          this.service.textAlignement === TextAlignement.center ? this.initialPoint.x + this.service.currentZoneDims.width / 2 : this.initialPoint.x + this.service.currentZoneDims.width),
+        initialCursorXPos,
         this.initialPoint.y + this.TEXT_OFFSET + this.service.fontSize
       )
     );
