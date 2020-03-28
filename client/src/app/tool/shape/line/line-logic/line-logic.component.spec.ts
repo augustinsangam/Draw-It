@@ -332,7 +332,6 @@ describe('LineLogicComponent', () => {
     expect(spy).toHaveBeenCalledTimes(0);
   });
 
-  // TODO
   it(
     '#onKeyDown should call getPath 1 time when it´s called with ' +
     'with Escape, and shoud set isNewPath to true',
