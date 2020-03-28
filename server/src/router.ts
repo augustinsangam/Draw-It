@@ -3,18 +3,25 @@ import flatbuffers from 'flatbuffers';
 import inversify from 'inversify';
 import log from 'loglevel';
 import mongodb from 'mongodb';
+import multer from 'multer';
 
 import { COLORS, ContentType, StatusCode, TextLen, TYPES } from './constants';
-import { Database, Entry } from './database';
 import { Draw, DrawBuffer, Draws } from './data_generated';
+import { Database, Entry } from './database';
+import { Email } from './email';
 
 // Source: zellwk.com/blog/async-await-express/
 @inversify.injectable()
 class Router {
 	readonly router: express.Router;
 
-	constructor(@inversify.inject(TYPES.Database) private readonly db: Database) {
+	constructor(
+		@inversify.inject(TYPES.Database) private readonly db: Database,
+		@inversify.inject(TYPES.Email) private readonly email: Email,
+	) {
+		const upload = multer({ dest: 'uploads/' });
 		this.router = express.Router();
+		this.router.post('/send', upload.single('media'), this.sendEmail());
 		this.router.get('/draw', this.methodGet());
 		this.router.post('/draw', this.methodPost());
 		this.router.put('/draw/:id', this.methodPut());
@@ -47,6 +54,17 @@ class Router {
 		}
 
 		return null;
+	}
+
+	private sendEmail(): express.RequestHandler {
+		return async (req, res, next): Promise<void> => {
+			const res2 = await this.email.send(req.body.recipient, req.file);
+			console.log(res2.statusCode);
+			res2.on('data', (chunk) => {
+				console.log('BODY: ' + chunk);
+			});
+			res.sendStatus(StatusCode.OK);
+		};
 	}
 
 	private methodGet(): express.RequestHandler {

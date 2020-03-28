@@ -69,6 +69,7 @@ const TIMEOUT = 1500;
 const TYPES = {
 	Application: Symbol.for('Application'),
 	Database: Symbol.for('Database'),
+	Email: Symbol.for('Email'),
 	Router: Symbol.for('Router'),
 	Server: Symbol.for('Server'),
 };

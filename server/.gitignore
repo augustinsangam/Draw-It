@@ -4,6 +4,7 @@ coverage/
 dump/
 lib/
 node_modules/
+uploads/
 src/secrets.json
 package-lock.json
 tsconfig.tsbuildinfo
