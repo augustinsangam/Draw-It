@@ -80,6 +80,7 @@ export class CommunicationService {
   async post(): Promise<number> {
     this.xhr.open('POST', `${this.host}/draw`);
     this.xhr.setRequestHeader('Content-Type', ContentType.OCTET_STREAM);
+    this.xhr.responseType = 'text';
     const promise = new Promise<number>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
         if (this.xhr.readyState !== DONE) {
@@ -101,6 +102,7 @@ export class CommunicationService {
   async put(id: number): Promise<null> {
     this.xhr.open('PUT', `${this.host}/draw/${id}`);
     this.xhr.setRequestHeader('Content-Type', ContentType.OCTET_STREAM);
+    this.xhr.responseType = 'text';
     const promise = new Promise<null>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
         if (this.xhr.readyState !== DONE) {
@@ -121,6 +123,7 @@ export class CommunicationService {
 
   async delete(id: number): Promise<null> {
     this.xhr.open('DELETE', `${this.host}/draw/${id}`);
+    this.xhr.responseType = 'text';
     const promise = new Promise<null>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
         if (this.xhr.readyState !== DONE) {
