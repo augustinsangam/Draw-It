@@ -14,7 +14,6 @@ export class Ellipse extends AbstractShape {
   constructor(
     initialPoint: Point,
     protected renderer: Renderer2,
-    // TODO :  element sprivate ? Mathu, Nico , Renderer dans  Ellipse Lofic ??
     public element: SVGElement,
     private mathService: MathService,
     protected ellipseService: EllipseService
