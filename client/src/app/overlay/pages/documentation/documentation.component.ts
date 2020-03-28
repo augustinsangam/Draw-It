@@ -28,24 +28,16 @@ export class DocumentationComponent {
   private leafNodeArray: Node[];
   private currentNodeIndex: number;
   protected contentToDisplay: Page;
+  private doc: Node[] = docs;
 
   constructor() {
     this.treeControl = new NestedTreeControl<Node>((node) => node.children);
     this.dataSource = new MatTreeNestedDataSource<Node>();
     this.leafNodeArray = new Array<Node>();
-    this.dataSource.data = docs;
-    this.constructLeafNodeArray(docs);
-    this.contentToDisplay = {
-      title: 'Bienvenue',
-      body: marked(
-        '**Bonjour et bienvenue** '
-        + 'dans le guide d’utilisation de DrawIt !</br></br>'
-        + 'Ce guide est destiné à vous aider à découvrir et utiliser '
-        + 'les différents outils proposés par l’application. '
-        + 'Pour naviguer dans ce guide, utilisez la barre de naviguation '
-        + 'sur la gauche de la page.<br/>'
-      )
-    };
+    this.dataSource.data = this.doc;
+    this.constructLeafNodeArray(this.doc);
+    this.contentToDisplay = {title: '', body: ''};
+    this.displayNodeContent(this.leafNodeArray[0]);
   }
 
   private constructLeafNodeArray(nodes: Node[]): void {
@@ -88,18 +80,18 @@ export class DocumentationComponent {
     }
   }
 
-  private expandParent(nodes: Node[], id: number): boolean {
+  private findParentNode(nodes: Node[], id: number): Node | null {
     for (const node of nodes) {
       if (!!node.children) {
-        if (this.expandParent(node.children, id)) {
+        if (!!this.findParentNode(node.children, id)) {
           this.treeControl.expand(node);
-          return true;
+          return node;
         }
       } else if (node.id === id) {
-        return true;
+        return node;
       }
     }
-    return false;
+    return null;
   }
 
   private displayNodeContent(node: Node): void {
@@ -107,7 +99,10 @@ export class DocumentationComponent {
     if (node.id != null) {
       this.currentNodeIndex = node.id;
       this.treeControl.collapseAll();
-      this.expandParent(docs, node.id);
+      // this.expandParent(this.doc, node.id);
+      const parentNode = this.findParentNode(this.doc, node.id);
+      this.treeControl.dataNodes = parentNode !== null ? new Array<Node>(parentNode) : new Array<Node>();
+      this.treeControl.expandAll();
     }
     fetch(encodeURI(`/assets/doc/md/${node.label}.md`))
       .then((res) => res.text())
