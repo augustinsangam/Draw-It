@@ -6,7 +6,7 @@ import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { CONSTANTS, EraserLogicComponent } from './eraser-logic.component';
 
 // tslint:disable: no-string-literal no-any no-magic-numbers
-describe('EraserLogicComponent', () => {
+fdescribe('EraserLogicComponent', () => {
   let component: EraserLogicComponent;
   let fixture: ComponentFixture<EraserLogicComponent>;
 

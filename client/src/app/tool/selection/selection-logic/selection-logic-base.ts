@@ -77,9 +77,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   protected applyMultipleInversion(startPoint: Point, endPoint: Point): void {
     const inversion = this.getMultipleSelection(startPoint, endPoint);
-    if (!inversion.empty) {
-      this.applyInversion(inversion.selectedElements);
-    }
+    this.applyInversion(inversion.selectedElements);
   }
 
   protected applyMultipleSelection(startPoint?: Point, endPoint?: Point,

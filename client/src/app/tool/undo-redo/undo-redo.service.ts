@@ -68,6 +68,7 @@ export class UndoRedoService {
   }
 
   saveState(): void {
+    console.log(this.svgStructure.drawZone.children);
     const drawZone = this.svgStructure.drawZone;
     const length = drawZone.children.length;
     const toPush = new Array(length);
