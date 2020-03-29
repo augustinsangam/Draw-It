@@ -7,7 +7,7 @@ import log from 'loglevel';
 import mongodb from 'mongodb';
 import multer from 'multer';
 
-import { COLORS, ContentType, EmailAPIHeaders, StatusCode, TextLen, TYPES } from './constants';
+import { COLORS, ContentType, EMAIL_API, StatusCode, TextLen, TYPES } from './constants';
 import { Database, Entry } from './database';
 import { Draw, DrawBuffer, Draws } from './data_generated';
 import { Email } from './email';
@@ -98,26 +98,32 @@ class Router {
 				return next(err);
 			}
 
-			const count = resEmail.headers[EmailAPIHeaders.COUNT];
-			const max = resEmail.headers[EmailAPIHeaders.MAX];
+			const count = resEmail.headers[EMAIL_API.headers.count];
+			const max = resEmail.headers[EMAIL_API.headers.max];
 
-			if (resEmail.statusCode === StatusCode.OK) {
-				console.log('OK');
-				res.status(StatusCode.OK).send(`Courriel envoyé (${count}/${max})`);
+			let fireAndForget = false;
+			switch (resEmail.statusCode) {
+			case StatusCode.ACCEPTED:
+				fireAndForget = true;
+			case StatusCode.OK:
+				res.status(StatusCode.OK);
+				const hint = fireAndForget ? 'probabablement' : 'normalement';
+				res.send(`Courriel ${hint} envoyé (${count}/${max})`);
 				return;
+			default:
+				break;
 			}
 
 			const chunks = new Array();
-			resEmail.on('data', (chunk) => chunks.push(chunk));
+			resEmail.on('data', chunks.push.bind(chunks));
 
 			const promise = new Promise((resolve) => resEmail.on('end', resolve));
 			await promise;
 
-			const result = Buffer.concat(chunks).toString();
+			const textResult = Buffer.concat(chunks).toString();
+			const result = JSON.parse(textResult);
 			console.log(result);
-			const json = JSON.parse(result);
-			console.log(json);
-			res.sendStatus(StatusCode.OK);
+			res.status(StatusCode.NOT_ACCEPTABLE).send(result.error);
 		};
 	}
 

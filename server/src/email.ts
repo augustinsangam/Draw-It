@@ -4,7 +4,7 @@ import { IncomingMessage } from 'http';
 import { request, RequestOptions } from 'https';
 import inversify from 'inversify';
 
-import { EmailAPIHeaders } from './constants.js';
+import { EMAIL_API } from './constants.js';
 import secrets from './secrets.json';
 
 @inversify.injectable()
@@ -13,14 +13,11 @@ class Email {
 
 	constructor() {
 		this.options = {
-			host: 'log2990.step.polymtl.ca',
-			path: '/email',
+			headers: {
+				[EMAIL_API.headers.key]: secrets.email.key,
+			},
 			method: 'POST',
 		};
-	}
-
-	verify(email: string): Error | null {
-		return null;
 	}
 
 	async send(
@@ -31,18 +28,19 @@ class Email {
 
 		const form = new FormData();
 		form.append('to', recipient);
-		// form.append('address_validation', 'true');
-		form.append('quick_return', 'true');
 		form.append('payload', readStream, {
 			filename: file.filename,
 			contentType: file.mimetype,
 		});
 
-		this.options.headers = form.getHeaders();
-		this.options.headers[EmailAPIHeaders.KEY] = secrets.email.key;
+		const options = {...this.options, ...{ headers: form.getHeaders() }};
+		Object.assign(options.headers, this.options.headers);
+
+		console.log(this.options);
+		console.log(options);
 		console.log(form);
 
-		const req = request(this.options);
+		const req = request(EMAIL_API.url, options);
 		form.pipe(req);
 		return new Promise((resolve) => req.on('response', resolve));
 	}

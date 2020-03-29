@@ -210,6 +210,10 @@ export class OverlayService {
     this.dialogRefs.export.disableClose = true;
   }
 
+  closeExportDialog(): void {
+    this.snackBar.open();
+  }
+
   openSaveDialog(): void {
     this.dialogRefs.save = this.dialog.open(SaveComponent, exportSaveDialogOptions);
     this.dialogRefs.save.disableClose = true;

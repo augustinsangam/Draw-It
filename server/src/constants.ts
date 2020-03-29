@@ -1,3 +1,5 @@
+import { format } from 'url';
+
 const ANSWER_TO_LIFE = 42;
 
 const COLORS = {
@@ -39,11 +41,21 @@ enum ContentType {
 	PLAIN_UTF8 = 'text/plain; charset=utf-8',
 }
 
-enum EmailAPIHeaders {
-	COUNT = 'X-RateLimit-Remaining',
-	KEY = 'X-Team-Key',
-	MAX = 'X-RateLimit-Limit',
-}
+const EMAIL_API = {
+	headers: {
+		count: 'X-RateLimit-Remaining',
+		key: 'X-Team-Key',
+		max: 'X-RateLimit-Limit',
+	},
+	url: format({
+		hostname: 'log2990.step.polymtl.ca',
+		pathname: '/email',
+		protocol: 'https',
+		query: {
+			address_validation: true,
+		}
+	}),
+};
 
 const ERRORS = {
 	nullCollection: new Error('collection is null or undefined'),
@@ -84,7 +96,7 @@ export {
 	ANSWER_TO_LIFE,
 	COLORS,
 	ContentType,
-	EmailAPIHeaders,
+	EMAIL_API,
 	ERRORS,
 	promisifiedTimeout,
 	StatusCode,
