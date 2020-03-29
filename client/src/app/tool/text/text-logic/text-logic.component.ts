@@ -59,7 +59,25 @@ implements OnDestroy {
     const onMouseUp = this.renderer.listen(
       this.svgStructure.root,
       'mouseup',
-      (mouseEv: MouseEvent) => this.onMouseUp(mouseEv)
+      (mouseEv: MouseEvent) => {
+        const point = this.svgStructure.root.createSVGPoint();
+        point.x = mouseEv.offsetX;
+        point.y = mouseEv.offsetY;
+        if (!(this.textZoneRect.element as SVGGeometryElement).isPointInStroke(point)) {
+          this.stopTyping();
+          return;
+        }
+        this.onMouseUp(mouseEv);
+      }
+    );
+
+    const onMouseLeave = this.renderer.listen(
+      this.svgStructure.root,
+      'mouseleave',
+      () => {
+        this.textZoneRect.element.remove();
+        this.onDrag = false;
+      }
     );
 
     const onMouseMove = this.renderer.listen(
@@ -87,6 +105,7 @@ implements OnDestroy {
       onKeyDown,
       onMouseUp,
       onMouseMove,
+      onMouseLeave
     ];
   }
 
@@ -100,7 +119,7 @@ implements OnDestroy {
 
       case 'Escape':
         console.log('Escape');
-        this.stopTyping();
+        this.cancelTyping();
         break;
 
       case 'Enter':
@@ -252,11 +271,25 @@ implements OnDestroy {
     this.initCursor();
   }
 
+  private cancelTyping(): void {
+    this.lines.forEach((line) => {
+      line.tspan.remove();
+      line.letters = [];
+      line.cursorIndex = 0;
+    });
+    this.textElement.remove();
+    this.onDrag = false;
+    this.stopTyping();
+  }
+
   private stopTyping(): void {
     this.cursor.removeCursor();
     this.textZoneRect.element.remove();
     this.service.currentZoneDims = {height: 0, width: 0};
     this.onType = false;
+    if (this.currentLine.tspan.textContent === '') {
+      this.textElement.remove();
+    }
     this.shortcutService.activateAll();
     this.currentLine = {tspan: undefined as unknown as SVGElement, letters: [], cursorIndex: 0};
     this.lines = [];
