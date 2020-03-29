@@ -193,13 +193,15 @@ implements OnDestroy {
 
   private onMouseUp(mouseEv: MouseEvent): void {
     mouseEv.cancelBubble = false;
-    const finalPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
     this.onDrag = false;
+    const finalPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+    this.service.currentZoneDims = this.mathService.getRectangleSize(this.initialPoint, finalPoint);
+    console.log('onMouseUp');
+    console.log(finalPoint);
     this.initialPoint = this.mathService.getRectangleUpLeftCorner(
       this.initialPoint,
       finalPoint
     );
-    this.service.currentZoneDims = this.mathService.getRectangleSize(this.initialPoint, finalPoint);
     if (!this.onType) {
       this.startTyping(mouseEv);
     }
@@ -217,7 +219,6 @@ implements OnDestroy {
   private initCursor(): void {
     const cursor = this.renderer.createElement('path', this.svgNS);
     this.renderer.appendChild(this.svgStructure.temporaryZone, cursor);
-
     const initialCursorXPos = (this.service.textAlignement === TextAlignement.left) ?
       this.initialPoint.x :
       (this.service.textAlignement === TextAlignement.center) ?

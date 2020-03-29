@@ -4,6 +4,7 @@ import {TextAlignement} from './text-alignement';
 import {TextMutators} from './text-mutators';
 import {TextLine} from './text-line';
 import {Dimension} from '../shape/common/dimension';
+import {Point} from '../shape/common/point';
 
 interface Font {
   value: string;
@@ -71,16 +72,20 @@ export class TextService extends ToolService {
     );
   }
 
-  getCursorAlign(currentLine: TextLine): number {
-    return this.textAlignement === TextAlignement.left ? this.getLineWidth(currentLine) : (
-      this.textAlignement === TextAlignement.center ? this.getLineWidth(currentLine) / 2 : 0
-    );
-  }
-
   getTextAnchor(): string {
     return this.textAlignement === 'left' ? 'start' : (
       this.textAlignement === 'center' ? 'middle' : 'end'
     );
+  }
+
+  getInitialPoint(mouseEv: MouseEvent): Point {
+    if (this.textAlignement === 'left') {
+      return new Point(mouseEv.offsetX, mouseEv.offsetY);
+    } else if (this.textAlignement === 'right') {
+      return new Point(mouseEv.offsetX + this.currentZoneDims.width, mouseEv.offsetY);
+    } else {
+      return new Point(mouseEv.offsetX + this.currentZoneDims.width / 2, mouseEv.offsetY);
+    }
   }
 
   getFullTextWidth(currentLine: TextLine): number {
@@ -95,7 +100,6 @@ export class TextService extends ToolService {
   }
 
   getLineWidth(currentLine: TextLine): number {
-    console.log(`cursorIndex: ${currentLine.cursorIndex}`);
     const oldText = currentLine.tspan.textContent;
     if (!!currentLine.tspan.textContent && currentLine.tspan.textContent.length !== currentLine.cursorIndex) {
       console.log('not at EOL');
@@ -103,7 +107,6 @@ export class TextService extends ToolService {
     }
     const xPos = (currentLine.tspan as SVGTextContentElement).getComputedTextLength();
     currentLine.tspan.textContent = oldText;
-    console.log(`xPos = ${xPos}`);
     return xPos;
   }
 }

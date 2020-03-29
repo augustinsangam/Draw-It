@@ -1,9 +1,9 @@
 import {Renderer2} from '@angular/core';
 import {interval, Observable, Subscription} from 'rxjs';
 import {Point} from '../shape/common/point';
+import {TextAlignement} from './text-alignement';
 import {TextLine} from './text-line';
 import {TextService} from './text.service';
-import {TextAlignement} from './text-alignement';
 
 // tslint:disable:use-lifecycle-interface
 export class Cursor {
