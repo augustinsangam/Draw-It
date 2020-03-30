@@ -61,23 +61,23 @@ export class Cursor {
     switch (this.service.textAlignement) {
       case TextAlignement.left:
         this.currentPosition.x = this.initialCursorPoint.x + this.service.getTextAlign() + this.service.getLineWidth(currentLine);
-        this.currentPosition.y = this.initialCursorPoint.y + ((lineIndex) * this.service.fontSize);
         break;
 
       case TextAlignement.center:
         const textStart = this.initialCursorPoint.x - this.service.getFullTextWidth(currentLine) / 2;
 
         this.currentPosition.x = textStart + this.service.getLineWidth(currentLine);
-        this.currentPosition.y = this.initialCursorPoint.y + ((lineIndex) * this.service.fontSize);
         break;
 
       case TextAlignement.right:
         const textWidthAtCursor = this.service.getLineWidth(currentLine);
 
         this.currentPosition.x = this.initialCursorPoint.x - (this.service.getFullTextWidth(currentLine) - textWidthAtCursor);
-        this.currentPosition.y = this.initialCursorPoint.y + ((lineIndex) * this.service.fontSize);
         break;
     }
+    console.log(this.initialCursorPoint.y);
+    console.log(`cursPos y = ${this.initialCursorPoint.y} + ${lineIndex} * ${this.service.fontSize}`);
+    this.currentPosition.y = this.initialCursorPoint.y + (lineIndex * this.service.fontSize);
     this.updateVisual();
   }
 }

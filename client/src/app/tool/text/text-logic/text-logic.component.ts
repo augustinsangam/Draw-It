@@ -65,7 +65,7 @@ implements OnDestroy {
         const point = this.svgStructure.root.createSVGPoint();
         point.x = mouseEv.offsetX;
         point.y = mouseEv.offsetY;
-        if (!(this.textZoneRect.element as SVGGeometryElement).isPointInStroke(point) && this.onType) {
+        if (!(this.textZoneRect.element as SVGGeometryElement).isPointInFill(point) && this.onType) {
           this.stopTyping();
           return;
         }
@@ -292,9 +292,11 @@ implements OnDestroy {
   }
 
   private addTspan(): void {
+    const prevLineIndex = this.lines.indexOf(this.currentLine);
     this.currentLine = {tspan: this.renderer.createElement('tspan', this.svgNS), letters: [], cursorIndex: 0};
     this.renderer.appendChild(this.textElement, this.currentLine.tspan);
     this.lines.push(this.currentLine);
+    // this.lines.splice(prevLineIndex + 1, 0, this.currentLine);
   }
 
   private addLine(): void {
@@ -304,7 +306,11 @@ implements OnDestroy {
       'x',
       `${+this.service.getTextAlign() + this.initialPoint.x}`
     );
-    // this.renderer.setAttribute(this.currentLine.tspan, 'y', `${this.cursor.currentPosition.y + this.TEXT_OFFSET}`);
+    this.renderer.setAttribute(
+      this.currentLine.tspan,
+      'y',
+      `${this.cursor.initialCursorPoint.y + (this.lines.indexOf(this.currentLine) * this.service.fontSize)}`
+    );
     this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
   }
 
