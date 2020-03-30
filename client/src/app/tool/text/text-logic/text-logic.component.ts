@@ -362,30 +362,19 @@ implements OnDestroy {
   }
 
   private deleteLeftLetter(): void {
-    if (this.currentLine.letters.length === 0) {
-      return ;
-    } else if (this.currentLine.cursorIndex === 0 && this.lines.indexOf(this.currentLine) >= 0) {
-      console.log(this.lines);
-      const oldLine = this.currentLine;
-      this.currentLine = this.lines[this.lines.indexOf(this.currentLine) - 1];
-      this.currentLine.cursorIndex = this.currentLine.tspan.textContent.length;
-      this.lines.splice(this.lines.indexOf(oldLine), 1);
-      this.currentLine.tspan.textContent = `${this.currentLine.tspan.textContent}${oldLine.tspan.textContent}`;
-      oldLine.letters.forEach((letter) => this.currentLine.letters.push(letter));
-      oldLine.tspan.remove();
-      console.log(this.lines);
+    if (this.currentLine.letters.length === 0 || this.currentLine.cursorIndex === 0) {
+      return;
+    }
+    const preCursor = this.currentLine.letters.slice(0, this.currentLine.cursorIndex - 1);
+    const postCursor = this.currentLine.letters.slice(this.currentLine.cursorIndex, this.currentLine.letters.length);
+    console.log(`pre: ${preCursor} post: ${postCursor}`);
+    if (preCursor.length !== 0) {
+      this.currentLine.letters = preCursor;
+      postCursor.forEach((letter) => this.currentLine.letters.push(letter));
+      --this.currentLine.cursorIndex;
     } else {
-      const preCursor = this.currentLine.letters.slice(0, this.currentLine.cursorIndex - 1);
-      const postCursor = this.currentLine.letters.slice(this.currentLine.cursorIndex, this.currentLine.letters.length);
-      console.log(`pre: ${preCursor} post: ${postCursor}`);
-      if (preCursor.length !== 0) {
-        this.currentLine.letters = preCursor;
-        postCursor.forEach((letter) => this.currentLine.letters.push(letter));
-        --this.currentLine.cursorIndex;
-      } else {
-        this.currentLine.letters = postCursor;
-        this.currentLine.cursorIndex = 0;
-      }
+      this.currentLine.letters = postCursor;
+      this.currentLine.cursorIndex = 0;
     }
     this.updateText();
   }
