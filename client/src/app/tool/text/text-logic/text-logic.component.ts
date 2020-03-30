@@ -49,9 +49,11 @@ implements OnDestroy {
       this.svgStructure.root,
       'mousedown',
       (mouseEv: MouseEvent) => {
+        mouseEv.cancelBubble = true;
+        mouseEv.preventDefault();
         if (!this.onType) {
           this.onDrag = true;
-          this.onMouseDown(mouseEv);
+          this.initRectVisu(mouseEv);
         }
       }
     );
@@ -63,7 +65,7 @@ implements OnDestroy {
         const point = this.svgStructure.root.createSVGPoint();
         point.x = mouseEv.offsetX;
         point.y = mouseEv.offsetY;
-        if (!(this.textZoneRect.element as SVGGeometryElement).isPointInStroke(point)) {
+        if (!(this.textZoneRect.element as SVGGeometryElement).isPointInStroke(point) && this.onType) {
           this.stopTyping();
           return;
         }
@@ -75,8 +77,10 @@ implements OnDestroy {
       this.svgStructure.root,
       'mouseleave',
       () => {
-        this.textZoneRect.element.remove();
-        this.onDrag = false;
+        if (!this.onType && this.onDrag) {
+          this.textZoneRect.element.remove();
+          this.onDrag = false;
+        }
       }
     );
 
@@ -105,7 +109,7 @@ implements OnDestroy {
       onKeyDown,
       onMouseUp,
       onMouseMove,
-      onMouseLeave
+      onMouseLeave,
     ];
   }
 
@@ -204,19 +208,11 @@ implements OnDestroy {
     }
   }
 
-  private onMouseDown(mouseEv: MouseEvent): void {
-    mouseEv.preventDefault();
-    mouseEv.cancelBubble = true;
-    this.initRectVisu(mouseEv);
-  }
-
   private onMouseUp(mouseEv: MouseEvent): void {
     mouseEv.cancelBubble = false;
     this.onDrag = false;
     const finalPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
     this.service.currentZoneDims = this.mathService.getRectangleSize(this.initialPoint, finalPoint);
-    console.log('onMouseUp');
-    console.log(finalPoint);
     this.initialPoint = this.mathService.getRectangleUpLeftCorner(
       this.initialPoint,
       finalPoint
@@ -308,7 +304,7 @@ implements OnDestroy {
       'x',
       `${+this.service.getTextAlign() + this.initialPoint.x}`
     );
-    this.renderer.setAttribute(this.currentLine.tspan, 'y', `${this.cursor.currentPosition.y + this.TEXT_OFFSET}`);
+    // this.renderer.setAttribute(this.currentLine.tspan, 'y', `${this.cursor.currentPosition.y + this.TEXT_OFFSET}`);
     this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
   }
 
@@ -366,19 +362,30 @@ implements OnDestroy {
   }
 
   private deleteLeftLetter(): void {
-    if (this.currentLine.letters.length === 0 || this.currentLine.cursorIndex === 0) {
+    if (this.currentLine.letters.length === 0) {
       return ;
-    }
-    const preCursor = this.currentLine.letters.slice(0, this.currentLine.cursorIndex - 1);
-    const postCursor = this.currentLine.letters.slice(this.currentLine.cursorIndex, this.currentLine.letters.length);
-    console.log(`pre: ${preCursor} post: ${postCursor}`);
-    if (preCursor.length !== 0) {
-      this.currentLine.letters = preCursor;
-      postCursor.forEach((letter) => this.currentLine.letters.push(letter));
-      --this.currentLine.cursorIndex;
+    } else if (this.currentLine.cursorIndex === 0 && this.lines.indexOf(this.currentLine) >= 0) {
+      console.log(this.lines);
+      const oldLine = this.currentLine;
+      this.currentLine = this.lines[this.lines.indexOf(this.currentLine) - 1];
+      this.currentLine.cursorIndex = this.currentLine.tspan.textContent.length;
+      this.lines.splice(this.lines.indexOf(oldLine), 1);
+      this.currentLine.tspan.textContent = `${this.currentLine.tspan.textContent}${oldLine.tspan.textContent}`;
+      oldLine.letters.forEach((letter) => this.currentLine.letters.push(letter));
+      oldLine.tspan.remove();
+      console.log(this.lines);
     } else {
-      this.currentLine.letters = postCursor;
-      this.currentLine.cursorIndex = 0;
+      const preCursor = this.currentLine.letters.slice(0, this.currentLine.cursorIndex - 1);
+      const postCursor = this.currentLine.letters.slice(this.currentLine.cursorIndex, this.currentLine.letters.length);
+      console.log(`pre: ${preCursor} post: ${postCursor}`);
+      if (preCursor.length !== 0) {
+        this.currentLine.letters = preCursor;
+        postCursor.forEach((letter) => this.currentLine.letters.push(letter));
+        --this.currentLine.cursorIndex;
+      } else {
+        this.currentLine.letters = postCursor;
+        this.currentLine.cursorIndex = 0;
+      }
     }
     this.updateText();
   }
