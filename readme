@@ -7,16 +7,7 @@ SERVER {{{
 	for code changes with ‘npm run watch’. Then open your browser at the address
 	displayed on the console.
 
-	- npm run db
-	- npm run build:watch
 	- npm start
-
-	- npm i nodemon
-	- npm i -D typescript eslint @typescript-eslint/parser
-	  @typescript-eslint/eslint-plugin prettier eslint-config-prettier
-	  eslint-plugin-prettier
-
-	For tests, consider `describe.only` & `it.only`.
 }}}
 
 DATABASE {{{
