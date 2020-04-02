@@ -1,4 +1,7 @@
 import { Renderer2 } from '@angular/core';
+import { EllipseService } from '../ellipse/ellipse.service';
+import { PolygoneService } from '../polygone/polygone.service';
+import { RectangleService } from '../rectangle/rectangle.service';
 
 export interface Style {
   strokeWidth: string;
@@ -23,6 +26,7 @@ export abstract class AbstractShape {
   constructor(
     protected renderer: Renderer2,
     public element: SVGElement,
+    protected thicknessService?: PolygoneService | RectangleService | EllipseService
   ) {
     this.backgoundProperties = BackGroundProperties.Filled;
     this.strokeProperties = StrokeProperties.Filled;
@@ -32,6 +36,9 @@ export abstract class AbstractShape {
     : void {
     if (stroke === StrokeProperties.None) {
       this.renderer.setAttribute(this.element, 'stroke', 'none');
+      if (this.thicknessService !== undefined) {
+        this.thicknessService.thickness = 0;
+      }
     } else if (stroke === StrokeProperties.Dashed) {
       this.renderer.setAttribute(this.element, 'stroke-dasharray', '5,5');
       this.renderer.setAttribute(this.element, 'stroke', 'black');

@@ -133,7 +133,8 @@ export class PolygoneLogicComponent extends ToolLogicDirective
       this.polygones.push(new Polygone(
         this.renderer,
         polygon,
-        this.mathService, this.service.sides));
+        this.mathService, this.service.sides,
+        this.service));
       this.setPolygoneProperties();
     }
   }

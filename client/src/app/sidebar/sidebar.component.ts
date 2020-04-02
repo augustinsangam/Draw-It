@@ -75,11 +75,6 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
   })
   protected applicatorElRef: ElementRef<HTMLElement>;
 
-  @ViewChild('bucket', {
-    static: false,
-  })
-  protected bucketElRef: ElementRef<HTMLElement>;
-
   @ViewChild('grid', {
     static: false,
   })
@@ -89,6 +84,11 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
     static: false,
   })
   protected textElRef: ElementRef<HTMLElement>;
+
+  @ViewChild('bucket', {
+    static: false,
+  })
+  protected bucketElRef: ElementRef<HTMLElement>;
 
   @Output() protected documentationEvent: EventEmitter<null>;
   @Output() protected exportEvent: EventEmitter<null>;
@@ -119,11 +119,10 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
   ngAfterViewInit(): void {
     this.toolToElRef[Tool.Aerosol]    = this.aerosolElRef;
     this.toolToElRef[Tool.Applicator] = this.applicatorElRef;
-    this.toolToElRef[Tool.Brush]      = this.brushElRef;
+    this.toolToElRef[Tool.Bucket]     = this.bucketElRef;
     this.toolToElRef[Tool.Eraser]     = this.eraserElRef;
     this.toolToElRef[Tool.Line]       = this.lineElRef;
     this.toolToElRef[Tool.Pencil]     = this.pencilElRef;
-    this.toolToElRef[Tool.Bucket]     = this.bucketElRef;
     this.toolToElRef[Tool.Pipette]    = this.pipetteElRef;
     this.toolToElRef[Tool.Polygone]   = this.polygoneElRef;
     this.toolToElRef[Tool.Rectangle]  = this.rectangleElRef;

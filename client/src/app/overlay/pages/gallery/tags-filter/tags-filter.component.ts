@@ -23,8 +23,6 @@ export interface Tags {
 })
 export class TagsFilterComponent implements OnInit {
 
-  // TODO: protected methodes
-
   @Input() tags: Observable<string[]>;
   @Input() selectedTag: Observable<string>;
   @Output() filteredTagsChange: Subject<[string[], boolean]>;
@@ -72,7 +70,7 @@ export class TagsFilterComponent implements OnInit {
     });
   }
 
-  add(event: MatChipInputEvent): void {
+  protected add(event: MatChipInputEvent): void {
     const input = event.input;
     const value = event.value;
 
@@ -83,15 +81,11 @@ export class TagsFilterComponent implements OnInit {
       this.addedTags.push(value.trim());
       input.value = '';
     }
-    // TODO : VOIR SI PERTINENT
-    if (input) {
-      input.value = '';
-    }
     this.filteredTagsChangeHandler();
     this.tagCtrl.setValue(null);
   }
 
-  remove(tag: string): void {
+  protected remove(tag: string): void {
     const index = this.addedTags.indexOf(tag);
 
     if (index >= 0) {
@@ -102,7 +96,7 @@ export class TagsFilterComponent implements OnInit {
     this.filteredTagsChangeHandler();
   }
 
-  selected(event: MatAutocompleteSelectedEvent): void {
+  protected selected(event: MatAutocompleteSelectedEvent): void {
     this.addedTags.push(event.option.viewValue);
     this.tagInput.nativeElement.value = '';
     this.tagCtrl.setValue(null);
@@ -120,11 +114,11 @@ export class TagsFilterComponent implements OnInit {
     return this.allTags.filter((tag) => this.addedTags.indexOf(tag) === NOT_FOUND);
   }
 
-  protected filteredTagsChangeHandler(): void {
+  private filteredTagsChangeHandler(): void {
     this.filteredTagsChange.next([this.addedTags, this.searchToggleRef.checked]);
   }
 
-  addTag(tag: string): void {
+  private addTag(tag: string): void {
     if (this.addedTags.indexOf(tag) === NOT_FOUND) {
       this.addedTags.push(tag);
     }

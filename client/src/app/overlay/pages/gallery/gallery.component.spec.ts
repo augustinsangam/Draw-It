@@ -91,7 +91,6 @@ describe('GalleryComponent', () => {
   });
 
   it('#ResponsePromiseHandler should call createGalleryDrawsTable', () => {
-    // Creer dessin 1
     const fbBuilder1 = new flatbuffers.Builder();
     const nameOffset = fbBuilder1.createString('test1');
     const tagOffset = fbBuilder1.createString('tag1');
@@ -101,7 +100,6 @@ describe('GalleryComponent', () => {
     Draw.addTags(fbBuilder1, tagsOffset);
     fbBuilder1.finish(Draw.end(fbBuilder1));
 
-    // Creer buffer du dessin 1
     const fbBuilder = new flatbuffers.Builder();
     const bufOffset = DrawBuffer.createBufVector(
         fbBuilder,
@@ -109,12 +107,10 @@ describe('GalleryComponent', () => {
     );
     const drawBufOffset1 = DrawBuffer.create(fbBuilder, 0, bufOffset);
 
-    // create Draws.drawBuffers
     const drawBuffers = Draws.createDrawBuffersVector(
         fbBuilder,
         [drawBufOffset1],
     );
-    // create Draws
     const draws = Draws.create(fbBuilder, drawBuffers);
     fbBuilder.finish(draws);
 
@@ -127,44 +123,81 @@ describe('GalleryComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  // TODO : Fails sometimes
+  it('#createGalleryDrawsTable should call allTags.next() with "[\'tag1\']"', () => {
+    const fbBuilder1 = new flatbuffers.Builder();
+    const nameOffset = fbBuilder1.createString('test1');
+    const tagOffset = fbBuilder1.createString('tag1');
+    const tagsOffset = Draw.createTagsVector(fbBuilder1, [tagOffset]);
+    Draw.start(fbBuilder1);
+    Draw.addName(fbBuilder1, nameOffset);
+    Draw.addTags(fbBuilder1, tagsOffset);
+    fbBuilder1.finish(Draw.end(fbBuilder1));
 
-  // it('#createGalleryDrawsTable should call allTags.next() with "[\'tag1\']"', () => {
-  //    // Creer dessin 1
-  //   const fbBuilder1 = new flatbuffers.Builder();
-  //   const nameOffset = fbBuilder1.createString('test1');
-  //   const tagOffset = fbBuilder1.createString('tag1');
-  //   const tagsOffset = Draw.createTagsVector(fbBuilder1, [tagOffset]);
-  //   Draw.start(fbBuilder1);
-  //   Draw.addName(fbBuilder1, nameOffset);
-  //   Draw.addTags(fbBuilder1, tagsOffset);
-  //   fbBuilder1.finish(Draw.end(fbBuilder1));
+    const fbBuilder = new flatbuffers.Builder();
+    const bufOffset = DrawBuffer.createBufVector(
+        fbBuilder,
+        fbBuilder1.asUint8Array(),
+    );
+    const drawBufOffset1 = DrawBuffer.create(fbBuilder, 0, bufOffset);
 
-  //   // Creer buffer du dessin 1
-  //   const fbBuilder = new flatbuffers.Builder();
-  //   const bufOffset = DrawBuffer.createBufVector(
-  //       fbBuilder,
-  //       fbBuilder1.asUint8Array(),
-  //   );
-  //   const drawBufOffset1 = DrawBuffer.create(fbBuilder, 0, bufOffset);
+    const drawBuffers = Draws.createDrawBuffersVector(
+        fbBuilder,
+        [drawBufOffset1],
+    );
+    const draws = Draws.create(fbBuilder, drawBuffers);
+    fbBuilder.finish(draws);
 
-  //   // create Draws.drawBuffers
-  //   const drawBuffers = Draws.createDrawBuffersVector(
-  //       fbBuilder,
-  //       [drawBufOffset1],
-  //   );
-  //   // create Draws
-  //   const draws = Draws.create(fbBuilder, drawBuffers);
-  //   fbBuilder.finish(draws);
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
 
-  //   const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+    const spy = spyOn(component['allTags'], 'next');
 
-  //   const spy = spyOn(component['allTags'], 'next');
+    component['createGalleryDrawsTable'](Draws.getRoot(fbByteBuffer));
 
-  //   component['createGalleryDrawsTable'](Draws.getRoot(fbByteBuffer));
+    expect(spy).toHaveBeenCalledWith(['tag1']);
+  });
 
-  //   expect(spy).toHaveBeenCalledWith(['tag1']);
-  // });
+  it('#createGalleryDrawsTable should call allTags.next() with nothing', () => {
+   const fbBuilder = new flatbuffers.Builder();
+   DrawBuffer.start(fbBuilder);
+   DrawBuffer.addId(fbBuilder, 0);
+   const drawBufOffset1 = DrawBuffer.end(fbBuilder);
+
+   const drawBuffers = Draws.createDrawBuffersVector(
+       fbBuilder,
+       [drawBufOffset1],
+   );
+   const draws = Draws.create(fbBuilder, drawBuffers);
+   fbBuilder.finish(draws);
+
+   const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+
+   const spy = spyOn(component['allTags'], 'next');
+   const tempDraws = Draws.getRoot(fbByteBuffer);
+
+   spyOn(tempDraws, 'drawBuffersLength').and.callFake(() => 2);
+
+   component['createGalleryDrawsTable'](tempDraws);
+
+   expect(spy).toHaveBeenCalledWith([]);
+ });
+
+  it('#createGalleryDrawsTable should call allTags.next() with nothing', () => {
+    const fbBuilder = new flatbuffers.Builder();
+    Draws.start(fbBuilder);
+    const draws = Draws.end(fbBuilder);
+    fbBuilder.finish(draws);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+
+    const spy = spyOn(component['allTags'], 'next');
+    const tempDraws = Draws.getRoot(fbByteBuffer);
+
+    spyOn(tempDraws, 'drawBuffersLength').and.callFake(() => 1);
+
+    component['createGalleryDrawsTable'](tempDraws);
+
+    expect(spy).toHaveBeenCalledWith([]);
+  });
 
   it('#newDraw should return tempsAllTags with added tags and add the draw to galleryDrawTable', () => {
 
@@ -250,6 +283,16 @@ describe('GalleryComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
+  it('#getAll should call responsePromiseHandler when he get a response from the communication service', async () => {
+    spyOn(component['communicationService'], 'get').and.callFake(() =>
+      Promise.resolve(new flatbuffers.ByteBuffer(new Uint8Array()))
+    );
+
+    const spy = spyOn<any>(component, 'responsePromiseHandler');
+
+    return component.getAll().then(() => expect(spy).toHaveBeenCalled());
+  });
+
   it('#ajustImageWidth should set the padding of cardContent to 29 when width of saved draws is less than the width', () => {
     component['renderer'].setStyle(component['cardContent'].nativeElement, 'width', '400px');
     component['filteredGalleryDrawTable'].length = 1;
@@ -330,8 +373,6 @@ describe('GalleryComponent', () => {
   });
 
   it('#deleteDraw should call deleteCloseHandler() with "id" when dialogRefs.delete is closed', () => {
-    // const spy = spyOn<any>(component, 'deleteCloseHandler');
-
     component['deleteDraw'](0);
 
     component['dialogRefs'].delete.close(true);

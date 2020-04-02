@@ -1,5 +1,6 @@
 import { Renderer2 } from '@angular/core';
 import { MathService } from '../../mathematics/tool.math-service.service';
+import { PolygoneService } from '../polygone/polygone.service';
 import { AbstractShape } from './abstract-shape';
 import { Point } from './point';
 
@@ -10,9 +11,10 @@ export class Polygone extends AbstractShape {
     protected renderer: Renderer2,
     public element: SVGElement,
     private mathService: MathService,
-    private sides: number
+    private sides: number,
+    protected polygonService?: PolygoneService
   ) {
-      super(renderer, element);
+      super(renderer, element, polygonService);
     }
 
   insertPolygonInSVG(points: Point []): void {

@@ -7,6 +7,7 @@ export class Transform {
   private matrix: Matrix;
 
   constructor(private element: SVGElement, private renderer: Renderer2) {
+
     const transform = this.element.getAttribute('transform') as string;
     const result =
       /matrix\(\s*([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)\)/.exec(transform);

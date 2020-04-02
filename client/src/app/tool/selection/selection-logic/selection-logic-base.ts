@@ -1,5 +1,4 @@
 import { OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { SvgService } from 'src/app/svg/svg.service';
 import { MathService } from '../../mathematics/tool.math-service.service';
 import { BackGroundProperties, StrokeProperties } from '../../shape/common/abstract-shape';
 import { Circle } from '../../shape/common/circle';
@@ -37,7 +36,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   protected debugCircle: SVGElement;
 
-  constructor(protected renderer: Renderer2, protected svgService: SvgService,
+  constructor(protected renderer: Renderer2,
               protected undoRedoService: UndoRedoService,
               protected service: SelectionService) {
     super();
@@ -145,13 +144,10 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   protected applyMultipleInversion(startPoint: Point, endPoint: Point): void {
     const inversion = this.getMultipleSelection(startPoint, endPoint);
-    if (!inversion.empty) {
-      this.applyInversion(inversion.selectedElements);
-    }
+    this.applyInversion(inversion.selectedElements);
   }
 
-  protected applyMultipleSelection(startPoint?: Point, endPoint?: Point,
-                                   elements?: Set<SVGElement>): void {
+  protected applyMultipleSelection(startPoint?: Point, endPoint?: Point, elements?: Set<SVGElement>): void {
     this.deleteVisualisation();
     const selection = this.getMultipleSelection(startPoint, endPoint, elements);
     this.service.selectedElements = selection.selectedElements;
@@ -160,8 +156,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     }
   }
 
-  private getMultipleSelection(startPoint?: Point, endPoint?: Point,
-                               elements?: Set<SVGElement>)
+  private getMultipleSelection(startPoint?: Point, endPoint?: Point, elements?: Set<SVGElement>)
     : SelectionReturn {
     this.service.selectedElements = new Set();
     if (elements === undefined) {
@@ -176,8 +171,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     return multipleSelection.getSelection();
   }
 
-  private applyInversion(elements: Set<SVGElement>,
-                         startPoint?: Point, endPoint?: Point): void {
+  private applyInversion(elements: Set<SVGElement>, startPoint?: Point, endPoint?: Point): void {
     const elementsToInvert = new Set(this.selectedElementsFreezed);
     elements.forEach((element: SVGElement) => {
       if (this.selectedElementsFreezed.has(element)) {
@@ -194,17 +188,16 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   private drawVisualisation(p1: Point, p2: Point): void {
-    this.drawARectangle(this.rectangles.visualisation, p1, p2, Util.COLORS.GREEN, true);
+    this.drawARectangle(this.rectangles.visualisation, p1, p2, Util.COLORS.GREEN);
     this.drawCircles(p1, p2);
   }
 
   protected drawInversion(p1: Point, p2: Point): void {
     this.drawARectangle(this.rectangles.inversion, p1, p2,
-      Util.COLORS.RED, true);
+      Util.COLORS.RED);
   }
 
-  private drawARectangle(element: SVGElement, p1: Point, p2: Point,
-                         color: string, dasharray: boolean = false): void {
+  private drawARectangle(element: SVGElement, p1: Point, p2: Point, color: string): void {
     const [startPoint, endPoint] = Util.SelectionLogicUtil.orderPoint(p1, p2);
     const rectangleObject =
       new Rectangle(this.renderer, element, new MathService());
@@ -216,9 +209,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
       fillColor: 'none',
       opacity: '0'
     });
-    if (dasharray) {
-      this.renderer.setAttribute(element, 'stroke-dasharray', Util.DASH_ARRAY);
-    }
+    this.renderer.setAttribute(element, 'stroke-dasharray', Util.DASH_ARRAY);
   }
 
   protected drawCircles(p1: Point, p2: Point): void {
@@ -332,12 +323,12 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
         console.log('switch to ' + this.mouse.left.selectedElement);
       }
     }
-    const xP1 = Math.min( refPoint1.x + ((this.mouse.left.selectedElement < 2) ? offsetX : 0),
-                          // refPoint2.x + ((this.mouse.left.selectedElement < 2) ? offsetX : 0));
-                          refPoint2.x);
-    const xP2 = Math.max( refPoint2.x + ((this.mouse.left.selectedElement > 1) ? offsetX : 0),
-                          // refPoint1.x + ((this.mouse.left.selectedElement > 1) ? offsetX : 0));
-                          refPoint1.x);
+    const xP1 = Math.min(refPoint1.x + ((this.mouse.left.selectedElement < 2) ? offsetX : 0),
+      // refPoint2.x + ((this.mouse.left.selectedElement < 2) ? offsetX : 0));
+      refPoint2.x);
+    const xP2 = Math.max(refPoint2.x + ((this.mouse.left.selectedElement > 1) ? offsetX : 0),
+      // refPoint1.x + ((this.mouse.left.selectedElement > 1) ? offsetX : 0));
+      refPoint1.x);
     const p1 = new Point(
       // Math.min(refPoint1.x) + ((this.mouse.left.selectedElement < 2) ? offsetX : 0),
       xP1,
@@ -368,7 +359,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   protected findElementCenter(element: SVGElement): Point {
     const selection = new SingleSelection(element, this.getSvgOffset()).points();
     const centerPoint = new Point(
-      (selection[0].x + selection[1].x ) / 2,
+      (selection[0].x + selection[1].x) / 2,
       (selection[0].y + selection[1].y) / 2
     );
     Circle.set(centerPoint, this.renderer, this.debugCircle, Util.CIRCLE_RADIUS, 'red');
@@ -392,7 +383,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
           this.keyManager.shift = $event.shiftKey;
           this.keyManager.alt = $event.altKey;
           if (!allArrows.has($event.key)) {
-            return ;
+            return;
           }
           $event.preventDefault();
           this.keyManager.keyPressed.add($event.key);

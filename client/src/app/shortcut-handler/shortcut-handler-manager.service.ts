@@ -107,6 +107,10 @@ export class ShortcutHandlerManagerService {
       }
     });
 
+    this.handlersFunc.set(Shortcut.T, () =>
+      this.toolSelectorService.set(Tool.Text)
+    );
+
     this.handlersFunc.set(Shortcut.V, (event: KeyboardEvent) => {
       event.preventDefault();
       if ( event.ctrlKey ) {
@@ -158,10 +162,6 @@ export class ShortcutHandlerManagerService {
     this.handlersFunc.set(Shortcut.MINUS, () => {
       this.gridService.keyEvHandler('-');
     });
-
-    this.handlersFunc.set(Shortcut.T, () =>
-      this.toolSelectorService.set(Tool.Text)
-    );
 
     for (const entry of this.handlersFunc) {
       this.shortcutHanler.set(

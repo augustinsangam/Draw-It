@@ -15,6 +15,9 @@
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                 (matChipInputTokenEnd)="add($event)">
         </mat-chip-list>
+        <mat-hint>
+            L'étiquette doit être en 3 et 21 caractères.
+          </mat-hint>
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="selected($event)">
             <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
                 {{tag}}
@@ -22,6 +25,6 @@
         </mat-autocomplete>
     </mat-form-field>
     <span>OU</span>
-    <mat-slide-toggle #searchToggleRef (change)="filteredTagsChangeHandler()"></mat-slide-toggle>
+    <mat-slide-toggle #searchToggleRef class="slider" (change)="filteredTagsChangeHandler()"></mat-slide-toggle>
     <span>ET</span>
 </div>

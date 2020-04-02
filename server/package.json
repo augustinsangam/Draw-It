@@ -8,6 +8,7 @@
     "clean": "rimraf coverage/ lib/ tsconfig.tsbuildinfo",
     "build": "tsc",
     "build:watch": "tsc --watch",
+    "prestart": "tsc",
     "start": "nodemon --es-module-specifier-resolution=node --unhandled-rejections=strict --require=source-map-support/register",
     "test": "node --experimental-specifier-resolution=node node_modules/.bin/mocha",
     "test:watch": "npm start node_modules/.bin/mocha",
