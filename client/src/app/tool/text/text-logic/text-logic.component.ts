@@ -93,6 +93,8 @@ implements OnDestroy {
     this.listeners.forEach((listener) => listener());
   }
 
+  // TODO : Fix complexity
+  // tslint:disable-next-line: cyclomatic-complexity
   private onKeyDown(keyEv: KeyboardEvent): void {
 
     switch (keyEv.key) {
@@ -114,7 +116,7 @@ implements OnDestroy {
 
       case 'End':
         keyEv.preventDefault();
-        this.currentLine.cursorIndex = this.currentLine.tspan.textContent.length;
+        this.currentLine.cursorIndex = (this.currentLine.tspan.textContent as string).length;
         this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
         break;
 
@@ -156,7 +158,7 @@ implements OnDestroy {
 
       case 'ArrowRight':
         keyEv.preventDefault();
-        if (this.currentLine.cursorIndex < this.currentLine.tspan.textContent.length) {
+        if (this.currentLine.cursorIndex < (this.currentLine.tspan.textContent as string).length) {
           ++this.currentLine.cursorIndex;
           this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
         }

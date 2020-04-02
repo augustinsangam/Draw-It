@@ -16,7 +16,6 @@ import { BasicSelectionType, ElementSelectedType } from './element-selected-type
 import * as Util from './selection-logic-util';
 import { Transform } from './transform';
 
-
 enum Arrow {
   Up = 'ArrowUp',
   Down = 'ArrowDown',
@@ -51,12 +50,10 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     };
     this.undoRedoService.setPostUndoAction(action);
     this.undoRedoService.setPostRedoAction(action);
-    this.inversion = new Point(1, 1);
   }
 
   ngOnInit(): void {
     // Debug
-
     this.debugCircle = this.renderer.createElement('circle', this.svgNS);
     this.renderer.appendChild(this.svgStructure.temporaryZone, this.debugCircle);
     // Debug
@@ -312,6 +309,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   private resizeVisualisationRectangle(point: Point, offsetX: number, offsetY: number): void {
+
     const x = this.rectangles.visualisation.getAttribute('x');
     const y = this.rectangles.visualisation.getAttribute('y');
     const width = this.rectangles.visualisation.getAttribute('width');
@@ -393,7 +391,6 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
         keydown: ($event: KeyboardEvent) => {
           this.keyManager.shift = $event.shiftKey;
           this.keyManager.alt = $event.altKey;
-          // console.log(this.keyManager.shift);
           if (!allArrows.has($event.key)) {
             return ;
           }
@@ -411,7 +408,6 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
         keyup: ($event: KeyboardEvent) => {
           this.keyManager.shift = $event.shiftKey;
           this.keyManager.alt = $event.altKey;
-          // console.log(this.keyManager.shift);
           this.keyManager.keyPressed.delete($event.key);
           if (this.keyManager.keyPressed.size === 0 && allArrows.has($event.key)) {
             this.undoRedoService.saveState();

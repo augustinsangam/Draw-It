@@ -8,17 +8,15 @@ export class Transform {
 
   constructor(private element: SVGElement, private renderer: Renderer2) {
     const transform = this.element.getAttribute('transform') as string;
-    const result = /matrix\(\s*([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)\)/.exec(transform);
-    // console.log(result);
+    const result =
+      /matrix\(\s*([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)\)/.exec(transform);
     const data = (result !== null) ?
       [[+result[1], +result[3], +result[5]],
        [+result[2], +result[4], +result[6]],
        [         0,          0,          1]]
-    :
-    undefined;
+    : undefined;
 
     this.matrix = new Matrix(3, 3, data);
-    // console.log(data);
   }
 
   static translateAll(elements: Iterable<SVGElement>, dx: number, dy: number, renderer: Renderer2): void {
@@ -40,9 +38,9 @@ export class Transform {
   }
 
   translate(dx: number, dy: number): void {
-    const translateMatrix = new Matrix(3, 3, [[1, 0, dx],
-                                              [0, 1, dy],
-                                              [0, 0, 1]]);
+    const translateMatrix         = new Matrix(3, 3, [[1, 0, dx],
+                                                      [0, 1, dy],
+                                                      [0, 0, 1]]);
     this.matrix = translateMatrix.multiply(this.matrix);
     this.setAttributes();
   }
