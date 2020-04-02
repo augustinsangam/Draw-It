@@ -129,7 +129,6 @@ implements OnDestroy {
     switch (keyEv.key) {
 
       case 'Escape':
-        console.log('Escape');
         this.cancelTyping();
         break;
 
