@@ -22,6 +22,7 @@ export class SelectionPanelComponent extends ToolPanelDirective implements After
 
   @ViewChild('circles', {
     static: false,
+    read: ElementRef
   }) circles: ElementRef<SVGGElement>;
 
   constructor(elementRef: ElementRef<HTMLElement>,
@@ -32,21 +33,27 @@ export class SelectionPanelComponent extends ToolPanelDirective implements After
   }
 
   ngAfterViewInit(): void {
-    const circles = Array.from(this.circles.nativeElement.children);
+    super.ngAfterViewInit();
+    const circles = Array.from(this.circles.nativeElement.children) as SVGElement[];
+    this.setCircle(circles[this.service.magnetPoint]);
     for (const [index, circle] of circles.entries()) {
       this.eventManager.addEventListener(
         circle as unknown as HTMLElement,
         'click',
         () => {
           this.service.magnetPoint = index;
-          const cx = circle.getAttribute('cx') as string;
-          const cy = circle.getAttribute('cy') as string;
-          this.renderer.setAttribute(this.previewCircle.nativeElement, 'cx', cx);
-          this.renderer.setAttribute(this.previewCircle.nativeElement, 'cy', cy);
+          this.setCircle(circle as SVGElement);
         }
       );
       this.renderer.setStyle(circle, 'cursor', 'pointer');
     }
+  }
+
+  private setCircle(circle: SVGElement): void {
+    const cx = circle.getAttribute('cx') as string;
+    const cy = circle.getAttribute('cy') as string;
+    this.renderer.setAttribute(this.previewCircle.nativeElement, 'cx', cx);
+    this.renderer.setAttribute(this.previewCircle.nativeElement, 'cy', cy);
   }
 
 }
