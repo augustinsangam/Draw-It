@@ -30,7 +30,6 @@ export class GalleryCardComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // TODO : Use renderer
     let viewPortWidth;
     let viewPortHeight;
     if (!!this.draw.shape.width && !!this.draw.shape.height) {
@@ -40,12 +39,12 @@ export class GalleryCardComponent implements AfterViewInit {
       );
       viewPortWidth = +this.draw.shape.width / factor;
       viewPortHeight = +this.draw.shape.height / factor;
-      this.svgRef.nativeElement.setAttribute('width', viewPortWidth.toString());
-      this.svgRef.nativeElement.setAttribute('height', viewPortHeight.toString());
+      this.renderer.setAttribute(this.svgRef.nativeElement, 'width', viewPortWidth.toString());
+      this.renderer.setAttribute(this.svgRef.nativeElement, 'height', viewPortHeight.toString());
     }
-    this.svgRef.nativeElement.setAttribute('viewBox',
+    this.renderer.setAttribute(this.svgRef.nativeElement, 'viewBox',
       [0, 0, this.draw.shape.width, this.draw.shape.height].join(' '));
-    this.svgRef.nativeElement.style.backgroundColor = this.draw.shape.color; // TODO : Renderer
+    this.renderer.setStyle(this.svgRef.nativeElement, 'background-color', this.draw.shape.color);
     this.renderer.appendChild(this.svgRef.nativeElement, this.draw.svg);
   }
 

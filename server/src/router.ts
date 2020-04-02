@@ -8,6 +8,11 @@ import { COLORS, ContentType, StatusCode, TextLen, TYPES } from './constants';
 import { Database, Entry } from './database';
 import { Draw, DrawBuffer, Draws } from './data_generated';
 
+interface Id {
+	id: number;
+	err?: Error;
+}
+
 // Source: zellwk.com/blog/async-await-express/
 @inversify.injectable()
 class Router {
@@ -25,7 +30,7 @@ class Router {
 		);
 	}
 
-	private verify(buf: Uint8Array): string | null {
+	private verifyBuffer(buf: Uint8Array): string | null {
 		const fbByteBuffer = new flatbuffers.flatbuffers.ByteBuffer(buf);
 		const draw = Draw.getRoot(fbByteBuffer);
 
@@ -38,8 +43,7 @@ class Router {
 			return `Nom “${name}” invalide`;
 		}
 
-		const tagsLen = draw.tagsLength();
-		for (let i = 0; i < tagsLen; ++i) {
+		for (let i = draw.tagsLength(); i-- !== 0; ) {
 			const tag = draw.tags(i);
 			if (tag.length < TextLen.MIN || tag.length > TextLen.MAX) {
 				return `Étiquette “${tag}” invalide`;
@@ -47,6 +51,26 @@ class Router {
 		}
 
 		return null;
+	}
+
+	private verifyID(textID: string): Id {
+		const possibleId: Id = {
+			id: Number(textID),
+		};
+
+		if (isNaN(possibleId.id)) {
+			possibleId.err = new Error(`ID “${textID}” n’est pas un nombre`);
+		} else if (!isFinite(possibleId.id)) {
+			possibleId.err = new Error(`ID “${textID}” ne doit pas être infini`);
+		} else if (!Number.isInteger(possibleId.id)) {
+			possibleId.err = new Error(`ID “${possibleId.id}” doit être un entier`);
+		} else if (possibleId.id < 1) {
+			possibleId.err = new Error(
+				`ID “${possibleId.id}” doit être suppérieur à zéro`,
+			);
+		}
+
+		return possibleId;
 	}
 
 	private methodGet(): express.RequestHandler {
@@ -57,6 +81,7 @@ class Router {
 			} catch (err) {
 				return next(err);
 			}
+
 			const fbBuilder = new flatbuffers.flatbuffers.Builder();
 			const drawBufferOffsets = entries
 				.filter((entry) => !!entry.data)
@@ -92,10 +117,9 @@ class Router {
 
 			const buffer = req.body as Buffer;
 
-			const errMessage = this.verify(buffer);
+			const errMessage = this.verifyBuffer(buffer);
 			if (!!errMessage) {
-				res.status(StatusCode.NOT_ACCEPTABLE);
-				res.send(errMessage);
+				res.status(StatusCode.NOT_ACCEPTABLE).send(errMessage);
 				return;
 			}
 
@@ -122,23 +146,22 @@ class Router {
 				return;
 			}
 
-			const id = Number(req.params.id);
-			if (id < 1) {
-				res
-					.status(StatusCode.BAD_REQUEST)
-					.send(`${id} doit être suppérieur à zéro`);
+			const possibleId = this.verifyID(req.params.id);
+			if (!!possibleId.err) {
+				res.status(StatusCode.BAD_REQUEST).send(possibleId.err.message);
 				return;
 			}
 
-			const errMessage = this.verify(req.body);
+			const errMessage = this.verifyBuffer(req.body);
 			if (!!errMessage) {
 				res.status(StatusCode.NOT_ACCEPTABLE).send(errMessage);
 				return;
 			}
+
 			try {
 				await this.db.replace(
 					{
-						_id: id,
+						_id: possibleId.id,
 						data: new mongodb.Binary(req.body),
 					},
 					true,
@@ -152,8 +175,14 @@ class Router {
 
 	private methodDelete(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
+			const possibleId = this.verifyID(req.params.id);
+			if (!!possibleId.err) {
+				res.status(StatusCode.BAD_REQUEST).send(possibleId.err.message);
+				return;
+			}
+
 			try {
-				await this.db.delete({ _id: Number(req.params.id) });
+				await this.db.delete({ _id: possibleId.id });
 			} catch (err) {
 				return next(err);
 			}

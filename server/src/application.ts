@@ -39,8 +39,8 @@ class Application {
 		next();
 	}
 
-	// Arguments need to follow the error handler prototype from express
-	// That’s why we disable tslint warnings about underscores
+	// Arguments need to follow the error handler prototype from express, even
+	// if unused. That’s why we disable tslint warnings about underscores.
 	private static err(
 		err: Error | mongodb.MongoError,
 		// tslint:disable-next-line: variable-name

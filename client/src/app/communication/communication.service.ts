@@ -25,9 +25,6 @@ export enum StatusCode {
   INTERNAL_SERVER_ERROR = 500,
 }
 
-// TODO: duplication message, decode element recursively reduire l imbrication,
-// enlever les abreviations
-
 // developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/
 //   Sending_and_Receiving_Binary_Data#Sending_typed_arrays_as_binary_data
 // gomakethings.com/promise-based-xhr/
@@ -80,6 +77,7 @@ export class CommunicationService {
   async post(): Promise<number> {
     this.xhr.open('POST', `${this.host}/draw`);
     this.xhr.setRequestHeader('Content-Type', ContentType.OCTET_STREAM);
+    this.xhr.responseType = 'text';
     const promise = new Promise<number>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
         if (this.xhr.readyState !== DONE) {
@@ -101,6 +99,7 @@ export class CommunicationService {
   async put(id: number): Promise<null> {
     this.xhr.open('PUT', `${this.host}/draw/${id}`);
     this.xhr.setRequestHeader('Content-Type', ContentType.OCTET_STREAM);
+    this.xhr.responseType = 'text';
     const promise = new Promise<null>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
         if (this.xhr.readyState !== DONE) {
@@ -121,6 +120,7 @@ export class CommunicationService {
 
   async delete(id: number): Promise<null> {
     this.xhr.open('DELETE', `${this.host}/draw/${id}`);
+    this.xhr.responseType = 'text';
     const promise = new Promise<null>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
         if (this.xhr.readyState !== DONE) {
@@ -155,7 +155,6 @@ export class CommunicationService {
       }
 
       const [key, value] = [attr.k(), attr.v()];
-      // v may be empty, so !!v is not suitable
       if (!!key && value != null) {
         renderer.setAttribute(svgEl, key, value);
       }

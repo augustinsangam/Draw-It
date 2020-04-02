@@ -121,6 +121,8 @@ implements OnDestroy {
     this.listeners.forEach((listener) => listener());
   }
 
+  // TODO : Fix complexity
+  // tslint:disable-next-line: cyclomatic-complexity
   private onKeyDown(keyEv: KeyboardEvent): void {
     switch (keyEv.key) {
 

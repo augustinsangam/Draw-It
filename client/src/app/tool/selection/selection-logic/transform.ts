@@ -1,27 +1,23 @@
 import { Renderer2 } from '@angular/core';
 import { Point } from '../../shape/common/point';
+import { Matrix } from './matrix';
 
 export class Transform {
 
-  private translateAttribute: [number, number];
-  private rotateAttribute: [number, number, number];
-  private scaleAttribute: [number, number];
+  private matrix: Matrix;
 
   constructor(private element: SVGElement, private renderer: Renderer2) {
+
     const transform = this.element.getAttribute('transform') as string;
+    const result =
+      /matrix\(\s*([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)\)/.exec(transform);
+    const data = (result !== null) ?
+      [[+result[1], +result[3], +result[5]],
+       [+result[2], +result[4], +result[6]],
+       [         0,          0,          1]]
+    : undefined;
 
-    let result = /translate\(\s*([^\s,)]+)[ ,][ ]?([^\s,)]+)\)/.exec(transform);
-    this.translateAttribute = (result !== null) ?
-      [parseInt(result[1], 10), parseInt(result[2], 10)] : [0, 0];
-
-    result = /rotate\(\s*([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)\)/.exec(transform);
-    this.rotateAttribute = (result !== null) ?
-      // tslint:disable-next-line: no-magic-numbers
-      [parseInt(result[1], 10), parseInt(result[2], 10), parseInt(result[3], 10)] : [0, 0, 0];
-
-    result = /scale\(\s*([^\s,)]+)[ ,][ ]?([^\s,)]+)\)/.exec(transform);
-    this.scaleAttribute = (result !== null) ?
-        [parseInt(result[1], 10), parseInt(result[2], 10)] : [1, 1];
+    this.matrix = new Matrix(3, 3, data);
   }
 
   static translateAll(elements: Iterable<SVGElement>, dx: number, dy: number, renderer: Renderer2): void {
@@ -36,43 +32,71 @@ export class Transform {
     }
   }
 
-  static scaleAll(elements: Iterable<SVGElement>, x: number, y: number, renderer: Renderer2): void {
+  static scaleAll(elements: Iterable<SVGElement>, point: Point, sx: number, sy: number, renderer: Renderer2): void {
     for (const element of elements) {
-      new Transform(element, renderer).scale(x, y);
+      new Transform(element, renderer).scale(point, sx, sy);
     }
   }
 
   translate(dx: number, dy: number): void {
-    this.translateAttribute[0] += dx;
-    this.translateAttribute[1] += dy;
+    const translateMatrix         = new Matrix(3, 3, [[1, 0, dx],
+                                                      [0, 1, dy],
+                                                      [0, 0, 1]]);
+    this.matrix = translateMatrix.multiply(this.matrix);
     this.setAttributes();
   }
 
   rotate(point: Point, angle: number): void {
-    this.rotateAttribute[0] = point.x;
-    this.rotateAttribute[1] = point.y;
-    this.rotateAttribute[2] = angle;
+    const [x, y] = [point.x, point.y];
+    const radians = angle * Math.PI / 180;
+    const translateMatrix         = new Matrix(3, 3, [[1, 0, x],
+                                                      [0, 1, y],
+                                                      [0, 0, 1]]);
+    const rotateMatrix            = new Matrix(3, 3, [[Math.cos(radians), -Math.sin(radians), 0],
+                                                      [Math.sin(radians),  Math.cos(radians), 0],
+                                                      [0, 0, 1]]);
+    const translateMatrixInverse  = new Matrix(3, 3, [[1, 0, -x],
+                                                      [0, 1, -y],
+                                                      [0, 0, 1]]);
+    this.matrix = translateMatrixInverse.multiply(this.matrix);
+    this.matrix = rotateMatrix.multiply(this.matrix);
+    this.matrix = translateMatrix.multiply(this.matrix);
     this.setAttributes();
   }
 
-  scale(x: number, y: number): void {
-    this.scaleAttribute[0] = x;
-    this.scaleAttribute[1] = y;
+  scale(point: Point, sx: number, sy: number): void {
+    const [x, y] = [point.x, point.y];
+    const translateMatrix         = new Matrix(3, 3, [[1, 0, x],
+                                                      [0, 1, y],
+                                                      [0, 0, 1]]);
+    const scaleMatrix             = new Matrix(3, 3, [[sx, 0, 0],
+                                                      [0, sy, 0],
+                                                      [0, 0, 1]]);
+    const translateMatrixInverse  = new Matrix(3, 3, [[1, 0, -x],
+                                                      [0, 1, -y],
+                                                      [0, 0, 1]]);
+
+    this.matrix = translateMatrixInverse.multiply(this.matrix);
+    this.matrix = scaleMatrix.multiply(this.matrix);
+    this.matrix = translateMatrix.multiply(this.matrix);
     this.setAttributes();
   }
 
   getTransformTranslate(): [number, number] {
-    return [this.translateAttribute[0] , this.translateAttribute[1]];
+    return [this.matrix.data[0][2] , this.matrix.data[1][2]];
   }
 
   private setAttributes(): void {
     this.renderer.setAttribute(
       this.element,
       'transform',
-      `scale(${this.scaleAttribute[0]},${this.scaleAttribute[1]}) ` +
-      `translate(${this.translateAttribute[0]},${this.translateAttribute[1]}) ` +
-      `rotate(${this.rotateAttribute[0]},${this.rotateAttribute[1]},${this.rotateAttribute[2]}) `
-    );
+      `matrix(${this.matrix.data[0][0]},` +
+      `${this.matrix.data[1][0]},` +
+      `${this.matrix.data[0][1]},` +
+      `${this.matrix.data[1][1]},` +
+      `${this.matrix.data[0][2]},` +
+      `${this.matrix.data[1][2]})`
+      );
   }
 
 }

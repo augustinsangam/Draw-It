@@ -211,11 +211,4 @@ describe('BrushLogicComponent', () => {
       tick(1000);
     })
   );
-
-  it('#the undo redo override function should call stopDrawing and saveState', () => {
-    const spy1 = spyOn(component['undoRedoService'], 'saveState');
-    component['mouseOnHold'] = true;
-    component['undoRedoOverride']();
-    expect(spy1).toHaveBeenCalled();
-  });
 });

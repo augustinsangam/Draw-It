@@ -60,7 +60,7 @@ describe('AerosolPanelComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it ('onThicknessChange should change the service value when' +
+  it ('#onThicknessChange should change the service value when' +
     'the user changes it from the slider, and update the thumbnail', () => {
     const spy = spyOn<any>(component, 'updateThumbnail');
     const expectedValue = 42;
@@ -71,7 +71,7 @@ describe('AerosolPanelComponent', () => {
       .toEqual(expectedValue);
   });
 
-  it ('onFrequencyChange should change the service value when' +
+  it ('#onFrequencyChange should change the service value when' +
     'the user changes it from the slider, and update the thumbnail', () => {
     const spy = spyOn<any>(component, 'updateThumbnail');
     const expectedValue = 150;
@@ -88,7 +88,7 @@ describe('AerosolPanelComponent', () => {
     expect(spyOnUpdate).toHaveBeenCalled();
   });
 
-  it ('updateThumbnail should update the prevPath ´d´ attribute ', () => {
+  it ('#updateThumbnail should update the prevPath ´d´ attribute ', () => {
     const dummyPath = 'M 190.1649298384418, 139.4657776162013 ' +
       'a 1, 1 0 1, 0 2,0 a 1, 1 0 1, 0 -2,0';
     component['service'].frequency = 1;

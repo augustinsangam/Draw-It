@@ -100,7 +100,7 @@ describe('CommunicationService', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('onreadystatechange from #get should do nothing if not done', async () => {
+  it('#onreadystatechange from #get should do nothing if not done', async () => {
     let done = false;
     const promise = service.get();
     promise.then(() => done = true);
@@ -117,7 +117,7 @@ describe('CommunicationService', () => {
     await promise;
   });
 
-  it('onreadystatechange from #get should do nothing if status is zero', async () => {
+  it('#onreadystatechange from #get should do nothing if status is zero', async () => {
     let done = false;
     const promise = service.get();
     promise.then(() => done = true);
@@ -176,7 +176,7 @@ describe('CommunicationService', () => {
     expect(xhrMock.headers.get('Content-Type')).toBe(ContentType.OCTET_STREAM);
   });
 
-  it('onreadystatechange from #post should do nothing if not done', async () => {
+  it('#onreadystatechange from #post should do nothing if not done', async () => {
     let done = false;
     const promise = service.post();
     promise.then(() => done = true);
@@ -194,7 +194,7 @@ describe('CommunicationService', () => {
     await promise;
   });
 
-  it('onreadystatechange from #post should do nothing if status is zero', async () => {
+  it('#onreadystatechange from #post should do nothing if status is zero', async () => {
     let done = false;
     const promise = service.post();
     promise.then(() => done = true);
@@ -254,7 +254,7 @@ describe('CommunicationService', () => {
     expect(xhrMock.headers.get('Content-Type')).toBe(ContentType.OCTET_STREAM);
   });
 
-  it('onreadystatechange from #put should do nothing if not done', async () => {
+  it('#onreadystatechange from #put should do nothing if not done', async () => {
     let done = false;
     const promise = service.put(42);
     promise.then(() => done = true);
@@ -271,7 +271,7 @@ describe('CommunicationService', () => {
     await promise;
   });
 
-  it('onreadystatechange from #put should do nothing if status is zero', async () => {
+  it('#onreadystatechange from #put should do nothing if status is zero', async () => {
     let done = false;
     const promise = service.put(42);
     promise.then(() => done = true);
@@ -324,7 +324,7 @@ describe('CommunicationService', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('onreadystatechange from #delete should do nothing if not done', async () => {
+  it('#onreadystatechange from #delete should do nothing if not done', async () => {
     let done = false;
     const promise = service.delete(42);
     promise.then(() => done = true);
@@ -341,7 +341,7 @@ describe('CommunicationService', () => {
     await promise;
   });
 
-  it('onreadystatechange from #delete should do nothing if status is zero', async () => {
+  it('#onreadystatechange from #delete should do nothing if status is zero', async () => {
     let done = false;
     const promise = service.delete(42);
     promise.then(() => done = true);
