@@ -6,6 +6,8 @@ import { BasicSelectionType } from './element-selected-type';
 import { SelectionLogicBase } from './selection-logic-base';
 import * as Util from './selection-logic-util';
 
+const NOT_FOUND = -1;
+
 @Component({
   selector: 'app-selection-logic',
   template: ''
@@ -48,6 +50,12 @@ export class SelectionLogicComponent
             $event.offsetX,
             $event.offsetY
           );
+          this.mouse.left.onResize = Util.CIRCLES.indexOf(
+            this.mouse.left.selectedElement as Util.CircleType
+          ) !== NOT_FOUND;
+          if (this.mouse.left.onResize) {
+            console.log(`Resize ${this.mouse.left.selectedElement}`);
+          }
           if (this.svgStructure.drawZone.contains($event.target as SVGElement)
             && !this.service.selectedElements.has($event.target as SVGElement)) {
             this.applySingleSelection($event.target as SVGElement);
