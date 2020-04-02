@@ -104,6 +104,8 @@ implements OnDestroy {
       }
     );
 
+    this.renderer.setStyle(this.svgStructure.root, 'cursor', 'crosshair');
+
     this.listeners = [
       onMouseDown,
       onKeyDown,
@@ -114,6 +116,9 @@ implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.onType) {
+      this.stopTyping();
+    }
     this.listeners.forEach((listener) => listener());
   }
 
@@ -138,7 +143,9 @@ implements OnDestroy {
 
       case 'End':
         keyEv.preventDefault();
-        this.currentLine.cursorIndex = this.currentLine.tspan.textContent.length;
+        if (!!this.currentLine.tspan.textContent) {
+          this.currentLine.cursorIndex = this.currentLine.tspan.textContent.length;
+        }
         this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
         break;
 
@@ -180,7 +187,7 @@ implements OnDestroy {
 
       case 'ArrowRight':
         keyEv.preventDefault();
-        if (this.currentLine.cursorIndex < this.currentLine.tspan.textContent.length) {
+        if (!!this.currentLine.tspan.textContent && this.currentLine.cursorIndex < this.currentLine.tspan.textContent.length) {
           ++this.currentLine.cursorIndex;
           this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
         }
@@ -200,7 +207,6 @@ implements OnDestroy {
         break;
 
       default:
-        console.log(keyEv.key);
         if (keyEv.key.length === 1) {
           this.addLetterAtCursor(keyEv.key);
         }
@@ -292,7 +298,7 @@ implements OnDestroy {
   }
 
   private addTspan(): void {
-    const prevLineIndex = this.lines.indexOf(this.currentLine);
+    // const prevLineIndex = this.lines.indexOf(this.currentLine);
     this.currentLine = {tspan: this.renderer.createElement('tspan', this.svgNS), letters: [], cursorIndex: 0};
     this.renderer.appendChild(this.textElement, this.currentLine.tspan);
     this.lines.push(this.currentLine);
@@ -356,7 +362,6 @@ implements OnDestroy {
     }
     const preCursor = this.currentLine.letters.slice(0, this.currentLine.cursorIndex);
     const postCursor = this.currentLine.letters.slice(this.currentLine.cursorIndex + 1, this.currentLine.letters.length);
-    console.log(`pre: ${preCursor} post: ${postCursor}`);
     if (postCursor.length !== 0) {
       this.currentLine.letters = preCursor;
       postCursor.forEach((letter) => this.currentLine.letters.push(letter));
@@ -373,7 +378,6 @@ implements OnDestroy {
     }
     const preCursor = this.currentLine.letters.slice(0, this.currentLine.cursorIndex - 1);
     const postCursor = this.currentLine.letters.slice(this.currentLine.cursorIndex, this.currentLine.letters.length);
-    console.log(`pre: ${preCursor} post: ${postCursor}`);
     if (preCursor.length !== 0) {
       this.currentLine.letters = preCursor;
       postCursor.forEach((letter) => this.currentLine.letters.push(letter));
