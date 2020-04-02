@@ -1,4 +1,5 @@
 import { EventEmitter, Injectable } from '@angular/core';
+import { MagnetPoint } from './magnet-point';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,9 @@ export class SelectionService {
   duplicate: EventEmitter<null>;
   delete: EventEmitter<null>;
 
+  magnetActive: boolean;
+  magnetPoint: MagnetPoint;
+
   constructor() {
     this.selectedElements = new Set();
     this.clipboard = new Set();
@@ -24,6 +28,9 @@ export class SelectionService {
     this.paste = new EventEmitter();
     this.duplicate = new EventEmitter();
     this.delete = new EventEmitter();
+
+    this.magnetActive = true;
+    this.magnetPoint = MagnetPoint.Center;
   }
 
 }

@@ -23,7 +23,7 @@ export class AppComponent implements AfterViewInit {
               private shortcutManager: ShortcutHandlerManagerService,
               private overlayService: OverlayService,
               private filterService: FilterService,
-              private renderer: Renderer2
+              private renderer: Renderer2,
   ) { }
 
   @HostListener('window:keydown', ['$event'])
