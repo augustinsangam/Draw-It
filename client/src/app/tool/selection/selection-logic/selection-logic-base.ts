@@ -16,6 +16,7 @@ import { BasicSelectionType, ElementSelectedType } from './element-selected-type
 import * as Util from './selection-logic-util';
 import { Transform } from './transform';
 
+
 enum Arrow {
   Up = 'ArrowUp',
   Down = 'ArrowDown',
@@ -35,6 +36,8 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   protected rectangles: Util.SelectionRectangles;
   protected keyManager: Util.KeyManager;
 
+  protected debugCircle: SVGElement;
+
   constructor(protected renderer: Renderer2, protected svgService: SvgService,
               protected undoRedoService: UndoRedoService,
               protected service: SelectionService) {
@@ -48,9 +51,16 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     };
     this.undoRedoService.setPostUndoAction(action);
     this.undoRedoService.setPostRedoAction(action);
+    this.inversion = new Point(1, 1);
   }
 
   ngOnInit(): void {
+    // Debug
+
+    this.debugCircle = this.renderer.createElement('circle', this.svgNS);
+    this.renderer.appendChild(this.svgStructure.temporaryZone, this.debugCircle);
+    // Debug
+
     this.mouse = Util.SelectionLogicUtil.initialiseMouse();
     this.rectangles = Util.SelectionLogicUtil.initialiseRectangles(
       this.renderer, this.svgStructure.temporaryZone, this.svgNS);
@@ -263,7 +273,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   private resetTranslate(element: SVGElement): void {
-    this.renderer.setAttribute(element, 'transform', 'translate(0,0)');
+    this.renderer.setAttribute(element, 'transform', 'matrix(1,0,0,1,0,0)');
   }
 
   protected elementSelectedType(element: SVGElement)
@@ -288,35 +298,83 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     return (this.rectangles.visualisation as SVGGeometryElement).isPointInFill(point);
   }
 
-  protected isOnControlCircle(x: number, y: number): number {
-    let retValue = 0;
-    let index = 0;
-    for (const circle of this.circles) {
-      const centerX = circle.getAttribute('cx');
-      const centerY = circle.getAttribute('cy');
-      // console.log('center: ' + centerX + ' ' + centerY);
-      // console.log('pos: ' + x + ' ' + y)
-      if (!!centerX && !!centerY) {
-        const distance = Math.sqrt(Math.pow(+centerX - x, 2) +  Math.pow(+centerY - y, 2));
-        retValue = distance < +Util.CIRCLE_RADIUS ? index : NOT_FOUND;
-      }
-      if (retValue !== NOT_FOUND) {
-        break;
-      }
-      index++;
-    }
-
-    return retValue;
-  }
-
   protected translateAll(x: number, y: number): void {
     Transform.translateAll(this.service.selectedElements, x, y, this.renderer);
     Transform.translateAll(this.circles, x, y, this.renderer);
     new Transform(this.rectangles.visualisation, this.renderer).translate(x, y);
   }
 
-  protected resizeAll(factorX: number, factorY: number): void {
-    Transform.scaleAll(this.service.selectedElements, factorX, factorY, this.renderer);
+  protected resizeAll(factorX: number, factorY: number, offsetX: number, offsetY: number): void {
+    const point = this.findElementCenter(this.rectangles.visualisation);
+    Transform.scaleAll(this.service.selectedElements, point, factorX, factorY, this.renderer);
+    Transform.translateAll(this.service.selectedElements, offsetX / 2, offsetY / 2, this.renderer);
+    this.resizeVisualisationRectangle(point, offsetX, offsetY);
+  }
+
+  private resizeVisualisationRectangle(point: Point, offsetX: number, offsetY: number): void {
+    const x = this.rectangles.visualisation.getAttribute('x');
+    const y = this.rectangles.visualisation.getAttribute('y');
+    const width = this.rectangles.visualisation.getAttribute('width');
+    const height = this.rectangles.visualisation.getAttribute('height');
+    const refPoint1 = new Point(0, 0);
+    const refPoint2 = new Point(0, 0);
+    if (!!x && !!y && !!width && !!height) {
+      refPoint1.x = +x;
+      refPoint1.y = +y;
+      refPoint2.x = +x + +width;
+      refPoint2.y = +y + +height;
+      if (+width <= 1) {
+        this.mouse.left.selectedElement = offsetX < 0 ? Util.CIRCLES[0] : Util.CIRCLES[3];
+        Transform.scaleAll(this.service.selectedElements, point, -1, 1, this.renderer);
+        console.log('switch to ' + this.mouse.left.selectedElement);
+      }
+      if (+height <= 1) {
+        this.mouse.left.selectedElement = offsetY < 0 ? Util.CIRCLES[1] : Util.CIRCLES[2];
+        Transform.scaleAll(this.service.selectedElements, point, 1, -1, this.renderer);
+        console.log('switch to ' + this.mouse.left.selectedElement);
+      }
+    }
+    const xP1 = Math.min( refPoint1.x + ((this.mouse.left.selectedElement < 2) ? offsetX : 0),
+                          // refPoint2.x + ((this.mouse.left.selectedElement < 2) ? offsetX : 0));
+                          refPoint2.x);
+    const xP2 = Math.max( refPoint2.x + ((this.mouse.left.selectedElement > 1) ? offsetX : 0),
+                          // refPoint1.x + ((this.mouse.left.selectedElement > 1) ? offsetX : 0));
+                          refPoint1.x);
+    const p1 = new Point(
+      // Math.min(refPoint1.x) + ((this.mouse.left.selectedElement < 2) ? offsetX : 0),
+      xP1,
+      refPoint1.y + ((this.mouse.left.selectedElement < 2) ? offsetY : 0),
+    );
+    const p2 = new Point(
+      // refPoint2.x + ((this.mouse.left.selectedElement > 1) ? offsetX : 0),
+      xP2,
+      refPoint2.y + ((this.mouse.left.selectedElement > 1) ? offsetY : 0),
+    );
+    this.drawVisualisation(p1, p2);
+  }
+
+  protected rotateAll(angle: number): void {
+    const point = this.findElementCenter(this.rectangles.visualisation);
+    Transform.rotateAll(this.service.selectedElements, point, angle, this.renderer);
+    Transform.rotateAll(this.circles, point, angle, this.renderer);
+    new Transform(this.rectangles.visualisation, this.renderer).rotate(point, angle);
+  }
+
+  protected allSelfRotate(angle: number): void {
+    this.service.selectedElements.forEach((element) => {
+      const point = this.findElementCenter(element);
+      new Transform(element, this.renderer).rotate(point, angle);
+    });
+  }
+
+  protected findElementCenter(element: SVGElement): Point {
+    const selection = new SingleSelection(element, this.getSvgOffset()).points();
+    const centerPoint = new Point(
+      (selection[0].x + selection[1].x ) / 2,
+      (selection[0].y + selection[1].y) / 2
+    );
+    Circle.set(centerPoint, this.renderer, this.debugCircle, Util.CIRCLE_RADIUS, 'red');
+    return centerPoint;
   }
 
   private getSvgOffset(): Offset {
@@ -329,8 +387,13 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.keyManager = {
       keyPressed: new Set(),
       lastTimeCheck: new Date().getTime(),
+      shift: false,
+      alt: false,
       handlers: {
         keydown: ($event: KeyboardEvent) => {
+          this.keyManager.shift = $event.shiftKey;
+          this.keyManager.alt = $event.altKey;
+          // console.log(this.keyManager.shift);
           if (!allArrows.has($event.key)) {
             return ;
           }
@@ -346,6 +409,9 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
           }
         },
         keyup: ($event: KeyboardEvent) => {
+          this.keyManager.shift = $event.shiftKey;
+          this.keyManager.alt = $event.altKey;
+          // console.log(this.keyManager.shift);
           this.keyManager.keyPressed.delete($event.key);
           if (this.keyManager.keyPressed.size === 0 && allArrows.has($event.key)) {
             this.undoRedoService.saveState();

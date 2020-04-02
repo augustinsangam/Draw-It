@@ -10,6 +10,9 @@ export const COLORS = {
   GRAY: 'rgba(128, 128, 255, 1)'
 };
 
+export const ANGLE = 15;
+export const MOUSE_WHEEL_DELTA_Y = 53;
+
 export const RECTANGLE_STROKE = '2';
 export const CIRCLE_RADIUS = '8';
 export const TIME_INTERVAL = 100;
@@ -26,16 +29,18 @@ export enum CircleType {
 export const CIRCLES = [
   CircleType.LEFT_CIRCLE,
   CircleType.TOP_CIRCLE,
-  CircleType.RIGHT_CIRCLE,
-  CircleType.BOTTOM_CIRCLE
+  CircleType.BOTTOM_CIRCLE,
+  CircleType.RIGHT_CIRCLE
 ];
 
 export type MouseEventCallBack = ($event: MouseEvent) => void;
 export type KeyboardPressCallback = ($event: KeyboardEvent) => void;
+export type WheelEventCallback = ($event: WheelEvent) => void;
 
 export interface Mouse {
   left: MouseTracking;
   right: MouseTracking;
+  wheel?: WheelEvent;
 }
 
 export interface SelectionRectangles {
@@ -46,10 +51,12 @@ export interface SelectionRectangles {
 
 export interface KeyManager {
   keyPressed: Set<string>;
+  shift: boolean;
+  alt: boolean;
   lastTimeCheck: number;
   handlers: {
     keydown: KeyboardPressCallback,
-    keyup: KeyboardPressCallback
+    keyup: KeyboardPressCallback,
   };
 }
 
@@ -97,7 +104,7 @@ export class SelectionLogicUtil {
     const circles = new Array<SVGElement>();
     CIRCLES.forEach((index) => {
       const circle = renderer.createElement('circle', domain);
-      const resizeType = index % 2 === 0 ? 'col-resize' : 'ns-resize';
+      const resizeType = index % 3 === 0 ? 'col-resize' : 'ns-resize';
       renderer.setStyle(circle, 'cursor', resizeType);
       circles.push(circle);
       renderer.appendChild(zone, circle);

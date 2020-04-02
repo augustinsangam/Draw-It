@@ -20,6 +20,7 @@ export class SelectionLogicComponent
 
   private baseVisualisationRectangleDimension: {width: number, height: number} = {width: 0, height: 0};
   private scaledRectangleDimension: {width: number, height: number} = {width: 0, height: 0};
+  // private angle: number = 0;
 
   constructor(protected renderer: Renderer2,
               protected svgService: SvgService,
@@ -60,33 +61,47 @@ export class SelectionLogicComponent
           if (this.svgStructure.drawZone.contains($event.target as SVGElement)
             && !this.service.selectedElements.has($event.target as SVGElement)) {
             this.applySingleSelection($event.target as SVGElement);
-            const selectionWidth = this.rectangles.visualisation.getAttribute('width');
-            const selectionHeight = this.rectangles.visualisation.getAttribute('height');
-            if (!!selectionHeight && !!selectionWidth) {
-              const [width, height] = [+selectionWidth, +selectionHeight];
-              this.baseVisualisationRectangleDimension = { width, height};
-              this.scaledRectangleDimension =  { width, height };
-            }
+            // const selectionWidth = this.rectangles.visualisation.getAttribute('width');
+            // const selectionHeight = this.rectangles.visualisation.getAttribute('height');
+            
           }
         }],
         ['mousemove', ($event: MouseEvent) => {
           if (this.mouse.left.mouseIsDown) {
-            const previousCurrentPoint = this.mouse.left.currentPoint;
+            const previousCurrentPoint = new Point(this.mouse.left.currentPoint.x, this.mouse.left.currentPoint.y);
             this.mouse.left.currentPoint = new Point($event.offsetX,
               $event.offsetY);
+            
+            // const rect = this.rectangles.visualisation.getBoundingClientRect();
+            // const selectionWidth = rect.width;
+            // const selectionHeight = rect.height;
+
+            const selectionWidth = this.rectangles.visualisation.getAttribute('width');
+            const selectionHeight = this.rectangles.visualisation.getAttribute('height');
+            // console.log(selectionWidth + ' ' + selectionHeight);
+            if (!!selectionHeight && !!selectionWidth) {
+              const [width, height] = [+selectionWidth, +selectionHeight];
+              this.baseVisualisationRectangleDimension = {width, height};
+              this.scaledRectangleDimension =  { width, height };
+            }
+
             if (this.mouse.left.onDrag && !this.mouse.left.onResize) {
               const offsetX = $event.offsetX - previousCurrentPoint.x;
               const offsetY = $event.offsetY - previousCurrentPoint.y;
               this.translateAll(offsetX, offsetY);
             } else if (this.mouse.left.onResize) {
+              this.baseVisualisationRectangleDimension = {width: this.scaledRectangleDimension.width, height: this.scaledRectangleDimension.height};
               const offsetX = +this.mouse.left.selectedElement % 3 === 0 ? $event.offsetX - previousCurrentPoint.x : 0;
               const offsetY = +this.mouse.left.selectedElement % 3 !== 0 ? $event.offsetY - previousCurrentPoint.y : 0;
-              this.scaledRectangleDimension.width += this.mouse.left.selectedElement > 1 ? offsetX : -offsetX;
-              this.scaledRectangleDimension.height += this.mouse.left.selectedElement > 1 ? offsetY : -offsetY;
-              const factorX = this.scaledRectangleDimension.width / this.baseVisualisationRectangleDimension.width;
-              const factorY = this.scaledRectangleDimension.height / this.baseVisualisationRectangleDimension.height;
-              console.log(factorX + ' ' + factorY);
-              this.resizeAll(factorX, factorY);
+              this.scaledRectangleDimension.width += this.mouse.left.selectedElement === 0 ? -offsetX : offsetX;
+              this.scaledRectangleDimension.height += this.mouse.left.selectedElement === 1 ? -offsetY : offsetY;
+              // console.log('scaled: width: ' + this.scaledRectangleDimension.width + 'height: ' + this.scaledRectangleDimension.height);
+              // console.log('base: width: ' + this.baseVisualisationRectangleDimension.width + 'height: ' + this.baseVisualisationRectangleDimension.height);
+              const factorX = this.baseVisualisationRectangleDimension.width > 3 ? this.scaledRectangleDimension.width / this.baseVisualisationRectangleDimension.width : 1;
+              const factorY = this.baseVisualisationRectangleDimension.height > 3 ? this.scaledRectangleDimension.height / this.baseVisualisationRectangleDimension.height : 1;
+
+              // console.log(factorX + ' ' + factorY);
+              this.resizeAll(factorX, factorY, offsetX, offsetY);
             } else {
               this.drawSelection(this.mouse.left.startPoint,
                 this.mouse.left.currentPoint);
@@ -101,7 +116,7 @@ export class SelectionLogicComponent
           if ($event.button !== 0) {
             return ;
           }
-          if (this.mouse.left.onDrag &&
+          if (this.mouse.left.onDrag || this.mouse.left.onResize &&
             !this.mouse.left.startPoint.equals(this.mouse.left.currentPoint)) {
             this.undoRedoService.saveState();
           }
@@ -121,6 +136,21 @@ export class SelectionLogicComponent
             } else if (elementType === BasicSelectionType.NOTHING) {
               this.deleteVisualisation();
             }
+          }
+        }]
+      ])],
+      ['centerButton', new Map<string, Util.WheelEventCallback>([
+        ['wheel', ($event: WheelEvent) => {
+          $event.preventDefault();
+          const angle = this.keyManager.alt ?
+           $event.deltaY / Util.MOUSE_WHEEL_DELTA_Y : Util.ANGLE * ($event.deltaY / Util.MOUSE_WHEEL_DELTA_Y);
+          if (this.keyManager.shift) {
+            this.allSelfRotate(angle);
+          } else {
+            this.rotateAll(angle);
+          }
+          if (this.service.selectedElements.size != 0) {
+            this.undoRedoService.saveState();
           }
         }]
       ])],
@@ -172,16 +202,16 @@ export class SelectionLogicComponent
   ngOnInit(): void {
     super.ngOnInit();
     [['leftButton', ['mousedown', 'mousemove', 'mouseup', 'click']],
-    ['rightButton', ['mousedown', 'mousemove', 'mouseup', 'contextmenu']]]
-      .forEach((side: [string, string[]]) => {
-        side[1].forEach((eventName: string) => {
-          this.allListenners.push(
-            this.renderer.listen(this.svgStructure.root, eventName,
-              (this.mouseHandlers.get(side[0]) as Map<string, Util.MouseEventCallBack>)
-                .get(eventName) as Util.MouseEventCallBack)
-          );
-        });
+    ['rightButton', ['mousedown', 'mousemove', 'mouseup', 'contextmenu']],
+    ['centerButton', ['wheel']]].forEach((side: [string, string[]]) => {
+      side[1].forEach((eventName: string) => {
+        this.allListenners.push(
+          this.renderer.listen(this.svgStructure.root, eventName,
+            (this.mouseHandlers.get(side[0]) as Map<string, Util.MouseEventCallBack>)
+              .get(eventName) as Util.MouseEventCallBack)
+        );
       });
+    });
     this.allListenners.push(
       this.renderer.listen(document, 'keydown',
         this.keyManager.handlers.keydown));
