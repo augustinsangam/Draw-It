@@ -82,6 +82,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
       this.svgStructure.root,
       'mousemove',
       (mouseEv: MouseEvent) => {
+        mouseEv.preventDefault();
         if (this.onDrag) {
           this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
           this.viewTemporaryForm(mouseEv);

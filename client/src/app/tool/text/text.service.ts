@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
-import {ToolService} from '../tool.service';
-import {TextAlignement} from './text-alignement';
-import {TextMutators} from './text-mutators';
-import {TextLine} from './text-line';
 import {Dimension} from '../shape/common/dimension';
 import {Point} from '../shape/common/point';
+import {Rectangle} from '../shape/common/rectangle';
+import {ToolService} from '../tool.service';
+import {TextAlignement} from './text-alignement';
+import {TextLine} from './text-line';
+import {TextMutators} from './text-mutators';
 
 interface Font {
   value: string;
@@ -25,6 +26,7 @@ export class TextService extends ToolService {
   fontSize: number;
   fontsList: Font[];
   currentZoneDims: Dimension;
+  textZoneRectangle: Rectangle;
 
   constructor() {
     super();
