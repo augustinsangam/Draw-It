@@ -9,6 +9,7 @@ import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
 import {Cursor} from '../cursor';
 import {TextAlignement} from '../text-alignement';
 import {TextLine} from '../text-line';
+import {TextNavHandler} from '../text-nav-handler';
 import {TextService} from '../text.service';
 
 @Component({
@@ -23,14 +24,13 @@ implements OnDestroy {
   readonly TEXT_OFFSET: number = 10;
 
   listeners: (() => void)[];
-  textZoneRect: Rectangle;
   cursor: Cursor;
-  onType: boolean;
+  indicators: StateIndicators;
   lines: TextLine[];
   currentLine: TextLine;
   textElement: SVGTSpanElement;
   initialPoint: Point;
-  onDrag: boolean;
+  textMovingHandler: TextNavHandler;
 
   constructor(private readonly service: TextService,
               private readonly renderer: Renderer2,
@@ -40,7 +40,7 @@ implements OnDestroy {
   ) {
     super();
     this.listeners = [];
-    this.onDrag = false;
+    this.indicators = {onDrag: false, onType: false};
     this.lines = [];
   }
 
@@ -51,8 +51,8 @@ implements OnDestroy {
       (mouseEv: MouseEvent) => {
         mouseEv.cancelBubble = true;
         mouseEv.preventDefault();
-        if (!this.onType) {
-          this.onDrag = true;
+        if (!this.indicators.onType) {
+          this.indicators.onDrag = true;
           this.initRectVisu(mouseEv);
         }
       }
@@ -65,7 +65,7 @@ implements OnDestroy {
         const point = this.svgStructure.root.createSVGPoint();
         point.x = mouseEv.offsetX;
         point.y = mouseEv.offsetY;
-        if (!(this.textZoneRect.element as SVGGeometryElement).isPointInFill(point) && this.onType) {
+        if (!(this.service.textZoneRectangle.element as SVGGeometryElement).isPointInFill(point) && this.indicators.onType) {
           this.stopTyping();
           return;
         }
@@ -77,9 +77,9 @@ implements OnDestroy {
       this.svgStructure.root,
       'mouseleave',
       () => {
-        if (!this.onType && this.onDrag) {
-          this.textZoneRect.element.remove();
-          this.onDrag = false;
+        if (!this.indicators.onType && this.indicators.onDrag) {
+          this.service.textZoneRectangle.element.remove();
+          this.indicators.onDrag = false;
         }
       }
     );
@@ -88,8 +88,8 @@ implements OnDestroy {
       this.svgStructure.root,
       'mousemove',
       (mouseEv: MouseEvent) => {
-        if (this.onDrag) {
-          this.textZoneRect.dragRectangle(this.initialPoint, new Point(mouseEv.offsetX, mouseEv.offsetY));
+        if (this.indicators.onDrag) {
+          this.service.textZoneRectangle.dragRectangle(this.initialPoint, new Point(mouseEv.offsetX, mouseEv.offsetY));
         }
       }
     );
@@ -98,13 +98,11 @@ implements OnDestroy {
       'document',
       'keydown',
       (keyEv: KeyboardEvent) => {
-        if (this.onType) {
+        if (this.indicators.onType) {
           this.onKeyDown(keyEv);
         }
       }
     );
-
-    this.renderer.setStyle(this.svgStructure.root, 'cursor', 'crosshair');
 
     this.listeners = [
       onMouseDown,
@@ -113,21 +111,20 @@ implements OnDestroy {
       onMouseMove,
       onMouseLeave,
     ];
+    this.renderer.setStyle(this.svgStructure.root, 'cursor', 'crosshair');
   }
 
   ngOnDestroy(): void {
-    if (this.onType) {
+    if (this.indicators.onType) {
       this.stopTyping();
     }
     this.listeners.forEach((listener) => listener());
   }
 
   private onKeyDown(keyEv: KeyboardEvent): void {
-
     switch (keyEv.key) {
 
       case 'Escape':
-        console.log('Escape');
         this.cancelTyping();
         break;
 
@@ -137,60 +134,32 @@ implements OnDestroy {
 
       case 'Home':
         keyEv.preventDefault();
-        this.currentLine.cursorIndex = 0;
-        this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
+        this.textMovingHandler.keyHome(this.currentLine);
         break;
 
       case 'End':
         keyEv.preventDefault();
-        if (!!this.currentLine.tspan.textContent) {
-          this.currentLine.cursorIndex = this.currentLine.tspan.textContent.length;
-        }
-        this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
+        this.textMovingHandler.keyEnd(this.currentLine);
         break;
 
       case 'ArrowUp':
         keyEv.preventDefault();
-        if (this.lines.indexOf(this.currentLine) - 1 >= 0) {
-          const oldCursorIndex = this.currentLine.cursorIndex;
-          this.currentLine = this.lines[this.lines.indexOf(this.currentLine) - 1];
-          if (this.currentLine.letters.length >= oldCursorIndex) {
-            this.currentLine.cursorIndex = oldCursorIndex;
-          } else {
-            this.currentLine.cursorIndex = this.currentLine.letters.length;
-          }
-          this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
-        }
+        this.currentLine = this.textMovingHandler.cursorUp(this.currentLine);
         break;
 
       case 'ArrowDown':
         keyEv.preventDefault();
-        if (this.lines.indexOf(this.currentLine) + 1 < this.lines.length) {
-          const oldCursorIndex = this.currentLine.cursorIndex;
-          this.currentLine = this.lines[this.lines.indexOf(this.currentLine) + 1];
-          if (this.currentLine.letters.length >= oldCursorIndex) {
-            this.currentLine.cursorIndex = oldCursorIndex;
-          } else {
-            this.currentLine.cursorIndex = this.currentLine.letters.length;
-          }
-          this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
-        }
+        this.currentLine = this.textMovingHandler.arrowDown(this.currentLine);
         break;
 
       case 'ArrowLeft':
         keyEv.preventDefault();
-        if (this.currentLine.cursorIndex > 0) {
-          --this.currentLine.cursorIndex;
-          this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
-        }
+        this.textMovingHandler.arrowLeft(this.currentLine);
         break;
 
       case 'ArrowRight':
         keyEv.preventDefault();
-        if (!!this.currentLine.tspan.textContent && this.currentLine.cursorIndex < this.currentLine.tspan.textContent.length) {
-          ++this.currentLine.cursorIndex;
-          this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
-        }
+        this.textMovingHandler.cursorDown(this.currentLine);
         break;
 
       case 'Backspace':
@@ -216,15 +185,12 @@ implements OnDestroy {
 
   private onMouseUp(mouseEv: MouseEvent): void {
     mouseEv.cancelBubble = false;
-    this.onDrag = false;
+    this.indicators.onDrag = false;
     const finalPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
     this.service.currentZoneDims = this.mathService.getRectangleSize(this.initialPoint, finalPoint);
-    this.initialPoint = this.mathService.getRectangleUpLeftCorner(
-      this.initialPoint,
-      finalPoint
-    );
-    if (!this.onType) {
-      this.startTyping(mouseEv);
+    this.initialPoint = this.mathService.getRectangleUpLeftCorner(this.initialPoint, finalPoint);
+    if (!this.indicators.onType) {
+      this.startTyping();
     }
   }
 
@@ -232,8 +198,8 @@ implements OnDestroy {
     this.initialPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
     const textZoneRect = this.renderer.createElement('rect', this.svgNS);
     this.renderer.appendChild(this.svgStructure.temporaryZone, textZoneRect);
-    this.textZoneRect = new Rectangle(this.renderer, textZoneRect, this.mathService);
-    this.textZoneRect.setParameters(BackGroundProperties.None, StrokeProperties.Dashed);
+    this.service.textZoneRectangle = new Rectangle(this.renderer, textZoneRect, this.mathService);
+    this.service.textZoneRectangle.setParameters(BackGroundProperties.None, StrokeProperties.Dashed);
     this.renderer.setStyle(textZoneRect, 'stroke', 'rgba(87,87,87,0.5)');
   }
 
@@ -256,6 +222,7 @@ implements OnDestroy {
       )
     );
     this.cursor.initBlink();
+    this.textMovingHandler = new TextNavHandler(this.cursor, this.lines);
   }
 
   private initSVGText(): void {
@@ -266,8 +233,8 @@ implements OnDestroy {
     this.addTspan();
   }
 
-  private startTyping(mouseEv: MouseEvent): void {
-    this.onType = true;
+  private startTyping(): void {
+    this.indicators.onType = true;
     this.shortcutService.desactivateAll();
     this.initSVGText();
     this.initCursor();
@@ -280,15 +247,15 @@ implements OnDestroy {
       line.cursorIndex = 0;
     });
     this.textElement.remove();
-    this.onDrag = false;
+    this.indicators.onDrag = false;
     this.stopTyping();
   }
 
   private stopTyping(): void {
     this.cursor.removeCursor();
-    this.textZoneRect.element.remove();
+    this.service.textZoneRectangle.element.remove();
     this.service.currentZoneDims = {height: 0, width: 0};
-    this.onType = false;
+    this.indicators.onType = false;
     if (this.currentLine.tspan.textContent === '') {
       this.textElement.remove();
     }
@@ -307,16 +274,9 @@ implements OnDestroy {
 
   private addLine(): void {
     this.addTspan();
-    this.renderer.setAttribute(
-      this.currentLine.tspan,
-      'x',
-      `${+this.service.getTextAlign() + this.initialPoint.x}`
-    );
-    this.renderer.setAttribute(
-      this.currentLine.tspan,
-      'y',
-      `${this.cursor.initialCursorPoint.y + (this.lines.indexOf(this.currentLine) * this.service.fontSize)}`
-    );
+    this.renderer.setAttribute(this.currentLine.tspan, 'x', `${+this.service.getTextAlign() + this.initialPoint.x}`);
+    this.renderer.setAttribute(this.currentLine.tspan, 'y',
+      `${this.cursor.initialCursorPoint.y + (this.lines.indexOf(this.currentLine) * this.service.fontSize)}`);
     this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
   }
 
@@ -332,12 +292,9 @@ implements OnDestroy {
 
   private setTextStyle(): void {
     this.textElement.setAttribute('fill', this.colorService.primaryColor);
-
     this.textElement.setAttribute('font-family', this.service.currentFont);
     this.textElement.setAttribute('font-size', this.service.fontSize.toString());
-
     this.textElement.setAttribute('text-anchor', this.service.getTextAnchor());
-
     this.textElement.setAttribute('font-weight', this.service.textMutators.bold ? 'bold' : 'normal');
     this.textElement.setAttribute('font-style', this.service.textMutators.italic ? 'italic' : 'normal');
     this.textElement.setAttribute('text-decoration', this.service.textMutators.underline ? 'underline' : 'none');
@@ -347,11 +304,7 @@ implements OnDestroy {
     this.currentLine.tspan.textContent = '';
     const svgLetter = this.renderer.createText(this.currentLine.letters.join(''));
     this.renderer.appendChild(this.currentLine.tspan, svgLetter);
-    this.renderer.setAttribute(
-      this.currentLine.tspan,
-      'x',
-      `${+this.service.getTextAlign() + this.initialPoint.x }`
-    );
+    this.renderer.setAttribute(this.currentLine.tspan, 'x', `${+this.service.getTextAlign() + this.initialPoint.x }`);
     this.renderer.setAttribute(this.currentLine.tspan, 'y', `${this.cursor.currentPosition.y - this.TEXT_OFFSET}`);
     this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
   }
@@ -388,4 +341,9 @@ implements OnDestroy {
     }
     this.updateText();
   }
+}
+
+interface StateIndicators {
+  onDrag: boolean;
+  onType: boolean;
 }
