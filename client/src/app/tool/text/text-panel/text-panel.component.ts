@@ -26,7 +26,7 @@ export class TextPanelComponent extends ToolPanelDirective {
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly formBuilder: FormBuilder,
               private readonly service: TextService,
-              protected readonly colorService: ColorService
+              protected readonly colorService: ColorService // value is only read in the html... ts-ignore ?
   ) {
     super(elementRef);
     this.textForm = this.formBuilder.group({

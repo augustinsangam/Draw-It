@@ -4,6 +4,7 @@ import {TextAlignement} from './text-alignement';
 import {TextMutators} from './text-mutators';
 import {TextLine} from './text-line';
 import {Dimension} from '../shape/common/dimension';
+import {Point} from '../shape/common/point';
 
 interface Font {
   value: string;
@@ -77,14 +78,35 @@ export class TextService extends ToolService {
     );
   }
 
+  getInitialPoint(mouseEv: MouseEvent): Point {
+    if (this.textAlignement === 'left') {
+      return new Point(mouseEv.offsetX, mouseEv.offsetY);
+    } else if (this.textAlignement === 'right') {
+      return new Point(mouseEv.offsetX + this.currentZoneDims.width, mouseEv.offsetY);
+    } else {
+      return new Point(mouseEv.offsetX + this.currentZoneDims.width / 2, mouseEv.offsetY);
+    }
+  }
+
+  getFullTextWidth(currentLine: TextLine): number {
+    const oldIndex = currentLine.cursorIndex;
+    if (currentLine.tspan.textContent) {
+      currentLine.cursorIndex = currentLine.tspan.textContent.length;
+    }
+    const fullTextWidth = this.getLineWidth(currentLine);
+    currentLine.cursorIndex = oldIndex;
+
+    return fullTextWidth;
+  }
+
   getLineWidth(currentLine: TextLine): number {
     const oldText = currentLine.tspan.textContent;
     if (!!currentLine.tspan.textContent && currentLine.tspan.textContent.length !== currentLine.cursorIndex) {
+      console.log('not at EOL');
       currentLine.tspan.textContent = currentLine.tspan.textContent.slice(0, currentLine.cursorIndex);
     }
     const xPos = (currentLine.tspan as SVGTextContentElement).getComputedTextLength();
     currentLine.tspan.textContent = oldText;
-    // console.log(`cursor X pos = ${xPos}`);
     return xPos;
   }
 }
