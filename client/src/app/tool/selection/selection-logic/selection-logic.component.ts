@@ -54,38 +54,52 @@ export class SelectionLogicComponent
             this.mouse.left.selectedElement as Util.CircleType
           ) !== NOT_FOUND;
           if (this.mouse.left.onResize) {
-            // console.log(`Resize ${this.mouse.left.selectedElement}`);
+            console.log(`Resize ${this.mouse.left.selectedElement}`);
           }
           // console.log('drag: ' + this.mouse.left.onDrag);
           // console.log('resize: ' + this.mouse.left.onResize);
           if (this.svgStructure.drawZone.contains($event.target as SVGElement)
             && !this.service.selectedElements.has($event.target as SVGElement)) {
             this.applySingleSelection($event.target as SVGElement);
-            const selectionWidth = this.rectangles.visualisation.getAttribute('width');
-            const selectionHeight = this.rectangles.visualisation.getAttribute('height');
-            if (!!selectionHeight && !!selectionWidth) {
-              const [width, height] = [+selectionWidth, +selectionHeight];
-              this.baseVisualisationRectangleDimension = { width, height};
-              this.scaledRectangleDimension =  { width, height };
-            }
+            // const selectionWidth = this.rectangles.visualisation.getAttribute('width');
+            // const selectionHeight = this.rectangles.visualisation.getAttribute('height');
+            
           }
         }],
         ['mousemove', ($event: MouseEvent) => {
           if (this.mouse.left.mouseIsDown) {
-            const previousCurrentPoint = this.mouse.left.currentPoint;
+            const previousCurrentPoint = new Point(this.mouse.left.currentPoint.x, this.mouse.left.currentPoint.y);
             this.mouse.left.currentPoint = new Point($event.offsetX,
               $event.offsetY);
+            
+            // const rect = this.rectangles.visualisation.getBoundingClientRect();
+            // const selectionWidth = rect.width;
+            // const selectionHeight = rect.height;
+
+            const selectionWidth = this.rectangles.visualisation.getAttribute('width');
+            const selectionHeight = this.rectangles.visualisation.getAttribute('height');
+            // console.log(selectionWidth + ' ' + selectionHeight);
+            if (!!selectionHeight && !!selectionWidth) {
+              const [width, height] = [+selectionWidth, +selectionHeight];
+              this.baseVisualisationRectangleDimension = {width, height};
+              this.scaledRectangleDimension =  { width, height };
+            }
+
             if (this.mouse.left.onDrag && !this.mouse.left.onResize) {
               const offsetX = $event.offsetX - previousCurrentPoint.x;
               const offsetY = $event.offsetY - previousCurrentPoint.y;
               this.translateAll(offsetX, offsetY);
             } else if (this.mouse.left.onResize) {
+              this.baseVisualisationRectangleDimension = {width: this.scaledRectangleDimension.width, height: this.scaledRectangleDimension.height};
               const offsetX = +this.mouse.left.selectedElement % 3 === 0 ? $event.offsetX - previousCurrentPoint.x : 0;
               const offsetY = +this.mouse.left.selectedElement % 3 !== 0 ? $event.offsetY - previousCurrentPoint.y : 0;
-              this.scaledRectangleDimension.width += this.mouse.left.selectedElement > 1 ? offsetX : -offsetX;
-              this.scaledRectangleDimension.height += this.mouse.left.selectedElement > 1 ? offsetY : -offsetY;
-              const factorX = this.scaledRectangleDimension.width / this.baseVisualisationRectangleDimension.width;
-              const factorY = this.scaledRectangleDimension.height / this.baseVisualisationRectangleDimension.height;
+              this.scaledRectangleDimension.width += this.mouse.left.selectedElement === 0 ? -offsetX : offsetX;
+              this.scaledRectangleDimension.height += this.mouse.left.selectedElement === 1 ? -offsetY : offsetY;
+              // console.log('scaled: width: ' + this.scaledRectangleDimension.width + 'height: ' + this.scaledRectangleDimension.height);
+              // console.log('base: width: ' + this.baseVisualisationRectangleDimension.width + 'height: ' + this.baseVisualisationRectangleDimension.height);
+              const factorX = this.baseVisualisationRectangleDimension.width > 3 ? this.scaledRectangleDimension.width / this.baseVisualisationRectangleDimension.width : 1;
+              const factorY = this.baseVisualisationRectangleDimension.height > 3 ? this.scaledRectangleDimension.height / this.baseVisualisationRectangleDimension.height : 1;
+
               // console.log(factorX + ' ' + factorY);
               this.resizeAll(factorX, factorY, offsetX, offsetY);
             } else {
@@ -102,7 +116,7 @@ export class SelectionLogicComponent
           if ($event.button !== 0) {
             return ;
           }
-          if (this.mouse.left.onDrag &&
+          if (this.mouse.left.onDrag || this.mouse.left.onResize &&
             !this.mouse.left.startPoint.equals(this.mouse.left.currentPoint)) {
             this.undoRedoService.saveState();
           }
@@ -130,11 +144,13 @@ export class SelectionLogicComponent
           $event.preventDefault();
           const angle = this.keyManager.alt ?
            $event.deltaY / Util.MOUSE_WHEEL_DELTA_Y : Util.ANGLE * ($event.deltaY / Util.MOUSE_WHEEL_DELTA_Y);
-          // console.log(this.angle);
           if (this.keyManager.shift) {
             this.allSelfRotate(angle);
           } else {
-            this.rotateAll(this.findElementCenter(this.rectangles.visualisation), angle);
+            this.rotateAll(angle);
+          }
+          if (this.service.selectedElements.size != 0) {
+            this.undoRedoService.saveState();
           }
         }]
       ])],

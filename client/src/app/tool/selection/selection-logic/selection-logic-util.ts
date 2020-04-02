@@ -29,8 +29,8 @@ export enum CircleType {
 export const CIRCLES = [
   CircleType.LEFT_CIRCLE,
   CircleType.TOP_CIRCLE,
-  CircleType.RIGHT_CIRCLE,
-  CircleType.BOTTOM_CIRCLE
+  CircleType.BOTTOM_CIRCLE,
+  CircleType.RIGHT_CIRCLE
 ];
 
 export type MouseEventCallBack = ($event: MouseEvent) => void;
@@ -104,7 +104,7 @@ export class SelectionLogicUtil {
     const circles = new Array<SVGElement>();
     CIRCLES.forEach((index) => {
       const circle = renderer.createElement('circle', domain);
-      const resizeType = index % 2 === 0 ? 'col-resize' : 'ns-resize';
+      const resizeType = index % 3 === 0 ? 'col-resize' : 'ns-resize';
       renderer.setStyle(circle, 'cursor', resizeType);
       circles.push(circle);
       renderer.appendChild(zone, circle);

@@ -36,6 +36,8 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   protected rectangles: Util.SelectionRectangles;
   protected keyManager: Util.KeyManager;
 
+  protected debugCircle: SVGElement;
+
   constructor(protected renderer: Renderer2, protected svgService: SvgService,
               protected undoRedoService: UndoRedoService,
               protected service: SelectionService) {
@@ -49,9 +51,16 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     };
     this.undoRedoService.setPostUndoAction(action);
     this.undoRedoService.setPostRedoAction(action);
+    this.inversion = new Point(1, 1);
   }
 
   ngOnInit(): void {
+    // Debug
+
+    this.debugCircle = this.renderer.createElement('circle', this.svgNS);
+    this.renderer.appendChild(this.svgStructure.temporaryZone, this.debugCircle);
+    // Debug
+
     this.mouse = Util.SelectionLogicUtil.initialiseMouse();
     this.rectangles = Util.SelectionLogicUtil.initialiseRectangles(
       this.renderer, this.svgStructure.temporaryZone, this.svgNS);
@@ -296,7 +305,13 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   protected resizeAll(factorX: number, factorY: number, offsetX: number, offsetY: number): void {
-    Transform.scaleAll(this.service.selectedElements, factorX, factorY, offsetX, offsetY, this.renderer);
+    const point = this.findElementCenter(this.rectangles.visualisation);
+    Transform.scaleAll(this.service.selectedElements, point, factorX, factorY, this.renderer);
+    Transform.translateAll(this.service.selectedElements, offsetX / 2, offsetY / 2, this.renderer);
+    this.resizeVisualisationRectangle(point, offsetX, offsetY);
+  }
+
+  private resizeVisualisationRectangle(point: Point, offsetX: number, offsetY: number): void {
     const x = this.rectangles.visualisation.getAttribute('x');
     const y = this.rectangles.visualisation.getAttribute('y');
     const width = this.rectangles.visualisation.getAttribute('width');
@@ -308,12 +323,16 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
       refPoint1.y = +y;
       refPoint2.x = +x + +width;
       refPoint2.y = +y + +height;
-    }
-    if (refPoint1.x < refPoint2.x) {
-      // this.mouse.left.selectedElement = this.mouse.left.selectedElement === Util.CIRCLES[0] ? Util.CIRCLES[3] : Util.CIRCLES[0];
-      this.mouse.left.selectedElement = this.mouse.left.selectedElement === Util.CIRCLES[0] || this.mouse.left.selectedElement === Util.CIRCLES[3] ? Util.CIRCLES[0] : this.mouse.left.selectedElement;
-    } else {
-      this.mouse.left.selectedElement = this.mouse.left.selectedElement === Util.CIRCLES[3] || this.mouse.left.selectedElement === Util.CIRCLES[0] ? Util.CIRCLES[3] : this.mouse.left.selectedElement;
+      if (+width <= 1) {
+        this.mouse.left.selectedElement = offsetX < 0 ? Util.CIRCLES[0] : Util.CIRCLES[3];
+        Transform.scaleAll(this.service.selectedElements, point, -1, 1, this.renderer);
+        console.log('switch to ' + this.mouse.left.selectedElement);
+      }
+      if (+height <= 1) {
+        this.mouse.left.selectedElement = offsetY < 0 ? Util.CIRCLES[1] : Util.CIRCLES[2];
+        Transform.scaleAll(this.service.selectedElements, point, 1, -1, this.renderer);
+        console.log('switch to ' + this.mouse.left.selectedElement);
+      }
     }
     const xP1 = Math.min( refPoint1.x + ((this.mouse.left.selectedElement < 2) ? offsetX : 0),
                           // refPoint2.x + ((this.mouse.left.selectedElement < 2) ? offsetX : 0));
@@ -331,11 +350,11 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
       xP2,
       refPoint2.y + ((this.mouse.left.selectedElement > 1) ? offsetY : 0),
     );
-    console.log('p1= ' + p1.x + ' ' + p1.y + ' p2= ' + p2.x + ' ' + p2.y);
     this.drawVisualisation(p1, p2);
   }
 
-  protected rotateAll(point: Point, angle: number): void {
+  protected rotateAll(angle: number): void {
+    const point = this.findElementCenter(this.rectangles.visualisation);
     Transform.rotateAll(this.service.selectedElements, point, angle, this.renderer);
     Transform.rotateAll(this.circles, point, angle, this.renderer);
     new Transform(this.rectangles.visualisation, this.renderer).rotate(point, angle);
@@ -343,7 +362,6 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   protected allSelfRotate(angle: number): void {
     this.service.selectedElements.forEach((element) => {
-      // console.log(element.getAttribute('x'));
       const point = this.findElementCenter(element);
       new Transform(element, this.renderer).rotate(point, angle);
     });
@@ -355,6 +373,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
       (selection[0].x + selection[1].x ) / 2,
       (selection[0].y + selection[1].y) / 2
     );
+    Circle.set(centerPoint, this.renderer, this.debugCircle, Util.CIRCLE_RADIUS, 'red');
     return centerPoint;
   }
 
