@@ -6,8 +6,10 @@ import {BackGroundProperties, StrokeProperties} from '../../shape/common/abstrac
 import {Point} from '../../shape/common/point';
 import {Rectangle} from '../../shape/common/rectangle';
 import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
+import {UndoRedoService} from '../../undo-redo/undo-redo.service';
 import {Cursor} from '../cursor';
 import {TextAlignement} from '../text-alignement';
+import {StateIndicators} from '../text-indicators';
 import {TextLine} from '../text-line';
 import {TextNavHandler} from '../text-nav-handler';
 import {TextService} from '../text.service';
@@ -37,11 +39,13 @@ implements OnDestroy {
               private readonly mathService: MathService,
               private readonly colorService: ColorService,
               private readonly shortcutService: ShortcutHandlerService,
+              private readonly undoRedoService: UndoRedoService
   ) {
     super();
     this.listeners = [];
     this.indicators = {onDrag: false, onType: false};
     this.lines = [];
+    this.undoRedoService.resetActions();
   }
 
   ngOnInit(): void {
@@ -66,7 +70,7 @@ implements OnDestroy {
         point.x = mouseEv.offsetX;
         point.y = mouseEv.offsetY;
         if (!(this.service.textZoneRectangle.element as SVGGeometryElement).isPointInFill(point) && this.indicators.onType) {
-          this.stopTyping();
+          this.stopTyping(false);
           return;
         }
         this.onMouseUp(mouseEv);
@@ -116,7 +120,7 @@ implements OnDestroy {
 
   ngOnDestroy(): void {
     if (this.indicators.onType) {
-      this.stopTyping();
+      this.stopTyping(false);
     }
     this.listeners.forEach((listener) => listener());
   }
@@ -237,6 +241,7 @@ implements OnDestroy {
   }
 
   private cancelTyping(): void {
+    this.stopTyping(true);
     this.lines.forEach((line) => {
       line.tspan.remove();
       line.letters = [];
@@ -244,10 +249,9 @@ implements OnDestroy {
     });
     this.textElement.remove();
     this.indicators.onDrag = false;
-    this.stopTyping();
   }
 
-  private stopTyping(): void {
+  private stopTyping(cancelled: boolean): void {
     this.cursor.removeCursor();
     this.service.textZoneRectangle.element.remove();
     this.service.currentZoneDims = {height: 0, width: 0};
@@ -258,6 +262,9 @@ implements OnDestroy {
     this.shortcutService.activateAll();
     this.currentLine = {tspan: undefined as unknown as SVGElement, letters: [], cursorIndex: 0};
     this.lines = [];
+    if (!cancelled) {
+      this.undoRedoService.saveState();
+    }
   }
 
   private addTspan(): void {
@@ -337,9 +344,4 @@ implements OnDestroy {
     }
     this.updateText();
   }
-}
-
-interface StateIndicators {
-  onDrag: boolean;
-  onType: boolean;
 }
