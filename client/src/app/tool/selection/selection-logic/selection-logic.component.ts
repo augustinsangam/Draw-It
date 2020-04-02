@@ -54,6 +54,7 @@ export class SelectionLogicComponent
           }
         }],
         ['mousemove', ($event: MouseEvent) => {
+          $event.preventDefault();
           if (this.mouse.left.mouseIsDown) {
             const previousCurrentPoint = new Point(this.mouse.left.currentPoint.x, this.mouse.left.currentPoint.y);
             this.mouse.left.currentPoint = new Point($event.offsetX,

@@ -64,7 +64,10 @@ export class AerosolLogicComponent
     const onMouseMove = this.renderer.listen(
       this.svgStructure.root,
       'mousemove',
-      (mouseEv: MouseEvent) => this.onMouseMove(mouseEv)
+      (mouseEv: MouseEvent) => {
+        mouseEv.preventDefault();
+        this.onMouseMove(mouseEv);
+      }
     );
 
     const onMouseUp = this.renderer.listen(
