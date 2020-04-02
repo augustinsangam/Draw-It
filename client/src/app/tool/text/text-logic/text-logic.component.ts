@@ -121,8 +121,6 @@ implements OnDestroy {
     this.listeners.forEach((listener) => listener());
   }
 
-  // TODO : Fix complexity
-  // tslint:disable-next-line: cyclomatic-complexity
   private onKeyDown(keyEv: KeyboardEvent): void {
     switch (keyEv.key) {
 
@@ -214,11 +212,7 @@ implements OnDestroy {
         this.initialPoint.x + this.service.currentZoneDims.width / 2 :
         this.initialPoint.x + this.service.currentZoneDims.width;
 
-    this.cursor = new Cursor(
-      this.renderer,
-      this.service,
-      cursor,
-      new Point(
+    this.cursor = new Cursor(this.renderer, this.service, cursor, new Point(
         initialCursorXPos,
         this.initialPoint.y + this.TEXT_OFFSET + this.service.fontSize
       )
