@@ -52,6 +52,7 @@ import {
 import {
   SaveComponent
 } from './pages/save/save.component';
+import { LocalStorageHandlerService } from '../auto-save/local-storage-handler.service';
 
 interface DialogRefs {
   home: MatDialogRef<HomeComponent>;
@@ -87,6 +88,7 @@ export class OverlayService {
               private readonly snackBar: MatSnackBar,
               private undoRedo: UndoRedoService,
               private gridService: GridService,
+              private autoSave: LocalStorageHandlerService
   ) {
   }
 
@@ -153,6 +155,7 @@ export class OverlayService {
       this.openHomeDialog();
     } else if (option !== null) {
       this.createNewDraw(option as SvgShape);
+      
     }
   }
 
@@ -229,6 +232,7 @@ export class OverlayService {
 
   private createNewDraw(shape: SvgShape): void {
     this.svgService.shape = shape;
+    this.autoSave.saveShape(shape);
     this.svgService.header = {
       name: '',
       tags: [],
@@ -262,10 +266,11 @@ export class OverlayService {
   }
 
   private getCommonDialogOptions(): MatDialogConfig {
+    console.log('valeuurrrrr ' + this.autoSave.verifyAvailability());
     return {
       width: '650px',
       height: '90%',
-      data: { drawInProgress: this.svgService.drawInProgress }
+      data: { drawInProgress: this.svgService.drawInProgress || this.autoSave.verifyAvailability()}
     };
   }
 }
