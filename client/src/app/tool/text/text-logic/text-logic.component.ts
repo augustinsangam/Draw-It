@@ -141,18 +141,10 @@ implements OnDestroy {
         this.textMovingHandler.keyHome(this.currentLine);
         break;
 
-<<<<<<< HEAD
-      // case 'End':
-      //   keyEv.preventDefault();
-      //   this.currentLine.cursorIndex = this.currentLine.tspan.textContent.length;
-      //   this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
-      //   break;
-=======
       case 'End':
         keyEv.preventDefault();
         this.textMovingHandler.keyEnd(this.currentLine);
         break;
->>>>>>> next
 
       case 'ArrowUp':
         keyEv.preventDefault();
@@ -170,18 +162,9 @@ implements OnDestroy {
         break;
 
       case 'ArrowRight':
-<<<<<<< HEAD
-        // keyEv.preventDefault();
-        // if (this.currentLine.cursorIndex < this.currentLine.tspan.textContent.length) {
-        //   ++this.currentLine.cursorIndex;
-        //   this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
-        // }
-        // break;
-=======
         keyEv.preventDefault();
         this.textMovingHandler.cursorDown(this.currentLine);
         break;
->>>>>>> next
 
       case 'Backspace':
         this.deleteLeftLetter();

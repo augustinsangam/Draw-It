@@ -92,7 +92,6 @@ export class UndoRedoService {
     if (this.actions.undo[1].functionDefined) {
       (this.actions.undo[1].function as () => void)();
     }
-    this.autoSave.saveState(this.svgStructure.root);
   }
 
   undoBase(): void {
@@ -100,6 +99,7 @@ export class UndoRedoService {
       const lastCommand = this.cmdDone.pop();
       this.cmdUndone.push(lastCommand as SVGElement[]);
       this.refresh(this.cmdDone[this.cmdDone.length - 1]);
+      this.autoSave.saveState(this.svgStructure.root);
     }
   }
 
@@ -116,7 +116,6 @@ export class UndoRedoService {
     if (this.actions.redo[1].functionDefined) {
       (this.actions.redo[1].function as () => void)();
     }
-    this.autoSave.saveState(this.svgStructure.root);
   }
 
   redoBase(): void {
@@ -124,6 +123,7 @@ export class UndoRedoService {
       const lastCommand = this.cmdUndone.pop();
       this.cmdDone.push(lastCommand as SVGElement[]);
       this.refresh(this.cmdDone[this.cmdDone.length - 1]);
+      this.autoSave.saveState(this.svgStructure.root);
     }
   }
 
