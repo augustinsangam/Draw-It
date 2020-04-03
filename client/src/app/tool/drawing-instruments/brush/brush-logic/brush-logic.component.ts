@@ -12,7 +12,7 @@ export class BrushLogicComponent extends PencilBrushCommon
   implements OnInit, OnDestroy {
 
   private listeners: (() => void)[];
-  private readonly undoRedoOverride: (() => void);
+  private preUndoFunction: () => void;
 
   constructor(private readonly renderer: Renderer2,
               private readonly colorService: ColorService,
@@ -21,9 +21,8 @@ export class BrushLogicComponent extends PencilBrushCommon
   ) {
     super();
     this.listeners = [];
-    this.undoRedoService.resetActions();
-    this.undoRedoOverride = () => {
-        if (this.mouseOnHold) {
+    this.preUndoFunction = () => {
+      if (this.mouseOnHold) {
         this.stopDrawing();
         this.undoRedoService.saveState();
       }
@@ -32,11 +31,12 @@ export class BrushLogicComponent extends PencilBrushCommon
       enabled: true,
       overrideDefaultBehaviour: false,
       overrideFunctionDefined: true,
-      overrideFunction: this.undoRedoOverride
+      overrideFunction: this.preUndoFunction
     });
   }
 
   ngOnInit(): void {
+    this.svgStructure.root.style.cursor = 'crosshair';
 
     const mouseDownListen = this.renderer.listen(this.svgStructure.root,
       'mousedown', (mouseEv: MouseEvent) => {
@@ -55,8 +55,7 @@ export class BrushLogicComponent extends PencilBrushCommon
 
     const mouseUpListen = this.renderer.listen(this.svgStructure.root,
       'mouseup', () => {
-        this.stopDrawing();
-        this.undoRedoService.saveState();
+        this.preUndoFunction();
       });
 
     const mouseLeaveListen = this.renderer.listen(this.svgStructure.root,
@@ -72,14 +71,11 @@ export class BrushLogicComponent extends PencilBrushCommon
       mouseUpListen,
       mouseLeaveListen
     ];
-    this.svgStructure.root.style.cursor = 'crosshair';
   }
 
   protected configureSvgElement(element: SVGElement): void {
     this.renderer.setAttribute(element, 'd', this.stringPath);
     this.renderer.setAttribute(element, 'stroke', this.colorService.primaryColor);
-    // TODO : Augustin a enlevé ceci
-    // this.renderer.setAttribute(element, 'fill', this.colorService.primaryColor);
     this.renderer.setAttribute(element, 'filter', `url(#${this.brushService.texture})`);
     this.renderer.setAttribute(element, 'stroke-linecap', this.strokeLineCap);
     this.renderer.setAttribute(element, 'stroke-width', this.brushService.thickness.toString());
@@ -92,14 +88,15 @@ export class BrushLogicComponent extends PencilBrushCommon
     this.configureSvgElement(this.svgPath);
     this.renderer.appendChild(this.svgStructure.drawZone, this.svgPath);
   }
-  ngOnDestroy(): void {
-    this.listeners.forEach((end) => { end(); });
-    this.undoRedoService.resetActions();
-    this.undoRedoOverride();
-  }
 
   protected onMouseMove(mouseEv: MouseEvent): void {
     this.drawing(mouseEv);
     this.svgPath.setAttribute('d', this.stringPath);
+  }
+
+  ngOnDestroy(): void {
+    this.listeners.forEach((end) => { end(); });
+    this.undoRedoService.resetActions();
+    this.preUndoFunction();
   }
 }

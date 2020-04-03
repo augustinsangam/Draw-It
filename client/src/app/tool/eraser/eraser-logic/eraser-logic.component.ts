@@ -14,10 +14,11 @@ import { PostAction, UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { EraserService } from '../eraser.service';
 
 export const CONSTANTS = {
-  MAX_RED: 150,
-  MIN_GREEN: 100,
-  MIN_BLUE: 100,
+  MAX_RGB: 255,
+  // tslint:disable-next-line: no-magic-numbers
+  MAX_DIFFERENCE: 255 * 255 * 3,
   FACTOR: 50,
+  TOLERANCE: 0.05,
   RED: 'rgba(255, 0, 0, 1)',
   RED_TRANSPARENT: 'rgba(255, 0, 0, 0.7)',
   FILL_COLOR: 'white',
@@ -51,14 +52,14 @@ export class EraserLogicComponent
     this.mouse = {
       startPoint: fakePoint, currentPoint: fakePoint, endPoint: fakePoint,
       mouseIsDown: false, selectedElement: BasicSelectionType.NOTHING,
-      onDrag: false,
-      onResize: false
+      onDrag: false, onResize: false
     };
     this.markedElements = new Map();
     this.undoRedoService.resetActions();
     const postAction: PostAction = {
       functionDefined: true,
       function: () => {
+        this.restoreMarkedElements();
         this.markElementsInZone(this.lastestMousePosition.x,
           this.lastestMousePosition.y);
       }
@@ -96,23 +97,18 @@ export class EraserLogicComponent
         }
         this.mouse.mouseIsDown = false;
         this.mouse.endPoint = new Point($event.offsetX, $event.offsetY);
-        if (this.elementsDeletedInDrag) {
-          this.restoreMarkedElements();
-          this.undoRedoService.saveState();
-        }
-      }],
-      ['click', ($event: MouseEvent) => {
-        if ($event.button !== 0) {
-          return;
-        }
         if (this.mouse.startPoint.equals(this.mouse.endPoint)) {
           this.restoreMarkedElements();
-          const marked = this.markElementsInZone($event.x, $event.y);
+          const marked = this.findElementsInZone($event.x, $event.y);
           if (marked.size !== 0) {
             this.deleteAll(marked);
             this.undoRedoService.saveState();
           }
+        } else if (this.elementsDeletedInDrag) {
+          this.restoreMarkedElements();
+          this.undoRedoService.saveState();
         }
+
       }],
       ['mouseleave', () => {
         this.hideEraser();
@@ -127,7 +123,7 @@ export class EraserLogicComponent
 
   }
   ngOnInit(): void {
-    ['mousedown', 'mousemove', 'mouseup', 'click', 'mouseleave']
+    ['mousedown', 'mousemove', 'mouseup', 'mouseleave']
       .forEach((event: string) => {
         this.allListeners.push(
           this.renderer.listen(this.svgStructure.root, event,
@@ -177,9 +173,9 @@ export class EraserLogicComponent
         stroke = element.getAttribute('fill') as string;
       }
       const rgb = this.colorService.rgbFormRgba(stroke as string);
-      if (rgb.r > CONSTANTS.MAX_RED && rgb.g < CONSTANTS.MIN_GREEN
-        && rgb.b < CONSTANTS.MIN_BLUE) {
-        rgb.r = rgb.r - CONSTANTS.FACTOR;
+      const difference = (rgb.r - CONSTANTS.MAX_RGB) * (rgb.r - CONSTANTS.MAX_RGB) + rgb.g * rgb.g + rgb.b * rgb.b;
+      if (difference / CONSTANTS.MAX_DIFFERENCE < CONSTANTS.TOLERANCE) {
+        rgb.r = Math.max(0, rgb.r - CONSTANTS.FACTOR);
         strokeModified = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
       }
       this.markedElements.set(element, [hasStroke, stroke as string]);
@@ -194,7 +190,9 @@ export class EraserLogicComponent
 
   private findElementsInZone(x: number, y: number): Set<SVGElement> {
     const selectedElements = new Set<SVGElement>();
-    const halfSize = this.service.size / 2;
+    let halfSize = this.service.size / 2;
+    const minHalfSize = 4;
+    halfSize = Math.max(minHalfSize, halfSize);
     this.removeFill();
     for (let i = x - halfSize; i <= x + halfSize; i += CONSTANTS.PIXEL_INCREMENT) {
       for (let j = y - halfSize; j <= y + halfSize; j += CONSTANTS.PIXEL_INCREMENT) {
@@ -212,7 +210,7 @@ export class EraserLogicComponent
   private deleteAll(elements: Set<SVGElement>): void {
     this.restoreMarkedElements();
     elements.forEach((element) => {
-      this.renderer.removeChild(this.svgStructure.drawZone, element);
+      element.remove();
     });
   }
 

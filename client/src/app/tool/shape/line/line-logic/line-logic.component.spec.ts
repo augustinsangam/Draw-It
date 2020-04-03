@@ -57,6 +57,15 @@ describe('LineLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
+  it('#createNewPath should set the css depending on the service', () => {
+    component['serviceColor'].primaryColor = '';
+    component['isNewPath'] = true;
+    component['service'].withJonction = false;
+    component['paths'] = [];
+    component['createNewPath'](new Point(100, 100));
+    expect(component['paths'][0]['element'].style.fill).toEqual('');
+  });
+
   it('#getPath should return the path containing' +
       'the Point passed as parameter', () => {
     component['paths'] = [defaultPath];
@@ -92,7 +101,7 @@ describe('LineLogicComponent', () => {
     });
 
   it(
-    'onMouseClick should call isNewLine and ' +
+    '#onMouseClick should call isNewLine and ' +
     'should set isNewPath to false when Shift is not pressed',
     () => {
       const spy = spyOn<any>(component, 'addNewLine').and.callThrough();
@@ -111,7 +120,7 @@ describe('LineLogicComponent', () => {
   );
 
   it(
-    'onMouseClick should call getAlignedPoint and ' +
+    '#onMouseClick should call getAlignedPoint and ' +
     'set isNewPath to false when Shift is pressed',
     () => {
       component['paths'].push(defaultPath);
@@ -134,7 +143,7 @@ describe('LineLogicComponent', () => {
   );
 
   it(
-    'onMouseMove should call getPath only 1 time' +
+    '#onMouseMove should call getPath only 1 time' +
     ' lorsque SHIFT n’est pas pressé',
     () => {
       component['isNewPath'] = false;
@@ -153,7 +162,7 @@ describe('LineLogicComponent', () => {
   );
 
   it(
-    'onMouseMove should call getPath 2 times lorsque SHIFT est pressé',
+    '#onMouseMove should call getPath 2 times lorsque SHIFT est pressé',
     () => {
       component['isNewPath'] = false;
       component['paths'] = [defaultPath];
@@ -185,7 +194,7 @@ describe('LineLogicComponent', () => {
   });
 
   it(
-    'onMouseDblClick should set isNewPath to true for a point ' +
+    '#onMouseDblClick should set isNewPath to true for a point ' +
     'that´s further than 3 pixels',
     () => {
       component['paths'] = [defaultPath];
@@ -205,7 +214,7 @@ describe('LineLogicComponent', () => {
   );
 
   it(
-    'onMouseDblClick should set isNewPath to true and call getPath ' +
+    '#onMouseDblClick should set isNewPath to true and call getPath ' +
     '5 for a point that´s further than 3 pixels and when we press Shift',
     () => {
       component['paths'] = [defaultPath];
@@ -237,7 +246,7 @@ describe('LineLogicComponent', () => {
   );
 
   it(
-    'onMouseDblClick should set isNewPath to true and call getPath '
+    '#onMouseDblClick should set isNewPath to true and call getPath '
     + '5 times for a point that´s further than 3 pixels and'
     + 'when shift isn´t pressed',
     () => {
@@ -323,9 +332,8 @@ describe('LineLogicComponent', () => {
     expect(spy).toHaveBeenCalledTimes(0);
   });
 
-  // TODO
   it(
-    'onKeyDown should call getPath 1 time when it´s called with ' +
+    '#onKeyDown should call getPath 1 time when it´s called with ' +
     'with Escape, and shoud set isNewPath to true',
     () => {
       component['isNewPath'] = false;
@@ -343,7 +351,7 @@ describe('LineLogicComponent', () => {
   );
 
   it(
-    'onKeyDown should call removeLastLine and ' +
+    '#onKeyDown should call removeLastLine and ' +
     'simulateNewLine when called with Backspace',
     () => {
       defaultPath.datas.points = [ new Point(42, 42), new Point(404, 404) ];
@@ -372,7 +380,7 @@ describe('LineLogicComponent', () => {
     }
   );
   it(
-    'onKeyDown should not call anything if there is not enought instruction  when called with Backspace',
+    '#onKeyDown should not call anything if there is not enought instruction  when called with Backspace',
     () => {
       defaultPath.datas.points = [ new Point(42, 42), new Point(404, 404) ];
       defaultPath.datas.instructions = [ 'M 50 25'];
@@ -402,7 +410,7 @@ describe('LineLogicComponent', () => {
   );
 
   it(
-    'removeLastLine should remove jonctions if  withJonction' +
+    '#removeLastLine should remove jonctions if  withJonction' +
     'was true', () => {
       defaultPath.datas.points = [
         new Point(42, 42),
@@ -420,7 +428,7 @@ describe('LineLogicComponent', () => {
     }
   );
   it(
-    'removeLastLine should not remove jonctions if  withJonction' +
+    '#removeLastLine should not remove jonctions if  withJonction' +
     'was true', () => {
       defaultPath.datas.points = [
         new Point(42, 42),
@@ -485,7 +493,7 @@ describe('LineLogicComponent', () => {
   });
 
   it(
-    'ngOnDestroy should set "called" to true ' +
+    '#ngOnDestroy should set "called" to true ' +
     '(= call every listener´s functions)',
     () => {
       let called = false;

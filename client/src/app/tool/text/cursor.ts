@@ -1,6 +1,7 @@
 import {Renderer2} from '@angular/core';
 import {interval, Observable, Subscription} from 'rxjs';
 import {Point} from '../shape/common/point';
+import {TextAlignement} from './text-alignement';
 import {TextLine} from './text-line';
 import {TextService} from './text.service';
 
@@ -10,7 +11,6 @@ export class Cursor {
   frequency: Observable<number>;
   blinker: Subscription;
   visible: boolean;
-  tmpTextZone: SVGElement;
   currentPosition: Point;
   initialCursorPoint: Point;
   readonly CURSOR_INTERVAL: number = 500;
@@ -21,10 +21,11 @@ export class Cursor {
               initialPoint: Point,
   ) {
     this.visible = true;
-    this.currentPosition = initialPoint;
     this.initialCursorPoint = new Point(initialPoint.x, initialPoint.y);
+    this.currentPosition = new Point(initialPoint.x, initialPoint.y);
     this.blinker = Subscription.EMPTY;
-    this.tmpTextZone = this.renderer.createElement('text', 'http://www.w3.org/2000/svg');
+    this.renderer.setAttribute(element, 'stroke', 'rgba(1,1,1,1)');
+    this.updateVisual();
   }
 
   initBlink(): void {
@@ -57,9 +58,26 @@ export class Cursor {
   }
 
   move(currentLine: TextLine, lineIndex: number): void {
-    // console.log(`lineIndex = ${lineIndex}`);
-    this.currentPosition.x = this.initialCursorPoint.x + this.service.getTextAlign() / 2 +  this.service.getLineWidth(currentLine);
-    this.currentPosition.y = this.initialCursorPoint.y + ((lineIndex) * this.service.fontSize);
+    switch (this.service.textAlignement) {
+      case TextAlignement.left:
+        this.currentPosition.x = this.initialCursorPoint.x + this.service.getTextAlign() + this.service.getLineWidth(currentLine);
+        break;
+
+      case TextAlignement.center:
+        const textStart = this.initialCursorPoint.x - this.service.getFullTextWidth(currentLine) / 2;
+
+        this.currentPosition.x = textStart + this.service.getLineWidth(currentLine);
+        break;
+
+      case TextAlignement.right:
+        const textWidthAtCursor = this.service.getLineWidth(currentLine);
+
+        this.currentPosition.x = this.initialCursorPoint.x - (this.service.getFullTextWidth(currentLine) - textWidthAtCursor);
+        break;
+    }
+    // console.log(this.initialCursorPoint.y);
+    // console.log(`cursPos y = ${this.initialCursorPoint.y} + ${lineIndex} * ${this.service.fontSize}`);
+    this.currentPosition.y = this.initialCursorPoint.y + (lineIndex * this.service.fontSize);
     this.updateVisual();
   }
 }

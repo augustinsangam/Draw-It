@@ -16,7 +16,6 @@ export class ColorService {
   change: Subject<null>;
 
   constructor() {
-    // TODO : Replace by the backend
     this.recentColors = [
       'rgba(230, 25, 75, 1)',
       'rgba(255, 225, 25, 1)',

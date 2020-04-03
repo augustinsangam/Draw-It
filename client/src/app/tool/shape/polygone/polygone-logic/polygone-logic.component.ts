@@ -76,6 +76,7 @@ export class PolygoneLogicComponent extends ToolLogicDirective
       this.svgStructure.root,
       'mousemove',
       (mouseEv: MouseEvent) => {
+        mouseEv.preventDefault();
         if (this.onDrag) {
           const currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
           this.visualisationRectangle.dragRectangle(
@@ -133,7 +134,8 @@ export class PolygoneLogicComponent extends ToolLogicDirective
       this.polygones.push(new Polygone(
         this.renderer,
         polygon,
-        this.mathService, this.service.sides));
+        this.mathService, this.service.sides,
+        this.service));
       this.setPolygoneProperties();
     }
   }

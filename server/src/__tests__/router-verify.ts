@@ -3,7 +3,7 @@
 import chai from 'chai';
 import flatbuffers from 'flatbuffers';
 
-import { TYPES } from '../constants';
+import { ANSWER_TO_LIFE, TYPES } from '../constants';
 import { Draw } from '../data_generated';
 import { myContainer } from '../inversify.config';
 import { Router } from '../router';
@@ -15,29 +15,29 @@ describe('router: verify', () => {
 		router = myContainer.get<Router>(TYPES.Router);
 	});
 
-	it('#verify should invalidate short name', () => {
+	it('#verifyBuffer should invalidate short name', () => {
 		const fbb = new flatbuffers.flatbuffers.Builder();
 		const name = 'yo';
 		const nameOffset = fbb.createString(name);
 		Draw.start(fbb);
 		Draw.addName(fbb, nameOffset);
 		fbb.finish(Draw.end(fbb));
-		const errMsg = router['verify'](fbb.asUint8Array());
+		const errMsg = router['verifyBuffer'](fbb.asUint8Array());
 		chai.expect(errMsg).to.be.equal(`Nom “${name}” invalide`);
 	});
 
-	it('#verify should invalidate long name', () => {
+	it('#verifyBuffer should invalidate long name', () => {
 		const fbb = new flatbuffers.flatbuffers.Builder();
 		const name = 'this is more than 21 characters';
 		const nameOffset = fbb.createString(name);
 		Draw.start(fbb);
 		Draw.addName(fbb, nameOffset);
 		fbb.finish(Draw.end(fbb));
-		const errMsg = router['verify'](fbb.asUint8Array());
+		const errMsg = router['verifyBuffer'](fbb.asUint8Array());
 		chai.expect(errMsg).to.be.equal(`Nom “${name}” invalide`);
 	});
 
-	it('#verify should invalidate short tag', () => {
+	it('#verifyBuffer should invalidate short tag', () => {
 		const fbb = new flatbuffers.flatbuffers.Builder();
 		const tag = 'yo';
 		const nameOffset = fbb.createString('correct name');
@@ -48,11 +48,11 @@ describe('router: verify', () => {
 		Draw.addName(fbb, nameOffset);
 		Draw.addTags(fbb, tags);
 		fbb.finish(Draw.end(fbb));
-		const errMsg = router['verify'](fbb.asUint8Array());
+		const errMsg = router['verifyBuffer'](fbb.asUint8Array());
 		chai.expect(errMsg).to.be.equal(`Étiquette “${tag}” invalide`);
 	});
 
-	it('#verify should invalidate long tag', () => {
+	it('#verifyBuffer should invalidate long tag', () => {
 		const fbb = new flatbuffers.flatbuffers.Builder();
 		const nameOffset = fbb.createString('correct name');
 		const tag = 'this is more than 21 characters';
@@ -63,11 +63,11 @@ describe('router: verify', () => {
 		Draw.addName(fbb, nameOffset);
 		Draw.addTags(fbb, tags);
 		fbb.finish(Draw.end(fbb));
-		const errMsg = router['verify'](fbb.asUint8Array());
+		const errMsg = router['verifyBuffer'](fbb.asUint8Array());
 		chai.expect(errMsg).to.be.equal(`Étiquette “${tag}” invalide`);
 	});
 
-	it('#verify should return null', () => {
+	it('#verifyBuffer should return null', () => {
 		const fbb = new flatbuffers.flatbuffers.Builder();
 		const nameOffset = fbb.createString('correct name');
 		const tag1 = fbb.createString('correct tag #1');
@@ -77,7 +77,38 @@ describe('router: verify', () => {
 		Draw.addName(fbb, nameOffset);
 		Draw.addTags(fbb, tags);
 		fbb.finish(Draw.end(fbb));
-		const errMsg = router['verify'](fbb.asUint8Array());
+		const errMsg = router['verifyBuffer'](fbb.asUint8Array());
 		chai.expect(errMsg).to.be.null;
+	});
+
+	it('#verifyID should invalidate NaN', () => {
+		const possibleId = router['verifyID']('.');
+		chai.expect(possibleId.err).not.be.undefined;
+	});
+
+	it('#verifyID should invalidate Infinity', () => {
+		const possibleId = router['verifyID']('Infinity');
+		chai.expect(possibleId.err).not.be.undefined;
+	});
+
+	it('#verifyID should invalidate decimal', () => {
+		const possibleId = router['verifyID']('.42');
+		chai.expect(possibleId.err).not.be.undefined;
+	});
+
+	it('#verifyID should invalidate zero', () => {
+		const possibleId = router['verifyID']('0');
+		chai.expect(possibleId.err).not.be.undefined;
+	});
+
+	it('#verifyID should invalidate negative', () => {
+		const possibleId = router['verifyID']('-42');
+		chai.expect(possibleId.err).not.be.undefined;
+	});
+
+	it(`#verifyID should validate ${ANSWER_TO_LIFE}`, () => {
+		const possibleId = router['verifyID'](ANSWER_TO_LIFE.toString());
+		chai.expect(possibleId.err).be.undefined;
+		chai.expect(possibleId.id).to.equal(ANSWER_TO_LIFE);
 	});
 });

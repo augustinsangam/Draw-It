@@ -76,6 +76,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
       this.svgStructure.root,
       'mousemove',
       (mouseEv: MouseEvent) => {
+        mouseEv.preventDefault();
         if (this.onDrag) {
           this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
           this.viewTemporaryForm(mouseEv);
@@ -140,7 +141,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
     }
     const rectangle = this.renderer.createElement('rect', this.svgNS);
     this.renderer.appendChild(this.svgStructure.drawZone, rectangle);
-    this.rectangles.push(new Rectangle(this.renderer, rectangle, this.mathService));
+    this.rectangles.push(new Rectangle(this.renderer, rectangle, this.mathService, this.service));
     this.setRectangleProperties();
     this.onDrag = true;
     this.mouseDownPoint = this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);

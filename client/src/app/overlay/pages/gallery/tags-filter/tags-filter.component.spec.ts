@@ -9,7 +9,6 @@ import {
 import { Observable, Subject } from 'rxjs';
 import { MaterialModule } from 'src/app/material.module';
 import { TagsFilterComponent } from './tags-filter.component';
-// import { ElementRef, ChangeDetectorRef } from '@angular/core';
 
 // tslint:disable: no-string-literal
 
@@ -56,7 +55,8 @@ describe('TagsFilterComponent', () => {
   });
 
   it('#ngOnInit should call addTag with "test1" when the value of selectedTag changes', () => {
-    const spy = spyOn(component, 'addTag');
+    // tslint:disable-next-line: no-any
+    const spy = spyOn<any>(component, 'addTag');
 
     const testSelectedTag = new Subject<string>();
     component.selectedTag = testSelectedTag.asObservable();
@@ -73,24 +73,23 @@ describe('TagsFilterComponent', () => {
       input: (input as HTMLInputElement),
       value: 'test',
     };
-    component.add(event);
+    component['add'](event);
     expect(component['addedTags']).toEqual(['test']);
   });
 
   it('#add should add nothing to addedTags if the event\'s value is empty', () => {
-    // const input = fixture.nativeElement.querySelector('');
     const event: MatChipInputEvent = {
       input: null as unknown as HTMLInputElement,
       value: '',
     };
-    component.add(event);
+    component['add'](event);
     expect(component['addedTags']).toEqual([]);
   });
 
   it('#remove should remove "tag" from addedTags if it contains it', () => {
     component['addedTags'] = ['test1', 'test2'];
 
-    component.remove('test1');
+    component['remove']('test1');
 
     expect(component['addedTags']).toEqual(['test2']);
   });
@@ -98,7 +97,7 @@ describe('TagsFilterComponent', () => {
   it('#remove should not remove "tag" from addedTags if it does not contain it', () => {
     component['addedTags'] = ['test1', 'test2'];
 
-    component.remove('test3');
+    component['remove']('test3');
 
     expect(component['addedTags']).toEqual(['test1', 'test2']);
   });
@@ -110,7 +109,7 @@ describe('TagsFilterComponent', () => {
         viewValue: 'test1'
       } as MatOption,
     };
-    component.selected(event);
+    component['selected'](event);
     expect(component['addedTags']).toContain('test1');
   });
 
@@ -148,7 +147,7 @@ describe('TagsFilterComponent', () => {
   it('#addTag should add "tag" to addedTags when it does not contain it', () => {
     component['addedTags'] = ['test1', 'test2'];
 
-    component.addTag('test3');
+    component['addTag']('test3');
 
     expect(component['addedTags']).toEqual(['test1', 'test2', 'test3']);
   });
@@ -156,7 +155,7 @@ describe('TagsFilterComponent', () => {
   it('#addTag should not add "tag" to addedTags when it does contain it', () => {
     component['addedTags'] = ['test1', 'test2', 'test3'];
 
-    component.addTag('test3');
+    component['addTag']('test3');
 
     expect(component['addedTags']).toEqual(['test1', 'test2', 'test3']);
   });

@@ -6,6 +6,8 @@ import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { ToolPanelDirective } from '../../../tool-panel/tool-panel.directive';
 import { LineService } from '../line.service';
 
+// tslint:disable-next-line:no-magic-numbers
+const RATIOTHICKNESS = 3 / 5;
 @Component({
   selector: 'app-line-panel',
   templateUrl: './line-panel.component.html',
@@ -53,7 +55,7 @@ export class LinePanelComponent extends ToolPanelDirective {
   }
 
   protected onThicknessValueChange(): void {
-    const newRadiusMin = Math.floor(this.service.thickness / 2);
+    const newRadiusMin = Math.floor(this.service.thickness * RATIOTHICKNESS);
     this.service.radius = Math.max(this.radiusSlider.value as number, newRadiusMin);
     this.radiusSlider.value = this.service.radius;
     this.radiusSlider.min = newRadiusMin;

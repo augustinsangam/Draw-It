@@ -98,7 +98,7 @@ describe('EllipseLogicComponent', () => {
       const event = new MouseEvent('mousedown', {
         offsetX: 10,
         offsetY: 30,
-        button: 1 // right click.
+        button: 1
       } as MouseEventInit);
       component['service'].borderOption = false;
       component['initEllipse'](event);
@@ -305,20 +305,6 @@ describe('EllipseLogicComponent', () => {
     component['onDrag'] = false;
     component['onMouseUp'](new MouseEvent('mousedown', {button: 2}));
     expect(spy1).not.toHaveBeenCalled();
-  });
-
-  it('#onKeyUp should call simulateEllipse', () => {
-    component['initEllipse'](createClickMouseEvent('mousedown'));
-    const event = new KeyboardEvent('window:keyup', {
-      code: 'ShiftRight',
-      key: 'Shift'
-    });
-    const spy = spyOn<any>(
-      component['getEllipse'](),
-      'simulateEllipse'
-    ).and.callThrough();
-    component['onKeyUp'](event);
-    expect(spy).toHaveBeenCalled();
   });
 
   it('#ngOnDestroy should set "called" to true ' +
