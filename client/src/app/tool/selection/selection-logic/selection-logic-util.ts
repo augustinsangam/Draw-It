@@ -123,4 +123,12 @@ export class SelectionLogicUtil {
     return set;
   }
 
+  static getRealTarget(event: Event): SVGElement {
+    let element = event.target as SVGElement;
+    while (element.localName === 'tspan') {
+      element = element.parentNode as SVGElement;
+    }
+    return element;
+  }
+
 }

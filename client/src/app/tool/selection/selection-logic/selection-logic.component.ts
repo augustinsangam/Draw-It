@@ -45,8 +45,9 @@ export class SelectionLogicComponent
           this.mouse.left.currentPoint =
             new Point($event.offsetX, $event.offsetY);
           this.mouse.left.mouseIsDown = true;
+          const target = Util.SelectionLogicUtil.getRealTarget($event);
           this.mouse.left.selectedElement = this.elementSelectedType(
-            $event.target as SVGElement
+            target as SVGElement
           );
           this.mouse.left.onDrag = this.isInTheVisualisationZone(
             $event.offsetX,
@@ -55,12 +56,9 @@ export class SelectionLogicComponent
           this.mouse.left.onResize = Util.CIRCLES.indexOf(
             this.mouse.left.selectedElement as Util.CircleType
           ) !== NOT_FOUND;
-          if (this.mouse.left.onResize) {
-            console.log(`Resize ${this.mouse.left.selectedElement}`);
-          }
-          if (this.svgStructure.drawZone.contains($event.target as SVGElement)
-            && !this.service.selectedElements.has($event.target as SVGElement)) {
-            this.applySingleSelection($event.target as SVGElement);
+          if (this.svgStructure.drawZone.contains(target as SVGElement)
+            && !this.service.selectedElements.has(target as SVGElement)) {
+            this.applySingleSelection(target as SVGElement);
           }
         }],
         // tslint:disable-next-line: cyclomatic-complexity
@@ -142,9 +140,10 @@ export class SelectionLogicComponent
             return;
           }
           if (this.mouse.left.startPoint.equals(this.mouse.left.endPoint)) {
-            const elementType = this.elementSelectedType($event.target as SVGElement);
+            const target = Util.SelectionLogicUtil.getRealTarget($event);
+            const elementType = this.elementSelectedType(target as SVGElement);
             if (elementType === BasicSelectionType.DRAW_ELEMENT) {
-              this.applySingleSelection($event.target as SVGElement);
+              this.applySingleSelection(target as SVGElement);
             } else if (elementType === BasicSelectionType.NOTHING) {
               this.deleteVisualisation();
             }
@@ -174,8 +173,9 @@ export class SelectionLogicComponent
             this.mouse.right.currentPoint =
               new Point($event.offsetX, $event.offsetY);
             this.mouse.right.mouseIsDown = true;
+            const target = Util.SelectionLogicUtil.getRealTarget($event);
             this.mouse.right.selectedElement = this.elementSelectedType(
-              $event.target as SVGElement
+              target as SVGElement
             );
             this.selectedElementsFreezed = new Set(this.service.selectedElements);
           }
@@ -202,9 +202,10 @@ export class SelectionLogicComponent
         }],
         ['contextmenu', ($event: MouseEvent) => {
           $event.preventDefault();
-          const type = this.elementSelectedType($event.target as SVGElement);
+          const target = Util.SelectionLogicUtil.getRealTarget($event);
+          const type = this.elementSelectedType(target);
           if (type === BasicSelectionType.DRAW_ELEMENT) {
-            this.applySingleInversion($event.target as SVGElement);
+            this.applySingleInversion(target);
           }
         }]
       ])],
