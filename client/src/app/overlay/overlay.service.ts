@@ -155,7 +155,7 @@ export class OverlayService {
       this.openHomeDialog();
     } else if (option !== null) {
       this.createNewDraw(option as SvgShape);
-      
+
     }
   }
 
@@ -266,7 +266,6 @@ export class OverlayService {
   }
 
   private getCommonDialogOptions(): MatDialogConfig {
-    console.log('valeuurrrrr ' + this.autoSave.verifyAvailability());
     return {
       width: '650px',
       height: '90%',

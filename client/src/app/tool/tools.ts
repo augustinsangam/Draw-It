@@ -98,31 +98,31 @@ import {
 export const TOOL_MANAGER =
   new Map<Tool, [Type<ToolPanelDirective>, Type<ToolLogicDirective>]>();
 
+TOOL_MANAGER.set(Tool.Aerosol,
+  [AerosolPanelComponent, AerosolLogicComponent]);
 TOOL_MANAGER.set(Tool.Applicator,
   [ApplicatorPanelComponent, ApplicatorLogicComponent]);
 TOOL_MANAGER.set(Tool.Brush,
   [BrushPanelComponent, BrushLogicComponent]);
+TOOL_MANAGER.set(Tool.Bucket,
+  [BucketPanelComponent, BucketLogicComponent]);
+TOOL_MANAGER.set(Tool.Ellipse,
+  [EllipsePanelComponent, EllipseLogicComponent]);
+TOOL_MANAGER.set(Tool.Eraser,
+  [EraserPanelComponent, EraserLogicComponent]);
+TOOL_MANAGER.set(Tool.Grid,
+  [GridPanelComponent, GridLogicComponent]);
 TOOL_MANAGER.set(Tool.Line,
   [LinePanelComponent, LineLogicComponent]);
 TOOL_MANAGER.set(Tool.Pencil,
   [PencilPanelComponent, PencilLogicComponent]);
-TOOL_MANAGER.set(Tool.Rectangle,
-  [RectanglePanelComponent, RectangleLogicComponent]);
-TOOL_MANAGER.set(Tool.Ellipse,
-  [EllipsePanelComponent, EllipseLogicComponent]);
+TOOL_MANAGER.set(Tool.Pipette,
+  [PipettePanelComponent, PipetteLogicComponent]);
 TOOL_MANAGER.set(Tool.Polygone,
   [PolygonePanelComponent, PolygoneLogicComponent]);
+TOOL_MANAGER.set(Tool.Rectangle,
+  [RectanglePanelComponent, RectangleLogicComponent]);
 TOOL_MANAGER.set(Tool.Selection,
   [SelectionPanelComponent, SelectionLogicComponent]);
-TOOL_MANAGER.set(Tool.Pipette,
-   [PipettePanelComponent, PipetteLogicComponent]);
-TOOL_MANAGER.set(Tool.Eraser,
-  [EraserPanelComponent, EraserLogicComponent]);
-TOOL_MANAGER.set(Tool.Aerosol,
-  [AerosolPanelComponent, AerosolLogicComponent]);
-TOOL_MANAGER.set(Tool.Grid,
-  [GridPanelComponent, GridLogicComponent]);
-TOOL_MANAGER.set(Tool.Bucket,
-    [BucketPanelComponent, BucketLogicComponent]);
 TOOL_MANAGER.set(Tool.Text,
   [TextPanelComponent, TextLogicComponent]);

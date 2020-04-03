@@ -9,11 +9,11 @@ export enum Tool {
   Grid,
   Line,
   Pencil,
+  Pipette,
   Polygone,
   Rectangle,
-  Pipette,
   Selection,
   Text,
   _Len,
-  _None,
+  _None
 }

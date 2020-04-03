@@ -203,7 +203,6 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     const point = this.svgStructure.root.createSVGPoint();
     const [dx, dy] = new Transform(this.rectangles.visualisation, this.renderer).getTransformTranslate();
     [point.x, point.y] = [x - dx, y - dy];
-    console.log((this.rectangles.visualisation as SVGGeometryElement).isPointInFill(point));
     return (this.rectangles.visualisation as SVGGeometryElement).isPointInFill(point);
   }
 
