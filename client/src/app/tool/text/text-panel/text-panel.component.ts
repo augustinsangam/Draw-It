@@ -30,7 +30,6 @@ export class TextPanelComponent extends ToolPanelDirective {
   ) {
     super(elementRef);
     this.textForm = this.formBuilder.group({
-      fontForm: [this.service.currentFont, []],
       mutatorsForm: [this.service.textMutators, []],
       fontSizeSlider: [this.service.fontSize, []],
       fontSizeFormField: [this.service.fontSize, [Validators.required]],
@@ -39,7 +38,7 @@ export class TextPanelComponent extends ToolPanelDirective {
     this.previewDims = {width: 320, height: 200};
   }
 
-  onMutatorChange(event: MatButtonToggleChange): void {
+  protected onMutatorChange(event: MatButtonToggleChange): void {
     const newMutators: TextMutators = {
       bold: event.value === 'bold' ? !this.service.textMutators.bold : this.service.textMutators.bold,
       italic: event.value === 'italic' ? !this.service.textMutators.italic : this.service.textMutators.italic,
@@ -51,21 +50,21 @@ export class TextPanelComponent extends ToolPanelDirective {
     this.service.textMutators = newMutators;
   }
 
-  onAlignChange(event: MatButtonToggleChange): void {
+  protected onAlignChange(event: MatButtonToggleChange): void {
     this.service.textAlignement = event.value;
     this.textForm.patchValue({
       alignementForm: event.value
     });
   }
 
-  onFontSizeChange(): void {
+  protected onFontSizeChange(): void {
     this.textForm.patchValue({
       fontSizeForm: this.fontSizeSlider.value
     });
     this.service.fontSize = this.fontSizeSlider.value as number;
   }
 
-  getPreviewTextAlign(): number {
+  protected getPreviewTextAlign(): number {
     return this.service.textAlignement === TextAlignement.left ? 0 : (
       this.service.textAlignement === TextAlignement.center ? this.previewDims.width / 2 : this.previewDims.width
     );
