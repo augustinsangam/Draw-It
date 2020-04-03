@@ -7,14 +7,14 @@ export class TextNavHandler {
               private lines: TextLine[]
               ) { }
 
-  arrowLeft(currentLine: TextLine): void {
+  cursorLeft(currentLine: TextLine): void {
     if (currentLine.cursorIndex > 0) {
       --currentLine.cursorIndex;
       this.cursor.move(currentLine, this.lines.indexOf(currentLine));
     }
   }
 
-  cursorDown(currentLine: TextLine): void {
+  cursorRight(currentLine: TextLine): void {
     if (!!currentLine.tspan.textContent && currentLine.cursorIndex < currentLine.tspan.textContent.length) {
       ++currentLine.cursorIndex;
       this.cursor.move(currentLine, this.lines.indexOf(currentLine));
@@ -36,7 +36,7 @@ export class TextNavHandler {
     return currentLine;
   }
 
-  arrowDown(currentLine: TextLine): TextLine {
+  cursorDown(currentLine: TextLine): TextLine {
     if (this.lines.indexOf(currentLine) + 1 < this.lines.length) {
       const oldCursorIndex = currentLine.cursorIndex;
       currentLine = this.lines[this.lines.indexOf(currentLine) + 1];

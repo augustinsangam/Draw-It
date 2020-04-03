@@ -25,14 +25,14 @@ implements OnDestroy {
 
   readonly TEXT_OFFSET: number = 10;
 
-  listeners: (() => void)[];
-  cursor: Cursor;
-  indicators: StateIndicators;
-  lines: TextLine[];
-  currentLine: TextLine;
-  textElement: SVGTSpanElement;
-  initialPoint: Point;
-  textMovingHandler: TextNavHandler;
+  private listeners: (() => void)[];
+  private cursor: Cursor;
+  private indicators: StateIndicators;
+  private lines: TextLine[];
+  private currentLine: TextLine;
+  private textElement: SVGTSpanElement;
+  private initialPoint: Point;
+  private textNavHandler: TextNavHandler;
 
   constructor(private readonly service: TextService,
               private readonly renderer: Renderer2,
@@ -138,32 +138,32 @@ implements OnDestroy {
 
       case 'Home':
         keyEv.preventDefault();
-        this.textMovingHandler.keyHome(this.currentLine);
+        this.textNavHandler.keyHome(this.currentLine);
         break;
 
       case 'End':
         keyEv.preventDefault();
-        this.textMovingHandler.keyEnd(this.currentLine);
+        this.textNavHandler.keyEnd(this.currentLine);
         break;
 
       case 'ArrowUp':
         keyEv.preventDefault();
-        this.currentLine = this.textMovingHandler.cursorUp(this.currentLine);
+        this.currentLine = this.textNavHandler.cursorUp(this.currentLine);
         break;
 
       case 'ArrowDown':
         keyEv.preventDefault();
-        this.currentLine = this.textMovingHandler.arrowDown(this.currentLine);
+        this.currentLine = this.textNavHandler.cursorDown(this.currentLine);
         break;
 
       case 'ArrowLeft':
         keyEv.preventDefault();
-        this.textMovingHandler.arrowLeft(this.currentLine);
+        this.textNavHandler.cursorLeft(this.currentLine);
         break;
 
       case 'ArrowRight':
         keyEv.preventDefault();
-        this.textMovingHandler.cursorDown(this.currentLine);
+        this.textNavHandler.cursorRight(this.currentLine);
         break;
 
       case 'Backspace':
@@ -222,7 +222,7 @@ implements OnDestroy {
       )
     );
     this.cursor.initBlink();
-    this.textMovingHandler = new TextNavHandler(this.cursor, this.lines);
+    this.textNavHandler = new TextNavHandler(this.cursor, this.lines);
   }
 
   private initSVGText(): void {

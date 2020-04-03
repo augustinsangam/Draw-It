@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {Dimension} from '../shape/common/dimension';
-import {Point} from '../shape/common/point';
 import {Rectangle} from '../shape/common/rectangle';
 import {ToolService} from '../tool.service';
 import {TextAlignement} from './text-alignement';
@@ -78,16 +77,6 @@ export class TextService extends ToolService {
     return this.textAlignement === 'left' ? 'start' : (
       this.textAlignement === 'center' ? 'middle' : 'end'
     );
-  }
-
-  getInitialPoint(mouseEv: MouseEvent): Point {
-    if (this.textAlignement === 'left') {
-      return new Point(mouseEv.offsetX, mouseEv.offsetY);
-    } else if (this.textAlignement === 'right') {
-      return new Point(mouseEv.offsetX + this.currentZoneDims.width, mouseEv.offsetY);
-    } else {
-      return new Point(mouseEv.offsetX + this.currentZoneDims.width / 2, mouseEv.offsetY);
-    }
   }
 
   getFullTextWidth(currentLine: TextLine): number {
