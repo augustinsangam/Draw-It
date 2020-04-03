@@ -1,52 +1,36 @@
 
 export class Matrix {
 
-    data: number[][];
+  data: number[][];
 
-    constructor(private rows: number, private columns: number, data ?: number[][]) {
-        this.data = !!data ? data : this.identity(rows, columns);
+  constructor(private rows: number, private columns: number, data?: number[][]) {
+    this.data = !!data ? data : this.identity(rows, columns);
+  }
+
+  private identity(rows: number, columns: number): number[][] {
+    const data: number[][] = new Array<number[]>(rows);
+    for (let row = 0; row < rows; row++) {
+      data[row] = new Array(columns);
     }
-
-    private identity(rows: number, columns: number): number[][] {
-        const data: number[][] = new Array<number[]>(rows);
-        
-        for (let row = 0 ; row < rows; row++) {
-            data[row] = new Array(columns);
-        }
-        
-        for (let row = 0; row < rows; row++) {
-            for (let column = 0; column < columns; column++) {
-                data[row][column] = row === column ? 1 : 0;
-            }
-        }
-        
-        return data;
+    for (let row = 0; row < rows; row++) {
+      for (let column = 0; column < columns; column++) {
+        data[row][column] = row === column ? 1 : 0;
+      }
     }
+    return data;
+  }
 
-    multiply(matrix: Matrix): Matrix {
-        if (this.columns !== matrix.rows) {
-            throw new Error('Matrix not compatible');
+  multiply(matrix: Matrix): Matrix {
+    const result = new Matrix(this.rows, matrix.columns);
+    for (let row = 0; row < this.rows; row++) {
+      for (let column = 0; column < matrix.columns; column++) {
+        result.data[row][column] = 0;
+        for (let i = 0; i < this.columns; i++) {
+          result.data[row][column] += this.data[row][i] * matrix.data[i][column];
         }
-
-        const result = new Matrix(this.rows, matrix.columns);
-
-        for (let row = 0; row < this.rows; row++) {
-            for (let column = 0; column < matrix.columns; column++) {
-                result.data[row][column] = 0;
-                for (let i = 0; i < this.columns; i++) {
-                    result.data[row][column] += this.data[row][i] * matrix.data[i][column];
-                }
-            }
-        }
-
-        return result;
+      }
     }
+    return result;
+  }
 
-    // linearize(): number[] {
-    //     let toReturn: number[] = [];
-    //     this.data.forEach((row) => {
-    //         toReturn = toReturn.concat(row);
-    //     });
-    //     return toReturn;
-    // }
 }

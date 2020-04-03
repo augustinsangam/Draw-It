@@ -2,7 +2,7 @@ import { Renderer2 } from '@angular/core';
 import { Transform } from './transform';
 
 // tslint:disable: no-magic-numbers
-describe('DeplacementUtil', () => {
+fdescribe('Transform', () => {
 
   const renderer = {
     setAttribute: ( element: SVGElement, attribute: string, value: string ) => {
@@ -10,58 +10,38 @@ describe('DeplacementUtil', () => {
     }
   } as unknown as Renderer2;
 
-  // TODO : remove com
+  let svg: SVGSVGElement;
+  let rect: SVGElement;
 
-  // it('#getTransformTranslate works well', () => {
-  //   const element = document.createElementNS(
-  //     'http://www.w3.org/2000/svg', 'svg:rect');
-  //   expect(Transform.getTransformTranslate(element))
-  //     .toEqual([0, 0]);
-  // });
+  beforeEach(() => {
+    svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.style.width = '500';
+    svg.style.height = '500';
+    svg.style.backgroundColor = '#FFFFFF';
+    rect = document.createElementNS('http://www.w3.org/2000/svg', 'svg:rect');
+    rect.setAttribute('x', '0');
+    rect.setAttribute('y', '0');
+    rect.setAttribute('width', '200');
+    rect.setAttribute('height', '200');
+    rect.setAttribute('fill', 'rgba(255, 0, 0, 1)');
+    svg.appendChild(rect);
+  });
 
-  // it('#translate works well', () => {
-  //   const element = document.createElementNS(
-  //     'http://www.w3.org/2000/svg', 'svg:rect');
-  //   Transform.translate(element, -10, 2, renderer);
-  //   expect(Transform.getTransformTranslate(element))
-  //     .toEqual([-10, 2]);
-  //   Transform.translate(element, -10, 2, renderer);
-  //   expect(Transform.getTransformTranslate(element))
-  //     .toEqual([-20, 4]);
-  // });
-
-  // it('#translateAll works well', () => {
-  //   const nElement = 5;
-  //   const elements = new Array(nElement);
-  //   for (let index = 0; index < nElement; index++) {
-  //     elements[index] = document.createElementNS(
-  //       'http://www.w3.org/2000/svg', 'svg:rect');
-  //   }
-  //   Transform.translateAll(elements, -10, 2, renderer);
-  //   for (let index = 0; index < nElement; index++) {
-  //     expect(Transform.getTransformTranslate(elements[index]))
-  //     .toEqual([-10, 2]);
-  //   }
-  // });
-  it('#getTransformTranslate works well', () => {
-    const element = document.createElementNS(
-      'http://www.w3.org/2000/svg', 'svg:rect');
-    expect(new Transform(element, renderer).getTransformTranslate())
+  it('#getTransformTranslate should return translate field', () => {
+    expect(new Transform(rect, renderer).getTransformTranslate())
       .toEqual([0, 0]);
   });
 
-  it('#translate works well', () => {
-    const element = document.createElementNS(
-      'http://www.w3.org/2000/svg', 'svg:rect');
-    new Transform(element, renderer).translate(-10, 2);
-    expect(new Transform(element, renderer).getTransformTranslate())
+  it('#translate can translate element', () => {
+    new Transform(rect, renderer).translate(-10, 2);
+    expect(new Transform(rect, renderer).getTransformTranslate())
       .toEqual([-10, 2]);
-    new Transform(element, renderer).translate(-10, 2);
-    expect(new Transform(element, renderer).getTransformTranslate())
+    new Transform(rect, renderer).translate(-10, 2);
+    expect(new Transform(rect, renderer).getTransformTranslate())
       .toEqual([-20, 4]);
   });
 
-  it('#translateAll works well', () => {
+  it('#translateAll can translate a set of elements', () => {
     const nElement = 5;
     const elements = new Array(nElement);
     for (let index = 0; index < nElement; index++) {
@@ -74,5 +54,14 @@ describe('DeplacementUtil', () => {
       .toEqual([-10, 2]);
     }
   });
+
+  // fit('#rotate can rotate element', (done: DoneFn) => {
+  //   const center = svg.createSVGPoint();
+  //   center.x = 100;
+  //   center.y = 100;
+  //   new Transform(rect, renderer).rotate(new Point(0, 0), 90);
+  //   new SvgToCanvas(svg, {width: })
+  //   expect((rect as SVGGeometryElement).isPointInFill(center)).toBeFalsy();
+  // });
 
 });
