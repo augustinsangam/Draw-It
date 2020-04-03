@@ -9,6 +9,7 @@ import {
 } from './shortcut-handler/shortcut-handler.service';
 import { SvgService } from './svg/svg.service';
 import { FilterService } from './tool/drawing-instruments/brush/filter.service';
+import { LocalStorageHandlerService } from './auto-save/local-storage-handler.service';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +24,8 @@ export class AppComponent implements AfterViewInit {
               private shortcutManager: ShortcutHandlerManagerService,
               private overlayService: OverlayService,
               private filterService: FilterService,
-              private renderer: Renderer2
+              private renderer: Renderer2,
+              private autoSave: LocalStorageHandlerService
   ) { }
 
   @HostListener('window:keydown', ['$event'])
@@ -34,6 +36,14 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     const svgDefsEl: SVGDefsElement = this.filterService.generateBrushFilters(this.renderer);
     this.renderer.appendChild(this.svgService.structure.defsZone, svgDefsEl);
+    if(this.autoSave.verifyAvailability()){
+      // TODO : renderer
+      const [draw, shape] = this.autoSave.getDrawing();
+      Array.from(draw.children).forEach((element: SVGElement) => {
+        this.svgService.structure.drawZone.appendChild(element);
+      });
+      this.svgService.shape = shape;
+    }
     this.overlayService.intialise(this.dialog, this.svgService);
     this.shortcutManager.initialiseShortcuts();
     this.overlayService.start();
