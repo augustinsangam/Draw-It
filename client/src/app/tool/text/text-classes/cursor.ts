@@ -1,16 +1,16 @@
 import {Renderer2} from '@angular/core';
 import {interval, Observable, Subscription} from 'rxjs';
-import {Point} from '../shape/common/point';
+import {Point} from '../../shape/common/point';
+import {TextService} from '../text.service';
 import {TextAlignement} from './text-alignement';
 import {TextLine} from './text-line';
-import {TextService} from './text.service';
 
 // tslint:disable:use-lifecycle-interface
 export class Cursor {
 
-  frequency: Observable<number>;
-  blinker: Subscription;
-  visible: boolean;
+  private frequency: Observable<number>;
+  private blinker: Subscription;
+  private visible: boolean;
   currentPosition: Point;
   initialCursorPoint: Point;
   readonly CURSOR_INTERVAL: number = 500;
@@ -51,7 +51,7 @@ export class Cursor {
     this.element.remove();
   }
 
-  updateVisual(): void {
+  private updateVisual(): void {
     this.renderer.setAttribute(this.element, 'd',
       `M ${this.currentPosition.x} ${this.currentPosition.y} v ${-this.service.fontSize}`
     );

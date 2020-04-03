@@ -1,7 +1,7 @@
 import {TestBed} from '@angular/core/testing';
 
-import {TextAlignement} from './text-alignement';
-import {TextLine} from './text-line';
+import {TextAlignement} from './text-classes/text-alignement';
+import {TextLine} from './text-classes/text-line';
 import {TextService} from './text.service';
 
 // tslint:disable:no-magic-numbers
@@ -13,7 +13,7 @@ const createLine = (sentence: string) => {
   } as TextLine;
 };
 
-describe('TextService', () => {
+fdescribe('TextService', () => {
   let service: TextService;
 
   beforeEach(() => {
@@ -23,7 +23,7 @@ describe('TextService', () => {
     service.currentZoneDims = {width: 10, height: 10};
   });
 
-  it('should be created', () => {
+  it('#should create', () => {
     expect(service).toBeTruthy();
   });
 

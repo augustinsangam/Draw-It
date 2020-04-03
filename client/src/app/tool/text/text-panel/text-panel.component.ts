@@ -5,8 +5,8 @@ import {MatSlider} from '@angular/material/slider';
 import {ColorService} from '../../color/color.service';
 import {Dimension} from '../../shape/common/dimension';
 import {ToolPanelDirective} from '../../tool-panel/tool-panel.directive';
-import {TextAlignement} from '../text-alignement';
-import {TextMutators} from '../text-mutators';
+import {TextAlignement} from '../text-classes/text-alignement';
+import {TextMutators} from '../text-classes/text-mutators';
 import {TextService} from '../text.service';
 
 @Component({
@@ -26,7 +26,7 @@ export class TextPanelComponent extends ToolPanelDirective {
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly formBuilder: FormBuilder,
               private readonly service: TextService,
-              protected readonly colorService: ColorService // value is only read in the html... ts-ignore ?
+              protected readonly colorService: ColorService
   ) {
     super(elementRef);
     this.textForm = this.formBuilder.group({

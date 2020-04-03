@@ -14,11 +14,11 @@ import {PanelComponent} from '../../../panel/panel.component';
 import {ColorPanelComponent} from '../../color/color-panel/color-panel.component';
 import {ColorPickerContentComponent} from '../../color/color-panel/color-picker-content/color-picker-content.component';
 import {ColorPickerItemComponent} from '../../color/color-panel/color-picker-item/color-picker-item.component';
-import {TextAlignement} from '../text-alignement';
+import {TextAlignement} from '../text-classes/text-alignement';
 import { TextPanelComponent } from './text-panel.component';
 
 // tslint:disable:no-string-literal no-magic-numbers
-describe('TextPanelComponent', () => {
+fdescribe('TextPanelComponent', () => {
   let component: TextPanelComponent;
   let fixture: ComponentFixture<TextPanelComponent>;
 

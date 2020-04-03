@@ -3,9 +3,9 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {Point} from '../../shape/common/point';
 import {Rectangle} from '../../shape/common/rectangle';
 import {UndoRedoService} from '../../undo-redo/undo-redo.service';
-import {Cursor} from '../cursor';
-import {TextAlignement} from '../text-alignement';
-import {TextNavHandler} from '../text-nav-handler';
+import {Cursor} from '../text-classes/cursor';
+import {TextAlignement} from '../text-classes/text-alignement';
+import {TextNavHandler} from '../text-classes/text-nav-handler';
 import {TextLogicComponent} from './text-logic.component';
 
 const createClickMouseEvent = (event: string): MouseEvent => {
@@ -17,7 +17,7 @@ const createClickMouseEvent = (event: string): MouseEvent => {
 };
 
 // tslint:disable:no-string-literal no-magic-numbers no-any max-file-line-count
-describe('TextLogicComponent', () => {
+fdescribe('TextLogicComponent', () => {
   let component: TextLogicComponent;
   let fixture: ComponentFixture<TextLogicComponent>;
 
