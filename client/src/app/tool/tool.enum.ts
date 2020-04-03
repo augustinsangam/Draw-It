@@ -6,6 +6,7 @@ export enum Tool {
   Brush,
   Eraser,
   Ellipse,
+  FeatherPen,
   Grid,
   Line,
   Pencil,
