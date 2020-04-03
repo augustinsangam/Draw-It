@@ -238,7 +238,7 @@ export class SelectionLogicComponent
       clipBoardCloned.forEach((element) => {
         this.renderer.appendChild(this.svgStructure.drawZone, element);
       });
-      this.applyMultipleSelection(undefined, undefined, clipBoardCloned);
+      this.applyMultipleSelection(undefined, undefined, new Set(clipBoardCloned));
     }
   }
 
