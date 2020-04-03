@@ -5,6 +5,7 @@ import { SelectionService } from '../selection.service';
 import { BasicSelectionType } from './element-selected-type';
 import { SelectionLogicBase } from './selection-logic-base';
 import * as Util from './selection-logic-util';
+import { Transform } from './transform';
 
 const NOT_FOUND = -1;
 const MINIMUM_SCALE = 5;
@@ -89,13 +90,13 @@ export class SelectionLogicComponent
               };
               const offsetX = +this.mouse.left.selectedElement % 3 === 0 ? $event.offsetX - previousCurrentPoint.x : 0;
               const offsetY = +this.mouse.left.selectedElement % 3 !== 0 ? $event.offsetY - previousCurrentPoint.y : 0;
-              
+
               this.scaledRectangleDimension.width += this.mouse.left.selectedElement === 0 ? -offsetX : offsetX;
               this.scaledRectangleDimension.height += this.mouse.left.selectedElement === 1 ? -offsetY : offsetY;
 
               const mouseOffset: Util.Offset = {x: offsetX, y: offsetY};
               const scaleOffset: Util.Offset = {x: offsetX, y: offsetY};
-              
+
               console.log(this.baseVisualisationRectangleDimension.width + ' ' + this.scaledRectangleDimension.width);
 
               let factorX = this.baseVisualisationRectangleDimension.width > MINIMUM_SCALE ?
@@ -210,6 +211,53 @@ export class SelectionLogicComponent
     ]);
   }
 
+  private onCopy(): void {
+    if (this.service.selectedElements.size !== 0) {
+      this.service.clipboard = Util.SelectionLogicUtil.clone(
+        this.service.selectedElements
+      );
+    }
+  }
+
+  private onCut(): void {
+    if (this.service.selectedElements.size !== 0) {
+      this.service.clipboard = Util.SelectionLogicUtil.clone(
+        this.service.selectedElements
+      );
+      this.service.selectedElements.forEach((element) => {
+        this.renderer.removeChild(this.svgStructure.drawZone, element);
+      });
+      this.deleteVisualisation();
+    }
+  }
+
+  private onPaste(): void {
+    if (this.service.clipboard.size !== 0) {
+      Transform.translateAll(this.service.clipboard, 30, 30, this.renderer);
+      const clipBoardCloned = Util.SelectionLogicUtil.clone(this.service.clipboard);
+      clipBoardCloned.forEach((element) => {
+        this.renderer.appendChild(this.svgStructure.drawZone, element);
+      });
+      this.applyMultipleSelection(undefined, undefined, clipBoardCloned);
+    }
+  }
+
+  private onDelete(): void {
+    if (this.service.selectedElements.size !== 0) {
+      this.service.selectedElements.forEach((element) => {
+        this.renderer.removeChild(this.svgStructure.drawZone, element);
+      });
+      this.deleteVisualisation();
+    }
+  }
+
+  private onDuplicate(): void {
+    if (this.service.selectedElements.size !== 0) {
+      this.onCopy();
+      this.onPaste();
+    }
+  }
+
   ngOnInit(): void {
     super.ngOnInit();
     [
@@ -235,6 +283,12 @@ export class SelectionLogicComponent
     this.allListenners.push(
       this.renderer.listen(document, 'keyup',
         this.keyManager.handlers.keyup));
+
+    this.service.copy.subscribe(() => this.onCopy());
+    this.service.cut.subscribe(() => this.onCut());
+    this.service.paste.subscribe(() => this.onPaste());
+    this.service.delete.subscribe(() => this.onDelete());
+    this.service.duplicate.subscribe(() => this.onDuplicate());
   }
 
 }

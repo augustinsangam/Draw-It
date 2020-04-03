@@ -68,15 +68,15 @@ export interface Offset {
 export class SelectionLogicUtil {
 
   static initialiseMouse(): Mouse {
-    const fakePoint = new Point(0, 0);
+    const point = new Point(0, 0);
     return {
       left: {
-        startPoint: fakePoint, currentPoint: fakePoint, endPoint: fakePoint,
+        startPoint: point, currentPoint: point, endPoint: point,
         mouseIsDown: false, selectedElement: BasicSelectionType.NOTHING,
         onDrag: false, onResize: false
       },
       right: {
-        startPoint: fakePoint, currentPoint: fakePoint, endPoint: fakePoint,
+        startPoint: point, currentPoint: point, endPoint: point,
         mouseIsDown: false, selectedElement: BasicSelectionType.NOTHING,
         onDrag: false, onResize: false
       }
@@ -113,6 +113,14 @@ export class SelectionLogicUtil {
       renderer.appendChild(zone, circle);
     });
     return circles;
+  }
+
+  static clone(elements: Set<SVGElement>): Set<SVGElement> {
+    const set = new Set<SVGElement>();
+    elements.forEach((element) => {
+      set.add(element.cloneNode(true) as SVGElement);
+    });
+    return set;
   }
 
 }
