@@ -49,7 +49,6 @@ export class UndoRedoService {
 
   intialise(svgStructure: SVGStructure): void {
     this.svgStructure = svgStructure;
-    this.autoSave.saveState(this.svgStructure.root);
   }
 
   setStartingCommand(): void {
