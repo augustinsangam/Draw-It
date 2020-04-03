@@ -93,7 +93,6 @@ export class TextService extends ToolService {
   getLineWidth(currentLine: TextLine): number {
     const oldText = currentLine.tspan.textContent;
     if (!!currentLine.tspan.textContent && currentLine.tspan.textContent.length !== currentLine.cursorIndex) {
-      console.log('not at EOL');
       currentLine.tspan.textContent = currentLine.tspan.textContent.slice(0, currentLine.cursorIndex);
     }
     const xPos = (currentLine.tspan as SVGTextContentElement).getComputedTextLength();
