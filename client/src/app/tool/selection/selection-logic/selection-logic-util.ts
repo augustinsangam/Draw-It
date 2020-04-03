@@ -60,6 +60,11 @@ export interface KeyManager {
   };
 }
 
+export interface Offset {
+  x: number;
+  y: number;
+}
+
 export class SelectionLogicUtil {
 
   static initialiseMouse(): Mouse {

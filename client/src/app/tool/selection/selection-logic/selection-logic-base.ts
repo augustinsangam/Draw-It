@@ -283,6 +283,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     const point = this.svgStructure.root.createSVGPoint();
     const [dx, dy] = new Transform(this.rectangles.visualisation, this.renderer).getTransformTranslate();
     [point.x, point.y] = [x - dx, y - dy];
+    console.log((this.rectangles.visualisation as SVGGeometryElement).isPointInFill(point));
     return (this.rectangles.visualisation as SVGGeometryElement).isPointInFill(point);
   }
 
@@ -292,14 +293,19 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     new Transform(this.rectangles.visualisation, this.renderer).translate(x, y);
   }
 
-  protected resizeAll(factorX: number, factorY: number, offsetX: number, offsetY: number): void {
+  protected resizeAll(factorX: number, factorY: number, scaleOffset: Util.Offset, mouseOffset: Util.Offset): void {
     const point = this.findElementCenter(this.rectangles.visualisation);
     Transform.scaleAll(this.service.selectedElements, point, factorX, factorY, this.renderer);
-    Transform.translateAll(this.service.selectedElements, offsetX / 2, offsetY / 2, this.renderer);
-    this.resizeVisualisationRectangle(point, offsetX, offsetY);
+    if (factorX !== 1) {
+      Transform.translateAll(this.service.selectedElements, scaleOffset.x / 2, 0, this.renderer);
+    }
+    if (factorY !== 1) {
+      Transform.translateAll(this.service.selectedElements, 0, scaleOffset.y / 2, this.renderer);
+    }
+    this.resizeVisualisationRectangle(point, mouseOffset);
   }
 
-  private resizeVisualisationRectangle(point: Point, offsetX: number, offsetY: number): void {
+  private resizeVisualisationRectangle(point: Point, mouseOffset: Util.Offset): void {
 
     const x = this.rectangles.visualisation.getAttribute('x');
     const y = this.rectangles.visualisation.getAttribute('y');
@@ -307,37 +313,38 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     const height = this.rectangles.visualisation.getAttribute('height');
     const refPoint1 = new Point(0, 0);
     const refPoint2 = new Point(0, 0);
+
     if (!!x && !!y && !!width && !!height) {
       refPoint1.x = +x;
       refPoint1.y = +y;
       refPoint2.x = +x + +width;
       refPoint2.y = +y + +height;
-      if (+width <= 1) {
-        this.mouse.left.selectedElement = offsetX < 0 ? Util.CIRCLES[0] : Util.CIRCLES[3];
+      if (+width <= 1 && mouseOffset.x !== 0) {
+        this.mouse.left.selectedElement = mouseOffset.x < 0 ? Util.CIRCLES[0] : Util.CIRCLES[3];
         Transform.scaleAll(this.service.selectedElements, point, -1, 1, this.renderer);
         console.log('switch to ' + this.mouse.left.selectedElement);
       }
-      if (+height <= 1) {
-        this.mouse.left.selectedElement = offsetY < 0 ? Util.CIRCLES[1] : Util.CIRCLES[2];
+      if (+height <= 1 && mouseOffset.y !== 0) {
+        this.mouse.left.selectedElement = mouseOffset.y < 0 ? Util.CIRCLES[1] : Util.CIRCLES[2];
         Transform.scaleAll(this.service.selectedElements, point, 1, -1, this.renderer);
         console.log('switch to ' + this.mouse.left.selectedElement);
       }
     }
-    const xP1 = Math.min(refPoint1.x + ((this.mouse.left.selectedElement < 2) ? offsetX : 0),
-      // refPoint2.x + ((this.mouse.left.selectedElement < 2) ? offsetX : 0));
+    const xP1 = Math.min(refPoint1.x + ((this.mouse.left.selectedElement < 2) ? mouseOffset.x : 0),
+      // refPoint2.x + ((this.mouse.left.selectedElement < 2) ? mouseOffset.x : 0));
       refPoint2.x);
-    const xP2 = Math.max(refPoint2.x + ((this.mouse.left.selectedElement > 1) ? offsetX : 0),
-      // refPoint1.x + ((this.mouse.left.selectedElement > 1) ? offsetX : 0));
+    const xP2 = Math.max(refPoint2.x + ((this.mouse.left.selectedElement > 1) ? mouseOffset.x : 0),
+      // refPoint1.x + ((this.mouse.left.selectedElement > 1) ? mouseOffset.x : 0));
       refPoint1.x);
     const p1 = new Point(
-      // Math.min(refPoint1.x) + ((this.mouse.left.selectedElement < 2) ? offsetX : 0),
+      // Math.min(refPoint1.x) + ((this.mouse.left.selectedElement < 2) ? mouseOffset.x : 0),
       xP1,
-      refPoint1.y + ((this.mouse.left.selectedElement < 2) ? offsetY : 0),
+      refPoint1.y + ((this.mouse.left.selectedElement < 2) ? mouseOffset.y : 0),
     );
     const p2 = new Point(
-      // refPoint2.x + ((this.mouse.left.selectedElement > 1) ? offsetX : 0),
+      // refPoint2.x + ((this.mouse.left.selectedElement > 1) ? mouseOffset.x : 0),
       xP2,
-      refPoint2.y + ((this.mouse.left.selectedElement > 1) ? offsetY : 0),
+      refPoint2.y + ((this.mouse.left.selectedElement > 1) ? mouseOffset.y : 0),
     );
     this.drawVisualisation(p1, p2);
   }
@@ -347,6 +354,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     Transform.rotateAll(this.service.selectedElements, point, angle, this.renderer);
     Transform.rotateAll(this.circles, point, angle, this.renderer);
     new Transform(this.rectangles.visualisation, this.renderer).rotate(point, angle);
+    this.applyMultipleSelection(undefined, undefined, new Set(this.service.selectedElements));
   }
 
   protected allSelfRotate(angle: number): void {
@@ -354,6 +362,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
       const point = this.findElementCenter(element);
       new Transform(element, this.renderer).rotate(point, angle);
     });
+    this.applyMultipleSelection(undefined, undefined, new Set(this.service.selectedElements));
   }
 
   protected findElementCenter(element: SVGElement): Point {
