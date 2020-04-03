@@ -1,7 +1,7 @@
 import { Matrix } from './matrix';
 
 // tslint:disable: no-magic-numbers no-string-literal
-describe('Matrix', () => {
+fdescribe('Matrix', () => {
 
   it('#should create', () => {
     expect(new Matrix(1, 1)).toBeTruthy();
