@@ -2,9 +2,9 @@ import {Injectable} from '@angular/core';
 import {Dimension} from '../shape/common/dimension';
 import {Rectangle} from '../shape/common/rectangle';
 import {ToolService} from '../tool.service';
-import {TextAlignement} from './text-alignement';
-import {TextLine} from './text-line';
-import {TextMutators} from './text-mutators';
+import {TextAlignement} from './text-classes/text-alignement';
+import {TextLine} from './text-classes/text-line';
+import {TextMutators} from './text-classes/text-mutators';
 
 interface Font {
   value: string;
@@ -93,7 +93,6 @@ export class TextService extends ToolService {
   getLineWidth(currentLine: TextLine): number {
     const oldText = currentLine.tspan.textContent;
     if (!!currentLine.tspan.textContent && currentLine.tspan.textContent.length !== currentLine.cursorIndex) {
-      console.log('not at EOL');
       currentLine.tspan.textContent = currentLine.tspan.textContent.slice(0, currentLine.cursorIndex);
     }
     const xPos = (currentLine.tspan as SVGTextContentElement).getComputedTextLength();

@@ -34,41 +34,41 @@
 <form [formGroup]="textForm">
   <!--  TODO add aria-label for each of these 6 buttons-->
   <mat-button-toggle-group multiple>
-    <!--      matTooltip="Gras"-->
     <mat-button-toggle
       value="bold"
+      title="Gras"
       (change)="onMutatorChange($event)">
       <mat-icon>format_bold</mat-icon>
     </mat-button-toggle>
-    <!--      matTooltip="Italique"-->
     <mat-button-toggle
       value="italic"
+      title="Italique"
       (change)="onMutatorChange($event)">
       <mat-icon>format_italic</mat-icon>
     </mat-button-toggle>
-    <!--      matTooltip="Souligné"-->
     <mat-button-toggle
       value="underline"
+      title="Souligné"
       (change)="onMutatorChange($event)">
       <mat-icon>format_underlined</mat-icon>
     </mat-button-toggle>
   </mat-button-toggle-group>
   <mat-button-toggle-group>
-    <!--      matTooltip="Aligné à gauche"-->
     <mat-button-toggle
       value="left"
+      title="Aligné à gauche"
       (change)="onAlignChange($event)">
       <mat-icon>format_align_left</mat-icon>
     </mat-button-toggle>
-    <!--      matTooltip="Centré"-->
     <mat-button-toggle
       value="center"
+      title="Centré"
       (change)="onAlignChange($event)">
       <mat-icon>format_align_center</mat-icon>
     </mat-button-toggle>
-    <!--      matTooltip="Aligné à droite"-->
     <mat-button-toggle
       value="right"
+      title="Aligné à droite"
       (change)="onAlignChange($event)">
       <mat-icon>format_align_right</mat-icon>
     </mat-button-toggle>
