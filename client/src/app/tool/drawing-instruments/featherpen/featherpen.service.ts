@@ -29,7 +29,6 @@ export class FeatherpenService extends ToolService {
     while (i <= this.MAX_ANGLE) {
       this.angles.push(i++);
     }
-    console.log(this.angles);
   }
 
   pathCentered(point: Point): string {
@@ -68,26 +67,21 @@ export class FeatherpenService extends ToolService {
   interpolate(oldAngle: number, newAngle: number, point: Point, up: boolean): string {
     let path = '';
     let angles: number[] = [];
-    console.log(`old ${oldAngle} new ${newAngle}`);
 
     if (up) {
       if (oldAngle < newAngle) {
-        console.log('A');
         angles = this.angles.slice(oldAngle, newAngle);
       } else {
-        console.log('B');
         const after = this.angles.slice(oldAngle);
         angles = this.angles.slice(1, newAngle);
         after.forEach((angle) => angles.push(angle));
       }
     } else {
       if (oldAngle < newAngle) {
-        console.log('D');
         const before = this.angles.slice(1, oldAngle);
         angles = this.angles.slice(newAngle, this.angles.length);
         before.forEach((angle) => angles.push(angle));
       } else {
-        console.log('C');
         angles = this.angles.slice(newAngle, oldAngle);
       }
     }

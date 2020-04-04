@@ -1,4 +1,4 @@
-import {Component, OnDestroy, Renderer2} from '@angular/core';
+import {Component, OnDestroy, OnInit, Renderer2} from '@angular/core';
 import {ColorService} from '../../../color/color.service';
 import {Point} from '../../../shape/common/point';
 import {ToolLogicDirective} from '../../../tool-logic/tool-logic.directive';
@@ -11,7 +11,7 @@ import {FeatherpenService} from '../featherpen.service';
 
 // tslint:disable:use-lifecycle-interface
 export class FeatherpenLogicComponent extends ToolLogicDirective
- implements OnDestroy {
+ implements OnDestroy, OnInit {
 
   private listeners: (() => void)[];
   private onDrag: boolean;
