@@ -36,10 +36,6 @@ class Email {
 		const options = {...this.options, ...{ headers: form.getHeaders() }};
 		Object.assign(options.headers, this.options.headers);
 
-		console.log(this.options);
-		console.log(options);
-		console.log(form);
-
 		const req = request(EMAIL_API.url, options);
 		form.pipe(req);
 		return new Promise((resolve) => req.on('response', resolve));
