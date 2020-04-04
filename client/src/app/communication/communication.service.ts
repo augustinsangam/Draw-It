@@ -10,7 +10,9 @@ import {
 } from './data_generated';
 
 const ERROR_MESSAGE = 'Communication impossible avec le serveur';
+const GENERIC_ERROR = new Error(ERROR_MESSAGE);
 const TIMEOUT_ERROR_MESSAGE = 'Délai d’attente dépassé';
+const TIMEOUT_ERROR = new Error(TIMEOUT_ERROR_MESSAGE);
 const TIMEOUT = 7000;
 const DONE = 4;
 
@@ -146,25 +148,25 @@ export class CommunicationService {
     return promise;
   }
 
-  async sendEmail(name: string, email: string, blob: Blob): Promise<void> {
+  async sendEmail(name: string, email: string, blob: Blob): Promise<string> {
     const formData = new FormData();
     formData.append('name', name);
     formData.append('recipient', email);
     formData.append('media', blob);
     this.xhr.open(Method.POST, `${this.host}/send`);
-    const promise = new Promise<void>((resolve, reject) => {
+    const promise = new Promise<string>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
         if (this.xhr.readyState !== DONE) {
           return;
         }
         if (this.xhr.status === StatusCode.ACCEPTED) {
-          resolve();
+          resolve(this.xhr.responseText);
         } else if (this.xhr.status) {
-          reject(this.xhr.responseText);
+          reject(new Error(this.xhr.responseText));
         }
       };
-      this.xhr.ontimeout = () => reject(TIMEOUT_ERROR_MESSAGE);
-      this.xhr.onerror = () => reject(ERROR_MESSAGE);
+      this.xhr.ontimeout = () => reject(TIMEOUT_ERROR);
+      this.xhr.onerror = () => reject(GENERIC_ERROR);
     });
     this.xhr.send(formData);
     return promise;

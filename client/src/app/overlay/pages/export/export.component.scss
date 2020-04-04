@@ -1,5 +1,17 @@
+:host {
+  display: block;
+  width: 70%;
+  margin: auto;
+}
+
 h1 {
   text-align: center;
+}
+
+svg {
+  display: block;
+  margin: 0 auto 25px;
+  border: 1px solid rgba(0, 0, 0, .5);
 }
 
 form {

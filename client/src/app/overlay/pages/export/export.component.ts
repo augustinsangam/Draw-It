@@ -116,15 +116,21 @@ export class ExportComponent implements AfterViewInit {
 
       const email = this.form.controls.email.value;
       const name = this.form.controls.name.value;
-      await this.communicationService.sendEmail(name, email, imageBlob);
+      try {
+        const response = await this.communicationService.sendEmail(
+          name, email, imageBlob);
+        this.dialogRef.close(response);
+      } catch (err) {
+        this.dialogRef.close(err);
+      }
     } else {
       this.exportDrawing(format);
+      this.dialogRef.close('Une fenêtre de sauvegarde apparaîtra sous peu');
     }
-    this.dialogRef.close();
   }
 
   protected onCancel(): void {
-    this.dialogRef.close();
+    this.dialogRef.close('Opération annulée');
   }
 
   ngAfterViewInit(): void {
