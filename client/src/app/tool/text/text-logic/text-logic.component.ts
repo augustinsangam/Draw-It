@@ -7,11 +7,11 @@ import {Point} from '../../shape/common/point';
 import {Rectangle} from '../../shape/common/rectangle';
 import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
 import {UndoRedoService} from '../../undo-redo/undo-redo.service';
-import {Cursor} from '../cursor';
-import {TextAlignement} from '../text-alignement';
-import {StateIndicators} from '../text-indicators';
-import {TextLine} from '../text-line';
-import {TextNavHandler} from '../text-nav-handler';
+import {Cursor} from '../text-classes/cursor';
+import {TextAlignement} from '../text-classes/text-alignement';
+import {StateIndicators} from '../text-classes/text-indicators';
+import {TextLine} from '../text-classes/text-line';
+import {TextNavHandler} from '../text-classes/text-nav-handler';
 import {TextService} from '../text.service';
 
 @Component({
