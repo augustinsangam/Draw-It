@@ -7,12 +7,12 @@ import {ToolService} from '../../tool.service';
 })
 export class FeatherpenService extends ToolService {
 
-  readonly MIN_LENGTH: number = 10;
-  readonly MAX_LENGTH: number = 200;
-  readonly DEFAULT_LENGTH: number = 100;
+  readonly MIN_LENGTH: number = 2;
+  readonly MAX_LENGTH: number = 100;
+  readonly DEFAULT_LENGTH: number = 20;
   readonly MAX_ANGLE: number = 180;
   readonly MIN_ANGLE: number = 0;
-  readonly DEFAULT_ANGLE: number = 5;
+  readonly DEFAULT_ANGLE: number = 20;
   readonly OFFSET_ANGLE: number = 15;
   readonly PI_DEG: number = 180;
 
