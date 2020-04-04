@@ -2,6 +2,7 @@ import {Component, ElementRef, Renderer2, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSlider} from '@angular/material/slider';
 import {ColorService} from '../../../color/color.service';
+import {Point} from '../../../shape/common/point';
 import {ToolPanelDirective} from '../../../tool-panel/tool-panel.directive';
 import {FeatherpenService} from '../featherpen.service';
 
@@ -43,7 +44,7 @@ export class FeatherpenPanelComponent extends ToolPanelDirective {
   }
 
   ngOnInit(): void {
-    console.log('created!');
+    // this.service.obs.subscribe(this.updatePreview);
   }
 
   ngAfterViewInit(): void {
@@ -55,7 +56,7 @@ export class FeatherpenPanelComponent extends ToolPanelDirective {
     this.renderer.setAttribute(
       this.prevPathElRef.nativeElement,
       'd',
-      this.service.previewCentered()
+      this.service.pathCentered(new Point(170, 100))
     );
   }
 
@@ -64,7 +65,6 @@ export class FeatherpenPanelComponent extends ToolPanelDirective {
       lengthFormField: this.lengthSlider.value
     });
     this.service.length = this.lengthSlider.value as number;
-
     this.updatePreview();
   }
 
@@ -73,7 +73,6 @@ export class FeatherpenPanelComponent extends ToolPanelDirective {
       angleFormField: this.angleSlider.value
     });
     this.service.angle = this.angleSlider.value as number;
-
     this.updatePreview();
   }
 }

@@ -18,12 +18,13 @@
     <mat-slider min="{{this.service.MIN_ANGLE}}" max="{{this.service.MAX_ANGLE}}" step=1
                 (input)="onAngleChange()"
                 (change)="onAngleChange()"
+                value="{{service.angle}}"
                 formControlName="angleSlider"
                 #angleSlider>
     </mat-slider>
     <mat-form-field>
-      <input readonly matInput formControlName="angleFormField" />
-      <span matSuffix>px</span>
+      <input readonly matInput formControlName="angleFormField" value="{{service.angle}}" />
+      <span matSuffix>°</span>
     </mat-form-field>
   </div>
 </form>
@@ -35,7 +36,7 @@
     stroke="#FFFFFF" stroke-width="1px">
   </rect>
   <path d =''
-        [ngStyle]="{'stroke': this.colorService.primaryColor}"
+        [ngStyle]="{'stroke': this.colorService.primaryColor, 'stroke-width': '2'}"
         #prevPath >
   </path>
 </svg>
