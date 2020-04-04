@@ -1,54 +1,49 @@
 :host {
-  display: grid;
-  place-items: center;
-  height: 100%;
-  background-color: transparent;
-}
-
-main {
-  text-align: center;
-  background-color: transparent;
-}
-
-img {
   display: block;
+  width: 70%;
   margin: auto;
+}
+
+h1 {
+  text-align: center;
+}
+
+svg {
+  display: block;
+  margin: 0 auto 25px;
+  border: 1px solid rgba(0, 0, 0, .5);
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.box {
+  flex: 50%;
+  padding: 5px 15px;
+  box-sizing: border-box;
+}
+
+.full {
+  flex: 100%;
+}
+
+.block-center {
+  margin: auto;
+  width: min-content;
+}
+
+mat-form-field {
+  display: block;
+}
+
+mat-radio-button {
+  margin: 5px 0;
 }
 
 button {
   display: block;
-  margin: 10px;
-  width: 30vh;
-}
-
-.filterOption{
-  margin-bottom: 7px;
-}
-
-.col {
-  padding: 20px;
-}
-
-.filters{
-  padding-right: 100px;
-}
-
-.option {
-  display : block;
-  float: left;
-}
-
-#export-buttons {
-  margin: auto;
-}
-
-mat-form-field {
-  width: 400px;
-}
-
-mat-radio-button {
-  margin-bottom: 10px;
-}
-td {
-  float: right;
+  margin: 0 auto;
+  padding: 0 25px;
 }

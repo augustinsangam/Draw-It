@@ -1,7 +1,8 @@
 
 import { AfterViewInit, Component, ElementRef, Optional, Renderer2, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MatRadioChange } from '@angular/material';
+import { MatButtonToggleChange, MatDialogRef, MatRadioChange } from '@angular/material';
+import { CommunicationService } from 'src/app/communication/communication.service';
 import { SvgToCanvas } from 'src/app/svg-to-canvas/svg-to-canvas';
 import { SvgShape } from 'src/app/svg/svg-shape';
 import { SvgService } from 'src/app/svg/svg.service';
@@ -24,6 +25,11 @@ export enum FormatChoice {
   Jpeg = 'JPEG',
 }
 
+enum ExportType {
+  LOCAL = 'local',
+  EMAIL = 'email',
+}
+
 @Component({
   selector: 'app-export',
   templateUrl: './export.component.html',
@@ -41,6 +47,7 @@ export class ExportComponent implements AfterViewInit {
   protected pictureView: SVGImageElement;
   private filtersChooser: Map<string, string>;
   protected form: FormGroup;
+  protected exportType: ExportType;
 
   static validator(control: FormControl): null | { spaceError: { value: string } } {
     const input = (control.value as string).trim();
@@ -51,16 +58,18 @@ export class ExportComponent implements AfterViewInit {
     return { spaceError: { value: 'No whitespace allowed' } };
   }
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(private readonly communicationService: CommunicationService,
+              private formBuilder: FormBuilder,
               @Optional() public dialogRef: MatDialogRef<ExportComponent>,
               private renderer: Renderer2,
               private filterService: FilterService,
               private svgService: SvgService
   ) {
-
-    this.filtersChooser = new Map<string, string>();
+    this.exportType = ExportType.LOCAL;
+    this.filtersChooser = new Map();
     this.form = this.formBuilder.group({
       name: ['', [Validators.required, ExportComponent.validator]],
+      email: [{value: '', disabled: true}],
       filter: [FilterChoice.None, [Validators.required]],
       format: [FormatChoice.Png, [Validators.required]]
     });
@@ -89,13 +98,39 @@ export class ExportComponent implements AfterViewInit {
     this.createView(String($change.value));
   }
 
-  protected onConfirm(): void {
-    this.exportDrawing(this.form.controls.format.value);
-    this.dialogRef.close();
+  private async parseToBase64(format: string): Promise<string> {
+    if (format as FormatChoice === FormatChoice.Svg) {
+      return `data:image/svg+xml,${encodeURIComponent(this.serializeSVG())}`;
+    }
+
+    const svgToCanvas = new SvgToCanvas(this.innerSVG, this.svgService.shape, this.renderer);
+    const canvas = await svgToCanvas.getCanvas();
+    return canvas.toDataURL(`image/${format}`);
+  }
+
+  protected async onConfirm(): Promise<void> {
+    const format = this.form.controls.format.value;
+    if (this.exportType === ExportType.EMAIL) {
+      const imageBase64 = await this.parseToBase64(format);
+      const imageBlob = this.dataURItoBlob(imageBase64);
+
+      const email = this.form.controls.email.value;
+      const name = this.form.controls.name.value;
+      try {
+        const response = await this.communicationService.sendEmail(
+          name, email, imageBlob);
+        this.dialogRef.close(response);
+      } catch (err) {
+        this.dialogRef.close(err);
+      }
+    } else {
+      this.exportDrawing(format);
+      this.dialogRef.close('Une fenêtre de sauvegarde apparaîtra sous peu');
+    }
   }
 
   protected onCancel(): void {
-    this.dialogRef.close();
+    this.dialogRef.close('Opération annulée');
   }
 
   ngAfterViewInit(): void {
@@ -216,5 +251,36 @@ export class ExportComponent implements AfterViewInit {
     this.renderer.setAttribute(rect, 'width', String(this.svgShape.width));
     this.renderer.setAttribute(rect, 'fill', this.svgShape.color);
     return rect;
+  }
+
+  protected onExportTypeChange({value}: MatButtonToggleChange): void {
+    this.exportType = value;
+    const input = this.form.get('email');
+    if (input == null) {
+      return;
+    }
+    if (value === ExportType.EMAIL) {
+      input.setValidators([Validators.required, Validators.email]);
+      input.enable();
+    } else {
+      input.disable();
+    }
+  }
+
+  // stackoverflow.com/a/12300351
+  private dataURItoBlob(dataURI: string) {
+    const byteString = atob(dataURI.split(',')[1]);
+
+    const mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    const arrBuf = new ArrayBuffer(byteString.length);
+
+    const byteArr = new Uint8Array(arrBuf);
+
+    for (let i = 0; i < byteString.length; ++i) {
+      byteArr[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([arrBuf], {type: mime});
   }
 }

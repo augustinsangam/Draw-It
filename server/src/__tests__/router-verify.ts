@@ -82,33 +82,32 @@ describe('router: verify', () => {
 	});
 
 	it('#verifyID should invalidate NaN', () => {
-		const possibleId = router['verifyID']('.');
-		chai.expect(possibleId.err).not.be.undefined;
+		const idOrError = router['verifyID']('.');
+		chai.expect(idOrError).to.be.an('error');
 	});
 
 	it('#verifyID should invalidate Infinity', () => {
-		const possibleId = router['verifyID']('Infinity');
-		chai.expect(possibleId.err).not.be.undefined;
+		const idOrError = router['verifyID']('Infinity');
+		chai.expect(idOrError).to.be.an('error');
 	});
 
 	it('#verifyID should invalidate decimal', () => {
-		const possibleId = router['verifyID']('.42');
-		chai.expect(possibleId.err).not.be.undefined;
+		const idOrError = router['verifyID']('.42');
+		chai.expect(idOrError).to.be.an('error');
 	});
 
 	it('#verifyID should invalidate zero', () => {
-		const possibleId = router['verifyID']('0');
-		chai.expect(possibleId.err).not.be.undefined;
+		const idOrError = router['verifyID']('0');
+		chai.expect(idOrError).to.be.an('error');
 	});
 
 	it('#verifyID should invalidate negative', () => {
-		const possibleId = router['verifyID']('-42');
-		chai.expect(possibleId.err).not.be.undefined;
+		const idOrError = router['verifyID']('-42');
+		chai.expect(idOrError).to.be.an('error');
 	});
 
 	it(`#verifyID should validate ${ANSWER_TO_LIFE}`, () => {
-		const possibleId = router['verifyID'](ANSWER_TO_LIFE.toString());
-		chai.expect(possibleId.err).be.undefined;
-		chai.expect(possibleId.id).to.equal(ANSWER_TO_LIFE);
+		const idOrError = router['verifyID'](ANSWER_TO_LIFE.toString());
+		chai.expect(idOrError).to.equal(ANSWER_TO_LIFE);
 	});
 });

@@ -1,3 +1,5 @@
+import { format } from 'url';
+
 const ANSWER_TO_LIFE = 42;
 
 const COLORS = {
@@ -35,14 +37,38 @@ const COLORS = {
 };
 
 enum ContentType {
+	JSON = 'application/json',
 	OCTET_STREAM = 'application/octet-stream',
 	PLAIN_UTF8 = 'text/plain; charset=utf-8',
 }
 
-const ERRORS = {
-	nullCollection: new Error('collection is null or undefined'),
-	nullDb: new Error('database is null or undefined'),
+const EMAIL_API = {
+	headers: {
+		count: 'X-RateLimit-Remaining',
+		key: 'X-Team-Key',
+		max: 'X-RateLimit-Limit',
+	},
+	url: format({
+		hostname: 'log2990.step.polymtl.ca',
+		pathname: '/email',
+		protocol: 'https',
+		query: {
+			address_validation: true,
+			dry_run: true, // TODO: remove when API fixed
+		}
+	}),
 };
+
+const ERRORS = {
+	reposneNotJson: new Error('Réponse de l’API n’est pas du JSON'),
+	nullCollection: new Error('La collection est nulle ou indéfinie'),
+	nullDb: new Error('La base de données est nulle ou indéfinie'),
+};
+
+// Values MUST be in lowercase
+enum Header {
+	CONTENT_TYPE = 'content-type',
+}
 
 const promisifiedTimeout = async (timeout: number): Promise<void> =>
 	new Promise((resolve) => setTimeout(resolve, timeout));
@@ -69,6 +95,7 @@ const TIMEOUT = 1500;
 const TYPES = {
 	Application: Symbol.for('Application'),
 	Database: Symbol.for('Database'),
+	Email: Symbol.for('Email'),
 	Router: Symbol.for('Router'),
 	Server: Symbol.for('Server'),
 };
@@ -77,7 +104,9 @@ export {
 	ANSWER_TO_LIFE,
 	COLORS,
 	ContentType,
+	EMAIL_API,
 	ERRORS,
+	Header,
 	promisifiedTimeout,
 	StatusCode,
 	TextLen,
