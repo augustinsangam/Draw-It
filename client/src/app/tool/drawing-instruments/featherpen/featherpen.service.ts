@@ -43,7 +43,7 @@ export class FeatherpenService extends ToolService {
     return `M ${point.x} ${point.y} L ${topPoint.x} ${topPoint.y} L ${bottomPoint.x} ${bottomPoint.y}`;
   }
 
-  toRadians(angleDeg: number): number {
+  private toRadians(angleDeg: number): number {
     return angleDeg * Math.PI / this.PI_DEG;
   }
 
@@ -51,10 +51,10 @@ export class FeatherpenService extends ToolService {
     const oldAngle = this.angle;
 
     if (wheelEv.altKey) {
-      this.angle = wheelEv.deltaY > 0 ? (this.angle + 1) % this.MAX_ANGLE :
+      this.angle = wheelEv.deltaY < 0 ? (this.angle + 1) % this.MAX_ANGLE :
         (this.angle - 1) % this.PI_DEG;
     } else {
-      this.angle = wheelEv.deltaY > 0 ? (this.angle + this.OFFSET_ANGLE) % this.MAX_ANGLE :
+      this.angle = wheelEv.deltaY < 0 ? (this.angle + this.OFFSET_ANGLE) % this.MAX_ANGLE :
         (this.angle - this.OFFSET_ANGLE) % this.PI_DEG;
     }
 

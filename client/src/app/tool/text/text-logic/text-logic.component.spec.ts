@@ -17,7 +17,7 @@ const createClickMouseEvent = (event: string): MouseEvent => {
 };
 
 // tslint:disable:no-string-literal no-magic-numbers no-any max-file-line-count
-fdescribe('TextLogicComponent', () => {
+describe('TextLogicComponent', () => {
   let component: TextLogicComponent;
   let fixture: ComponentFixture<TextLogicComponent>;
 

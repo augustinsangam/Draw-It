@@ -13,7 +13,7 @@ const createLine = (sentence: string) => {
   } as TextLine;
 };
 
-fdescribe('TextService', () => {
+describe('TextService', () => {
   let service: TextService;
 
   beforeEach(() => {

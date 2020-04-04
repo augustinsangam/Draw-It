@@ -6,7 +6,7 @@ import {Cursor} from './cursor';
 import {TextAlignement} from './text-alignement';
 
 // tslint:disable:no-magic-numbers no-string-literal no-any
-fdescribe('Cursor', () => {
+describe('Cursor', () => {
   let cursor: Cursor;
   let setAttributeWasCalled: boolean;
   let removeWasCalled: boolean;

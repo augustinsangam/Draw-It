@@ -2,6 +2,7 @@ import {Component, OnDestroy, OnInit, Renderer2} from '@angular/core';
 import {ColorService} from '../../../color/color.service';
 import {Point} from '../../../shape/common/point';
 import {ToolLogicDirective} from '../../../tool-logic/tool-logic.directive';
+import {UndoRedoService} from '../../../undo-redo/undo-redo.service';
 import {FeatherpenService} from '../featherpen.service';
 
 @Component({
@@ -20,11 +21,24 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
 
   constructor(private renderer: Renderer2,
               private readonly service: FeatherpenService,
-              private readonly colorService: ColorService) {
+              private readonly colorService: ColorService,
+              private readonly undoRedoService: UndoRedoService) {
     super();
     this.onDrag = false;
     this.element = undefined as unknown as SVGElement;
     this.currentPath = '';
+    this.undoRedoService.resetActions();
+    this.undoRedoService.setPreUndoAction({
+      enabled: true,
+      overrideDefaultBehaviour: false,
+      overrideFunctionDefined: true,
+      overrideFunction: () => {
+        if (this.onDrag) {
+          this.onMouseUp();
+          this.element.remove();
+        }
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -72,6 +86,7 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
 
   ngOnDestroy(): void {
     this.listeners.forEach((listener) => listener());
+    this.undoRedoService.resetActions();
   }
 
   private onMouseDown(mouseEv: MouseEvent): void {
@@ -97,9 +112,11 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
   }
 
   private onMouseUp(): void {
-    this.onDrag = false;
-    this.element = undefined as unknown as SVGElement;
-    this.currentPath = '';
+    if (this.onDrag) {
+      this.onDrag = false;
+      this.undoRedoService.saveState();
+      this.currentPath = '';
+    }
   }
 
   private onScroll(wheelEv: WheelEvent): void {
@@ -110,7 +127,7 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
         oldAngle,
         this.service.angle,
         new Point(wheelEv.offsetX, wheelEv.offsetY),
-        wheelEv.deltaY > 0
+        wheelEv.deltaY < 0
       );
       this.currentPath = `${this.currentPath} ${pathToAdd}`;
       this.renderer.setAttribute(this.element, 'd', `${this.currentPath}`);
