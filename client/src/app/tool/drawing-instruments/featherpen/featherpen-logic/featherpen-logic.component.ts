@@ -104,9 +104,14 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
 
   private onScroll(wheelEv: WheelEvent): void {
     wheelEv.preventDefault();
-    const oldAngle = this.service.incrementAngle(wheelEv);
+    const oldAngle = this.service.updateAngle(wheelEv);
     if (this.onDrag) {
-      const pathToAdd = this.service.interpolate(oldAngle, this.service.angle, new Point(wheelEv.offsetX, wheelEv.offsetY));
+      const pathToAdd = this.service.interpolate(
+        oldAngle,
+        this.service.angle,
+        new Point(wheelEv.offsetX, wheelEv.offsetY),
+        wheelEv.deltaY > 0
+      );
       this.currentPath = `${this.currentPath} ${pathToAdd}`;
       this.renderer.setAttribute(this.element, 'd', `${this.currentPath}`);
     }

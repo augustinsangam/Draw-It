@@ -2,6 +2,7 @@ import {Component, ElementRef, Renderer2, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSlider} from '@angular/material/slider';
 import {ColorService} from '../../../color/color.service';
+import {Dimension} from '../../../shape/common/dimension';
 import {Point} from '../../../shape/common/point';
 import {ToolPanelDirective} from '../../../tool-panel/tool-panel.directive';
 import {FeatherpenService} from '../featherpen.service';
@@ -27,6 +28,7 @@ export class FeatherpenPanelComponent extends ToolPanelDirective {
   }) private prevPathElRef: ElementRef<SVGElement>;
 
   private featherpenForm: FormGroup;
+  private readonly previewDimensions: Dimension;
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: FeatherpenService,
@@ -34,7 +36,7 @@ export class FeatherpenPanelComponent extends ToolPanelDirective {
               private readonly formBuilder: FormBuilder,
               private renderer: Renderer2) {
     super(elementRef);
-
+    this.previewDimensions = {width: 340, height: 200};
     this.featherpenForm = this.formBuilder.group({
       lengthFormField: [this.service.length, [Validators.required]],
       lengthSlider: [this.service.length, []],
@@ -56,7 +58,7 @@ export class FeatherpenPanelComponent extends ToolPanelDirective {
     this.renderer.setAttribute(
       this.prevPathElRef.nativeElement,
       'd',
-      this.service.pathCentered(new Point(170, 100))
+      this.service.pathCentered(new Point(this.previewDimensions.width / 2, this.previewDimensions.height / 2))
     );
   }
 
