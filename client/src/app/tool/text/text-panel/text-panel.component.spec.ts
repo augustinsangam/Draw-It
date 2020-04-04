@@ -18,7 +18,7 @@ import {TextAlignement} from '../text-classes/text-alignement';
 import { TextPanelComponent } from './text-panel.component';
 
 // tslint:disable:no-string-literal no-magic-numbers
-fdescribe('TextPanelComponent', () => {
+describe('TextPanelComponent', () => {
   let component: TextPanelComponent;
   let fixture: ComponentFixture<TextPanelComponent>;
 

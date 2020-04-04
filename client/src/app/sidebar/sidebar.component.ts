@@ -90,6 +90,11 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
   })
   protected bucketElRef: ElementRef<HTMLElement>;
 
+  @ViewChild('plume', {
+    static: false,
+  })
+  protected featherpenElRef: ElementRef<HTMLElement>;
+
   @Output() protected documentationEvent: EventEmitter<null>;
   @Output() protected exportEvent: EventEmitter<null>;
   @Output() protected saveEvent: EventEmitter<null>;
@@ -123,6 +128,7 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
     this.toolToElRef[Tool.Brush]      = this.brushElRef;
     this.toolToElRef[Tool.Ellipse]    = this.ellipseElRef;
     this.toolToElRef[Tool.Eraser]     = this.eraserElRef;
+    this.toolToElRef[Tool.FeatherPen] = this.featherpenElRef;
     this.toolToElRef[Tool.Grid]       = this.gridElRef;
     this.toolToElRef[Tool.Line]       = this.lineElRef;
     this.toolToElRef[Tool.Pencil]     = this.pencilElRef;

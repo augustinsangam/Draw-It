@@ -1,0 +1,41 @@
+<h1 xmlns="http://www.w3.org/1999/html">Plume</h1>
+<form [formGroup]="featherpenForm">
+  <p>Longeur</p>
+  <div class="length">
+    <mat-slider min="{{this.service.MIN_LENGTH}}" max="{{this.service.MAX_LENGTH}}" step=1
+                (input)="onLengthChange()"
+                (change)="onLengthChange()"
+                formControlName="lengthSlider"
+                #lengthSlider>
+    </mat-slider>
+    <mat-form-field>
+      <input readonly matInput formControlName="lengthFormField" />
+      <span matSuffix>px</span>
+    </mat-form-field>
+  </div>
+  <p>Angle</p>
+  <div class="angle">
+    <mat-slider min="{{this.service.MIN_ANGLE}}" max="{{this.service.MAX_ANGLE}}" step=1
+                (input)="onAngleChange()"
+                (change)="onAngleChange()"
+                value="{{service.angle}}"
+                formControlName="angleSlider"
+                #angleSlider>
+    </mat-slider>
+    <mat-form-field>
+      <input readonly matInput formControlName="angleFormField" value="{{service.angle}}" />
+      <span matSuffix>°</span>
+    </mat-form-field>
+  </div>
+</form>
+<svg [attr.width]="previewDimensions.width + 20" [attr.height]="previewDimensions.height">
+  <rect
+    [ngStyle]="{'fill': colorService.backgroundColor, 'stroke': 'rgba(255,255,255,1)', 'stroke-width': '3px'}"
+    [attr.width]="previewDimensions.width" [attr.height]="previewDimensions.height" x="0" y="0"
+    stroke="#FFFFFF" stroke-width="1px">
+  </rect>
+  <path d =''
+        [ngStyle]="{'stroke': this.colorService.primaryColor, 'stroke-width': '2'}"
+        #prevPath >
+  </path>
+</svg>

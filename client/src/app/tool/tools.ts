@@ -38,6 +38,12 @@ import {
   EraserPanelComponent
 } from './eraser/eraser-panel/eraser-panel.component';
 import {
+  FeatherpenLogicComponent
+} from './drawing-instruments/featherpen/featherpen-logic/featherpen-logic.component';
+import {
+  FeatherpenPanelComponent
+} from './drawing-instruments/featherpen/featherpen-panel/featherpen-panel.component';
+import {
   GridLogicComponent
 } from './grid/grid-logic/grid-logic.component';
 import {
@@ -110,6 +116,8 @@ TOOL_MANAGER.set(Tool.Ellipse,
   [EllipsePanelComponent, EllipseLogicComponent]);
 TOOL_MANAGER.set(Tool.Eraser,
   [EraserPanelComponent, EraserLogicComponent]);
+TOOL_MANAGER.set(Tool.FeatherPen,
+  [FeatherpenPanelComponent, FeatherpenLogicComponent]);
 TOOL_MANAGER.set(Tool.Grid,
   [GridPanelComponent, GridLogicComponent]);
 TOOL_MANAGER.set(Tool.Line,

@@ -10,7 +10,7 @@ const createLine = (sentence: string, index: number) => {
 };
 
 // tslint:disable:no-magic-numbers no-string-literal
-fdescribe('TextNavHandler', () => {
+describe('TextNavHandler', () => {
   let textNavClass: TextNavHandler;
   let moveWasCalled: boolean;
 
