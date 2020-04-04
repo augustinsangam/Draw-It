@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {Subject} from 'rxjs';
 import {Point} from '../../shape/common/point';
 import {ToolService} from '../../tool.service';
 
@@ -7,7 +8,7 @@ import {ToolService} from '../../tool.service';
 })
 export class FeatherpenService extends ToolService {
 
-  readonly MIN_LENGTH: number = 2;
+  readonly MIN_LENGTH: number = 10;
   readonly MAX_LENGTH: number = 100;
   readonly DEFAULT_LENGTH: number = 20;
   readonly MAX_ANGLE: number = 180;
@@ -19,11 +20,13 @@ export class FeatherpenService extends ToolService {
   length: number;
   angle: number;
   private readonly angles: number[];
+  emitter: Subject<number>;
 
   constructor() {
     super();
     this.length = this.DEFAULT_LENGTH;
     this.angle = this.DEFAULT_ANGLE;
+    this.emitter = new Subject();
     this.angles = [];
     let i = 0;
     while (i <= this.MAX_ANGLE) {

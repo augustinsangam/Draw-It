@@ -44,6 +44,7 @@ export class FeatherpenPanelComponent extends ToolPanelDirective {
       angleFormField: [this.service.angle, [Validators.required]],
       angleSlider: [this.service.angle, []],
     });
+    this.service.emitter.subscribe(() => this.updatePreview());
   }
 
   ngAfterViewInit(): void {

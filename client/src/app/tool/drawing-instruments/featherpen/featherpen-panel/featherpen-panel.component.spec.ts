@@ -16,7 +16,7 @@ import {ColorPickerContentComponent} from '../../../color/color-panel/color-pick
 import {ColorPickerItemComponent} from '../../../color/color-panel/color-picker-item/color-picker-item.component';
 import { FeatherpenPanelComponent } from './featherpen-panel.component';
 
-// tslint:disable:no-magic-numbers no-string-literal
+// tslint:disable:no-magic-numbers no-string-literal no-any
 fdescribe('FeatherpenPanelComponent', () => {
   let component: FeatherpenPanelComponent;
   let fixture: ComponentFixture<FeatherpenPanelComponent>;
@@ -75,6 +75,12 @@ fdescribe('FeatherpenPanelComponent', () => {
   it('#updatePreview should call setAttribute of renderer', () => {
     const spy = spyOn(component['renderer'], 'setAttribute');
     component['updatePreview']();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#the update preview method should be called when the service observable emits', () => {
+    const spy = spyOn<any>(component, 'updatePreview');
+    component['service'].emitter.next();
     expect(spy).toHaveBeenCalled();
   });
 
