@@ -1,10 +1,13 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { Point } from '../../shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
+import { MultipleSelection } from '../multiple-selection';
 import { SelectionService } from '../selection.service';
+import { Zone } from '../zone';
 import { BasicSelectionType } from './element-selected-type';
 import { SelectionLogicBase } from './selection-logic-base';
 import * as Util from './selection-logic-util';
+import { Transform } from './transform';
 
 const NOT_FOUND = -1;
 const MINIMUM_SCALE = 5;
@@ -17,10 +20,9 @@ export class SelectionLogicComponent
   extends SelectionLogicBase implements OnInit {
 
   private mouseHandlers: Map<string, Map<string, Util.MouseEventCallBack>>;
-
+  private pasteTranslation: number;
   private baseVisualisationRectangleDimension: {width: number, height: number} = { width: 0, height: 0 };
   private scaledRectangleDimension: { width: number, height: number } = { width: 0, height: 0 };
-
 
   constructor(protected renderer: Renderer2,
               protected undoRedoService: UndoRedoService,
@@ -28,6 +30,7 @@ export class SelectionLogicComponent
   ) {
     super(renderer, undoRedoService, service);
     this.initialiseHandlers();
+    this.pasteTranslation = 0;
   }
 
   private initialiseHandlers(): void {
@@ -42,8 +45,9 @@ export class SelectionLogicComponent
           this.mouse.left.currentPoint =
             new Point($event.offsetX, $event.offsetY);
           this.mouse.left.mouseIsDown = true;
+          const target = Util.SelectionLogicUtil.getRealTarget($event);
           this.mouse.left.selectedElement = this.elementSelectedType(
-            $event.target as SVGElement
+            target as SVGElement
           );
           this.mouse.left.onDrag = this.isInTheVisualisationZone(
             $event.offsetX,
@@ -52,12 +56,9 @@ export class SelectionLogicComponent
           this.mouse.left.onResize = Util.CIRCLES.indexOf(
             this.mouse.left.selectedElement as Util.CircleType
           ) !== NOT_FOUND;
-          if (this.mouse.left.onResize) {
-            console.log(`Resize ${this.mouse.left.selectedElement}`);
-          }
-          if (this.svgStructure.drawZone.contains($event.target as SVGElement)
-            && !this.service.selectedElements.has($event.target as SVGElement)) {
-            this.applySingleSelection($event.target as SVGElement);
+          if (this.svgStructure.drawZone.contains(target as SVGElement)
+            && !this.service.selectedElements.has(target as SVGElement)) {
+            this.applySingleSelection(target as SVGElement);
           }
         }],
         // tslint:disable-next-line: cyclomatic-complexity
@@ -145,9 +146,10 @@ export class SelectionLogicComponent
             return;
           }
           if (this.mouse.left.startPoint.equals(this.mouse.left.endPoint)) {
-            const elementType = this.elementSelectedType($event.target as SVGElement);
+            const target = Util.SelectionLogicUtil.getRealTarget($event);
+            const elementType = this.elementSelectedType(target as SVGElement);
             if (elementType === BasicSelectionType.DRAW_ELEMENT) {
-              this.applySingleSelection($event.target as SVGElement);
+              this.applySingleSelection(target as SVGElement);
             } else if (elementType === BasicSelectionType.NOTHING) {
               this.deleteVisualisation();
             }
@@ -177,8 +179,9 @@ export class SelectionLogicComponent
             this.mouse.right.currentPoint =
               new Point($event.offsetX, $event.offsetY);
             this.mouse.right.mouseIsDown = true;
+            const target = Util.SelectionLogicUtil.getRealTarget($event);
             this.mouse.right.selectedElement = this.elementSelectedType(
-              $event.target as SVGElement
+              target as SVGElement
             );
             this.selectedElementsFreezed = new Set(this.service.selectedElements);
           }
@@ -205,25 +208,90 @@ export class SelectionLogicComponent
         }],
         ['contextmenu', ($event: MouseEvent) => {
           $event.preventDefault();
-          const type = this.elementSelectedType($event.target as SVGElement);
+          const target = Util.SelectionLogicUtil.getRealTarget($event);
+          const type = this.elementSelectedType(target);
           if (type === BasicSelectionType.DRAW_ELEMENT) {
-            this.applySingleInversion($event.target as SVGElement);
+            this.applySingleInversion(target);
           }
         }]
       ])],
     ]);
   }
 
+  private onCopy(): void {
+    if (this.service.selectedElements.size !== 0) {
+      this.service.clipboard = Util.SelectionLogicUtil.clone(
+        this.service.selectedElements
+      );
+      this.pasteTranslation = Util.PASTE_TRANSLATION;
+    }
+  }
+
+  private onCut(): void {
+    this.onCopy();
+    this.onDelete();
+  }
+
+  private onPaste(): void {
+    if (this.service.clipboard.size !== 0) {
+      const clipBoardCloned = Util.SelectionLogicUtil.clone(this.service.clipboard);
+      this.pasteElements(clipBoardCloned, false);
+    }
+  }
+
+  private onDelete(): void {
+    if (this.service.selectedElements.size !== 0) {
+      this.service.selectedElements.forEach((element) => {
+        element.remove();
+      });
+      this.deleteVisualisation();
+    }
+  }
+
+  private onDuplicate(): void {
+    const selectedElementsCloned = Util.SelectionLogicUtil.clone(this.service.selectedElements);
+    this.pasteElements(selectedElementsCloned, true);
+  }
+
+  private pasteElements(elements: Set<SVGElement>, isDuplicate: boolean): void {
+    if (isDuplicate) {
+      Transform.translateAll(elements, Util.PASTE_TRANSLATION, Util.PASTE_TRANSLATION, this.renderer);
+    } else {
+      Transform.translateAll(elements, this.pasteTranslation, this.pasteTranslation, this.renderer);
+    }
+    elements.forEach((element) => {
+      this.renderer.appendChild(this.svgStructure.drawZone, element);
+    });
+    this.applyMultipleSelection(undefined, undefined, elements);
+    if (!isDuplicate) {
+      this.pasteTranslation += Util.PASTE_TRANSLATION;
+    }
+    const selection = new MultipleSelection(elements, this.getSvgOffset(), undefined, undefined).getSelection();
+    const svgZone = new Zone(0, this.svgShape.width, 0, this.svgShape.height);
+    const selectionZone = new Zone(selection.points[0].x, selection.points[1].x, selection.points[0].y, selection.points[1].y);
+    if (!svgZone.intersection(selectionZone)[0]) {
+      this.service.selectedElements = new Set<SVGElement>();
+      this.renderer.removeChild(this.svgStructure.drawZone, elements.values().next().value);
+      const newTranslation = -this.pasteTranslation + Util.PASTE_TRANSLATION;
+      if (isDuplicate) {
+        Transform.translateAll(elements, - Util.PASTE_TRANSLATION, - Util.PASTE_TRANSLATION, this.renderer);
+      } else {
+        Transform.translateAll(elements, newTranslation, newTranslation, this.renderer);
+      }
+      elements.forEach((element) => {
+        this.renderer.appendChild(this.svgStructure.drawZone, element);
+      });
+      this.applyMultipleSelection(undefined, undefined, elements);
+      this.pasteTranslation = Util.PASTE_TRANSLATION;
+    }
+  }
+
   ngOnInit(): void {
     super.ngOnInit();
     [
-
       ['leftButton', ['mousedown', 'mousemove', 'mouseup', 'click']],
-
       ['rightButton', ['mousedown', 'mousemove', 'mouseup', 'contextmenu']],
-
       ['centerButton', ['wheel']]
-
     ].forEach((side: [string, string[]]) => {
       side[1].forEach((eventName: string) => {
         this.allListenners.push(
@@ -239,6 +307,19 @@ export class SelectionLogicComponent
     this.allListenners.push(
       this.renderer.listen(document, 'keyup',
         this.keyManager.handlers.keyup));
+
+    const subscriptionCopy = this.service.copy.asObservable().subscribe(() => this.onCopy());
+    const subscriptionCut = this.service.cut.asObservable().subscribe(() => this.onCut());
+    const subscriptionPaste = this.service.paste.asObservable().subscribe(() => this.onPaste());
+    const subcriptionDelete = this.service.delete.asObservable().subscribe(() => this.onDelete());
+    const subcriptionDuplicate = this.service.duplicate.asObservable().subscribe(() => this.onDuplicate());
+
+    this.allListenners.push(() => { subcriptionDelete.unsubscribe(); });
+    this.allListenners.push(() => { subscriptionPaste.unsubscribe(); });
+    this.allListenners.push(() => { subscriptionCut.unsubscribe(); });
+    this.allListenners.push(() => { subscriptionCopy.unsubscribe(); });
+    this.allListenners.push(() => { subcriptionDuplicate.unsubscribe(); });
+
   }
 
 }

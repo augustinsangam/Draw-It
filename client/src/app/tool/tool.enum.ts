@@ -6,14 +6,15 @@ export enum Tool {
   Brush,
   Eraser,
   Ellipse,
+  FeatherPen,
   Grid,
   Line,
   Pencil,
+  Pipette,
   Polygone,
   Rectangle,
-  Pipette,
   Selection,
   Text,
   _Len,
-  _None,
+  _None
 }

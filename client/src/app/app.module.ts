@@ -167,6 +167,8 @@ import {
 import {
   TextPanelComponent
 } from './tool/text/text-panel/text-panel.component';
+import { FeatherpenLogicComponent } from './tool/drawing-instruments/featherpen/featherpen-logic/featherpen-logic.component';
+import { FeatherpenPanelComponent } from './tool/drawing-instruments/featherpen/featherpen-panel/featherpen-panel.component';
 
 @NgModule({
   declarations: [
@@ -219,7 +221,9 @@ import {
     BucketPanelComponent,
     ColorBoxComponent,
     TextLogicComponent,
-    TextPanelComponent
+    TextPanelComponent,
+    FeatherpenLogicComponent,
+    FeatherpenPanelComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -276,7 +280,9 @@ import {
     GridPanelComponent,
     SaveComponent,
     TextLogicComponent,
-    TextPanelComponent
+    TextPanelComponent,
+    FeatherpenLogicComponent,
+    FeatherpenPanelComponent
   ],
   bootstrap: [
     AppComponent,

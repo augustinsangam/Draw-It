@@ -11,16 +11,10 @@ import { Offset } from '../offset';
 import { SelectionReturn } from '../selection-return';
 import { SelectionService } from '../selection.service';
 import { SingleSelection } from '../single-selection';
+import { Arrow } from './arrow';
 import { BasicSelectionType, ElementSelectedType } from './element-selected-type';
 import * as Util from './selection-logic-util';
 import { Transform } from './transform';
-
-enum Arrow {
-  Up = 'ArrowUp',
-  Down = 'ArrowDown',
-  Left = 'ArrowLeft',
-  Right = 'ArrowRight'
-}
 
 const NOT_FOUND = -1;
 
@@ -34,8 +28,6 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   protected rectangles: Util.SelectionRectangles;
   protected keyManager: Util.KeyManager;
 
-  protected debugCircle: SVGElement;
-
   constructor(protected renderer: Renderer2,
               protected undoRedoService: UndoRedoService,
               protected service: SelectionService) {
@@ -43,20 +35,13 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.allListenners = [];
     const action: PostAction = {
       functionDefined: true,
-      function: () => {
-        this.deleteVisualisation();
-      }
+      function: () => { this.deleteVisualisation(); }
     };
     this.undoRedoService.setPostUndoAction(action);
     this.undoRedoService.setPostRedoAction(action);
   }
 
   ngOnInit(): void {
-    // Debug
-    this.debugCircle = this.renderer.createElement('circle', this.svgNS);
-    this.renderer.appendChild(this.svgStructure.temporaryZone, this.debugCircle);
-    // Debug
-
     this.mouse = Util.SelectionLogicUtil.initialiseMouse();
     this.rectangles = Util.SelectionLogicUtil.initialiseRectangles(
       this.renderer, this.svgStructure.temporaryZone, this.svgNS);
@@ -66,69 +51,9 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     const subscription = this.service.selectAllElements.subscribe(() => {
       this.applyMultipleSelection();
     });
-    this.service.copy.subscribe(() => this.onCopy());
-    this.service.cut.subscribe(() => this.onCut());
-    this.service.paste.subscribe(() => this.onPaste());
-    this.service.delete.subscribe(() => this.onDelete());
-    this.service.duplicate.subscribe(() => this.onDuplicate());
     this.allListenners.push(() => subscription.unsubscribe());
     this.initialiseKeyManager();
     this.renderer.setStyle(this.svgStructure.root, 'cursor', 'default');
-  }
-
-  private onCopy(): void {
-    if (this.service.selectedElements.size !== 0) {
-      this.service.clipboard = this.clone(
-        this.service.selectedElements
-      );
-    }
-  }
-
-  private onCut(): void {
-    if (this.service.selectedElements.size !== 0) {
-      this.service.clipboard = this.clone(
-        this.service.selectedElements
-      );
-      this.service.selectedElements.forEach((element) => {
-        this.renderer.removeChild(this.svgStructure.drawZone, element);
-      });
-      this.deleteVisualisation();
-    }
-  }
-
-  private onPaste(): void {
-    if (this.service.clipboard.size !== 0) {
-      Transform.translateAll(this.service.clipboard, 30, 30, this.renderer);
-      const clipBoardCloned = this.clone(this.service.clipboard);
-      clipBoardCloned.forEach((element) => {
-        this.renderer.appendChild(this.svgStructure.drawZone, element);
-      });
-      this.applyMultipleSelection(undefined, undefined, clipBoardCloned);
-    }
-  }
-
-  private onDelete(): void {
-    if (this.service.selectedElements.size !== 0) {
-      this.service.selectedElements.forEach((element) => {
-        this.renderer.removeChild(this.svgStructure.drawZone, element);
-      });
-      this.deleteVisualisation();
-    }
-  }
-
-  private onDuplicate(): void {
-    if (this.service.selectedElements.size !== 0) {
-      this.onCopy();
-      this.onPaste();
-    }
-  }
-
-  private clone(elements: Set<SVGElement>): Set<SVGElement> {
-    const set = new Set<SVGElement>();
-    elements.forEach((element) => {
-      set.add(element.cloneNode(true) as SVGElement);
-    });
-    return set;
   }
 
   protected applySingleSelection(element: SVGElement): void {
@@ -160,10 +85,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     : SelectionReturn {
     this.service.selectedElements = new Set();
     if (elements === undefined) {
-      const allElements = Array.from(
-        this.svgStructure.drawZone.children
-      ) as SVGElement[];
-      elements = new Set(allElements);
+      elements = new Set(this.svgStructure.drawZone.children as unknown as Iterable<SVGElement>);
     }
     const multipleSelection = new MultipleSelection(
       elements, this.getSvgOffset(), startPoint, endPoint
@@ -204,10 +126,8 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     rectangleObject.setParameters(BackGroundProperties.None, StrokeProperties.Filled);
     rectangleObject.dragRectangle(startPoint, endPoint);
     rectangleObject.setCss({
-      strokeWidth: Util.RECTANGLE_STROKE,
-      strokeColor: color,
-      fillColor: 'none',
-      opacity: '0'
+      strokeWidth: Util.RECTANGLE_STROKE, strokeColor: color,
+      fillColor: 'none', opacity: '0'
     });
     this.renderer.setAttribute(element, 'stroke-dasharray', Util.DASH_ARRAY);
   }
@@ -236,6 +156,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.resetTranslate(this.rectangles.visualisation);
     this.deleteCircles();
     this.service.selectedElements.clear();
+    console.log('entre');
   }
 
   private deleteCircles(): void {
@@ -255,7 +176,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.resetTranslate(this.rectangles.inversion);
   }
 
-  private resetRectangle(element: SVGElement): void {
+  protected resetRectangle(element: SVGElement): void {
     this.renderer.setAttribute(element, 'width', '0');
     this.renderer.setAttribute(element, 'height', '0');
   }
@@ -283,7 +204,6 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     const point = this.svgStructure.root.createSVGPoint();
     const [dx, dy] = new Transform(this.rectangles.visualisation, this.renderer).getTransformTranslate();
     [point.x, point.y] = [x - dx, y - dy];
-    console.log((this.rectangles.visualisation as SVGGeometryElement).isPointInFill(point));
     return (this.rectangles.visualisation as SVGGeometryElement).isPointInFill(point);
   }
 
@@ -466,15 +386,13 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   protected findElementCenter(element: SVGElement): Point {
     const selection = new SingleSelection(element, this.getSvgOffset()).points();
-    const centerPoint = new Point(
+    return new Point(
       (selection[0].x + selection[1].x) / 2,
       (selection[0].y + selection[1].y) / 2
     );
-    Circle.set(centerPoint, this.renderer, this.debugCircle, Util.CIRCLE_RADIUS, 'red');
-    return centerPoint;
   }
 
-  private getSvgOffset(): Offset {
+  getSvgOffset(): Offset {
     const svgBoundingRect = this.svgStructure.root.getBoundingClientRect();
     return { top: svgBoundingRect.top, left: svgBoundingRect.left };
   }

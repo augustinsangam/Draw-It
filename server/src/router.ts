@@ -1,12 +1,17 @@
+import EmailValidator from 'email-validator';
 import express from 'express';
 import flatbuffers from 'flatbuffers';
+import { IncomingMessage } from 'http';
 import inversify from 'inversify';
 import log from 'loglevel';
 import mongodb from 'mongodb';
+import multer from 'multer';
+import { promisify } from 'util';
 
-import { COLORS, ContentType, StatusCode, TextLen, TYPES } from './constants';
+import { COLORS, ContentType, EMAIL_API, ERRORS, Header, StatusCode, TextLen, TYPES } from './constants';
 import { Database, Entry } from './database';
 import { Draw, DrawBuffer, Draws } from './data_generated';
+import { Email } from './email';
 
 interface Id {
 	id: number;
@@ -18,8 +23,13 @@ interface Id {
 class Router {
 	readonly router: express.Router;
 
-	constructor(@inversify.inject(TYPES.Database) private readonly db: Database) {
+	constructor(
+		@inversify.inject(TYPES.Database) private readonly db: Database,
+		@inversify.inject(TYPES.Email) private readonly email: Email,
+	) {
+		const upload = multer({ dest: 'uploads/' });
 		this.router = express.Router();
+		this.router.post('/send', upload.single('media'), this.sendEmail());
 		this.router.get('/draw', this.methodGet());
 		this.router.post('/draw', this.methodPost());
 		this.router.put('/draw/:id', this.methodPut());
@@ -53,24 +63,82 @@ class Router {
 		return null;
 	}
 
-	private verifyID(textID: string): Id {
-		const possibleId: Id = {
-			id: Number(textID),
-		};
+	private verifyID(textID: string): number | Error {
+		const id = Number(textID);
 
-		if (isNaN(possibleId.id)) {
-			possibleId.err = new Error(`ID “${textID}” n’est pas un nombre`);
-		} else if (!isFinite(possibleId.id)) {
-			possibleId.err = new Error(`ID “${textID}” ne doit pas être infini`);
-		} else if (!Number.isInteger(possibleId.id)) {
-			possibleId.err = new Error(`ID “${possibleId.id}” doit être un entier`);
-		} else if (possibleId.id < 1) {
-			possibleId.err = new Error(
-				`ID “${possibleId.id}” doit être suppérieur à zéro`,
-			);
+		if (isNaN(id)) {
+			return new Error(`ID “${textID}” n’est pas un nombre`);
 		}
 
-		return possibleId;
+		if (!isFinite(id)) {
+			return new Error(`ID “${textID}” ne doit pas être infini`);
+		}
+
+		if (!Number.isInteger(id)) {
+			return new Error(`ID “${id}” doit être un entier`);
+		}
+
+		if (id < 1) {
+			return new Error(`ID “${id}” doit être suppérieur à zéro`);
+		}
+
+		return id;
+	}
+
+	private sendEmail(): express.RequestHandler {
+		return async (req, res, next): Promise<void> => {
+			const recipient = req.body.recipient;
+			if (recipient == null || req.file == null) {
+				res.status(StatusCode.BAD_REQUEST).send('“recipient” ou “media” manquant');
+				return;
+			}
+
+			if (!EmailValidator.validate(recipient)) {
+				res.status(StatusCode.NOT_ACCEPTABLE).send('Courriel invalide');
+				return;
+			}
+
+			let resEmail: IncomingMessage;
+			try {
+				resEmail = await this.email.send(recipient, req.file);
+			} catch(err) {
+				return next(err);
+			}
+
+			const count = resEmail.headers[EMAIL_API.headers.count];
+			const max = resEmail.headers[EMAIL_API.headers.max];
+
+			switch (resEmail.statusCode) {
+			case StatusCode.OK:
+				res.status(StatusCode.OK);
+				res.send(`Courriel envoyé (${count}/${max})`);
+				return;
+			case StatusCode.ACCEPTED:
+				res.status(StatusCode.OK);
+				res.send(`Courriel probabablement envoyé (${count}/${max})`);
+				return;
+			default:
+				break;
+			}
+
+			if (resEmail.headers[Header.CONTENT_TYPE] !== ContentType.JSON) {
+				return next(ERRORS.reposneNotJson);
+			}
+
+			const chunks = new Array();
+			resEmail.on('data', chunks.push.bind(chunks));
+
+			await promisify(resEmail.on)('end');
+
+			const textResult = Buffer.concat(chunks).toString();
+			try {
+				const result = JSON.parse(textResult);
+				res.type(ContentType.PLAIN_UTF8);
+				res.status(StatusCode.NOT_ACCEPTABLE).send(result.error);
+			} catch (err) {
+				next(err);
+			}
+		};
 	}
 
 	private methodGet(): express.RequestHandler {
@@ -146,9 +214,9 @@ class Router {
 				return;
 			}
 
-			const possibleId = this.verifyID(req.params.id);
-			if (!!possibleId.err) {
-				res.status(StatusCode.BAD_REQUEST).send(possibleId.err.message);
+			const idOrError = this.verifyID(req.params.id);
+			if (idOrError instanceof Error) {
+				res.status(StatusCode.BAD_REQUEST).send(idOrError.message);
 				return;
 			}
 
@@ -161,7 +229,7 @@ class Router {
 			try {
 				await this.db.replace(
 					{
-						_id: possibleId.id,
+						_id: idOrError,
 						data: new mongodb.Binary(req.body),
 					},
 					true,
@@ -175,14 +243,14 @@ class Router {
 
 	private methodDelete(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
-			const possibleId = this.verifyID(req.params.id);
-			if (!!possibleId.err) {
-				res.status(StatusCode.BAD_REQUEST).send(possibleId.err.message);
+			const idOrError = this.verifyID(req.params.id);
+			if (idOrError instanceof Error) {
+				res.status(StatusCode.BAD_REQUEST).send(idOrError.message);
 				return;
 			}
 
 			try {
-				await this.db.delete({ _id: possibleId.id });
+				await this.db.delete({ _id: idOrError });
 			} catch (err) {
 				return next(err);
 			}

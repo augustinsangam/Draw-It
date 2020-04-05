@@ -155,7 +155,7 @@ export class OverlayService {
       this.openHomeDialog();
     } else if (option !== null) {
       this.createNewDraw(option as SvgShape);
-      
+
     }
   }
 
@@ -181,6 +181,20 @@ export class OverlayService {
       exportSaveDialogOptions
     );
     this.dialogRefs.export.disableClose = true;
+    this.dialogRefs.export.afterClosed().subscribe(
+      (reponseOrError: string | Error) => this.closeExportDialog(reponseOrError));
+  }
+
+  private closeExportDialog(reponseOrError: string | Error): void {
+    if (reponseOrError instanceof Error) {
+      this.snackBar.open(reponseOrError.message, 'Ok', {
+        duration: CONSTANTS.FAILURE_DURATION,
+      });
+    } else {
+      this.snackBar.open(reponseOrError, 'Ok', {
+        duration: CONSTANTS.SUCCES_DURATION,
+      });
+    }
   }
 
   openSaveDialog(): void {
@@ -266,7 +280,6 @@ export class OverlayService {
   }
 
   private getCommonDialogOptions(): MatDialogConfig {
-    console.log('valeuurrrrr ' + this.autoSave.verifyAvailability());
     return {
       width: '650px',
       height: '90%',

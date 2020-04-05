@@ -1,4 +1,4 @@
-// tslint:disable: no-any no-string-literal no-unused-expression
+// tslint:disable: no-any no-string-literal no-unused-expression ban-types no-non-null-assertion max-file-line-count
 // TSLint reports “expect(…).to.be.null;” (or true or false) as
 // wrong, even if the syntax is correct.
 // See https://www.chaijs.com/api/bdd/#method_ok
@@ -6,17 +6,38 @@
 import chai from 'chai';
 import express from 'express';
 import flatbuffers from 'flatbuffers';
+import { IncomingHttpHeaders } from 'http';
 import log from 'loglevel';
 import mongodb from 'mongodb';
 import sinon from 'sinon';
 import supertest from 'supertest';
 
 import { Application } from '../application';
-import { ANSWER_TO_LIFE, ContentType, StatusCode, TYPES } from '../constants';
+import {
+	ANSWER_TO_LIFE,
+	asyncTimeout,
+	ContentType,
+	EMAIL_API,
+	Header,
+	StatusCode,
+	TYPES,
+} from '../constants';
 import { Database, Entry } from '../database';
 import { Draw, Draws } from '../data_generated';
 import { myContainer } from '../inversify.config';
 import { Router } from '../router';
+
+class IncomingMessageMock {
+	// tslint:disable-next-line: typedef
+	static readonly events = new Map<string, Function>();
+	readonly headers: IncomingHttpHeaders;
+	constructor(readonly statusCode: number) {
+		this.headers = {};
+	}
+	on(event: string, listener: Function): void {
+		IncomingMessageMock.events.set(event, listener);
+	}
+}
 
 describe('router', () => {
 	let app: express.Express;
@@ -32,19 +53,153 @@ describe('router', () => {
 		log.setLevel('silent');
 	});
 
-	it('#methodGet should fail on db.all error', async () => {
-		const errMsg = 'foobar';
+	it('#methodSendEmail should fail if no recipient', async () =>
+		supertest(app)
+			.post('/send')
+			.expect(StatusCode.BAD_REQUEST)
+			.then());
 
-		const dbAllStub = sinon.stub(db, 'all');
-		dbAllStub.rejects(errMsg);
+	it('#methodSendEmail should fail if no media', async () =>
+		supertest(app)
+			.post('/send')
+			.field('recipient', 'foo@bar')
+			.expect(StatusCode.BAD_REQUEST)
+			.then());
+
+	it('#methodSendEmail should fail if invalid recipient', async () =>
+		supertest(app)
+			.post('/send')
+			.attach('media', 'package.json')
+			.field('recipient', 'foo@bar')
+			.expect(StatusCode.NOT_ACCEPTABLE)
+			.then());
+
+	it('#methodSendEmail should fail if not attach', async () => {
+		const emailSendStub = sinon.stub(router['email'], 'send');
+		emailSendStub.rejects('foobar');
 
 		app.use(Application['err']);
-		const res = await supertest(app)
-			.get('/draw')
+		return supertest(app)
+			.post('/send')
+			.attach('media', 'package.json')
+			.field('recipient', 'foo@example.com')
+			.expect(StatusCode.INTERNAL_SERVER_ERROR)
+			.then(emailSendStub.restore);
+	});
+
+	it('#methodSendEmail should fail backend fails w/o json', async () => {
+		const incomingMessageMock = new IncomingMessageMock(StatusCode.INTERNAL_SERVER_ERROR);
+		incomingMessageMock.headers[EMAIL_API.headers.count] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[EMAIL_API.headers.max] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[Header.CONTENT_TYPE] = ContentType.PLAIN_UTF8;
+
+		const emailSendStub = sinon.stub(router['email'], 'send');
+		emailSendStub.resolves(incomingMessageMock as any);
+
+		app.use(Application['err']);
+		return supertest(app)
+			.post('/send')
+			.attach('media', 'package.json')
+			.field('recipient', 'foo@example.com')
+			.expect(StatusCode.INTERNAL_SERVER_ERROR)
+			.then(emailSendStub.restore);
+	});
+
+	it('#methodSendEmail should fail backend fails with wrong json', async () => {
+		const incomingMessageMock = new IncomingMessageMock(StatusCode.INTERNAL_SERVER_ERROR);
+		incomingMessageMock.headers[EMAIL_API.headers.count] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[EMAIL_API.headers.max] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[Header.CONTENT_TYPE] = ContentType.JSON;
+
+		const emailSendStub = sinon.stub(router['email'], 'send');
+		emailSendStub.resolves(incomingMessageMock as any);
+
+		app.use(Application['err']);
+		const promise = supertest(app)
+			.post('/send')
+			.attach('media', 'package.json')
+			.field('recipient', 'foo@example.com')
 			.expect(StatusCode.INTERNAL_SERVER_ERROR)
 			.then();
 
-		dbAllStub.restore();
+		await asyncTimeout(ANSWER_TO_LIFE);
+		IncomingMessageMock.events.get('data')!(Buffer.from('{"error":}'));
+		await asyncTimeout(ANSWER_TO_LIFE);
+		IncomingMessageMock.events.get('end')!();
+
+		return promise.then(emailSendStub.restore);
+	});
+
+	it('#methodSendEmail should fail backend fails', async () => {
+		const incomingMessageMock = new IncomingMessageMock(StatusCode.INTERNAL_SERVER_ERROR);
+		incomingMessageMock.headers[EMAIL_API.headers.count] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[EMAIL_API.headers.max] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[Header.CONTENT_TYPE] = ContentType.JSON;
+
+		const emailSendStub = sinon.stub(router['email'], 'send');
+		emailSendStub.resolves(incomingMessageMock as any);
+
+		const promise = supertest(app)
+			.post('/send')
+			.attach('media', 'package.json')
+			.field('recipient', 'foo@example.com')
+			.expect(StatusCode.NOT_ACCEPTABLE)
+			.expect(Header.CONTENT_TYPE, ContentType.PLAIN_UTF8)
+			.then();
+
+		await asyncTimeout(ANSWER_TO_LIFE);
+		IncomingMessageMock.events.get('data')!(Buffer.from('{"error": "foobar"}'));
+		await asyncTimeout(ANSWER_TO_LIFE);
+		IncomingMessageMock.events.get('end')!();
+
+		const res = await promise;
+		chai.expect(res.text).to.equal('foobar');
+		emailSendStub.restore();
+	});
+
+	it(`#methodSendEmail should returns ${StatusCode.OK}`, async () => {
+		const incomingMessageMock = new IncomingMessageMock(StatusCode.OK);
+		incomingMessageMock.headers[EMAIL_API.headers.count] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[EMAIL_API.headers.max] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[Header.CONTENT_TYPE] = ContentType.JSON;
+
+		const emailSendStub = sinon.stub(router['email'], 'send');
+		emailSendStub.resolves(incomingMessageMock as any);
+
+		return supertest(app)
+			.post('/send')
+			.attach('media', 'package.json')
+			.field('recipient', 'foo@example.com')
+			.expect(StatusCode.OK)
+			.then(emailSendStub.restore);
+	});
+
+	it(`#methodSendEmail should returns ${StatusCode.OK} even if fire and forget`, async () => {
+		const incomingMessageMock = new IncomingMessageMock(StatusCode.ACCEPTED);
+		incomingMessageMock.headers[EMAIL_API.headers.count] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[EMAIL_API.headers.max] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[Header.CONTENT_TYPE] = ContentType.JSON;
+
+		const emailSendStub = sinon.stub(router['email'], 'send');
+		emailSendStub.resolves(incomingMessageMock as any);
+
+		return supertest(app)
+			.post('/send')
+			.attach('media', 'package.json')
+			.field('recipient', 'foo@example.com')
+			.expect(StatusCode.OK)
+			.then(emailSendStub.restore);
+	});
+
+	it('#methodGet should fail on db.all error', async () => {
+		const dbAllStub = sinon.stub(db, 'all');
+		dbAllStub.rejects('foobar');
+
+		app.use(Application['err']);
+		return supertest(app)
+			.get('/draw')
+			.expect(StatusCode.INTERNAL_SERVER_ERROR)
+			.then(dbAllStub.restore);
 	});
 
 	it('#methodGet should returns all entries', async () => {
@@ -72,7 +227,7 @@ describe('router', () => {
 		const res = await supertest(app)
 			.get('/draw')
 			.expect(StatusCode.OK)
-			.expect('Content-Type', ContentType.OCTET_STREAM)
+			.expect(Header.CONTENT_TYPE, ContentType.OCTET_STREAM)
 			.then();
 		const fbByteBuffer1 = new flatbuffers.flatbuffers.ByteBuffer(res.body);
 
@@ -102,7 +257,7 @@ describe('router', () => {
 		supertest(app)
 			.post('/draw')
 			.expect(StatusCode.BAD_REQUEST)
-			.expect('Content-Type', ContentType.PLAIN_UTF8)
+			.expect(Header.CONTENT_TYPE, ContentType.PLAIN_UTF8)
 			.then(({ text }) => chai.expect(text).to.equal('Requète incorrecte')));
 
 	it('#methodPost should reject wrong request', async () => {
@@ -113,9 +268,9 @@ describe('router', () => {
 
 		const res = await supertest(app)
 			.post('/draw')
-			.set('Content-Type', ContentType.OCTET_STREAM)
+			.set(Header.CONTENT_TYPE, ContentType.OCTET_STREAM)
 			.expect(StatusCode.NOT_ACCEPTABLE)
-			.expect('Content-Type', ContentType.PLAIN_UTF8)
+			.expect(Header.CONTENT_TYPE, ContentType.PLAIN_UTF8)
 			.then();
 
 		chai.expect(res.text).to.equal(errMsg);
@@ -133,9 +288,9 @@ describe('router', () => {
 		app.use(Application['err']);
 		await supertest(app)
 			.post('/draw')
-			.set('Content-Type', ContentType.OCTET_STREAM)
+			.set(Header.CONTENT_TYPE, ContentType.OCTET_STREAM)
 			.expect(StatusCode.INTERNAL_SERVER_ERROR)
-			.expect('Content-Type', ContentType.PLAIN_UTF8)
+			.expect(Header.CONTENT_TYPE, ContentType.PLAIN_UTF8)
 			.then();
 
 		chai.expect(dbNextStub.calledOnce).to.be.true;
@@ -160,9 +315,9 @@ describe('router', () => {
 
 		const res = await supertest(app)
 			.post('/draw')
-			.set('Content-Type', ContentType.OCTET_STREAM)
+			.set(Header.CONTENT_TYPE, ContentType.OCTET_STREAM)
 			.expect(StatusCode.CREATED)
-			.expect('Content-Type', ContentType.PLAIN_UTF8)
+			.expect(Header.CONTENT_TYPE, ContentType.PLAIN_UTF8)
 			.then();
 
 		chai.expect(res.text).to.equal(ANSWER_TO_LIFE.toString());
@@ -180,7 +335,7 @@ describe('router', () => {
 	it('#methodPut should reject non-binary request', async () =>
 		supertest(app)
 			.put(`/draw/${ANSWER_TO_LIFE}`)
-			.expect('Content-Type', ContentType.PLAIN_UTF8)
+			.expect(Header.CONTENT_TYPE, ContentType.PLAIN_UTF8)
 			.then(({ text }) => chai.expect(text).to.equal('Requète incorrecte')));
 
 	it('#methodPut should reject id zero', async () => {
@@ -189,9 +344,9 @@ describe('router', () => {
 
 		return supertest(app)
 			.put('/draw/0')
-			.set('Content-Type', ContentType.OCTET_STREAM)
+			.set(Header.CONTENT_TYPE, ContentType.OCTET_STREAM)
 			.expect(StatusCode.BAD_REQUEST)
-			.then(() => verifyBufferStub.restore());
+			.then(verifyBufferStub.restore);
 	});
 
 	it('#methodPut should reject negative id', async () => {
@@ -200,9 +355,9 @@ describe('router', () => {
 
 		return supertest(app)
 			.put(`/draw/-${ANSWER_TO_LIFE}`)
-			.set('Content-Type', ContentType.OCTET_STREAM)
+			.set(Header.CONTENT_TYPE, ContentType.OCTET_STREAM)
 			.expect(StatusCode.BAD_REQUEST)
-			.then(() => verifyBufferStub.restore());
+			.then(verifyBufferStub.restore);
 	});
 
 	it('#methodPut should reject wrong request', async () => {
@@ -213,9 +368,9 @@ describe('router', () => {
 
 		const res = await supertest(app)
 			.put(`/draw/${ANSWER_TO_LIFE}`)
-			.set('Content-Type', ContentType.OCTET_STREAM)
+			.set(Header.CONTENT_TYPE, ContentType.OCTET_STREAM)
 			.expect(StatusCode.NOT_ACCEPTABLE)
-			.expect('Content-Type', ContentType.PLAIN_UTF8)
+			.expect(Header.CONTENT_TYPE, ContentType.PLAIN_UTF8)
 			.then();
 
 		chai.expect(res.text).to.equal(errMsg);
@@ -233,7 +388,7 @@ describe('router', () => {
 		app.use(Application['err']);
 		await supertest(app)
 			.put(`/draw/${ANSWER_TO_LIFE}`)
-			.set('Content-Type', ContentType.OCTET_STREAM)
+			.set(Header.CONTENT_TYPE, ContentType.OCTET_STREAM)
 			.expect(StatusCode.INTERNAL_SERVER_ERROR)
 			.then();
 
@@ -249,7 +404,7 @@ describe('router', () => {
 
 		await supertest(app)
 			.put(`/draw/${ANSWER_TO_LIFE}`)
-			.set('Content-Type', ContentType.OCTET_STREAM)
+			.set(Header.CONTENT_TYPE, ContentType.OCTET_STREAM)
 			.expect(StatusCode.ACCEPTED)
 			.then();
 

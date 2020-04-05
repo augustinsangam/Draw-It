@@ -1,3 +1,6 @@
+import { format, UrlObject } from 'url';
+import { promisify } from 'util';
+
 const ANSWER_TO_LIFE = 42;
 
 const COLORS = {
@@ -35,17 +38,40 @@ const COLORS = {
 };
 
 enum ContentType {
+	JSON = 'application/json',
 	OCTET_STREAM = 'application/octet-stream',
 	PLAIN_UTF8 = 'text/plain; charset=utf-8',
 }
 
-const ERRORS = {
-	nullCollection: new Error('collection is null or undefined'),
-	nullDb: new Error('database is null or undefined'),
+const EMAIL_API = {
+	headers: {
+		count: 'X-RateLimit-Remaining',
+		key: 'x-team-key',
+		max: 'X-RateLimit-Limit',
+	},
+	url: {
+		hostname: 'log2990.step.polymtl.ca',
+		pathname: 'email',
+		protocol: 'https',
+		query: {
+			address_validation: true,
+			dry_run: true, // TODO: remove when API fixed
+		}
+	} as UrlObject,
 };
 
-const promisifiedTimeout = async (timeout: number): Promise<void> =>
-	new Promise((resolve) => setTimeout(resolve, timeout));
+const promisifiedTimeout = promisify(setTimeout);
+const asyncTimeout = (timeout: number) => promisifiedTimeout(timeout);
+
+const ERRORS = {
+	reposneNotJson: new Error('Réponse de l’API n’est pas du JSON'),
+	nullCollection: new Error('La collection est nulle ou indéfinie'),
+	nullDb: new Error('La base de données est nulle ou indéfinie'),
+};
+
+enum Header {
+	CONTENT_TYPE = 'content-type',
+}
 
 enum StatusCode {
 	OK = 200,
@@ -69,16 +95,19 @@ const TIMEOUT = 1500;
 const TYPES = {
 	Application: Symbol.for('Application'),
 	Database: Symbol.for('Database'),
+	Email: Symbol.for('Email'),
 	Router: Symbol.for('Router'),
 	Server: Symbol.for('Server'),
 };
 
 export {
 	ANSWER_TO_LIFE,
+	asyncTimeout,
 	COLORS,
 	ContentType,
+	EMAIL_API,
 	ERRORS,
-	promisifiedTimeout,
+	Header,
 	StatusCode,
 	TextLen,
 	TIMEOUT,

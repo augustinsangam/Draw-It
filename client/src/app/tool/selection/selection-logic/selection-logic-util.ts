@@ -12,7 +12,7 @@ export const COLORS = {
 
 export const ANGLE = 15;
 export const MOUSE_WHEEL_DELTA_Y = 53;
-
+export const PASTE_TRANSLATION = 30;
 export const RECTANGLE_STROKE = '2';
 export const CIRCLE_RADIUS = '8';
 export const TIME_INTERVAL = 100;
@@ -68,15 +68,15 @@ export interface Offset {
 export class SelectionLogicUtil {
 
   static initialiseMouse(): Mouse {
-    const fakePoint = new Point(0, 0);
+    const point = new Point(0, 0);
     return {
       left: {
-        startPoint: fakePoint, currentPoint: fakePoint, endPoint: fakePoint,
+        startPoint: point, currentPoint: point, endPoint: point,
         mouseIsDown: false, selectedElement: BasicSelectionType.NOTHING,
         onDrag: false, onResize: false
       },
       right: {
-        startPoint: fakePoint, currentPoint: fakePoint, endPoint: fakePoint,
+        startPoint: point, currentPoint: point, endPoint: point,
         mouseIsDown: false, selectedElement: BasicSelectionType.NOTHING,
         onDrag: false, onResize: false
       }
@@ -113,6 +113,22 @@ export class SelectionLogicUtil {
       renderer.appendChild(zone, circle);
     });
     return circles;
+  }
+
+  static clone(elements: Set<SVGElement>): Set<SVGElement> {
+    const set = new Set<SVGElement>();
+    elements.forEach((element) => {
+      set.add(element.cloneNode(true) as SVGElement);
+    });
+    return set;
+  }
+
+  static getRealTarget(event: Event): SVGElement {
+    let element = event.target as SVGElement;
+    while (element.localName === 'tspan') {
+      element = element.parentNode as SVGElement;
+    }
+    return element;
   }
 
 }

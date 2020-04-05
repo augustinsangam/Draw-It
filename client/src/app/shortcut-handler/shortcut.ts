@@ -8,6 +8,7 @@ export enum Shortcut {
   I = 'i',
   L = 'l',
   O = 'o',
+  P = 'p',
   R = 'r',
   S = 's',
   V = 'v',
@@ -20,5 +21,6 @@ export enum Shortcut {
   DIGIT_3 = '3',
   MINUS = '-',
   PLUS = '+',
+  DELETE = 'Delete',
   T = 't',
 }
