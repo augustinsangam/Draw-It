@@ -12,7 +12,7 @@ export const COLORS = {
 
 export const ANGLE = 15;
 export const MOUSE_WHEEL_DELTA_Y = 53;
-
+export const PASTE_TRANSLATION = 30;
 export const RECTANGLE_STROKE = '2';
 export const CIRCLE_RADIUS = '8';
 export const TIME_INTERVAL = 100;

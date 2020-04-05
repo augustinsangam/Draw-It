@@ -1,5 +1,6 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { MagnetPoint } from './magnet-point';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,12 +10,12 @@ export class SelectionService {
   selectedElements: Set<SVGElement>;
   clipboard: Set<SVGElement>;
 
-  selectAllElements: EventEmitter<null>;
-  copy: EventEmitter<null>;
-  cut: EventEmitter<null>;
-  paste: EventEmitter<null>;
-  duplicate: EventEmitter<null>;
-  delete: EventEmitter<null>;
+  selectAllElements: Subject<null>;
+  copy: Subject<null>;
+  cut: Subject<null>;
+  paste: Subject<null>;
+  duplicate: Subject<null>;
+  delete: Subject<null>;
 
   magnetActive: boolean;
   magnetPoint: MagnetPoint;
@@ -22,12 +23,12 @@ export class SelectionService {
   constructor() {
     this.selectedElements = new Set();
     this.clipboard = new Set();
-    this.selectAllElements = new EventEmitter();
-    this.copy = new EventEmitter();
-    this.cut = new EventEmitter();
-    this.paste = new EventEmitter();
-    this.duplicate = new EventEmitter();
-    this.delete = new EventEmitter();
+    this.selectAllElements = new Subject();
+    this.copy = new Subject();
+    this.cut = new Subject();
+    this.paste = new Subject();
+    this.duplicate = new Subject();
+    this.delete = new Subject();
 
     this.magnetActive = true;
     this.magnetPoint = MagnetPoint.Center;
