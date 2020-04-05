@@ -1,7 +1,9 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { Point } from '../../shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
+import { MultipleSelection } from '../multiple-selection';
 import { SelectionService } from '../selection.service';
+import { Zone } from '../zone';
 import { BasicSelectionType } from './element-selected-type';
 import { SelectionLogicBase } from './selection-logic-base';
 import * as Util from './selection-logic-util';
@@ -18,7 +20,7 @@ export class SelectionLogicComponent
   extends SelectionLogicBase implements OnInit {
 
   private mouseHandlers: Map<string, Map<string, Util.MouseEventCallBack>>;
-
+  private pasteTranslation: number;
   private baseVisualisationRectangleDimension: {
     width: number,
     height: number
@@ -26,11 +28,12 @@ export class SelectionLogicComponent
   private scaledRectangleDimension: { width: number, height: number } = { width: 0, height: 0 };
 
   constructor(protected renderer: Renderer2,
-              protected undoRedoService: UndoRedoService,
-              protected service: SelectionService
+    protected undoRedoService: UndoRedoService,
+    protected service: SelectionService
   ) {
     super(renderer, undoRedoService, service);
     this.initialiseHandlers();
+    this.pasteTranslation = 0;
   }
 
   private initialiseHandlers(): void {
@@ -92,8 +95,8 @@ export class SelectionLogicComponent
               this.scaledRectangleDimension.width += this.mouse.left.selectedElement === 0 ? -offsetX : offsetX;
               this.scaledRectangleDimension.height += this.mouse.left.selectedElement === 1 ? -offsetY : offsetY;
 
-              const mouseOffset: Util.Offset = {x: offsetX, y: offsetY};
-              const scaleOffset: Util.Offset = {x: offsetX, y: offsetY};
+              const mouseOffset: Util.Offset = { x: offsetX, y: offsetY };
+              const scaleOffset: Util.Offset = { x: offsetX, y: offsetY };
 
               console.log(this.baseVisualisationRectangleDimension.width + ' ' + this.scaledRectangleDimension.width);
 
@@ -102,12 +105,14 @@ export class SelectionLogicComponent
               let factorY = this.baseVisualisationRectangleDimension.height > MINIMUM_SCALE ?
                 this.scaledRectangleDimension.height / this.baseVisualisationRectangleDimension.height : 1;
 
-              if (factorX === 1 && this.scaledRectangleDimension.width > MINIMUM_SCALE && this.baseVisualisationRectangleDimension.width <= MINIMUM_SCALE) {
+              if (factorX === 1 && this.scaledRectangleDimension.width > MINIMUM_SCALE &&
+                this.baseVisualisationRectangleDimension.width <= MINIMUM_SCALE) {
                 factorX = this.scaledRectangleDimension.width / MINIMUM_SCALE;
                 scaleOffset.x = this.scaledRectangleDimension.width - MINIMUM_SCALE;
                 console.log('Recalcul ' + factorX + ' offsetX : ' + offsetX);
               }
-              if (factorY === 1 && this.scaledRectangleDimension.height > MINIMUM_SCALE && this.baseVisualisationRectangleDimension.height <= MINIMUM_SCALE) {
+              if (factorY === 1 && this.scaledRectangleDimension.height > MINIMUM_SCALE &&
+                this.baseVisualisationRectangleDimension.height <= MINIMUM_SCALE) {
                 factorY = this.scaledRectangleDimension.height / MINIMUM_SCALE;
                 scaleOffset.y = this.scaledRectangleDimension.height - MINIMUM_SCALE;
               }
@@ -217,58 +222,75 @@ export class SelectionLogicComponent
       this.service.clipboard = Util.SelectionLogicUtil.clone(
         this.service.selectedElements
       );
+      this.pasteTranslation = Util.PASTE_TRANSLATION;
     }
   }
 
   private onCut(): void {
-    if (this.service.selectedElements.size !== 0) {
-      this.service.clipboard = Util.SelectionLogicUtil.clone(
-        this.service.selectedElements
-      );
-      this.service.selectedElements.forEach((element) => {
-        this.renderer.removeChild(this.svgStructure.drawZone, element);
-      });
-      this.deleteVisualisation();
-    }
+    this.onCopy();
+    this.onDelete();
   }
 
   private onPaste(): void {
     if (this.service.clipboard.size !== 0) {
-      Transform.translateAll(this.service.clipboard, 30, 30, this.renderer);
       const clipBoardCloned = Util.SelectionLogicUtil.clone(this.service.clipboard);
-      clipBoardCloned.forEach((element) => {
-        this.renderer.appendChild(this.svgStructure.drawZone, element);
-      });
-      this.applyMultipleSelection(undefined, undefined, new Set(clipBoardCloned));
+      this.pasteElements(clipBoardCloned, false);
     }
   }
 
   private onDelete(): void {
     if (this.service.selectedElements.size !== 0) {
       this.service.selectedElements.forEach((element) => {
-        this.renderer.removeChild(this.svgStructure.drawZone, element);
+        element.remove();
       });
       this.deleteVisualisation();
     }
   }
 
   private onDuplicate(): void {
-    if (this.service.selectedElements.size !== 0) {
-      this.onCopy();
-      this.onPaste();
+    const selectedElementsCloned = Util.SelectionLogicUtil.clone(this.service.selectedElements);
+    this.pasteElements(selectedElementsCloned, true);
+  }
+
+  private pasteElements(elements: Set<SVGElement>, isDuplicate: boolean): void {
+    if (isDuplicate) {
+      Transform.translateAll(elements, Util.PASTE_TRANSLATION, Util.PASTE_TRANSLATION, this.renderer);
+    } else {
+      Transform.translateAll(elements, this.pasteTranslation, this.pasteTranslation, this.renderer);
+    }
+    elements.forEach((element) => {
+      this.renderer.appendChild(this.svgStructure.drawZone, element);
+    });
+    this.applyMultipleSelection(undefined, undefined, elements);
+    if (!isDuplicate) {
+      this.pasteTranslation += Util.PASTE_TRANSLATION;
+    }
+    const selection = new MultipleSelection(elements, this.getSvgOffset(), undefined, undefined).getSelection();
+    const svgZone = new Zone(0, this.svgShape.width, 0, this.svgShape.height);
+    const selectionZone = new Zone(selection.points[0].x, selection.points[1].x, selection.points[0].y, selection.points[1].y);
+    if (!svgZone.intersection(selectionZone)[0]) {
+      this.service.selectedElements = new Set<SVGElement>();
+      this.renderer.removeChild(this.svgStructure.drawZone, elements.values().next().value);
+      const newTranslation = -this.pasteTranslation + Util.PASTE_TRANSLATION;
+      if (isDuplicate) {
+        Transform.translateAll(elements, - Util.PASTE_TRANSLATION, - Util.PASTE_TRANSLATION, this.renderer);
+      } else {
+        Transform.translateAll(elements, newTranslation, newTranslation, this.renderer);
+      }
+      elements.forEach((element) => {
+        this.renderer.appendChild(this.svgStructure.drawZone, element);
+      });
+      this.applyMultipleSelection(undefined, undefined, elements);
+      this.pasteTranslation = Util.PASTE_TRANSLATION;
     }
   }
 
   ngOnInit(): void {
     super.ngOnInit();
     [
-
       ['leftButton', ['mousedown', 'mousemove', 'mouseup', 'click']],
-
       ['rightButton', ['mousedown', 'mousemove', 'mouseup', 'contextmenu']],
-
       ['centerButton', ['wheel']]
-
     ].forEach((side: [string, string[]]) => {
       side[1].forEach((eventName: string) => {
         this.allListenners.push(
@@ -285,11 +307,18 @@ export class SelectionLogicComponent
       this.renderer.listen(document, 'keyup',
         this.keyManager.handlers.keyup));
 
-    this.service.copy.subscribe(() => this.onCopy());
-    this.service.cut.subscribe(() => this.onCut());
-    this.service.paste.subscribe(() => this.onPaste());
-    this.service.delete.subscribe(() => this.onDelete());
-    this.service.duplicate.subscribe(() => this.onDuplicate());
+    const subscriptionCopy = this.service.copy.asObservable().subscribe(() => this.onCopy());
+    const subscriptionCut = this.service.cut.asObservable().subscribe(() => this.onCut());
+    const subscriptionPaste = this.service.paste.asObservable().subscribe(() => this.onPaste());
+    const subcriptionDelete = this.service.delete.asObservable().subscribe(() => this.onDelete());
+    const subcriptionDuplicate = this.service.duplicate.asObservable().subscribe(() => this.onDuplicate());
+
+    this.allListenners.push(() => { subcriptionDelete.unsubscribe(); });
+    this.allListenners.push(() => { subscriptionPaste.unsubscribe(); });
+    this.allListenners.push(() => { subscriptionCut.unsubscribe(); });
+    this.allListenners.push(() => { subscriptionCopy.unsubscribe(); });
+    this.allListenners.push(() => { subcriptionDuplicate.unsubscribe(); });
+
   }
 
 }
