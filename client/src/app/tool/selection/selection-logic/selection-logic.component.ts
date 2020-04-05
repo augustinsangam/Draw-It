@@ -18,11 +18,9 @@ export class SelectionLogicComponent
 
   private mouseHandlers: Map<string, Map<string, Util.MouseEventCallBack>>;
 
-  private baseVisualisationRectangleDimension: {
-    width: number,
-    height: number
-  } = { width: 0, height: 0 };
+  private baseVisualisationRectangleDimension: {width: number, height: number} = { width: 0, height: 0 };
   private scaledRectangleDimension: { width: number, height: number } = { width: 0, height: 0 };
+
 
   constructor(protected renderer: Renderer2,
               protected undoRedoService: UndoRedoService,
@@ -89,28 +87,34 @@ export class SelectionLogicComponent
               };
               const offsetX = +this.mouse.left.selectedElement % 3 === 0 ? $event.offsetX - previousCurrentPoint.x : 0;
               const offsetY = +this.mouse.left.selectedElement % 3 !== 0 ? $event.offsetY - previousCurrentPoint.y : 0;
-              
+
+              // console.log(offsetX);
+
               this.scaledRectangleDimension.width += this.mouse.left.selectedElement === 0 ? -offsetX : offsetX;
               this.scaledRectangleDimension.height += this.mouse.left.selectedElement === 1 ? -offsetY : offsetY;
 
               const mouseOffset: Util.Offset = {x: offsetX, y: offsetY};
               const scaleOffset: Util.Offset = {x: offsetX, y: offsetY};
-              
-              console.log(this.baseVisualisationRectangleDimension.width + ' ' + this.scaledRectangleDimension.width);
 
-              let factorX = this.baseVisualisationRectangleDimension.width > MINIMUM_SCALE ?
+              // console.log(this.baseVisualisationRectangleDimension.width + ' ' + this.scaledRectangleDimension.width);
+
+              const factorX = this.baseVisualisationRectangleDimension.width >= MINIMUM_SCALE ?
                 this.scaledRectangleDimension.width / this.baseVisualisationRectangleDimension.width : 1;
-              let factorY = this.baseVisualisationRectangleDimension.height > MINIMUM_SCALE ?
+              const factorY = this.baseVisualisationRectangleDimension.height >= MINIMUM_SCALE ?
                 this.scaledRectangleDimension.height / this.baseVisualisationRectangleDimension.height : 1;
 
-              if (factorX === 1 && this.scaledRectangleDimension.width > MINIMUM_SCALE && this.baseVisualisationRectangleDimension.width <= MINIMUM_SCALE) {
-                factorX = this.scaledRectangleDimension.width / MINIMUM_SCALE;
-                scaleOffset.x = this.scaledRectangleDimension.width - MINIMUM_SCALE;
-                console.log('Recalcul ' + factorX + ' offsetX : ' + offsetX);
+              if (factorX === 1 && this.scaledRectangleDimension.width > MINIMUM_SCALE && this.baseVisualisationRectangleDimension.width < MINIMUM_SCALE) {
+                // factorX = this.scaledRectangleDimension.width / MINIMUM_SCALE;
+                const test = MINIMUM_SCALE - this.baseVisualisationRectangleDimension.width;
+                scaleOffset.x = test;
+                mouseOffset.x = test;
+                console.log('Recalcul ' + factorX + ' offsetX : ' + test);
               }
-              if (factorY === 1 && this.scaledRectangleDimension.height > MINIMUM_SCALE && this.baseVisualisationRectangleDimension.height <= MINIMUM_SCALE) {
-                factorY = this.scaledRectangleDimension.height / MINIMUM_SCALE;
-                scaleOffset.y = this.scaledRectangleDimension.height - MINIMUM_SCALE;
+              if (factorY === 1 && this.scaledRectangleDimension.height > MINIMUM_SCALE && this.baseVisualisationRectangleDimension.height < MINIMUM_SCALE) {
+                // factorY = this.scaledRectangleDimension.height / MINIMUM_SCALE;
+                const test = MINIMUM_SCALE - this.baseVisualisationRectangleDimension.height;
+                scaleOffset.y = test;
+                mouseOffset.y = test;
               }
               this.resizeAll(factorX, factorY, scaleOffset, mouseOffset);
             } else {

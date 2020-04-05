@@ -305,6 +305,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.resizeVisualisationRectangle(point, mouseOffset);
   }
 
+  // tslint:disable-next-line: cyclomatic-complexity
   private resizeVisualisationRectangle(point: Point, mouseOffset: Util.Offset): void {
 
     const x = this.rectangles.visualisation.getAttribute('x');
@@ -313,40 +314,138 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     const height = this.rectangles.visualisation.getAttribute('height');
     const refPoint1 = new Point(0, 0);
     const refPoint2 = new Point(0, 0);
+    // let splitedOffset: Util.Offset[];
+    const splitedOffset = [mouseOffset];
 
     if (!!x && !!y && !!width && !!height) {
       refPoint1.x = +x;
       refPoint1.y = +y;
-      refPoint2.x = +x + +width;
-      refPoint2.y = +y + +height;
-      if (+width <= 1 && mouseOffset.x !== 0) {
-        this.mouse.left.selectedElement = mouseOffset.x < 0 ? Util.CIRCLES[0] : Util.CIRCLES[3];
-        Transform.scaleAll(this.service.selectedElements, point, -1, 1, this.renderer);
-        console.log('switch to ' + this.mouse.left.selectedElement);
+      refPoint2.x = +x + Math.round(+width);
+      refPoint2.y = +y + Math.round(+height);
+
+      let switched = false;
+
+      // splitedOffset = 
+      this.preventResizeOverflow(mouseOffset, [refPoint1, refPoint2]);
+      // console.log(splitedOffset[0].x + ' ' + splitedOffset[1].x);
+      // [refPoint1, refPoint2] = this.drawVisualisationResising(splitedOffset[0], [refPoint1, refPoint2]);
+      
+      if (refPoint2.x - refPoint1.x <= 1 && splitedOffset[0].x !== 0) {
+        if (splitedOffset[0].x < 0 && this.mouse.left.selectedElement !== 0) {
+          this.mouse.left.selectedElement = Util.CIRCLES[0];
+          switched = true;
+        } else if (splitedOffset[0].x > 0 && this.mouse.left.selectedElement !== 3) {
+          this.mouse.left.selectedElement = Util.CIRCLES[3];
+          switched = true;
+        }
+        if (switched) {
+          Transform.scaleAll(this.service.selectedElements, point, -1, 1, this.renderer);
+          console.log('switch to ' + this.mouse.left.selectedElement);
+        }
       }
-      if (+height <= 1 && mouseOffset.y !== 0) {
-        this.mouse.left.selectedElement = mouseOffset.y < 0 ? Util.CIRCLES[1] : Util.CIRCLES[2];
-        Transform.scaleAll(this.service.selectedElements, point, 1, -1, this.renderer);
-        console.log('switch to ' + this.mouse.left.selectedElement);
+      switched = false;
+      if (refPoint2.y - refPoint1.y <= 1 && splitedOffset[0].y !== 0) {
+        if (splitedOffset[0].y < 0 && this.mouse.left.selectedElement !== 1) {
+          this.mouse.left.selectedElement = Util.CIRCLES[1];
+          switched = true;
+        } else if (splitedOffset[0].y > 0 && this.mouse.left.selectedElement !== 2) {
+          this.mouse.left.selectedElement = Util.CIRCLES[2];
+          switched = true;
+        }
+        if (switched) {
+          Transform.scaleAll(this.service.selectedElements, point, 1, -1, this.renderer);
+          console.log('switch to ' + this.mouse.left.selectedElement);
+        }
       }
+      // this.drawVisualisationResising(splitedOffset[1], [refPoint1, refPoint2]);
+      this.drawVisualisationResising(mouseOffset, [refPoint1, refPoint2]);
     }
-    const xP1 = Math.min(refPoint1.x + ((this.mouse.left.selectedElement < 2) ? mouseOffset.x : 0),
-      // refPoint2.x + ((this.mouse.left.selectedElement < 2) ? mouseOffset.x : 0));
-      refPoint2.x);
-    const xP2 = Math.max(refPoint2.x + ((this.mouse.left.selectedElement > 1) ? mouseOffset.x : 0),
-      // refPoint1.x + ((this.mouse.left.selectedElement > 1) ? mouseOffset.x : 0));
-      refPoint1.x);
+    // const p1 = new Point(
+    //   refPoint1.x + ((this.mouse.left.selectedElement === Util.CircleType.LEFT_CIRCLE) ? mouseOffset.x : 0),
+    //   refPoint1.y + ((this.mouse.left.selectedElement === Util.CircleType.TOP_CIRCLE) ? mouseOffset.y : 0),
+    // );
+    // const p2 = new Point(
+    //   refPoint2.x + ((this.mouse.left.selectedElement === Util.CircleType.RIGHT_CIRCLE) ? mouseOffset.x : 0),
+    //   refPoint2.y + ((this.mouse.left.selectedElement === Util.CircleType.BOTTOM_CIRCLE) ? mouseOffset.y : 0),
+    // );
+    // this.drawVisualisation(p1, p2);
+  }
+
+  private drawVisualisationResising(mouseOffset: Util.Offset, refPoint: Point[]): Point[] {
     const p1 = new Point(
-      // Math.min(refPoint1.x) + ((this.mouse.left.selectedElement < 2) ? mouseOffset.x : 0),
-      xP1,
-      refPoint1.y + ((this.mouse.left.selectedElement < 2) ? mouseOffset.y : 0),
+      refPoint[0].x + ((this.mouse.left.selectedElement === Util.CircleType.LEFT_CIRCLE) ? mouseOffset.x : 0),
+      refPoint[0].y + ((this.mouse.left.selectedElement === Util.CircleType.TOP_CIRCLE) ? mouseOffset.y : 0),
     );
     const p2 = new Point(
-      // refPoint2.x + ((this.mouse.left.selectedElement > 1) ? mouseOffset.x : 0),
-      xP2,
-      refPoint2.y + ((this.mouse.left.selectedElement > 1) ? mouseOffset.y : 0),
+      refPoint[1].x + ((this.mouse.left.selectedElement === Util.CircleType.RIGHT_CIRCLE) ? mouseOffset.x : 0),
+      refPoint[1].y + ((this.mouse.left.selectedElement === Util.CircleType.BOTTOM_CIRCLE) ? mouseOffset.y : 0),
     );
     this.drawVisualisation(p1, p2);
+    return [p1, p2];
+  }
+
+  private preventResizeOverflow(mouseOffset: Util.Offset, pointRef: Point[]): Util.Offset[] {
+    let offset1: Util.Offset = {
+      x: 0,
+      y: 0,
+    };
+    let offset2: Util.Offset = {
+      x: 0,
+      y: 0,
+    };
+    switch (this.mouse.left.selectedElement) {
+      case Util.CircleType.LEFT_CIRCLE: {
+        const splitedOffset = pointRef[0].x + mouseOffset.x > pointRef[1].x ? pointRef[1].x - pointRef[0].x : mouseOffset.x;
+        offset1 = {
+          x: splitedOffset,
+          y: 0,
+        };
+        offset2 = {
+          x: -(mouseOffset.x - splitedOffset),
+          y: 0,
+        };
+        break;
+      }
+      case Util.CircleType.TOP_CIRCLE: {
+        const splitedOffset = pointRef[0].y + mouseOffset.y > pointRef[1].y ? pointRef[1].y - pointRef[0].y : mouseOffset.y;
+        offset1 = {
+          x: 0,
+          y: splitedOffset,
+        };
+        offset2 = {
+          x: 0,
+          y: -(mouseOffset.y - splitedOffset),
+        };
+        break;
+      }
+      case Util.CircleType.BOTTOM_CIRCLE: {
+        const splitedOffset = pointRef[1].y + mouseOffset.y < pointRef[0].y ? pointRef[0].y - pointRef[1].y : mouseOffset.y;
+        offset1 = {
+          x: 0,
+          y: splitedOffset,
+        };
+        offset2 = {
+          x: 0,
+          y: -(mouseOffset.y - splitedOffset),
+        };
+        break;
+      }
+      case Util.CircleType.RIGHT_CIRCLE: {
+        const splitedOffset = pointRef[1].x + mouseOffset.x < pointRef[0].x ? pointRef[0].x - pointRef[1].x : mouseOffset.x;
+        offset1 = {
+          x: splitedOffset,
+          y: 0,
+        };
+        offset2 = {
+          x: -(mouseOffset.x - splitedOffset),
+          y: 0,
+        };
+        break;
+      }
+      default:
+        break;
+    }
+    return [offset1, offset2];
   }
 
   protected rotateAll(angle: number): void {
