@@ -42,10 +42,7 @@ export class AppComponent implements AfterViewInit {
       if (this.autoSave.verifyAvailability()) {
         const [draw, shape] = this.autoSave.getDrawing();
         Array.from(draw.children).forEach((element: SVGElement) => {
-          this.renderer.appendChild(
-            this.svgService.structure.drawZone,
-            element
-          );
+          this.renderer.appendChild(this.svgService.structure.drawZone, element);
         });
         this.svgService.shape = shape;
         this.undoRedo.setStartingCommand();
