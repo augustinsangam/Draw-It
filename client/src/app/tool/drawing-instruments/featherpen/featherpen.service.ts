@@ -43,7 +43,9 @@ export class FeatherpenService extends ToolService {
       point.x - this.length / 2 * Math.cos(this.toRadians(this.angle)),
       point.y + this.length / 2 * Math.sin(this.toRadians(this.angle))
     );
-    return `M ${point.x} ${point.y} L ${topPoint.x} ${topPoint.y} L ${bottomPoint.x} ${bottomPoint.y}`;
+    const p = `M ${point.x} ${point.y} L ${topPoint.x} ${topPoint.y} L ${bottomPoint.x} ${bottomPoint.y}`;
+    if (p.includes('Infinity')) {console.log(`Infinity computed ${point.x} ${point.y}`);}
+    return p;
   }
 
   private toRadians(angleDeg: number): number {
@@ -65,6 +67,29 @@ export class FeatherpenService extends ToolService {
       this.angle += this.MAX_ANGLE;
     }
     return oldAngle;
+  }
+
+  getInterpolatedPoints(initial: Point, final: Point): Point[] {
+    const points = [];
+    const delta = {x: final.x - initial.x, y: final.y - initial.y};
+    if (Math.abs(delta.x) > Math.abs(delta.y)) {
+      for (let x = Math.min(initial.x, final.x); x < Math.max(initial.x, final.x); x++) {
+        if (Math.min(initial.x, final.x) === initial.x) {
+          points.push(new Point(x, initial.y + 1 / delta.x));
+        } else {
+          points.push(new Point(x, final.y + 1 / delta.x));
+        }
+      }
+    } else {
+      for (let y = Math.min(initial.y, final.y); y < Math.max(initial.y, final.y); y++) {
+        if (Math.min(initial.y, final.y) === initial.y) {
+          points.push(new Point(initial.x + 1 / delta.y, y));
+        } else {
+          points.push(new Point(final.x + 1 / delta.y, y));
+        }
+      }
+    }
+    return points;
   }
 
   interpolate(oldAngle: number, newAngle: number, point: Point, up: boolean): string {

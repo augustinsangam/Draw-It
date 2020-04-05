@@ -18,6 +18,7 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
   private onDrag: boolean;
   private element: SVGElement;
   private currentPath: string;
+  private previousPoint: Point;
 
   constructor(private renderer: Renderer2,
               private readonly service: FeatherpenService,
@@ -96,6 +97,7 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
       this.renderer.appendChild(this.svgStructure.drawZone, this.element);
       this.setElementStyle();
       this.element.setAttribute('d', this.service.pathCentered(new Point(mouseEv.offsetX, mouseEv.offsetY)));
+      this.previousPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
     }
   }
 
@@ -104,10 +106,25 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
     this.element.setAttribute('stroke-width', '2');
   }
 
+  private complete(initial: Point, final: Point): string {
+    let toAdd = '';
+    // console.log(`interpol, initX ${initial.x} finalX ${final.x}`);
+    const points = this.service.getInterpolatedPoints(initial, final);
+    // console.log(`${points.length} points interpolated`);
+    for (const point of points) {
+      toAdd = `${toAdd} ${this.service.pathCentered(point)}`;
+    }
+    return toAdd;
+  }
+
   private onMouseMove(point: Point): void {
     if (this.onDrag) {
       this.currentPath += this.service.pathCentered(point);
+      if (point.squareDistanceTo(this.previousPoint) > 3) {
+        this.currentPath = `${this.currentPath} ${this.complete(this.previousPoint, point)}`;
+      }
       this.element.setAttribute('d', `${this.currentPath}`);
+      this.previousPoint = point;
     }
   }
 
