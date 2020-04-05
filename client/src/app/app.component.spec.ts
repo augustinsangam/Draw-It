@@ -34,7 +34,7 @@ import {
   ToolSelectorService
 } from './tool/tool-selector/tool-selector.service';
 import { UndoRedoService } from './tool/undo-redo/undo-redo.service';
-import { LocalStorageHandlerService } from './auto-save/local-storage-handler.service';
+// import { LocalStorageHandlerService } from './auto-save/local-storage-handler.service';
 
 // tslint:disable: no-string-literal no-any no-magic-numbers
 describe('AppComponent', () => {
@@ -42,7 +42,7 @@ describe('AppComponent', () => {
   let service: OverlayService;
   let svgService: SvgService;
   let fixture: ComponentFixture<AppComponent>;
-  let autoSave: LocalStorageHandlerService;
+  // let autoSave: LocalStorageHandlerService;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -105,7 +105,7 @@ describe('AppComponent', () => {
     service = component['overlayService'];
 
     svgService = TestBed.get(SvgService);
-    autoSave = TestBed.get(LocalStorageHandlerService);
+    // autoSave = TestBed.get(LocalStorageHandlerService);
     svgService.structure = {
       root: document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
       defsZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
