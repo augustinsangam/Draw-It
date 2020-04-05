@@ -1,4 +1,5 @@
 import { format } from 'url';
+import { promisify } from 'util';
 
 const ANSWER_TO_LIFE = 42;
 
@@ -70,8 +71,7 @@ enum Header {
 	CONTENT_TYPE = 'content-type',
 }
 
-const promisifiedTimeout = async (timeout: number): Promise<void> =>
-	new Promise((resolve) => setTimeout(resolve, timeout));
+const promisifiedTimeout = promisify(setTimeout);
 
 enum StatusCode {
 	OK = 200,

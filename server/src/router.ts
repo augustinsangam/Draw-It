@@ -88,6 +88,11 @@ class Router {
 	private sendEmail(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
 			const recipient = req.body.recipient;
+			if (recipient == null || req.file == null) {
+				res.status(StatusCode.BAD_REQUEST).send('“recipient” ou “media” manquant');
+				return;
+			}
+
 			if (!EmailValidator.validate(recipient)) {
 				res.status(StatusCode.NOT_ACCEPTABLE).send('Courriel invalide');
 				return;
@@ -128,6 +133,7 @@ class Router {
 			const textResult = Buffer.concat(chunks).toString();
 			try {
 				const result = JSON.parse(textResult);
+				res.type(ContentType.PLAIN_UTF8);
 				res.status(StatusCode.NOT_ACCEPTABLE).send(result.error);
 			} catch (err) {
 				next(err);
