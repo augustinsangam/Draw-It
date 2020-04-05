@@ -1,57 +1,63 @@
-<form id="form" [formGroup]="form">
-  <div class="informations">
-    <h1>Exporter un dessin</h1>
-  </div>
-  <table>
-    <tr>
-      <td class="col">
-        <h4>Nom du dessin</h4>
-        <mat-form-field appearance="outline">
-          <mat-label>Nom du dessin</mat-label>
-          <input matInput placeholder="Entrer le nom du dessin" formControlName="name">
-          <mat-hint>
-            Le nom du fichier ne doit pas contenir d'espaces
-          </mat-hint>
-        </mat-form-field>
-        <table>
-          <tr>
-            <td class="filters option">
-              <h4>Filtres</h4>
-              <mat-radio-group (change)="onOptionChange($event)" formControlName="filter">
-                <div *ngFor="let filter of getFilters()" class="filterOption">
-                  <mat-radio-button [value]="filter"></mat-radio-button>
-                  {{filter}}
-                </div>
-              </mat-radio-group>
-            </td>
-            <td class="option">
-              <h4>Formats</h4>
-              <mat-radio-group formControlName="format">
-                <div *ngFor="let format of getFormats()" class="formatOption">
-                  <mat-radio-button [value]="format" #radioFormat></mat-radio-button>
-                  {{format}}
-                </div>
-              </mat-radio-group>
-            </td>
-          </tr>
-        </table>
-      </td>
-      <td class="col">
-        <svg id="picture-view-zone" width="350" height="350" xmlns="http://www.w3.org/2000/svg"
+<h1>Exporter un dessin</h1>
+<svg id="picture-view-zone" width="350" height="350" xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink" #svgView>
         </svg>
-      </td>
-    </tr>
-  </table>
-  <table id="export-buttons">
-    <tr>
-      <td>
-        <button mat-raised-button color="primary" (click)="onConfirm($event)"
-          [disabled]="form.invalid">Exporter</button>
-      </td>
-      <td>
-        <button mat-raised-button color="warn" (click)="onCancel($event)">Annuler </button>
-      </td>
-    </tr>
-  </table>
+<form id="form" [formGroup]="form">
+  <div class="box full">
+    <div class="block-center">
+      <mat-button-toggle-group (change)="onExportTypeChange($event)" [value]="exportType" aria-label="Type d’export">
+        <mat-button-toggle value="local">Exporter en local</mat-button-toggle>
+        <mat-button-toggle value="email">Exporter par courriel</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+  </div>
+
+  <div class="box">
+    <mat-form-field appearance="outline">
+      <mat-label>Nom du dessin</mat-label>
+      <input matInput placeholder="Entrer le nom du dessin" formControlName="name">
+      <mat-hint>
+        Le nom du fichier ne doit pas contenir d'espaces
+      </mat-hint>
+    </mat-form-field>
+  </div>
+
+  <div class="box">
+    <mat-form-field appearance="outline">
+      <mat-label>Courriel</mat-label>
+      <input matInput placeholder="Entrer l’adresse électronique" formControlName="email">
+      <mat-hint>
+        email@example.com
+      </mat-hint>
+    </mat-form-field>
+  </div>
+
+  <div class="box">
+    <h4>Filtres</h4>
+    <mat-radio-group (change)="onOptionChange($event)" formControlName="filter">
+      <div *ngFor="let filter of getFilters()" class="filterOption">
+        <mat-radio-button [value]="filter"></mat-radio-button>
+        {{filter}}
+      </div>
+    </mat-radio-group>
+  </div>
+
+  <div class="box">
+    <h4>Formats</h4>
+    <mat-radio-group formControlName="format">
+      <div *ngFor="let format of getFormats()" class="formatOption">
+        <mat-radio-button [value]="format" #radioFormat></mat-radio-button>
+        {{format}}
+      </div>
+    </mat-radio-group>
+  </div>
+
+  <div class="box">
+    <button mat-raised-button color="warn" (click)="onCancel($event)">Annuler</button>
+  </div>
+
+  <div class="box">
+    <button mat-raised-button color="primary" (click)="onConfirm($event)"
+    [disabled]="form.invalid">Exporter</button>
+  </div>
 </form>

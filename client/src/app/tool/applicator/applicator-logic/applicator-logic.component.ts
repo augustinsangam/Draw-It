@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { ColorService } from '../../color/color.service';
+import { SelectionLogicUtil } from '../../selection/selection-logic/selection-logic-util';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
-import {UndoRedoService} from '../../undo-redo/undo-redo.service';
+import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 
 @Component({
   selector: 'app-applicator-logic',
@@ -29,7 +30,7 @@ export class ApplicatorLogicComponent
 
     this.handlers = {
       left: ($event: MouseEvent) => {
-        const target = $event.target as SVGElement;
+        const target = SelectionLogicUtil.getRealTarget($event);
         if (!this.isADrawElement(target)) {
           return ;
         }

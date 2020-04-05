@@ -105,11 +105,14 @@
     "useTabs": true
   },
   "dependencies": {
+    "email-validator": "^2.0.4",
     "express": "^4.17.1",
     "flatbuffers": "^1.11.0",
+    "form-data": "^3.0.0",
     "inversify": "^5.0.1",
     "loglevel": "^1.6.7",
     "mongodb": "^3.5.5",
+    "multer": "^1.4.2",
     "nodemon": "^2.0.2",
     "reflect-metadata": "^0.1.13",
     "source-map-support": "^0.5.16"
@@ -121,6 +124,7 @@
     "@types/flatbuffers": "^1.10.0",
     "@types/mocha": "^7.0.2",
     "@types/mongodb": "^3.5.2",
+    "@types/multer": "^1.4.2",
     "@types/sinon": "^7.5.2",
     "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "^2.24.0",
@@ -133,6 +137,7 @@
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-simple-import-sort": "^5.0.2",
     "mocha": "^7.1.1",
+    "portfinder": "^1.0.25",
     "prettier": "^2.0.1",
     "rimraf": "^3.0.2",
     "sinon": "^9.0.1",

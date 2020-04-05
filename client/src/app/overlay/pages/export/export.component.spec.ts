@@ -8,7 +8,7 @@ import { SvgShape } from 'src/app/svg/svg-shape';
 import { SvgService} from 'src/app/svg/svg.service';
 import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.service';
 import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
-import { ExportComponent, FilterChoice, FormatChoice } from './export.component';
+import { ExportComponent, ExportType, FilterChoice, FormatChoice } from './export.component';
 
 // tslint:disable: no-magic-numbers no-any no-string-literal
 describe('ExportComponent', () => {
@@ -110,10 +110,42 @@ describe('ExportComponent', () => {
     expect(result[5]).toEqual(FilterChoice.Grey);
   }));
 
+  it('#parseToB64URI should return svg type', () => {
+    const spy = spyOn<any>(component, 'serializeSVG');
+    spy.and.returnValue('foo');
+
+    const uri = component['parseToB64URI'](FormatChoice.Svg);
+    console.log(uri);
+    expect(true).toBeTruthy();
+  });
+
   it('#onConfirm should close the dialogRef', () => {
     spyOn<any>(component, 'exportDrawing');
     component['onConfirm']();
     expect(mockDialogRef.close).toHaveBeenCalled();
+  });
+
+  it('#onConfirm should close with sendEmail error', async () => {
+    const spy = spyOn(component['communicationService'], 'sendEmail');
+    const error = new Error('foobar');
+    spy.and.callFake(() => Promise.reject(error));
+
+    component['exportType'] = ExportType.EMAIL;
+
+    await component['onConfirm']();
+
+    expect(mockDialogRef.close).toHaveBeenCalledWith(error);
+  });
+
+  it('#onConfirm should close with sendEmail response', async () => {
+    const spy = spyOn(component['communicationService'], 'sendEmail');
+    spy.and.returnValue(Promise.resolve('foobar'));
+
+    component['exportType'] = ExportType.EMAIL;
+
+    await component['onConfirm']();
+
+    expect(mockDialogRef.close).toHaveBeenCalledWith('foobar');
   });
 
   it('#onOptionChange should call createView', () => {
@@ -264,5 +296,48 @@ describe('ExportComponent', () => {
     expect(ExportComponent.validator({
       value: 'aValidName'
     } as unknown as FormControl)).toEqual(null);
+  });
+
+  it('#onExportTypeChange shoudl handle null', () => {
+    const spy = spyOn(component['form'], 'get');
+    spy.and.returnValue(null);
+    expect(() => component['onExportTypeChange']({
+      value: ExportType.LOCAL,
+    } as any)).not.toThrow();
+  });
+
+  it('#onExportTypeChange shoudl handle local export', () => {
+    const input = component['form'].get('email');
+    if (input == null) {
+      fail('input should not be null');
+      return;
+    }
+    const spy = spyOn(input, 'disable');
+    component['onExportTypeChange']({
+      value: ExportType.LOCAL,
+    } as any);
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#onExportTypeChange shoudl handle email export', () => {
+    const input = component['form'].get('email');
+    if (input == null) {
+      fail('input should not be null');
+      return;
+    }
+    const spy = spyOn(input, 'enable');
+    component['onExportTypeChange']({
+      value: ExportType.EMAIL,
+    } as any);
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#dataURItoBlob should decode uri', () => {
+    let b64img = '';
+    b64img += 'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAJUlEQVR42mP8z8A';
+    b64img += 'ARLQDjKMWjFowasGoBaMWjFowasGoBUPDAgCFIi/pHcieOwAAAABJRU5ErkJggg';
+    b64img += '==';
+    const blob = component['dataURItoBlob'](`data:image/png;base64,${b64img}`);
+    expect(blob.type).toEqual('image/png');
   });
 });

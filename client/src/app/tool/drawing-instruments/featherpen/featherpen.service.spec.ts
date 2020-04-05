@@ -4,7 +4,7 @@ import {Point} from '../../shape/common/point';
 import { FeatherpenService } from './featherpen.service';
 
 // tslint:disable:no-string-literal no-magic-numbers
-fdescribe('FeatherpenService', () => {
+describe('FeatherpenService', () => {
   let service: FeatherpenService;
 
   beforeEach(() => {

@@ -196,7 +196,8 @@ export class EraserLogicComponent
     this.removeFill();
     for (let i = x - halfSize; i <= x + halfSize; i += CONSTANTS.PIXEL_INCREMENT) {
       for (let j = y - halfSize; j <= y + halfSize; j += CONSTANTS.PIXEL_INCREMENT) {
-        const element = document.elementFromPoint(i, j);
+        const elementFromPoint = document.elementFromPoint(i, j);
+        const element = Util.SelectionLogicUtil.getRealTarget({target: elementFromPoint} as Event);
         if (this.svgStructure.drawZone.contains(element)
           && element !== this.eraser) {
           selectedElements.add(element as SVGElement);

@@ -181,6 +181,20 @@ export class OverlayService {
       exportSaveDialogOptions
     );
     this.dialogRefs.export.disableClose = true;
+    this.dialogRefs.export.afterClosed().subscribe(
+      (reponseOrError: string | Error) => this.closeExportDialog(reponseOrError));
+  }
+
+  private closeExportDialog(reponseOrError: string | Error): void {
+    if (reponseOrError instanceof Error) {
+      this.snackBar.open(reponseOrError.message, 'Ok', {
+        duration: CONSTANTS.FAILURE_DURATION,
+      });
+    } else {
+      this.snackBar.open(reponseOrError, 'Ok', {
+        duration: CONSTANTS.SUCCES_DURATION,
+      });
+    }
   }
 
   openSaveDialog(): void {

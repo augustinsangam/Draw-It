@@ -21,5 +21,6 @@ export enum Shortcut {
   DIGIT_3 = '3',
   MINUS = '-',
   PLUS = '+',
+  DELETE = 'Delete',
   T = 't',
 }
