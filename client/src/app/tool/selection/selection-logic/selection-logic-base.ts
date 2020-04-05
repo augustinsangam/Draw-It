@@ -156,6 +156,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.resetTranslate(this.rectangles.visualisation);
     this.deleteCircles();
     this.service.selectedElements.clear();
+    console.log('entre');
   }
 
   private deleteCircles(): void {
@@ -175,7 +176,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.resetTranslate(this.rectangles.inversion);
   }
 
-  private resetRectangle(element: SVGElement): void {
+  protected resetRectangle(element: SVGElement): void {
     this.renderer.setAttribute(element, 'width', '0');
     this.renderer.setAttribute(element, 'height', '0');
   }
@@ -278,7 +279,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     );
   }
 
-  private getSvgOffset(): Offset {
+  getSvgOffset(): Offset {
     const svgBoundingRect = this.svgStructure.root.getBoundingClientRect();
     return { top: svgBoundingRect.top, left: svgBoundingRect.left };
   }
