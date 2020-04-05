@@ -6,6 +6,8 @@ import { BasicSelectionType } from './element-selected-type';
 import { SelectionLogicBase } from './selection-logic-base';
 import * as Util from './selection-logic-util';
 import { Transform } from './transform';
+import { MultipleSelection } from '../multiple-selection';
+import { Zone } from '../zone';
 
 const NOT_FOUND = -1;
 const MINIMUM_SCALE = 5;
@@ -234,10 +236,18 @@ export class SelectionLogicComponent
       Transform.translateAll(
         this.service.clipboard.peak(),
         Util.PASTE_TRANSLATION, Util.PASTE_TRANSLATION, this.renderer);
-      this.service.clipboard.peak().forEach((element) => {
+      const lastValidClipboard = this.service.clipboard.peak();
+      lastValidClipboard.forEach((element) => {
         this.renderer.appendChild(this.svgStructure.drawZone, element);
       });
-      this.applyMultipleSelection(undefined, undefined, new Set(this.service.clipboard.peak()));
+      if (!this.isInside(lastValidClipboard)) {
+        const length = this.service.clipboard.length - 1;
+        Transform.translateAll(
+          lastValidClipboard,
+          - Util.PASTE_TRANSLATION * length, -Util.PASTE_TRANSLATION * length, this.renderer);
+        this.service.clipboard = [lastValidClipboard];
+      }
+      this.applyMultipleSelection(undefined, undefined, new Set(lastValidClipboard));
     }
   }
 
@@ -253,6 +263,13 @@ export class SelectionLogicComponent
     return true;
   }
 
+  private isInside(elements: Set<SVGElement>): boolean {
+    const svgZone = new Zone(0, this.svgShape.width, 0, this.svgShape.height);
+    const selection = new MultipleSelection(elements, this.getSvgOffset(), undefined, undefined).getSelection();
+    const selectionZone = new Zone(selection.points[0].x, selection.points[1].x, selection.points[0].y, selection.points[1].y);
+    return svgZone.intersection(selectionZone)[0];
+  }
+
   private onDelete(): void {
     if (this.service.selectedElements.size !== 0) {
       this.service.selectedElements.forEach((element) => {
@@ -263,7 +280,14 @@ export class SelectionLogicComponent
   }
 
   private onDuplicate(): void {
-
+    const toDuplicate = Util.SelectionLogicUtil.clone(this.service.selectedElements);
+    Transform.translateAll(
+      toDuplicate,
+      Util.PASTE_TRANSLATION, Util.PASTE_TRANSLATION, this.renderer);
+    toDuplicate.forEach((element) => {
+      this.renderer.appendChild(this.svgStructure.drawZone, element);
+    });
+    this.applyMultipleSelection(undefined, undefined, new Set(toDuplicate));
   }
 
   ngOnInit(): void {
