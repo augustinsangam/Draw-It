@@ -31,7 +31,7 @@ export class ShortcutHandlerManagerService {
     this.shortcutHanler.set(Shortcut.A, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();
-        this.selectionService.selectAllElements.emit(null);
+        this.selectionService.selectAllElements.next(null);
       } else {
         this.toolSelectorService.set(Tool.Aerosol);
       }
@@ -53,8 +53,13 @@ export class ShortcutHandlerManagerService {
     this.handlersFunc.set(Shortcut.D, (event: KeyboardEvent) => {
       event.preventDefault();
       if ( event.ctrlKey ) {
-        this.selectionService.duplicate.emit(null);
+        this.selectionService.duplicate.next(null);
       }
+    });
+
+    this.handlersFunc.set(Shortcut.DELETE, (event: KeyboardEvent) => {
+      event.preventDefault();
+      this.selectionService.delete.next(null);
     });
 
     this.handlersFunc.set(Shortcut.E, (event: KeyboardEvent) => {
@@ -113,14 +118,14 @@ export class ShortcutHandlerManagerService {
     this.handlersFunc.set(Shortcut.V, (event: KeyboardEvent) => {
       event.preventDefault();
       if ( event.ctrlKey ) {
-        this.selectionService.paste.emit(null);
+        this.selectionService.paste.next(null);
       }
     });
 
     this.handlersFunc.set(Shortcut.X, (event: KeyboardEvent) => {
       event.preventDefault();
       if ( event.ctrlKey ) {
-        this.selectionService.cut.emit(null);
+        this.selectionService.cut.next(null);
       }
     });
 
