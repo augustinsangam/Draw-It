@@ -17,7 +17,7 @@ import {ColorPickerItemComponent} from '../../../color/color-panel/color-picker-
 import { FeatherpenPanelComponent } from './featherpen-panel.component';
 
 // tslint:disable:no-magic-numbers no-string-literal no-any
-fdescribe('FeatherpenPanelComponent', () => {
+describe('FeatherpenPanelComponent', () => {
   let component: FeatherpenPanelComponent;
   let fixture: ComponentFixture<FeatherpenPanelComponent>;
 
