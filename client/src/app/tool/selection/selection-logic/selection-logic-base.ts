@@ -156,7 +156,6 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.resetTranslate(this.rectangles.visualisation);
     this.deleteCircles();
     this.service.selectedElements.clear();
-    console.log('entre');
   }
 
   private deleteCircles(): void {

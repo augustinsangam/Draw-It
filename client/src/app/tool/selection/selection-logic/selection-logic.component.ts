@@ -1,9 +1,7 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { Point } from '../../shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
-import { MultipleSelection } from '../multiple-selection';
 import { SelectionService } from '../selection.service';
-import { Zone } from '../zone';
 import { BasicSelectionType } from './element-selected-type';
 import { SelectionLogicBase } from './selection-logic-base';
 import * as Util from './selection-logic-util';
@@ -20,7 +18,6 @@ export class SelectionLogicComponent
   extends SelectionLogicBase implements OnInit {
 
   private mouseHandlers: Map<string, Map<string, Util.MouseEventCallBack>>;
-  private pasteTranslation: number;
   private baseVisualisationRectangleDimension: {
     width: number,
     height: number
@@ -28,12 +25,11 @@ export class SelectionLogicComponent
   private scaledRectangleDimension: { width: number, height: number } = { width: 0, height: 0 };
 
   constructor(protected renderer: Renderer2,
-    protected undoRedoService: UndoRedoService,
-    protected service: SelectionService
+              protected undoRedoService: UndoRedoService,
+              protected service: SelectionService
   ) {
     super(renderer, undoRedoService, service);
     this.initialiseHandlers();
-    this.pasteTranslation = 0;
   }
 
   private initialiseHandlers(): void {
@@ -219,10 +215,7 @@ export class SelectionLogicComponent
 
   private onCopy(): void {
     if (this.service.selectedElements.size !== 0) {
-      this.service.clipboard = Util.SelectionLogicUtil.clone(
-        this.service.selectedElements
-      );
-      this.pasteTranslation = Util.PASTE_TRANSLATION;
+      this.service.clipboard = [new Set(this.service.selectedElements)];
     }
   }
 
@@ -232,57 +225,45 @@ export class SelectionLogicComponent
   }
 
   private onPaste(): void {
-    if (this.service.clipboard.size !== 0) {
-      const clipBoardCloned = Util.SelectionLogicUtil.clone(this.service.clipboard);
-      this.pasteElements(clipBoardCloned, false);
+    if (this.service.clipboard.length !== 0) {
+      while (!this.clipboardValid(this.service.clipboard.peak())) {
+        console.log(this.service.clipboard);
+        this.service.clipboard.pop();
+      }
+      this.service.clipboard.push(Util.SelectionLogicUtil.clone(this.service.clipboard.peak()));
+      Transform.translateAll(
+        this.service.clipboard.peak(),
+        Util.PASTE_TRANSLATION, Util.PASTE_TRANSLATION, this.renderer);
+      this.service.clipboard.peak().forEach((element) => {
+        this.renderer.appendChild(this.svgStructure.drawZone, element);
+      });
+      this.applyMultipleSelection(undefined, undefined, new Set(this.service.clipboard.peak()));
     }
+  }
+
+  private clipboardValid(clipboard: Set<SVGElement>): boolean {
+    if (clipboard.size === 0) {
+      return false;
+    }
+    for (const element of clipboard) {
+      if (!this.svgStructure.drawZone.contains(element)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private onDelete(): void {
     if (this.service.selectedElements.size !== 0) {
       this.service.selectedElements.forEach((element) => {
-        element.remove();
+        this.renderer.removeChild(this.svgStructure.drawZone, element);
       });
       this.deleteVisualisation();
     }
   }
 
   private onDuplicate(): void {
-    const selectedElementsCloned = Util.SelectionLogicUtil.clone(this.service.selectedElements);
-    this.pasteElements(selectedElementsCloned, true);
-  }
 
-  private pasteElements(elements: Set<SVGElement>, isDuplicate: boolean): void {
-    if (isDuplicate) {
-      Transform.translateAll(elements, Util.PASTE_TRANSLATION, Util.PASTE_TRANSLATION, this.renderer);
-    } else {
-      Transform.translateAll(elements, this.pasteTranslation, this.pasteTranslation, this.renderer);
-    }
-    elements.forEach((element) => {
-      this.renderer.appendChild(this.svgStructure.drawZone, element);
-    });
-    this.applyMultipleSelection(undefined, undefined, elements);
-    if (!isDuplicate) {
-      this.pasteTranslation += Util.PASTE_TRANSLATION;
-    }
-    const selection = new MultipleSelection(elements, this.getSvgOffset(), undefined, undefined).getSelection();
-    const svgZone = new Zone(0, this.svgShape.width, 0, this.svgShape.height);
-    const selectionZone = new Zone(selection.points[0].x, selection.points[1].x, selection.points[0].y, selection.points[1].y);
-    if (!svgZone.intersection(selectionZone)[0]) {
-      this.service.selectedElements = new Set<SVGElement>();
-      this.renderer.removeChild(this.svgStructure.drawZone, elements.values().next().value);
-      const newTranslation = -this.pasteTranslation + Util.PASTE_TRANSLATION;
-      if (isDuplicate) {
-        Transform.translateAll(elements, - Util.PASTE_TRANSLATION, - Util.PASTE_TRANSLATION, this.renderer);
-      } else {
-        Transform.translateAll(elements, newTranslation, newTranslation, this.renderer);
-      }
-      elements.forEach((element) => {
-        this.renderer.appendChild(this.svgStructure.drawZone, element);
-      });
-      this.applyMultipleSelection(undefined, undefined, elements);
-      this.pasteTranslation = Util.PASTE_TRANSLATION;
-    }
   }
 
   ngOnInit(): void {

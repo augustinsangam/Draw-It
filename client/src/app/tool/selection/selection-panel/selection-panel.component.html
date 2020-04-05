@@ -7,7 +7,7 @@
   <img src="../../../../assets/selecton-icons/cut.svg" alt="Couper">
 </button>
 <button mat-fab (click)="service.paste.next(null)" color="" title="Coller"
-  [disabled]="service.clipboard.size === 0">
+  [disabled]="service.clipboard.length === 0">
   <img src="../../../../assets/selecton-icons/paste.svg" alt="Coller">
 </button>
 <button mat-fab (click)="service.duplicate.next(null)" color="" title="Dupliquer"
