@@ -15,10 +15,10 @@ import supertest from 'supertest';
 import { Application } from '../application';
 import {
 	ANSWER_TO_LIFE,
+	asyncTimeout,
 	ContentType,
 	EMAIL_API,
 	Header,
-	promisifiedTimeout,
 	StatusCode,
 	TYPES,
 } from '../constants';
@@ -122,9 +122,9 @@ describe('router', () => {
 			.expect(StatusCode.INTERNAL_SERVER_ERROR)
 			.then();
 
-		await promisifiedTimeout(ANSWER_TO_LIFE);
+		await asyncTimeout(ANSWER_TO_LIFE);
 		IncomingMessageMock.events.get('data')!(Buffer.from('{"error":}'));
-		await promisifiedTimeout(ANSWER_TO_LIFE);
+		await asyncTimeout(ANSWER_TO_LIFE);
 		IncomingMessageMock.events.get('end')!();
 
 		return promise.then(emailSendStub.restore);
@@ -147,9 +147,9 @@ describe('router', () => {
 			.expect(Header.CONTENT_TYPE, ContentType.PLAIN_UTF8)
 			.then();
 
-		await promisifiedTimeout(ANSWER_TO_LIFE);
+		await asyncTimeout(ANSWER_TO_LIFE);
 		IncomingMessageMock.events.get('data')!(Buffer.from('{"error": "foobar"}'));
-		await promisifiedTimeout(ANSWER_TO_LIFE);
+		await asyncTimeout(ANSWER_TO_LIFE);
 		IncomingMessageMock.events.get('end')!();
 
 		const res = await promise;

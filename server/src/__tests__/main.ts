@@ -4,7 +4,7 @@ import chai from 'chai';
 import log from 'loglevel';
 import sinon from 'sinon';
 
-import { TYPES } from '../constants';
+import { TYPES, asyncTimeout } from '../constants';
 import { myContainer } from '../inversify.config';
 import { main } from '../main';
 import { Server } from '../server';
@@ -15,9 +15,7 @@ describe('main', () => {
 	before(() => (server = myContainer.get<Server>(TYPES.Server)));
 
 	it('#main should launch all application', async () =>
-		main(server)(new Promise((resolve) => setTimeout(resolve, 5000)))).timeout(
-		7000,
-	);
+		main(server)(asyncTimeout(5000))).timeout(7000);
 
 	it('#main should not abort program on launch fail', async () => {
 		const serverLaunchStub = sinon.stub(server, 'launch');
