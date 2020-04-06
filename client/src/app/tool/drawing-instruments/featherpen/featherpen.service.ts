@@ -72,7 +72,7 @@ export class FeatherpenService extends ToolService {
   getInterpolatedPoints(initial: Point, final: Point): Point[] {
     const points = [];
     const delta = {x: final.x - initial.x, y: final.y - initial.y};
-    if (Math.abs(delta.x) > Math.abs(delta.y)) {
+    // if (Math.abs(delta.x) > Math.abs(delta.y)) {
       for (let x = Math.min(initial.x, final.x); x < Math.max(initial.x, final.x); x++) {
         if (Math.min(initial.x, final.x) === initial.x) {
           points.push(new Point(x, initial.y + 1 / delta.x));
@@ -80,7 +80,7 @@ export class FeatherpenService extends ToolService {
           points.push(new Point(x, final.y + 1 / delta.x));
         }
       }
-    } else {
+    // } else {
       for (let y = Math.min(initial.y, final.y); y < Math.max(initial.y, final.y); y++) {
         if (Math.min(initial.y, final.y) === initial.y) {
           points.push(new Point(initial.x + 1 / delta.y, y));
@@ -88,7 +88,7 @@ export class FeatherpenService extends ToolService {
           points.push(new Point(final.x + 1 / delta.y, y));
         }
       }
-    }
+    // }
     return points;
   }
 
