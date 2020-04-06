@@ -13,7 +13,7 @@ const createClickMouseEvent = (event: string): MouseEvent => {
 };
 
 // tslint:disable:no-string-literal no-magic-numbers no-any
-fdescribe('FeatherpenLogicComponent', () => {
+describe('FeatherpenLogicComponent', () => {
   let component: FeatherpenLogicComponent;
   let fixture: ComponentFixture<FeatherpenLogicComponent>;
 
