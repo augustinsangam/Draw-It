@@ -108,9 +108,7 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
 
   private complete(initial: Point, final: Point): string {
     let toAdd = '';
-    // console.log(`interpol, initX ${initial.x} finalX ${final.x}`);
     const points = this.service.getInterpolatedPoints(initial, final);
-    // console.log(`${points.length} points interpolated`);
     for (const point of points) {
       toAdd = `${toAdd} ${this.service.pathCentered(point)}`;
     }
@@ -120,7 +118,7 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
   private onMouseMove(point: Point): void {
     if (this.onDrag) {
       this.currentPath += this.service.pathCentered(point);
-      if (point.squareDistanceTo(this.previousPoint) > 3) {
+      if (point.squareDistanceTo(this.previousPoint) > 1) {
         this.currentPath = `${this.currentPath} ${this.complete(this.previousPoint, point)}`;
       }
       this.element.setAttribute('d', `${this.currentPath}`);

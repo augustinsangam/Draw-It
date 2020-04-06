@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
 import {Point} from '../../shape/common/point';
 import {ToolService} from '../../tool.service';
@@ -43,9 +43,7 @@ export class FeatherpenService extends ToolService {
       point.x - this.length / 2 * Math.cos(this.toRadians(this.angle)),
       point.y + this.length / 2 * Math.sin(this.toRadians(this.angle))
     );
-    const p = `M ${point.x} ${point.y} L ${topPoint.x} ${topPoint.y} L ${bottomPoint.x} ${bottomPoint.y}`;
-    if (p.includes('Infinity')) {console.log(`Infinity computed ${point.x} ${point.y}`);}
-    return p;
+    return `M ${point.x} ${point.y} L ${topPoint.x} ${topPoint.y} L ${bottomPoint.x} ${bottomPoint.y}`;
   }
 
   private toRadians(angleDeg: number): number {
@@ -72,23 +70,20 @@ export class FeatherpenService extends ToolService {
   getInterpolatedPoints(initial: Point, final: Point): Point[] {
     const points = [];
     const delta = {x: final.x - initial.x, y: final.y - initial.y};
-    // if (Math.abs(delta.x) > Math.abs(delta.y)) {
-      for (let x = Math.min(initial.x, final.x); x < Math.max(initial.x, final.x); x++) {
-        if (Math.min(initial.x, final.x) === initial.x) {
-          points.push(new Point(x, initial.y + 1 / delta.x));
-        } else {
-          points.push(new Point(x, final.y + 1 / delta.x));
-        }
-      }
-    // } else {
-      for (let y = Math.min(initial.y, final.y); y < Math.max(initial.y, final.y); y++) {
-        if (Math.min(initial.y, final.y) === initial.y) {
-          points.push(new Point(initial.x + 1 / delta.y, y));
-        } else {
-          points.push(new Point(final.x + 1 / delta.y, y));
-        }
-      }
-    // }
+
+    // y = aXAxis * x + bXAxis
+    const aXAxis = delta.y / delta.x;
+    const bXAxis = initial.y - aXAxis * initial.x;
+    // x = aYAxis * y + bYAxis
+    const aYAxis = delta.x / delta.y;
+    const bYAxis = initial.x - aYAxis * initial.y;
+
+    for (let x = Math.min(initial.x, final.x); x < Math.max(initial.x, final.x); x++) {
+        points.push(new Point(x, aXAxis * x + bXAxis));
+    }
+    for (let y = Math.min(initial.y, final.y); y < Math.max(initial.y, final.y); y++) {
+        points.push(new Point(aYAxis * y + bYAxis, y));
+    }
     return points;
   }
 
