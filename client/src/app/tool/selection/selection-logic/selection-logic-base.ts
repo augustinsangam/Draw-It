@@ -27,6 +27,9 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   protected mouse: Util.Mouse;
   protected rectangles: Util.SelectionRectangles;
   protected keyManager: Util.KeyManager;
+  protected inverted: {x: number, y: number};
+
+  protected debugCircle: SVGElement;
 
   constructor(protected renderer: Renderer2,
               protected undoRedoService: UndoRedoService,
@@ -39,9 +42,15 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     };
     this.undoRedoService.setPostUndoAction(action);
     this.undoRedoService.setPostRedoAction(action);
+    this.inverted = {x: 1, y: 1};
   }
 
   ngOnInit(): void {
+    // Debug
+    this.debugCircle = this.renderer.createElement('circle', this.svgNS);
+    this.renderer.appendChild(this.svgStructure.temporaryZone, this.debugCircle);
+    // Debug
+
     this.mouse = Util.SelectionLogicUtil.initialiseMouse();
     this.rectangles = Util.SelectionLogicUtil.initialiseRectangles(
       this.renderer, this.svgStructure.temporaryZone, this.svgNS);
@@ -156,7 +165,6 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.resetTranslate(this.rectangles.visualisation);
     this.deleteCircles();
     this.service.selectedElements.clear();
-    console.log('entre');
   }
 
   private deleteCircles(): void {
@@ -213,14 +221,19 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     new Transform(this.rectangles.visualisation, this.renderer).translate(x, y);
   }
 
-  protected resizeAll(factorX: number, factorY: number, scaleOffset: Util.Offset, mouseOffset: Util.Offset): void {
+  protected resizeAll(factorX: number, factorY: number, scaleOffset: Util.Offset, mouseOffset: Util.Offset, baseTransform: number[]): void {
     const point = this.findElementCenter(this.rectangles.visualisation);
-    Transform.scaleAll(this.service.selectedElements, point, factorX, factorY, this.renderer);
+    point.x = point.x - scaleOffset.x / 2;
+    point.y = point.y - scaleOffset.y / 2;
+    Transform.scaleAll(this.service.selectedElements, point, factorX * this.inverted.x, factorY * this.inverted.y, baseTransform, this.renderer);
+    // Circle.set(point, this.renderer, this.debugCircle, Util.CIRCLE_RADIUS, 'red');
     if (factorX !== 1) {
       Transform.translateAll(this.service.selectedElements, scaleOffset.x / 2, 0, this.renderer);
+      new Transform(this.debugCircle, this.renderer).translate(scaleOffset.x / 2, 0);
     }
     if (factorY !== 1) {
       Transform.translateAll(this.service.selectedElements, 0, scaleOffset.y / 2, this.renderer);
+      new Transform(this.debugCircle, this.renderer).translate(0, scaleOffset.y / 2);
     }
     this.resizeVisualisationRectangle(point, mouseOffset);
   }
@@ -232,10 +245,10 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     const y = this.rectangles.visualisation.getAttribute('y');
     const width = this.rectangles.visualisation.getAttribute('width');
     const height = this.rectangles.visualisation.getAttribute('height');
-    const refPoint1 = new Point(0, 0);
-    const refPoint2 = new Point(0, 0);
-    // let splitedOffset: Util.Offset[];
-    const splitedOffset = [mouseOffset];
+    let refPoint1 = new Point(0, 0);
+    let refPoint2 = new Point(0, 0);
+    let splitedOffset: Util.Offset[];
+    // const splitedOffset = [mouseOffset];
 
     if (!!x && !!y && !!width && !!height) {
       refPoint1.x = +x;
@@ -245,10 +258,9 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
       let switched = false;
 
-      // splitedOffset = 
-      this.preventResizeOverflow(mouseOffset, [refPoint1, refPoint2]);
-      // console.log(splitedOffset[0].x + ' ' + splitedOffset[1].x);
-      // [refPoint1, refPoint2] = this.drawVisualisationResising(splitedOffset[0], [refPoint1, refPoint2]);
+      splitedOffset = this.preventResizeOverflow(mouseOffset, [refPoint1, refPoint2]);
+      console.log('splited: ' + splitedOffset[0].x + ' ' + splitedOffset[1].x);
+      [refPoint1, refPoint2] = this.drawVisualisationResising(splitedOffset[0], [refPoint1, refPoint2]);
       
       if (refPoint2.x - refPoint1.x <= 1 && splitedOffset[0].x !== 0) {
         if (splitedOffset[0].x < 0 && this.mouse.left.selectedElement !== 0) {
@@ -259,8 +271,9 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
           switched = true;
         }
         if (switched) {
-          Transform.scaleAll(this.service.selectedElements, point, -1, 1, this.renderer);
-          console.log('switch to ' + this.mouse.left.selectedElement);
+          this.inverted.x = -this.inverted.x;
+          // Transform.scaleAll(this.service.selectedElements, point, -1, 1, this.renderer);
+          console.log('SWITCH TO ' + this.mouse.left.selectedElement);
         }
       }
       switched = false;
@@ -273,12 +286,13 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
           switched = true;
         }
         if (switched) {
-          Transform.scaleAll(this.service.selectedElements, point, 1, -1, this.renderer);
-          console.log('switch to ' + this.mouse.left.selectedElement);
+          this.inverted.y = -this.inverted.y;
+          // Transform.scaleAll(this.service.selectedElements, point, 1, -1, this.renderer);
+          console.log('SWITCH TO ' + this.mouse.left.selectedElement);
         }
       }
-      // this.drawVisualisationResising(splitedOffset[1], [refPoint1, refPoint2]);
-      this.drawVisualisationResising(mouseOffset, [refPoint1, refPoint2]);
+      this.drawVisualisationResising(splitedOffset[1], [refPoint1, refPoint2]);
+      // this.drawVisualisationResising(mouseOffset, [refPoint1, refPoint2]);
     }
     // const p1 = new Point(
     //   refPoint1.x + ((this.mouse.left.selectedElement === Util.CircleType.LEFT_CIRCLE) ? mouseOffset.x : 0),
@@ -386,10 +400,17 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   protected findElementCenter(element: SVGElement): Point {
     const selection = new SingleSelection(element, this.getSvgOffset()).points();
-    return new Point(
+    // return new Point(
+    //   (selection[0].x + selection[1].x) / 2,
+    //   (selection[0].y + selection[1].y) / 2
+    // );
+    const centerPoint = new Point(
       (selection[0].x + selection[1].x) / 2,
       (selection[0].y + selection[1].y) / 2
     );
+    Circle.set(centerPoint, this.renderer, this.debugCircle, Util.CIRCLE_RADIUS, 'red');
+    return centerPoint;
+
   }
 
   getSvgOffset(): Offset {

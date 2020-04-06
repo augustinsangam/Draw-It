@@ -7,7 +7,6 @@ export class Transform {
   private matrix: Matrix;
 
   constructor(private element: SVGElement, private renderer: Renderer2) {
-
     const transform = this.element.getAttribute('transform') as string;
     const result =
       /matrix\(\s*([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)[ ,][ ]?([^\s,)]+)\)/.exec(transform);
@@ -32,10 +31,22 @@ export class Transform {
     }
   }
 
-  static scaleAll(elements: Iterable<SVGElement>, point: Point, sx: number, sy: number, renderer: Renderer2): void {
+  static scaleAll(elements: Iterable<SVGElement>,
+                  point: Point,
+                  sx: number,
+                  sy: number,
+                  baseTransform: number[],
+                  renderer: Renderer2): void {
     for (const element of elements) {
-      new Transform(element, renderer).scale(point, sx, sy);
+      new Transform(element, renderer).scale(point, sx, sy, baseTransform);
     }
+  }
+
+  private setMatrix(array: number[]): void {
+    const data = [[array[0], array[1], array[2]],
+                  [array[3], array[4], array[5]],
+                  [       0,        0,        1]];
+    this.matrix = new Matrix(3, 3, data);
   }
 
   translate(dx: number, dy: number): void {
@@ -64,7 +75,9 @@ export class Transform {
     this.setAttributes();
   }
 
-  scale(point: Point, sx: number, sy: number): void {
+  scale(point: Point, sx: number, sy: number, baseTransform: number[]): void {
+    // this.setAttributesFromArray(baseTransform);
+    this.setMatrix(baseTransform);
     const [x, y] = [point.x, point.y];
     const translateMatrix         = new Matrix(3, 3, [[1, 0, x],
                                                       [0, 1, y],
@@ -86,6 +99,12 @@ export class Transform {
     return [this.matrix.data[0][2] , this.matrix.data[1][2]];
   }
 
+  getTransform(): number[] {
+    return [this.matrix.data[0][0], this.matrix.data[0][1], this.matrix.data[0][2],
+            this.matrix.data[1][0], this.matrix.data[1][1], this.matrix.data[1][2]
+    ];
+  }
+
   private setAttributes(): void {
     this.renderer.setAttribute(
       this.element,
@@ -99,4 +118,16 @@ export class Transform {
       );
   }
 
+  setAttributesFromArray(array: number[]): void {
+    this.renderer.setAttribute(
+      this.element,
+      'transform',
+      `matrix(${array[0]},` +
+      `${array[3]},` +
+      `${array[1]},` +
+      `${array[4]},` +
+      `${array[2]},` +
+      `${array[5]})`
+      );
+  }
 }
