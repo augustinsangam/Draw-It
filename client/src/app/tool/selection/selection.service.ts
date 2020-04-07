@@ -41,7 +41,7 @@ export class SelectionService {
     this.delete = new Subject();
 
     this.magnetActive = true;
-    this.magnetPoint = MagnetPoint.Center;
+    this.magnetPoint = MagnetPoint.NorthWest;
   }
 
 }

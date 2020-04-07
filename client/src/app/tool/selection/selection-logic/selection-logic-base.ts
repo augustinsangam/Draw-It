@@ -1,4 +1,5 @@
 import { OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { GridService } from '../../grid/grid.service';
 import { MathService } from '../../mathematics/tool.math-service.service';
 import { BackGroundProperties, StrokeProperties } from '../../shape/common/abstract-shape';
 import { Circle } from '../../shape/common/circle';
@@ -15,6 +16,7 @@ import { Arrow } from './arrow';
 import { BasicSelectionType, ElementSelectedType } from './element-selected-type';
 import * as Util from './selection-logic-util';
 import { Transform } from './transform';
+import { PointSet } from '../../bucket/bucket-logic/point-set';
 
 const NOT_FOUND = -1;
 
@@ -30,7 +32,8 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   constructor(readonly   renderer: Renderer2,
               protected  undoRedoService: UndoRedoService,
-              readonly   service: SelectionService) {
+              readonly   service: SelectionService,
+              protected  gridService: GridService) {
     super();
     this.allListenners = [];
     const action: PostAction = {
@@ -272,8 +275,53 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   private handleKey(key: string, dx: number, dy: number): void {
     if (this.keyManager.keyPressed.has(key)) {
-      this.translateAll(dx, dy);
+      const comparePoint = this.getComparePoint(this.service.selectedElements);
+      const pointInDirection = this.pointInDirection(comparePoint, dx, dy);
+      let [translateX, translateY] = [pointInDirection.x - comparePoint.x, pointInDirection.y - comparePoint.y];
+      const intersection = this.nearestIntersection(comparePoint);
+      translateX += intersection.x - comparePoint.x;
+      translateY += intersection.y - comparePoint.y;
+
+      if (translateX > this.gridService.squareSize) {
+        translateX -= this.gridService.squareSize;
+      } else if (translateX < -this.gridService.squareSize) {
+        translateX += this.gridService.squareSize;
+      }
+      if (translateY > this.gridService.squareSize) {
+        translateY -= this.gridService.squareSize;
+      } else if (translateY < -this.gridService.squareSize) {
+        translateY += this.gridService.squareSize;
+      }
+
+      this.translateAll(translateX, translateY);
     }
+  }
+
+  private nearestIntersection(point: Point): Point {
+    const candidates = new PointSet();
+    const s = this.gridService.squareSize;
+    for (let i = 0; i < 2; i++) {
+      for (let j = 0; j < 2; j++) {
+        candidates.add(new Point(point.x - point.x % s + i * s, point.y - point.y % s + j * s));
+      }
+    }
+    return candidates.nearestPoint(point)[0] as Point;
+  }
+
+  private pointInDirection(currentPoint: Point, ux: number, uy: number): Point {
+    const dx = ux === 0 ? 0 : ux / Math.abs(ux) * this.gridService.squareSize;
+    const dy = uy === 0 ? 0 : uy / Math.abs(uy) * this.gridService.squareSize;
+    return new Point (currentPoint.x + dx, currentPoint.y + dy);
+  }
+
+  private getComparePoint(elements: Set<SVGElement>): Point {
+    const selection = new MultipleSelection(elements, this.getSvgOffset()).getSelection().points;
+    const x = (this.service.magnetPoint as number) % 3;
+    const y = Math.floor((this.service.magnetPoint as number) / 3);
+    return new Point(
+      (2 - x) / 2 * selection[0].x + x / 2 * selection[1].x,
+      (2 - y) / 2 * selection[0].y + y / 2 * selection[1].y,
+    );
   }
 
   ngOnDestroy(): void {

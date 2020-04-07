@@ -1,4 +1,5 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
+import { GridService } from '../../grid/grid.service';
 import { Point } from '../../shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { SelectionService } from '../selection.service';
@@ -22,9 +23,10 @@ export class SelectionLogicComponent
 
   constructor(readonly  renderer: Renderer2,
               protected undoRedoService: UndoRedoService,
-              readonly  service: SelectionService
+              readonly  service: SelectionService,
+              protected   gridService: GridService
   ) {
-    super(renderer, undoRedoService, service);
+    super(renderer, undoRedoService, service, gridService);
     this.initialiseHandlers();
     this.scaleUtil = new ScaleUtil(this);
   }
