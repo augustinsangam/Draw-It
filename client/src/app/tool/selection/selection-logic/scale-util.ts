@@ -15,13 +15,11 @@ export class ScaleUtil {
 
     private baseVisualisationRectangleDimension: Dimensions = { width: 0, height: 0 };
     private scaledRectangleDimension: Dimensions = { width: 0, height: 0 };
-    private readonly baseTransform: Map<SVGElement, Transform>;
+    private baseTransform: Map<SVGElement, Transform>;
     private scaleOffset: Offset;
     private inverted: Offset;
 
-    constructor(private selectionLogic: SelectionLogicComponent) {
-        this.baseTransform = new Map();
-    }
+    constructor(private selectionLogic: SelectionLogicComponent) {}
 
     onMouseDown(): void {
         const selectionWidth  = this.selectionLogic.rectangles.visualisation.getAttribute('width');
@@ -31,6 +29,7 @@ export class ScaleUtil {
             this.baseVisualisationRectangleDimension = { width: Math.round(width), height: Math.round(height) };
             this.scaledRectangleDimension = { width: Math.round(width), height: Math.round(height) };
         }
+        this.baseTransform = new Map();
         this.selectionLogic.service.selectedElements.forEach((element) => {
             this.baseTransform.set(element, new Transform(element, this.selectionLogic.renderer));
         });
@@ -41,7 +40,7 @@ export class ScaleUtil {
     onMouseUp(): void {
         this.scaleOffset    = {x: 0, y: 0};
         this.inverted       = {x: 1, y: 1};
-        this.baseTransform.clear();
+        this.baseTransform = new Map();
     }
 
     private onResize(previousCurrentPoint: Point): Offset {
