@@ -1,5 +1,7 @@
 import { Renderer2 } from '@angular/core';
 import { Point } from '../../shape/common/point';
+import { Offset } from '../offset';
+import { SingleSelection } from '../single-selection';
 import { BasicSelectionType } from './element-selected-type';
 import { MouseTracking } from './mouse-tracking';
 
@@ -60,11 +62,6 @@ export interface KeyManager {
   };
 }
 
-export interface Offset {
-  x: number;
-  y: number;
-}
-
 export class SelectionLogicUtil {
 
   static initialiseMouse(): Mouse {
@@ -107,7 +104,7 @@ export class SelectionLogicUtil {
     const circles = new Array<SVGElement>();
     CIRCLES.forEach((index) => {
       const circle = renderer.createElement('circle', domain);
-      const resizeType = index % 3 === 0 ? 'col-resize' : 'ns-resize';
+      const resizeType = index % (CIRCLES.length - 1) === 0 ? 'col-resize' : 'ns-resize';
       renderer.setStyle(circle, 'cursor', resizeType);
       circles.push(circle);
       renderer.appendChild(zone, circle);
@@ -129,6 +126,14 @@ export class SelectionLogicUtil {
       element = element.parentNode as SVGElement;
     }
     return element;
+  }
+
+  static findElementCenter(element: SVGElement, offset: Offset): Point {
+    const selection = new SingleSelection(element, offset).points();
+    return new Point(
+      (selection[0].x + selection[1].x) / 2,
+      (selection[0].y + selection[1].y) / 2
+    );
   }
 
 }

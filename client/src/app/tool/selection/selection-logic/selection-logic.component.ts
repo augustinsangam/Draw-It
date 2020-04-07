@@ -2,15 +2,13 @@ import { Component, OnInit, Renderer2 } from '@angular/core';
 import { Point } from '../../shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { SelectionService } from '../selection.service';
+import { Clipboard } from './clipboard';
 import { BasicSelectionType } from './element-selected-type';
+import { ScaleUtil } from './scale-util';
 import { SelectionLogicBase } from './selection-logic-base';
 import * as Util from './selection-logic-util';
-import { Transform } from './transform';
-import { MultipleSelection } from '../multiple-selection';
-import { Zone } from '../zone';
 
 const NOT_FOUND = -1;
-const MINIMUM_SCALE = 5;
 
 @Component({
   selector: 'app-selection-logic',
@@ -20,18 +18,15 @@ export class SelectionLogicComponent
   extends SelectionLogicBase implements OnInit {
 
   private mouseHandlers: Map<string, Map<string, Util.MouseEventCallBack>>;
-  private baseVisualisationRectangleDimension: {
-    width: number,
-    height: number
-  } = { width: 0, height: 0 };
-  private scaledRectangleDimension: { width: number, height: number } = { width: 0, height: 0 };
+  private scaleUtil: ScaleUtil;
 
-  constructor(protected renderer: Renderer2,
+  constructor(readonly  renderer: Renderer2,
               protected undoRedoService: UndoRedoService,
-              protected service: SelectionService
+              readonly  service: SelectionService
   ) {
     super(renderer, undoRedoService, service);
     this.initialiseHandlers();
+    this.scaleUtil = new ScaleUtil(this);
   }
 
   private initialiseHandlers(): void {
@@ -61,64 +56,21 @@ export class SelectionLogicComponent
             && !this.service.selectedElements.has(target as SVGElement)) {
             this.applySingleSelection(target as SVGElement);
           }
+          this.scaleUtil.onMouseDown();
         }],
-        // tslint:disable-next-line: cyclomatic-complexity
         ['mousemove', ($event: MouseEvent) => {
           $event.preventDefault();
           if (this.mouse.left.mouseIsDown) {
             const previousCurrentPoint = new Point(this.mouse.left.currentPoint.x, this.mouse.left.currentPoint.y);
             this.mouse.left.currentPoint = new Point($event.offsetX,
               $event.offsetY);
-            const selectionWidth = this.rectangles.visualisation.getAttribute('width');
-            const selectionHeight = this.rectangles.visualisation.getAttribute('height');
-            if (!!selectionHeight && !!selectionWidth) {
-              const [width, height] = [+selectionWidth, +selectionHeight];
-              this.baseVisualisationRectangleDimension = { width: Math.round(width), height: Math.round(height) };
-              this.scaledRectangleDimension = { width: Math.round(width), height: Math.round(height) };
-              // this.baseVisualisationRectangleDimension = { width, height };
-              // this.scaledRectangleDimension = { width, height };
-            }
+
             if (this.mouse.left.onDrag && !this.mouse.left.onResize) {
               const offsetX = $event.offsetX - previousCurrentPoint.x;
               const offsetY = $event.offsetY - previousCurrentPoint.y;
               this.translateAll(offsetX, offsetY);
             } else if (this.mouse.left.onResize) {
-              this.baseVisualisationRectangleDimension = {
-                width: this.scaledRectangleDimension.width,
-                height: this.scaledRectangleDimension.height
-              };
-              const offsetX = +this.mouse.left.selectedElement % 3 === 0 ? $event.offsetX - previousCurrentPoint.x : 0;
-              const offsetY = +this.mouse.left.selectedElement % 3 !== 0 ? $event.offsetY - previousCurrentPoint.y : 0;
-
-              // console.log(offsetX);
-
-              this.scaledRectangleDimension.width += this.mouse.left.selectedElement === 0 ? -offsetX : offsetX;
-              this.scaledRectangleDimension.height += this.mouse.left.selectedElement === 1 ? -offsetY : offsetY;
-
-              const mouseOffset: Util.Offset = {x: offsetX, y: offsetY};
-              const scaleOffset: Util.Offset = {x: offsetX, y: offsetY};
-
-              // console.log(this.baseVisualisationRectangleDimension.width + ' ' + this.scaledRectangleDimension.width);
-
-              const factorX = this.baseVisualisationRectangleDimension.width >= MINIMUM_SCALE ?
-                this.scaledRectangleDimension.width / this.baseVisualisationRectangleDimension.width : 1;
-              const factorY = this.baseVisualisationRectangleDimension.height >= MINIMUM_SCALE ?
-                this.scaledRectangleDimension.height / this.baseVisualisationRectangleDimension.height : 1;
-
-              if (factorX === 1 && this.scaledRectangleDimension.width > MINIMUM_SCALE && this.baseVisualisationRectangleDimension.width < MINIMUM_SCALE) {
-                // factorX = this.scaledRectangleDimension.width / MINIMUM_SCALE;
-                const test = MINIMUM_SCALE - this.baseVisualisationRectangleDimension.width;
-                scaleOffset.x = test;
-                mouseOffset.x = test;
-                console.log('Recalcul ' + factorX + ' offsetX : ' + test);
-              }
-              if (factorY === 1 && this.scaledRectangleDimension.height > MINIMUM_SCALE && this.baseVisualisationRectangleDimension.height < MINIMUM_SCALE) {
-                // factorY = this.scaledRectangleDimension.height / MINIMUM_SCALE;
-                const test = MINIMUM_SCALE - this.baseVisualisationRectangleDimension.height;
-                scaleOffset.y = test;
-                mouseOffset.y = test;
-              }
-              this.resizeAll(factorX, factorY, scaleOffset, mouseOffset);
+              this.scaleUtil.onMouseMove(previousCurrentPoint);
             } else {
               this.drawSelection(this.mouse.left.startPoint,
                 this.mouse.left.currentPoint);
@@ -161,7 +113,8 @@ export class SelectionLogicComponent
         ['wheel', ($event: WheelEvent) => {
           $event.preventDefault();
           const angle = this.keyManager.alt ?
-            $event.deltaY / Util.MOUSE_WHEEL_DELTA_Y : Util.ANGLE * ($event.deltaY / Util.MOUSE_WHEEL_DELTA_Y);
+            $event.deltaY / Util.MOUSE_WHEEL_DELTA_Y :
+            Util.ANGLE * ($event.deltaY / Util.MOUSE_WHEEL_DELTA_Y);
           if (this.keyManager.shift) {
             this.allSelfRotate(angle);
           } else {
@@ -219,86 +172,6 @@ export class SelectionLogicComponent
     ]);
   }
 
-  private onCopy(): void {
-    if (this.service.selectedElements.size !== 0) {
-      this.service.clipboard = [new Set(this.service.selectedElements)];
-    }
-  }
-
-  private onCut(): void {
-    if (this.service.selectedElements.size !== 0) {
-      this.service.clipboard = [new Set(this.service.selectedElements)];
-      this.service.clipboard.peak().forEach((element) => {
-        this.renderer.removeChild(this.svgStructure.drawZone, element);
-      });
-      this.deleteVisualisation();
-    }
-  }
-
-  private onPaste(): void {
-    if (this.service.clipboard.length !== 0) {
-      while (this.service.clipboard.length > 1 && !this.clipboardValid(this.service.clipboard.peak())) {
-        console.log(this.service.clipboard);
-        this.service.clipboard.pop();
-      }
-      this.service.clipboard.push(Util.SelectionLogicUtil.clone(this.service.clipboard.peak()));
-      Transform.translateAll(
-        this.service.clipboard.peak(),
-        Util.PASTE_TRANSLATION, Util.PASTE_TRANSLATION, this.renderer);
-      const lastValidClipboard = this.service.clipboard.peak();
-      lastValidClipboard.forEach((element) => {
-        this.renderer.appendChild(this.svgStructure.drawZone, element);
-      });
-      if (!this.isInside(lastValidClipboard)) {
-        const length = this.service.clipboard.length - 1;
-        Transform.translateAll(
-          lastValidClipboard,
-          - Util.PASTE_TRANSLATION * length, -Util.PASTE_TRANSLATION * length, this.renderer);
-        this.service.clipboard = [lastValidClipboard];
-      }
-      this.applyMultipleSelection(undefined, undefined, new Set(lastValidClipboard));
-    }
-  }
-
-  private clipboardValid(clipboard: Set<SVGElement>): boolean {
-    if (clipboard.size === 0) {
-      return false;
-    }
-    for (const element of clipboard) {
-      if (!this.svgStructure.drawZone.contains(element)) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private isInside(elements: Set<SVGElement>): boolean {
-    const svgZone = new Zone(0, this.svgShape.width, 0, this.svgShape.height);
-    const selection = new MultipleSelection(elements, this.getSvgOffset(), undefined, undefined).getSelection();
-    const selectionZone = new Zone(selection.points[0].x, selection.points[1].x, selection.points[0].y, selection.points[1].y);
-    return svgZone.intersection(selectionZone)[0];
-  }
-
-  private onDelete(): void {
-    if (this.service.selectedElements.size !== 0) {
-      this.service.selectedElements.forEach((element) => {
-        this.renderer.removeChild(this.svgStructure.drawZone, element);
-      });
-      this.deleteVisualisation();
-    }
-  }
-
-  private onDuplicate(): void {
-    const toDuplicate = Util.SelectionLogicUtil.clone(this.service.selectedElements);
-    Transform.translateAll(
-      toDuplicate,
-      Util.PASTE_TRANSLATION, Util.PASTE_TRANSLATION, this.renderer);
-    toDuplicate.forEach((element) => {
-      this.renderer.appendChild(this.svgStructure.drawZone, element);
-    });
-    this.applyMultipleSelection(undefined, undefined, new Set(toDuplicate));
-  }
-
   ngOnInit(): void {
     super.ngOnInit();
     [
@@ -321,11 +194,16 @@ export class SelectionLogicComponent
       this.renderer.listen(document, 'keyup',
         this.keyManager.handlers.keyup));
 
-    const subscriptionCopy = this.service.copy.asObservable().subscribe(() => this.onCopy());
-    const subscriptionCut = this.service.cut.asObservable().subscribe(() => this.onCut());
-    const subscriptionPaste = this.service.paste.asObservable().subscribe(() => this.onPaste());
-    const subcriptionDelete = this.service.delete.asObservable().subscribe(() => this.onDelete());
-    const subcriptionDuplicate = this.service.duplicate.asObservable().subscribe(() => this.onDuplicate());
+    const subscriptionCopy      = this.service.copy.     asObservable()
+                                  .subscribe(() => new Clipboard(this).copy());
+    const subscriptionCut       = this.service.cut.      asObservable()
+                                  .subscribe(() => new Clipboard(this).cut());
+    const subscriptionPaste     = this.service.paste.    asObservable()
+                                  .subscribe(() => new Clipboard(this).paste());
+    const subcriptionDelete     = this.service.delete.   asObservable()
+                                  .subscribe(() => new Clipboard(this).delete());
+    const subcriptionDuplicate  = this.service.duplicate.asObservable()
+                                  .subscribe(() => new Clipboard(this).duplicate());
 
     this.allListenners.push(() => { subcriptionDelete.unsubscribe(); });
     this.allListenners.push(() => { subscriptionPaste.unsubscribe(); });

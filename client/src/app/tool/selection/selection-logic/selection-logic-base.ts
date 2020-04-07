@@ -24,13 +24,13 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   protected circles: SVGElement[];
   protected allListenners: (() => void)[];
   protected selectedElementsFreezed: Set<SVGElement>;
-  protected mouse: Util.Mouse;
-  protected rectangles: Util.SelectionRectangles;
   protected keyManager: Util.KeyManager;
+  rectangles: Util.SelectionRectangles;
+  mouse: Util.Mouse;
 
-  constructor(protected renderer: Renderer2,
-              protected undoRedoService: UndoRedoService,
-              protected service: SelectionService) {
+  constructor(readonly   renderer: Renderer2,
+              protected  undoRedoService: UndoRedoService,
+              readonly   service: SelectionService) {
     super();
     this.allListenners = [];
     const action: PostAction = {
@@ -72,7 +72,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.applyInversion(inversion.selectedElements);
   }
 
-  protected applyMultipleSelection(startPoint?: Point, endPoint?: Point, elements?: Set<SVGElement>): void {
+  applyMultipleSelection(startPoint?: Point, endPoint?: Point, elements?: Set<SVGElement>): void {
     this.deleteVisualisation();
     const selection = this.getMultipleSelection(startPoint, endPoint, elements);
     this.service.selectedElements = selection.selectedElements;
@@ -109,7 +109,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     this.drawARectangle(this.rectangles.selection, p1, p2, Util.COLORS.BLUE);
   }
 
-  private drawVisualisation(p1: Point, p2: Point): void {
+  drawVisualisation(p1: Point, p2: Point): void {
     this.drawARectangle(this.rectangles.visualisation, p1, p2, Util.COLORS.GREEN);
     this.drawCircles(p1, p2);
   }
@@ -151,7 +151,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     Circle.set(center, this.renderer, circle, radius, Util.COLORS.GRAY);
   }
 
-  protected deleteVisualisation(): void {
+  deleteVisualisation(): void {
     this.resetRectangle(this.rectangles.visualisation);
     this.resetTranslate(this.rectangles.visualisation);
     this.deleteCircles();
@@ -212,163 +212,8 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     new Transform(this.rectangles.visualisation, this.renderer).translate(x, y);
   }
 
-  protected resizeAll(factorX: number, factorY: number, scaleOffset: Util.Offset, mouseOffset: Util.Offset): void {
-    const point = this.findElementCenter(this.rectangles.visualisation);
-    Transform.scaleAll(this.service.selectedElements, point, factorX, factorY, this.renderer);
-    if (factorX !== 1) {
-      Transform.translateAll(this.service.selectedElements, scaleOffset.x / 2, 0, this.renderer);
-    }
-    if (factorY !== 1) {
-      Transform.translateAll(this.service.selectedElements, 0, scaleOffset.y / 2, this.renderer);
-    }
-    this.resizeVisualisationRectangle(point, mouseOffset);
-  }
-
-  // tslint:disable-next-line: cyclomatic-complexity
-  private resizeVisualisationRectangle(point: Point, mouseOffset: Util.Offset): void {
-
-    const x = this.rectangles.visualisation.getAttribute('x');
-    const y = this.rectangles.visualisation.getAttribute('y');
-    const width = this.rectangles.visualisation.getAttribute('width');
-    const height = this.rectangles.visualisation.getAttribute('height');
-    const refPoint1 = new Point(0, 0);
-    const refPoint2 = new Point(0, 0);
-    // let splitedOffset: Util.Offset[];
-    const splitedOffset = [mouseOffset];
-
-    if (!!x && !!y && !!width && !!height) {
-      refPoint1.x = +x;
-      refPoint1.y = +y;
-      refPoint2.x = +x + Math.round(+width);
-      refPoint2.y = +y + Math.round(+height);
-
-      let switched = false;
-
-      // splitedOffset = 
-      this.preventResizeOverflow(mouseOffset, [refPoint1, refPoint2]);
-      // console.log(splitedOffset[0].x + ' ' + splitedOffset[1].x);
-      // [refPoint1, refPoint2] = this.drawVisualisationResising(splitedOffset[0], [refPoint1, refPoint2]);
-      
-      if (refPoint2.x - refPoint1.x <= 1 && splitedOffset[0].x !== 0) {
-        if (splitedOffset[0].x < 0 && this.mouse.left.selectedElement !== 0) {
-          this.mouse.left.selectedElement = Util.CIRCLES[0];
-          switched = true;
-        } else if (splitedOffset[0].x > 0 && this.mouse.left.selectedElement !== 3) {
-          this.mouse.left.selectedElement = Util.CIRCLES[3];
-          switched = true;
-        }
-        if (switched) {
-          Transform.scaleAll(this.service.selectedElements, point, -1, 1, this.renderer);
-          console.log('switch to ' + this.mouse.left.selectedElement);
-        }
-      }
-      switched = false;
-      if (refPoint2.y - refPoint1.y <= 1 && splitedOffset[0].y !== 0) {
-        if (splitedOffset[0].y < 0 && this.mouse.left.selectedElement !== 1) {
-          this.mouse.left.selectedElement = Util.CIRCLES[1];
-          switched = true;
-        } else if (splitedOffset[0].y > 0 && this.mouse.left.selectedElement !== 2) {
-          this.mouse.left.selectedElement = Util.CIRCLES[2];
-          switched = true;
-        }
-        if (switched) {
-          Transform.scaleAll(this.service.selectedElements, point, 1, -1, this.renderer);
-          console.log('switch to ' + this.mouse.left.selectedElement);
-        }
-      }
-      // this.drawVisualisationResising(splitedOffset[1], [refPoint1, refPoint2]);
-      this.drawVisualisationResising(mouseOffset, [refPoint1, refPoint2]);
-    }
-    // const p1 = new Point(
-    //   refPoint1.x + ((this.mouse.left.selectedElement === Util.CircleType.LEFT_CIRCLE) ? mouseOffset.x : 0),
-    //   refPoint1.y + ((this.mouse.left.selectedElement === Util.CircleType.TOP_CIRCLE) ? mouseOffset.y : 0),
-    // );
-    // const p2 = new Point(
-    //   refPoint2.x + ((this.mouse.left.selectedElement === Util.CircleType.RIGHT_CIRCLE) ? mouseOffset.x : 0),
-    //   refPoint2.y + ((this.mouse.left.selectedElement === Util.CircleType.BOTTOM_CIRCLE) ? mouseOffset.y : 0),
-    // );
-    // this.drawVisualisation(p1, p2);
-  }
-
-  private drawVisualisationResising(mouseOffset: Util.Offset, refPoint: Point[]): Point[] {
-    const p1 = new Point(
-      refPoint[0].x + ((this.mouse.left.selectedElement === Util.CircleType.LEFT_CIRCLE) ? mouseOffset.x : 0),
-      refPoint[0].y + ((this.mouse.left.selectedElement === Util.CircleType.TOP_CIRCLE) ? mouseOffset.y : 0),
-    );
-    const p2 = new Point(
-      refPoint[1].x + ((this.mouse.left.selectedElement === Util.CircleType.RIGHT_CIRCLE) ? mouseOffset.x : 0),
-      refPoint[1].y + ((this.mouse.left.selectedElement === Util.CircleType.BOTTOM_CIRCLE) ? mouseOffset.y : 0),
-    );
-    this.drawVisualisation(p1, p2);
-    return [p1, p2];
-  }
-
-  private preventResizeOverflow(mouseOffset: Util.Offset, pointRef: Point[]): Util.Offset[] {
-    let offset1: Util.Offset = {
-      x: 0,
-      y: 0,
-    };
-    let offset2: Util.Offset = {
-      x: 0,
-      y: 0,
-    };
-    switch (this.mouse.left.selectedElement) {
-      case Util.CircleType.LEFT_CIRCLE: {
-        const splitedOffset = pointRef[0].x + mouseOffset.x > pointRef[1].x ? pointRef[1].x - pointRef[0].x : mouseOffset.x;
-        offset1 = {
-          x: splitedOffset,
-          y: 0,
-        };
-        offset2 = {
-          x: -(mouseOffset.x - splitedOffset),
-          y: 0,
-        };
-        break;
-      }
-      case Util.CircleType.TOP_CIRCLE: {
-        const splitedOffset = pointRef[0].y + mouseOffset.y > pointRef[1].y ? pointRef[1].y - pointRef[0].y : mouseOffset.y;
-        offset1 = {
-          x: 0,
-          y: splitedOffset,
-        };
-        offset2 = {
-          x: 0,
-          y: -(mouseOffset.y - splitedOffset),
-        };
-        break;
-      }
-      case Util.CircleType.BOTTOM_CIRCLE: {
-        const splitedOffset = pointRef[1].y + mouseOffset.y < pointRef[0].y ? pointRef[0].y - pointRef[1].y : mouseOffset.y;
-        offset1 = {
-          x: 0,
-          y: splitedOffset,
-        };
-        offset2 = {
-          x: 0,
-          y: -(mouseOffset.y - splitedOffset),
-        };
-        break;
-      }
-      case Util.CircleType.RIGHT_CIRCLE: {
-        const splitedOffset = pointRef[1].x + mouseOffset.x < pointRef[0].x ? pointRef[0].x - pointRef[1].x : mouseOffset.x;
-        offset1 = {
-          x: splitedOffset,
-          y: 0,
-        };
-        offset2 = {
-          x: -(mouseOffset.x - splitedOffset),
-          y: 0,
-        };
-        break;
-      }
-      default:
-        break;
-    }
-    return [offset1, offset2];
-  }
-
   protected rotateAll(angle: number): void {
-    const point = this.findElementCenter(this.rectangles.visualisation);
+    const point = Util.SelectionLogicUtil.findElementCenter(this.rectangles.visualisation, this.getSvgOffset());
     Transform.rotateAll(this.service.selectedElements, point, angle, this.renderer);
     Transform.rotateAll(this.circles, point, angle, this.renderer);
     new Transform(this.rectangles.visualisation, this.renderer).rotate(point, angle);
@@ -377,23 +222,15 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   protected allSelfRotate(angle: number): void {
     this.service.selectedElements.forEach((element) => {
-      const point = this.findElementCenter(element);
+      const point = Util.SelectionLogicUtil.findElementCenter(element, this.getSvgOffset());
       new Transform(element, this.renderer).rotate(point, angle);
     });
     this.applyMultipleSelection(undefined, undefined, new Set(this.service.selectedElements));
   }
 
-  protected findElementCenter(element: SVGElement): Point {
-    const selection = new SingleSelection(element, this.getSvgOffset()).points();
-    return new Point(
-      (selection[0].x + selection[1].x) / 2,
-      (selection[0].y + selection[1].y) / 2
-    );
-  }
-
   getSvgOffset(): Offset {
     const svgBoundingRect = this.svgStructure.root.getBoundingClientRect();
-    return { top: svgBoundingRect.top, left: svgBoundingRect.left };
+    return { y: svgBoundingRect.top, x: svgBoundingRect.left };
   }
 
   private initialiseKeyManager(): void {
@@ -449,5 +286,4 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
       this.svgStructure.temporaryZone, circle)
     );
   }
-
 }
