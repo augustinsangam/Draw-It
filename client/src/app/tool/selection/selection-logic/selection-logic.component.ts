@@ -5,12 +5,12 @@ import { MultipleSelection } from '../multiple-selection';
 import { SelectionService } from '../selection.service';
 import { Zone } from '../zone';
 import { BasicSelectionType } from './element-selected-type';
+import { ScaleUtil } from './scale-util';
 import { SelectionLogicBase } from './selection-logic-base';
 import * as Util from './selection-logic-util';
 import { Transform } from './transform';
 
 const NOT_FOUND = -1;
-const MINIMUM_SCALE = 5;
 
 @Component({
   selector: 'app-selection-logic',
@@ -21,21 +21,16 @@ export class SelectionLogicComponent
 
   private mouseHandlers: Map<string, Map<string, Util.MouseEventCallBack>>;
   private pasteTranslation: number;
-  private baseVisualisationRectangleDimension: {width: number, height: number} = { width: 0, height: 0 };
-  private scaledRectangleDimension: { width: number, height: number } = { width: 0, height: 0 };
-  // private baseTransform: [number[]];
-  private baseTransform: Map<SVGElement, number[]>;
-  private scaleOffset: {x: number, y: number};
+  private scaleUtil: ScaleUtil;
 
-  constructor(protected renderer: Renderer2,
+  constructor(readonly  renderer: Renderer2,
               protected undoRedoService: UndoRedoService,
-              protected service: SelectionService
+              readonly  service: SelectionService
   ) {
     super(renderer, undoRedoService, service);
     this.initialiseHandlers();
     this.pasteTranslation = 0;
-    this.baseTransform = new Map<SVGElement, number[]>();
-    console.log('base: ' + this.baseTransform);
+    this.scaleUtil = new ScaleUtil(this);
   }
 
   private initialiseHandlers(): void {
@@ -65,26 +60,8 @@ export class SelectionLogicComponent
             && !this.service.selectedElements.has(target as SVGElement)) {
             this.applySingleSelection(target as SVGElement);
           }
-          const selectionWidth = this.rectangles.visualisation.getAttribute('width');
-          const selectionHeight = this.rectangles.visualisation.getAttribute('height');
-          if (!!selectionHeight && !!selectionWidth) {
-            const [width, height] = [+selectionWidth, +selectionHeight];
-            this.baseVisualisationRectangleDimension = { width: Math.round(width), height: Math.round(height) };
-            this.scaledRectangleDimension = { width: Math.round(width), height: Math.round(height) };
-          }
-          console.log(this.baseTransform);
-          this.service.selectedElements.forEach((element) => {
-              // this.baseTransform.push(new Transform(element, this.renderer).getTransform());
-              // console.log('ajout');
-              this.baseTransform.set(element, new Transform(element, this.renderer).getTransform());
-            }
-          );
-          // this.baseTransform.splice(0, 1);
-
-          console.log(this.baseTransform);
-          this.scaleOffset = {x: 0, y: 0};
+          this.scaleUtil.onMouseDown();
         }],
-        // tslint:disable-next-line: cyclomatic-complexity
         ['mousemove', ($event: MouseEvent) => {
           $event.preventDefault();
           if (this.mouse.left.mouseIsDown) {
@@ -97,34 +74,7 @@ export class SelectionLogicComponent
               const offsetY = $event.offsetY - previousCurrentPoint.y;
               this.translateAll(offsetX, offsetY);
             } else if (this.mouse.left.onResize) {
-              const offsetX = +this.mouse.left.selectedElement % 3 === 0 ? $event.offsetX - previousCurrentPoint.x : 0;
-              const offsetY = +this.mouse.left.selectedElement % 3 !== 0 ? $event.offsetY - previousCurrentPoint.y : 0;
-
-              this.scaledRectangleDimension.width += this.mouse.left.selectedElement === 0 ? -offsetX : offsetX;
-              this.scaledRectangleDimension.height += this.mouse.left.selectedElement === 1 ? -offsetY : offsetY;
-
-              const mouseOffset: Util.Offset = {x: offsetX, y: offsetY};
-              this.scaleOffset = {x: this.scaleOffset.x + offsetX, y: this.scaleOffset.y + offsetY};
-
-              const factorX = this.baseVisualisationRectangleDimension.width >= MINIMUM_SCALE ?
-                this.scaledRectangleDimension.width / this.baseVisualisationRectangleDimension.width : 1;
-              const factorY = this.baseVisualisationRectangleDimension.height >= MINIMUM_SCALE ?
-                this.scaledRectangleDimension.height / this.baseVisualisationRectangleDimension.height : 1;
-
-              // if (factorX === 1 && this.scaledRectangleDimension.width > MINIMUM_SCALE && this.baseVisualisationRectangleDimension.width < MINIMUM_SCALE) {
-              //   const test = MINIMUM_SCALE - this.baseVisualisationRectangleDimension.width;
-              //   mouseOffset.x = test;
-              //   console.log('Recalcul ' + factorX + ' offsetX : ' + test);
-              // }
-              // if (factorY === 1 && this.scaledRectangleDimension.height > MINIMUM_SCALE && this.baseVisualisationRectangleDimension.height < MINIMUM_SCALE) {
-              //   const test = MINIMUM_SCALE - this.baseVisualisationRectangleDimension.height;
-              //   mouseOffset.y = test;
-              // }
-              // this.baseTransform.forEach((value) =>
-              //   this.resizeAll(factorX, factorY, this.scaleOffset, value)
-              // );
-              this.resizeAll(factorX, factorY, this.scaleOffset, this.baseTransform);
-              this.resizeVisualisationRectangle(mouseOffset);
+              this.scaleUtil.onMouseMove(previousCurrentPoint);
             } else {
               this.drawSelection(this.mouse.left.startPoint,
                 this.mouse.left.currentPoint);
@@ -143,9 +93,6 @@ export class SelectionLogicComponent
             !this.mouse.left.startPoint.equals(this.mouse.left.currentPoint)) {
             this.undoRedoService.saveState();
           }
-          this.scaleOffset = {x: 0, y: 0};
-          this.inverted = {x: 1, y: 1};
-          this.baseTransform = new Map<SVGElement, number[]>();
           this.mouse.left.endPoint = new Point($event.offsetX, $event.offsetY);
           this.mouse.left.mouseIsDown = false;
           this.mouse.left.onDrag = false;

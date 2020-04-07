@@ -1,5 +1,5 @@
 
 export interface Offset {
-  left: number;
-  top: number;
+  x: number;
+  y: number;
 }
