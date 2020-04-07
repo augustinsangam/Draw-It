@@ -23,7 +23,8 @@ export class SelectionLogicComponent
   private pasteTranslation: number;
   private baseVisualisationRectangleDimension: {width: number, height: number} = { width: 0, height: 0 };
   private scaledRectangleDimension: { width: number, height: number } = { width: 0, height: 0 };
-  private baseTransform: number[];
+  // private baseTransform: [number[]];
+  private baseTransform: Map<SVGElement, number[]>;
   private scaleOffset: {x: number, y: number};
 
   constructor(protected renderer: Renderer2,
@@ -33,6 +34,8 @@ export class SelectionLogicComponent
     super(renderer, undoRedoService, service);
     this.initialiseHandlers();
     this.pasteTranslation = 0;
+    this.baseTransform = new Map<SVGElement, number[]>();
+    console.log('base: ' + this.baseTransform);
   }
 
   private initialiseHandlers(): void {
@@ -68,12 +71,18 @@ export class SelectionLogicComponent
             const [width, height] = [+selectionWidth, +selectionHeight];
             this.baseVisualisationRectangleDimension = { width: Math.round(width), height: Math.round(height) };
             this.scaledRectangleDimension = { width: Math.round(width), height: Math.round(height) };
-            // this.baseVisualisationRectangleDimension = { width, height };
-            // this.scaledRectangleDimension = { width, height };
-            this.baseTransform = new Transform(this.service.selectedElements.values().next().value, this.renderer).getTransform();
-            console.log(this.baseTransform);
-            this.scaleOffset = {x: 0, y: 0};
           }
+          console.log(this.baseTransform);
+          this.service.selectedElements.forEach((element) => {
+              // this.baseTransform.push(new Transform(element, this.renderer).getTransform());
+              // console.log('ajout');
+              this.baseTransform.set(element, new Transform(element, this.renderer).getTransform());
+            }
+          );
+          // this.baseTransform.splice(0, 1);
+
+          console.log(this.baseTransform);
+          this.scaleOffset = {x: 0, y: 0};
         }],
         // tslint:disable-next-line: cyclomatic-complexity
         ['mousemove', ($event: MouseEvent) => {
@@ -82,48 +91,40 @@ export class SelectionLogicComponent
             const previousCurrentPoint = new Point(this.mouse.left.currentPoint.x, this.mouse.left.currentPoint.y);
             this.mouse.left.currentPoint = new Point($event.offsetX,
               $event.offsetY);
-            
+
             if (this.mouse.left.onDrag && !this.mouse.left.onResize) {
               const offsetX = $event.offsetX - previousCurrentPoint.x;
               const offsetY = $event.offsetY - previousCurrentPoint.y;
               this.translateAll(offsetX, offsetY);
             } else if (this.mouse.left.onResize) {
-              // this.baseVisualisationRectangleDimension = {
-              //   width: this.scaledRectangleDimension.width,
-              //   height: this.scaledRectangleDimension.height
-              // };
               const offsetX = +this.mouse.left.selectedElement % 3 === 0 ? $event.offsetX - previousCurrentPoint.x : 0;
               const offsetY = +this.mouse.left.selectedElement % 3 !== 0 ? $event.offsetY - previousCurrentPoint.y : 0;
 
-              
               this.scaledRectangleDimension.width += this.mouse.left.selectedElement === 0 ? -offsetX : offsetX;
               this.scaledRectangleDimension.height += this.mouse.left.selectedElement === 1 ? -offsetY : offsetY;
-              
+
               const mouseOffset: Util.Offset = {x: offsetX, y: offsetY};
               this.scaleOffset = {x: this.scaleOffset.x + offsetX, y: this.scaleOffset.y + offsetY};
-              // console.log(this.scaleOffset.x + ' ' + this.scaleOffset.y);
-
-              // console.log(this.baseVisualisationRectangleDimension.width + ' ' + this.scaledRectangleDimension.width);
 
               const factorX = this.baseVisualisationRectangleDimension.width >= MINIMUM_SCALE ?
                 this.scaledRectangleDimension.width / this.baseVisualisationRectangleDimension.width : 1;
               const factorY = this.baseVisualisationRectangleDimension.height >= MINIMUM_SCALE ?
                 this.scaledRectangleDimension.height / this.baseVisualisationRectangleDimension.height : 1;
 
-              if (factorX === 1 && this.scaledRectangleDimension.width > MINIMUM_SCALE && this.baseVisualisationRectangleDimension.width < MINIMUM_SCALE) {
-                // factorX = this.scaledRectangleDimension.width / MINIMUM_SCALE;
-                const test = MINIMUM_SCALE - this.baseVisualisationRectangleDimension.width;
-                // scaleOffset.x = test;
-                mouseOffset.x = test;
-                console.log('Recalcul ' + factorX + ' offsetX : ' + test);
-              }
-              if (factorY === 1 && this.scaledRectangleDimension.height > MINIMUM_SCALE && this.baseVisualisationRectangleDimension.height < MINIMUM_SCALE) {
-                // factorY = this.scaledRectangleDimension.height / MINIMUM_SCALE;
-                const test = MINIMUM_SCALE - this.baseVisualisationRectangleDimension.height;
-                // scaleOffset.y = test;
-                mouseOffset.y = test;
-              }
-              this.resizeAll(factorX, factorY, this.scaleOffset, mouseOffset, this.baseTransform);
+              // if (factorX === 1 && this.scaledRectangleDimension.width > MINIMUM_SCALE && this.baseVisualisationRectangleDimension.width < MINIMUM_SCALE) {
+              //   const test = MINIMUM_SCALE - this.baseVisualisationRectangleDimension.width;
+              //   mouseOffset.x = test;
+              //   console.log('Recalcul ' + factorX + ' offsetX : ' + test);
+              // }
+              // if (factorY === 1 && this.scaledRectangleDimension.height > MINIMUM_SCALE && this.baseVisualisationRectangleDimension.height < MINIMUM_SCALE) {
+              //   const test = MINIMUM_SCALE - this.baseVisualisationRectangleDimension.height;
+              //   mouseOffset.y = test;
+              // }
+              // this.baseTransform.forEach((value) =>
+              //   this.resizeAll(factorX, factorY, this.scaleOffset, value)
+              // );
+              this.resizeAll(factorX, factorY, this.scaleOffset, this.baseTransform);
+              this.resizeVisualisationRectangle(mouseOffset);
             } else {
               this.drawSelection(this.mouse.left.startPoint,
                 this.mouse.left.currentPoint);
@@ -141,9 +142,10 @@ export class SelectionLogicComponent
           if (this.mouse.left.onDrag || this.mouse.left.onResize &&
             !this.mouse.left.startPoint.equals(this.mouse.left.currentPoint)) {
             this.undoRedoService.saveState();
-            this.scaleOffset = {x: 0, y: 0};
-            this.inverted = {x: 1, y: 1};
           }
+          this.scaleOffset = {x: 0, y: 0};
+          this.inverted = {x: 1, y: 1};
+          this.baseTransform = new Map<SVGElement, number[]>();
           this.mouse.left.endPoint = new Point($event.offsetX, $event.offsetY);
           this.mouse.left.mouseIsDown = false;
           this.mouse.left.onDrag = false;

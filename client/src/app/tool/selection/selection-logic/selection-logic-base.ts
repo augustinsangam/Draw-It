@@ -221,7 +221,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     new Transform(this.rectangles.visualisation, this.renderer).translate(x, y);
   }
 
-  protected resizeAll(factorX: number, factorY: number, scaleOffset: Util.Offset, mouseOffset: Util.Offset, baseTransform: number[]): void {
+  protected resizeAll(factorX: number, factorY: number, scaleOffset: Util.Offset, baseTransform: Map<SVGElement, number[]>): void {
     const point = this.findElementCenter(this.rectangles.visualisation);
     point.x = point.x - scaleOffset.x / 2;
     point.y = point.y - scaleOffset.y / 2;
@@ -235,11 +235,10 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
       Transform.translateAll(this.service.selectedElements, 0, scaleOffset.y / 2, this.renderer);
       new Transform(this.debugCircle, this.renderer).translate(0, scaleOffset.y / 2);
     }
-    this.resizeVisualisationRectangle(point, mouseOffset);
   }
 
   // tslint:disable-next-line: cyclomatic-complexity
-  private resizeVisualisationRectangle(point: Point, mouseOffset: Util.Offset): void {
+  protected resizeVisualisationRectangle(mouseOffset: Util.Offset): void {
 
     const x = this.rectangles.visualisation.getAttribute('x');
     const y = this.rectangles.visualisation.getAttribute('y');
@@ -400,16 +399,16 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   protected findElementCenter(element: SVGElement): Point {
     const selection = new SingleSelection(element, this.getSvgOffset()).points();
-    // return new Point(
-    //   (selection[0].x + selection[1].x) / 2,
-    //   (selection[0].y + selection[1].y) / 2
-    // );
-    const centerPoint = new Point(
+    return new Point(
       (selection[0].x + selection[1].x) / 2,
       (selection[0].y + selection[1].y) / 2
     );
-    Circle.set(centerPoint, this.renderer, this.debugCircle, Util.CIRCLE_RADIUS, 'red');
-    return centerPoint;
+    // const centerPoint = new Point(
+    //   (selection[0].x + selection[1].x) / 2,
+    //   (selection[0].y + selection[1].y) / 2
+    // );
+    // Circle.set(centerPoint, this.renderer, this.debugCircle, Util.CIRCLE_RADIUS, 'red');
+    // return centerPoint;
 
   }
 

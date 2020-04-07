@@ -35,10 +35,24 @@ export class Transform {
                   point: Point,
                   sx: number,
                   sy: number,
-                  baseTransform: number[],
+                  baseTransform: Map<SVGElement, number[]>,
                   renderer: Renderer2): void {
+    // for (const element of elements) {
+    //   new Transform(element, renderer).scale(point, sx, sy, baseTransform);
+    // }
+    // for (let i = 0; i < baseTransform.length; i++) {
+    //   new Transform(elements.values().next().value, renderer).scale(point, sx, sy, baseTransform[i]);
+    // }
+    // baseTransform.forEach((value, key) => {
+    //   new Transform(key, renderer).scale(point, sx, sy, value);
+    // });
     for (const element of elements) {
-      new Transform(element, renderer).scale(point, sx, sy, baseTransform);
+      const transform = baseTransform.get(element);
+      if (!!transform) {
+        new Transform(element, renderer).scale(point, sx, sy, transform);
+      } else {
+        console.log('RIP')
+      }
     }
   }
 
@@ -96,12 +110,14 @@ export class Transform {
   }
 
   getTransformTranslate(): [number, number] {
-    return [this.matrix.data[0][2] , this.matrix.data[1][2]];
+    // return [this.matrix.data[0][2] , this.matrix.data[1][2]];
+    const transform = this.getTransform();
+    return [transform[4], transform[5]];
   }
 
   getTransform(): number[] {
-    return [this.matrix.data[0][0], this.matrix.data[0][1], this.matrix.data[0][2],
-            this.matrix.data[1][0], this.matrix.data[1][1], this.matrix.data[1][2]
+    return [this.matrix.data[0][0], this.matrix.data[1][0], this.matrix.data[0][1],
+            this.matrix.data[1][1], this.matrix.data[0][2], this.matrix.data[1][2]
     ];
   }
 
@@ -118,16 +134,16 @@ export class Transform {
       );
   }
 
-  setAttributesFromArray(array: number[]): void {
-    this.renderer.setAttribute(
-      this.element,
-      'transform',
-      `matrix(${array[0]},` +
-      `${array[3]},` +
-      `${array[1]},` +
-      `${array[4]},` +
-      `${array[2]},` +
-      `${array[5]})`
-      );
-  }
+  // setAttributesFromArray(array: number[]): void {
+  //   this.renderer.setAttribute(
+  //     this.element,
+  //     'transform',
+  //     `matrix(${array[0]},` +
+  //     `${array[1]},` +
+  //     `${array[2]},` +
+  //     `${array[3]},` +
+  //     `${array[4]},` +
+  //     `${array[5]})`
+  //     );
+  // }
 }
