@@ -22,9 +22,9 @@ export class SelectionLogicComponent
   private scaleUtil: ScaleUtil;
 
   constructor(readonly  renderer: Renderer2,
-              protected undoRedoService: UndoRedoService,
+              readonly  undoRedoService: UndoRedoService,
               readonly  service: SelectionService,
-              protected   gridService: GridService
+              protected gridService: GridService
   ) {
     super(renderer, undoRedoService, service, gridService);
     this.initialiseHandlers();

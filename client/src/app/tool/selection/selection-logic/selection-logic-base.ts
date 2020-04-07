@@ -31,7 +31,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   mouse: Util.Mouse;
 
   constructor(readonly   renderer: Renderer2,
-              protected  undoRedoService: UndoRedoService,
+              readonly   undoRedoService: UndoRedoService,
               readonly   service: SelectionService,
               protected  gridService: GridService) {
     super();
@@ -306,16 +306,26 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     const s = this.gridService.squareSize;
     for (let i = 0; i < 2; i++) {
       for (let j = 0; j < 2; j++) {
-        candidates.add(new Point(point.x - point.x % s + i * s, point.y - point.y % s + j * s));
+        const pointToAdd = new Point(point.x - point.x % s + i * s, point.y - point.y % s + j * s);
+        if (this.isValidPoint(pointToAdd)) {
+          candidates.add(pointToAdd);
+        }
       }
     }
     return candidates.nearestPoint(point)[0] as Point;
   }
 
+  private isValidPoint(point: Point): boolean {
+    const [x, y] = [point.x, point.y];
+    return 0 <= x && x < this.svgShape.width
+      && 0 <= y && y < this.svgShape.height;
+  }
+
   private pointInDirection(currentPoint: Point, ux: number, uy: number): Point {
     const dx = ux === 0 ? 0 : ux / Math.abs(ux) * this.gridService.squareSize;
     const dy = uy === 0 ? 0 : uy / Math.abs(uy) * this.gridService.squareSize;
-    return new Point (currentPoint.x + dx, currentPoint.y + dy);
+    const result = new Point (currentPoint.x + dx, currentPoint.y + dy);
+    return this.isValidPoint(result) ? result : currentPoint;
   }
 
   protected getComparePoint(elements: Set<SVGElement>): Point {
