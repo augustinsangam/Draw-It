@@ -275,6 +275,10 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   private handleKey(key: string, dx: number, dy: number): void {
     if (this.keyManager.keyPressed.has(key)) {
+      if (!this.service.magnetActive) {
+        this.translateAll(dx, dy);
+        return ;
+      }
       const comparePoint = this.getComparePoint(this.service.selectedElements);
       const pointInDirection = this.pointInDirection(comparePoint, dx, dy);
       let [translateX, translateY] = [pointInDirection.x - comparePoint.x, pointInDirection.y - comparePoint.y];
@@ -297,7 +301,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     }
   }
 
-  private nearestIntersection(point: Point): Point {
+  protected nearestIntersection(point: Point): Point {
     const candidates = new PointSet();
     const s = this.gridService.squareSize;
     for (let i = 0; i < 2; i++) {
@@ -314,7 +318,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     return new Point (currentPoint.x + dx, currentPoint.y + dy);
   }
 
-  private getComparePoint(elements: Set<SVGElement>): Point {
+  protected getComparePoint(elements: Set<SVGElement>): Point {
     const selection = new MultipleSelection(elements, this.getSvgOffset()).getSelection().points;
     const x = (this.service.magnetPoint as number) % 3;
     const y = Math.floor((this.service.magnetPoint as number) / 3);

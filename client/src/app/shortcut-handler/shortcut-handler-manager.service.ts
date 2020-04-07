@@ -88,6 +88,10 @@ export class ShortcutHandlerManagerService {
       this.toolSelectorService.set(Tool.Line)
     );
 
+    this.handlersFunc.set(Shortcut.M, () => {
+      this.selectionService.magnetActive = !this.selectionService.magnetActive;
+    });
+
     this.shortcutHanler.set(Shortcut.O, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
         event.preventDefault();

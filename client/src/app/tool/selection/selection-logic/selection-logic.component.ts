@@ -68,11 +68,23 @@ export class SelectionLogicComponent
               $event.offsetY);
 
             if (this.mouse.left.onDrag && !this.mouse.left.onResize) {
-              const offsetX = $event.offsetX - previousCurrentPoint.x;
-              const offsetY = $event.offsetY - previousCurrentPoint.y;
-              this.translateAll(offsetX, offsetY);
+
+              if (this.service.magnetActive) {
+                const nearestIntersection = this.nearestIntersection(this.mouse.left.currentPoint);
+                const comparePoint = this.getComparePoint(this.service.selectedElements);
+                const dx = nearestIntersection.x - comparePoint.x;
+                const dy = nearestIntersection.y - comparePoint.y;
+                this.translateAll(dx, dy);
+              } else {
+                const offsetX = $event.offsetX - previousCurrentPoint.x;
+                const offsetY = $event.offsetY - previousCurrentPoint.y;
+                this.translateAll(offsetX, offsetY);
+              }
+
             } else if (this.mouse.left.onResize) {
+
               this.scaleUtil.onMouseMove(previousCurrentPoint);
+
             } else {
               this.drawSelection(this.mouse.left.startPoint,
                 this.mouse.left.currentPoint);
