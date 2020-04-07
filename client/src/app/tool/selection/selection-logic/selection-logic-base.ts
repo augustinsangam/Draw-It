@@ -1,4 +1,5 @@
 import { OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { PointSet } from '../../bucket/bucket-logic/point-set';
 import { GridService } from '../../grid/grid.service';
 import { MathService } from '../../mathematics/tool.math-service.service';
 import { BackGroundProperties, StrokeProperties } from '../../shape/common/abstract-shape';
@@ -16,7 +17,6 @@ import { Arrow } from './arrow';
 import { BasicSelectionType, ElementSelectedType } from './element-selected-type';
 import * as Util from './selection-logic-util';
 import { Transform } from './transform';
-import { PointSet } from '../../bucket/bucket-logic/point-set';
 
 const NOT_FOUND = -1;
 
@@ -320,8 +320,9 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
 
   protected getComparePoint(elements: Set<SVGElement>): Point {
     const selection = new MultipleSelection(elements, this.getSvgOffset()).getSelection().points;
-    const x = (this.service.magnetPoint as number) % 3;
-    const y = Math.floor((this.service.magnetPoint as number) / 3);
+    const MAX_POINTS_PER_DIMENSION = 3;
+    const x = (this.service.magnetPoint as number) % MAX_POINTS_PER_DIMENSION;
+    const y = Math.floor((this.service.magnetPoint as number) / MAX_POINTS_PER_DIMENSION);
     return new Point(
       (2 - x) / 2 * selection[0].x + x / 2 * selection[1].x,
       (2 - y) / 2 * selection[0].y + y / 2 * selection[1].y,

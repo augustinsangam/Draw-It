@@ -108,6 +108,12 @@ import {
   BrushPanelComponent
 } from './tool/drawing-instruments/brush/brush-panel/brush-panel.component';
 import {
+  FeatherpenLogicComponent
+} from './tool/drawing-instruments/featherpen/featherpen-logic/featherpen-logic.component';
+import {
+  FeatherpenPanelComponent
+} from './tool/drawing-instruments/featherpen/featherpen-panel/featherpen-panel.component';
+import {
   PencilLogicComponent
 } from './tool/drawing-instruments/pencil/pencil-logic/pencil-logic.component';
 import {
@@ -167,8 +173,6 @@ import {
 import {
   TextPanelComponent
 } from './tool/text/text-panel/text-panel.component';
-import { FeatherpenLogicComponent } from './tool/drawing-instruments/featherpen/featherpen-logic/featherpen-logic.component';
-import { FeatherpenPanelComponent } from './tool/drawing-instruments/featherpen/featherpen-panel/featherpen-panel.component';
 
 @NgModule({
   declarations: [
