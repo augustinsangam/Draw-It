@@ -222,13 +222,18 @@ export class SelectionLogicComponent
   }
 
   private onCut(): void {
-    this.onCopy();
-    this.onDelete();
+    if (this.service.selectedElements.size !== 0) {
+      this.service.clipboard = [new Set(this.service.selectedElements)];
+      this.service.clipboard.peak().forEach((element) => {
+        this.renderer.removeChild(this.svgStructure.drawZone, element);
+      });
+      this.deleteVisualisation();
+    }
   }
 
   private onPaste(): void {
     if (this.service.clipboard.length !== 0) {
-      while (!this.clipboardValid(this.service.clipboard.peak())) {
+      while (this.service.clipboard.length > 1 && !this.clipboardValid(this.service.clipboard.peak())) {
         console.log(this.service.clipboard);
         this.service.clipboard.pop();
       }
