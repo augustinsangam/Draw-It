@@ -106,6 +106,23 @@ describe('FeatherpenLogicComponent', () => {
 
   it('#onMouseMove should call setAttribute on the element if on Drag', () => {
     component['onDrag'] = true;
+    component['previousPoint'] = new Point(43, 69);
+    component['element'] = {setAttribute: () => true} as unknown as SVGElement;
+    const spy = spyOn(component['element'], 'setAttribute');
+    component['onMouseMove'](new Point(42, 69));
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#complete should return an empty string', () => {
+    const spy = spyOn<any>(component['service'], 'getInterpolatedPoints').and.callThrough();
+    expect(component['complete'](new Point(42, 69), new Point(69, 42))).not.toEqual('');
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#onMouseMove should call setAttribute on the element if on Drag and complete' +
+    ' when the distance between mouseMoves is > 1 pixel', () => {
+    component['onDrag'] = true;
+    component['previousPoint'] = new Point(56, 42);
     component['element'] = {setAttribute: () => true} as unknown as SVGElement;
     const spy = spyOn(component['element'], 'setAttribute');
     component['onMouseMove'](new Point(42, 69));

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
 import {Point} from '../../shape/common/point';
 import {ToolService} from '../../tool.service';
@@ -65,6 +65,26 @@ export class FeatherpenService extends ToolService {
       this.angle += this.MAX_ANGLE;
     }
     return oldAngle;
+  }
+
+  getInterpolatedPoints(initial: Point, final: Point): Point[] {
+    const points = [];
+    const delta = {x: final.x - initial.x, y: final.y - initial.y};
+
+    // y = aXAxis * x + bXAxis
+    const aXAxis = delta.y / delta.x;
+    const bXAxis = initial.y - aXAxis * initial.x;
+    // x = aYAxis * y + bYAxis
+    const aYAxis = delta.x / delta.y;
+    const bYAxis = initial.x - aYAxis * initial.y;
+
+    for (let x = Math.min(initial.x, final.x); x < Math.max(initial.x, final.x); x++) {
+        points.push(new Point(x, aXAxis * x + bXAxis));
+    }
+    for (let y = Math.min(initial.y, final.y); y < Math.max(initial.y, final.y); y++) {
+        points.push(new Point(aYAxis * y + bYAxis, y));
+    }
+    return points;
   }
 
   interpolate(oldAngle: number, newAngle: number, point: Point, up: boolean): string {
