@@ -119,7 +119,15 @@
         "label": "Sauvegarder votre dessin"
       },
       {
-        "label": "Exporter votre dessin"
+        "label": "Exporter votre dessin",
+        "children": [
+          {
+            "label": "En local"
+          },
+          {
+            "label": "Par courriel"
+          }
+        ]
       }
     ]
   },

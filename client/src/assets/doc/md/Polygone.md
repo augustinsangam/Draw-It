@@ -3,7 +3,7 @@ L’outil **Polygone** est très similaire aux outils Rectangle et Ellipse. Il p
  Pour commencer à tracer un polygone, cliquez sur l’icône ![icône doc](/assets/sidebar-icons/polygone.png) ou pressez **`3`**. 
  
 <video width="70%" height="70%" class="doc-fig" autoplay loop>
-    <source src="/assets/doc/vid/polygone_trctd.webm" type="video/webm">
+    <source src="/assets/doc/vid/polygone.webm" type="video/webm">
 </video>
 
  Vous pouvez définir le nombre de côtés de votre polygone depuis le panneau de configuration de l’outil, qui présente les options suivantes : 

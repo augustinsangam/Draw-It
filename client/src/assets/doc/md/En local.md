@@ -5,7 +5,7 @@ Pour télécharger votre dessin sur votre machine, cliquez sur l'icône ![icône
 *   **Formats** : format du fichier exporté
 
 <video width="70%" height="70%" class="doc-fig" autoplay loop>
-    <source src="/assets/doc/vid/export_trctd.webm" type="video/webm">
+    <source src="/assets/doc/vid/export.webm" type="video/webm">
 </video>
 
 Lorsque vous avez configuré votre exportation, cliquez sur `Exporter` afin de télécharger votre dessin.
