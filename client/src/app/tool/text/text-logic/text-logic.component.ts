@@ -176,7 +176,7 @@ implements OnDestroy {
 
       case 'Space':
         keyEv.preventDefault();
-        this.addLetterAtCursor(' ');
+        this.addLetterAtCursor('U+0020');
         break;
 
       default:
@@ -271,6 +271,7 @@ implements OnDestroy {
     // const prevLineIndex = this.lines.indexOf(this.currentLine);
     this.currentLine = {tspan: this.renderer.createElement('tspan', this.svgNS), letters: [], cursorIndex: 0};
     this.renderer.appendChild(this.textElement, this.currentLine.tspan);
+    this.renderer.setStyle(this.currentLine.tspan, 'white-space', 'pre');
     this.lines.push(this.currentLine);
     // this.lines.splice(prevLineIndex + 1, 0, this.currentLine);
   }
