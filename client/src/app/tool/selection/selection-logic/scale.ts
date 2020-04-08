@@ -5,7 +5,7 @@ import * as Util from './selection-logic-util';
 import { SelectionLogicComponent } from './selection-logic.component';
 import { Transform } from './transform';
 
-const MINIMUM_SCALE = 5;
+const MINIMUM_SIZE = 5;
 
 interface Dimensions {
   width: number;
@@ -44,6 +44,11 @@ export class Scale {
     this.baseTransform = new Map();
   }
 
+  onMouseMove(previousCurrentPoint: Point): void {
+    const mouseOffset: Offset = this.onResize(previousCurrentPoint);
+    this.resizeVisualisationRectangle(mouseOffset);
+  }
+
   private onResize(previousCurrentPoint: Point): Offset {
     const offsetX = +this.selectionLogic.mouse.left.selectedElement % (Util.CIRCLES.length - 1) === 0 ?
       this.selectionLogic.mouse.left.currentPoint.x - previousCurrentPoint.x : 0;
@@ -56,39 +61,34 @@ export class Scale {
     const mouseOffset: Offset = { x: offsetX, y: offsetY };
     this.scaleOffset = { x: this.scaleOffset.x + offsetX, y: this.scaleOffset.y + offsetY };
 
-    const factorX = this.baseVisualisationRectangleDimension.width >= MINIMUM_SCALE ?
+    const factorX = this.baseVisualisationRectangleDimension.width >= MINIMUM_SIZE ?
       this.scaledRectangleDimension.width / this.baseVisualisationRectangleDimension.width : 1;
-    const factorY = this.baseVisualisationRectangleDimension.height >= MINIMUM_SCALE ?
+    const factorY = this.baseVisualisationRectangleDimension.height >= MINIMUM_SIZE ?
       this.scaledRectangleDimension.height / this.baseVisualisationRectangleDimension.height : 1;
 
-    this.resizeAll([factorX, factorY], this.scaleOffset, this.baseTransform);
+    this.resizeAll([factorX, factorY]);
 
     return mouseOffset;
   }
 
-  private resizeAll(factors: [number, number], scaleOffset: Offset, baseTransform: Map<SVGElement, Transform>): void {
+  private resizeAll(factors: [number, number]): void {
     const point = Util.SelectionLogicUtil.findElementCenter(
       this.selectionLogic.rectangles.visualisation,
       this.selectionLogic.getSvgOffset()
     );
-    point.x = point.x - scaleOffset.x / 2;
-    point.y = point.y - scaleOffset.y / 2;
+    point.x = point.x - this.scaleOffset.x / 2;
+    point.y = point.y - this.scaleOffset.y / 2;
 
-    baseTransform.forEach((value) => {
+    this.baseTransform.forEach((value) => {
       value.clone().scale(point, factors[0] * this.inverted.x, factors[1] * this.inverted.y);
     });
 
     if (factors[0] !== 1) {
-      Transform.translateAll(this.selectionLogic.service.selectedElements, scaleOffset.x / 2, 0, this.selectionLogic.renderer);
+      Transform.translateAll(this.selectionLogic.service.selectedElements, this.scaleOffset.x / 2, 0, this.selectionLogic.renderer);
     }
     if (factors[1] !== 1) {
-      Transform.translateAll(this.selectionLogic.service.selectedElements, 0, scaleOffset.y / 2, this.selectionLogic.renderer);
+      Transform.translateAll(this.selectionLogic.service.selectedElements, 0, this.scaleOffset.y / 2, this.selectionLogic.renderer);
     }
-  }
-
-  onMouseMove(previousCurrentPoint: Point): void {
-    const mouseOffset: Offset = this.onResize(previousCurrentPoint);
-    this.resizeVisualisationRectangle(mouseOffset);
   }
 
   private resizeVisualisationRectangle(mouseOffset: Offset): void {

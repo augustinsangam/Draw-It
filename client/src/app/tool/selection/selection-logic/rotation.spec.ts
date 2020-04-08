@@ -6,7 +6,7 @@ import { Rotation } from './rotation';
 import { Transform } from './transform';
 
 // tslint:disable: no-magic-numbers no-string-literal no-any
-fdescribe('Rotate', () => {
+describe('Rotate', () => {
   let component: SelectionLogicComponent;
   let fixture: ComponentFixture<SelectionLogicComponent>;
   let rotate: Rotation;
