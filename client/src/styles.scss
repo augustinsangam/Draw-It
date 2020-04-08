@@ -38,3 +38,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   float: right;
   margin-left: 20px;
 }
+
+@font-face {
+  font-family: 'Geo-Sans-Light-NMS';
+  src: url('/assets/fonts/geonms-font.ttf')
+}
+@font-face {
+  font-family: 'JetBrains-Mono';
+  src: url('/assets/fonts/JetBrainsMono-Regular.ttf')
+}
+@font-face {
+  font-family: 'texgyrepagella';
+  src: url('/assets/fonts/texgyrepagella-regular.otf')
+}

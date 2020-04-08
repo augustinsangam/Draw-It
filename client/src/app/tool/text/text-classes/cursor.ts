@@ -57,6 +57,10 @@ export class Cursor {
     );
   }
 
+  setYPos(lineIndex: number): void {
+    this.currentPosition.y = this.initialCursorPoint.y + (lineIndex * this.service.fontSize);
+  }
+
   move(currentLine: TextLine, lineIndex: number): void {
     switch (this.service.textAlignement) {
       case TextAlignement.left:
@@ -75,7 +79,7 @@ export class Cursor {
         this.currentPosition.x = this.initialCursorPoint.x - (this.service.getFullTextWidth(currentLine) - textWidthAtCursor);
         break;
     }
-    this.currentPosition.y = this.initialCursorPoint.y + (lineIndex * this.service.fontSize);
+    this.setYPos(lineIndex);
     this.updateVisual();
   }
 }
