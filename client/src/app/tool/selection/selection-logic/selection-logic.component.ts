@@ -3,9 +3,12 @@ import { GridService } from '../../grid/grid.service';
 import { Point } from '../../shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { SelectionService } from '../selection.service';
+import { CircleType } from './circle-type';
 import { Clipboard } from './clipboard';
+import { Deplacement } from './deplacement';
 import { BasicSelectionType } from './element-selected-type';
-import { ScaleUtil } from './scale-util';
+import { Rotation } from './rotation';
+import { Scale } from './scale';
 import { SelectionLogicBase } from './selection-logic-base';
 import * as Util from './selection-logic-util';
 
@@ -19,16 +22,17 @@ export class SelectionLogicComponent
   extends SelectionLogicBase implements OnInit {
 
   private mouseHandlers: Map<string, Map<string, Util.MouseEventCallBack>>;
-  private scaleUtil: ScaleUtil;
+  private scaleUtil: Scale;
+  deplacement: Deplacement;
 
-  constructor(readonly  renderer: Renderer2,
-              readonly  undoRedoService: UndoRedoService,
-              readonly  service: SelectionService,
-              protected gridService: GridService
+  constructor(readonly renderer: Renderer2,
+              readonly undoRedoService: UndoRedoService,
+              readonly service: SelectionService,
+              readonly gridService: GridService
   ) {
-    super(renderer, undoRedoService, service, gridService);
+    super(renderer, undoRedoService, service);
     this.initialiseHandlers();
-    this.scaleUtil = new ScaleUtil(this);
+    this.scaleUtil = new Scale(this);
   }
 
   private initialiseHandlers(): void {
@@ -52,7 +56,7 @@ export class SelectionLogicComponent
             $event.offsetY
           );
           this.mouse.left.onResize = Util.CIRCLES.indexOf(
-            this.mouse.left.selectedElement as Util.CircleType
+            this.mouse.left.selectedElement as CircleType
           ) !== NOT_FOUND;
           if (this.svgStructure.drawZone.contains(target as SVGElement)
             && !this.service.selectedElements.has(target as SVGElement)) {
@@ -70,11 +74,7 @@ export class SelectionLogicComponent
             if (this.mouse.left.onDrag && !this.mouse.left.onResize) {
 
               if (this.service.magnetActive) {
-                const nearestIntersection = this.nearestIntersection(this.mouse.left.currentPoint);
-                const comparePoint = this.getComparePoint(this.service.selectedElements);
-                const dx = nearestIntersection.x - comparePoint.x;
-                const dy = nearestIntersection.y - comparePoint.y;
-                this.translateAll(dx, dy);
+                this.deplacement.onCursorMove();
               } else {
                 const offsetX = $event.offsetX - previousCurrentPoint.x;
                 const offsetY = $event.offsetY - previousCurrentPoint.y;
@@ -126,17 +126,7 @@ export class SelectionLogicComponent
       ['centerButton', new Map<string, Util.WheelEventCallback>([
         ['wheel', ($event: WheelEvent) => {
           $event.preventDefault();
-          const angle = this.keyManager.alt ?
-            $event.deltaY / Util.MOUSE_WHEEL_DELTA_Y :
-            Util.ANGLE * ($event.deltaY / Util.MOUSE_WHEEL_DELTA_Y);
-          if (this.keyManager.shift) {
-            this.allSelfRotate(angle);
-          } else {
-            this.rotateAll(angle);
-          }
-          if (this.service.selectedElements.size !== 0) {
-            this.undoRedoService.saveState();
-          }
+          new Rotation(this).onRotate($event);
         }]
       ])],
       ['rightButton', new Map<string, Util.MouseEventCallBack>([
@@ -201,12 +191,8 @@ export class SelectionLogicComponent
         );
       });
     });
-    this.allListenners.push(
-      this.renderer.listen(document, 'keydown',
-        this.keyManager.handlers.keydown));
-    this.allListenners.push(
-      this.renderer.listen(document, 'keyup',
-        this.keyManager.handlers.keyup));
+
+    this.deplacement = new Deplacement(this);
 
     const subscriptionCopy      = this.service.copy.     asObservable()
                                   .subscribe(() => new Clipboard(this).copy());
