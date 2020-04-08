@@ -79,8 +79,6 @@ export class Cursor {
         this.currentPosition.x = this.initialCursorPoint.x - (this.service.getFullTextWidth(currentLine) - textWidthAtCursor);
         break;
     }
-    // console.log(this.initialCursorPoint.y);
-    // console.log(`cursPos y = ${this.initialCursorPoint.y} + ${lineIndex} * ${this.service.fontSize}`);
     this.setYPos(lineIndex);
     this.updateVisual();
   }

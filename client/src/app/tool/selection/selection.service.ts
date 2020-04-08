@@ -1,6 +1,16 @@
 import { Injectable } from '@angular/core';
-import { MagnetPoint } from './magnet-point';
 import { Subject } from 'rxjs';
+import { MagnetPoint } from './magnet-point';
+
+declare global {
+    interface Array<T> {
+      peak(): T ;
+    }
+}
+
+Array.prototype.peak = function<T>(this: T[]): T {
+  return this[this.length - 1];
+};
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +18,7 @@ import { Subject } from 'rxjs';
 export class SelectionService {
 
   selectedElements: Set<SVGElement>;
-  clipboard: Set<SVGElement>;
+  clipboard: Set<SVGElement>[];
 
   selectAllElements: Subject<null>;
   copy: Subject<null>;
@@ -22,7 +32,7 @@ export class SelectionService {
 
   constructor() {
     this.selectedElements = new Set();
-    this.clipboard = new Set();
+    this.clipboard = [];
     this.selectAllElements = new Subject();
     this.copy = new Subject();
     this.cut = new Subject();
@@ -31,7 +41,7 @@ export class SelectionService {
     this.delete = new Subject();
 
     this.magnetActive = true;
-    this.magnetPoint = MagnetPoint.Center;
+    this.magnetPoint = MagnetPoint.NorthWest;
   }
 
 }

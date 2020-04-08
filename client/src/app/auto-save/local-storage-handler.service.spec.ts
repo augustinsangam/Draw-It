@@ -1,17 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 
-import { LocalStorageHandlerService } from './local-storage-handler.service';
 import { SvgShape } from '../svg/svg-shape';
+import { LocalStorageHandlerService } from './local-storage-handler.service';
 
 describe('LocalStorageHandlerService', () => {
-  
+
   let service: LocalStorageHandlerService;
 
   beforeEach(() => TestBed.configureTestingModule({}));
 
-
   beforeEach(() => {
-    service =TestBed.get(LocalStorageHandlerService);
+    service = TestBed.get(LocalStorageHandlerService);
   });
 
   it('should be created', () => {
@@ -21,22 +20,22 @@ describe('LocalStorageHandlerService', () => {
   it('#saveShape should add a key named shape into the localstorage', () => {
     const shape: SvgShape = { width: 500, height: 500, color: 'red'};
     service.saveShape(shape);
-    const shapeSaved: SvgShape = JSON.parse(localStorage.getItem('shape') as string)
+    const shapeSaved: SvgShape = JSON.parse(localStorage.getItem('shape') as string);
     expect(shapeSaved).toEqual(shape);
   });
 
   it('#saveState should add a the svgElement', () => {
-    const element = document.createElementNS('http://www.w3.org/2000/svg','g');
+    const element = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     element.setAttribute('id', 'test');
     service.saveState(element);
     const savedElement = localStorage.getItem('draw') as string;
-    const drawingDocument = new DOMParser().parseFromString(savedElement, "image/svg+xml");
+    const drawingDocument = new DOMParser().parseFromString(savedElement, 'image/svg+xml');
     const drawingSaved = drawingDocument.firstElementChild as SVGSVGElement;
     expect(drawingSaved.getAttribute('id')).toEqual('test');
   });
 
   it('#verifyAvailability should should return true when there is a draw saved', () => {
-    const element = document.createElementNS('http://www.w3.org/2000/svg','g');
+    const element = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     element.setAttribute('id', 'test');
     service.saveState(element);
     const drawExist = service.verifyAvailability();
@@ -50,7 +49,7 @@ describe('LocalStorageHandlerService', () => {
   });
 
   it('#getDrawing should return the element saved and the shape', () => {
-    const element = document.createElementNS('http://www.w3.org/2000/svg','g');
+    const element = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     element.setAttribute('id', 'test');
     const shape: SvgShape = { width: 500, height: 500, color: 'red'};
     service.saveShape(shape);

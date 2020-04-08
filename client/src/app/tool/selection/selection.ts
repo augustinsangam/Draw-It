@@ -15,13 +15,13 @@ export abstract class Selection {
     const thikness = this.getThikness(element);
     const domRectangle = element.getBoundingClientRect();
     const startingPoint = new Point(
-      domRectangle.left - this.svgOffset.left - thikness / 2,
-      domRectangle.top - this.svgOffset.top - thikness / 2
+      domRectangle.left - this.svgOffset.x - thikness / 2,
+      domRectangle.top - this.svgOffset.y - thikness / 2
     );
     const offsetIncrement = this.getOffsetIncrement(element);
     const endPoint = new Point(
-      startingPoint.x + (domRectangle.width + thikness + offsetIncrement.left),
-      startingPoint.y + (domRectangle.height + thikness + offsetIncrement.top)
+      startingPoint.x + (domRectangle.width + thikness + offsetIncrement.x),
+      startingPoint.y + (domRectangle.height + thikness + offsetIncrement.y)
     );
     return new Zone(startingPoint.x, endPoint.x, startingPoint.y, endPoint.y);
   }
@@ -42,13 +42,13 @@ export abstract class Selection {
   private getOffsetIncrement(element: SVGElement): Offset {
     if ( element.classList.contains('filter1') ) {
       return {
-        left: this.getThikness(element),
-        top: this.getThikness(element)
+        x: this.getThikness(element),
+        y: this.getThikness(element)
       };
     }
     return  {
-      left: 0,
-      top: 0
+      x: 0,
+      y: 0
     };
   }
 

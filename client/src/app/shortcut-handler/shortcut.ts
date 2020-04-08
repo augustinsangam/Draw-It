@@ -7,6 +7,7 @@ export enum Shortcut {
   G = 'g',
   I = 'i',
   L = 'l',
+  M = 'm',
   O = 'o',
   P = 'p',
   R = 'r',
