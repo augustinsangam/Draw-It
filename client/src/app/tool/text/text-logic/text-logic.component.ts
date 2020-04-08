@@ -322,9 +322,11 @@ implements OnDestroy {
   }
 
   private deleteRightLetter(): void {
-    if (this.lines.indexOf(this.currentLine) === this.lines.length - 1 && (this.currentLine.cursorIndex === this.currentLine.letters.length)) {
+    const onLastLine = this.lines.indexOf(this.currentLine) === this.lines.length - 1;
+    if (onLastLine && (this.currentLine.cursorIndex === this.currentLine.letters.length)) {
       return;
-    } else if (this.currentLine.cursorIndex === this.currentLine.letters.length && this.lines.indexOf(this.currentLine) !== this.lines.length - 1) {
+    } else if (this.currentLine.cursorIndex === this.currentLine.letters.length && !onLastLine) {
+
       const lineBelow = this.lines[this.lines.indexOf(this.currentLine) + 1];
       this.currentLine.append(lineBelow);
       this.lines.slice(this.lines.indexOf(lineBelow), this.lines.length).forEach((line) => {
@@ -333,7 +335,9 @@ implements OnDestroy {
 
       this.lines.splice(this.lines.indexOf(lineBelow), 1);
       lineBelow.emptySelf();
+
     } else {
+
       const preCursor = this.currentLine.letters.slice(0, this.currentLine.cursorIndex);
       const postCursor = this.currentLine.letters.slice(this.currentLine.cursorIndex + 1, this.currentLine.letters.length);
       if (postCursor.length !== 0) {
@@ -342,14 +346,18 @@ implements OnDestroy {
       } else {
         this.currentLine.letters = preCursor;
         this.currentLine.cursorIndex = this.currentLine.letters.length;
+
       }
     }
   }
 
   private deleteLeftLetter(): void {
-    if ((this.currentLine.cursorIndex === 0 || this.currentLine.letters.length === 0) && this.lines.indexOf(this.currentLine) === 0) {
+    const onFirstLine = this.lines.indexOf(this.currentLine) === 0;
+
+    if ((this.currentLine.cursorIndex === 0 || this.currentLine.letters.length === 0) && onFirstLine) {
       return;
-    } else if (this.currentLine.cursorIndex === 0 && this.lines.indexOf(this.currentLine) !== 0) {
+    } else if (this.currentLine.cursorIndex === 0 && !onFirstLine) {
+
       const lineAbove = this.lines[this.lines.indexOf(this.currentLine) - 1];
       lineAbove.append(this.currentLine);
       this.lines.slice(this.lines.indexOf(this.currentLine), this.lines.length).forEach((line) => {
@@ -363,6 +371,7 @@ implements OnDestroy {
       this.cursor.setYPos(this.lines.indexOf(this.currentLine));
 
     } else {
+
       const preCursor = this.currentLine.letters.slice(0, this.currentLine.cursorIndex - 1);
       const postCursor = this.currentLine.letters.slice(this.currentLine.cursorIndex, this.currentLine.letters.length);
       if (preCursor.length !== 0) {
