@@ -158,12 +158,12 @@ implements OnDestroy {
 
       case 'ArrowLeft':
         keyEv.preventDefault();
-        this.textNavHandler.cursorLeft(this.currentLine);
+        this.currentLine = this.textNavHandler.cursorLeft(this.currentLine);
         break;
 
       case 'ArrowRight':
         keyEv.preventDefault();
-        this.textNavHandler.cursorRight(this.currentLine);
+        this.currentLine = this.textNavHandler.cursorRight(this.currentLine);
         break;
 
       case 'Backspace':
@@ -185,6 +185,7 @@ implements OnDestroy {
         }
         break;
     }
+    this.updateView();
   }
 
   private onMouseUp(mouseEv: MouseEvent): void {
@@ -291,7 +292,6 @@ implements OnDestroy {
     this.currentLine.letters.push(letter);
     postCursor.forEach((postLetter) => this.currentLine.letters.push(postLetter));
     ++this.currentLine.cursorIndex;
-    this.updateView();
   }
 
   private setTextStyle(): void {
@@ -317,12 +317,9 @@ implements OnDestroy {
   }
 
   private deleteRightLetter(): void {
-    console.log(this.lines.length);
     if (this.lines.indexOf(this.currentLine) === this.lines.length - 1 && (this.currentLine.cursorIndex === this.currentLine.letters.length)) {
-      console.log('case 1');
       return;
     } else if (this.currentLine.cursorIndex === this.currentLine.letters.length && this.lines.indexOf(this.currentLine) !== this.lines.length - 1) {
-      console.log('case 2');
       const lineBelow = this.lines[this.lines.indexOf(this.currentLine) + 1];
       this.currentLine.append(lineBelow);
       this.lines.slice(this.lines.indexOf(lineBelow), this.lines.length).forEach((line) => {
@@ -331,9 +328,7 @@ implements OnDestroy {
 
       this.lines.splice(this.lines.indexOf(lineBelow), 1);
       lineBelow.emptySelf();
-      this.updateView();
     } else {
-      console.log('case 3');
       const preCursor = this.currentLine.letters.slice(0, this.currentLine.cursorIndex);
       const postCursor = this.currentLine.letters.slice(this.currentLine.cursorIndex + 1, this.currentLine.letters.length);
       if (postCursor.length !== 0) {
@@ -343,16 +338,13 @@ implements OnDestroy {
         this.currentLine.letters = preCursor;
         this.currentLine.cursorIndex = this.currentLine.letters.length;
       }
-      this.updateView();
     }
   }
 
   private deleteLeftLetter(): void {
     if ((this.currentLine.cursorIndex === 0 || this.currentLine.letters.length === 0) && this.lines.indexOf(this.currentLine) === 0) {
-      console.log('case 1');
       return;
     } else if (this.currentLine.cursorIndex === 0 && this.lines.indexOf(this.currentLine) !== 0) {
-      console.log('case 2');
       const lineAbove = this.lines[this.lines.indexOf(this.currentLine) - 1];
       lineAbove.append(this.currentLine);
       this.lines.slice(this.lines.indexOf(this.currentLine), this.lines.length).forEach((line) => {
@@ -365,9 +357,7 @@ implements OnDestroy {
       this.currentLine = lineAbove;
       this.cursor.setYPos(this.lines.indexOf(this.currentLine));
 
-      this.updateView();
     } else {
-      console.log('case 3');
       const preCursor = this.currentLine.letters.slice(0, this.currentLine.cursorIndex - 1);
       const postCursor = this.currentLine.letters.slice(this.currentLine.cursorIndex, this.currentLine.letters.length);
       if (preCursor.length !== 0) {
@@ -378,7 +368,6 @@ implements OnDestroy {
         this.currentLine.letters = postCursor;
         this.currentLine.cursorIndex = 0;
       }
-      this.updateView();
     }
   }
 }
