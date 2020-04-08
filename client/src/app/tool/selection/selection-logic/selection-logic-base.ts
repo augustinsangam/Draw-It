@@ -1,5 +1,4 @@
 import { OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { PointSet } from '../../bucket/bucket-logic/point-set';
 import { GridService } from '../../grid/grid.service';
 import { MathService } from '../../mathematics/tool.math-service.service';
 import { BackGroundProperties, StrokeProperties } from '../../shape/common/abstract-shape';
@@ -13,8 +12,9 @@ import { Offset } from '../offset';
 import { SelectionReturn } from '../selection-return';
 import { SelectionService } from '../selection.service';
 import { SingleSelection } from '../single-selection';
-import { Arrow } from './arrow';
+import { CircleType } from './circle-type';
 import { BasicSelectionType, ElementSelectedType } from './element-selected-type';
+import { Mouse } from './mouse';
 import * as Util from './selection-logic-util';
 import { Transform } from './transform';
 
@@ -23,17 +23,16 @@ const NOT_FOUND = -1;
 export abstract class SelectionLogicBase extends ToolLogicDirective
   implements OnInit, OnDestroy {
 
-  protected circles: SVGElement[];
-  protected allListenners: (() => void)[];
+  circles: SVGElement[];
+  allListenners: (() => void)[];
   protected selectedElementsFreezed: Set<SVGElement>;
-  protected keyManager: Util.KeyManager;
   rectangles: Util.SelectionRectangles;
-  mouse: Util.Mouse;
+  mouse: Mouse;
 
-  constructor(readonly   renderer: Renderer2,
-              readonly   undoRedoService: UndoRedoService,
-              readonly   service: SelectionService,
-              protected  gridService: GridService) {
+  constructor(readonly renderer: Renderer2,
+              readonly undoRedoService: UndoRedoService,
+              readonly service: SelectionService,
+              readonly gridService: GridService) {
     super();
     this.allListenners = [];
     const action: PostAction = {
@@ -55,7 +54,6 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
       this.applyMultipleSelection();
     });
     this.allListenners.push(() => subscription.unsubscribe());
-    this.initialiseKeyManager();
     this.renderer.setStyle(this.svgStructure.root, 'cursor', 'default');
   }
 
@@ -141,13 +139,13 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
       (startPoint.x + endPoint.x) / 2,
       (startPoint.y + endPoint.y) / 2);
     this.setCircle(new Point(startPoint.x, centerPoint.y),
-      this.circles[Util.CircleType.LEFT_CIRCLE], Util.CIRCLE_RADIUS);
+      this.circles[CircleType.LEFT_CIRCLE], Util.CIRCLE_RADIUS);
     this.setCircle(new Point(centerPoint.x, startPoint.y),
-      this.circles[Util.CircleType.TOP_CIRCLE], Util.CIRCLE_RADIUS);
+      this.circles[CircleType.TOP_CIRCLE], Util.CIRCLE_RADIUS);
     this.setCircle(new Point(endPoint.x, centerPoint.y),
-      this.circles[Util.CircleType.RIGHT_CIRCLE], Util.CIRCLE_RADIUS);
+      this.circles[CircleType.RIGHT_CIRCLE], Util.CIRCLE_RADIUS);
     this.setCircle(new Point(centerPoint.x, endPoint.y),
-      this.circles[Util.CircleType.BOTTOM_CIRCLE], Util.CIRCLE_RADIUS);
+      this.circles[CircleType.BOTTOM_CIRCLE], Util.CIRCLE_RADIUS);
   }
 
   private setCircle(center: Point, circle: SVGElement, radius: string): void {
@@ -197,7 +195,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     }
     const indexOfCircle = this.circles.indexOf(element);
     if (indexOfCircle !== NOT_FOUND) {
-      return indexOfCircle as Util.CircleType;
+      return indexOfCircle as CircleType;
     }
     return BasicSelectionType.NOTHING;
   }
@@ -209,134 +207,15 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     return (this.rectangles.visualisation as SVGGeometryElement).isPointInFill(point);
   }
 
-  protected translateAll(x: number, y: number): void {
+  translateAll(x: number, y: number): void {
     Transform.translateAll(this.service.selectedElements, x, y, this.renderer);
     Transform.translateAll(this.circles, x, y, this.renderer);
     new Transform(this.rectangles.visualisation, this.renderer).translate(x, y);
   }
 
-  protected rotateAll(angle: number): void {
-    const point = Util.SelectionLogicUtil.findElementCenter(this.rectangles.visualisation, this.getSvgOffset());
-    Transform.rotateAll(this.service.selectedElements, point, angle, this.renderer);
-    Transform.rotateAll(this.circles, point, angle, this.renderer);
-    new Transform(this.rectangles.visualisation, this.renderer).rotate(point, angle);
-    this.applyMultipleSelection(undefined, undefined, new Set(this.service.selectedElements));
-  }
-
-  protected allSelfRotate(angle: number): void {
-    this.service.selectedElements.forEach((element) => {
-      const point = Util.SelectionLogicUtil.findElementCenter(element, this.getSvgOffset());
-      new Transform(element, this.renderer).rotate(point, angle);
-    });
-    this.applyMultipleSelection(undefined, undefined, new Set(this.service.selectedElements));
-  }
-
   getSvgOffset(): Offset {
     const svgBoundingRect = this.svgStructure.root.getBoundingClientRect();
     return { y: svgBoundingRect.top, x: svgBoundingRect.left };
-  }
-
-  private initialiseKeyManager(): void {
-    const allArrows = new Set<string>([Arrow.Up, Arrow.Down, Arrow.Left, Arrow.Right]);
-    this.keyManager = {
-      keyPressed: new Set(),
-      lastTimeCheck: new Date().getTime(),
-      shift: false,
-      alt: false,
-      handlers: {
-        keydown: ($event: KeyboardEvent) => {
-          this.keyManager.shift = $event.shiftKey;
-          this.keyManager.alt = $event.altKey;
-          if (!allArrows.has($event.key)) {
-            return;
-          }
-          $event.preventDefault();
-          this.keyManager.keyPressed.add($event.key);
-          const actualTime = new Date().getTime();
-          if (actualTime - this.keyManager.lastTimeCheck >= Util.TIME_INTERVAL) {
-            this.keyManager.lastTimeCheck = actualTime;
-            this.handleKey(Arrow.Up, 0, -Util.OFFSET_TRANSLATE);
-            this.handleKey(Arrow.Down, 0, Util.OFFSET_TRANSLATE);
-            this.handleKey(Arrow.Left, -Util.OFFSET_TRANSLATE, 0);
-            this.handleKey(Arrow.Right, Util.OFFSET_TRANSLATE, 0);
-          }
-        },
-        keyup: ($event: KeyboardEvent) => {
-          this.keyManager.shift = $event.shiftKey;
-          this.keyManager.alt = $event.altKey;
-          this.keyManager.keyPressed.delete($event.key);
-          if (this.keyManager.keyPressed.size === 0 && allArrows.has($event.key)) {
-            this.undoRedoService.saveState();
-          }
-        }
-      }
-    };
-  }
-
-  private handleKey(key: string, dx: number, dy: number): void {
-    if (this.keyManager.keyPressed.has(key)) {
-      if (!this.service.magnetActive) {
-        this.translateAll(dx, dy);
-        return ;
-      }
-      const comparePoint = this.getComparePoint(this.service.selectedElements);
-      const pointInDirection = this.pointInDirection(comparePoint, dx, dy);
-      let [translateX, translateY] = [pointInDirection.x - comparePoint.x, pointInDirection.y - comparePoint.y];
-      const intersection = this.nearestIntersection(comparePoint);
-      translateX += intersection.x - comparePoint.x;
-      translateY += intersection.y - comparePoint.y;
-
-      if (translateX > this.gridService.squareSize) {
-        translateX -= this.gridService.squareSize;
-      } else if (translateX < -this.gridService.squareSize) {
-        translateX += this.gridService.squareSize;
-      }
-      if (translateY > this.gridService.squareSize) {
-        translateY -= this.gridService.squareSize;
-      } else if (translateY < -this.gridService.squareSize) {
-        translateY += this.gridService.squareSize;
-      }
-
-      this.translateAll(translateX, translateY);
-    }
-  }
-
-  protected nearestIntersection(point: Point): Point {
-    const candidates = new PointSet();
-    const s = this.gridService.squareSize;
-    for (let i = 0; i < 2; i++) {
-      for (let j = 0; j < 2; j++) {
-        const pointToAdd = new Point(point.x - point.x % s + i * s, point.y - point.y % s + j * s);
-        if (this.isValidPoint(pointToAdd)) {
-          candidates.add(pointToAdd);
-        }
-      }
-    }
-    return candidates.nearestPoint(point)[0] as Point;
-  }
-
-  private isValidPoint(point: Point): boolean {
-    const [x, y] = [point.x, point.y];
-    return 0 <= x && x < this.svgShape.width
-      && 0 <= y && y < this.svgShape.height;
-  }
-
-  private pointInDirection(currentPoint: Point, ux: number, uy: number): Point {
-    const dx = ux === 0 ? 0 : ux / Math.abs(ux) * this.gridService.squareSize;
-    const dy = uy === 0 ? 0 : uy / Math.abs(uy) * this.gridService.squareSize;
-    const result = new Point (currentPoint.x + dx, currentPoint.y + dy);
-    return this.isValidPoint(result) ? result : currentPoint;
-  }
-
-  protected getComparePoint(elements: Set<SVGElement>): Point {
-    const selection = new MultipleSelection(elements, this.getSvgOffset()).getSelection().points;
-    const MAX_POINTS_PER_DIMENSION = 3;
-    const x = (this.service.magnetPoint as number) % MAX_POINTS_PER_DIMENSION;
-    const y = Math.floor((this.service.magnetPoint as number) / MAX_POINTS_PER_DIMENSION);
-    return new Point(
-      (2 - x) / 2 * selection[0].x + x / 2 * selection[1].x,
-      (2 - y) / 2 * selection[0].y + y / 2 * selection[1].y,
-    );
   }
 
   ngOnDestroy(): void {

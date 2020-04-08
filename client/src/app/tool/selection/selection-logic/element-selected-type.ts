@@ -1,4 +1,4 @@
-import { CircleType } from './selection-logic-util';
+import { CircleType } from './circle-type';
 
 export enum BasicSelectionType {
   NOTHING = 'NOTHING',

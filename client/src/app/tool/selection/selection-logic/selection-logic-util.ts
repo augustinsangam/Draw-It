@@ -2,8 +2,9 @@ import { Renderer2 } from '@angular/core';
 import { Point } from '../../shape/common/point';
 import { Offset } from '../offset';
 import { SingleSelection } from '../single-selection';
+import { CircleType } from './circle-type';
 import { BasicSelectionType } from './element-selected-type';
-import { MouseTracking } from './mouse-tracking';
+import { Mouse } from './mouse';
 
 export const COLORS = {
   RED: 'rgba(255, 0, 0, 0.7)',
@@ -21,13 +22,6 @@ export const TIME_INTERVAL = 100;
 export const DASH_ARRAY = '10 5';
 export const OFFSET_TRANSLATE = 3;
 
-export enum CircleType {
-  LEFT_CIRCLE = 0,
-  TOP_CIRCLE,
-  BOTTOM_CIRCLE,
-  RIGHT_CIRCLE
-}
-
 export const CIRCLES = [
   CircleType.LEFT_CIRCLE,
   CircleType.TOP_CIRCLE,
@@ -39,27 +33,10 @@ export type MouseEventCallBack = ($event: MouseEvent) => void;
 export type KeyboardPressCallback = ($event: KeyboardEvent) => void;
 export type WheelEventCallback = ($event: WheelEvent) => void;
 
-export interface Mouse {
-  left: MouseTracking;
-  right: MouseTracking;
-  wheel?: WheelEvent;
-}
-
 export interface SelectionRectangles {
   selection: SVGElement;
   inversion: SVGElement;
   visualisation: SVGElement;
-}
-
-export interface KeyManager {
-  keyPressed: Set<string>;
-  shift: boolean;
-  alt: boolean;
-  lastTimeCheck: number;
-  handlers: {
-    keydown: KeyboardPressCallback,
-    keyup: KeyboardPressCallback,
-  };
 }
 
 export class SelectionLogicUtil {
