@@ -111,7 +111,7 @@ describe('SelectionLogicComponent', () => {
       button: 0,
       offsetX: 200,
       offsetY: 200,
-      target: component['svgStructure'].root
+      target: document.createElementNS('http://www.w3.org/2000/svg', 'svg:rect')
     } as unknown as MouseEvent;
 
     const mouseDownHandler = (component['mouseHandlers'].get('leftButton') as

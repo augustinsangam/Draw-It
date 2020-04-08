@@ -6,7 +6,7 @@ import { Deplacement } from './deplacement';
 import { SelectionLogicComponent } from './selection-logic.component';
 
 // tslint:disable: no-magic-numbers no-string-literal no-any
-fdescribe('Deplacement', () => {
+describe('Deplacement', () => {
   let component: SelectionLogicComponent;
   let fixture: ComponentFixture<SelectionLogicComponent>;
   let instance: Deplacement;
