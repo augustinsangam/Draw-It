@@ -36,6 +36,7 @@ class Application {
 		res.header('Access-Control-Allow-Headers', 'Content-Type');
 		res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
 		res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
+		res.header('Vary', 'Origin');
 		next();
 	}
 
@@ -52,7 +53,7 @@ class Application {
 		log.error(`[${COLORS.fg.red}ERR${COLORS.reset}] ${err}`);
 		res
 			.status(StatusCode.INTERNAL_SERVER_ERROR)
-			.send(`${err.name}: ${err.message}`);
+			.send(`Erreur interne (${err.message})`);
 	}
 
 	callback(): (req: IncomingMessage, res: ServerResponse) => void {
