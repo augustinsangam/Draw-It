@@ -2,6 +2,7 @@ import { Renderer2 } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Point } from '../../shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
+import { Offset } from '../offset';
 import { CircleType } from './circle-type';
 import { Scale } from './scale';
 // import * as Util from './selection-logic-util';
@@ -116,7 +117,7 @@ fdescribe('Scale', () => {
     expect(spyResize).toHaveBeenCalled();
   });
 
-  it('#onResize should return the right mouseOffset and set scaledRectagleDimension properly', () => {
+  it('#onResize should return the right mouseOffset and set scaledRectagleDimension properly (left)', () => {
     spyOn<any>(scale, 'resizeAll').and.callFake(() => {return; });
 
     scale['scaledRectangleDimension'] = {width: 69, height: 69};
@@ -133,7 +134,7 @@ fdescribe('Scale', () => {
     expect(scale['scaledRectangleDimension']).toEqual({width: 27, height: 69});
   });
 
-  it('#onResize should return the right mouseOffset and set scaledRectagleDimension properly', () => {
+  it('#onResize should return the right mouseOffset and set scaledRectagleDimension properly (top)', () => {
     spyOn<any>(scale, 'resizeAll').and.callFake(() => {return; });
 
     scale['scaledRectangleDimension'] = {width: 69, height: 69};
@@ -150,7 +151,7 @@ fdescribe('Scale', () => {
     expect(scale['scaledRectangleDimension']).toEqual({width: 69, height: 27});
   });
 
-  it('#onResize should return the right mouseOffset and set scaledRectagleDimension properly', () => {
+  it('#onResize should return the right mouseOffset and set scaledRectagleDimension properly (right)', () => {
     spyOn<any>(scale, 'resizeAll').and.callFake(() => {return; });
 
     scale['scaledRectangleDimension'] = {width: 69, height: 69};
@@ -167,7 +168,7 @@ fdescribe('Scale', () => {
     expect(scale['scaledRectangleDimension']).toEqual({width: 111, height: 69});
   });
 
-  it('#onResize should return the right mouseOffset and set scaledRectagleDimension properly', () => {
+  it('#onResize should return the right mouseOffset and set scaledRectagleDimension properly (bottom)', () => {
     spyOn<any>(scale, 'resizeAll').and.callFake(() => {return; });
 
     scale['scaledRectangleDimension'] = {width: 69, height: 69};
@@ -272,4 +273,364 @@ fdescribe('Scale', () => {
 
     expect(spy).toHaveBeenCalled();
   });
+
+  it('#resizeVisualisationRectangle should not call drawVisualisationResising', () => {
+    const spy = spyOn<any>(scale, 'drawVisualisationResising');
+
+    scale['resizeVisualisationRectangle']({x: 42, y: 0});
+
+    expect(spy).toHaveBeenCalledTimes(0);
+  });
+
+  it('#resizeVisualisationRectangle should call drawVisualisationResising twice', () => {
+    const spy = spyOn<any>(scale, 'drawVisualisationResising').and.callThrough();
+
+    component.rectangles.visualisation.setAttribute('x', '42');
+    component.rectangles.visualisation.setAttribute('y', '69');
+    component.rectangles.visualisation.setAttribute('width', '69');
+    component.rectangles.visualisation.setAttribute('height', '42');
+
+    scale['resizeVisualisationRectangle']({x: 42, y: 0});
+
+    expect(spy).toHaveBeenCalledTimes(2);
+  });
+
+  it('#resizeVisualisationRectangle should call preventResizeOverflow with the right parameters', () => {
+    const spy = spyOn<any>(scale, 'preventResizeOverflow').and.callThrough();
+
+    component.rectangles.visualisation.setAttribute('x', '42');
+    component.rectangles.visualisation.setAttribute('y', '69');
+    component.rectangles.visualisation.setAttribute('width', '69');
+    component.rectangles.visualisation.setAttribute('height', '42');
+
+    scale['resizeVisualisationRectangle']({x: 42, y: 0});
+
+    const expectedMouseOffset: Offset = {x: 42, y: 0};
+    const expectedPoint1 = new Point(42, 69);
+    const expectedPoint2 = new Point(111, 111);
+
+    expect(spy).toHaveBeenCalledWith(expectedMouseOffset, [expectedPoint1, expectedPoint2]);
+  });
+
+  it('#switchControlPoint should set inverted.x to -1 and set mouse.left.selectedElement to RIGHT_CIRCLE', () => {
+    component.mouse.left.selectedElement = CircleType.LEFT_CIRCLE;
+    scale['inverted'] = {x: 1, y: 1};
+
+    const refPoint1 = new Point(42, 69);
+    const refPoint2 = new Point(43, 42);
+    const splittedOffset1 = {x: 4, y: 0};
+    const splittedOffset2 = {x: 5, y: 0};
+
+    scale['switchControlPoint']([refPoint1, refPoint2], [splittedOffset1, splittedOffset2]);
+
+    const expectedElement = CircleType.RIGHT_CIRCLE;
+
+    expect(scale['inverted']).toEqual({x: -1, y: 1});
+    expect<any>(component.mouse.left.selectedElement).toEqual(expectedElement);
+  });
+
+  it('#switchControlPoint should not set inverted.x to -1 and not set mouse.left.selectedElement to RIGHT_CIRCLE', () => {
+    component.mouse.left.selectedElement = CircleType.LEFT_CIRCLE;
+    scale['inverted'] = {x: 1, y: 1};
+
+    const refPoint1 = new Point(42, 69);
+    const refPoint2 = new Point(43, 42);
+    const splittedOffset1 = {x: -4, y: 0};
+    const splittedOffset2 = {x: -5, y: 0};
+
+    scale['switchControlPoint']([refPoint1, refPoint2], [splittedOffset1, splittedOffset2]);
+
+    const expectedElement = CircleType.LEFT_CIRCLE;
+
+    expect(scale['inverted']).toEqual({x: 1, y: 1});
+    expect<any>(component.mouse.left.selectedElement).toEqual(expectedElement);
+  });
+
+  it('#switchControlPoint should set inverted.x to -1 and set mouse.left.selectedElement to LEFT_CIRCLE', () => {
+    component.mouse.left.selectedElement = CircleType.RIGHT_CIRCLE;
+    scale['inverted'] = {x: 1, y: 1};
+
+    const refPoint1 = new Point(42, 69);
+    const refPoint2 = new Point(43, 42);
+    const splittedOffset1 = {x: -4, y: 0};
+    const splittedOffset2 = {x: -5, y: 0};
+
+    scale['switchControlPoint']([refPoint1, refPoint2], [splittedOffset1, splittedOffset2]);
+
+    const expectedElement = CircleType.LEFT_CIRCLE;
+
+    expect(scale['inverted']).toEqual({x: -1, y: 1});
+    expect<any>(component.mouse.left.selectedElement).toEqual(expectedElement);
+  });
+
+  it('#switchControlPoint should not set inverted.x to -1 and not set mouse.left.selectedElement to LEFT_CIRCLE', () => {
+    component.mouse.left.selectedElement = CircleType.RIGHT_CIRCLE;
+    scale['inverted'] = {x: 1, y: 1};
+
+    const refPoint1 = new Point(42, 69);
+    const refPoint2 = new Point(43, 42);
+    const splittedOffset1 = {x: 4, y: 0};
+    const splittedOffset2 = {x: 5, y: 0};
+
+    scale['switchControlPoint']([refPoint1, refPoint2], [splittedOffset1, splittedOffset2]);
+
+    const expectedElement = CircleType.RIGHT_CIRCLE;
+
+    expect(scale['inverted']).toEqual({x: 1, y: 1});
+    expect<any>(component.mouse.left.selectedElement).toEqual(expectedElement);
+  });
+
+
+
+  it('#switchControlPoint should set inverted.y to -1 and set mouse.left.selectedElement to BOTTOM_CIRCLE', () => {
+    component.mouse.left.selectedElement = CircleType.TOP_CIRCLE;
+    scale['inverted'] = {x: 1, y: 1};
+
+    const refPoint1 = new Point(42, 41);
+    const refPoint2 = new Point(43, 42);
+    const splittedOffset1 = {x: 0, y: 4};
+    const splittedOffset2 = {x: 0, y: 5};
+
+    scale['switchControlPoint']([refPoint1, refPoint2], [splittedOffset1, splittedOffset2]);
+
+    const expectedElement = CircleType.BOTTOM_CIRCLE;
+
+    expect(scale['inverted']).toEqual({x: 1, y: -1});
+    expect<any>(component.mouse.left.selectedElement).toEqual(expectedElement);
+  });
+
+  it('#switchControlPoint should not set inverted.y to -1 and not set mouse.left.selectedElement to BOTTOM_CIRCLE', () => {
+    component.mouse.left.selectedElement = CircleType.TOP_CIRCLE;
+    scale['inverted'] = {x: 1, y: 1};
+
+    const refPoint1 = new Point(42, 41);
+    const refPoint2 = new Point(43, 42);
+    const splittedOffset1 = {x: 0, y: -4};
+    const splittedOffset2 = {x: 0, y: -5};
+
+    scale['switchControlPoint']([refPoint1, refPoint2], [splittedOffset1, splittedOffset2]);
+
+    const expectedElement = CircleType.TOP_CIRCLE;
+
+    expect(scale['inverted']).toEqual({x: 1, y: 1});
+    expect<any>(component.mouse.left.selectedElement).toEqual(expectedElement);
+  });
+
+  it('#switchControlPoint should set inverted.y to -1 and set mouse.left.selectedElement to TOP_CIRCLE', () => {
+    component.mouse.left.selectedElement = CircleType.BOTTOM_CIRCLE;
+    scale['inverted'] = {x: 1, y: 1};
+
+    const refPoint1 = new Point(42, 41);
+    const refPoint2 = new Point(43, 42);
+    const splittedOffset1 = {x: 0, y: -4};
+    const splittedOffset2 = {x: 0, y: -5};
+
+    scale['switchControlPoint']([refPoint1, refPoint2], [splittedOffset1, splittedOffset2]);
+
+    const expectedElement = CircleType.TOP_CIRCLE;
+
+    expect(scale['inverted']).toEqual({x: 1, y: -1});
+    expect<any>(component.mouse.left.selectedElement).toEqual(expectedElement);
+  });
+
+  it('#switchControlPoint should not set inverted.y to -1 and not set mouse.left.selectedElement to TOP_CIRCLE', () => {
+    component.mouse.left.selectedElement = CircleType.BOTTOM_CIRCLE;
+    scale['inverted'] = {x: 1, y: 1};
+
+    const refPoint1 = new Point(42, 41);
+    const refPoint2 = new Point(43, 42);
+    const splittedOffset1 = {x: 0, y: 4};
+    const splittedOffset2 = {x: 0, y: 5};
+
+    scale['switchControlPoint']([refPoint1, refPoint2], [splittedOffset1, splittedOffset2]);
+
+    const expectedElement = CircleType.BOTTOM_CIRCLE;
+
+    expect(scale['inverted']).toEqual({x: 1, y: 1});
+    expect<any>(component.mouse.left.selectedElement).toEqual(expectedElement);
+  });
+
+  it('#preventResizeOverflow should return theright offsets when LEFT_CIRCLE is selected', () => {
+    component.mouse.left.selectedElement = CircleType.LEFT_CIRCLE;
+
+    const mouseOffset = {x: 5, y: 0};
+    const refPoint1 = new Point(42, 41);
+    const refPoint2 = new Point(45, 42);
+
+    const expectedReturn = scale['preventResizeOverflow'](mouseOffset, [refPoint1, refPoint2]);
+
+    const expectedOffset0 = {x: 3, y: 0};
+    const expectedOffset1 = {x: -2, y: 0};
+
+    expect(expectedReturn).toEqual([expectedOffset0, expectedOffset1]);
+  });
+
+  it('#preventResizeOverflow should return theright offsets when LEFT_CIRCLE is selected', () => {
+    component.mouse.left.selectedElement = CircleType.LEFT_CIRCLE;
+
+    const mouseOffset = {x: 3, y: 0};
+    const refPoint1 = new Point(42, 41);
+    const refPoint2 = new Point(45, 42);
+
+    const expectedReturn = scale['preventResizeOverflow'](mouseOffset, [refPoint1, refPoint2]);
+
+    const expectedOffset0 = {x: 3, y: 0};
+    const expectedOffset1 = {x: -0, y: 0};
+
+    expect(expectedReturn).toEqual([expectedOffset0, expectedOffset1]);
+  });
+
+
+  it('#preventResizeOverflow should return theright offsets when TOP_CIRCLE is selected', () => {
+    component.mouse.left.selectedElement = CircleType.TOP_CIRCLE;
+
+    const mouseOffset = {x: 0, y: 5};
+    const refPoint1 = new Point(42, 42);
+    const refPoint2 = new Point(45, 45);
+
+    const expectedReturn = scale['preventResizeOverflow'](mouseOffset, [refPoint1, refPoint2]);
+
+    const expectedOffset0 = {x: 0, y: 3};
+    const expectedOffset1 = {x: 0, y: -2};
+
+    expect(expectedReturn).toEqual([expectedOffset0, expectedOffset1]);
+  });
+
+  it('#preventResizeOverflow should return the right offsets when TOP_CIRCLE is selected', () => {
+    component.mouse.left.selectedElement = CircleType.TOP_CIRCLE;
+
+    const mouseOffset = {x: 0, y: 3};
+    const refPoint1 = new Point(42, 42);
+    const refPoint2 = new Point(45, 45);
+
+    const expectedReturn = scale['preventResizeOverflow'](mouseOffset, [refPoint1, refPoint2]);
+
+    const expectedOffset0 = {x: 0, y: 3};
+    const expectedOffset1 = {x: 0, y: -0};
+
+    expect(expectedReturn).toEqual([expectedOffset0, expectedOffset1]);
+  });
+
+
+  it('#preventResizeOverflow should return theright offsets when BOTTOM_CIRCLE is selected', () => {
+    component.mouse.left.selectedElement = CircleType.BOTTOM_CIRCLE;
+
+    const mouseOffset = {x: 0, y: -5};
+    const refPoint1 = new Point(42, 42);
+    const refPoint2 = new Point(45, 45);
+
+    const expectedReturn = scale['preventResizeOverflow'](mouseOffset, [refPoint1, refPoint2]);
+
+    const expectedOffset0 = {x: 0, y: -3};
+    const expectedOffset1 = {x: 0, y: 2};
+
+    expect(expectedReturn).toEqual([expectedOffset0, expectedOffset1]);
+  });
+
+  it('#preventResizeOverflow should return the right offsets when BOTTOM_CIRCLE is selected', () => {
+    component.mouse.left.selectedElement = CircleType.BOTTOM_CIRCLE;
+
+    const mouseOffset = {x: 0, y: -3};
+    const refPoint1 = new Point(42, 42);
+    const refPoint2 = new Point(45, 45);
+
+    const expectedReturn = scale['preventResizeOverflow'](mouseOffset, [refPoint1, refPoint2]);
+
+    const expectedOffset0 = {x: 0, y: -3};
+    const expectedOffset1 = {x: 0, y: -0};
+
+    expect(expectedReturn).toEqual([expectedOffset0, expectedOffset1]);
+  });
+
+
+  it('#preventResizeOverflow should return theright offsets when RIGHT_CIRCLE is selected', () => {
+    component.mouse.left.selectedElement = CircleType.RIGHT_CIRCLE;
+
+    const mouseOffset = {x: -5, y: 0};
+    const refPoint1 = new Point(42, 42);
+    const refPoint2 = new Point(45, 45);
+
+    const expectedReturn = scale['preventResizeOverflow'](mouseOffset, [refPoint1, refPoint2]);
+
+    const expectedOffset0 = {x: -3, y: 0};
+    const expectedOffset1 = {x: 2, y: 0};
+
+    expect(expectedReturn).toEqual([expectedOffset0, expectedOffset1]);
+  });
+
+  it('#preventResizeOverflow should return the right offsets when RIGHT_CIRCLE is selected', () => {
+    component.mouse.left.selectedElement = CircleType.RIGHT_CIRCLE;
+
+    const mouseOffset = {x: -3, y: 0};
+    const refPoint1 = new Point(42, 42);
+    const refPoint2 = new Point(45, 45);
+
+    const expectedReturn = scale['preventResizeOverflow'](mouseOffset, [refPoint1, refPoint2]);
+
+    const expectedOffset0 = {x: -3, y: 0};
+    const expectedOffset1 = {x: -0, y: 0};
+
+    expect(expectedReturn).toEqual([expectedOffset0, expectedOffset1]);
+  });
+
+  it('#drawVisualisationResising should return the right points when LEFT_CIRCLE is selected', () => {
+    component.mouse.left.selectedElement = CircleType.LEFT_CIRCLE;
+
+    const mouseOffset = {x: -3, y: 0};
+    const refPoint1 = new Point(42, 42);
+    const refPoint2 = new Point(45, 45);
+
+    const retrunedPoints = scale['drawVisualisationResising'](mouseOffset, [refPoint1, refPoint2]);
+
+    const expectedReturnedPoint1 = new Point(39, 42);
+    const expectedReturnedPoint2 = new Point(45, 45);
+
+    expect(retrunedPoints).toEqual([expectedReturnedPoint1, expectedReturnedPoint2]);
+  });
+
+  it('#drawVisualisationResising should return the right points when TOP_CIRCLE is selected', () => {
+    component.mouse.left.selectedElement = CircleType.TOP_CIRCLE;
+
+    const mouseOffset = {x: 0, y: -3};
+    const refPoint1 = new Point(42, 42);
+    const refPoint2 = new Point(45, 45);
+
+    const retrunedPoints = scale['drawVisualisationResising'](mouseOffset, [refPoint1, refPoint2]);
+
+    const expectedReturnedPoint1 = new Point(42, 39);
+    const expectedReturnedPoint2 = new Point(45, 45);
+
+    expect(retrunedPoints).toEqual([expectedReturnedPoint1, expectedReturnedPoint2]);
+  });
+
+  it('#drawVisualisationResising should return the right points when RIGHT_CIRCLE is selected', () => {
+    component.mouse.left.selectedElement = CircleType.RIGHT_CIRCLE;
+
+    const mouseOffset = {x: 3, y: 0};
+    const refPoint1 = new Point(42, 42);
+    const refPoint2 = new Point(45, 45);
+
+    const retrunedPoints = scale['drawVisualisationResising'](mouseOffset, [refPoint1, refPoint2]);
+
+    const expectedReturnedPoint1 = new Point(42, 42);
+    const expectedReturnedPoint2 = new Point(48, 45);
+
+    expect(retrunedPoints).toEqual([expectedReturnedPoint1, expectedReturnedPoint2]);
+  });
+
+  it('#drawVisualisationResising should return the right points when BOTTOM_CIRCLE is selected', () => {
+    component.mouse.left.selectedElement = CircleType.BOTTOM_CIRCLE;
+
+    const mouseOffset = {x: 0, y: 3};
+    const refPoint1 = new Point(42, 42);
+    const refPoint2 = new Point(45, 45);
+
+    const retrunedPoints = scale['drawVisualisationResising'](mouseOffset, [refPoint1, refPoint2]);
+
+    const expectedReturnedPoint1 = new Point(42, 42);
+    const expectedReturnedPoint2 = new Point(45, 48);
+
+    expect(retrunedPoints).toEqual([expectedReturnedPoint1, expectedReturnedPoint2]);
+  });
+// tslint:disable-next-line: max-file-line-count
 });

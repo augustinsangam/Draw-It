@@ -1,6 +1,6 @@
 import { Point } from '../../shape/common/point';
 import { Offset } from '../offset';
-import * as CircleType from './circle-type';
+import { CircleType } from './circle-type';
 import * as Util from './selection-logic-util';
 import { SelectionLogicComponent } from './selection-logic.component';
 import { Transform } from './transform';
@@ -117,11 +117,11 @@ export class Scale {
     const refPoint2 = refPoints[1];
 
     if (refPoint2.x - refPoint1.x <= 1 && splitedOffset[0].x !== 0) {
-      if (splitedOffset[0].x < 0 && this.selectionLogic.mouse.left.selectedElement !== CircleType.CircleType.LEFT_CIRCLE) {
-        this.selectionLogic.mouse.left.selectedElement = CircleType.CircleType.LEFT_CIRCLE;
+      if (splitedOffset[0].x < 0 && this.selectionLogic.mouse.left.selectedElement !== CircleType.LEFT_CIRCLE) {
+        this.selectionLogic.mouse.left.selectedElement = CircleType.LEFT_CIRCLE;
         switched = true;
-      } else if (splitedOffset[0].x > 0 && this.selectionLogic.mouse.left.selectedElement !== CircleType.CircleType.RIGHT_CIRCLE) {
-        this.selectionLogic.mouse.left.selectedElement = CircleType.CircleType.RIGHT_CIRCLE;
+      } else if (splitedOffset[0].x > 0 && this.selectionLogic.mouse.left.selectedElement !== CircleType.RIGHT_CIRCLE) {
+        this.selectionLogic.mouse.left.selectedElement = CircleType.RIGHT_CIRCLE;
         switched = true;
       }
       if (switched) {
@@ -130,11 +130,11 @@ export class Scale {
     }
     switched = false;
     if (refPoint2.y - refPoint1.y <= 1 && splitedOffset[0].y !== 0) {
-      if (splitedOffset[0].y < 0 && this.selectionLogic.mouse.left.selectedElement !== CircleType.CircleType.TOP_CIRCLE) {
-        this.selectionLogic.mouse.left.selectedElement = CircleType.CircleType.TOP_CIRCLE;
+      if (splitedOffset[0].y < 0 && this.selectionLogic.mouse.left.selectedElement !== CircleType.TOP_CIRCLE) {
+        this.selectionLogic.mouse.left.selectedElement = CircleType.TOP_CIRCLE;
         switched = true;
-      } else if (splitedOffset[0].y > 0 && this.selectionLogic.mouse.left.selectedElement !== CircleType.CircleType.BOTTOM_CIRCLE) {
-        this.selectionLogic.mouse.left.selectedElement = CircleType.CircleType.BOTTOM_CIRCLE;
+      } else if (splitedOffset[0].y > 0 && this.selectionLogic.mouse.left.selectedElement !== CircleType.BOTTOM_CIRCLE) {
+        this.selectionLogic.mouse.left.selectedElement = CircleType.BOTTOM_CIRCLE;
         switched = true;
       }
       if (switched) {
@@ -152,27 +152,25 @@ export class Scale {
     let offset2: Offset = { x: 0, y: 0 };
 
     switch (this.selectionLogic.mouse.left.selectedElement) {
-      case CircleType.CircleType.LEFT_CIRCLE: {
+      case CircleType.LEFT_CIRCLE: {
         const splitedOffset = pointRef[0].x + mouseOffset.x > pointRef[1].x ? pointRef[1].x - pointRef[0].x : mouseOffset.x;
         offset1 = { x: splitedOffset, y: 0 };
         offset2 = { x: -(mouseOffset.x - splitedOffset), y: 0 };
         break;
       }
-      case CircleType.CircleType.TOP_CIRCLE: {
+      case CircleType.TOP_CIRCLE: {
         const splitedOffset = pointRef[0].y + mouseOffset.y > pointRef[1].y ? pointRef[1].y - pointRef[0].y : mouseOffset.y;
         offset1 = { x: 0, y: splitedOffset };
-        offset2 = {
-          x: 0, y: -(mouseOffset.y - splitedOffset),
-        };
+        offset2 = {x: 0, y: -(mouseOffset.y - splitedOffset)};
         break;
       }
-      case CircleType.CircleType.BOTTOM_CIRCLE: {
+      case CircleType.BOTTOM_CIRCLE: {
         const splitedOffset = pointRef[1].y + mouseOffset.y < pointRef[0].y ? pointRef[0].y - pointRef[1].y : mouseOffset.y;
         offset1 = { x: 0, y: splitedOffset };
         offset2 = { x: 0, y: -(mouseOffset.y - splitedOffset) };
         break;
       }
-      case CircleType.CircleType.RIGHT_CIRCLE: {
+      case CircleType.RIGHT_CIRCLE: {
         const splitedOffset = pointRef[1].x + mouseOffset.x < pointRef[0].x ? pointRef[0].x - pointRef[1].x : mouseOffset.x;
         offset1 = { x: splitedOffset, y: 0 };
         offset2 = { x: -(mouseOffset.x - splitedOffset), y: 0 };
@@ -186,12 +184,12 @@ export class Scale {
 
   private drawVisualisationResising(mouseOffset: Offset, refPoint: Point[]): Point[] {
     const p1 = new Point(
-      refPoint[0].x + ((this.selectionLogic.mouse.left.selectedElement === CircleType.CircleType.LEFT_CIRCLE) ? mouseOffset.x : 0),
-      refPoint[0].y + ((this.selectionLogic.mouse.left.selectedElement === CircleType.CircleType.TOP_CIRCLE) ? mouseOffset.y : 0),
+      refPoint[0].x + ((this.selectionLogic.mouse.left.selectedElement === CircleType.LEFT_CIRCLE) ? mouseOffset.x : 0),
+      refPoint[0].y + ((this.selectionLogic.mouse.left.selectedElement === CircleType.TOP_CIRCLE) ? mouseOffset.y : 0),
     );
     const p2 = new Point(
-      refPoint[1].x + ((this.selectionLogic.mouse.left.selectedElement === CircleType.CircleType.RIGHT_CIRCLE) ? mouseOffset.x : 0),
-      refPoint[1].y + ((this.selectionLogic.mouse.left.selectedElement === CircleType.CircleType.BOTTOM_CIRCLE) ? mouseOffset.y : 0),
+      refPoint[1].x + ((this.selectionLogic.mouse.left.selectedElement === CircleType.RIGHT_CIRCLE) ? mouseOffset.x : 0),
+      refPoint[1].y + ((this.selectionLogic.mouse.left.selectedElement === CircleType.BOTTOM_CIRCLE) ? mouseOffset.y : 0),
     );
     this.selectionLogic.drawVisualisation(p1, p2);
     return [p1, p2];
