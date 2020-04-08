@@ -6,7 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { EventManager } from '@angular/platform-browser';
-import { ToolPanelDirective } from '../../tool-panel/tool-panel.directive';
+import { ToolPanelDirective } from '../../tool/tool-panel/tool-panel.directive';
 import { SelectionService } from '../selection.service';
 
 @Component({

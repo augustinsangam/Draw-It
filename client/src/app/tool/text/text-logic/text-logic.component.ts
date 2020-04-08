@@ -6,7 +6,7 @@ import {BackGroundProperties, StrokeProperties} from '../../shape/common/abstrac
 import {Point} from '../../shape/common/point';
 import {Rectangle} from '../../shape/common/rectangle';
 import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
-import {UndoRedoService} from '../../undo-redo/undo-redo.service';
+import {UndoRedoService} from '../../../undo-redo/undo-redo.service';
 import {Cursor} from '../text-classes/cursor';
 import {TextAlignement} from '../text-classes/text-alignement';
 import {StateIndicators} from '../text-classes/text-indicators';

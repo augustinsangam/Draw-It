@@ -33,7 +33,7 @@ import { PencilPanelComponent } from './tool/drawing-instruments/pencil/pencil-p
 import {
   ToolSelectorService
 } from './tool/tool-selector/tool-selector.service';
-import { UndoRedoService } from './tool/undo-redo/undo-redo.service';
+import { UndoRedoService } from './undo-redo/undo-redo.service';
 // import { LocalStorageHandlerService } from './auto-save/local-storage-handler.service';
 
 // tslint:disable: no-string-literal no-any no-magic-numbers

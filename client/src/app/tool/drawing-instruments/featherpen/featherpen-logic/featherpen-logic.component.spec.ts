@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import {Point} from '../../../shape/common/point';
-import {UndoRedoService} from '../../../undo-redo/undo-redo.service';
+import {UndoRedoService} from '../../../../undo-redo/undo-redo.service';
 import { FeatherpenLogicComponent } from './featherpen-logic.component';
 
 const createClickMouseEvent = (event: string): MouseEvent => {

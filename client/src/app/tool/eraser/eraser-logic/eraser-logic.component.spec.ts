@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import * as Util from '../../selection/selection-logic/selection-logic-util';
+import * as Util from '../../../selection/selection-logic/selection-logic-util';
 import { Point } from '../../shape/common/point';
-import { UndoRedoService } from '../../undo-redo/undo-redo.service';
+import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import { CONSTANTS, EraserLogicComponent } from './eraser-logic.component';
 
 // tslint:disable: no-string-literal no-any no-magic-numbers

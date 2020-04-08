@@ -1,6 +1,6 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
-import { GridService } from '../../grid/grid.service';
-import { Point } from '../../shape/common/point';
+import { GridService } from '../../tool/grid/grid.service';
+import { Point } from '../../tool/shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { SelectionService } from '../selection.service';
 import { CircleType } from './circle-type';

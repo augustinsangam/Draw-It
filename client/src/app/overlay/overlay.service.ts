@@ -29,7 +29,7 @@ import {
 } from '../tool/tool.enum';
 import {
   UndoRedoService
-} from '../tool/undo-redo/undo-redo.service';
+} from '../undo-redo/undo-redo.service';
 import {
   OverlayManager
 } from './overlay-manager';

@@ -10,7 +10,7 @@ import {
 } from './shortcut-handler/shortcut-handler.service';
 import { SvgService } from './svg/svg.service';
 import { FilterService } from './tool/drawing-instruments/brush/filter.service';
-import { UndoRedoService } from './tool/undo-redo/undo-redo.service';
+import { UndoRedoService } from './undo-redo/undo-redo.service';
 
 @Component({
   selector: 'app-root',

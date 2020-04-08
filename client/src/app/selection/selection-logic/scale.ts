@@ -1,4 +1,4 @@
-import { Point } from '../../shape/common/point';
+import { Point } from '../../tool/shape/common/point';
 import { Offset } from '../offset';
 import * as CircleType from './circle-type';
 import * as Util from './selection-logic-util';

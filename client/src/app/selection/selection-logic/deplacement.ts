@@ -1,5 +1,5 @@
-import { PointSet } from '../../bucket/bucket-logic/point-set';
-import { Point } from '../../shape/common/point';
+import { PointSet } from '../../tool/bucket/bucket-logic/point-set';
+import { Point } from '../../tool/shape/common/point';
 import { MultipleSelection } from '../multiple-selection';
 import { Arrow } from './arrow';
 import { KeyManager } from './key-manager';
@@ -75,7 +75,7 @@ export class Deplacement {
         this.selectionLogic.translateAll(dx, dy);
         return ;
       }
-      const comparePoint = this.getComparePoint(
+      let comparePoint = this.getComparePoint(
         this.selectionLogic.service.selectedElements
       );
 
@@ -100,7 +100,11 @@ export class Deplacement {
         translateY += this.selectionLogic.gridService.squareSize;
       }
 
-      this.selectionLogic.translateAll(translateX, translateY);
+      comparePoint = new Point(comparePoint.x + translateX, comparePoint.y + translateY);
+      if (this.isValidPoint(comparePoint)) {
+        this.selectionLogic.translateAll(translateX, translateY);
+      }
+
     }
 
   }
@@ -129,9 +133,7 @@ export class Deplacement {
           point.x - point.x % s + i * s,
           point.y - point.y % s + j * s
         );
-        if (this.isValidPoint(pointToAdd)) {
-          candidates.add(pointToAdd);
-        }
+        candidates.add(pointToAdd);
       }
     }
     return candidates.nearestPoint(point)[0] as Point;
@@ -151,7 +153,7 @@ export class Deplacement {
     const dx = ux === 0 ? 0 : ux / Math.abs(ux) * this.selectionLogic.gridService.squareSize;
     const dy = uy === 0 ? 0 : uy / Math.abs(uy) * this.selectionLogic.gridService.squareSize;
     const result = new Point (currentPoint.x + dx, currentPoint.y + dy);
-    return this.isValidPoint(result) ? result : currentPoint;
+    return result;
 
   }
 

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { SVGStructure } from '../../svg/svg-structure';
+import { SVGStructure } from '../svg/svg-structure';
 import { UndoRedoService } from './undo-redo.service';
 
 const createEllipse = (): SVGElement => {
