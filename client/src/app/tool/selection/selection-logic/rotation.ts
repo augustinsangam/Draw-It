@@ -7,6 +7,7 @@ export class Rotation {
   constructor(private selectionLogic: SelectionLogicComponent) { }
 
   onRotate($event: WheelEvent): void {
+    console.log($event.deltaY);
     const angle = this.selectionLogic.deplacement.keyManager.alt ?
       $event.deltaY / Util.MOUSE_WHEEL_DELTA_Y :
       Util.ANGLE * ($event.deltaY / Util.MOUSE_WHEEL_DELTA_Y);

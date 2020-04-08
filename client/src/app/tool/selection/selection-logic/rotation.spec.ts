@@ -1,13 +1,15 @@
 import { Renderer2 } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
-import { Clipboard } from './clipboard';
 import { SelectionLogicComponent } from './selection-logic.component';
+import { Rotation } from './rotation';
+import { Transform } from './transform';
 
 // tslint:disable: no-magic-numbers no-string-literal no-any
-describe('Clipboard', () => {
+fdescribe('Rotate', () => {
   let component: SelectionLogicComponent;
   let fixture: ComponentFixture<SelectionLogicComponent>;
+  let rotate: Rotation;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -22,6 +24,7 @@ describe('Clipboard', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SelectionLogicComponent);
     component = fixture.componentInstance;
+    rotate = new Rotation(component);
     component.svgStructure = {
       root: document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
       defsZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
@@ -59,7 +62,72 @@ describe('Clipboard', () => {
   });
 
   it('#should create', () => {
-    expect(new Clipboard(component)).toBeTruthy();
+    expect(rotate).toBeTruthy();
   });
 
+  it('#onRotate should call rotateAll() when the key SHIFT is not pressed', () => {
+    const spy = spyOn<any>(rotate, 'rotateAll');
+
+    const event = {deltaY: 53} as WheelEvent;
+
+    rotate.onRotate(event);
+
+    expect(spy).toHaveBeenCalledWith(15);
+  });
+
+  it('#onRotate should call allSelfRotate() when the key SHIFT is not pressed', () => {
+    const spy = spyOn<any>(rotate, 'allSelfRotate');
+
+    const event = {deltaY: 53} as WheelEvent;
+    component.deplacement.keyManager.shift = true;
+
+    rotate.onRotate(event);
+
+    expect(spy).toHaveBeenCalledWith(15);
+  });
+
+  it('#onRotate should call rotateAll() with "1" when the key SHIFT is not pressed and ALT is', () => {
+    const spy = spyOn<any>(rotate, 'rotateAll');
+
+    const event = {deltaY: 53} as WheelEvent;
+    component.deplacement.keyManager.alt = true;
+
+    rotate.onRotate(event);
+
+    expect(spy).toHaveBeenCalledWith(1);
+  });
+
+  it('#onRotate should call saveState() when there are selected elements', () => {
+    const spy = spyOn(component.undoRedoService, 'saveState');
+
+    const event = {deltaY: 53} as WheelEvent;
+    component.service.selectedElements.add(
+      component.svgStructure.drawZone.children.item(0) as SVGElement
+    );
+
+    rotate.onRotate(event);
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#rotateAll should call Transform.rotateAll twice and applyMultipleSelection once', () => {
+    const spyRotateAll = spyOn(Transform, 'rotateAll');
+
+    const spySelection = spyOn(component, 'applyMultipleSelection');
+
+    rotate['rotateAll'](42);
+
+    expect(spyRotateAll).toHaveBeenCalledTimes(2);
+    expect(spySelection).toHaveBeenCalledTimes(1);
+  });
+
+  it('#allSelfRotate should call applyMultipleSelection once', () => {
+    const spySelection = spyOn(component, 'applyMultipleSelection');
+    component.service.selectedElements.add(
+      component.svgStructure.drawZone.children.item(0) as SVGElement
+    );
+    rotate['allSelfRotate'](42);
+
+    expect(spySelection).toHaveBeenCalledTimes(1);
+  });
 });
