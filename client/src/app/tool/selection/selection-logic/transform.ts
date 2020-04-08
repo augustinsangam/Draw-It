@@ -46,7 +46,6 @@ export class Transform {
                   point: Point,
                   sx: number,
                   sy: number,
-                  baseTransform: Map<SVGElement, number[]>,
                   renderer: Renderer2): void {
     for (const element of elements) {
       new Transform(element, renderer).scale(point, sx, sy);

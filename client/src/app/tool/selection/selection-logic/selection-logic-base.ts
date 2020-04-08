@@ -1,4 +1,5 @@
 import { OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { GridService } from '../../grid/grid.service';
 import { MathService } from '../../mathematics/tool.math-service.service';
 import { BackGroundProperties, StrokeProperties } from '../../shape/common/abstract-shape';
 import { Circle } from '../../shape/common/circle';
@@ -28,9 +29,10 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   rectangles: Util.SelectionRectangles;
   mouse: Mouse;
 
-  constructor(private renderer: Renderer2,
-              private undoRedoService: UndoRedoService,
-              private service: SelectionService) {
+  constructor(readonly renderer: Renderer2,
+              readonly undoRedoService: UndoRedoService,
+              readonly service: SelectionService,
+              readonly gridService: GridService) {
     super();
     this.allListenners = [];
     const action: PostAction = {

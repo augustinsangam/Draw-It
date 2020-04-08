@@ -30,7 +30,7 @@ export class SelectionLogicComponent
               readonly service: SelectionService,
               readonly gridService: GridService
   ) {
-    super(renderer, undoRedoService, service);
+    super(renderer, undoRedoService, service, gridService);
     this.initialiseHandlers();
     this.scaleUtil = new Scale(this);
   }
