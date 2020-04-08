@@ -5,7 +5,7 @@ import { SelectionLogicComponent } from './selection-logic.component';
 import { Rotation } from './rotation';
 
 // tslint:disable: no-magic-numbers no-string-literal no-any
-fdescribe('Rotation', () => {
+describe('Rotation', () => {
   let component: SelectionLogicComponent;
   let fixture: ComponentFixture<SelectionLogicComponent>;
 

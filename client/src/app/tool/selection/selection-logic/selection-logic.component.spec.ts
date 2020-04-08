@@ -9,7 +9,7 @@ import * as Util from './selection-logic-util';
 import { SelectionLogicComponent } from './selection-logic.component';
 
 // tslint:disable: no-magic-numbers no-string-literal no-any
-describe('SelectionLogicComponent', () => {
+fdescribe('SelectionLogicComponent', () => {
   let component: SelectionLogicComponent;
   let fixture: ComponentFixture<SelectionLogicComponent>;
 
@@ -33,6 +33,10 @@ describe('SelectionLogicComponent', () => {
       temporaryZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
       endZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement
     };
+
+    component.svgStructure.root.setAttribute('width', '500');
+    component.svgStructure.root.setAttribute('height', '500');
+
     component.svgStructure.root.appendChild(component.svgStructure.defsZone);
     component.svgStructure.root.appendChild(component.svgStructure.drawZone);
     component.svgStructure.root.appendChild(component.svgStructure.temporaryZone);
@@ -52,6 +56,7 @@ describe('SelectionLogicComponent', () => {
     rec2.style.strokeWidth = '2';
     const rec3 = document.createElementNS('http://www.w3.org/2000/svg', 'svg:rect');
     rec3.classList.add('filter1');
+
     component.svgStructure.drawZone.appendChild(rec1);
     component.svgStructure.drawZone.appendChild(rec2);
     component.svgStructure.drawZone.appendChild(rec3);
@@ -105,7 +110,8 @@ describe('SelectionLogicComponent', () => {
     const fakeEvent = {
       button: 0,
       offsetX: 200,
-      offsetY: 200
+      offsetY: 200,
+      target: component['svgStructure'].root
     } as unknown as MouseEvent;
 
     const mouseDownHandler = (component['mouseHandlers'].get('leftButton') as
@@ -117,11 +123,32 @@ describe('SelectionLogicComponent', () => {
     expect(component['mouse'].left.mouseIsDown).toEqual(true);
   });
 
+  it('#left down handler should apply single selection when '
+      + 'target is a draw and the click is real', () => {
+    const fakeEvent = {
+      button: 0,
+      offsetX: 200,
+      offsetY: 200,
+      target: component.svgStructure.drawZone.children.item(0)
+    } as unknown as MouseEvent;
+
+    const mouseClickHandler = (component['mouseHandlers'].get('leftButton') as
+      Map<string, Util.MouseEventCallBack>).get('mousedown') as
+      Util.MouseEventCallBack;
+
+    const spy = spyOn<any>(component, 'applySingleSelection').and.callThrough();
+
+    mouseClickHandler(fakeEvent);
+
+    expect(spy).toHaveBeenCalled();
+  });
+
   it('#left mouse move handler should at least modifiy left'
    + ' current point when mouse in down', () => {
     const fakeEvent = {
       offsetX: 200,
-      offsetY: 200
+      offsetY: 200,
+      preventDefault: () => { return ; }
     } as unknown as MouseEvent;
     const mouseMoveHandler = (component['mouseHandlers'].get('leftButton') as
     Map<string, Util.MouseEventCallBack>).get('mousemove') as
@@ -135,7 +162,8 @@ describe('SelectionLogicComponent', () => {
   it('#left mouse move handler should do nothing when mouse is up', () => {
     const fakeEvent = {
       offsetX: 200,
-      offsetY: 200
+      offsetY: 200,
+      preventDefault: () => { return ; }
     } as unknown as MouseEvent;
     const mouseMoveHandler = (component['mouseHandlers'].get('leftButton') as
     Map<string, Util.MouseEventCallBack>).get('mousemove') as
@@ -150,7 +178,7 @@ describe('SelectionLogicComponent', () => {
     const fakeEvent = {
       button: 0,
       offsetX: 200,
-      offsetY: 200
+      offsetY: 200,
     } as unknown as MouseEvent;
 
     const mouseUpHandler = (component['mouseHandlers'].get('leftButton') as
@@ -183,7 +211,8 @@ describe('SelectionLogicComponent', () => {
     const fakeEvent = {
       button: 2,
       offsetX: 200,
-      offsetY: 200
+      offsetY: 200,
+      target: component['svgStructure'].drawZone.children.item(0)
     } as unknown as MouseEvent;
 
     const mouseDownHandler = (component['mouseHandlers'].get('rightButton') as
@@ -242,10 +271,12 @@ describe('SelectionLogicComponent', () => {
 
   it('#contextmenu handler should at least prevent default action', () => {
     const fakeEvent = {
+      target: component['svgStructure'].root,
       preventDefault: () => {return ; },
     } as unknown as MouseEvent;
 
     const spy = spyOn(fakeEvent, 'preventDefault');
+    spyOn<any>(component, 'applySingleInversion');
 
     const contextMenuHandler = (component['mouseHandlers'].get('rightButton') as
       Map<string, Util.MouseEventCallBack>).get('contextmenu') as
@@ -275,12 +306,15 @@ describe('SelectionLogicComponent', () => {
   });
 
   it('#left mouse move handler should translate all shapes'
-      + 'when draging', () => {
+      + ' when draging', () => {
     const fakeEvent = {
       offsetX: 200,
-      offsetY: 200
+      offsetY: 200,
+      preventDefault: () => { return ; }
     } as unknown as MouseEvent;
 
+    spyOn(component['deplacement'], 'onCursorMove');
+    component['service'].magnetActive = false;
     const mouseMoveHandler = (component['mouseHandlers'].get('leftButton') as
       Map<string, Util.MouseEventCallBack>).get('mousemove') as
       Util.MouseEventCallBack;
@@ -298,7 +332,8 @@ describe('SelectionLogicComponent', () => {
       + 'when not draging', () => {
     const fakeEvent = {
       offsetX: 200,
-      offsetY: 200
+      offsetY: 200,
+      preventDefault: () => { return ; }
     } as unknown as MouseEvent;
 
     const mouseMoveHandler = (component['mouseHandlers'].get('leftButton') as
@@ -331,26 +366,6 @@ describe('SelectionLogicComponent', () => {
     component['mouse'].left.startPoint = new Point(0, 0);
     component['mouse'].left.currentPoint = new Point(1, 1);
     mouseMoveHandler(fakeEvent);
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('#left down handler should apply single selection when'
-      + 'target is a draw and the click is real', () => {
-    const fakeEvent = {
-      button: 0,
-      target: component.svgStructure.drawZone.children.item(0)
-    } as unknown as MouseEvent;
-
-    const mouseClickHandler = (component['mouseHandlers'].get('leftButton') as
-      Map<string, Util.MouseEventCallBack>).get('mousedown') as
-      Util.MouseEventCallBack;
-
-    const spy = spyOn<any>(component, 'applySingleSelection').and.callThrough();
-
-    component['mouse'].left.startPoint = new Point(2, 3);
-    component['mouse'].left.endPoint = new Point(2, 3);
-
-    mouseClickHandler(fakeEvent);
     expect(spy).toHaveBeenCalled();
   });
 
@@ -480,67 +495,6 @@ describe('SelectionLogicComponent', () => {
 
     expect(component['service'].selectedElements).not.toContain(selectedElement);
   });
-
-  // it('#KeyManager should contain all keypressed', () => {
-  //   let fakeKeyDownEvent = {
-  //     key: 'ArrowUp',
-  //     preventDefault: () => { return ; }
-  //   } as unknown as KeyboardEvent;
-  //   component['keyManager'].handlers.keydown(fakeKeyDownEvent);
-  //   expect(component['keyManager'].keyPressed).toContain('ArrowUp');
-  //   fakeKeyDownEvent = {
-  //     key: 'ArrowDown',
-  //     preventDefault: () => { return ; }
-  //   } as unknown as KeyboardEvent;
-  //   component['keyManager'].handlers.keydown(fakeKeyDownEvent);
-  //   expect(component['keyManager'].keyPressed).toContain('ArrowUp');
-  //   expect(component['keyManager'].keyPressed).toContain('ArrowDown');
-  // });
-
-  // it('#KeyDown manager should consider only arrows', () => {
-  //   const fakeKeyDownEvent = {
-  //     key: 'ArrowUppppp',
-  //     preventDefault: () => { return ; }
-  //   } as unknown as KeyboardEvent;
-  //   const spy = spyOn(fakeKeyDownEvent, 'preventDefault');
-  //   component['keyManager'].handlers.keydown(fakeKeyDownEvent);
-  //   expect(spy).not.toHaveBeenCalled();
-  // });
-
-  // it('#Translate should be done only after each 100 ms', fakeAsync(() => {
-  //   const spy = spyOn<any>(component, 'handleKey').and.callThrough();
-  //   const fakeKeyDownEvent = {
-  //     key: 'ArrowUp',
-  //     preventDefault: () => { return ; }
-  //   } as unknown as KeyboardEvent;
-  //   component['keyManager'].handlers.keydown(fakeKeyDownEvent);
-  //   expect(spy).not.toHaveBeenCalled();
-  //   setTimeout(() => {
-  //     component['keyManager'].handlers.keydown(fakeKeyDownEvent);
-  //   }, 200);
-  //   tick(200);
-  //   expect(spy).toHaveBeenCalled();
-  //   component['keyManager'].handlers.keydown(fakeKeyDownEvent);
-  // }));
-
-  // it('#KeyUp handler should save the state only'
-  //      + ' all arrows are released', fakeAsync(() => {
-  //   const spy = spyOn(component['undoRedoService'], 'saveState');
-  //   const arrowUpEvent = {
-  //     key: 'ArrowUp',
-  //     preventDefault: () => { return ; }
-  //   } as unknown as KeyboardEvent;
-  //   const arrowDownEvent = {
-  //     key: 'ArrowDown',
-  //     preventDefault: () => { return ; }
-  //   } as unknown as KeyboardEvent;
-  //   component['keyManager'].handlers.keydown(arrowUpEvent);
-  //   component['keyManager'].handlers.keydown(arrowDownEvent);
-  //   component['keyManager'].handlers.keyup(arrowUpEvent);
-  //   expect(spy).not.toHaveBeenCalled();
-  //   component['keyManager'].handlers.keyup(arrowDownEvent);
-  //   expect(spy).toHaveBeenCalled();
-  // }));
 
   it('#MultipleSelection.getSelection should return a null Zone'
    + ' when no element is selected', () => {

@@ -4,7 +4,7 @@ import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { SelectionLogicComponent } from './selection-logic.component';
 
 // tslint:disable: no-magic-numbers no-string-literal no-any
-fdescribe('Scale', () => {
+describe('Scale', () => {
   let component: SelectionLogicComponent;
   let fixture: ComponentFixture<SelectionLogicComponent>;
 
