@@ -8,13 +8,29 @@ export class TextLine {
   }
 
   moveUp(offSetY: number): void {
-    const oldY = this.tspan.getAttribute('y') as number;
-    this.tspan.setAttribute('y', `${oldY - offSetY}`);
+    const oldY = this.tspan.getAttribute('y');
+    if (oldY !== null) {
+      this.tspan.setAttribute('y', `${+oldY - offSetY}`);
+    }
   }
 
-  moveDown(offSetY: number): void {
-    const oldY = this.tspan.getAttribute('y') as number;
-    this.tspan.setAttribute('y', `${oldY - offSetY}`);
+  moveDown(init: number, index: number, fontSize: number): void {
+    this.tspan.setAttribute('y', `${init + (index + 1) * fontSize}`);
+  }
+
+  splitAtCursor(index: number, freshTspan: SVGElement): TextLine {
+    const newLine = new TextLine(
+      freshTspan,
+      Array.from(this.letters.slice(index, this.letters.length)),
+      0
+    );
+    newLine.tspan.textContent = newLine.letters.join('');
+
+    this.letters = this.letters.slice(0, index);
+    this.tspan.textContent = this.letters.join('');
+    this.cursorIndex = index;
+
+    return newLine;
   }
 
   emptySelf(): void {

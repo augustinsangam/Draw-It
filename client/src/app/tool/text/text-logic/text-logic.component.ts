@@ -185,7 +185,9 @@ implements OnDestroy {
         }
         break;
     }
-    this.updateView();
+    if (keyEv.key !== 'Escape') {
+      this.updateView();
+    }
   }
 
   private onMouseUp(mouseEv: MouseEvent): void {
@@ -231,14 +233,14 @@ implements OnDestroy {
     this.renderer.appendChild(this.svgStructure.drawZone, this.textElement);
     this.setTextStyle();
 
-    this.addTspan();
+    this.addLine();
   }
 
   private startTyping(): void {
     this.indicators.onType = true;
     this.shortcutService.desactivateAll();
-    this.initSVGText();
     this.initCursor();
+    this.initSVGText();
   }
 
   private cancelTyping(): void {
@@ -261,28 +263,31 @@ implements OnDestroy {
       this.textElement.remove();
     }
     this.shortcutService.activateAll();
-    this.currentLine = new TextLine(undefined as unknown as SVGElement, [], 0);
+    delete this.currentLine;
     this.lines = [];
     if (!cancelled) {
       this.undoRedoService.saveState();
     }
   }
 
-  private addTspan(): void {
-    // const prevLineIndex = this.lines.indexOf(this.currentLine);
-    this.currentLine = new TextLine(this.renderer.createElement('tspan', this.svgNS), [], 0);
+  private addLine(): void {
+    if (!this.currentLine) {
+      this.currentLine = new TextLine(this.renderer.createElement('tspan', this.svgNS),  [], 0);
+    }
+    const prevLineIndex = this.lines.indexOf(this.currentLine);
+    const newTspan = this.renderer.createElement('tspan', this.svgNS);
+
+    this.currentLine = this.currentLine.splitAtCursor(this.currentLine.cursorIndex, newTspan);
+
     this.renderer.appendChild(this.textElement, this.currentLine.tspan);
     this.renderer.setStyle(this.currentLine.tspan, 'white-space', 'pre');
-    this.lines.push(this.currentLine);
-    // this.lines.splice(prevLineIndex + 1, 0, this.currentLine);
-  }
-
-  private addLine(): void {
-    this.addTspan();
     this.renderer.setAttribute(this.currentLine.tspan, 'x', `${+this.service.getTextAlign() + this.initialPoint.x}`);
-    this.renderer.setAttribute(this.currentLine.tspan, 'y',
-      `${this.cursor.initialCursorPoint.y + (this.lines.indexOf(this.currentLine) * this.service.fontSize)}`);
-    this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
+
+    this.lines.splice(prevLineIndex + 1, 0, this.currentLine);
+
+    this.lines.slice(this.lines.indexOf(this.currentLine), this.lines.length).forEach((line) => {
+      line.moveDown(this.initialPoint.y, this.lines.indexOf(line), this.service.fontSize);
+    });
   }
 
   private addLetterAtCursor(letter: string): void {
