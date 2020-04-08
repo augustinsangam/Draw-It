@@ -256,11 +256,11 @@ implements OnDestroy {
     this.service.textZoneRectangle.element.remove();
     this.service.currentZoneDims = {height: 0, width: 0};
     this.indicators.onType = false;
-    if (this.currentLine.tspan.textContent === '') {
+    if (this.currentLine.tspan.textContent === '' && this.lines.length === 1) {
       this.textElement.remove();
     }
     this.shortcutService.activateAll();
-    this.currentLine = {tspan: undefined as unknown as SVGElement, letters: [], cursorIndex: 0};
+    this.currentLine = new TextLine(undefined as unknown as SVGElement, [], 0);
     this.lines = [];
     if (!cancelled) {
       this.undoRedoService.saveState();
@@ -269,7 +269,7 @@ implements OnDestroy {
 
   private addTspan(): void {
     // const prevLineIndex = this.lines.indexOf(this.currentLine);
-    this.currentLine = {tspan: this.renderer.createElement('tspan', this.svgNS), letters: [], cursorIndex: 0};
+    this.currentLine = new TextLine(this.renderer.createElement('tspan', this.svgNS), [], 0);
     this.renderer.appendChild(this.textElement, this.currentLine.tspan);
     this.renderer.setStyle(this.currentLine.tspan, 'white-space', 'pre');
     this.lines.push(this.currentLine);
@@ -291,7 +291,7 @@ implements OnDestroy {
     this.currentLine.letters.push(letter);
     postCursor.forEach((postLetter) => this.currentLine.letters.push(postLetter));
     ++this.currentLine.cursorIndex;
-    this.updateText();
+    this.updateView();
   }
 
   private setTextStyle(): void {
@@ -304,45 +304,81 @@ implements OnDestroy {
     this.textElement.setAttribute('text-decoration', this.service.textMutators.underline ? 'underline' : 'none');
   }
 
-  private updateText(): void {
-    this.currentLine.tspan.textContent = '';
-    const svgLetter = this.renderer.createText(this.currentLine.letters.join(''));
-    this.renderer.appendChild(this.currentLine.tspan, svgLetter);
+  private updateView(): void {
+    this.lines.forEach((line) => {
+      line.tspan.textContent = '';
+      const svgLetter = this.renderer.createText(line.letters.join(''));
+      this.renderer.appendChild(line.tspan, svgLetter);
+    });
     this.renderer.setAttribute(this.currentLine.tspan, 'x', `${+this.service.getTextAlign() + this.initialPoint.x }`);
     this.renderer.setAttribute(this.currentLine.tspan, 'y', `${this.cursor.currentPosition.y - this.TEXT_OFFSET}`);
+
     this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
   }
 
   private deleteRightLetter(): void {
-    if (this.currentLine.letters.length === 0 || this.currentLine.cursorIndex === this.currentLine.letters.length) {
-      return ;
-    }
-    const preCursor = this.currentLine.letters.slice(0, this.currentLine.cursorIndex);
-    const postCursor = this.currentLine.letters.slice(this.currentLine.cursorIndex + 1, this.currentLine.letters.length);
-    if (postCursor.length !== 0) {
-      this.currentLine.letters = preCursor;
-      postCursor.forEach((letter) => this.currentLine.letters.push(letter));
+    console.log(this.lines.length);
+    if (this.lines.indexOf(this.currentLine) === this.lines.length - 1 && (this.currentLine.cursorIndex === this.currentLine.letters.length)) {
+      console.log('case 1');
+      return;
+    } else if (this.currentLine.cursorIndex === this.currentLine.letters.length && this.lines.indexOf(this.currentLine) !== this.lines.length - 1) {
+      console.log('case 2');
+      const lineBelow = this.lines[this.lines.indexOf(this.currentLine) + 1];
+      this.currentLine.append(lineBelow);
+      this.lines.slice(this.lines.indexOf(lineBelow), this.lines.length).forEach((line) => {
+        line.moveUp(this.service.fontSize);
+      });
+
+      this.lines.splice(this.lines.indexOf(lineBelow), 1);
+      lineBelow.emptySelf();
+      this.updateView();
     } else {
-      this.currentLine.letters = preCursor;
-      this.currentLine.cursorIndex = this.currentLine.letters.length;
+      console.log('case 3');
+      const preCursor = this.currentLine.letters.slice(0, this.currentLine.cursorIndex);
+      const postCursor = this.currentLine.letters.slice(this.currentLine.cursorIndex + 1, this.currentLine.letters.length);
+      if (postCursor.length !== 0) {
+        this.currentLine.letters = preCursor;
+        postCursor.forEach((letter) => this.currentLine.letters.push(letter));
+      } else {
+        this.currentLine.letters = preCursor;
+        this.currentLine.cursorIndex = this.currentLine.letters.length;
+      }
+      this.updateView();
     }
-    this.updateText();
   }
 
   private deleteLeftLetter(): void {
-    if (this.currentLine.letters.length === 0 || this.currentLine.cursorIndex === 0) {
+    if ((this.currentLine.cursorIndex === 0 || this.currentLine.letters.length === 0) && this.lines.indexOf(this.currentLine) === 0) {
+      console.log('case 1');
       return;
-    }
-    const preCursor = this.currentLine.letters.slice(0, this.currentLine.cursorIndex - 1);
-    const postCursor = this.currentLine.letters.slice(this.currentLine.cursorIndex, this.currentLine.letters.length);
-    if (preCursor.length !== 0) {
-      this.currentLine.letters = preCursor;
-      postCursor.forEach((letter) => this.currentLine.letters.push(letter));
-      --this.currentLine.cursorIndex;
+    } else if (this.currentLine.cursorIndex === 0 && this.lines.indexOf(this.currentLine) !== 0) {
+      console.log('case 2');
+      const lineAbove = this.lines[this.lines.indexOf(this.currentLine) - 1];
+      lineAbove.append(this.currentLine);
+      this.lines.slice(this.lines.indexOf(this.currentLine), this.lines.length).forEach((line) => {
+        line.moveUp(this.service.fontSize);
+      });
+
+      this.lines.splice(this.lines.indexOf(this.currentLine), 1);
+      this.currentLine.emptySelf();
+      delete this.currentLine;
+      this.currentLine = lineAbove;
+      this.cursor.setYPos(this.lines.indexOf(this.currentLine));
+
+      this.updateView();
     } else {
-      this.currentLine.letters = postCursor;
-      this.currentLine.cursorIndex = 0;
+      console.log('case 3');
+      const preCursor = this.currentLine.letters.slice(0, this.currentLine.cursorIndex - 1);
+      const postCursor = this.currentLine.letters.slice(this.currentLine.cursorIndex, this.currentLine.letters.length);
+      if (preCursor.length !== 0) {
+        this.currentLine.letters = preCursor;
+        postCursor.forEach((letter) => this.currentLine.letters.push(letter));
+        --this.currentLine.cursorIndex;
+      } else {
+        this.currentLine.letters = postCursor;
+        this.currentLine.cursorIndex = 0;
+      }
+      this.updateView();
     }
-    this.updateText();
   }
 }

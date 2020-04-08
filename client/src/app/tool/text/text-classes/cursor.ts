@@ -57,6 +57,10 @@ export class Cursor {
     );
   }
 
+  setYPos(lineIndex: number): void {
+    this.currentPosition.y = this.initialCursorPoint.y + (lineIndex * this.service.fontSize);
+  }
+
   move(currentLine: TextLine, lineIndex: number): void {
     switch (this.service.textAlignement) {
       case TextAlignement.left:
@@ -77,7 +81,7 @@ export class Cursor {
     }
     // console.log(this.initialCursorPoint.y);
     // console.log(`cursPos y = ${this.initialCursorPoint.y} + ${lineIndex} * ${this.service.fontSize}`);
-    this.currentPosition.y = this.initialCursorPoint.y + (lineIndex * this.service.fontSize);
+    this.setYPos(lineIndex);
     this.updateVisual();
   }
 }
