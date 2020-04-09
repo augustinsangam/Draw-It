@@ -79,20 +79,20 @@ describe('Transform', () => {
     expect(boundingRect.width).toEqual(400);
     expect(boundingRect.height).toEqual(400);
   });
-
-  it('#scaleAll scale each element', () => {
-    const nElement = 5;
-    const elements = new Array(nElement);
-    for (let index = 0; index < nElement; index++) {
-      elements[index] = rect.cloneNode(true);
-      svg.appendChild(elements[index]);
-    }
-    Transform.scaleAll(elements, new Point(100, 100), 2, 2, renderer);
-    for (let index = 0; index < nElement; index++) {
-      const boundingRect = elements[index].getBoundingClientRect();
-      expect(boundingRect.width).toEqual(400);
-      expect(boundingRect.height).toEqual(400);
-    }
-  });
+  //
+  // it('#scaleAll scale each element', () => {
+  //   const nElement = 5;
+  //   const elements = new Array(nElement);
+  //   for (let index = 0; index < nElement; index++) {
+  //     elements[index] = rect.cloneNode(true);
+  //     svg.appendChild(elements[index]);
+  //   }
+  //   Transform.scaleAll(elements, new Point(100, 100), 2, 2, renderer);
+  //   for (let index = 0; index < nElement; index++) {
+  //     const boundingRect = elements[index].getBoundingClientRect();
+  //     expect(boundingRect.width).toEqual(400);
+  //     expect(boundingRect.height).toEqual(400);
+  //   }
+  // });
 
 });

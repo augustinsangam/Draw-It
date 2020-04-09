@@ -11,7 +11,7 @@ const createLine = (sentence: string, index: number) => {
 };
 
 // tslint:disable:no-magic-numbers no-string-literal
-fdescribe('TextNavHandler', () => {
+describe('TextNavHandler', () => {
   let textNavClass: TextNavHandler;
   let moveWasCalled: boolean;
 
@@ -37,22 +37,40 @@ fdescribe('TextNavHandler', () => {
   });
 
   it('#cursorRight shoud set cursorIndex at 0 if at the end of the non last line', () => {
-    const line = createLine('', 0);
-    textNavClass['lines'].push(line);
-    textNavClass['lines'].push(line);
-    textNavClass.cursorRight(line);
-    expect(moveWasCalled).toBeFalsy();
-    expect(line.cursorIndex).toEqual(0);
+    const line1 = createLine('drawit', 6);
+    const line2 = createLine('drawit', 5);
+    textNavClass['lines'].push(line1);
+    textNavClass['lines'].push(line2);
+    textNavClass.cursorRight(line1);
+    expect(line2.cursorIndex).toEqual(0);
   });
 
-  it('#cursorLeft shoud call move on an non empty sentence', () => {
-    textNavClass.cursorLeft(createLine('drawit', 2));
+  it('#cursorRight sould not touch cursorIndex if at the end of the last line', () => {
+    const line = createLine('drawit', 6);
+    textNavClass['lines'].push(line);
+    expect(textNavClass.cursorRight(line).cursorIndex).toEqual(6);
+  });
+
+  it('#cursorLeft shoud set cursorIndex at the next line length if at the end of the non last line', () => {
+    const line1 = createLine('drawit', 5);
+    const line2 = createLine('drawit', 0);
+    textNavClass['lines'].push(line1);
+    textNavClass['lines'].push(line2);
+    textNavClass.cursorLeft(line2);
+    expect(line1.cursorIndex).toEqual(6);
+  });
+
+  it('#cursorLeft shoud decrement cursorIndex when not at end of line', () => {
+    const line = createLine('drawit', 2);
+    textNavClass.cursorLeft(line);
     expect(moveWasCalled).toBeTruthy();
+    expect(line.cursorIndex).toEqual(1);
   });
 
-  it('#cursorLeft shoud not call move on an empty sentence', () => {
-    textNavClass.cursorLeft(createLine('', 0));
-    expect(moveWasCalled).toBeFalsy();
+  it('#cursorLeft sould not touch cursorIndex if at the start of the first line', () => {
+    const line = createLine('drawit', 0);
+    textNavClass['lines'].push(line);
+    expect(textNavClass.cursorLeft(line).cursorIndex).toEqual(0);
   });
 
   it('#cursorUp should call move when not on first line, and when the upper cursor is on the right', () => {

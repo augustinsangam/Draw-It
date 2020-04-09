@@ -169,11 +169,11 @@ export class TextLogicComponent extends ToolLogicDirective
         break;
 
       case 'Backspace':
-        this.deleteLeftLetter();
+        this.currentLine = this.handlers.letterDelete.deleteLeftLetter(this.currentLine);
         break;
 
       case 'Delete':
-        this.deleteRightLetter();
+        this.currentLine = this.handlers.letterDelete.deleteRightLetter(this.currentLine);
         break;
 
       case 'Space':
@@ -229,7 +229,7 @@ export class TextLogicComponent extends ToolLogicDirective
     this.cursor.initBlink();
     this.handlers = {
       textNav: new TextNavHandler(this.cursor, this.lines),
-      letterDelete: new LetterDeleterHandler(this.lines, this.service, this.cursor)
+      letterDelete: new LetterDeleterHandler(this.lines, this.service)
     };
   }
 
@@ -328,13 +328,5 @@ export class TextLogicComponent extends ToolLogicDirective
     );
 
     this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
-  }
-
-  private deleteRightLetter(): void {
-    this.currentLine = this.handlers.letterDelete.deleteRightLetter(this.currentLine);
-  }
-
-  private deleteLeftLetter(): void {
-    this.currentLine = this.handlers.letterDelete.deleteLeftLetter(this.currentLine);
   }
 }
