@@ -10,6 +10,7 @@ import {UndoRedoService} from '../../undo-redo/undo-redo.service';
 import {Cursor} from '../text-classes/cursor';
 import {LetterDeleterHandler} from '../text-classes/letter-deleter-handler';
 import {TextAlignement} from '../text-classes/text-alignement';
+import {TextHandlers} from '../text-classes/text-handlers';
 import {StateIndicators} from '../text-classes/text-indicators';
 import {TextLine} from '../text-classes/text-line';
 import {TextNavHandler} from '../text-classes/text-nav-handler';
@@ -33,8 +34,7 @@ export class TextLogicComponent extends ToolLogicDirective
   private currentLine: TextLine;
   private textElement: SVGTSpanElement;
   private initialPoint: Point;
-  private textNavHandler: TextNavHandler;
-  private letterDelHandler: LetterDeleterHandler;
+  private handlers: TextHandlers;
 
   constructor(private readonly service: TextService,
               private readonly renderer: Renderer2,
@@ -140,32 +140,32 @@ export class TextLogicComponent extends ToolLogicDirective
 
       case 'Home':
         keyEv.preventDefault();
-        this.textNavHandler.keyHome(this.currentLine);
+        this.handlers.textNav.keyHome(this.currentLine);
         break;
 
       case 'End':
         keyEv.preventDefault();
-        this.textNavHandler.keyEnd(this.currentLine);
+        this.handlers.textNav.keyEnd(this.currentLine);
         break;
 
       case 'ArrowUp':
         keyEv.preventDefault();
-        this.currentLine = this.textNavHandler.cursorUp(this.currentLine);
+        this.currentLine = this.handlers.textNav.cursorUp(this.currentLine);
         break;
 
       case 'ArrowDown':
         keyEv.preventDefault();
-        this.currentLine = this.textNavHandler.cursorDown(this.currentLine);
+        this.currentLine = this.handlers.textNav.cursorDown(this.currentLine);
         break;
 
       case 'ArrowLeft':
         keyEv.preventDefault();
-        this.currentLine = this.textNavHandler.cursorLeft(this.currentLine);
+        this.currentLine = this.handlers.textNav.cursorLeft(this.currentLine);
         break;
 
       case 'ArrowRight':
         keyEv.preventDefault();
-        this.currentLine = this.textNavHandler.cursorRight(this.currentLine);
+        this.currentLine = this.handlers.textNav.cursorRight(this.currentLine);
         break;
 
       case 'Backspace':
@@ -227,8 +227,10 @@ export class TextLogicComponent extends ToolLogicDirective
       )
     );
     this.cursor.initBlink();
-    this.textNavHandler = new TextNavHandler(this.cursor, this.lines);
-    this.letterDelHandler = new LetterDeleterHandler(this.lines, this.service, this.cursor);
+    this.handlers = {
+      textNav: new TextNavHandler(this.cursor, this.lines),
+      letterDelete: new LetterDeleterHandler(this.lines, this.service, this.cursor)
+    };
   }
 
   private initSVGText(): void {
@@ -288,7 +290,7 @@ export class TextLogicComponent extends ToolLogicDirective
 
     this.lines.splice(prevLineIndex + 1, 0, this.currentLine);
 
-    this.lines.slice(this.lines.indexOf(this.currentLine) - 1, this.lines.length).forEach((line) => {
+    this.lines.slice(this.lines.indexOf(this.currentLine), this.lines.length).forEach((line) => {
       line.moveDown(this.initialPoint.y, this.lines.indexOf(line), this.service.fontSize);
     });
   }
@@ -319,16 +321,20 @@ export class TextLogicComponent extends ToolLogicDirective
       this.renderer.appendChild(line.tspan, svgLetter);
     });
     this.renderer.setAttribute(this.currentLine.tspan, 'x', `${+this.service.getTextAlign() + this.initialPoint.x }`);
-    this.renderer.setAttribute(this.currentLine.tspan, 'y', `${this.cursor.currentPosition.y - this.TEXT_OFFSET}`);
+    this.renderer.setAttribute(
+      this.currentLine.tspan,
+      'y',
+      `${this.initialPoint.y + (this.lines.indexOf(this.currentLine) + 1) * this.service.fontSize}`
+    );
 
     this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
   }
 
   private deleteRightLetter(): void {
-    this.currentLine = this.letterDelHandler.deleteRightLetter(this.currentLine);
+    this.currentLine = this.handlers.letterDelete.deleteRightLetter(this.currentLine);
   }
 
   private deleteLeftLetter(): void {
-    this.currentLine = this.letterDelHandler.deleteLeftLetter(this.currentLine);
+    this.currentLine = this.handlers.letterDelete.deleteLeftLetter(this.currentLine);
   }
 }
