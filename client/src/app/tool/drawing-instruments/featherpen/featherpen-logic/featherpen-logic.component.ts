@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit, Renderer2} from '@angular/core';
+import {UndoRedoService} from '../../../../undo-redo/undo-redo.service';
 import {ColorService} from '../../../color/color.service';
 import {Point} from '../../../shape/common/point';
 import {ToolLogicDirective} from '../../../tool-logic/tool-logic.directive';
-import {UndoRedoService} from '../../../../undo-redo/undo-redo.service';
 import {FeatherpenService} from '../featherpen.service';
 
 @Component({
