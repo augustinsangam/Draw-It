@@ -8,7 +8,9 @@ import {Rectangle} from '../../shape/common/rectangle';
 import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
 import {UndoRedoService} from '../../../undo-redo/undo-redo.service';
 import {Cursor} from '../text-classes/cursor';
+import {LetterDeleterHandler} from '../text-classes/letter-deleter-handler';
 import {TextAlignement} from '../text-classes/text-alignement';
+import {TextHandlers} from '../text-classes/text-handlers';
 import {StateIndicators} from '../text-classes/text-indicators';
 import {TextLine} from '../text-classes/text-line';
 import {TextNavHandler} from '../text-classes/text-nav-handler';
@@ -21,7 +23,7 @@ import {TextService} from '../text.service';
 
 // tslint:disable:use-lifecycle-interface
 export class TextLogicComponent extends ToolLogicDirective
-implements OnDestroy {
+  implements OnDestroy {
 
   readonly TEXT_OFFSET: number = 10;
 
@@ -32,7 +34,7 @@ implements OnDestroy {
   private currentLine: TextLine;
   private textElement: SVGTSpanElement;
   private initialPoint: Point;
-  private textNavHandler: TextNavHandler;
+  private handlers: TextHandlers;
 
   constructor(private readonly service: TextService,
               private readonly renderer: Renderer2,
@@ -138,40 +140,40 @@ implements OnDestroy {
 
       case 'Home':
         keyEv.preventDefault();
-        this.textNavHandler.keyHome(this.currentLine);
+        this.handlers.textNav.keyHome(this.currentLine);
         break;
 
       case 'End':
         keyEv.preventDefault();
-        this.textNavHandler.keyEnd(this.currentLine);
+        this.handlers.textNav.keyEnd(this.currentLine);
         break;
 
       case 'ArrowUp':
         keyEv.preventDefault();
-        this.currentLine = this.textNavHandler.cursorUp(this.currentLine);
+        this.currentLine = this.handlers.textNav.cursorUp(this.currentLine);
         break;
 
       case 'ArrowDown':
         keyEv.preventDefault();
-        this.currentLine = this.textNavHandler.cursorDown(this.currentLine);
+        this.currentLine = this.handlers.textNav.cursorDown(this.currentLine);
         break;
 
       case 'ArrowLeft':
         keyEv.preventDefault();
-        this.currentLine = this.textNavHandler.cursorLeft(this.currentLine);
+        this.currentLine = this.handlers.textNav.cursorLeft(this.currentLine);
         break;
 
       case 'ArrowRight':
         keyEv.preventDefault();
-        this.currentLine = this.textNavHandler.cursorRight(this.currentLine);
+        this.currentLine = this.handlers.textNav.cursorRight(this.currentLine);
         break;
 
       case 'Backspace':
-        this.deleteLeftLetter();
+        this.currentLine = this.handlers.letterDelete.deleteLeftLetter(this.currentLine);
         break;
 
       case 'Delete':
-        this.deleteRightLetter();
+        this.currentLine = this.handlers.letterDelete.deleteRightLetter(this.currentLine);
         break;
 
       case 'Space':
@@ -220,12 +222,15 @@ implements OnDestroy {
         this.initialPoint.x + this.service.currentZoneDims.width;
 
     this.cursor = new Cursor(this.renderer, this.service, cursor, new Point(
-        initialCursorXPos,
-        this.initialPoint.y + this.TEXT_OFFSET + this.service.fontSize
+      initialCursorXPos,
+      this.initialPoint.y + this.TEXT_OFFSET + this.service.fontSize
       )
     );
     this.cursor.initBlink();
-    this.textNavHandler = new TextNavHandler(this.cursor, this.lines);
+    this.handlers = {
+      textNav: new TextNavHandler(this.cursor, this.lines),
+      letterDelete: new LetterDeleterHandler(this.lines, this.service)
+    };
   }
 
   private initSVGText(): void {
@@ -316,72 +321,12 @@ implements OnDestroy {
       this.renderer.appendChild(line.tspan, svgLetter);
     });
     this.renderer.setAttribute(this.currentLine.tspan, 'x', `${+this.service.getTextAlign() + this.initialPoint.x }`);
-    this.renderer.setAttribute(this.currentLine.tspan, 'y', `${this.cursor.currentPosition.y - this.TEXT_OFFSET}`);
+    this.renderer.setAttribute(
+      this.currentLine.tspan,
+      'y',
+      `${this.initialPoint.y + (this.lines.indexOf(this.currentLine) + 1) * this.service.fontSize}`
+    );
 
     this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
-  }
-
-  private deleteRightLetter(): void {
-    const onLastLine = this.lines.indexOf(this.currentLine) === this.lines.length - 1;
-    if (onLastLine && (this.currentLine.cursorIndex === this.currentLine.letters.length)) {
-      return;
-    } else if (this.currentLine.cursorIndex === this.currentLine.letters.length && !onLastLine) {
-
-      const lineBelow = this.lines[this.lines.indexOf(this.currentLine) + 1];
-      this.currentLine.append(lineBelow);
-      this.lines.slice(this.lines.indexOf(lineBelow), this.lines.length).forEach((line) => {
-        line.moveUp(this.service.fontSize);
-      });
-
-      this.lines.splice(this.lines.indexOf(lineBelow), 1);
-      lineBelow.emptySelf();
-
-    } else {
-
-      const preCursor = this.currentLine.letters.slice(0, this.currentLine.cursorIndex);
-      const postCursor = this.currentLine.letters.slice(this.currentLine.cursorIndex + 1, this.currentLine.letters.length);
-      if (postCursor.length !== 0) {
-        this.currentLine.letters = preCursor;
-        postCursor.forEach((letter) => this.currentLine.letters.push(letter));
-      } else {
-        this.currentLine.letters = preCursor;
-        this.currentLine.cursorIndex = this.currentLine.letters.length;
-
-      }
-    }
-  }
-
-  private deleteLeftLetter(): void {
-    const onFirstLine = this.lines.indexOf(this.currentLine) === 0;
-
-    if ((this.currentLine.cursorIndex === 0 || this.currentLine.letters.length === 0) && onFirstLine) {
-      return;
-    } else if (this.currentLine.cursorIndex === 0 && !onFirstLine) {
-
-      const lineAbove = this.lines[this.lines.indexOf(this.currentLine) - 1];
-      lineAbove.append(this.currentLine);
-      this.lines.slice(this.lines.indexOf(this.currentLine), this.lines.length).forEach((line) => {
-        line.moveUp(this.service.fontSize);
-      });
-
-      this.lines.splice(this.lines.indexOf(this.currentLine), 1);
-      this.currentLine.emptySelf();
-      delete this.currentLine;
-      this.currentLine = lineAbove;
-      this.cursor.setYPos(this.lines.indexOf(this.currentLine));
-
-    } else {
-
-      const preCursor = this.currentLine.letters.slice(0, this.currentLine.cursorIndex - 1);
-      const postCursor = this.currentLine.letters.slice(this.currentLine.cursorIndex, this.currentLine.letters.length);
-      if (preCursor.length !== 0) {
-        this.currentLine.letters = preCursor;
-        postCursor.forEach((letter) => this.currentLine.letters.push(letter));
-        --this.currentLine.cursorIndex;
-      } else {
-        this.currentLine.letters = postCursor;
-        this.currentLine.cursorIndex = 0;
-      }
-    }
   }
 }
