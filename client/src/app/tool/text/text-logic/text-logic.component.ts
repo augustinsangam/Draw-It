@@ -8,6 +8,7 @@ import {Rectangle} from '../../shape/common/rectangle';
 import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
 import {UndoRedoService} from '../../undo-redo/undo-redo.service';
 import {Cursor} from '../text-classes/cursor';
+import {LetterDeleterHandler} from '../text-classes/letter-deleter-handler';
 import {TextAlignement} from '../text-classes/text-alignement';
 import {StateIndicators} from '../text-classes/text-indicators';
 import {TextLine} from '../text-classes/text-line';
@@ -21,7 +22,7 @@ import {TextService} from '../text.service';
 
 // tslint:disable:use-lifecycle-interface
 export class TextLogicComponent extends ToolLogicDirective
-implements OnDestroy {
+  implements OnDestroy {
 
   readonly TEXT_OFFSET: number = 10;
 
@@ -33,6 +34,7 @@ implements OnDestroy {
   private textElement: SVGTSpanElement;
   private initialPoint: Point;
   private textNavHandler: TextNavHandler;
+  private letterDelHandler: LetterDeleterHandler;
 
   constructor(private readonly service: TextService,
               private readonly renderer: Renderer2,
@@ -220,12 +222,13 @@ implements OnDestroy {
         this.initialPoint.x + this.service.currentZoneDims.width;
 
     this.cursor = new Cursor(this.renderer, this.service, cursor, new Point(
-        initialCursorXPos,
-        this.initialPoint.y + this.TEXT_OFFSET + this.service.fontSize
+      initialCursorXPos,
+      this.initialPoint.y + this.TEXT_OFFSET + this.service.fontSize
       )
     );
     this.cursor.initBlink();
     this.textNavHandler = new TextNavHandler(this.cursor, this.lines);
+    this.letterDelHandler = new LetterDeleterHandler(this.lines, this.service, this.cursor);
   }
 
   private initSVGText(): void {
@@ -285,7 +288,7 @@ implements OnDestroy {
 
     this.lines.splice(prevLineIndex + 1, 0, this.currentLine);
 
-    this.lines.slice(this.lines.indexOf(this.currentLine), this.lines.length).forEach((line) => {
+    this.lines.slice(this.lines.indexOf(this.currentLine) - 1, this.lines.length).forEach((line) => {
       line.moveDown(this.initialPoint.y, this.lines.indexOf(line), this.service.fontSize);
     });
   }
@@ -322,66 +325,10 @@ implements OnDestroy {
   }
 
   private deleteRightLetter(): void {
-    const onLastLine = this.lines.indexOf(this.currentLine) === this.lines.length - 1;
-    if (onLastLine && (this.currentLine.cursorIndex === this.currentLine.letters.length)) {
-      return;
-    } else if (this.currentLine.cursorIndex === this.currentLine.letters.length && !onLastLine) {
-
-      const lineBelow = this.lines[this.lines.indexOf(this.currentLine) + 1];
-      this.currentLine.append(lineBelow);
-      this.lines.slice(this.lines.indexOf(lineBelow), this.lines.length).forEach((line) => {
-        line.moveUp(this.service.fontSize);
-      });
-
-      this.lines.splice(this.lines.indexOf(lineBelow), 1);
-      lineBelow.emptySelf();
-
-    } else {
-
-      const preCursor = this.currentLine.letters.slice(0, this.currentLine.cursorIndex);
-      const postCursor = this.currentLine.letters.slice(this.currentLine.cursorIndex + 1, this.currentLine.letters.length);
-      if (postCursor.length !== 0) {
-        this.currentLine.letters = preCursor;
-        postCursor.forEach((letter) => this.currentLine.letters.push(letter));
-      } else {
-        this.currentLine.letters = preCursor;
-        this.currentLine.cursorIndex = this.currentLine.letters.length;
-
-      }
-    }
+    this.currentLine = this.letterDelHandler.deleteRightLetter(this.currentLine);
   }
 
   private deleteLeftLetter(): void {
-    const onFirstLine = this.lines.indexOf(this.currentLine) === 0;
-
-    if ((this.currentLine.cursorIndex === 0 || this.currentLine.letters.length === 0) && onFirstLine) {
-      return;
-    } else if (this.currentLine.cursorIndex === 0 && !onFirstLine) {
-
-      const lineAbove = this.lines[this.lines.indexOf(this.currentLine) - 1];
-      lineAbove.append(this.currentLine);
-      this.lines.slice(this.lines.indexOf(this.currentLine), this.lines.length).forEach((line) => {
-        line.moveUp(this.service.fontSize);
-      });
-
-      this.lines.splice(this.lines.indexOf(this.currentLine), 1);
-      this.currentLine.emptySelf();
-      delete this.currentLine;
-      this.currentLine = lineAbove;
-      this.cursor.setYPos(this.lines.indexOf(this.currentLine));
-
-    } else {
-
-      const preCursor = this.currentLine.letters.slice(0, this.currentLine.cursorIndex - 1);
-      const postCursor = this.currentLine.letters.slice(this.currentLine.cursorIndex, this.currentLine.letters.length);
-      if (preCursor.length !== 0) {
-        this.currentLine.letters = preCursor;
-        postCursor.forEach((letter) => this.currentLine.letters.push(letter));
-        --this.currentLine.cursorIndex;
-      } else {
-        this.currentLine.letters = postCursor;
-        this.currentLine.cursorIndex = 0;
-      }
-    }
+    this.currentLine = this.letterDelHandler.deleteLeftLetter(this.currentLine);
   }
 }
