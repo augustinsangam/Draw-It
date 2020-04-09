@@ -1,8 +1,8 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
+import {UndoRedoService} from '../../../undo-redo/undo-redo.service';
 import {Point} from '../../shape/common/point';
 import {Rectangle} from '../../shape/common/rectangle';
-import {UndoRedoService} from '../../undo-redo/undo-redo.service';
 import {Cursor} from '../text-classes/cursor';
 import {LetterDeleterHandler} from '../text-classes/letter-deleter-handler';
 import {TextAlignement} from '../text-classes/text-alignement';

@@ -33,7 +33,7 @@ import { ToolSelectorService } from './tool/tool-selector/tool-selector.service'
 import { UndoRedoService } from './undo-redo/undo-redo.service';
 
 // tslint:disable: no-string-literal no-any no-magic-numbers
-fdescribe('AppComponent', () => {
+describe('AppComponent', () => {
   let component: AppComponent;
   let service: OverlayService;
   let svgService: SvgService;
