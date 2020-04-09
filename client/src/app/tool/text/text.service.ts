@@ -31,38 +31,14 @@ export class TextService extends ToolService {
     super();
     this.textMutators = {bold: false, italic: false, underline: false};
     this.textAlignement = TextAlignement.left;
-    this.currentFont = 'Times New Roman';
+    this.currentFont = 'Arial';
     this.fontsList = [
-      // sans serif
       {value: 'Arial, sans-serif', viewValue: 'Arial'},
-      // {value: 'Helvetica, sans-serif', viewValue: 'Helvetica'},
-      // {value: 'Gill Sans, sans-serif', viewValue: 'Gill Sans'},
-      // {value: 'Lucida, sans-serif', viewValue: 'Lucida'},
-      // {value: 'Helvetica Narrow, sans-serif', viewValue: 'Helvetica Narrow'},
-      // serif
-      // {value: 'Times, serif', viewValue: 'Times'},
-      {value: 'Times New Roman, serif', viewValue: 'Times New Roman'},
-      // {value: 'Palatino, serif', viewValue: 'Palatino'},
-      // {value: 'Bookman, serif', viewValue: 'Bookman'},
-      // {value: 'New Century Schoolbook, serif', viewValue: 'New Century Schoolbook'},
-      // monospace
-      {value: 'Andale Mono, monospace', viewValue: 'Andale Mono'},
+      {value: 'Geo-Sans-Light-NMS', viewValue: 'Geo Sans Light NMS'},
       {value: 'Courier New, monospace', viewValue: 'Courier New'},
-      // {value: 'Courier, monospace', viewValue: 'Courier'},
-      // {value: 'Lucidatypewriter, monospace', viewValue: 'Lucidatypewriter'},
-      // {value: 'Fixed, monospace', viewValue: 'Fixed'},
-      // cursive
-      // {value: 'Comic Sans, Comic Sans MS, cursive', viewValue: 'Comic Sans'},
-      // {value: 'Zapf Chancery, cursive', viewValue: 'Zapf Chancery'},
-      // {value: 'Coronetscript, cursive', viewValue: 'Coronetscript'},
-      // {value: 'Florence, cursive', viewValue: 'Florence'},
-      // {value: 'Parkavenue, cursive', viewValue: 'Parkavenue'},
-      // fantasy
-      // {value: 'Impact, fantasy', viewValue: 'Impact'},
-      // {value: 'Arnoldboecklin, fantasy', viewValue: 'Arnoldboecklin'},
-      // {value: 'Oldtown, fantasy', viewValue: 'Oldtown'},
-      // {value: 'Blippo, fantasy', viewValue: 'Blippo'},
-      // {value: 'Brushstroke, fantasy', viewValue: 'Brushstroke'}
+      {value: 'JetBrains-Mono', viewValue: 'JetBrains Mono'},
+      {value: 'texgyrepagella', viewValue: 'TeX Pagella'},
+      {value: 'Times New Roman, serif', viewValue: 'Times New Roman'},
     ];
     this.fontSize = this.DEFAULT_FONTSIZE;
   }

@@ -2,7 +2,7 @@
 <svg width="320" height="200">
   <rect
     [ngStyle]="{'fill': colorService.backgroundColor, 'stroke': 'rgba(255,255,255,1)', 'stroke-width': '3px'}"
-    width="320" height="200" x="0" y="0"
+    width="320" height="200" x="0" y="0" rx="15"
     stroke="#FFFFFF" stroke-width="1px">
   </rect>
   <text
@@ -32,7 +32,6 @@
 </svg>
 <hr>
 <form [formGroup]="textForm">
-  <!--  TODO add aria-label for each of these 6 buttons-->
   <mat-button-toggle-group multiple>
     <mat-button-toggle
       value="bold"

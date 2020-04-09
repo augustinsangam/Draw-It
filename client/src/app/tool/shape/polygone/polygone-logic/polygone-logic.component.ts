@@ -3,7 +3,7 @@ import { Point } from 'src/app/tool/shape/common/point';
 import { ColorService } from '../../../color/color.service';
 import { MathService } from '../../../mathematics/tool.math-service.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
-import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
+import { UndoRedoService } from '../../../../undo-redo/undo-redo.service';
 import {
   BackGroundProperties,
   StrokeProperties,

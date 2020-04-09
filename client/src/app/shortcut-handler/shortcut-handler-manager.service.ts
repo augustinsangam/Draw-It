@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {OverlayService} from '../overlay/overlay.service';
 import {GridService} from '../tool/grid/grid.service';
-import {SelectionService} from '../tool/selection/selection.service';
+import {SelectionService} from '../selection/selection.service';
 import {ToolSelectorService} from '../tool/tool-selector/tool-selector.service';
 import {Tool} from '../tool/tool.enum';
-import {UndoRedoService} from '../tool/undo-redo/undo-redo.service';
+import {UndoRedoService} from '../undo-redo/undo-redo.service';
 import {Shortcut} from './shortcut';
 import {ShortcutCallBack, ShortcutHandlerService} from './shortcut-handler.service';
 
@@ -87,6 +87,10 @@ export class ShortcutHandlerManagerService {
     this.handlersFunc.set(Shortcut.L, () =>
       this.toolSelectorService.set(Tool.Line)
     );
+
+    this.handlersFunc.set(Shortcut.M, () => {
+      this.selectionService.magnetActive = !this.selectionService.magnetActive;
+    });
 
     this.shortcutHanler.set(Shortcut.O, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {

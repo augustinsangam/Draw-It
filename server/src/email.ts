@@ -1,23 +1,19 @@
 import FormData from 'form-data';
 import { createReadStream } from 'fs';
-import { ClientRequest, IncomingMessage, OutgoingHttpHeaders, request as httpRequest, RequestOptions } from 'http';
+import {
+	IncomingMessage,
+	OutgoingHttpHeaders,
+	request as httpRequest,
+	RequestOptions,
+} from 'http';
 import { request as httpsRequest } from 'https';
 import inversify from 'inversify';
-import { format } from 'url';
 
 import { EMAIL_API } from './constants.js';
 import secrets from './secrets.json';
 
-interface ProtocolToFn {
-	[protocol: string]: (url: string, options: RequestOptions) => ClientRequest;
-}
-
 @inversify.injectable()
 class Email {
-	private readonly protocolToFn: ProtocolToFn = {
-		https: httpsRequest,
-		http: httpRequest,
-	};
 	private readonly options: RequestOptions;
 
 	constructor() {
@@ -42,14 +38,18 @@ class Email {
 			contentType: file.mimetype,
 		});
 
-		const options = {...this.options, ...{ headers: form.getHeaders() }};
+		const options = { ...this.options, ...{ headers: form.getHeaders() } };
 		Object.assign(options.headers, this.options.headers);
 
-		const url = format(EMAIL_API.url);
-		const reqFn = this.protocolToFn[EMAIL_API.url.protocol as string];
-		const req = reqFn(url, options);
+		const url = EMAIL_API.url;
+		const secure = url.startsWith('https');
+		const req = (secure ? httpsRequest : httpRequest)(url, options);
 		form.pipe(req);
-		return new Promise((resolve) => req.on('response', resolve));
+
+		return new Promise((resolve, reject) => {
+			req.on('response', resolve);
+			req.on('error', reject);
+		});
 	}
 }
 

@@ -7,6 +7,9 @@ import {
   MatSnackBar
 } from '@angular/material';
 import {
+  LocalStorageHandlerService
+} from '../auto-save/local-storage-handler.service';
+import {
   SvgShape
 } from '../svg/svg-shape';
 import {
@@ -26,7 +29,7 @@ import {
 } from '../tool/tool.enum';
 import {
   UndoRedoService
-} from '../tool/undo-redo/undo-redo.service';
+} from '../undo-redo/undo-redo.service';
 import {
   OverlayManager
 } from './overlay-manager';
@@ -52,7 +55,6 @@ import {
 import {
   SaveComponent
 } from './pages/save/save.component';
-import { LocalStorageHandlerService } from '../auto-save/local-storage-handler.service';
 
 interface DialogRefs {
   home: MatDialogRef<HomeComponent>;

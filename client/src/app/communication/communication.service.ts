@@ -154,6 +154,7 @@ export class CommunicationService {
     formData.append('recipient', email);
     formData.append('media', blob);
     this.xhr.open(Method.POST, `${this.host}/send`);
+    this.xhr.responseType = 'text';
     const promise = new Promise<string>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
         if (this.xhr.readyState !== DONE) {

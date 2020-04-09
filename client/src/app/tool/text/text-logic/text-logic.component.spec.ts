@@ -1,11 +1,15 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
+import {UndoRedoService} from '../../../undo-redo/undo-redo.service';
 import {Point} from '../../shape/common/point';
 import {Rectangle} from '../../shape/common/rectangle';
-import {UndoRedoService} from '../../undo-redo/undo-redo.service';
 import {Cursor} from '../text-classes/cursor';
+import {LetterDeleterHandler} from '../text-classes/letter-deleter-handler';
 import {TextAlignement} from '../text-classes/text-alignement';
+import {TextHandlers} from '../text-classes/text-handlers';
+import {TextLine} from '../text-classes/text-line';
 import {TextNavHandler} from '../text-classes/text-nav-handler';
+import {TextService} from '../text.service';
 import {TextLogicComponent} from './text-logic.component';
 
 const createClickMouseEvent = (event: string): MouseEvent => {
@@ -157,21 +161,24 @@ describe('TextLogicComponent', () => {
   it('#onKeyDown should call the associated methods for each key pressed', () => {
     const cursor = component['renderer'].createElement('path', component.svgNS);
     component['cursor'] = new Cursor(component['renderer'], component['service'], cursor, new Point(10, 10));
-    component['textNavHandler'] = new TextNavHandler(component['cursor'], component['lines']);
+    component['handlers'] = {
+      textNav: new TextNavHandler(component['cursor'], component['lines']),
+      letterDelete: new LetterDeleterHandler([], {} as unknown as TextService)
+    } as TextHandlers;
     let letterAdded = 0;
     const spyOnLettersAdded = spyOn<any>(component, 'addLetterAtCursor').and.callFake(() => ++letterAdded);
-
+    spyOn<any>(component, 'updateView');
     const methods = new Map([
-      ['Escape',     spyOn<any>(component,                    'cancelTyping')],
-      ['Enter',      spyOn<any>(component,                    'addLine')],
-      ['Home',       spyOn(component['textNavHandler'],       'keyHome')],
-      ['End',        spyOn(component['textNavHandler'],       'keyEnd')],
-      ['ArrowLeft',  spyOn(component['textNavHandler'],       'cursorLeft')],
-      ['ArrowRight', spyOn<any>(component['textNavHandler'],  'cursorRight')],
-      ['ArrowUp',    spyOn<any>(component['textNavHandler'],  'cursorUp')],
-      ['ArrowDown',  spyOn(component['textNavHandler'],       'cursorDown')],
-      ['Backspace',  spyOn<any>(component,                    'deleteLeftLetter')],
-      ['Delete',     spyOn<any>(component,                    'deleteRightLetter')],
+      ['Escape',     spyOn<any>(component,                          'cancelTyping')],
+      ['Enter',      spyOn<any>(component,                          'addLine')],
+      ['Home',       spyOn(component['handlers'].textNav,           'keyHome')],
+      ['End',        spyOn(component['handlers'].textNav,           'keyEnd')],
+      ['ArrowLeft',  spyOn(component['handlers'].textNav,           'cursorLeft')],
+      ['ArrowRight', spyOn(component['handlers'].textNav,      'cursorRight')],
+      ['ArrowUp',    spyOn(component['handlers'].textNav,      'cursorUp')],
+      ['ArrowDown',  spyOn(component['handlers'].textNav,           'cursorDown')],
+      ['Delete',     spyOn(component['handlers'].letterDelete, 'deleteRightLetter')],
+      ['Backspace',  spyOn(component['handlers'].letterDelete, 'deleteLeftLetter')],
       ['Space',      spyOnLettersAdded],
       ['x',          spyOnLettersAdded],
     ]);
@@ -214,37 +221,44 @@ describe('TextLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#initCursor should create a cursor and create a TextNavHandler, alignement left', () => {
+  it('#initCursor should create a cursor and create a handlers attribute, alignement left', () => {
     const alignements = ['left', 'center', 'right'];
     component['service'].currentZoneDims = {width: 100, height: 100};
     alignements.forEach((align) => {
       component['service'].textAlignement = align as TextAlignement;
       component['initialPoint'] = new Point(42, 69);
       component['cursor'] = undefined as unknown as Cursor;
-      component['textNavHandler'] = undefined as unknown as TextNavHandler;
+      component['handlers'] = {
+        textNav: undefined as unknown as TextNavHandler,
+        letterDelete: undefined as unknown as LetterDeleterHandler
+      } as TextHandlers;
       component['initCursor']();
       expect(component['cursor']).toBeTruthy();
-      expect(component['textNavHandler']).toBeTruthy();
+      expect(component['handlers'].textNav).toBeTruthy();
+      expect(component['handlers'].letterDelete).toBeTruthy();
     });
   });
 
-  it('#initSVGText should call the addTspan method', () => {
-    const spy = spyOn<any>(component, 'addTspan');
+  it('#initSVGText should call the addLine method', () => {
+    const spy = spyOn<any>(component, 'addLine');
     component['initSVGText']();
     expect(spy).toHaveBeenCalled();
   });
 
   it('#startTyping should call initCursor method', () =>  {
     const spy = spyOn<any>(component, 'initCursor');
+    spyOn<any>(component, 'initSVGText');
     component['startTyping']();
     expect(spy).toHaveBeenCalled();
     component['indicators'].onType = false;
   });
 
   it('#cancelTyping should empty the lines attribute and set onDrag to false', () => {
-    const textEl = component['textElement'] = component['renderer'].createElement('text', component.svgNS);
+    component['initialPoint'] = new Point(42, 69);
+    const textEl = component['renderer'].createElement('text', component.svgNS);
+    component['textElement'] = textEl;
     component['renderer'].appendChild(component.svgStructure.drawZone, textEl);
-    component['addTspan']();
+    component['addLine']();
     const spy = spyOn(component['lines'][0].tspan, 'remove');
     spyOn<any>(component, 'stopTyping');
     component['indicators'].onDrag = true;
@@ -272,32 +286,42 @@ describe('TextLogicComponent', () => {
     expect(spySaveState).not.toHaveBeenCalled();
   });
 
-  it('#tspan should push a new line', () => {
+  it('#addTspan should push a new line', () => {
     const initialSize = component['lines'].length;
+    component['initialPoint'] = new Point(42, 69);
     spyOn(component['renderer'], 'appendChild');
-    component['addTspan']();
+    component['addLine']();
     expect(component['lines'].length).toEqual(initialSize + 1);
   });
 
-  it('#addLine should call addTspan and move the cursor', () => {
+  it('#addLine should splitAtCursor and call moveDown on the right Lines', () => {
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mousedown'));
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mouseup'));
-    const spyAddTspan = spyOn<any>(component, 'addTspan');
-    const spyMove = spyOn(component['cursor'], 'move');
+    let splitWasCalled = false;
+    let moveWasCalled = false;
+    const lineTest = {
+      tspan: undefined as unknown as SVGElement,
+      splitAtCursor: () => splitWasCalled = true,
+      moveDown: () => moveWasCalled = true,
+    } as unknown as TextLine;
+    component['currentLine'] = lineTest;
+    spyOn(component['lines'], 'slice').and.callFake(() => [lineTest]);
+    spyOn(component['renderer'], 'appendChild');
+    spyOn(component['renderer'], 'setStyle');
+    spyOn(component['renderer'], 'setAttribute');
     component['addLine']();
-    expect(spyAddTspan).toHaveBeenCalled();
-    expect(spyMove).toHaveBeenCalled();
+    expect(splitWasCalled).toBeTruthy();
+    expect(moveWasCalled).toBeTruthy();
+    component['indicators'].onType = false;
   });
 
-  it('#addLetterAtCursor should call updateText and increment currentLine CursorIndex', () => {
+  it('#addLetterAtCursor increment currentLine CursorIndex', () => {
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mousedown'));
     component.svgStructure.root.dispatchEvent(createClickMouseEvent( 'mouseup'));
-    const spy = spyOn<any>(component, 'updateText');
     component['addLetterAtCursor']('x');
     component['onKeyDown'](new KeyboardEvent('keydown', {key: 'ArrowLeft'}));
     component['addLetterAtCursor']('y');
     expect(component['currentLine'].letters).toEqual(['y', 'x']);
-    expect(spy).toHaveBeenCalled();
   });
 
   it('#setTextStyle should call all the textStyle functions', () => {
@@ -309,112 +333,12 @@ describe('TextLogicComponent', () => {
     expect(spy).toHaveBeenCalledTimes(7);
   });
 
-  it('#updateText should move the cursor to the right place', () => {
+  it('#updateView should move the cursor to the right place', () => {
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mousedown'));
     component.svgStructure.root.dispatchEvent(createClickMouseEvent( 'mouseup'));
     const spy = spyOn(component['cursor'], 'move');
-    component['updateText']();
+    component['updateView']();
     expect(spy).toHaveBeenCalled();
-  });
-
-  it('#deleteRightLetter should not do anything if the text is empty', () => {
-    component.svgStructure.root.dispatchEvent(createClickMouseEvent('mousedown'));
-    component.svgStructure.root.dispatchEvent(createClickMouseEvent( 'mouseup'));
-
-    component['deleteRightLetter']();
-    expect(component['currentLine'].tspan.textContent).toEqual('');
-    expect(component['currentLine'].cursorIndex).toEqual(0);
-  });
-
-  it('#deleteRightLetter should call updateText, and remove right letter if not at end of line', () => {
-    component.svgStructure.root.dispatchEvent(createClickMouseEvent('mousedown'));
-    component.svgStructure.root.dispatchEvent(createClickMouseEvent( 'mouseup'));
-    const spy = spyOn<any>(component, 'updateText').and.callThrough();
-    const arrowLeftEv = new KeyboardEvent('keydown', {key: 'ArrowLeft'});
-    const text = ['d', 'r', 'a', 'w', 'i', 't'].reverse();
-    text.forEach((letter) => {
-      component['onKeyDown'](new KeyboardEvent('keydown', {key: letter}));
-      component['onKeyDown'](arrowLeftEv);
-    });
-
-    component['deleteRightLetter']();
-    expect(component['currentLine'].tspan.textContent).toEqual('rawit');
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('#deleteRightLetter should call updateText, and not remove right letter if at end of line', () => {
-    component.svgStructure.root.dispatchEvent(createClickMouseEvent('mousedown'));
-    component.svgStructure.root.dispatchEvent(createClickMouseEvent( 'mouseup'));
-    const spy = spyOn<any>(component, 'updateText').and.callThrough();
-    const text = ['d', 'r', 'a', 'w', 'i', 't'];
-    text.forEach((letter) => {
-      component['onKeyDown'](new KeyboardEvent('keydown', {key: letter}));
-    });
-    const arrowLeftEv = new KeyboardEvent('keydown', {key: 'ArrowLeft'});
-    component['onKeyDown'](arrowLeftEv);
-
-    component['deleteRightLetter']();
-    expect(spy).toHaveBeenCalled();
-    expect(component['currentLine'].tspan.textContent).toEqual('drawi');
-  });
-
-  it('#deleteLeftLetter should not do anything if the text is empty', () => {
-    component.svgStructure.root.dispatchEvent(createClickMouseEvent('mousedown'));
-    component.svgStructure.root.dispatchEvent(createClickMouseEvent( 'mouseup'));
-
-    component['deleteLeftLetter']();
-    expect(component['currentLine'].tspan.textContent).toEqual('');
-    expect(component['currentLine'].cursorIndex).toEqual(0);
-  });
-
-  it('#deleteLeftLetter should call updateText, and remove left letter if at end of line', () => {
-    component.svgStructure.root.dispatchEvent(createClickMouseEvent('mousedown'));
-    component.svgStructure.root.dispatchEvent(createClickMouseEvent( 'mouseup'));
-    const spy = spyOn<any>(component, 'updateText').and.callThrough();
-    const text = ['d', 'r', 'a', 'w', 'i', 't'];
-    text.forEach((letter) => {
-      component['onKeyDown'](new KeyboardEvent('keydown', {key: letter}));
-    });
-
-    component['deleteLeftLetter']();
-    expect(spy).toHaveBeenCalled();
-    expect(component['currentLine'].tspan.textContent).toEqual('drawi');
-  });
-
-  it('#deleteLeftLetter should call updateText, and remove left letter if not at end of line', () => {
-    component.svgStructure.root.dispatchEvent(createClickMouseEvent('mousedown'));
-    component.svgStructure.root.dispatchEvent(createClickMouseEvent( 'mouseup'));
-    const spy = spyOn<any>(component, 'updateText').and.callThrough();
-    const text = ['d', 'r', 'a', 'w', 'i', 't'];
-    text.forEach((letter) => {
-      component['onKeyDown'](new KeyboardEvent('keydown', {key: letter}));
-    });
-
-    component['onKeyDown'](new KeyboardEvent('keydown', {key: 'ArrowLeft'}));
-    component['onKeyDown'](new KeyboardEvent('keydown', {key: 'ArrowLeft'}));
-    component['onKeyDown'](new KeyboardEvent('keydown', {key: 'ArrowLeft'}));
-
-    component['deleteLeftLetter']();
-    expect(spy).toHaveBeenCalled();
-    expect(component['currentLine'].tspan.textContent).toEqual('drwit');
-  });
-
-  it('#deleteLeftLetter should call updateText, do nothing if at start of line', () => {
-    component.svgStructure.root.dispatchEvent(createClickMouseEvent('mousedown'));
-    component.svgStructure.root.dispatchEvent(createClickMouseEvent( 'mouseup'));
-    const spy = spyOn<any>(component, 'updateText').and.callThrough();
-    const text = ['d', 'r', 'a', 'w', 'i', 't'];
-    text.forEach((letter) => {
-      component['onKeyDown'](new KeyboardEvent('keydown', {key: letter}));
-    });
-
-    component['onKeyDown'](new KeyboardEvent('keydown', {key: 'Home'}));
-    component['onKeyDown'](new KeyboardEvent('keydown', {key: 'ArrowRight'}));
-
-    component['deleteLeftLetter']();
-    expect(spy).toHaveBeenCalled();
-    expect(component['currentLine'].tspan.textContent).toEqual('rawit');
-    expect(component['currentLine'].cursorIndex).toEqual(0);
   });
 
 });

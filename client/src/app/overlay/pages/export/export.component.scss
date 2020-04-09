@@ -9,12 +9,14 @@ h1 {
 }
 
 svg {
-  display: block;
-  margin: 0 auto 25px;
   border: 1px solid rgba(0, 0, 0, .5);
 }
 
-form {
+h4 {
+  margin: 0;
+}
+
+.flex {
   display: flex;
   flex-wrap: wrap;
 }
@@ -30,7 +32,7 @@ form {
 }
 
 .block-center {
-  margin: auto;
+  margin: 15px auto 0;
   width: min-content;
 }
 
@@ -45,5 +47,5 @@ mat-radio-button {
 button {
   display: block;
   margin: 0 auto;
-  padding: 0 25px;
+  width: 90%;
 }
