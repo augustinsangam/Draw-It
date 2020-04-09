@@ -100,7 +100,7 @@ fdescribe('FeatherpenLogicComponent', () => {
   it('#setElementStyle should call setAttribute on the element', () => {
     component['onMouseDown'](createClickMouseEvent('mousedown'));
     const spy = spyOn(component['element'], 'setAttribute');
-    component['setElementStyle']();
+    component['setElementStyle'](component['element']);
     expect(spy).toHaveBeenCalled();
   });
 
