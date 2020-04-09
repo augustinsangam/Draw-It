@@ -93,6 +93,20 @@ describe('TextLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
+  it('#mousedown should do nothing if its not the left button', () => {
+    const spy = spyOn<any>(component, 'initRectVisu');
+    component['indicators'].onType = false;
+    component.svgStructure.root.dispatchEvent(new MouseEvent('mousedown', {button: 1}));
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('#mouseup should do nothing if its not the left button', () => {
+    const spy = spyOn<any>(component, 'onMouseUp');
+    component['indicators'].onType = false;
+    component.svgStructure.root.dispatchEvent(new MouseEvent('mouseup', {button: 1}));
+    expect(spy).not.toHaveBeenCalled();
+  });
+
   it('#on a mousedown the listener should initialize the rectangle if not already onType', () => {
     const spy = spyOn<any>(component, 'initRectVisu');
     component['indicators'].onType = true;

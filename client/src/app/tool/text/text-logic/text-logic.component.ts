@@ -55,11 +55,13 @@ export class TextLogicComponent extends ToolLogicDirective
       this.svgStructure.root,
       'mousedown',
       (mouseEv: MouseEvent) => {
-        mouseEv.cancelBubble = true;
-        mouseEv.preventDefault();
-        if (!this.indicators.onType) {
-          this.indicators.onDrag = true;
-          this.initRectVisu(mouseEv);
+        if (mouseEv.button === 0) {
+          mouseEv.cancelBubble = true;
+          mouseEv.preventDefault();
+          if (!this.indicators.onType) {
+            this.indicators.onDrag = true;
+            this.initRectVisu(mouseEv);
+          }
         }
       }
     );
@@ -68,14 +70,16 @@ export class TextLogicComponent extends ToolLogicDirective
       this.svgStructure.root,
       'mouseup',
       (mouseEv: MouseEvent) => {
-        const point = this.svgStructure.root.createSVGPoint();
-        point.x = mouseEv.offsetX;
-        point.y = mouseEv.offsetY;
-        if (!(this.service.textZoneRectangle.element as SVGGeometryElement).isPointInFill(point) && this.indicators.onType) {
-          this.stopTyping(false);
-          return;
+        if (mouseEv.button === 0) {
+          const point = this.svgStructure.root.createSVGPoint();
+          point.x = mouseEv.offsetX;
+          point.y = mouseEv.offsetY;
+          if (!(this.service.textZoneRectangle.element as SVGGeometryElement).isPointInFill(point) && this.indicators.onType) {
+            this.stopTyping(false);
+            return;
+          }
+          this.onMouseUp(mouseEv);
         }
-        this.onMouseUp(mouseEv);
       }
     );
 
@@ -227,6 +231,7 @@ export class TextLogicComponent extends ToolLogicDirective
       )
     );
     this.cursor.initBlink();
+
     this.handlers = {
       textNav: new TextNavHandler(this.cursor, this.lines),
       letterDelete: new LetterDeleterHandler(this.lines, this.service)
