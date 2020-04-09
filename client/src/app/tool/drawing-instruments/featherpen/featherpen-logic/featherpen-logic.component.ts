@@ -19,6 +19,7 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
   private element: SVGElement;
   private currentPath: string;
   private previousPoint: Point;
+  private cursorLine: SVGElement;
 
   constructor(private renderer: Renderer2,
               private readonly service: FeatherpenService,
@@ -66,7 +67,10 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
     const onMouseLeave = this.renderer.listen(
       this.svgStructure.root,
       'mouseleave',
-      () => this.onMouseUp()
+      () => {
+        this.renderer.setAttribute(this.cursorLine, 'd', 'M 0 0 L 0 0');
+        this.onMouseUp();
+      }
     );
 
     const onMouseUp = this.renderer.listen(
@@ -82,12 +86,17 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
       onMouseLeave,
       onMouseUp,
     ];
-    this.svgStructure.root.setAttribute('cursor', 'crosshair');
+
+    this.renderer.setStyle(this.svgStructure.root, 'cursor', 'none');
+    this.cursorLine = this.renderer.createElement('path', this.svgNS);
+    this.renderer.appendChild(this.svgStructure.temporaryZone, this.cursorLine);
+    this.setElementStyle(this.cursorLine);
   }
 
   ngOnDestroy(): void {
     this.listeners.forEach((listener) => listener());
     this.undoRedoService.resetActions();
+    this.cursorLine.remove();
   }
 
   private onMouseDown(mouseEv: MouseEvent): void {
@@ -95,15 +104,15 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
       this.onDrag = true;
       this.element = this.renderer.createElement('path', this.svgNS);
       this.renderer.appendChild(this.svgStructure.drawZone, this.element);
-      this.setElementStyle();
+      this.setElementStyle(this.element);
       this.element.setAttribute('d', this.service.pathCentered(new Point(mouseEv.offsetX, mouseEv.offsetY)));
       this.previousPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
     }
   }
 
-  private setElementStyle(): void {
-    this.element.setAttribute('stroke', this.colorService.primaryColor);
-    this.element.setAttribute('stroke-width', '2');
+  private setElementStyle(element: SVGElement): void {
+    element.setAttribute('stroke', this.colorService.primaryColor);
+    element.setAttribute('stroke-width', '2');
   }
 
   private complete(initial: Point, final: Point): string {
@@ -123,6 +132,9 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
       }
       this.element.setAttribute('d', `${this.currentPath}`);
       this.previousPoint = point;
+    } else {
+      this.renderer.setAttribute(this.cursorLine, 'd', this.service.pathCentered(point));
+      this.setElementStyle(this.cursorLine);
     }
   }
 
@@ -135,6 +147,7 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
   }
 
   private onScroll(wheelEv: WheelEvent): void {
+    this.renderer.setAttribute(this.cursorLine, 'd', this.service.pathCentered(new Point(wheelEv.offsetX, wheelEv.offsetY)));
     wheelEv.preventDefault();
     const oldAngle = this.service.updateAngle(wheelEv);
     this.service.emitter.next();
