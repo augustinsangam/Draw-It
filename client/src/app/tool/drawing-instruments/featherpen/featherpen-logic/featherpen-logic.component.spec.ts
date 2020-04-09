@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {Point} from '../../../shape/common/point';
 import {UndoRedoService} from '../../../../undo-redo/undo-redo.service';
+import {Point} from '../../../shape/common/point';
 import { FeatherpenLogicComponent } from './featherpen-logic.component';
 
 const createClickMouseEvent = (event: string): MouseEvent => {
@@ -117,6 +117,18 @@ describe('FeatherpenLogicComponent', () => {
     const spy = spyOn<any>(component['service'], 'getInterpolatedPoints').and.callThrough();
     expect(component['complete'](new Point(42, 69), new Point(69, 42))).not.toEqual('');
     expect(spy).toHaveBeenCalled();
+  });
+
+  it('#onMouseUp should do nothing if the button pressed is not the left one', () => {
+    const spy = spyOn<any>(component, 'onMouseUp');
+    document.dispatchEvent(new MouseEvent('mouseup', {button: 1}));
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('#onMouseDown should do nothing if the button pressed is not the left one', () => {
+    const spy = spyOn<any>(component, 'onMouseDown');
+    component.svgStructure.root.dispatchEvent(new MouseEvent('mousedown', {button: 1}));
+    expect(spy).not.toHaveBeenCalled();
   });
 
   it('#onMouseMove should call setAttribute on the element if on Drag and complete' +
