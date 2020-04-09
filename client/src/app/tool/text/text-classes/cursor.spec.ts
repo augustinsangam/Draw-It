@@ -4,6 +4,7 @@ import {Point} from '../../shape/common/point';
 import {TextService} from '../text.service';
 import {Cursor} from './cursor';
 import {TextAlignement} from './text-alignement';
+import {TextLine} from './text-line';
 
 // tslint:disable:no-magic-numbers no-string-literal no-any
 describe('Cursor', () => {
@@ -86,7 +87,7 @@ describe('Cursor', () => {
     alignements.forEach((align) => {
       cursor['service'].textAlignement = align as TextAlignement;
       cursor.move(
-        {tspan: undefined as unknown as SVGElement, letters: [], cursorIndex: 0},
+        {tspan: undefined as unknown as SVGElement, letters: [], cursorIndex: 0} as unknown as TextLine,
         0
       );
     });

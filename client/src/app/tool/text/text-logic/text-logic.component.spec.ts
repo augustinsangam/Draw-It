@@ -17,7 +17,7 @@ const createClickMouseEvent = (event: string): MouseEvent => {
 };
 
 // tslint:disable:no-string-literal no-magic-numbers no-any max-file-line-count
-describe('TextLogicComponent', () => {
+fdescribe('TextLogicComponent', () => {
   let component: TextLogicComponent;
   let fixture: ComponentFixture<TextLogicComponent>;
 
@@ -244,7 +244,7 @@ describe('TextLogicComponent', () => {
   it('#cancelTyping should empty the lines attribute and set onDrag to false', () => {
     const textEl = component['textElement'] = component['renderer'].createElement('text', component.svgNS);
     component['renderer'].appendChild(component.svgStructure.drawZone, textEl);
-    component['addTspan']();
+    component['addLine']();
     const spy = spyOn(component['lines'][0].tspan, 'remove');
     spyOn<any>(component, 'stopTyping');
     component['indicators'].onDrag = true;
@@ -275,7 +275,7 @@ describe('TextLogicComponent', () => {
   it('#tspan should push a new line', () => {
     const initialSize = component['lines'].length;
     spyOn(component['renderer'], 'appendChild');
-    component['addTspan']();
+    component['addLine']();
     expect(component['lines'].length).toEqual(initialSize + 1);
   });
 
@@ -313,7 +313,7 @@ describe('TextLogicComponent', () => {
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mousedown'));
     component.svgStructure.root.dispatchEvent(createClickMouseEvent( 'mouseup'));
     const spy = spyOn(component['cursor'], 'move');
-    component['updateText']();
+    component['updateView']();
     expect(spy).toHaveBeenCalled();
   });
 

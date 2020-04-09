@@ -1,16 +1,17 @@
 import {Cursor} from './cursor';
+import {TextLine} from './text-line';
 import {TextNavHandler} from './text-nav-handler';
 
 const createLine = (sentence: string, index: number) => {
-  return {
-    tspan: {textContent: sentence} as unknown as SVGElement,
-    cursorIndex: index,
-    letters: Array.from(sentence)
-  };
+  return new TextLine(
+    {textContent: sentence} as unknown as SVGElement,
+    Array.from(sentence),
+    index
+  );
 };
 
 // tslint:disable:no-magic-numbers no-string-literal
-describe('TextNavHandler', () => {
+fdescribe('TextNavHandler', () => {
   let textNavClass: TextNavHandler;
   let moveWasCalled: boolean;
 
@@ -28,14 +29,20 @@ describe('TextNavHandler', () => {
     expect(textNavClass).toBeTruthy();
   });
 
-  it('#cursorRight shoud call move on an non empty sentence', () => {
-    textNavClass.cursorRight(createLine('drawit', 2));
+  it('#cursorRight shoud increment cursorIndex when not at end of line', () => {
+    const line = createLine('drawit', 2);
+    textNavClass.cursorRight(line);
     expect(moveWasCalled).toBeTruthy();
+    expect(line.cursorIndex).toEqual(3);
   });
 
-  it('#cursorRight shoud not call move on an empty sentence', () => {
-    textNavClass.cursorRight(createLine('', 0));
+  it('#cursorRight shoud set cursorIndex at 0 if at the end of the non last line', () => {
+    const line = createLine('', 0);
+    textNavClass['lines'].push(line);
+    textNavClass['lines'].push(line);
+    textNavClass.cursorRight(line);
     expect(moveWasCalled).toBeFalsy();
+    expect(line.cursorIndex).toEqual(0);
   });
 
   it('#cursorLeft shoud call move on an non empty sentence', () => {
