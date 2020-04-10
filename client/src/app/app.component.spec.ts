@@ -150,7 +150,7 @@ fdescribe('AppComponent', () => {
     const spy = spyOn<any>(component['autoSave'], 'getDrawing').and.callThrough();
     const element: SVGGElement = document.createElementNS('http://www.w3.org/2000/svg','g');
     const apath: SVGPathElement = document.createElementNS('http://www.w3.org/2000/svg','path');
-    apath.setAttribute('id', 'thepath1');
+    apath.setAttribute('id', 'thepath11');
     element.setAttribute('id', 'test11');
     element.appendChild(apath);
     autoSave.saveState(element);
