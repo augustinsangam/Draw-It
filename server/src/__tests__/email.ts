@@ -2,6 +2,7 @@
 
 import chai from 'chai';
 import express from 'express';
+import { request } from 'https';
 import multer from 'multer';
 import portfinder from 'portfinder';
 import sinon from 'sinon';
@@ -21,6 +22,10 @@ describe('email', () => {
 		email = myContainer.get<Email>(TYPES.Email);
 	});
 
+	it('#requestHandler should return request from https', () => {
+		chai.expect(email['requestHandler'](true)).equals(request);
+	});
+
 	it('#send should resolve the response', async () => {
 		const handler: express.RequestHandler = (req, res) => {
 			const receivedKey = req.header(EMAIL_API.headers.key);
@@ -30,18 +35,13 @@ describe('email', () => {
 			res.sendStatus(StatusCode.OK);
 		};
 		const upload = multer({ dest: 'uploads/' });
-		app.post(`/${EMAIL_API.url.pathname}`, upload.single('payload'), handler);
+		app.post('/', upload.single('payload'), handler);
 
 		const port = await portfinder.getPortPromise();
 		const server = app.listen(port, '127.0.0.1');
 
-		const emailApiUrlProtocolStub = sinon.stub(EMAIL_API.url, 'protocol');
-		emailApiUrlProtocolStub.value('http');
-
-		const emailApiUrlHostnameStub = sinon.stub(EMAIL_API.url, 'hostname');
-		emailApiUrlHostnameStub.value('127.0.0.1');
-
-		EMAIL_API.url.port = port;
+		const emailApiUrlStub = sinon.stub(EMAIL_API, 'url');
+		emailApiUrlStub.value(`http://127.0.0.1:${port}`);
 
 		const res2 = await email.send('foo@example.com', {
 			filename: 'foo.png',
@@ -49,14 +49,14 @@ describe('email', () => {
 			path: 'package.json',
 		} as any);
 
-		chai.expect(res2.headers[EMAIL_API.headers.key]).to.equal(secrets.email.key);
+		chai
+			.expect(res2.headers[EMAIL_API.headers.key])
+			.to.equal(secrets.email.key);
 		chai.expect(res2.headers.recipient).to.equal('foo@example.com');
 		chai.expect(res2.headers.payload).to.equal('true');
 
 		await promisify(server.close.bind(server))();
 
-		emailApiUrlProtocolStub.restore();
-		emailApiUrlHostnameStub.restore();
-		delete EMAIL_API.url.port;
+		emailApiUrlStub.restore();
 	});
 });

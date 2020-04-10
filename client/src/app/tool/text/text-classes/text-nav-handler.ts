@@ -21,7 +21,6 @@ export class TextNavHandler {
   cursorRight(currentLine: TextLine): TextLine {
     if (!!currentLine.tspan.textContent && currentLine.cursorIndex < currentLine.tspan.textContent.length) {
       ++currentLine.cursorIndex;
-      this.cursor.move(currentLine, this.lines.indexOf(currentLine));
     } else if (this.lines.indexOf(currentLine) !== this.lines.length - 1) {
       currentLine = this.lines[this.lines.indexOf(currentLine) + 1];
       currentLine.cursorIndex = 0;

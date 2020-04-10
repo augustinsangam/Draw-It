@@ -4,7 +4,7 @@ import chai from 'chai';
 import log from 'loglevel';
 import sinon from 'sinon';
 
-import { TYPES, asyncTimeout } from '../constants';
+import { asyncTimeout, TYPES } from '../constants';
 import { myContainer } from '../inversify.config';
 import { main } from '../main';
 import { Server } from '../server';

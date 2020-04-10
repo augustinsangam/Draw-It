@@ -1,11 +1,11 @@
 import { OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { GridService } from '../../grid/grid.service';
-import { MathService } from '../../mathematics/tool.math-service.service';
-import { BackGroundProperties, StrokeProperties } from '../../shape/common/abstract-shape';
-import { Circle } from '../../shape/common/circle';
-import { Point } from '../../shape/common/point';
-import { Rectangle } from '../../shape/common/rectangle';
-import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
+import { GridService } from '../../tool/grid/grid.service';
+import { MathService } from '../../tool/mathematics/tool.math-service.service';
+import { BackGroundProperties, StrokeProperties } from '../../tool/shape/common/abstract-shape';
+import { Circle } from '../../tool/shape/common/circle';
+import { Point } from '../../tool/shape/common/point';
+import { Rectangle } from '../../tool/shape/common/rectangle';
+import { ToolLogicDirective } from '../../tool/tool-logic/tool-logic.directive';
 import { PostAction, UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { MultipleSelection } from '../multiple-selection';
 import { Offset } from '../offset';

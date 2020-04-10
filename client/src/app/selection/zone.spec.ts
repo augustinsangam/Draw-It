@@ -1,4 +1,4 @@
-import { Point } from '../shape/common/point';
+import { Point } from '../tool/shape/common/point';
 import { Zone } from './zone';
 
 // tslint:disable: no-magic-numbers

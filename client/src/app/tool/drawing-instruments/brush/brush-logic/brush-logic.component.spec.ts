@@ -7,7 +7,7 @@ import {
 } from '@angular/core/testing';
 
 import { Renderer2 } from '@angular/core';
-import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
+import { UndoRedoService } from 'src/app/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { BrushService } from '../brush.service';
 import { BrushLogicComponent } from './brush-logic.component';

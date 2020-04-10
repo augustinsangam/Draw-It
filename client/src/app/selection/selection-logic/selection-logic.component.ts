@@ -1,6 +1,6 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
-import { GridService } from '../../grid/grid.service';
-import { Point } from '../../shape/common/point';
+import { GridService } from '../../tool/grid/grid.service';
+import { Point } from '../../tool/shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { SelectionService } from '../selection.service';
 import { CircleType } from './circle-type';
@@ -23,6 +23,7 @@ export class SelectionLogicComponent
 
   private mouseHandlers: Map<string, Map<string, Util.MouseEventCallBack>>;
   private scaleUtil: Scale;
+  private clipboard: Clipboard;
   deplacement: Deplacement;
 
   constructor(readonly renderer: Renderer2,
@@ -33,6 +34,7 @@ export class SelectionLogicComponent
     super(renderer, undoRedoService, service, gridService);
     this.initialiseHandlers();
     this.scaleUtil = new Scale(this);
+    this.clipboard = new Clipboard(this);
   }
 
   private initialiseHandlers(): void {
@@ -195,15 +197,15 @@ export class SelectionLogicComponent
     this.deplacement = new Deplacement(this);
 
     const subscriptionCopy      = this.service.copy.     asObservable()
-                                  .subscribe(() => new Clipboard(this).copy());
+                                  .subscribe(() => this.clipboard.copy());
     const subscriptionCut       = this.service.cut.      asObservable()
-                                  .subscribe(() => new Clipboard(this).cut());
+                                  .subscribe(() => this.clipboard.cut());
     const subscriptionPaste     = this.service.paste.    asObservable()
-                                  .subscribe(() => new Clipboard(this).paste());
+                                  .subscribe(() => this.clipboard.paste());
     const subcriptionDelete     = this.service.delete.   asObservable()
-                                  .subscribe(() => new Clipboard(this).delete());
+                                  .subscribe(() => this.clipboard.delete());
     const subcriptionDuplicate  = this.service.duplicate.asObservable()
-                                  .subscribe(() => new Clipboard(this).duplicate());
+                                  .subscribe(() => this.clipboard.duplicate());
 
     this.allListenners.push(() => { subcriptionDelete.unsubscribe(); });
     this.allListenners.push(() => { subscriptionPaste.unsubscribe(); });

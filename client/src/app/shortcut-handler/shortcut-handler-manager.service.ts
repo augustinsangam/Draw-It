@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {OverlayService} from '../overlay/overlay.service';
 import {GridService} from '../tool/grid/grid.service';
-import {SelectionService} from '../tool/selection/selection.service';
+import {SelectionService} from '../selection/selection.service';
 import {ToolSelectorService} from '../tool/tool-selector/tool-selector.service';
 import {Tool} from '../tool/tool.enum';
-import {UndoRedoService} from '../tool/undo-redo/undo-redo.service';
+import {UndoRedoService} from '../undo-redo/undo-redo.service';
 import {Shortcut} from './shortcut';
 import {ShortcutCallBack, ShortcutHandlerService} from './shortcut-handler.service';
 

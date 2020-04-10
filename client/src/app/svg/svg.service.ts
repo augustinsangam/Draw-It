@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UndoRedoService } from '../tool/undo-redo/undo-redo.service';
+import { UndoRedoService } from '../undo-redo/undo-redo.service';
 import { SvgHeader } from './svg-header';
 import { SvgShape } from './svg-shape';
 import { SVGStructure } from './svg-structure';
