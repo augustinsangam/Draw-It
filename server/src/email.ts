@@ -1,9 +1,10 @@
 import FormData from 'form-data';
 import { createReadStream } from 'fs';
 import {
+	ClientRequest,
 	IncomingMessage,
 	OutgoingHttpHeaders,
-	request as httpRequest,
+	request,
 	RequestOptions,
 } from 'http';
 import { request as httpsRequest } from 'https';
@@ -25,6 +26,16 @@ class Email {
 		};
 	}
 
+	private requestHandler(
+		secure: boolean,
+	): (
+		url: string,
+		options: RequestOptions,
+		callback?: (res: IncomingMessage) => void,
+	) => ClientRequest {
+		return secure ? httpsRequest : request;
+	}
+
 	async send(
 		recipient: string,
 		file: Express.Multer.File,
@@ -42,8 +53,7 @@ class Email {
 		Object.assign(options.headers, this.options.headers);
 
 		const url = EMAIL_API.url;
-		const secure = url.startsWith('https');
-		const req = (secure ? httpsRequest : httpRequest)(url, options);
+		const req = this.requestHandler(url.startsWith('https'))(url, options);
 		form.pipe(req);
 
 		return new Promise((resolve, reject) => {

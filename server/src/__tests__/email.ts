@@ -2,10 +2,10 @@
 
 import chai from 'chai';
 import express from 'express';
+import { request } from 'https';
 import multer from 'multer';
 import portfinder from 'portfinder';
 import sinon from 'sinon';
-import { parse } from 'url';
 import { promisify } from 'util';
 
 import { EMAIL_API, StatusCode, TYPES } from '../constants';
@@ -20,6 +20,10 @@ describe('email', () => {
 	before(() => {
 		app = express();
 		email = myContainer.get<Email>(TYPES.Email);
+	});
+
+	it('#requestHandler should return request from https', () => {
+		chai.expect(email['requestHandler'](true)).equals(request);
 	});
 
 	it('#send should resolve the response', async () => {
