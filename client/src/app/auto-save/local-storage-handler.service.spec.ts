@@ -3,13 +3,8 @@ import { TestBed } from '@angular/core/testing';
 import { SvgShape } from '../svg/svg-shape';
 import { LocalStorageHandlerService } from './local-storage-handler.service';
 
-<<<<<<< HEAD
-fdescribe('LocalStorageHandlerService', () => {
-  
-=======
 describe('LocalStorageHandlerService', () => {
 
->>>>>>> next
   let service: LocalStorageHandlerService;
 
   beforeEach(() => TestBed.configureTestingModule({}));

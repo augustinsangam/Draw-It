@@ -150,8 +150,8 @@ fdescribe('AppComponent', () => {
     const spy = spyOn<any>(component['autoSave'], 'getDrawing').and.callThrough();
     const element: SVGGElement = document.createElementNS('http://www.w3.org/2000/svg','g');
     const apath: SVGPathElement = document.createElementNS('http://www.w3.org/2000/svg','path');
-    apath.setAttribute('id', 'thepath');
-    element.setAttribute('id', 'test');
+    apath.setAttribute('id', 'thepath1');
+    element.setAttribute('id', 'test11');
     element.appendChild(apath);
     autoSave.saveState(element);
     const shape: SvgShape = { width: 500, height: 500, color: 'red'};
@@ -161,6 +161,7 @@ fdescribe('AppComponent', () => {
       expect(spy).toHaveBeenCalledTimes(1);
     }, 500);
     tick(500);
+    localStorage.clear();
   }));
 
   it('#openSelectedDialog should call openNewDrawDialog', () => {
