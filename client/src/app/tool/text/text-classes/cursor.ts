@@ -5,15 +5,14 @@ import {TextService} from '../text.service';
 import {TextAlignement} from './text-alignement';
 import {TextLine} from './text-line';
 
-// tslint:disable:use-lifecycle-interface
 export class Cursor {
+  readonly CURSOR_INTERVAL: number = 500;
 
   private frequency: Observable<number>;
   private blinker: Subscription;
   private visible: boolean;
   currentPosition: Point;
   initialCursorPoint: Point;
-  readonly CURSOR_INTERVAL: number = 500;
 
   constructor(private readonly renderer: Renderer2,
               private readonly service: TextService,

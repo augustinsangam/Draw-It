@@ -54,6 +54,7 @@ export class UndoRedoService {
   setStartingCommand(): void {
     this.initialCommand = Array.from(this.svgStructure.drawZone.children) as
       SVGElement[];
+    this.autoSave.saveState(this.svgStructure.drawZone);
   }
 
   resetActions(): void {

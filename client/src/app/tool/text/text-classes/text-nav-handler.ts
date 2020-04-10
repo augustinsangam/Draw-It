@@ -1,10 +1,10 @@
-import {Cursor} from './cursor';
+import { Cursor} from './cursor';
 import {TextLine} from './text-line';
 
 export class TextNavHandler {
 
   constructor(private cursor: Cursor,
-              public lines: TextLine[]
+              public lines: TextLine[],
               ) { }
 
   cursorLeft(currentLine: TextLine): TextLine {

@@ -65,9 +65,13 @@ export class TextPanelComponent extends ToolPanelDirective {
   }
 
   protected getPreviewTextAlign(): number {
-    return this.service.textAlignement === TextAlignement.left ? 0 : (
-      this.service.textAlignement === TextAlignement.center ? this.previewDims.width / 2 : this.previewDims.width
-    );
+    if (this.service.textAlignement === TextAlignement.left) {
+      return 0;
+    }
+
+    return this.service.textAlignement === TextAlignement.center
+      ? this.previewDims.width / 2
+      : this.previewDims.width;
   }
 
 }

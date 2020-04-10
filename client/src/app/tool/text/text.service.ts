@@ -29,30 +29,34 @@ export class TextService extends ToolService {
 
   constructor() {
     super();
-    this.textMutators = {bold: false, italic: false, underline: false};
+    this.textMutators = { bold: false, italic: false, underline: false };
     this.textAlignement = TextAlignement.left;
     this.currentFont = 'Arial';
     this.fontsList = [
-      {value: 'Arial, sans-serif', viewValue: 'Arial'},
-      {value: 'Geo-Sans-Light-NMS', viewValue: 'Geo Sans Light NMS'},
-      {value: 'Courier New, monospace', viewValue: 'Courier New'},
-      {value: 'JetBrains-Mono', viewValue: 'JetBrains Mono'},
-      {value: 'texgyrepagella', viewValue: 'TeX Pagella'},
-      {value: 'Times New Roman, serif', viewValue: 'Times New Roman'},
+      {value: 'Arial, sans-serif'     , viewValue: 'Arial'              },
+      {value: 'Geo-Sans-Light-NMS'    , viewValue: 'Geo Sans Light NMS' },
+      {value: 'Courier New, monospace', viewValue: 'Courier New'        },
+      {value: 'JetBrains-Mono'        , viewValue: 'JetBrains Mono'     },
+      {value: 'texgyrepagella'        , viewValue: 'TeX Pagella'        },
+      {value: 'Times New Roman, serif', viewValue: 'Times New Roman'    },
     ];
     this.fontSize = this.DEFAULT_FONTSIZE;
   }
 
   getTextAlign(): number {
-    return this.textAlignement === TextAlignement.left ? 0 : (
-      this.textAlignement === TextAlignement.center ? this.currentZoneDims.width / 2 : this.currentZoneDims.width
-    );
+    if (this.textAlignement === TextAlignement.left) {
+      return 0;
+    }
+    return this.textAlignement === TextAlignement.center
+      ? this.currentZoneDims.width / 2
+      : this.currentZoneDims.width;
   }
 
   getTextAnchor(): string {
-    return this.textAlignement === 'left' ? 'start' : (
-      this.textAlignement === 'center' ? 'middle' : 'end'
-    );
+    // TODO : Enums + 3 ifm
+    return this.textAlignement === TextAlignement.left
+      ? 'start'
+      : (this.textAlignement === TextAlignement.center ? 'middle' : 'end');
   }
 
   getFullTextWidth(currentLine: TextLine): number {

@@ -10,7 +10,6 @@ import {FeatherpenService} from '../featherpen.service';
   template: '',
 })
 
-// tslint:disable:use-lifecycle-interface
 export class FeatherpenLogicComponent extends ToolLogicDirective
  implements OnDestroy, OnInit {
 
@@ -21,13 +20,14 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
   private previousPoint: Point;
   private cursorLine: SVGElement;
 
-  constructor(private renderer: Renderer2,
-              private readonly service: FeatherpenService,
-              private readonly colorService: ColorService,
-              private readonly undoRedoService: UndoRedoService) {
+  constructor(
+      private readonly renderer: Renderer2,
+      private readonly service: FeatherpenService,
+      private readonly colorService: ColorService,
+      private readonly undoRedoService: UndoRedoService,
+    ) {
     super();
     this.onDrag = false;
-    this.element = undefined as unknown as SVGElement;
     this.currentPath = '';
     this.undoRedoService.resetActions();
     this.undoRedoService.setPreUndoAction({
@@ -57,15 +57,14 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
     const onMouseMove = this.renderer.listen(
       this.svgStructure.root,
       'mousemove',
-      (mouseEv: MouseEvent) => {
-        this.onMouseMove(new Point(mouseEv.offsetX, mouseEv.offsetY));
-      }
+      (mouseEv: MouseEvent) => this.onMouseMove(
+        new Point(mouseEv.offsetX, mouseEv.offsetY)),
     );
 
     const onScroll = this.renderer.listen(
       this.svgStructure.root,
       'wheel',
-      (wheelEv: WheelEvent) => this.onScroll(wheelEv)
+      (wheelEv: WheelEvent) => this.onScroll(wheelEv),
     );
 
     const onMouseLeave = this.renderer.listen(
@@ -119,31 +118,32 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
   }
 
   private setElementStyle(element: SVGElement): void {
-    element.setAttribute('stroke', this.colorService.primaryColor);
-    element.setAttribute('stroke-width', '2');
+    this.renderer.setAttribute(element, 'stroke', this.colorService.primaryColor);
+    this.renderer.setAttribute(element, 'stroke-width', '2');
   }
 
   private complete(initial: Point, final: Point): string {
     let toAdd = '';
     const points = this.service.getInterpolatedPoints(initial, final);
     for (const point of points) {
-      toAdd = `${toAdd} ${this.service.pathCentered(point)}`;
+      toAdd += ` ${this.service.pathCentered(point)}`;
     }
     return toAdd;
   }
 
   private onMouseMove(point: Point): void {
-    if (this.onDrag) {
-      this.currentPath += this.service.pathCentered(point);
-      if (point.squareDistanceTo(this.previousPoint) > 1) {
-        this.currentPath = `${this.currentPath} ${this.complete(this.previousPoint, point)}`;
-      }
-      this.element.setAttribute('d', `${this.currentPath}`);
-      this.previousPoint = point;
-    } else {
+    if (!this.onDrag) {
       this.renderer.setAttribute(this.cursorLine, 'd', this.service.pathCentered(point));
       this.setElementStyle(this.cursorLine);
+      return;
     }
+
+    this.currentPath += this.service.pathCentered(point);
+    if (point.squareDistanceTo(this.previousPoint) > 1) {
+      this.currentPath += ` ${this.complete(this.previousPoint, point)}`;
+    }
+    this.element.setAttribute('d', this.currentPath);
+    this.previousPoint = point;
   }
 
   private onMouseUp(): void {
@@ -159,15 +159,17 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
     wheelEv.preventDefault();
     const oldAngle = this.service.updateAngle(wheelEv);
     this.service.emitter.next();
-    if (this.onDrag) {
-      const pathToAdd = this.service.interpolate(
-        oldAngle,
-        this.service.angle,
-        new Point(wheelEv.offsetX, wheelEv.offsetY),
-        wheelEv.deltaY < 0
-      );
-      this.currentPath = `${this.currentPath} ${pathToAdd}`;
-      this.renderer.setAttribute(this.element, 'd', `${this.currentPath}`);
+    if (!this.onDrag) {
+      return;
     }
+
+    const pathToAdd = this.service.interpolate(
+      oldAngle,
+      this.service.angle,
+      new Point(wheelEv.offsetX, wheelEv.offsetY),
+      wheelEv.deltaY < 0,
+    );
+    this.currentPath += ` ${pathToAdd}`;
+    this.renderer.setAttribute(this.element, 'd', this.currentPath);
   }
 }

@@ -39,6 +39,7 @@ export class LocalStorageHandlerService {
 
     const drawingDocument = new DOMParser().parseFromString(drawXML, 'image/svg+xml');
     const draw = drawingDocument.firstElementChild as SVGGElement;
+
     if (drawingDocument === null || draw.childElementCount === 0) {
       return null;
     }

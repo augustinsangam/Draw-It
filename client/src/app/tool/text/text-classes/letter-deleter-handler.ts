@@ -1,5 +1,5 @@
-import {TextService} from '../text.service';
-import {TextLine} from './text-line';
+import { TextService } from '../text.service';
+import { TextLine } from './text-line';
 
 export class LetterDeleterHandler {
 
@@ -13,10 +13,10 @@ export class LetterDeleterHandler {
     const lineEmpty = currentLine.letters.length === 0;
 
     if ((atStartOfLine || lineEmpty) && onFirstLine) {
-
       return currentLine;
+    }
 
-    } else if (atStartOfLine && !onFirstLine) {
+    if (atStartOfLine && !onFirstLine) {
 
       const lineAbove = this.lines[this.lines.indexOf(currentLine) - 1];
       lineAbove.append(currentLine);
@@ -49,10 +49,10 @@ export class LetterDeleterHandler {
     const atEndOfLine = currentLine.cursorIndex === currentLine.letters.length;
 
     if (onLastLine && atEndOfLine) {
-
       return currentLine;
+    }
 
-    } else if (atEndOfLine && !onLastLine) {
+    if (atEndOfLine && !onLastLine) {
 
       const lineBelow = this.lines[this.lines.indexOf(currentLine) + 1];
       currentLine.append(lineBelow);

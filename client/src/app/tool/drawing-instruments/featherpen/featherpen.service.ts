@@ -27,10 +27,10 @@ export class FeatherpenService extends ToolService {
     this.length = this.DEFAULT_LENGTH;
     this.angle = this.DEFAULT_ANGLE;
     this.emitter = new Subject();
-    this.angles = [];
-    let i = 0;
-    while (i <= this.MAX_ANGLE) {
-      this.angles.push(i++);
+
+    this.angles = new Array(this.MAX_ANGLE);
+    for (let i = this.MAX_ANGLE; i--; ) {
+      this.angles[i] = i;
     }
   }
 
@@ -53,13 +53,9 @@ export class FeatherpenService extends ToolService {
   updateAngle(wheelEv: WheelEvent): number {
     const oldAngle = this.angle;
 
-    if (wheelEv.altKey) {
-      this.angle = wheelEv.deltaY < 0 ? (this.angle + 1) % this.MAX_ANGLE :
-        (this.angle - 1) % this.PI_DEG;
-    } else {
-      this.angle = wheelEv.deltaY < 0 ? (this.angle + this.OFFSET_ANGLE) % this.MAX_ANGLE :
-        (this.angle - this.OFFSET_ANGLE) % this.PI_DEG;
-    }
+    const delta = wheelEv.altKey ? 1 : this.OFFSET_ANGLE;
+    this.angle = wheelEv.deltaY < 0 ? (this.angle + delta) % this.MAX_ANGLE
+                                    : (this.angle - delta) % this.PI_DEG;
 
     if (this.angle < 0) {
       this.angle += this.MAX_ANGLE;
@@ -71,10 +67,8 @@ export class FeatherpenService extends ToolService {
     const points = [];
     const delta = {x: final.x - initial.x, y: final.y - initial.y};
 
-    // y = aXAxis * x + bXAxis
     const aXAxis = delta.y / delta.x;
     const bXAxis = initial.y - aXAxis * initial.x;
-    // x = aYAxis * y + bYAxis
     const aYAxis = delta.x / delta.y;
     const bYAxis = initial.x - aYAxis * initial.y;
 

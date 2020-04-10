@@ -1,27 +1,26 @@
-import {Component, OnDestroy, Renderer2} from '@angular/core';
-import {ShortcutHandlerService} from '../../../shortcut-handler/shortcut-handler.service';
-import {UndoRedoService} from '../../../undo-redo/undo-redo.service';
-import {ColorService} from '../../color/color.service';
-import {MathService} from '../../mathematics/tool.math-service.service';
-import {BackGroundProperties, StrokeProperties} from '../../shape/common/abstract-shape';
-import {Point} from '../../shape/common/point';
-import {Rectangle} from '../../shape/common/rectangle';
-import {ToolLogicDirective} from '../../tool-logic/tool-logic.directive';
-import {Cursor} from '../text-classes/cursor';
-import {LetterDeleterHandler} from '../text-classes/letter-deleter-handler';
-import {TextAlignement} from '../text-classes/text-alignement';
-import {TextHandlers} from '../text-classes/text-handlers';
-import {StateIndicators} from '../text-classes/text-indicators';
-import {TextLine} from '../text-classes/text-line';
-import {TextNavHandler} from '../text-classes/text-nav-handler';
-import {TextService} from '../text.service';
+import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { ShortcutHandlerService } from '../../../shortcut-handler/shortcut-handler.service';
+import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
+import { ColorService } from '../../color/color.service';
+import { MathService } from '../../mathematics/tool.math-service.service';
+import { BackGroundProperties, StrokeProperties } from '../../shape/common/abstract-shape';
+import { Point } from '../../shape/common/point';
+import { Rectangle } from '../../shape/common/rectangle';
+import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
+import { Cursor } from '../text-classes/cursor';
+import { LetterDeleterHandler } from '../text-classes/letter-deleter-handler';
+import { TextAlignement } from '../text-classes/text-alignement';
+import { TextHandlers } from '../text-classes/text-handlers';
+import { StateIndicators } from '../text-classes/text-indicators';
+import { TextLine } from '../text-classes/text-line';
+import { TextNavHandler } from '../text-classes/text-nav-handler';
+import { TextService } from '../text.service';
 
 @Component({
   selector: 'app-text-logic',
   template: '',
 })
 
-// tslint:disable:use-lifecycle-interface
 export class TextLogicComponent extends ToolLogicDirective
   implements OnDestroy {
 
@@ -36,16 +35,17 @@ export class TextLogicComponent extends ToolLogicDirective
   private initialPoint: Point;
   private handlers: TextHandlers;
 
-  constructor(private readonly service: TextService,
-              private readonly renderer: Renderer2,
-              private readonly mathService: MathService,
-              private readonly colorService: ColorService,
-              private readonly shortcutService: ShortcutHandlerService,
-              private readonly undoRedoService: UndoRedoService
+  constructor(
+    private readonly service: TextService,
+    private readonly renderer: Renderer2,
+    private readonly mathService: MathService,
+    private readonly colorService: ColorService,
+    private readonly shortcutService: ShortcutHandlerService,
+    private readonly undoRedoService: UndoRedoService,
   ) {
     super();
     this.listeners = [];
-    this.indicators = {onDrag: false, onType: false};
+    this.indicators = { onDrag: false, onType: false };
     this.lines = [];
     this.undoRedoService.resetActions();
   }
@@ -55,13 +55,14 @@ export class TextLogicComponent extends ToolLogicDirective
       this.svgStructure.root,
       'mousedown',
       (mouseEv: MouseEvent) => {
-        if (mouseEv.button === 0) {
-          mouseEv.cancelBubble = true;
-          mouseEv.preventDefault();
-          if (!this.indicators.onType) {
-            this.indicators.onDrag = true;
-            this.initRectVisu(mouseEv);
-          }
+        if (mouseEv.button !== 0) {
+          return;
+        }
+        mouseEv.cancelBubble = true;
+        mouseEv.preventDefault();
+        if (!this.indicators.onType) {
+          this.indicators.onDrag = true;
+          this.initRectVisu(mouseEv);
         }
       }
     );
@@ -70,14 +71,15 @@ export class TextLogicComponent extends ToolLogicDirective
       this.svgStructure.root,
       'mouseup',
       (mouseEv: MouseEvent) => {
-        if (mouseEv.button === 0) {
-          const point = this.svgStructure.root.createSVGPoint();
-          point.x = mouseEv.offsetX;
-          point.y = mouseEv.offsetY;
-          if (!(this.service.textZoneRectangle.element as SVGGeometryElement).isPointInFill(point) && this.indicators.onType) {
-            this.stopTyping(false);
-            return;
-          }
+        if (mouseEv.button !== 0) {
+          return;
+        }
+        const point = this.svgStructure.root.createSVGPoint();
+        point.x = mouseEv.offsetX;
+        point.y = mouseEv.offsetY;
+        if (!(this.service.textZoneRectangle.element as SVGGeometryElement).isPointInFill(point) && this.indicators.onType) {
+          this.stopTyping(false);
+        } else {
           this.onMouseUp(mouseEv);
         }
       }
@@ -132,6 +134,7 @@ export class TextLogicComponent extends ToolLogicDirective
   }
 
   private onKeyDown(keyEv: KeyboardEvent): void {
+    // TODO: Replace string by string enum
     switch (keyEv.key) {
 
       case 'Escape':
@@ -219,6 +222,7 @@ export class TextLogicComponent extends ToolLogicDirective
   private initCursor(): void {
     const cursor = this.renderer.createElement('path', this.svgNS);
     this.renderer.appendChild(this.svgStructure.temporaryZone, cursor);
+    // TODO : mettre des ifs
     const initialCursorXPos = (this.service.textAlignement === TextAlignement.left) ?
       this.initialPoint.x :
       (this.service.textAlignement === TextAlignement.center) ?
@@ -310,13 +314,13 @@ export class TextLogicComponent extends ToolLogicDirective
   }
 
   private setTextStyle(): void {
-    this.textElement.setAttribute('fill', this.colorService.primaryColor);
-    this.textElement.setAttribute('font-family', this.service.currentFont);
-    this.textElement.setAttribute('font-size', this.service.fontSize.toString());
-    this.textElement.setAttribute('text-anchor', this.service.getTextAnchor());
-    this.textElement.setAttribute('font-weight', this.service.textMutators.bold ? 'bold' : 'normal');
-    this.textElement.setAttribute('font-style', this.service.textMutators.italic ? 'italic' : 'normal');
-    this.textElement.setAttribute('text-decoration', this.service.textMutators.underline ? 'underline' : 'none');
+    this.renderer.setAttribute(this.textElement, 'fill', this.colorService.primaryColor);
+    this.renderer.setAttribute(this.textElement, 'font-family', this.service.currentFont);
+    this.renderer.setAttribute(this.textElement, 'font-size', this.service.fontSize.toString());
+    this.renderer.setAttribute(this.textElement, 'text-anchor', this.service.getTextAnchor());
+    this.renderer.setAttribute(this.textElement, 'font-weight', this.service.textMutators.bold ? 'bold' : 'normal');
+    this.renderer.setAttribute(this.textElement, 'font-style', this.service.textMutators.italic ? 'italic' : 'normal');
+    this.renderer.setAttribute(this.textElement, 'text-decoration', this.service.textMutators.underline ? 'underline' : 'none');
   }
 
   private updateView(): void {

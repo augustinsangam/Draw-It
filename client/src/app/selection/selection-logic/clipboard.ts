@@ -55,29 +55,18 @@ export class Clipboard {
       const lastValidClipboard = this.selectionLogic.service.clipboard.peak();
 
       lastValidClipboard.forEach((element) => {
-        this.selectionLogic.renderer.appendChild(
-          this.selectionLogic.svgStructure.drawZone,
-          element
-        );
+        this.selectionLogic.renderer.appendChild(this.selectionLogic.svgStructure.drawZone, element);
       });
 
       if (!this.isInside(lastValidClipboard)) {
         const length = this.selectionLogic.service.clipboard.length - 1;
-        Transform.translateAll(
-          lastValidClipboard,
-          - Util.PASTE_TRANSLATION * length,
-          -Util.PASTE_TRANSLATION * length,
+        Transform.translateAll(lastValidClipboard, - Util.PASTE_TRANSLATION * length, -Util.PASTE_TRANSLATION * length,
           this.selectionLogic.renderer
         );
         this.selectionLogic.service.clipboard = [lastValidClipboard];
       }
 
-      this.selectionLogic.applyMultipleSelection(
-        undefined,
-        undefined,
-        new Set(lastValidClipboard)
-      );
-
+      this.selectionLogic.applyMultipleSelection(undefined, undefined, new Set(lastValidClipboard));
       this.selectionLogic.undoRedoService.saveState();
     }
 

@@ -269,20 +269,15 @@ export class ExportComponent implements AfterViewInit {
     }
   }
 
-  // stackoverflow.com/a/12300351
+  // From: stackoverflow.com/a/12300351
   private dataURItoBlob(dataURI: string): Blob {
     const byteString = atob(dataURI.split(',')[1]);
-
     const mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
     const arrBuf = new ArrayBuffer(byteString.length);
-
     const byteArr = new Uint8Array(arrBuf);
-
     for (let i = 0; i < byteString.length; ++i) {
       byteArr[i] = byteString.charCodeAt(i);
     }
-
     return new Blob([arrBuf], {type: mime});
   }
 }

@@ -75,11 +75,11 @@ export class SelectionLogicComponent
 
             if (this.mouse.left.onDrag && !this.mouse.left.onResize) {
 
+              const offsetX = $event.offsetX - previousCurrentPoint.x;
+              const offsetY = $event.offsetY - previousCurrentPoint.y;
               if (this.service.magnetActive) {
                 this.deplacement.onCursorMove();
               } else {
-                const offsetX = $event.offsetX - previousCurrentPoint.x;
-                const offsetY = $event.offsetY - previousCurrentPoint.y;
                 this.translateAll(offsetX, offsetY);
               }
 

@@ -24,7 +24,7 @@ export class BucketLogicComponent
   extends ToolLogicDirective implements OnInit, OnDestroy {
 
   private image: ImageData;
-  private allListeners: (() => void)[] = [];
+  private allListeners: (() => void)[];
 
   constructor(private renderer: Renderer2,
               private colorService: ColorService,
@@ -32,6 +32,7 @@ export class BucketLogicComponent
               private service: BucketService
   ) {
     super();
+    this.allListeners = [];
   }
 
   ngOnInit(): void {
@@ -151,11 +152,8 @@ export class BucketLogicComponent
     shapes.forEach((shape) => {
       let pathString = '';
       shape.forEach((point) => {
-        if (pathString === '') {
-          pathString += `M${point.x}, ${point.y} `;
-        } else {
-          pathString += `L${point.x}, ${point.y} `;
-        }
+        pathString += pathString ? 'L' : 'M';
+        pathString += `${point.x}, ${point.y} `;
       });
       pathString += 'z ';
       pathDAttribute += pathString;
@@ -170,8 +168,7 @@ export class BucketLogicComponent
     this.renderer.appendChild(this.svgStructure.drawZone, path);
   }
 
-  private fourConnectedPoint(point: Point): Point[] {
-    const [x, y] = [point.x, point.y];
+  private fourConnectedPoint({x, y}: Point): Point[] {
     return [
       new Point(x - 1, y    ),
       new Point(x + 1, y    ),
