@@ -8,15 +8,19 @@ import mongodb from 'mongodb';
 import multer from 'multer';
 import { promisify } from 'util';
 
-import { COLORS, ContentType, EMAIL_API, ERRORS, Header, StatusCode, TextLen, TYPES } from './constants';
+import {
+	COLORS,
+	ContentType,
+	EMAIL_API,
+	ERRORS,
+	Header,
+	StatusCode,
+	TextLen,
+	TYPES,
+} from './constants';
 import { Database, Entry } from './database';
 import { Draw, DrawBuffer, Draws } from './data_generated';
 import { Email } from './email';
-
-interface Id {
-	id: number;
-	err?: Error;
-}
 
 // Source: zellwk.com/blog/async-await-express/
 @inversify.injectable()
@@ -88,6 +92,13 @@ class Router {
 	private sendEmail(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
 			const recipient = req.body.recipient;
+			if (recipient == null || req.file == null) {
+				res
+					.status(StatusCode.BAD_REQUEST)
+					.send('“recipient” ou “media” manquant');
+				return;
+			}
+
 			if (!EmailValidator.validate(recipient)) {
 				res.status(StatusCode.NOT_ACCEPTABLE).send('Courriel invalide');
 				return;
@@ -96,7 +107,7 @@ class Router {
 			let resEmail: IncomingMessage;
 			try {
 				resEmail = await this.email.send(recipient, req.file);
-			} catch(err) {
+			} catch (err) {
 				return next(err);
 			}
 
@@ -104,16 +115,16 @@ class Router {
 			const max = resEmail.headers[EMAIL_API.headers.max];
 
 			switch (resEmail.statusCode) {
-			case StatusCode.OK:
-				res.status(StatusCode.OK);
-				res.send(`Courriel envoyé (${count}/${max})`);
-				return;
-			case StatusCode.ACCEPTED:
-				res.status(StatusCode.OK);
-				res.send(`Courriel probabablement envoyé (${count}/${max})`);
-				return;
-			default:
-				break;
+				case StatusCode.OK:
+					res.status(StatusCode.OK);
+					res.send(`Courriel envoyé (${count}/${max})`);
+					return;
+				case StatusCode.ACCEPTED:
+					res.status(StatusCode.OK);
+					res.send(`Courriel probabablement envoyé (${count}/${max})`);
+					return;
+				default:
+					break;
 			}
 
 			if (resEmail.headers[Header.CONTENT_TYPE] !== ContentType.JSON) {
@@ -128,6 +139,7 @@ class Router {
 			const textResult = Buffer.concat(chunks).toString();
 			try {
 				const result = JSON.parse(textResult);
+				res.type(ContentType.PLAIN_UTF8);
 				res.status(StatusCode.NOT_ACCEPTABLE).send(result.error);
 			} catch (err) {
 				next(err);

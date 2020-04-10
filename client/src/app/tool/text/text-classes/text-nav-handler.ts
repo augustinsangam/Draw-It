@@ -4,21 +4,29 @@ import {TextLine} from './text-line';
 export class TextNavHandler {
 
   constructor(private cursor: Cursor,
-              private lines: TextLine[]
+              public lines: TextLine[]
               ) { }
 
-  cursorLeft(currentLine: TextLine): void {
+  cursorLeft(currentLine: TextLine): TextLine {
     if (currentLine.cursorIndex > 0) {
       --currentLine.cursorIndex;
-      this.cursor.move(currentLine, this.lines.indexOf(currentLine));
+    } else if (this.lines.indexOf(currentLine) !== 0) {
+      currentLine = this.lines[this.lines.indexOf(currentLine) - 1];
+      currentLine.cursorIndex = currentLine.letters.length;
     }
+    this.cursor.move(currentLine, this.lines.indexOf(currentLine));
+    return currentLine;
   }
 
-  cursorRight(currentLine: TextLine): void {
+  cursorRight(currentLine: TextLine): TextLine {
     if (!!currentLine.tspan.textContent && currentLine.cursorIndex < currentLine.tspan.textContent.length) {
       ++currentLine.cursorIndex;
-      this.cursor.move(currentLine, this.lines.indexOf(currentLine));
+    } else if (this.lines.indexOf(currentLine) !== this.lines.length - 1) {
+      currentLine = this.lines[this.lines.indexOf(currentLine) + 1];
+      currentLine.cursorIndex = 0;
     }
+    this.cursor.move(currentLine, this.lines.indexOf(currentLine));
+    return currentLine;
   }
 
   cursorUp(currentLine: TextLine): TextLine {

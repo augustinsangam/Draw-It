@@ -26,6 +26,12 @@ import {
   BrushPanelComponent
 } from './drawing-instruments/brush/brush-panel/brush-panel.component';
 import {
+  FeatherpenLogicComponent
+} from './drawing-instruments/featherpen/featherpen-logic/featherpen-logic.component';
+import {
+  FeatherpenPanelComponent
+} from './drawing-instruments/featherpen/featherpen-panel/featherpen-panel.component';
+import {
   PencilLogicComponent
 } from './drawing-instruments/pencil/pencil-logic/pencil-logic.component';
 import {
@@ -37,12 +43,6 @@ import {
 import {
   EraserPanelComponent
 } from './eraser/eraser-panel/eraser-panel.component';
-import {
-  FeatherpenLogicComponent
-} from './drawing-instruments/featherpen/featherpen-logic/featherpen-logic.component';
-import {
-  FeatherpenPanelComponent
-} from './drawing-instruments/featherpen/featherpen-panel/featherpen-panel.component';
 import {
   GridLogicComponent
 } from './grid/grid-logic/grid-logic.component';
@@ -57,10 +57,10 @@ import {
 } from './pipette/pipette-panel/pipette-panel.component';
 import {
   SelectionLogicComponent
-} from './selection/selection-logic/selection-logic.component';
+} from '../selection/selection-logic/selection-logic.component';
 import {
   SelectionPanelComponent
-} from './selection/selection-panel/selection-panel.component';
+} from '../selection/selection-panel/selection-panel.component';
 import {
   EllipseLogicComponent
 } from './shape/ellipse/ellipse-logic/ellipse-logic.component';

@@ -1,4 +1,4 @@
-import { format } from 'url';
+import { promisify } from 'util';
 
 const ANSWER_TO_LIFE = 42;
 
@@ -45,19 +45,15 @@ enum ContentType {
 const EMAIL_API = {
 	headers: {
 		count: 'X-RateLimit-Remaining',
-		key: 'X-Team-Key',
+		key: 'x-team-key',
 		max: 'X-RateLimit-Limit',
 	},
-	url: format({
-		hostname: 'log2990.step.polymtl.ca',
-		pathname: '/email',
-		protocol: 'https',
-		query: {
-			address_validation: true,
-			dry_run: true, // TODO: remove when API fixed
-		}
-	}),
+	url:
+		'https://log2990.step.polymtl.ca/email?address_validation=true&dry_run=true',
 };
+
+const promisifiedTimeout = promisify(setTimeout);
+const asyncTimeout = (timeout: number) => promisifiedTimeout(timeout);
 
 const ERRORS = {
 	reposneNotJson: new Error('Réponse de l’API n’est pas du JSON'),
@@ -65,13 +61,9 @@ const ERRORS = {
 	nullDb: new Error('La base de données est nulle ou indéfinie'),
 };
 
-// Values MUST be in lowercase
 enum Header {
 	CONTENT_TYPE = 'content-type',
 }
-
-const promisifiedTimeout = async (timeout: number): Promise<void> =>
-	new Promise((resolve) => setTimeout(resolve, timeout));
 
 enum StatusCode {
 	OK = 200,
@@ -102,12 +94,12 @@ const TYPES = {
 
 export {
 	ANSWER_TO_LIFE,
+	asyncTimeout,
 	COLORS,
 	ContentType,
 	EMAIL_API,
 	ERRORS,
 	Header,
-	promisifiedTimeout,
 	StatusCode,
 	TextLen,
 	TIMEOUT,

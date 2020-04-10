@@ -25,7 +25,7 @@ export enum FormatChoice {
   Jpeg = 'JPEG',
 }
 
-enum ExportType {
+export enum ExportType {
   LOCAL = 'local',
   EMAIL = 'email',
 }
@@ -98,7 +98,7 @@ export class ExportComponent implements AfterViewInit {
     this.createView(String($change.value));
   }
 
-  private async parseToBase64(format: string): Promise<string> {
+  private async parseToB64URI(format: string): Promise<string> {
     if (format as FormatChoice === FormatChoice.Svg) {
       return `data:image/svg+xml,${encodeURIComponent(this.serializeSVG())}`;
     }
@@ -111,7 +111,7 @@ export class ExportComponent implements AfterViewInit {
   protected async onConfirm(): Promise<void> {
     const format = this.form.controls.format.value;
     if (this.exportType === ExportType.EMAIL) {
-      const imageBase64 = await this.parseToBase64(format);
+      const imageBase64 = await this.parseToB64URI(format);
       const imageBlob = this.dataURItoBlob(imageBase64);
 
       const email = this.form.controls.email.value;
@@ -268,7 +268,7 @@ export class ExportComponent implements AfterViewInit {
   }
 
   // stackoverflow.com/a/12300351
-  private dataURItoBlob(dataURI: string) {
+  private dataURItoBlob(dataURI: string): Blob {
     const byteString = atob(dataURI.split(',')[1]);
 
     const mime = dataURI.split(',')[0].split(':')[1].split(';')[0];

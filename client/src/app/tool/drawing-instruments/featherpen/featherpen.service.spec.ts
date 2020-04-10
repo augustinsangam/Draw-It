@@ -48,6 +48,10 @@ describe('FeatherpenService', () => {
     expect(service['angle']).toEqual(14);
   });
 
+  it('#getInterpolatedPoints should return a non empty array for 2 points far away from each other (>1px)', () => {
+    expect(service.getInterpolatedPoints(new Point(42, 69), new Point(52, 79)).length).toEqual(20);
+  });
+
   // The following tested method aims at selecting parts of an array. 4 cases are possible, so these 4 tests
   // simulate them. The 4 cases (the selection is indicated between pipes `|` :
 
@@ -61,7 +65,7 @@ describe('FeatherpenService', () => {
   //     |<-------------|              |         <----|           |<----
 
   it('#interpolate should return a non empty path and handle case A', () => {
-    expect(service.interpolate(12, 21, new Point(42, 69), true)).not.toEqual('');
+    expect(service.interpolate(12, 27, new Point(42, 69), true)).not.toEqual('');
   });
 
   it('#interpolate should return a non empty path and handle case B', () => {

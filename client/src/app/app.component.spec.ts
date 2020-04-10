@@ -8,6 +8,7 @@ import {
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
+import { LocalStorageHandlerService } from './auto-save/local-storage-handler.service';
 import { MaterialModule } from './material.module';
 import { OverlayService } from './overlay/overlay.service';
 import { DocumentationComponent } from './overlay/pages/documentation/documentation.component';
@@ -19,9 +20,7 @@ import { HomeComponent } from './overlay/pages/home/home.component';
 import { NewDrawComponent } from './overlay/pages/new-draw/new-draw.component';
 import { SaveComponent } from './overlay/pages/save/save.component';
 import { PanelComponent } from './panel/panel.component';
-import {
-  ShortcutHandlerService
-} from './shortcut-handler/shortcut-handler.service';
+import { ShortcutHandlerService } from './shortcut-handler/shortcut-handler.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { SvgShape } from './svg/svg-shape';
 import { SvgService } from './svg/svg.service';
@@ -30,11 +29,8 @@ import { ColorPanelComponent } from './tool/color/color-panel/color-panel.compon
 import { ColorPickerContentComponent } from './tool/color/color-panel/color-picker-content/color-picker-content.component';
 import { ColorPickerItemComponent } from './tool/color/color-panel/color-picker-item/color-picker-item.component';
 import { PencilPanelComponent } from './tool/drawing-instruments/pencil/pencil-panel/pencil-panel.component';
-import {
-  ToolSelectorService
-} from './tool/tool-selector/tool-selector.service';
-import { UndoRedoService } from './tool/undo-redo/undo-redo.service';
-import { LocalStorageHandlerService } from './auto-save/local-storage-handler.service';
+import { ToolSelectorService } from './tool/tool-selector/tool-selector.service';
+import { UndoRedoService } from './undo-redo/undo-redo.service';
 
 // tslint:disable: no-string-literal no-any no-magic-numbers
 fdescribe('AppComponent', () => {
@@ -105,7 +101,9 @@ fdescribe('AppComponent', () => {
     service = component['overlayService'];
 
     svgService = TestBed.get(SvgService);
+
     autoSave = TestBed.get(LocalStorageHandlerService);
+
     svgService.structure = {
       root: document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
       defsZone: document.createElementNS('http://www.w3.org/2000/svg', 'svg:g') as SVGGElement,
@@ -119,7 +117,6 @@ fdescribe('AppComponent', () => {
     svgService.structure.root.appendChild(svgService.structure.endZone);
 
     (TestBed.get(UndoRedoService) as UndoRedoService).intialise(svgService.structure);
-
     fixture.detectChanges();
   });
 

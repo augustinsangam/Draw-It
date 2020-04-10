@@ -7,25 +7,23 @@ export const AUTOS_SAVE_KEY_DRAW = 'draw';
   providedIn: 'root'
 })
 export class LocalStorageHandlerService {
-  
-  constructor() {}
 
-  saveShape(shape: SvgShape){
+  saveShape(shape: SvgShape): void {
     localStorage.setItem('shape', JSON.stringify(shape));
   }
 
-  saveState(draw: SVGGElement ){
+  saveState(draw: SVGGElement): void {
     const svgDrawString = new XMLSerializer().serializeToString(draw);
     localStorage.setItem(AUTOS_SAVE_KEY_DRAW, svgDrawString);
   }
 
   verifyAvailability(): boolean {
-    return localStorage.getItem(AUTOS_SAVE_KEY_DRAW) !== null ? true : false; 
+    return localStorage.getItem(AUTOS_SAVE_KEY_DRAW) !== null ? true : false;
   }
 
-  getDrawing(): [SVGGElement, SvgShape]{
+  getDrawing(): [SVGGElement, SvgShape] {
     const savedElement = localStorage.getItem(AUTOS_SAVE_KEY_DRAW) as string;
-    const drawingDocument = new DOMParser().parseFromString(savedElement, "image/svg+xml");
+    const drawingDocument = new DOMParser().parseFromString(savedElement, 'image/svg+xml');
     const drawingElement = drawingDocument.firstElementChild as SVGSVGElement;
     const shape: SvgShape = JSON.parse(localStorage.getItem('shape') as string);
     return [ drawingElement, shape];

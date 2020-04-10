@@ -6,7 +6,7 @@ import express from 'express';
 import sinon from 'sinon';
 import supertest from 'supertest';
 
-import { promisifiedTimeout, StatusCode, TIMEOUT, TYPES } from '../constants';
+import { asyncTimeout, StatusCode, TIMEOUT, TYPES } from '../constants';
 import { myContainer } from '../inversify.config';
 import { Server } from '../server';
 
@@ -40,9 +40,7 @@ describe('server', () => {
 		openedSocketsMock.value(openedSockets);
 
 		const serverStub = sinon.stub(server as any, 'promisifyServerClose');
-		serverStub.returns(
-			new Promise((resolve) => setTimeout(resolve, TIMEOUT + 200)),
-		);
+		serverStub.returns(asyncTimeout(TIMEOUT + 200));
 
 		await server.close();
 		chai.expect(openedSockets[0].active).to.be.false;
@@ -102,7 +100,7 @@ describe('server', () => {
 		await supertest(server['server']).get('/').then();
 		server['server'].close();
 
-		await promisifiedTimeout(100);
+		await asyncTimeout(100);
 
 		chai.expect(server['openedSockets'].size).to.equal(0);
 

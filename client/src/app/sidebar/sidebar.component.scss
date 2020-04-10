@@ -32,12 +32,12 @@ a:hover {
   cursor: pointer;
 }
 
-nav a {
+nav a:not(:first-child) {
   transition: .3s filter;
   filter: grayscale(99%);
 }
 
-nav a:hover, nav a.selected {
+nav a:not(:first-child):hover, nav a.selected {
   filter: grayscale(0) drop-shadow(0 0 5px #FFF);
 }
 

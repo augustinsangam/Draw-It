@@ -381,6 +381,76 @@ describe('CommunicationService', () => {
     return expectAsync(promise).toBeRejected();
   });
 
+  it('#sendEmail should use method POST', () => {
+    service.sendEmail('foo', 'bar@example.com', new Blob());
+
+    expect(xhrMock.method).toBe('POST');
+  });
+
+  it('#sendEmail should call send', () => {
+    const spy = spyOn(xhrMock, 'send');
+    service.sendEmail('foo', 'bar@example.com', new Blob());
+
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#onreadystatechange from #sendEmail should do nothing if not done', async () => {
+    let done = false;
+    const promise = service.sendEmail('foo', 'bar@example.com', new Blob());
+    promise.then(() => done = true);
+
+    xhrMock.readyState = 1;
+    xhrMock.onreadystatechange();
+
+    expect(done).toBeFalsy();
+
+    xhrMock.status = StatusCode.ACCEPTED;
+    xhrMock.readyState = 4;
+    xhrMock.onreadystatechange();
+
+    await promise;
+  });
+
+  it('#onreadystatechange from #sendEmail should do nothing if status is zero', async () => {
+    let done = false;
+    const promise = service.sendEmail('foo', 'bar@example.com', new Blob());
+    promise.then(() => done = true);
+
+    xhrMock.status = 0;
+    xhrMock.readyState = 4;
+    xhrMock.onreadystatechange();
+
+    expect(done).toBeFalsy();
+
+    xhrMock.status = StatusCode.ACCEPTED;
+    xhrMock.onreadystatechange();
+
+    await promise;
+  });
+
+  it('#sendEmail should reject if INTERNAL SERVER ERROR', async () => {
+    const promise = service.sendEmail('foo', 'bar@example.com', new Blob());
+    xhrMock.status = StatusCode.INTERNAL_SERVER_ERROR;
+    xhrMock.readyState = 4;
+    xhrMock.onreadystatechange();
+
+    return expectAsync(promise).toBeRejected();
+  });
+
+  it('#sendEmail should reject if timeout', async () => {
+    const promise = service.sendEmail('foo', 'bar@example.com', new Blob());
+    xhrMock.ontimeout();
+
+    return expectAsync(promise).toBeRejected();
+  });
+
+  it('#sendEmail should reject if error', async () => {
+    const promise = service.sendEmail('foo', 'bar@example.com', new Blob());
+    xhrMock.onerror();
+
+    return expectAsync(promise).toBeRejected();
+  });
+
   it('#decodeElementRecursively should return null if no name', () => {
     const fbBuilder = new flatbuffers.Builder();
     ElementT.start(fbBuilder);

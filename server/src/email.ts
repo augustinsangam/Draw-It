@@ -1,7 +1,12 @@
 import FormData from 'form-data';
 import { createReadStream } from 'fs';
-import { IncomingMessage } from 'http';
-import { request, RequestOptions } from 'https';
+import {
+	IncomingMessage,
+	OutgoingHttpHeaders,
+	request as httpRequest,
+	RequestOptions,
+} from 'http';
+import { request as httpsRequest } from 'https';
 import inversify from 'inversify';
 
 import { EMAIL_API } from './constants.js';
@@ -15,7 +20,7 @@ class Email {
 		this.options = {
 			headers: {
 				[EMAIL_API.headers.key]: secrets.email.key,
-			},
+			} as OutgoingHttpHeaders,
 			method: 'POST',
 		};
 	}
@@ -33,13 +38,23 @@ class Email {
 			contentType: file.mimetype,
 		});
 
-		const options = {...this.options, ...{ headers: form.getHeaders() }};
+		const options = { ...this.options, ...{ headers: form.getHeaders() } };
 		Object.assign(options.headers, this.options.headers);
 
-		const req = request(EMAIL_API.url, options);
+		const url = EMAIL_API.url;
+		const secure = url.startsWith('https');
+		const req = (secure ? httpsRequest : httpRequest)(url, options);
 		form.pipe(req);
-		return new Promise((resolve) => req.on('response', resolve));
+
+		return new Promise((resolve, reject) => {
+			req.on('response', resolve);
+			req.on('error', reject);
+		});
 	}
 }
 
+// Due to a bug, c8 reports the export line as uncovered even tho
+// it’s used outside of the current file
+// See the bug submission https://github.com/bcoe/c8/issues/196
+/* c8 ignore next */
 export { Email };
