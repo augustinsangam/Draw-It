@@ -151,6 +151,25 @@ describe('AppComponent', () => {
     expect(service['dialogRefs'].home.disableClose).toBe(true);
   });
 
+<<<<<<< HEAD
+  it('#ngAfterviewInit should call getDrawing when there is a draw saved', fakeAsync(() => {
+    const spy = spyOn<any>(component['autoSave'], 'getDrawing').and.callThrough();
+    const element: SVGGElement = document.createElementNS('http://www.w3.org/2000/svg','g');
+    const apath: SVGPathElement = document.createElementNS('http://www.w3.org/2000/svg','path');
+    apath.setAttribute('id', 'thepath11');
+    element.setAttribute('id', 'test11');
+    element.appendChild(apath);
+    autoSave.saveState(element);
+    const shape: SvgShape = { width: 500, height: 500, color: 'red'};
+    autoSave.saveShape(shape);
+    component.ngAfterViewInit();
+    setTimeout(() => {
+      expect(spy).toHaveBeenCalledTimes(1);
+    }, 500);
+    tick(500);
+    localStorage.clear();
+  }));
+=======
   // it('#ngAfterviewInit should call getDrawing when there is a draw saved', () => {
   //   const spy = spyOn<any>(component['autoSave'], 'getDrawing');
   //   const element = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -171,6 +190,7 @@ describe('AppComponent', () => {
   //   component.ngAfterViewInit();
   //   expect(spy).toHaveBeenCalledTimes(1);
   // });
+>>>>>>> next
 
   it('#openSelectedDialog should call openNewDrawDialog', () => {
     const spy = spyOn<any>(service, 'openNewDrawDialog');
