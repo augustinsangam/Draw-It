@@ -60,6 +60,7 @@ export class SelectionLogicComponent
           this.mouse.left.onResize = Util.CIRCLES.indexOf(
             this.mouse.left.selectedElement as CircleType
           ) !== NOT_FOUND;
+          this.applyMouseStyle($event);
           if (this.svgStructure.drawZone.contains(target as SVGElement)
             && !this.service.selectedElements.has(target as SVGElement)) {
             this.applySingleSelection(target as SVGElement);
@@ -68,6 +69,7 @@ export class SelectionLogicComponent
         }],
         ['mousemove', ($event: MouseEvent) => {
           $event.preventDefault();
+          this.applyMouseStyle($event);
           if (!this.mouse.left.mouseIsDown) {
             return;
           }
@@ -109,7 +111,9 @@ export class SelectionLogicComponent
           this.mouse.left.endPoint = new Point($event.offsetX, $event.offsetY);
           this.mouse.left.mouseIsDown = false;
           this.mouse.left.onDrag = false;
+          this.mouse.left.onResize = false;
           this.deleteSelection();
+          this.applyMouseStyle($event);
         }],
         ['click', ($event: MouseEvent) => {
           if ($event.button !== 0) {
@@ -125,6 +129,7 @@ export class SelectionLogicComponent
           } else if (elementType === BasicSelectionType.NOTHING) {
             this.deleteVisualisation();
           }
+          this.applyMouseStyle($event);
         }]
       ])],
       ['centerButton', new Map<string, Util.WheelEventCallback>([
