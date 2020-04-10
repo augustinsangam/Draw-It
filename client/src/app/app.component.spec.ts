@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 
 import { Overlay } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -33,7 +33,7 @@ import { ToolSelectorService } from './tool/tool-selector/tool-selector.service'
 import { UndoRedoService } from './undo-redo/undo-redo.service';
 
 // tslint:disable: no-string-literal no-any no-magic-numbers
-describe('AppComponent', () => {
+fdescribe('AppComponent', () => {
   let component: AppComponent;
   let service: OverlayService;
   let svgService: SvgService;
@@ -117,11 +117,6 @@ describe('AppComponent', () => {
     svgService.structure.root.appendChild(svgService.structure.endZone);
 
     (TestBed.get(UndoRedoService) as UndoRedoService).intialise(svgService.structure);
-
-    console.log(autoSave);
-
-    // spyOn(autoSave, 'verifyAvailability').and.callFake(() => false);
-
     fixture.detectChanges();
   });
 
@@ -151,26 +146,23 @@ describe('AppComponent', () => {
     expect(service['dialogRefs'].home.disableClose).toBe(true);
   });
 
-  // it('#ngAfterviewInit should call getDrawing when there is a draw saved', () => {
-  //   const spy = spyOn<any>(component['autoSave'], 'getDrawing');
-  //   const element = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  //   element.setAttribute('id', 'test');
-  //   autoSave.saveState(element);
-  //   const shape: SvgShape = { width: 500, height: 500, color: 'red'};
-  //   autoSave.saveShape(shape);
-  //   component.ngAfterViewInit();
-  //   expect(spy).toHaveBeenCalledTimes(1);
-  // });
-
-  // it('#ngAfterviewInit shouldnt call getDrawing when there isnt a draw saved', () => {
-  //   const spy = spyOn<any>(component['autoSave'], 'getDrawing').and.callThrough();
-  //   const element = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  //   element.setAttribute('id', 'test');
-  //   localStorage.setItem('draw', 'exemple');
-  //   localStorage.clear();
-  //   component.ngAfterViewInit();
-  //   expect(spy).toHaveBeenCalledTimes(1);
-  // });
+  it('#ngAfterviewInit should call getDrawing when there is a draw saved', fakeAsync(() => {
+    const spy = spyOn<any>(component['autoSave'], 'getDrawing').and.callThrough();
+    const element: SVGGElement = document.createElementNS('http://www.w3.org/2000/svg','g');
+    const apath: SVGPathElement = document.createElementNS('http://www.w3.org/2000/svg','path');
+    apath.setAttribute('id', 'thepath1');
+    element.setAttribute('id', 'test11');
+    element.appendChild(apath);
+    autoSave.saveState(element);
+    const shape: SvgShape = { width: 500, height: 500, color: 'red'};
+    autoSave.saveShape(shape);
+    component.ngAfterViewInit();
+    setTimeout(() => {
+      expect(spy).toHaveBeenCalledTimes(1);
+    }, 500);
+    tick(500);
+    localStorage.clear();
+  }));
 
   it('#openSelectedDialog should call openNewDrawDialog', () => {
     const spy = spyOn<any>(service, 'openNewDrawDialog');

@@ -179,7 +179,7 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private closeDialog(result: boolean): void {
-    this.dialogRef.close(result ? this.form.value : OverlayPages.Home as string);
+    this.dialogRef.close(result ? this.form.value : OverlayPages.Home as string)
   }
 
   protected onReturn(): void {
