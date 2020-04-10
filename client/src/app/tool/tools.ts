@@ -57,10 +57,10 @@ import {
 } from './pipette/pipette-panel/pipette-panel.component';
 import {
   SelectionLogicComponent
-} from './selection/selection-logic/selection-logic.component';
+} from '../selection/selection-logic/selection-logic.component';
 import {
   SelectionPanelComponent
-} from './selection/selection-panel/selection-panel.component';
+} from '../selection/selection-panel/selection-panel.component';
 import {
   EllipseLogicComponent
 } from './shape/ellipse/ellipse-logic/ellipse-logic.component';

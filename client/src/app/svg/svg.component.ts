@@ -19,7 +19,7 @@ import { Tool } from '../tool/tool.enum';
 import { SVGStructure } from './svg-structure';
 
 import * as Tools from '../tool/tools';
-import { UndoRedoService } from '../tool/undo-redo/undo-redo.service';
+import { UndoRedoService } from '../undo-redo/undo-redo.service';
 import { SvgService } from './svg.service';
 
 @Component({

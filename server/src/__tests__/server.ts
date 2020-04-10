@@ -5,9 +5,8 @@ import chaiAsPromised from 'chai-as-promised';
 import express from 'express';
 import sinon from 'sinon';
 import supertest from 'supertest';
-import { promisify } from 'util';
 
-import { StatusCode, TIMEOUT, TYPES, asyncTimeout } from '../constants';
+import { asyncTimeout, StatusCode, TIMEOUT, TYPES } from '../constants';
 import { myContainer } from '../inversify.config';
 import { Server } from '../server';
 

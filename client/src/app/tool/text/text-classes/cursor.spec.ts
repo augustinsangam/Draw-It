@@ -1,9 +1,10 @@
-// import {Renderer2} from '@angular/core';
-// import {fakeAsync, tick} from '@angular/core/testing';
-// import {Point} from '../../shape/common/point';
-// import {TextService} from '../text.service';
-// import {Cursor} from './cursor';
-// import {TextAlignement} from './text-alignement';
+import {Renderer2} from '@angular/core';
+import {fakeAsync, tick} from '@angular/core/testing';
+import {Point} from '../../shape/common/point';
+import {TextService} from '../text.service';
+import {Cursor} from './cursor';
+import {TextAlignement} from './text-alignement';
+import {TextLine} from './text-line';
 
 // // tslint:disable:no-magic-numbers no-string-literal no-any
 // describe('Cursor', () => {
@@ -83,10 +84,10 @@
 //     spyOn(cursor['service'], 'getFullTextWidth');
 //     spyOn(cursor['service'], 'getTextAlign');
 
-//     alignements.forEach((align) => {
+// alignements.forEach((align) => {
 //       cursor['service'].textAlignement = align as TextAlignement;
 //       cursor.move(
-//         {tspan: undefined as unknown as SVGElement, letters: [], cursorIndex: 0},
+//         {tspan: undefined as unknown as SVGElement, letters: [], cursorIndex: 0} as unknown as TextLine,
 //         0
 //       );
 //     });

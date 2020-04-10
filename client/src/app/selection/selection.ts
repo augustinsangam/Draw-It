@@ -1,4 +1,4 @@
-import { Point } from '../shape/common/point';
+import { Point } from '../tool/shape/common/point';
 import { Offset } from './offset';
 import { Zone } from './zone';
 

@@ -212,9 +212,11 @@ export class ExportComponent implements AfterViewInit {
 
     const factor = Math.max(this.svgShape.height / viewZoneHeigth,
       this.svgShape.width / viewZoneWidth);
-    const pictureHeigth = this.svgShape.height / factor;
-    const pictureWidth = this.svgShape.width / factor;
+    const pictureHeigth = this.svgShape.height / factor - 2;
+    const pictureWidth = this.svgShape.width / factor - 2;
 
+    this.renderer.setAttribute(picture, 'x', '1');
+    this.renderer.setAttribute(picture, 'y', '1');
     this.renderer.setAttribute(picture, 'id', 'pictureView');
     this.renderer.setAttribute(picture, 'href', this.convertSVGToBase64());
     this.renderer.setAttribute(picture, 'width', pictureWidth.toString());

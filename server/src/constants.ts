@@ -1,4 +1,3 @@
-import { format, UrlObject } from 'url';
 import { promisify } from 'util';
 
 const ANSWER_TO_LIFE = 42;
@@ -49,15 +48,8 @@ const EMAIL_API = {
 		key: 'x-team-key',
 		max: 'X-RateLimit-Limit',
 	},
-	url: {
-		hostname: 'log2990.step.polymtl.ca',
-		pathname: 'email',
-		protocol: 'https',
-		query: {
-			address_validation: true,
-			dry_run: true, // TODO: remove when API fixed
-		}
-	} as UrlObject,
+	url:
+		'https://log2990.step.polymtl.ca/email?address_validation=true&dry_run=true',
 };
 
 const promisifiedTimeout = promisify(setTimeout);

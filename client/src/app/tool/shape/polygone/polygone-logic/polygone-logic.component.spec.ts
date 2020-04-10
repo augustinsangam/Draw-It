@@ -6,7 +6,7 @@ import {
   TestBed,
   tick
 } from '@angular/core/testing';
-import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
+import { UndoRedoService } from 'src/app/undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
 import { BackGroundProperties, StrokeProperties } from '../../common/abstract-shape';

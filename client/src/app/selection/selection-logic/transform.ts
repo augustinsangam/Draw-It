@@ -1,5 +1,5 @@
 import { Renderer2 } from '@angular/core';
-import { Point } from '../../shape/common/point';
+import { Point } from '../../tool/shape/common/point';
 import { Matrix } from './matrix';
 
 const MATRIX_SIZE = 3;

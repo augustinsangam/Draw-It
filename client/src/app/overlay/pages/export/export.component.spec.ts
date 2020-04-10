@@ -7,7 +7,7 @@ import { MaterialModule } from 'src/app/material.module';
 import { SvgShape } from 'src/app/svg/svg-shape';
 import { SvgService} from 'src/app/svg/svg.service';
 import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.service';
-import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
+import { UndoRedoService } from 'src/app/undo-redo/undo-redo.service';
 import { ExportComponent, ExportType, FilterChoice, FormatChoice } from './export.component';
 
 // tslint:disable: no-magic-numbers no-any no-string-literal
@@ -110,13 +110,12 @@ describe('ExportComponent', () => {
     expect(result[5]).toEqual(FilterChoice.Grey);
   }));
 
-  it('#parseToB64URI should return svg type', () => {
+  it('#parseToB64URI should return svg type', async () => {
     const spy = spyOn<any>(component, 'serializeSVG');
     spy.and.returnValue('foo');
 
-    const uri = component['parseToB64URI'](FormatChoice.Svg);
-    console.log(uri);
-    expect(true).toBeTruthy();
+    const uri = await component['parseToB64URI'](FormatChoice.Svg);
+    expect(uri).toEqual('data:image/svg+xml,foo');
   });
 
   it('#onConfirm should close the dialogRef', () => {

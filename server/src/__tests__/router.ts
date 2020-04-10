@@ -54,10 +54,7 @@ describe('router', () => {
 	});
 
 	it('#methodSendEmail should fail if no recipient', async () =>
-		supertest(app)
-			.post('/send')
-			.expect(StatusCode.BAD_REQUEST)
-			.then());
+		supertest(app).post('/send').expect(StatusCode.BAD_REQUEST).then());
 
 	it('#methodSendEmail should fail if no media', async () =>
 		supertest(app)
@@ -88,9 +85,12 @@ describe('router', () => {
 	});
 
 	it('#methodSendEmail should fail backend fails w/o json', async () => {
-		const incomingMessageMock = new IncomingMessageMock(StatusCode.INTERNAL_SERVER_ERROR);
-		incomingMessageMock.headers[EMAIL_API.headers.count] = ANSWER_TO_LIFE.toString();
-		incomingMessageMock.headers[EMAIL_API.headers.max] = ANSWER_TO_LIFE.toString();
+		const incomingMessageMock = new IncomingMessageMock(
+			StatusCode.INTERNAL_SERVER_ERROR,
+		);
+		const { count, max } = EMAIL_API.headers;
+		incomingMessageMock.headers[count] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[max] = ANSWER_TO_LIFE.toString();
 		incomingMessageMock.headers[Header.CONTENT_TYPE] = ContentType.PLAIN_UTF8;
 
 		const emailSendStub = sinon.stub(router['email'], 'send');
@@ -106,9 +106,12 @@ describe('router', () => {
 	});
 
 	it('#methodSendEmail should fail backend fails with wrong json', async () => {
-		const incomingMessageMock = new IncomingMessageMock(StatusCode.INTERNAL_SERVER_ERROR);
-		incomingMessageMock.headers[EMAIL_API.headers.count] = ANSWER_TO_LIFE.toString();
-		incomingMessageMock.headers[EMAIL_API.headers.max] = ANSWER_TO_LIFE.toString();
+		const incomingMessageMock = new IncomingMessageMock(
+			StatusCode.INTERNAL_SERVER_ERROR,
+		);
+		const { count, max } = EMAIL_API.headers;
+		incomingMessageMock.headers[count] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[max] = ANSWER_TO_LIFE.toString();
 		incomingMessageMock.headers[Header.CONTENT_TYPE] = ContentType.JSON;
 
 		const emailSendStub = sinon.stub(router['email'], 'send');
@@ -131,9 +134,12 @@ describe('router', () => {
 	});
 
 	it('#methodSendEmail should fail backend fails', async () => {
-		const incomingMessageMock = new IncomingMessageMock(StatusCode.INTERNAL_SERVER_ERROR);
-		incomingMessageMock.headers[EMAIL_API.headers.count] = ANSWER_TO_LIFE.toString();
-		incomingMessageMock.headers[EMAIL_API.headers.max] = ANSWER_TO_LIFE.toString();
+		const incomingMessageMock = new IncomingMessageMock(
+			StatusCode.INTERNAL_SERVER_ERROR,
+		);
+		const { count, max } = EMAIL_API.headers;
+		incomingMessageMock.headers[count] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[max] = ANSWER_TO_LIFE.toString();
 		incomingMessageMock.headers[Header.CONTENT_TYPE] = ContentType.JSON;
 
 		const emailSendStub = sinon.stub(router['email'], 'send');
@@ -159,8 +165,9 @@ describe('router', () => {
 
 	it(`#methodSendEmail should returns ${StatusCode.OK}`, async () => {
 		const incomingMessageMock = new IncomingMessageMock(StatusCode.OK);
-		incomingMessageMock.headers[EMAIL_API.headers.count] = ANSWER_TO_LIFE.toString();
-		incomingMessageMock.headers[EMAIL_API.headers.max] = ANSWER_TO_LIFE.toString();
+		const { count, max } = EMAIL_API.headers;
+		incomingMessageMock.headers[count] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[max] = ANSWER_TO_LIFE.toString();
 		incomingMessageMock.headers[Header.CONTENT_TYPE] = ContentType.JSON;
 
 		const emailSendStub = sinon.stub(router['email'], 'send');
@@ -176,8 +183,9 @@ describe('router', () => {
 
 	it(`#methodSendEmail should returns ${StatusCode.OK} even if fire and forget`, async () => {
 		const incomingMessageMock = new IncomingMessageMock(StatusCode.ACCEPTED);
-		incomingMessageMock.headers[EMAIL_API.headers.count] = ANSWER_TO_LIFE.toString();
-		incomingMessageMock.headers[EMAIL_API.headers.max] = ANSWER_TO_LIFE.toString();
+		const { count, max } = EMAIL_API.headers;
+		incomingMessageMock.headers[count] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[max] = ANSWER_TO_LIFE.toString();
 		incomingMessageMock.headers[Header.CONTENT_TYPE] = ContentType.JSON;
 
 		const emailSendStub = sinon.stub(router['email'], 'send');
@@ -227,8 +235,7 @@ describe('router', () => {
 		const res = await supertest(app)
 			.get('/draw')
 			.expect(StatusCode.OK)
-			.expect(Header.CONTENT_TYPE, ContentType.OCTET_STREAM)
-			.then();
+			.expect(Header.CONTENT_TYPE, ContentType.OCTET_STREAM);
 		const fbByteBuffer1 = new flatbuffers.flatbuffers.ByteBuffer(res.body);
 
 		const draws = Draws.getRoot(fbByteBuffer1);

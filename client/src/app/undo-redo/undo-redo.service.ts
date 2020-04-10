@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LocalStorageHandlerService } from 'src/app/auto-save/local-storage-handler.service';
-import { SVGStructure } from '../../svg/svg-structure';
+import { SVGStructure } from '../svg/svg-structure';
 
 export interface PreAction {
   enabled: boolean;

@@ -2,9 +2,10 @@ import { Renderer2 } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { SelectionLogicComponent } from './selection-logic.component';
+import { Rotation } from './rotation';
 
 // tslint:disable: no-magic-numbers no-string-literal no-any
-fdescribe('Deplacement', () => {
+describe('Rotation', () => {
   let component: SelectionLogicComponent;
   let fixture: ComponentFixture<SelectionLogicComponent>;
 
@@ -58,7 +59,7 @@ fdescribe('Deplacement', () => {
   });
 
   it('#should create', () => {
-    expect(component['deplacement']).toBeTruthy();
+    expect(new Rotation(component)).toBeTruthy();
   });
 
 });

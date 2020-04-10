@@ -1,5 +1,5 @@
 import { Renderer2 } from '@angular/core';
-import { Point } from '../../shape/common/point';
+import { Point } from '../../tool/shape/common/point';
 import { Offset } from '../offset';
 import { SingleSelection } from '../single-selection';
 import { CircleType } from './circle-type';

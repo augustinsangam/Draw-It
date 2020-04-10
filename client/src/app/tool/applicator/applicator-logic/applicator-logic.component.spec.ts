@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UndoRedoService } from '../../undo-redo/undo-redo.service';
+import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import { ApplicatorLogicComponent } from './applicator-logic.component';
 
 // tslint:disable: no-string-literal

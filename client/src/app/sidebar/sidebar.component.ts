@@ -15,7 +15,7 @@ import {
   ToolSelectorService
 } from '../tool/tool-selector/tool-selector.service';
 import { Tool } from '../tool/tool.enum';
-import { UndoRedoService } from '../tool/undo-redo/undo-redo.service';
+import { UndoRedoService } from '../undo-redo/undo-redo.service';
 
 @Component({
   selector: 'app-sidebar',

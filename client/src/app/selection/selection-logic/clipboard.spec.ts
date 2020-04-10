@@ -6,7 +6,7 @@ import { Clipboard } from './clipboard';
 import { SelectionLogicComponent } from './selection-logic.component';
 
 // tslint:disable: no-magic-numbers no-string-literal no-any
-fdescribe('Clipboard', () => {
+describe('Clipboard', () => {
   let component: SelectionLogicComponent;
   let fixture: ComponentFixture<SelectionLogicComponent>;
   let instance: Clipboard;
