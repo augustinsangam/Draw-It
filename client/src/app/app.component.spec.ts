@@ -118,10 +118,6 @@ describe('AppComponent', () => {
 
     (TestBed.get(UndoRedoService) as UndoRedoService).intialise(svgService.structure);
 
-    console.log(autoSave);
-
-    // spyOn(autoSave, 'verifyAvailability').and.callFake(() => false);
-
     fixture.detectChanges();
   });
 
@@ -150,27 +146,6 @@ describe('AppComponent', () => {
 
     expect(service['dialogRefs'].home.disableClose).toBe(true);
   });
-
-  // it('#ngAfterviewInit should call getDrawing when there is a draw saved', () => {
-  //   const spy = spyOn<any>(component['autoSave'], 'getDrawing');
-  //   const element = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  //   element.setAttribute('id', 'test');
-  //   autoSave.saveState(element);
-  //   const shape: SvgShape = { width: 500, height: 500, color: 'red'};
-  //   autoSave.saveShape(shape);
-  //   component.ngAfterViewInit();
-  //   expect(spy).toHaveBeenCalledTimes(1);
-  // });
-
-  // it('#ngAfterviewInit shouldnt call getDrawing when there isnt a draw saved', () => {
-  //   const spy = spyOn<any>(component['autoSave'], 'getDrawing').and.callThrough();
-  //   const element = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-  //   element.setAttribute('id', 'test');
-  //   localStorage.setItem('draw', 'exemple');
-  //   localStorage.clear();
-  //   component.ngAfterViewInit();
-  //   expect(spy).toHaveBeenCalledTimes(1);
-  // });
 
   it('#openSelectedDialog should call openNewDrawDialog', () => {
     const spy = spyOn<any>(service, 'openNewDrawDialog');
