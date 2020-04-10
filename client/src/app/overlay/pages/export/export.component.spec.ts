@@ -110,13 +110,12 @@ describe('ExportComponent', () => {
     expect(result[5]).toEqual(FilterChoice.Grey);
   }));
 
-  it('#parseToB64URI should return svg type', () => {
+  it('#parseToB64URI should return svg type', async () => {
     const spy = spyOn<any>(component, 'serializeSVG');
     spy.and.returnValue('foo');
 
-    const uri = component['parseToB64URI'](FormatChoice.Svg);
-    console.log(uri);
-    expect(true).toBeTruthy();
+    const uri = await component['parseToB64URI'](FormatChoice.Svg);
+    expect(uri).toEqual('data:image/svg+xml,foo');
   });
 
   it('#onConfirm should close the dialogRef', () => {
