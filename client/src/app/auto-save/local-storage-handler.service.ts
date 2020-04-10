@@ -1,7 +1,15 @@
 import { Injectable } from '@angular/core';
 import { SvgShape } from '../svg/svg-shape';
 
-export const AUTOS_SAVE_KEY_DRAW = 'draw';
+export enum AutoSaveKey {
+  DRAW = 'draw',
+  SHAPE = 'shape',
+}
+
+export interface LocalStorageReturn {
+  shape: SvgShape;
+  draw: SVGGElement;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -9,23 +17,36 @@ export const AUTOS_SAVE_KEY_DRAW = 'draw';
 export class LocalStorageHandlerService {
 
   saveShape(shape: SvgShape): void {
-    localStorage.setItem('shape', JSON.stringify(shape));
+    localStorage.setItem(AutoSaveKey.SHAPE, JSON.stringify(shape));
   }
 
   saveState(draw: SVGGElement): void {
     const svgDrawString = new XMLSerializer().serializeToString(draw);
-    localStorage.setItem(AUTOS_SAVE_KEY_DRAW, svgDrawString);
+    localStorage.setItem(AutoSaveKey.DRAW, svgDrawString);
   }
 
-  verifyAvailability(): boolean {
-    return localStorage.getItem(AUTOS_SAVE_KEY_DRAW) !== null ? true : false;
+  clearDrawings(): void {
+    localStorage.removeItem(AutoSaveKey.DRAW);
   }
 
-  getDrawing(): [SVGGElement, SvgShape] {
-    const savedElement = localStorage.getItem(AUTOS_SAVE_KEY_DRAW) as string;
-    const drawingDocument = new DOMParser().parseFromString(savedElement, 'image/svg+xml');
-    const drawingElement = drawingDocument.firstElementChild as SVGSVGElement;
-    const shape: SvgShape = JSON.parse(localStorage.getItem('shape') as string);
-    return [ drawingElement, shape];
+  getDrawing(): LocalStorageReturn | null {
+    const drawXML = localStorage.getItem(AutoSaveKey.DRAW);
+    const shapeJson = localStorage.getItem(AutoSaveKey.SHAPE);
+
+    if (drawXML === null || shapeJson === null) {
+      return null;
+    }
+
+    const drawingDocument = new DOMParser().parseFromString(drawXML, 'image/svg+xml');
+    const draw = drawingDocument.firstElementChild as SVGGElement;
+    if (drawingDocument === null || draw.childElementCount === 0) {
+      return null;
+    }
+
+    return {
+      shape: JSON.parse(shapeJson),
+      draw
+    };
   }
+
 }

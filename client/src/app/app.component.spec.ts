@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 
 import { Overlay } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,11 +10,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { LocalStorageHandlerService } from './auto-save/local-storage-handler.service';
 import { MaterialModule } from './material.module';
-import { OverlayService } from './overlay/overlay.service';
 import { DocumentationComponent } from './overlay/pages/documentation/documentation.component';
 import { ExportComponent } from './overlay/pages/export/export.component';
 import { GalleryCardComponent } from './overlay/pages/gallery/gallery-card/gallery-card.component';
-import { GalleryComponent, GalleryDraw } from './overlay/pages/gallery/gallery.component';
+import { GalleryComponent } from './overlay/pages/gallery/gallery.component';
 import { TagsFilterComponent } from './overlay/pages/gallery/tags-filter/tags-filter.component';
 import { HomeComponent } from './overlay/pages/home/home.component';
 import { NewDrawComponent } from './overlay/pages/new-draw/new-draw.component';
@@ -34,11 +33,12 @@ import { UndoRedoService } from './undo-redo/undo-redo.service';
 
 // tslint:disable: no-string-literal no-any no-magic-numbers
 describe('AppComponent', () => {
+
   let component: AppComponent;
-  let service: OverlayService;
   let svgService: SvgService;
-  let fixture: ComponentFixture<AppComponent>;
   let autoSave: LocalStorageHandlerService;
+  let fixture: ComponentFixture<AppComponent>;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -98,8 +98,6 @@ describe('AppComponent', () => {
 
     component = fixture.componentInstance;
 
-    service = component['overlayService'];
-
     svgService = TestBed.get(SvgService);
 
     autoSave = TestBed.get(LocalStorageHandlerService);
@@ -125,236 +123,23 @@ describe('AppComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('#keyEvent should call this.shortcutHanler.execute()', () => {
-    const event = new KeyboardEvent('window:keydown', {
-      code: 'KeyC'
-    });
-
-    const spy = spyOn(component['shortcutHanler'], 'execute');
-
-    component.keyEvent(event);
-
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('#openHomeDialog should call openSelectedDialog()', () => {
-    service['dialogRefs'].home.disableClose = false;
-
-    service['openHomeDialog']();
-
-    service['dialogRefs'].home.close();
-
-    expect(service['dialogRefs'].home.disableClose).toBe(true);
-  });
-
-  it('#openSelectedDialog should call openNewDrawDialog', () => {
-    const spy = spyOn<any>(service, 'openNewDrawDialog');
-
-    service['openSelectedDialog']('new');
-
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('#openSelectedDialog should call openDocumentationDialog', () => {
-    const spy = spyOn<any>(service, 'openDocumentationDialog');
-
-    service['openSelectedDialog']('documentation');
-
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('#openSelectedDialog should not call openNewDrawDialog '
-    + 'and openDocumentationDialog', () => {
-      const spy1 = spyOn<any>(service, 'openNewDrawDialog');
-      const spy2 = spyOn<any>(service, 'openDocumentationDialog');
-
-      service['openSelectedDialog']('library');
-
-      expect(spy1).toHaveBeenCalledTimes(0);
-      expect(spy2).toHaveBeenCalledTimes(0);
-    });
-
-  it('#openSelectedDialog should not call openNewDrawDialog'
-    + 'and openDocumentationDialog', () => {
-      const spy1 = spyOn<any>(service, 'openNewDrawDialog');
-      const spy2 = spyOn<any>(service, 'openDocumentationDialog');
-
-      service['openSelectedDialog']('home');
-
-      expect(spy1).toHaveBeenCalledTimes(0);
-      expect(spy2).toHaveBeenCalledTimes(0);
-    });
-
-  it('#openNewDrawDialog should call getCommonDialogOptions.', () => {
-    const spy = spyOn<any>(service, 'getCommonDialogOptions').and.callThrough();
-
-    service['openNewDrawDialog']();
-
-    service['dialogRefs'].newDraw.close();
-
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('#closeNewDrawDialog should call openHomeDialog if option '
-    + 'is "home".', () => {
-      const spy = spyOn<any>(service, 'openHomeDialog');
-
-      service['closeNewDrawDialog']('home');
-
-      expect(spy).toHaveBeenCalled();
-    });
-
-  it('#closeNewDrawDialog should call createNewDraw if option is a'
-    + ' NewDrawOtion type.', () => {
-      const spy = spyOn<any>(service, 'createNewDraw');
-
-      const option: SvgShape = {
-        width: 2,
-        height: 2,
-        color: '#FFFFFF'
-      };
-
-      service['closeNewDrawDialog'](option);
-
-      expect(spy).toHaveBeenCalled();
-    });
-
-  it('#closeNewDrawDialog should not call openHomeDialog and'
-    + 'createNewDraw if option null.', () => {
-      const spy1 = spyOn<any>(service, 'openHomeDialog');
-      const spy2 = spyOn<any>(service, 'createNewDraw');
-
-      const option = (null as unknown) as SvgShape;
-
-      service['closeNewDrawDialog'](option);
-
-      expect(spy1).toHaveBeenCalledTimes(0);
-      expect(spy2).toHaveBeenCalledTimes(0);
-    });
-
-  it('#closeDocumentationDialog should call openHomeDialog if fromHome'
-    + '(arg) is true', () => {
-      const spy = spyOn<any>(service, 'openHomeDialog');
-
-      service['closeDocumentationDialog'](true);
-
-      expect(spy).toHaveBeenCalled();
-    });
-
-  it('#closeDocumentationDialog should not call openHomeDialog'
-    + 'if fromHome (arg) is false', () => {
-      const spy = spyOn<any>(service, 'openHomeDialog');
-
-      service['closeDocumentationDialog'](false);
-
-      expect(spy).not.toHaveBeenCalled();
-    });
-
-  it('#openDocumentationDialog should set '
-    + 'dialogRefs.documentation.disableClose to false', () => {
-
-      service['openDocumentationDialog'](true);
-
-      service['dialogRefs'].documentation.close();
-
-      expect(service['dialogRefs'].documentation.disableClose).toBeFalsy();
-    });
-
-  it('#createNewDraw should clear the DOM', () => {
-    const option: SvgShape = {
-      width: 2,
-      height: 2,
-      color: '#FFFFFF'
-    };
-    const spy = spyOn(service['svgService'], 'clearDom');
-    service['createNewDraw'](option);
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('#openSaveDialog and #openExportDialog should not call getCommonDialogOptions.', () => {
-    const spy = spyOn<any>(service, 'getCommonDialogOptions');
-    service['openSaveDialog']();
-    service['dialogRefs'].save.close();
-    expect(spy).not.toHaveBeenCalled();
-  });
-
-  it('#openExportDialog should not call getCommonDialogOptions.', () => {
-    const spy = spyOn<any>(service, 'getCommonDialogOptions');
-    service['openExportDialog']();
-    service['dialogRefs'].export.close();
-    expect(spy).not.toHaveBeenCalled();
-  });
-
-  it('#openGalleryDialog should not call getCommonDialogOptions.', () => {
-    const spy = spyOn<any>(service, 'getCommonDialogOptions');
-    service['openGalleryDialog'](true);
-    service['dialogRefs'].gallery.close();
-    expect(spy).not.toHaveBeenCalled();
-  });
-
-  it('#closeGalleryDialog should load the draw if option is not undefined', () => {
-    const spy = spyOn<any>(service, 'loadDraw');
-    service['closeGalleryDialog'](false, ' ' as unknown as GalleryDraw);
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('#closeGalleryDialog should not load the draw if option is undefined', () => {
-    const spy = spyOn<any>(service, 'loadDraw');
-    service['closeGalleryDialog'](false, undefined);
-    expect(spy).not.toHaveBeenCalled();
-  });
-
-  it('#closeGalleryDialog should open home dialog when option is undefined'
-    + ' and from home is set', () => {
-    const spy = spyOn<any>(service, 'openHomeDialog');
-    service['closeGalleryDialog'](true, undefined);
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('#loadDraw append SVGElement in the DOM', (done: DoneFn) => {
-    const drawElements = document.createElementNS('http://www.w3.org/2000/svg',
-                                            'svg:g') as SVGGElement;
-    const rec1 = document.createElementNS('http://www.w3.org/2000/svg',
-                                            'svg:rect') as SVGElement;
-    const rec2 = document.createElementNS('http://www.w3.org/2000/svg',
-                                            'svg:rect') as SVGElement;
-    drawElements.appendChild(rec1);
-    drawElements.appendChild(rec2);
-
-    const draw: GalleryDraw = {
-      header : {
-        name: 'Zeus',
-        id: 3,
-        tags: [],
-      },
-      shape: {
-        height: 400,
-        width: 400,
-        color: '#FFFFFF'
-      },
-      svg: drawElements,
-      colors: ['rgba(0, 0, 0, 1)'],
-    };
-
-    service['loadDraw'](draw);
+  it('#ngAfterviewInit should call getDrawing '
+      + 'when there is a draw saved', fakeAsync(() => {
+    const spy = spyOn<any>(component['autoSave'], 'getDrawing').and.callThrough();
+    const element: SVGGElement = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    const apath: SVGPathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    apath.setAttribute('id', 'thepath11');
+    element.setAttribute('id', 'test11');
+    element.appendChild(apath);
+    autoSave.saveState(element);
+    const shape: SvgShape = { width: 500, height: 500, color: 'red'};
+    autoSave.saveShape(shape);
+    component.ngAfterViewInit();
     setTimeout(() => {
-      expect(svgService.structure.drawZone.contains(rec1)).toBeTruthy();
-      expect(svgService.structure.drawZone.contains(rec2)).toBeTruthy();
-      done();
+      expect(spy).toHaveBeenCalledTimes(1);
     }, 500);
-  });
-
-  it('#closeSaveDialog works well when error undefined', () => {
-    const spy = spyOn<any>(service['snackBar'], 'open').and.callThrough();
-    service['closeSaveDialog'](undefined as unknown as string);
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('#closeSaveDialog works well when error undefined', () => {
-    const spy = spyOn<any>(service['snackBar'], 'open').and.callThrough();
-    service['closeSaveDialog']('Success');
-    expect(spy).toHaveBeenCalled();
-  });
+    tick(500);
+    localStorage.clear();
+  }));
 
 });
-// tslint:disable-next-line: max-file-line-count
