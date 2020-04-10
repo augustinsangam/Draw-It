@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { SvgShape } from '../svg/svg-shape';
 import { LocalStorageHandlerService, LocalStorageReturn } from './local-storage-handler.service';
 
-fdescribe('LocalStorageHandlerService', () => {
+describe('LocalStorageHandlerService', () => {
 
   let service: LocalStorageHandlerService;
 

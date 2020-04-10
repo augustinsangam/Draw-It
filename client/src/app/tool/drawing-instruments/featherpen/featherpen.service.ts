@@ -81,26 +81,36 @@ export class FeatherpenService extends ToolService {
     return points;
   }
 
+  private interpolateUp(low: number, high: number, angles: number[]): number[] {
+    if (low < high) {
+      angles = this.angles.slice(low, high);
+    } else {
+      const after = this.angles.slice(low);
+      angles = this.angles.slice(1, high);
+      after.forEach((angle) => angles.push(angle));
+    }
+    return angles;
+  }
+
+  private interpolateDown(low: number, high: number, angles: number[]): number[] {
+    if (low < high) {
+      const before = this.angles.slice(1, low);
+      angles = this.angles.slice(high, this.angles.length);
+      before.forEach((angle) => angles.push(angle));
+    } else {
+      angles = this.angles.slice(high, low);
+    }
+    return angles;
+  }
+
   interpolate(oldAngle: number, newAngle: number, point: Point, up: boolean): string {
     let path = '';
     let angles: number[] = [];
 
     if (up) {
-      if (oldAngle < newAngle) {
-        angles = this.angles.slice(oldAngle, newAngle);
-      } else {
-        const after = this.angles.slice(oldAngle);
-        angles = this.angles.slice(1, newAngle);
-        after.forEach((angle) => angles.push(angle));
-      }
+      angles = this.interpolateUp(oldAngle, newAngle, angles);
     } else {
-      if (oldAngle < newAngle) {
-        const before = this.angles.slice(1, oldAngle);
-        angles = this.angles.slice(newAngle, this.angles.length);
-        before.forEach((angle) => angles.push(angle));
-      } else {
-        angles = this.angles.slice(newAngle, oldAngle);
-      }
+      angles = this.interpolateDown(oldAngle, newAngle, angles);
     }
 
     for (const angle of angles) {
