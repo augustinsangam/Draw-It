@@ -40,8 +40,12 @@ export class SelectionService {
     this.duplicate = new Subject();
     this.delete = new Subject();
 
-    this.magnetActive = true;
-    this.magnetPoint = MagnetPoint.NorthWest;
+    this.magnetActive = false;
+    this.magnetPoint = MagnetPoint.Center;
+  }
+  reset(): void {
+    this.clipboard = [];
+    this.selectedElements.clear();
   }
 
 }

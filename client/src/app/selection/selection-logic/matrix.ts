@@ -8,7 +8,7 @@ export class Matrix {
   }
 
   private identity(rows: number, columns: number): number[][] {
-    const data: number[][] = new Array<number[]>(rows);
+    const data = new Array<number[]>(rows);
     for (let row = 0; row < rows; row++) {
       data[row] = new Array(columns);
     }

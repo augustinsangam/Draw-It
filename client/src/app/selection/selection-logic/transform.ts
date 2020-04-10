@@ -53,7 +53,7 @@ export class Transform {
   }
 
   clone(): Transform {
-    const result: Transform = new Transform(this.element, this.renderer);
+    const result = new Transform(this.element, this.renderer);
     result.matrix = new Matrix(MATRIX_SIZE, MATRIX_SIZE, this.matrix.data);
     return result;
   }
@@ -70,8 +70,7 @@ export class Transform {
     this.setAttributes();
   }
 
-  rotate(point: Point, angle: number): void {
-    const [x, y] = [point.x, point.y];
+  rotate({x, y}: Point, angle: number): void {
     const PI_IN_DEGRES = 180;
     const radians = angle * Math.PI / PI_IN_DEGRES;
     const translateMatrix = new Matrix(
@@ -82,11 +81,13 @@ export class Transform {
        [0, 0, 1]]
     );
 
-    const rotateMatrix            = new Matrix(
+    const sin = Math.sin(radians);
+    const cos = Math.cos(radians);
+    const rotateMatrix = new Matrix(
       MATRIX_SIZE,
       MATRIX_SIZE,
-      [[Math.cos(radians), -Math.sin(radians), 0],
-       [Math.sin(radians),  Math.cos(radians), 0],
+      [[cos, -sin, 0],
+       [sin,  cos, 0],
        [0, 0, 1]]
     );
 
@@ -104,9 +105,7 @@ export class Transform {
     this.setAttributes();
   }
 
-  scale(point: Point, sx: number, sy: number): void {
-    const [x, y] = [point.x, point.y];
-
+  scale({x, y}: Point, sx: number, sy: number): void {
     const translateMatrix = new Matrix(
       MATRIX_SIZE,
       MATRIX_SIZE,

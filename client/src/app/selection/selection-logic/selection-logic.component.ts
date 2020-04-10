@@ -68,33 +68,34 @@ export class SelectionLogicComponent
         }],
         ['mousemove', ($event: MouseEvent) => {
           $event.preventDefault();
-          if (this.mouse.left.mouseIsDown) {
-            const previousCurrentPoint = new Point(this.mouse.left.currentPoint.x, this.mouse.left.currentPoint.y);
-            this.mouse.left.currentPoint = new Point($event.offsetX,
-              $event.offsetY);
+          if (!this.mouse.left.mouseIsDown) {
+            return;
+          }
+          const previousCurrentPoint = new Point(this.mouse.left.currentPoint.x, this.mouse.left.currentPoint.y);
+          this.mouse.left.currentPoint = new Point($event.offsetX,
+            $event.offsetY);
 
-            if (this.mouse.left.onDrag && !this.mouse.left.onResize) {
+          if (this.mouse.left.onDrag && !this.mouse.left.onResize) {
 
-              const offsetX = $event.offsetX - previousCurrentPoint.x;
-              const offsetY = $event.offsetY - previousCurrentPoint.y;
-              if (this.service.magnetActive) {
-                this.deplacement.onCursorMove();
-              } else {
-                this.translateAll(offsetX, offsetY);
-              }
-
-            } else if (this.mouse.left.onResize) {
-
-              this.scaleUtil.onMouseMove(previousCurrentPoint);
-
+            const offsetX = $event.offsetX - previousCurrentPoint.x;
+            const offsetY = $event.offsetY - previousCurrentPoint.y;
+            if (this.service.magnetActive) {
+              this.deplacement.onCursorMove();
             } else {
-              this.drawSelection(this.mouse.left.startPoint,
-                this.mouse.left.currentPoint);
-              const [startPoint, currentPoint] = Util.SelectionLogicUtil.orderPoint(
-                this.mouse.left.startPoint, this.mouse.left.currentPoint
-              );
-              this.applyMultipleSelection(startPoint, currentPoint);
+              this.translateAll(offsetX, offsetY);
             }
+
+          } else if (this.mouse.left.onResize) {
+
+            this.scaleUtil.onMouseMove(previousCurrentPoint);
+
+          } else {
+            this.drawSelection(this.mouse.left.startPoint,
+              this.mouse.left.currentPoint);
+            const [startPoint, currentPoint] = Util.SelectionLogicUtil.orderPoint(
+              this.mouse.left.startPoint, this.mouse.left.currentPoint
+            );
+            this.applyMultipleSelection(startPoint, currentPoint);
           }
         }],
         ['mouseup', ($event: MouseEvent) => {
@@ -114,14 +115,15 @@ export class SelectionLogicComponent
           if ($event.button !== 0) {
             return;
           }
-          if (this.mouse.left.startPoint.equals(this.mouse.left.endPoint)) {
-            const target = Util.SelectionLogicUtil.getRealTarget($event);
-            const elementType = this.elementSelectedType(target as SVGElement);
-            if (elementType === BasicSelectionType.DRAW_ELEMENT) {
-              this.applySingleSelection(target as SVGElement);
-            } else if (elementType === BasicSelectionType.NOTHING) {
-              this.deleteVisualisation();
-            }
+          if (!this.mouse.left.startPoint.equals(this.mouse.left.endPoint)) {
+            return;
+          }
+          const target = Util.SelectionLogicUtil.getRealTarget($event);
+          const elementType = this.elementSelectedType(target as SVGElement);
+          if (elementType === BasicSelectionType.DRAW_ELEMENT) {
+            this.applySingleSelection(target as SVGElement);
+          } else if (elementType === BasicSelectionType.NOTHING) {
+            this.deleteVisualisation();
           }
         }]
       ])],

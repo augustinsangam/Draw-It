@@ -10,6 +10,9 @@ import {
   LocalStorageHandlerService
 } from '../auto-save/local-storage-handler.service';
 import {
+  SelectionService
+} from '../selection/selection.service';
+import {
   SvgShape
 } from '../svg/svg-shape';
 import {
@@ -90,7 +93,8 @@ export class OverlayService {
               private readonly snackBar: MatSnackBar,
               private undoRedo: UndoRedoService,
               private gridService: GridService,
-              private autoSave: LocalStorageHandlerService
+              private autoSave: LocalStorageHandlerService,
+              private selectionService: SelectionService
   ) {
   }
 
@@ -254,6 +258,7 @@ export class OverlayService {
     this.svgService.clearDom();
     this.gridService.handleGrid();
     this.toolSelectorService.set(Tool.Pencil);
+    this.selectionService.reset();
     this.undoRedo.setStartingCommand();
     // Deuxième fois juste pour fermer le panneau latéral
     this.toolSelectorService.set(Tool.Pencil);
