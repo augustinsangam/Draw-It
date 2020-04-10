@@ -68,7 +68,7 @@ describe('TextLogicComponent', () => {
   });
 
   it('#onMouseUp should call onMouseUp if the click was in the textZone', () => {
-    component['indicators'].onType = false;
+    component['service'].indicators.onType = false;
     const spy = spyOn<any>(component, 'onMouseUp');
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mouseup'));
     expect(spy).toHaveBeenCalled();
@@ -80,84 +80,84 @@ describe('TextLogicComponent', () => {
     const textZoneRect = component['renderer'].createElement('rect', component.svgNS);
     const rect = new Rectangle(component['renderer'], textZoneRect, component['mathService']);
     rect.dragRectangle(new Point(0, 0), new Point(5, 5));
-    component['indicators'].onType = true;
+    component['service'].indicators.onType = true;
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mouseup'));
     expect(called).toBeTruthy();
-    component['indicators'].onType = false;
+    component['service'].indicators.onType = false;
   });
 
   it('#on a mousedown the listener should initialize the rectangle if not already onType', () => {
     const spy = spyOn<any>(component, 'initRectVisu');
-    component['indicators'].onType = false;
+    component['service'].indicators.onType = false;
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mousedown'));
     expect(spy).toHaveBeenCalled();
   });
 
   it('#mousedown should do nothing if its not the left button', () => {
     const spy = spyOn<any>(component, 'initRectVisu');
-    component['indicators'].onType = false;
+    component['service'].indicators.onType = false;
     component.svgStructure.root.dispatchEvent(new MouseEvent('mousedown', {button: 1}));
     expect(spy).not.toHaveBeenCalled();
   });
 
   it('#mouseup should do nothing if its not the left button', () => {
     const spy = spyOn<any>(component, 'onMouseUp');
-    component['indicators'].onType = false;
+    component['service'].indicators.onType = false;
     component.svgStructure.root.dispatchEvent(new MouseEvent('mouseup', {button: 1}));
     expect(spy).not.toHaveBeenCalled();
   });
 
   it('#on a mousedown the listener should initialize the rectangle if not already onType', () => {
     const spy = spyOn<any>(component, 'initRectVisu');
-    component['indicators'].onType = true;
-    component['indicators'].onDrag = false;
+    component['service'].indicators.onType = true;
+    component['service'].indicators.onDrag = false;
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mousedown'));
     expect(spy).not.toHaveBeenCalled();
-    expect(component['indicators'].onDrag).toBeFalsy();
-    component['indicators'].onType = false;
+    expect(component['service'].indicators.onDrag).toBeFalsy();
+    component['service'].indicators.onType = false;
   });
 
   it('#mouseLeave should remove the textZoneRectangle if not onType and onDrag', () => {
-    component['indicators'] = {onType: false, onDrag: true};
+    component['service'].indicators = {onType: false, onDrag: true};
     const spy = spyOn(component['service'].textZoneRectangle.element, 'remove');
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mouseleave'));
     expect(spy).toHaveBeenCalled();
-    expect(component['indicators'].onDrag).toBeFalsy();
+    expect(component['service'].indicators.onDrag).toBeFalsy();
   });
 
   it('#mouseLeave should not remove the textZoneRectangle if onType or not onDrag', () => {
-    component['indicators'] = {onType: true, onDrag: false};
+    component['service'].indicators = {onType: true, onDrag: false};
     const spy = spyOn(component['service'].textZoneRectangle.element, 'remove');
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mouseleave'));
     expect(spy).not.toHaveBeenCalled();
-    expect(component['indicators'].onDrag).toBeFalsy();
-    component['indicators'].onType = false;
+    expect(component['service'].indicators.onDrag).toBeFalsy();
+    component['service'].indicators.onType = false;
   });
 
   it('#a mousemove event should call dragRectangle when we are onDrag', () => {
-    component['indicators'].onDrag = true;
+    component['service'].indicators.onDrag = true;
     const spy = spyOn(component['service'].textZoneRectangle, 'dragRectangle');
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mousemove'));
     expect(spy).toHaveBeenCalled();
   });
 
   it('#a mousemove event should not call dragRectangle when we are not onDrag', () => {
-    component['indicators'].onDrag = false;
+    component['service'].indicators.onDrag = false;
     const spy = spyOn(component['service'].textZoneRectangle, 'dragRectangle');
     component.svgStructure.root.dispatchEvent(createClickMouseEvent('mousemove'));
     expect(spy).not.toHaveBeenCalled();
   });
 
   it('#a KeyDown should call the onKeyDown method when onType', () => {
-    component['indicators'].onType = true;
+    component['service'].indicators.onType = true;
     const spy = spyOn<any>(component, 'onKeyDown');
     document.dispatchEvent(new KeyboardEvent('keydown'));
     expect(spy).toHaveBeenCalled();
-    component['indicators'].onType = false;
+    component['service'].indicators.onType = false;
   });
 
   it('#a KeyDown should not call the onKeyDown method when not onType', () => {
-    component['indicators'].onType = false;
+    component['service'].indicators.onType = false;
     const spy = spyOn<any>(component, 'onKeyDown');
     document.dispatchEvent(new KeyboardEvent('keydown'));
     expect(spy).not.toHaveBeenCalled();
@@ -165,11 +165,11 @@ describe('TextLogicComponent', () => {
 
   it('#ngOnDestroy should call stopTyping if onType to handle the tool switch', () => {
     let called = false;
-    component['indicators'].onType = true;
+    component['service'].indicators.onType = true;
     spyOn<any>(component,  'stopTyping').and.callFake(() => called = true);
     component.ngOnDestroy();
     expect(called).toBeTruthy();
-    component['indicators'].onType = false;
+    component['service'].indicators.onType = false;
   });
 
   it('#onKeyDown should call the associated methods for each key pressed', () => {
@@ -205,28 +205,28 @@ describe('TextLogicComponent', () => {
 
     component['onKeyDown'](new KeyboardEvent('keydown', {key: 'Shift'}));
     expect(spyOnLettersAdded).toHaveBeenCalledTimes(2);
-    component['indicators'].onType = false;
+    component['service'].indicators.onType = false;
   });
 
   it('#onMouseUp should get the rectangle up left corner, and not startTyping if already onType', () => {
     spyOn(component['mathService'], 'getRectangleSize');
     const spyOnRect = spyOn(component['mathService'], 'getRectangleUpLeftCorner');
     const spyOnStart = spyOn<any>(component, 'startTyping');
-    component['indicators'].onType = true;
+    component['service'].indicators.onType = true;
     component['onMouseUp'](createClickMouseEvent('mouseup'));
     expect(spyOnRect).toHaveBeenCalled();
     expect(spyOnStart).not.toHaveBeenCalled();
-    component['indicators'].onType = false;
+    component['service'].indicators.onType = false;
   });
 
   it('#onMouseUp should get the rectangle up left corner, and not startTyping if already onType', () => {
     spyOn(component['mathService'], 'getRectangleSize');
     spyOn(component['mathService'], 'getRectangleUpLeftCorner');
     const spyOnStart = spyOn<any>(component, 'startTyping');
-    component['indicators'].onType = false;
+    component['service'].indicators.onType = false;
     component['onMouseUp'](createClickMouseEvent('mouseup'));
     expect(spyOnStart).toHaveBeenCalled();
-    component['indicators'].onType = false;
+    component['service'].indicators.onType = false;
   });
 
   it('#initRectVisu shoud set the style of the rectangle', () => {
@@ -264,7 +264,7 @@ describe('TextLogicComponent', () => {
     spyOn<any>(component, 'initSVGText');
     component['startTyping']();
     expect(spy).toHaveBeenCalled();
-    component['indicators'].onType = false;
+    component['service'].indicators.onType = false;
   });
 
   it('#cancelTyping should empty the lines attribute and set onDrag to false', () => {
@@ -275,9 +275,9 @@ describe('TextLogicComponent', () => {
     component['addLine']();
     const spy = spyOn(component['lines'][0].tspan, 'remove');
     spyOn<any>(component, 'stopTyping');
-    component['indicators'].onDrag = true;
+    component['service'].indicators.onDrag = true;
     component['cancelTyping']();
-    expect(component['indicators'].onDrag).toBeFalsy();
+    expect(component['service'].indicators.onDrag).toBeFalsy();
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
@@ -326,7 +326,7 @@ describe('TextLogicComponent', () => {
     component['addLine']();
     expect(splitWasCalled).toBeTruthy();
     expect(moveWasCalled).toBeTruthy();
-    component['indicators'].onType = false;
+    component['service'].indicators.onType = false;
   });
 
   it('#addLetterAtCursor increment currentLine CursorIndex', () => {

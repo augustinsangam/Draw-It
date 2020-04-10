@@ -3,12 +3,19 @@ import {Dimension} from '../shape/common/dimension';
 import {Rectangle} from '../shape/common/rectangle';
 import {ToolService} from '../tool.service';
 import {TextAlignement} from './text-classes/text-alignement';
+import {StateIndicators} from './text-classes/text-indicators';
 import {TextLine} from './text-classes/text-line';
 import {TextMutators} from './text-classes/text-mutators';
 
 interface Font {
   value: string;
   viewValue: string;
+}
+
+enum SvgAlignement {
+  left = 'start',
+  center = 'middle',
+  right = 'end'
 }
 
 @Injectable({
@@ -22,6 +29,7 @@ export class TextService extends ToolService {
   currentFont: string;
   textMutators: TextMutators;
   textAlignement: TextAlignement;
+  indicators: StateIndicators;
   fontSize: number;
   fontsList: Font[];
   currentZoneDims: Dimension;
@@ -53,10 +61,13 @@ export class TextService extends ToolService {
   }
 
   getTextAnchor(): string {
-    // TODO : Enums + 3 ifm
-    return this.textAlignement === TextAlignement.left
-      ? 'start'
-      : (this.textAlignement === TextAlignement.center ? 'middle' : 'end');
+    if (this.textAlignement === TextAlignement.left) {
+      return SvgAlignement.left;
+    }
+
+    return this.textAlignement === TextAlignement.center
+      ? SvgAlignement.center
+      : SvgAlignement.right;
   }
 
   getFullTextWidth(currentLine: TextLine): number {

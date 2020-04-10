@@ -36,6 +36,7 @@ export class TextPanelComponent extends ToolPanelDirective {
       alignementForm: [this.service.textAlignement, []],
     });
     this.previewDims = {width: 320, height: 200};
+    this.service.indicators = { onDrag: false, onType: false };
   }
 
   protected onMutatorChange(event: MatButtonToggleChange): void {

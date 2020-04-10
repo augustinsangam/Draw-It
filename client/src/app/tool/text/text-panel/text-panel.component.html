@@ -29,23 +29,26 @@
 </svg>
 <hr>
 <form [formGroup]="textForm">
-  <mat-button-toggle-group multiple>
+  <mat-button-toggle-group multiple class="mutators">
     <mat-button-toggle
       value="bold"
       title="Gras"
-      (change)="onMutatorChange($event)">
+      (change)="onMutatorChange($event)"
+      disabled="{{service.indicators.onType}}">
       <mat-icon>format_bold</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       value="italic"
       title="Italique"
-      (change)="onMutatorChange($event)">
+      (change)="onMutatorChange($event)"
+      disabled="{{service.indicators.onType}}">
       <mat-icon>format_italic</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       value="underline"
       title="Souligné"
-      (change)="onMutatorChange($event)">
+      (change)="onMutatorChange($event)"
+      disabled="{{service.indicators.onType}}">
       <mat-icon>format_underlined</mat-icon>
     </mat-button-toggle>
   </mat-button-toggle-group>
@@ -53,19 +56,22 @@
     <mat-button-toggle
       value="left"
       title="Aligné à gauche"
-      (change)="onAlignChange($event)">
+      (change)="onAlignChange($event)"
+      disabled="{{service.indicators.onType}}">
       <mat-icon>format_align_left</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       value="center"
       title="Centré"
-      (change)="onAlignChange($event)">
+      (change)="onAlignChange($event)"
+      disabled="{{service.indicators.onType}}">
       <mat-icon>format_align_center</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       value="right"
       title="Aligné à droite"
-      (change)="onAlignChange($event)">
+      (change)="onAlignChange($event)"
+      disabled="{{service.indicators.onType}}">
       <mat-icon>format_align_right</mat-icon>
     </mat-button-toggle>
   </mat-button-toggle-group>

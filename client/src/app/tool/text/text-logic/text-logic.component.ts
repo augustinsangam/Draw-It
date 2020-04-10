@@ -1,4 +1,4 @@
-import { Component, OnDestroy, Renderer2 } from '@angular/core';
+import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { ShortcutHandlerService } from '../../../shortcut-handler/shortcut-handler.service';
 import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import { ColorService } from '../../color/color.service';
@@ -11,7 +11,7 @@ import { Cursor } from '../text-classes/cursor';
 import { LetterDeleterHandler } from '../text-classes/letter-deleter-handler';
 import { TextAlignement } from '../text-classes/text-alignement';
 import { TextHandlers } from '../text-classes/text-handlers';
-import { StateIndicators } from '../text-classes/text-indicators';
+import {TextKeycodes} from '../text-classes/text-keycodes';
 import { TextLine } from '../text-classes/text-line';
 import { TextNavHandler } from '../text-classes/text-nav-handler';
 import { TextService } from '../text.service';
@@ -22,13 +22,12 @@ import { TextService } from '../text.service';
 })
 
 export class TextLogicComponent extends ToolLogicDirective
-  implements OnDestroy {
+  implements OnDestroy, OnInit {
 
   readonly TEXT_OFFSET: number = 10;
 
   private listeners: (() => void)[];
   private cursor: Cursor;
-  private indicators: StateIndicators;
   private lines: TextLine[];
   private currentLine: TextLine;
   private textElement: SVGTSpanElement;
@@ -45,7 +44,7 @@ export class TextLogicComponent extends ToolLogicDirective
   ) {
     super();
     this.listeners = [];
-    this.indicators = { onDrag: false, onType: false };
+    this.service.indicators = { onDrag: false, onType: false };
     this.lines = [];
     this.undoRedoService.resetActions();
   }
@@ -60,8 +59,8 @@ export class TextLogicComponent extends ToolLogicDirective
         }
         mouseEv.cancelBubble = true;
         mouseEv.preventDefault();
-        if (!this.indicators.onType) {
-          this.indicators.onDrag = true;
+        if (!this.service.indicators.onType) {
+          this.service.indicators.onDrag = true;
           this.initRectVisu(mouseEv);
         }
       }
@@ -77,7 +76,7 @@ export class TextLogicComponent extends ToolLogicDirective
         const point = this.svgStructure.root.createSVGPoint();
         point.x = mouseEv.offsetX;
         point.y = mouseEv.offsetY;
-        if (!(this.service.textZoneRectangle.element as SVGGeometryElement).isPointInFill(point) && this.indicators.onType) {
+        if (!(this.service.textZoneRectangle.element as SVGGeometryElement).isPointInFill(point) && this.service.indicators.onType) {
           this.stopTyping(false);
         } else {
           this.onMouseUp(mouseEv);
@@ -89,9 +88,9 @@ export class TextLogicComponent extends ToolLogicDirective
       this.svgStructure.root,
       'mouseleave',
       () => {
-        if (!this.indicators.onType && this.indicators.onDrag) {
+        if (!this.service.indicators.onType && this.service.indicators.onDrag) {
           this.service.textZoneRectangle.element.remove();
-          this.indicators.onDrag = false;
+          this.service.indicators.onDrag = false;
         }
       }
     );
@@ -100,7 +99,7 @@ export class TextLogicComponent extends ToolLogicDirective
       this.svgStructure.root,
       'mousemove',
       (mouseEv: MouseEvent) => {
-        if (this.indicators.onDrag) {
+        if (this.service.indicators.onDrag) {
           this.service.textZoneRectangle.dragRectangle(this.initialPoint, new Point(mouseEv.offsetX, mouseEv.offsetY));
         }
       }
@@ -110,7 +109,7 @@ export class TextLogicComponent extends ToolLogicDirective
       'document',
       'keydown',
       (keyEv: KeyboardEvent) => {
-        if (this.indicators.onType) {
+        if (this.service.indicators.onType) {
           this.onKeyDown(keyEv);
         }
       }
@@ -127,63 +126,62 @@ export class TextLogicComponent extends ToolLogicDirective
   }
 
   ngOnDestroy(): void {
-    if (this.indicators.onType) {
+    if (this.service.indicators.onType) {
       this.stopTyping(false);
     }
     this.listeners.forEach((listener) => listener());
   }
 
   private onKeyDown(keyEv: KeyboardEvent): void {
-    // TODO: Replace string by string enum
     switch (keyEv.key) {
 
-      case 'Escape':
+      case TextKeycodes.escape:
         this.cancelTyping();
         break;
 
-      case 'Enter':
+      case TextKeycodes.enter:
         this.addLine();
         break;
 
-      case 'Home':
+      case TextKeycodes.home:
         keyEv.preventDefault();
         this.handlers.textNav.keyHome(this.currentLine);
         break;
 
-      case 'End':
+      case TextKeycodes.end:
         keyEv.preventDefault();
         this.handlers.textNav.keyEnd(this.currentLine);
         break;
 
-      case 'ArrowUp':
+      case TextKeycodes.arrowUp:
         keyEv.preventDefault();
         this.currentLine = this.handlers.textNav.cursorUp(this.currentLine);
         break;
 
-      case 'ArrowDown':
+      case TextKeycodes.arrowDown:
         keyEv.preventDefault();
         this.currentLine = this.handlers.textNav.cursorDown(this.currentLine);
         break;
 
-      case 'ArrowLeft':
+      case TextKeycodes.arrowLeft:
         keyEv.preventDefault();
         this.currentLine = this.handlers.textNav.cursorLeft(this.currentLine);
         break;
 
-      case 'ArrowRight':
+      case TextKeycodes.arrowRight:
         keyEv.preventDefault();
         this.currentLine = this.handlers.textNav.cursorRight(this.currentLine);
         break;
 
-      case 'Backspace':
+      case TextKeycodes.backspace:
         this.currentLine = this.handlers.letterDelete.deleteLeftLetter(this.currentLine);
         break;
 
-      case 'Delete':
+      case TextKeycodes.delete:
         this.currentLine = this.handlers.letterDelete.deleteRightLetter(this.currentLine);
         break;
 
-      case 'Space':
+      case TextKeycodes.space:
         keyEv.preventDefault();
         this.addLetterAtCursor('U+0020');
         break;
@@ -201,11 +199,11 @@ export class TextLogicComponent extends ToolLogicDirective
 
   private onMouseUp(mouseEv: MouseEvent): void {
     mouseEv.cancelBubble = false;
-    this.indicators.onDrag = false;
+    this.service.indicators.onDrag = false;
     const finalPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
     this.service.currentZoneDims = this.mathService.getRectangleSize(this.initialPoint, finalPoint);
     this.initialPoint = this.mathService.getRectangleUpLeftCorner(this.initialPoint, finalPoint);
-    if (!this.indicators.onType) {
+    if (!this.service.indicators.onType) {
       this.startTyping();
     }
   }
@@ -222,12 +220,15 @@ export class TextLogicComponent extends ToolLogicDirective
   private initCursor(): void {
     const cursor = this.renderer.createElement('path', this.svgNS);
     this.renderer.appendChild(this.svgStructure.temporaryZone, cursor);
-    // TODO : mettre des ifs
-    const initialCursorXPos = (this.service.textAlignement === TextAlignement.left) ?
-      this.initialPoint.x :
-      (this.service.textAlignement === TextAlignement.center) ?
-        this.initialPoint.x + this.service.currentZoneDims.width / 2 :
-        this.initialPoint.x + this.service.currentZoneDims.width;
+    let initialCursorXPos: number;
+
+    if (this.service.textAlignement === TextAlignement.left) {
+      initialCursorXPos = this.initialPoint.x;
+    } else if (this.service.textAlignement === TextAlignement.center) {
+      initialCursorXPos = this.initialPoint.x + this.service.currentZoneDims.width / 2;
+    } else {
+      initialCursorXPos = this.initialPoint.x + this.service.currentZoneDims.width;
+    }
 
     this.cursor = new Cursor(this.renderer, this.service, cursor, new Point(
       initialCursorXPos,
@@ -251,7 +252,7 @@ export class TextLogicComponent extends ToolLogicDirective
   }
 
   private startTyping(): void {
-    this.indicators.onType = true;
+    this.service.indicators.onType = true;
     this.shortcutService.desactivateAll();
     this.initCursor();
     this.initSVGText();
@@ -265,14 +266,14 @@ export class TextLogicComponent extends ToolLogicDirective
       line.cursorIndex = 0;
     });
     this.textElement.remove();
-    this.indicators.onDrag = false;
+    this.service.indicators.onDrag = false;
   }
 
   private stopTyping(cancelled: boolean): void {
     this.cursor.removeCursor();
     this.service.textZoneRectangle.element.remove();
     this.service.currentZoneDims = {height: 0, width: 0};
-    this.indicators.onType = false;
+    this.service.indicators.onType = false;
     if (this.currentLine.tspan.textContent === '' && this.lines.length === 1) {
       this.textElement.remove();
     }
