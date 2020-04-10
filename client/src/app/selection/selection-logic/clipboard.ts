@@ -87,12 +87,10 @@ export class Clipboard {
 
     if (this.selectionLogic.service.selectedElements.size !== 0) {
       this.selectionLogic.service.selectedElements.forEach((element) => {
-        this.selectionLogic.renderer.removeChild(
-          this.selectionLogic.svgStructure.drawZone,
-          element
-        );
+        element.remove();
       });
       this.selectionLogic.deleteVisualisation();
+      this.selectionLogic.undoRedoService.saveState();
     }
 
   }

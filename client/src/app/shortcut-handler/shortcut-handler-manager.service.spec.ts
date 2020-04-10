@@ -123,6 +123,26 @@ describe('ShortcutHandlerManagerService', () => {
     }, waitTime);
   });
 
+  it('#Handler for P should select FeatherPen', (done: DoneFn) => {
+    const spyTool = spyOn(service['toolSelectorService'], 'set');
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.P) as Handler;
+    handler.handlerFunction();
+    setTimeout(() => {
+      expect(spyTool).toHaveBeenCalledWith(Tool.FeatherPen);
+      done();
+    }, waitTime);
+  });
+
+  it('#Handler for T should select Text', (done: DoneFn) => {
+    const spyTool = spyOn(service['toolSelectorService'], 'set');
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.T) as Handler;
+    handler.handlerFunction();
+    setTimeout(() => {
+      expect(spyTool).toHaveBeenCalledWith(Tool.Text);
+      done();
+    }, waitTime);
+  });
+
   it('#Shortcut + should call grid service', (done: DoneFn) => {
     const spyTool = spyOn(service['gridService'], 'keyEvHandler');
     const handler = service['shortcutHanler']['manager'].get(Shortcut.PLUS) as Handler;
@@ -156,6 +176,125 @@ describe('ShortcutHandlerManagerService', () => {
     }
     setTimeout(() => {
       expect(spy).toHaveBeenCalled();
+      done();
+    }, waitTime);
+  });
+
+  it('#Handler for Ctrl + X should call cut', (done: DoneFn) => {
+    const event = {
+      code: 'x',
+      ctrlKey: true,
+      preventDefault: () => {}
+    } as unknown as KeyboardEvent;
+    const spy = spyOn<any>(service['selectionService'].cut, 'next');
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.X);
+    if (!!handler) {
+      handler.handlerFunction(event);
+    }
+    setTimeout(() => {
+      expect(spy).toHaveBeenCalled();
+      done();
+    }, waitTime);
+  });
+
+  it('#Handler for Ctrl + X should not call cut when ctrl is not pressed', (done: DoneFn) => {
+    const event = {
+      code: 'x',
+      ctrlKey: false,
+      preventDefault: () => {}
+    } as unknown as KeyboardEvent;
+    const spy = spyOn<any>(service['selectionService'].cut, 'next');
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.X);
+    if (!!handler) {
+      handler.handlerFunction(event);
+    }
+    setTimeout(() => {
+      expect(spy).not.toHaveBeenCalled();
+      done();
+    }, waitTime);
+  });
+
+  it('#Handler for Ctrl + V should call paste', (done: DoneFn) => {
+    const event = {
+      code: 'v',
+      ctrlKey: true,
+      preventDefault: () => {}
+    } as unknown as KeyboardEvent;
+    const spy = spyOn<any>(service['selectionService'].paste, 'next');
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.V);
+    if (!!handler) {
+      handler.handlerFunction(event);
+    }
+    setTimeout(() => {
+      expect(spy).toHaveBeenCalled();
+      done();
+    }, waitTime);
+  });
+
+  it('#Handler for Ctrl + V should not call paste without ctrl key', (done: DoneFn) => {
+    const event = {
+      code: 'v',
+      ctrlKey: false,
+      preventDefault: () => {}
+    } as unknown as KeyboardEvent;
+    const spy = spyOn<any>(service['selectionService'].paste, 'next');
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.V);
+    if (!!handler) {
+      handler.handlerFunction(event);
+    }
+    setTimeout(() => {
+      expect(spy).not.toHaveBeenCalled();
+      done();
+    }, waitTime);
+  });
+
+  it('#Handler for Ctrl + C should call copy', (done: DoneFn) => {
+    const event = {
+      code: 'c',
+      ctrlKey: true,
+      preventDefault: () => {}
+    } as unknown as KeyboardEvent;
+    const spy = spyOn<any>(service['selectionService'].copy, 'next');
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.C);
+    if (!!handler) {
+      handler.handlerFunction(event);
+    }
+    setTimeout(() => {
+      expect(spy).toHaveBeenCalled();
+      done();
+    }, waitTime);
+  });
+
+  it('#Handler for Ctrl + D should call duplicate', (done: DoneFn) => {
+    const event = {
+      code: 'd',
+      ctrlKey: true,
+      preventDefault: () => {}
+    } as unknown as KeyboardEvent;
+    const spy = spyOn<any>(service['selectionService'].duplicate, 'next');
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.D);
+    if (!!handler) {
+      handler.handlerFunction(event);
+    }
+    setTimeout(() => {
+      expect(spy).toHaveBeenCalled();
+      done();
+    }, waitTime);
+  });
+
+  it('#Handler for Ctrl + D should not call duplicate without ctrl key', (done: DoneFn) => {
+    const event = {
+      code: 'd',
+      ctrlKey: false,
+      preventDefault: () => {}
+    } as unknown as KeyboardEvent;
+    const spy = spyOn<any>(service['selectionService'].duplicate, 'next');
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.D);
+    if (!!handler) {
+      handler.handlerFunction(event);
+    }
+    setTimeout(() => {
+      expect(spy).not.toHaveBeenCalled();
       done();
     }, waitTime);
   });
@@ -243,6 +382,59 @@ describe('ShortcutHandlerManagerService', () => {
     }
     setTimeout(() => {
       expect(spyTool).toHaveBeenCalledWith(Tool.Aerosol);
+      done();
+    }, 500);
+  });
+
+  it('#Handler for B should select Bucket', (done: DoneFn) => {
+    const eventOWithControl = {
+      code: 'b',
+      ctrlKey: false,
+      preventDefault: () => { return ; }
+    } as unknown as KeyboardEvent;
+    const spyTool = spyOn(service['toolSelectorService'], 'set');
+    service['initialiseShortcuts']();
+    const handlerDigitB = service['shortcutHanler']['manager'].get(Shortcut.B);
+    if (!!handlerDigitB) {
+      handlerDigitB.handlerFunction(eventOWithControl);
+    }
+    setTimeout(() => {
+      expect(spyTool).toHaveBeenCalledWith(Tool.Bucket);
+      done();
+    }, 500);
+  });
+
+  it('#Handler for M should toggle Magnetism', (done: DoneFn) => {
+    const eventOWithControl = {
+      code: 'm',
+      ctrlKey: false,
+      preventDefault: () => { return ; }
+    } as unknown as KeyboardEvent;
+    service['selectionService'].magnetActive = true;
+    service['initialiseShortcuts']();
+    const handlerDigitB = service['shortcutHanler']['manager'].get(Shortcut.M);
+    if (!!handlerDigitB) {
+      handlerDigitB.handlerFunction(eventOWithControl);
+    }
+    setTimeout(() => {
+      expect(service['selectionService'].magnetActive).not.toEqual(true);
+      done();
+    }, 500);
+  });
+
+  it('#Handler for Delete should select delete', (done: DoneFn) => {
+    const eventOWithControl = {
+      code: 'Delete',
+      ctrlKey: false,
+      preventDefault: () => { return ; }
+    } as unknown as KeyboardEvent;
+    const spyTool = spyOn(service['selectionService'].delete, 'next');
+    const handler = service['shortcutHanler']['manager'].get(Shortcut.DELETE);
+    if (!!handler) {
+      handler.handlerFunction(eventOWithControl);
+    }
+    setTimeout(() => {
+      expect(spyTool).toHaveBeenCalled();
       done();
     }, 500);
   });

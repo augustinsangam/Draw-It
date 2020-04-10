@@ -37,19 +37,27 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     const svgDefsEl: SVGDefsElement = this.filterService.generateBrushFilters(this.renderer);
+
     this.renderer.appendChild(this.svgService.structure.defsZone, svgDefsEl);
+
     setTimeout(() => {
-      if (this.autoSave.verifyAvailability()) {
-        const [draw, shape] = this.autoSave.getDrawing();
-        Array.from(draw.children).forEach((element: SVGElement) => {
+
+      const state = this.autoSave.getDrawing();
+
+      if (state !== null) {
+        Array.from(state.draw.children).forEach((element: SVGElement) => {
           this.renderer.appendChild(this.svgService.structure.drawZone, element);
         });
-        this.svgService.shape = shape;
+        this.svgService.shape = state.shape;
         this.undoRedo.setStartingCommand();
       }
+
     }, 0);
+
     this.overlayService.intialise(this.dialog, this.svgService);
+
     this.shortcutManager.initialiseShortcuts();
+
     this.overlayService.start();
   }
 
