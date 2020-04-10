@@ -22,6 +22,7 @@ import { OverlayPages } from 'src/app/overlay/overlay-pages';
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 import { PaletteDialogComponent } from './palette-dialog.component';
 import { ScreenService, ScreenSize } from './sreen-service/screen.service';
+import { UndoRedoService } from 'src/app/tool/undo-redo/undo-redo.service';
 
 export interface DialogData {
   drawInProgress: boolean;
@@ -73,6 +74,7 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
     private screenService: ScreenService,
     private renderer: Renderer2,
     private dialog: MatDialog,
+    private undoRedo: UndoRedoService,
     @Optional() private dialogRef: MatDialogRef<NewDrawComponent>,
     @Inject(MAT_DIALOG_DATA) private data: DialogData
   ) {
@@ -179,7 +181,15 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private closeDialog(result: boolean): void {
-    this.dialogRef.close(result ? this.form.value : OverlayPages.Home as string);
+    // this.dialogRef.close(result ? this.form.value : OverlayPages.Home as string);
+    if(result){
+      this.dialogRef.close(this.form.value);
+      localStorage.clear();
+      this.undoRedo.saveState();
+      console.log('iciciicicc');
+    }else{
+      this.dialogRef.close(OverlayPages.Home as string);
+    }
   }
 
   protected onReturn(): void {
