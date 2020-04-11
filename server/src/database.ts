@@ -129,11 +129,6 @@ class Database {
 			return Promise.reject(ERRORS.nullCollection);
 		}
 
-		/*
-		return this.collection.deleteOne({
-			_id: entry._id,
-		});
-		*/
 		return this.collection.deleteOne(entry);
 	}
 }
