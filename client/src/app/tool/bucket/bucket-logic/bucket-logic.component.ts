@@ -50,7 +50,14 @@ export class BucketLogicComponent
   }
 
   private async onMouseClick($event: MouseEvent): Promise<void> {
-    const canvas = await new SvgToCanvas(this.svgStructure.root, this.svgShape, this.renderer)
+    const svg = this.renderer.createElement('svg', this.svgNS);
+    this.renderer.setAttribute(svg, 'height', this.svgShape.height.toString());
+    this.renderer.setAttribute(svg, 'width', this.svgShape.width.toString());
+    this.renderer.setStyle(svg, 'background-color', this.svgShape.color);
+    this.renderer.appendChild(svg, this.svgStructure.defsZone.cloneNode(true));
+    this.renderer.appendChild(svg, this.svgStructure.drawZone.cloneNode(true));
+
+    const canvas = await new SvgToCanvas(svg, this.svgShape, this.renderer)
     .getCanvas();
     this.image = (canvas.getContext('2d') as CanvasRenderingContext2D)
         .getImageData(0, 0, this.svgShape.width, this.svgShape.height);
