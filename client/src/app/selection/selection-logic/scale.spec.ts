@@ -83,6 +83,8 @@ describe('Scale', () => {
   });
 
   it('#onMouseDown should set baseVisualisationRectangleDimension and scaledRectangleDimension', () => {
+    component.rectangles.visualisation.setAttribute('x', '42');
+    component.rectangles.visualisation.setAttribute('y', '43');
     component.rectangles.visualisation.setAttribute('width', '100');
     component.rectangles.visualisation.setAttribute('height', '50');
 
@@ -115,6 +117,33 @@ describe('Scale', () => {
 
     expect(spyOnResize).toHaveBeenCalled();
     expect(spyResize).toHaveBeenCalled();
+  });
+
+  it('#getVisualisationRectangledimensions should return the position' +
+      ' and the dimensions of the visualisation rectangle', () => {
+    component.rectangles.visualisation.setAttribute('x', '42');
+    component.rectangles.visualisation.setAttribute('y', '43');
+    component.rectangles.visualisation.setAttribute('width', '100');
+    component.rectangles.visualisation.setAttribute('height', '101');
+
+    const returnedValue = scale['getVisualisationRectangledimensions']();
+
+    const expectedReturn = [42, 43, 100, 101];
+
+    expect(returnedValue).toEqual(expectedReturn);
+  });
+
+  it('#getVisualisationRectangledimensions should return [0, 0, 0, 0]', () => {
+    component.rectangles.visualisation.removeAttribute('x');
+    component.rectangles.visualisation.removeAttribute('y');
+    component.rectangles.visualisation.removeAttribute('width');
+    component.rectangles.visualisation.removeAttribute('height');
+
+    const returnedValue = scale['getVisualisationRectangledimensions']();
+
+    const expectedReturn = [0, 0, 0, 0];
+
+    expect(returnedValue).toEqual(expectedReturn);
   });
 
   it('#onResize should return the right mouseOffset and set scaledRectagleDimension properly (left)', () => {
@@ -274,14 +303,6 @@ describe('Scale', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#resizeVisualisationRectangle should not call drawVisualisationResising', () => {
-    const spy = spyOn<any>(scale, 'drawVisualisationResising');
-
-    scale['resizeVisualisationRectangle']({x: 42, y: 0});
-
-    expect(spy).toHaveBeenCalledTimes(0);
-  });
-
   it('#resizeVisualisationRectangle should call drawVisualisationResising twice', () => {
     const spy = spyOn<any>(scale, 'drawVisualisationResising').and.callThrough();
 
@@ -310,6 +331,15 @@ describe('Scale', () => {
     const expectedPoint2 = new Point(111, 111);
 
     expect(spy).toHaveBeenCalledWith(expectedMouseOffset, [expectedPoint1, expectedPoint2]);
+  });
+
+  it('#getZonePoint sould return the right points', () => {
+    const returnedValue = scale['getZonePoints']([42, 43, 100, 101]);
+
+    const expectedReturn = [new Point(42, 43), new Point(142, 144)];
+
+    expect<any>(returnedValue).toEqual(expectedReturn);
+
   });
 
   it('#switchControlPoint should set inverted.x to -1 and set mouse.left.selectedElement to RIGHT_CIRCLE', () => {

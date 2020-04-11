@@ -12,19 +12,11 @@ describe('Rotate', () => {
   let fixture: ComponentFixture<SelectionLogicComponent>;
   let rotate: Rotation;
 
-  // const mockOnRotate = {
-  //   onRotate: jasmine.createSpy('onRotate')
-  // };
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SelectionLogicComponent ],
       providers: [
         Renderer2,
-        // {
-        //   provide: Rotation,
-        //   useValue: mockOnRotate,
-        // }
       ]
     })
     .compileComponents();

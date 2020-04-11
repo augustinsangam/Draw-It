@@ -112,6 +112,8 @@ export class SelectionLogicComponent
           this.mouse.left.mouseIsDown = false;
           this.mouse.left.onDrag = false;
           this.mouse.left.onResize = false;
+          this.mouse.left.selectedElement = BasicSelectionType.NOTHING;
+          this.scaleUtil.onMouseUp();
           this.deleteSelection();
           this.applyMouseStyle($event);
         }],

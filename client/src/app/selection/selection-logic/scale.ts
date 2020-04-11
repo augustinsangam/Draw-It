@@ -23,30 +23,43 @@ export class Scale {
   constructor(private selectionLogic: SelectionLogicComponent) { }
 
   onMouseDown(): void {
-    const selectionWidth = this.selectionLogic.rectangles.visualisation.getAttribute('width');
-    const selectionHeight = this.selectionLogic.rectangles.visualisation.getAttribute('height');
-    if (!!selectionHeight && !!selectionWidth) {
-      const [width, height] = [+selectionWidth, +selectionHeight];
-      this.baseVisualisationRectangleDimension = { width: Math.round(width), height: Math.round(height) };
-      this.scaledRectangleDimension = { width: Math.round(width), height: Math.round(height) };
-    }
+    const dimensions = this.getVisualisationRectangledimensions();
+    const width = dimensions[2];
+    const height = dimensions[dimensions.length - 1];
+    this.baseVisualisationRectangleDimension = { width: Math.round(width), height: Math.round(height) };
+    this.scaledRectangleDimension = { width: Math.round(width), height: Math.round(height) };
     this.baseTransform = new Map();
     this.selectionLogic.service.selectedElements.forEach((element) => {
       this.baseTransform.set(element, new Transform(element, this.selectionLogic.renderer));
     });
     this.scaleOffset = { x: 0, y: 0 };
     this.inverted = { x: 1, y: 1 };
+    const [point1, point2] = this.getZonePoints(this.getVisualisationRectangledimensions());
+    this.selectionLogic.drawVisualisation(point1, point2);
   }
 
   onMouseUp(): void {
     this.scaleOffset = { x: 0, y: 0 };
     this.inverted = { x: 1, y: 1 };
     this.baseTransform = new Map();
+    const [point1, point2] = this.getZonePoints(this.getVisualisationRectangledimensions());
+    this.selectionLogic.drawVisualisation(point1, point2);
   }
 
   onMouseMove(previousCurrentPoint: Point): void {
     const mouseOffset: Offset = this.onResize(previousCurrentPoint);
     this.resizeVisualisationRectangle(mouseOffset);
+  }
+
+  private getVisualisationRectangledimensions(): [number, number, number, number] {
+    const x = this.selectionLogic.rectangles.visualisation.getAttribute('x');
+    const y = this.selectionLogic.rectangles.visualisation.getAttribute('y');
+    const width = this.selectionLogic.rectangles.visualisation.getAttribute('width');
+    const height = this.selectionLogic.rectangles.visualisation.getAttribute('height');
+    if (!!x && !!y && !!width && !!height) {
+      return [+x, +y, +width, +height];
+    }
+    return [0, 0, 0, 0];
   }
 
   private onResize(previousCurrentPoint: Point): Offset {
@@ -92,20 +105,25 @@ export class Scale {
   }
 
   private resizeVisualisationRectangle(mouseOffset: Offset): void {
-    const x = this.selectionLogic.rectangles.visualisation.getAttribute('x');
-    const y = this.selectionLogic.rectangles.visualisation.getAttribute('y');
-    const width = this.selectionLogic.rectangles.visualisation.getAttribute('width');
-    const height = this.selectionLogic.rectangles.visualisation.getAttribute('height');
     let [refPoint1, refPoint2] = [new Point(0, 0), new Point(0, 0)];
     let splitedOffset: [Offset, Offset];
-    if (!!x && !!y && !!width && !!height) {
-      [refPoint1.x, refPoint1.y] = [+x, +y];
-      [refPoint2.x, refPoint2.y] = [+x + Math.round(+width), +y + Math.round(+height)];
-      splitedOffset = this.preventResizeOverflow(mouseOffset, [refPoint1, refPoint2]);
-      [refPoint1, refPoint2] = this.drawVisualisationResising(splitedOffset[0], [refPoint1, refPoint2]);
-      this.switchControlPoint([refPoint1, refPoint2], splitedOffset);
-      this.drawVisualisationResising(splitedOffset[1], [refPoint1, refPoint2]);
-    }
+    [refPoint1, refPoint2] = this.getZonePoints(this.getVisualisationRectangledimensions());
+    splitedOffset = this.preventResizeOverflow(mouseOffset, [refPoint1, refPoint2]);
+    [refPoint1, refPoint2] = this.drawVisualisationResising(splitedOffset[0], [refPoint1, refPoint2]);
+    this.switchControlPoint([refPoint1, refPoint2], splitedOffset);
+    this.drawVisualisationResising(splitedOffset[1], [refPoint1, refPoint2]);
+  }
+
+  private getZonePoints([x, y, width, height]: [number, number, number, number]): [Point, Point] {
+    const point1 = new Point(
+      x,
+      y
+    );
+    const point2 = new Point(
+      x + Math.round(width),
+      y + Math.round(height)
+    );
+    return [point1, point2];
   }
 
   private switchControlPoint(
