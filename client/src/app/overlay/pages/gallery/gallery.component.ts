@@ -247,7 +247,6 @@ export class GalleryComponent implements AfterViewInit {
       });
     } else {
       this.galleryDrawTable.splice(this.galleryDrawTable.indexOf(this.findDraw(id)), 1);
-      this.filteredGalleryDrawTable.splice(this.filteredGalleryDrawTable.indexOf(this.findDraw(id)), 1);
       this.ajustImagesWidth();
     }
   }
