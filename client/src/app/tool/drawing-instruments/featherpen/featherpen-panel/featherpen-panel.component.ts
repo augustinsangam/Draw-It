@@ -37,7 +37,7 @@ export class FeatherpenPanelComponent extends ToolPanelDirective {
               private readonly formBuilder: FormBuilder,
               private renderer: Renderer2) {
     super(elementRef);
-    this.previewDimensions = {width: 320, height: 200};
+    this.previewDimensions = {width: 310, height: 200};
     this.featherpenForm = this.formBuilder.group({
       lengthFormField: [this.service.length, [Validators.required]],
       lengthSlider: [this.service.length, []],
