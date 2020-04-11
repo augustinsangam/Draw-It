@@ -1,63 +1,23 @@
-import {
-  Injectable
-} from '@angular/core';
-import {
-  MatDialogConfig,
-  MatDialogRef,
-  MatSnackBar
-} from '@angular/material';
-import {
-  LocalStorageHandlerService
-} from '../auto-save/local-storage-handler.service';
-import {
-  SelectionService
-} from '../selection/selection.service';
-import {
-  SvgShape
-} from '../svg/svg-shape';
-import {
-  SvgService
-} from '../svg/svg.service';
-import {
-  ColorService
-} from '../tool/color/color.service';
-import {
-  GridService
-} from '../tool/grid/grid.service';
-import {
-  ToolSelectorService
-} from '../tool/tool-selector/tool-selector.service';
-import {
-  Tool
-} from '../tool/tool.enum';
-import {
-  UndoRedoService
-} from '../undo-redo/undo-redo.service';
-import {
-  OverlayManager
-} from './overlay-manager';
-import {
-  OverlayPages
-} from './overlay-pages';
-import {
-  DocumentationComponent
-} from './pages/documentation/documentation.component';
-import {
-  ExportComponent
-} from './pages/export/export.component';
-import {
-  GalleryComponent,
-  GalleryDraw
-} from './pages/gallery/gallery.component';
-import {
-  HomeComponent
-} from './pages/home/home.component';
-import {
-  NewDrawComponent
-} from './pages/new-draw/new-draw.component';
-import {
-  SaveComponent
-} from './pages/save/save.component';
+import {Injectable} from '@angular/core';
+import {MatDialogConfig, MatDialogRef, MatSnackBar} from '@angular/material';
+import {LocalStorageHandlerService} from '../auto-save/local-storage-handler.service';
+import {SelectionService} from '../selection/selection.service';
+import {SvgShape} from '../svg/svg-shape';
+import {SvgService} from '../svg/svg.service';
+import {ColorService} from '../tool/color/color.service';
+import {GridService} from '../tool/grid/grid.service';
+import {ToolSelectorService} from '../tool/tool-selector/tool-selector.service';
+import {Tool} from '../tool/tool.enum';
+import {UndoRedoService} from '../undo-redo/undo-redo.service';
+import {OverlayManager} from './overlay-manager';
+import {OverlayPages} from './overlay-pages';
+import {DocEnum} from './pages/documentation/doc-enum';
+import {DocumentationComponent} from './pages/documentation/documentation.component';
+import {ExportComponent} from './pages/export/export.component';
+import {GalleryComponent, GalleryDraw} from './pages/gallery/gallery.component';
+import {HomeComponent} from './pages/home/home.component';
+import {NewDrawComponent} from './pages/new-draw/new-draw.component';
+import {SaveComponent} from './pages/save/save.component';
 
 interface DialogRefs {
   home: MatDialogRef<HomeComponent>;
@@ -160,7 +120,7 @@ export class OverlayService {
     }
   }
 
-  openDocumentationDialog(fromHome: boolean): void {
+  openDocumentationDialog(fromHome: boolean, initSection: DocEnum = DocEnum.welcome): void {
     const dialogOptions: MatDialogConfig = {
       width: '115vw',
       height: '100vh',
@@ -170,6 +130,7 @@ export class OverlayService {
       DocumentationComponent,
       dialogOptions
     );
+    this.dialogRefs.documentation.componentInstance.goToSection(initSection);
     this.dialogRefs.documentation.disableClose = false;
     this.dialogRefs.documentation.afterClosed().subscribe(
       () => this.closeDocumentationDialog(fromHome));

@@ -1,8 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MaterialModule } from 'src/app/material.module';
-import { DocumentationComponent, Node } from './documentation.component';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {MaterialModule} from 'src/app/material.module';
+import {DocEnum} from './doc-enum';
+import {DocumentationComponent, Node} from './documentation.component';
 
-// tslint:disable: no-magic-numbers
+// tslint:disable: no-magic-numbers no-any
 describe('DocumentationComponent', () => {
   let component: DocumentationComponent;
   let fixture: ComponentFixture<DocumentationComponent>;
@@ -330,6 +331,12 @@ describe('DocumentationComponent', () => {
     component['displayNodeContent']({ label: 'nodeTest', id: 5});
     component['currentNodeIndex'] = 0;
     expect(component['currentNodeIndex']).toBe(0);
+  });
+
+  it('#goToSection should call displayNodeContent', () => {
+    const spy = spyOn<any>(component, 'displayNodeContent');
+    component.goToSection(DocEnum.text);
+    expect(spy).toHaveBeenCalled();
   });
 
 });
