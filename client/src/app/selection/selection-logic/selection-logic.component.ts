@@ -104,7 +104,7 @@ export class SelectionLogicComponent
           if ($event.button !== 0) {
             return;
           }
-          if ((this.mouse.left.onDrag || this.mouse.left.onResize) && 
+          if ((this.mouse.left.onDrag || this.mouse.left.onResize) &&
               !this.mouse.left.startPoint.equals(this.mouse.left.currentPoint)) {
             this.undoRedoService.saveState();
           }

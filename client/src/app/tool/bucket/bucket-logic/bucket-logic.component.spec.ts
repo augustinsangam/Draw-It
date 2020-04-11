@@ -4,6 +4,7 @@ import { SvgToCanvas } from 'src/app/svg-to-canvas/svg-to-canvas';
 import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import { Point } from '../../shape/common/point';
 import { BucketLogicComponent } from './bucket-logic.component';
+import { PointSet } from './point-set';
 
 // tslint:disable: no-string-literal no-magic-numbers
 describe('BucketLogicComponent', () => {
@@ -181,5 +182,20 @@ describe('BucketLogicComponent', () => {
       expect(spy).toHaveBeenCalled();
     }, 20);
   }));
+
+  it('#separateShapes should take distance in count '
+    + 'while seperating shape', () => {
+    const borders = new PointSet();
+    borders.add(new Point(0, 0));
+    borders.add(new Point(0, 1));
+    borders.add(new Point(1, 1));
+    borders.add(new Point(1, 0));
+    borders.add(new Point(2, 2));
+    borders.add(new Point(2, 3));
+    borders.add(new Point(3, 3));
+    borders.add(new Point(3, 2));
+    const shapes = component['separateShapes'](borders);
+    expect(shapes.length).toEqual(1);
+  });
 
 });

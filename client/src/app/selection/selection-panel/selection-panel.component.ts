@@ -18,12 +18,12 @@ export class SelectionPanelComponent extends ToolPanelDirective implements After
 
   @ViewChild('previewCircle', {
     static: false,
-  }) previewCircle: ElementRef<SVGElement>;
+  }) private previewCircle: ElementRef<SVGElement>;
 
   @ViewChild('circles', {
     static: false,
     read: ElementRef
-  }) circles: ElementRef<SVGGElement>;
+  }) private circles: ElementRef<SVGGElement>;
 
   constructor(elementRef: ElementRef<HTMLElement>,
               protected readonly service: SelectionService,

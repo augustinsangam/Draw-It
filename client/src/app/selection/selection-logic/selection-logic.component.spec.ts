@@ -5,6 +5,8 @@ import { Point } from '../../tool/shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { MultipleSelection } from '../multiple-selection';
 import { Offset } from '../offset';
+import { CircleType } from './circle-type';
+import { BasicSelectionType } from './element-selected-type';
 import * as Util from './selection-logic-util';
 import { SelectionLogicComponent } from './selection-logic.component';
 
@@ -371,6 +373,26 @@ describe('SelectionLogicComponent', () => {
 
   });
 
+  it('#left mouse move handler should consider magnet tool when active', () => {
+    const fakeEvent = {
+      offsetX: 200,
+      offsetY: 200,
+      preventDefault: () => { return ; }
+    } as unknown as MouseEvent;
+
+    const spy = spyOn(component['deplacement'], 'onCursorMove');
+    component['service'].magnetActive = true;
+    const mouseMoveHandler = (component['mouseHandlers'].get('leftButton') as
+      Map<string, Util.MouseEventCallBack>).get('mousemove') as
+      Util.MouseEventCallBack;
+
+    component['mouse'].left.onDrag = true;
+    component['mouse'].left.mouseIsDown = true;
+    mouseMoveHandler(fakeEvent);
+    expect(spy).toHaveBeenCalled();
+
+  });
+
   it('#left mouse move handler should drawSelection'
       + 'when not draging', () => {
     const fakeEvent = {
@@ -574,6 +596,69 @@ describe('SelectionLogicComponent', () => {
       const spy = spyOn<any>(component, 'drawVisualisation');
       component['applyMultipleSelection'](undefinedPoint, undefinedPoint);
       expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('#applyMouseStyle should set cursor '
+      + 'to col-resize or ns-resize when resizing', () => {
+    component['mouse'].left.onResize = true;
+    component['mouse'].left.selectedElement = CircleType.BOTTOM_CIRCLE;
+    component['applyMouseStyle'](undefined as unknown as MouseEvent);
+    expect(['ns-resize', 'ns-resize']).toContain(
+      component['svgStructure'].root.style.cursor
+    );
+  });
+
+  it('#applyMouseStyle should set cursor '
+      + 'to col-resize or ns-resize when resizing 2', () => {
+    component['mouse'].left.onResize = true;
+    component['mouse'].left.selectedElement = CircleType.LEFT_CIRCLE;
+    component['applyMouseStyle'](undefined as unknown as MouseEvent);
+    expect(['ns-resize', 'ns-resize']).toContain(
+      component['svgStructure'].root.style.cursor
+    );
+  });
+
+  it('#applyMouseStyle should set cursor to grab'
+      + 'when hovering selection', () => {
+    component['mouse'].left.onResize = false;
+    spyOn<any>(component, 'isInTheVisualisationZone').and.callFake(() => true);
+    spyOn<any>(component, 'elementSelectedType').and.callFake(() => BasicSelectionType.NOTHING);
+    component['mouse'].left.selectedElement = CircleType.BOTTOM_CIRCLE;
+    component['applyMouseStyle']({
+      x: 0, y: 0, offsetX: 0, offsetY: 0
+    } as unknown as MouseEvent);
+    expect(component['svgStructure'].root.style.cursor).toEqual(
+      'grab'
+    );
+  });
+
+  it('#applyMouseStyle should set cursor to pointer'
+      + 'when hovering element in a selection', () => {
+    component['mouse'].left.onResize = false;
+    spyOn<any>(component, 'isInTheVisualisationZone').and.callFake(() => true);
+    spyOn<any>(component, 'elementSelectedType').and.callFake(() => BasicSelectionType.DRAW_ELEMENT);
+    component['mouse'].left.selectedElement = CircleType.BOTTOM_CIRCLE;
+    component['applyMouseStyle']({
+      x: 0, y: 0, offsetX: 0, offsetY: 0
+    } as unknown as MouseEvent);
+    expect(component['svgStructure'].root.style.cursor).toEqual(
+      'pointer'
+    );
+  });
+
+  it('#applyMouseStyle should set cursor to grabbing'
+      + 'when draging', () => {
+    component['mouse'].left.onResize = false;
+    component['mouse'].left.onDrag = true;
+    spyOn<any>(component, 'isInTheVisualisationZone').and.callFake(() => false);
+    spyOn<any>(component, 'elementSelectedType').and.callFake(() => BasicSelectionType.DRAW_ELEMENT);
+    component['mouse'].left.selectedElement = CircleType.BOTTOM_CIRCLE;
+    component['applyMouseStyle']({
+      x: 0, y: 0, offsetX: 0, offsetY: 0
+    } as unknown as MouseEvent);
+    expect(component['svgStructure'].root.style.cursor).toEqual(
+      'grabbing'
+    );
   });
 
 });

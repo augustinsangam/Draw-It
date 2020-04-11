@@ -113,6 +113,7 @@ describe('Overlay', () => {
     svgService.structure.root.appendChild(svgService.structure.endZone);
 
     (TestBed.get(UndoRedoService) as UndoRedoService).intialise(svgService.structure);
+    localStorage.clear();
 
     fixture.detectChanges();
   });
