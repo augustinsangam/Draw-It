@@ -1,4 +1,5 @@
 import { CdkObserveContent } from '@angular/cdk/observers';
+import { Overlay } from '@angular/cdk/overlay';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -12,18 +13,19 @@ import {
   MatRadioGroup,
   MatRipple,
   MatSlider,
-  MatSlideToggle
+  MatSlideToggle,
+  MatSnackBar
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 import { PanelComponent } from '../../../panel/panel.component';
 import { ColorPanelComponent } from '../../color/color-panel/color-panel.component';
 import { ColorPickerContentComponent } from '../../color/color-panel/color-picker-content/color-picker-content.component';
 import { ColorPickerItemComponent } from '../../color/color-panel/color-picker-item/color-picker-item.component';
 import { GridPanelComponent } from './grid-panel.component';
-import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable:no-string-literal
-describe('GridPanelComponent', () => {
+fdescribe('GridPanelComponent', () => {
   let component: GridPanelComponent;
   let fixture: ComponentFixture<GridPanelComponent>;
 
@@ -46,13 +48,17 @@ describe('GridPanelComponent', () => {
         MatCardTitle,
         MatCardContent,
         CdkObserveContent,
-        MatRipple
+        MatRipple,
       ],
       imports: [
         FormsModule,
         ReactiveFormsModule,
         BrowserAnimationsModule
       ],
+      providers: [
+        MatSnackBar,
+        Overlay
+      ]
     })
       .compileComponents();
   }));

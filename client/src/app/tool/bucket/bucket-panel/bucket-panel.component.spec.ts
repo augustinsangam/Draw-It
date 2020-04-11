@@ -40,7 +40,7 @@ import {
 } from './bucket-panel.component';
 import { OverlayService } from 'src/app/overlay/overlay.service';
 
-describe('BucketPanelComponent', () => {
+fdescribe('BucketPanelComponent', () => {
   let component: BucketPanelComponent;
   let fixture: ComponentFixture<BucketPanelComponent>;
 

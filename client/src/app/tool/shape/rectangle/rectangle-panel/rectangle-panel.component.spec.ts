@@ -20,7 +20,7 @@ import { RectanglePanelComponent } from './rectangle-panel.component';
 import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable: no-string-literal
-describe('RectanglePanelComponent', () => {
+fdescribe('RectanglePanelComponent', () => {
   let component: RectanglePanelComponent;
   let fixture: ComponentFixture<RectanglePanelComponent>;
 

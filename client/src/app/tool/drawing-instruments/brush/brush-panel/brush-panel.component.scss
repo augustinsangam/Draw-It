@@ -1,5 +1,6 @@
 :host {
   display: block;
+  position: relative;
   padding: 0px 10px 0px 10px;
   width: 320px;
   color : white;
@@ -39,8 +40,9 @@ img{
     font-size: 24px;
     vertical-align: middle;
     position: absolute;
-    top: 26px;
-    left: 350px;
+    top: 7px;
+    right: 35px;
+    z-index: 99;
     transition-delay: 0s title;
   }
 

@@ -34,7 +34,7 @@ import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // On a besoin des string-literal pour accéder aux attributs privés
 // tslint:disable: no-string-literal
-describe('BrushPanelComponent', () => {
+fdescribe('BrushPanelComponent', () => {
   let component: BrushPanelComponent;
   let fixture: ComponentFixture<BrushPanelComponent>;
 

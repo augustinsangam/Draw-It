@@ -12,7 +12,7 @@ import { ColorPickerItemComponent } from '../../color/color-panel/color-picker-i
 import { ApplicatorPanelComponent } from './applicator-panel.component';
 import { OverlayService } from 'src/app/overlay/overlay.service';
 
-describe('ApplicatorPanelComponent', () => {
+fdescribe('ApplicatorPanelComponent', () => {
   let component: ApplicatorPanelComponent;
   let fixture: ComponentFixture<ApplicatorPanelComponent>;
 

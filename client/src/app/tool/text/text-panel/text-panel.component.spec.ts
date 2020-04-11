@@ -1,6 +1,8 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
+import { Overlay } from '@angular/cdk/overlay';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
 import {MatButtonToggle, MatButtonToggleChange, MatButtonToggleGroup} from '@angular/material/button-toggle';
 import {MatCard, MatCardContent, MatCardTitle} from '@angular/material/card';
 import {MatRippleModule} from '@angular/material/core';
@@ -10,16 +12,16 @@ import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSlider} from '@angular/material/slider';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 import {PanelComponent} from '../../../panel/panel.component';
 import {ColorPanelComponent} from '../../color/color-panel/color-panel.component';
 import {ColorPickerContentComponent} from '../../color/color-panel/color-picker-content/color-picker-content.component';
 import {ColorPickerItemComponent} from '../../color/color-panel/color-picker-item/color-picker-item.component';
 import {TextAlignement} from '../text-classes/text-alignement';
 import {TextPanelComponent} from './text-panel.component';
-import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable:no-string-literal no-magic-numbers no-any
-describe('TextPanelComponent', () => {
+fdescribe('TextPanelComponent', () => {
   let component: TextPanelComponent;
   let fixture: ComponentFixture<TextPanelComponent>;
 
@@ -48,6 +50,10 @@ describe('TextPanelComponent', () => {
         MatRippleModule,
         MatInputModule,
         BrowserAnimationsModule
+      ],
+      providers: [
+        MatSnackBar,
+        Overlay
       ]
     })
     .compileComponents();

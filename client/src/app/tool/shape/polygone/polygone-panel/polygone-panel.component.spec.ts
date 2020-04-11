@@ -19,7 +19,7 @@ import { PolygonePanelComponent } from './polygone-panel.component';
 import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable: no-string-literal
-describe('PolygonePanelComponent', () => {
+fdescribe('PolygonePanelComponent', () => {
   let component: PolygonePanelComponent;
   let fixture: ComponentFixture<PolygonePanelComponent>;
 

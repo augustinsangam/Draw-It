@@ -11,14 +11,14 @@ import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatSlider} from '@angular/material/slider';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 import {ColorPanelComponent} from '../../../color/color-panel/color-panel.component';
 import {ColorPickerContentComponent} from '../../../color/color-panel/color-picker-content/color-picker-content.component';
 import {ColorPickerItemComponent} from '../../../color/color-panel/color-picker-item/color-picker-item.component';
 import { AerosolPanelComponent } from './aerosol-panel.component';
-import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable:no-string-literal no-any disable:no-magic-numbers
-describe('AerosolPanelComponent', () => {
+fdescribe('AerosolPanelComponent', () => {
   let component: AerosolPanelComponent;
   let fixture: ComponentFixture<AerosolPanelComponent>;
 

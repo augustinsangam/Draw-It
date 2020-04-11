@@ -43,7 +43,7 @@ import {
 import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable: no-string-literal no-magic-numbers
-describe('LinePanelComponent', () => {
+fdescribe('LinePanelComponent', () => {
   let component: LinePanelComponent;
   let fixture: ComponentFixture<LinePanelComponent>;
 

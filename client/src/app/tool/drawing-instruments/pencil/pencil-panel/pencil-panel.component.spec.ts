@@ -7,7 +7,7 @@ import { PencilPanelComponent } from './pencil-panel.component';
 import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable: no-string-literal
-describe('PencilPanelComponent', () => {
+fdescribe('PencilPanelComponent', () => {
   let component: PencilPanelComponent;
   let fixture: ComponentFixture<PencilPanelComponent>;
 

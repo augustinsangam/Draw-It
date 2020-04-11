@@ -23,7 +23,7 @@ import { Tool } from '../tool/tool.enum';
 import { PanelComponent } from './panel.component';
 
 // tslint:disable: no-any no-magic-numbers
-describe('PanelComponent', () => {
+fdescribe('PanelComponent', () => {
   let component: PanelComponent;
   let fixture: ComponentFixture<PanelComponent>;
 

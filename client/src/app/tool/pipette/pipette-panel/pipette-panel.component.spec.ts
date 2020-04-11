@@ -10,7 +10,7 @@ import {PipettePanelComponent} from './pipette-panel.component';
 import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable:no-string-literal
-describe('PipettePanelComponent', () => {
+fdescribe('PipettePanelComponent', () => {
   let component: PipettePanelComponent;
   let fixture: ComponentFixture<PipettePanelComponent>;
 

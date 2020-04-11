@@ -18,7 +18,7 @@ import { FeatherpenPanelComponent } from './featherpen-panel.component';
 import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable:no-magic-numbers no-string-literal no-any
-describe('FeatherpenPanelComponent', () => {
+fdescribe('FeatherpenPanelComponent', () => {
   let component: FeatherpenPanelComponent;
   let fixture: ComponentFixture<FeatherpenPanelComponent>;
 

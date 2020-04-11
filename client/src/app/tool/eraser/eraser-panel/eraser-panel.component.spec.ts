@@ -3,6 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EraserPanelComponent } from './eraser-panel.component';
 
 import { CdkObserveContent } from '@angular/cdk/observers';
+import { Overlay } from '@angular/cdk/overlay';
 import {
   MatCard,
   MatCardContent,
@@ -15,14 +16,15 @@ import {
   MatRipple,
   MatSlider,
   MatSlideToggle,
+  MatSnackBar,
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 import { ColorPanelComponent } from '../../color/color-panel/color-panel.component';
 import { ColorPickerContentComponent } from '../../color/color-panel/color-picker-content/color-picker-content.component';
 import { ColorPickerItemComponent } from '../../color/color-panel/color-picker-item/color-picker-item.component';
-import { OverlayService } from 'src/app/overlay/overlay.service';
 
-describe('EraserPanelComponent', () => {
+fdescribe('EraserPanelComponent', () => {
   let component: EraserPanelComponent;
   let fixture: ComponentFixture<EraserPanelComponent>;
 
@@ -51,6 +53,10 @@ describe('EraserPanelComponent', () => {
         MatCardContent,
         MatCard
       ],
+      providers: [
+        MatSnackBar,
+        Overlay
+      ]
     })
     .compileComponents();
   }));

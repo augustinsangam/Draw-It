@@ -1,12 +1,14 @@
 import { CdkObserveContent } from '@angular/cdk/observers';
+import { Overlay } from '@angular/cdk/overlay';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatCard, MatCardContent, MatCardTitle, MatFormField, MatIcon, MatInput,
-  MatRadioButton, MatRadioGroup, MatRipple, MatSlider, MatSlideToggle
+  MatRadioButton, MatRadioGroup, MatRipple, MatSlider, MatSlideToggle, MatSnackBar
 } from '@angular/material';
 import { MatSlideToggleChange} from '@angular/material/slide-toggle';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 import {
   ColorPanelComponent
 } from '../../../color/color-panel/color-panel.component';
@@ -19,10 +21,9 @@ import {
 // tslint:disable-next-line: max-line-length
 } from '../../../color/color-panel/color-picker-item/color-picker-item.component';
 import { EllipsePanelComponent } from './ellipse-panel.component';
-import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable: no-string-literal
-describe('EllipsePanelComponent', () => {
+fdescribe('EllipsePanelComponent', () => {
   let component: EllipsePanelComponent;
   let fixture: ComponentFixture<EllipsePanelComponent>;
 
@@ -51,8 +52,10 @@ describe('EllipsePanelComponent', () => {
         MatCardContent,
         MatCardTitle
       ],
-      schemas: [],
-      providers: []
+      providers: [
+        MatSnackBar,
+        Overlay
+      ]
     })
     .compileComponents();
   }));
