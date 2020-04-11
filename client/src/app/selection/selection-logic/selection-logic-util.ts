@@ -10,7 +10,8 @@ export const COLORS = {
   RED: 'rgba(255, 0, 0, 0.7)',
   BLUE: 'rgba(0, 0, 255, 0.7)',
   GREEN: 'rgba(0, 255, 0, 0.7)',
-  GRAY: 'rgba(128, 128, 255, 1)'
+  GRAY: 'rgba(128, 128, 255, 1)',
+  DRAK_GRAY: 'rgba(128, 0, 0, 1)'
 };
 
 export const ANGLE = 15;
