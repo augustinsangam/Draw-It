@@ -2,6 +2,8 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { MatSlider } from '@angular/material';
+import { OverlayService } from 'src/app/overlay/overlay.service';
+import { DocEnum } from 'src/app/overlay/pages/documentation/doc-enum';
 import { ToolPanelDirective } from '../../../tool-panel/tool-panel.directive';
 import { PencilService } from '../pencil.service';
 
@@ -20,6 +22,7 @@ export class PencilPanelComponent extends ToolPanelDirective {
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: PencilService,
+              private overlay: OverlayService,
               private readonly formBuilder: FormBuilder) {
     super(elementRef);
     this.pencilForm = this.formBuilder.group({
@@ -33,4 +36,9 @@ export class PencilPanelComponent extends ToolPanelDirective {
               ({ thicknessFormField: this.thicknessSlider.value });
     this.service.thickness = this.thicknessSlider.value as number;
   }
+
+  protected showDocumentation(): void {
+    this.overlay.openDocumentationDialog(false, DocEnum.pencil);
+  }
+
 }

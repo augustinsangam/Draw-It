@@ -10,6 +10,8 @@ import {
   MatSlideToggleChange
 } from '@angular/material/slide-toggle';
 import {MatSlider} from '@angular/material/slider';
+import { OverlayService } from 'src/app/overlay/overlay.service';
+import { DocEnum } from 'src/app/overlay/pages/documentation/doc-enum';
 import {ToolPanelDirective} from '../../../tool-panel/tool-panel.directive';
 import {EllipseService} from '../ellipse.service';
 
@@ -40,6 +42,7 @@ export class EllipsePanelComponent
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: EllipseService,
+              private overlay: OverlayService,
               private readonly formBuilder: FormBuilder) {
     super(elementRef);
     this.ellipseForm = this.formBuilder.group({
@@ -79,6 +82,10 @@ export class EllipsePanelComponent
       thicknessFormField: this.thicknessSlider.value
     });
     this.service.thickness = this.thicknessSlider.value as number;
+  }
+
+  protected showDocumentation(): void {
+    this.overlay.openDocumentationDialog(false, DocEnum.ellipse);
   }
 
 }

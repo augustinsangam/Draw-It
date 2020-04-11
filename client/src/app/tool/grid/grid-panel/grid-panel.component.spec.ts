@@ -20,6 +20,7 @@ import { ColorPanelComponent } from '../../color/color-panel/color-panel.compone
 import { ColorPickerContentComponent } from '../../color/color-panel/color-picker-content/color-picker-content.component';
 import { ColorPickerItemComponent } from '../../color/color-panel/color-picker-item/color-picker-item.component';
 import { GridPanelComponent } from './grid-panel.component';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable:no-string-literal
 describe('GridPanelComponent', () => {
@@ -59,6 +60,10 @@ describe('GridPanelComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(GridPanelComponent);
     component = fixture.componentInstance;
+    // tslint:disable-next-line: no-string-literal
+    component['overlay'] = {
+      openDocumentationDialog: () => { return ; }
+    } as unknown as OverlayService;
     fixture.detectChanges();
   });
 
@@ -91,5 +96,11 @@ describe('GridPanelComponent', () => {
     component['onActiveChange']();
     expect(spyOnHandle).toHaveBeenCalled();
     expect(spyOnPatch).toHaveBeenCalled();
+  });
+
+  it('#showDocumentation should call openDocumentationDialog of overlay service', () => {
+    const spy = spyOn(component['overlay'], 'openDocumentationDialog');
+    component['showDocumentation']();
+    expect(spy).toHaveBeenCalled();
   });
 });

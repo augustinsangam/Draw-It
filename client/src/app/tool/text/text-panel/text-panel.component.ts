@@ -2,6 +2,8 @@ import {AfterViewInit, Component, ElementRef, Renderer2, ViewChild} from '@angul
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatButtonToggleChange} from '@angular/material/button-toggle';
 import {MatSlider} from '@angular/material/slider';
+import { OverlayService } from 'src/app/overlay/overlay.service';
+import { DocEnum } from 'src/app/overlay/pages/documentation/doc-enum';
 import {ColorService} from '../../color/color.service';
 import {Dimension} from '../../shape/common/dimension';
 import {ToolPanelDirective} from '../../tool-panel/tool-panel.directive';
@@ -43,6 +45,7 @@ implements AfterViewInit {
               private readonly service: TextService,
               protected readonly colorService: ColorService,
               private readonly renderer: Renderer2,
+              private overlay: OverlayService
   ) {
     super(elementRef);
     this.textForm = this.formBuilder.group({
@@ -139,4 +142,7 @@ implements AfterViewInit {
     this.updateButtonsStyle();
   }
 
+  protected showDocumentation(): void {
+    this.overlay.openDocumentationDialog(false, DocEnum.text);
+  }
 }

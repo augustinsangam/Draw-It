@@ -1,6 +1,8 @@
 import {Component, ElementRef, Renderer2, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSlider} from '@angular/material/slider';
+import { OverlayService } from 'src/app/overlay/overlay.service';
+import { DocEnum } from 'src/app/overlay/pages/documentation/doc-enum';
 import {ColorService} from '../../../color/color.service';
 import {Dimension} from '../../../shape/common/dimension';
 import {Point} from '../../../shape/common/point';
@@ -35,6 +37,7 @@ export class FeatherpenPanelComponent extends ToolPanelDirective {
               private readonly service: FeatherpenService,
               protected readonly colorService: ColorService,
               private readonly formBuilder: FormBuilder,
+              private overlay: OverlayService,
               private renderer: Renderer2) {
     super(elementRef);
     this.previewDimensions = {width: 310, height: 200};
@@ -75,4 +78,9 @@ export class FeatherpenPanelComponent extends ToolPanelDirective {
     this.service.angle = this.angleSlider.value as number;
     this.updatePreview();
   }
+
+  protected showDocumentation(): void {
+    this.overlay.openDocumentationDialog(false, DocEnum.featherpen);
+  }
+
 }

@@ -7,6 +7,7 @@ import {ColorPanelComponent} from '../../color/color-panel/color-panel.component
 import {ColorPickerContentComponent} from '../../color/color-panel/color-picker-content/color-picker-content.component';
 import {ColorPickerItemComponent} from '../../color/color-panel/color-picker-item/color-picker-item.component';
 import {PipettePanelComponent} from './pipette-panel.component';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable:no-string-literal
 describe('PipettePanelComponent', () => {
@@ -34,6 +35,10 @@ describe('PipettePanelComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PipettePanelComponent);
     component = fixture.componentInstance;
+    // tslint:disable-next-line: no-string-literal
+    component['overlay'] = {
+      openDocumentationDialog: () => { return ; }
+    } as unknown as OverlayService;
     fixture.detectChanges();
   });
 
@@ -48,5 +53,11 @@ describe('PipettePanelComponent', () => {
     const ret = component['getHex']();
     expect(spy).toHaveBeenCalled();
     expect(ret).toEqual('#7F7F7F');
+  });
+
+  it('#showDocumentation should call openDocumentationDialog of overlay service', () => {
+    const spy = spyOn(component['overlay'], 'openDocumentationDialog');
+    component['showDocumentation']();
+    expect(spy).toHaveBeenCalled();
   });
 });

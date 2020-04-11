@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from 'src/app/material.module';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 import { ColorPanelComponent } from '../../tool/color/color-panel/color-panel.component';
 import { ColorPickerContentComponent } from '../../tool/color/color-panel/color-picker-content/color-picker-content.component';
 import { ColorPickerItemComponent } from '../../tool/color/color-panel/color-picker-item/color-picker-item.component';
@@ -31,6 +32,10 @@ describe('SelectionPanelComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SelectionPanelComponent);
     component = fixture.componentInstance;
+    // tslint:disable-next-line: no-string-literal
+    component['overlay'] = {
+      openDocumentationDialog: () => { return ; }
+    } as unknown as OverlayService;
     fixture.detectChanges();
   });
 
@@ -48,6 +53,14 @@ describe('SelectionPanelComponent', () => {
       expect(spy).toHaveBeenCalled();
       done();
     });
+  });
+
+  it('#showDocumentation should call openDocumentationDialog of overlay service', () => {
+    // tslint:disable-next-line: no-string-literal
+    const spy = spyOn(component['overlay'], 'openDocumentationDialog');
+    // tslint:disable:next-line no-string-literal
+    component['showDocumentation']();
+    expect(spy).toHaveBeenCalled();
   });
 
 });

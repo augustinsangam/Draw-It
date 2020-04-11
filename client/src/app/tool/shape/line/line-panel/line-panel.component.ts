@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSlider, MatSlideToggleChange } from '@angular/material';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 
+import { OverlayService } from 'src/app/overlay/overlay.service';
+import { DocEnum } from 'src/app/overlay/pages/documentation/doc-enum';
 import { ToolPanelDirective } from '../../../tool-panel/tool-panel.directive';
 import { LineService } from '../line.service';
 
@@ -33,6 +35,7 @@ export class LinePanelComponent extends ToolPanelDirective {
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: LineService,
+              private overlay: OverlayService,
               private formBuilder: FormBuilder) {
     super(elementRef);
     this.lineForm = this.formBuilder.group({
@@ -67,4 +70,7 @@ export class LinePanelComponent extends ToolPanelDirective {
     this.service.radius = this.radiusSlider.value as number;
   }
 
+  protected showDocumentation(): void {
+    this.overlay.openDocumentationDialog(false, DocEnum.line);
+  }
 }

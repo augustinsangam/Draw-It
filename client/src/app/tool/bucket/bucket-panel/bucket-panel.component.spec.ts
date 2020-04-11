@@ -25,6 +25,7 @@ import {
 import {
   BrowserAnimationsModule
 } from '@angular/platform-browser/animations';
+
 import {
   ColorPanelComponent
 } from '../../color/color-panel/color-panel.component';
@@ -37,6 +38,7 @@ import {
 import {
   BucketPanelComponent
 } from './bucket-panel.component';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 
 describe('BucketPanelComponent', () => {
   let component: BucketPanelComponent;
@@ -74,6 +76,10 @@ describe('BucketPanelComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(BucketPanelComponent);
     component = fixture.componentInstance;
+    // tslint:disable-next-line: no-string-literal
+    component['overlay'] = {
+      openDocumentationDialog: () => { return ; }
+    } as unknown as OverlayService;
     fixture.detectChanges();
   });
 
@@ -90,6 +96,12 @@ describe('BucketPanelComponent', () => {
     component['onToleranceChange']();
     expect(spy).toHaveBeenCalled();
     expect(component['service'].tolerance).toEqual(newValue);
+  });
+
+  it('#showDocumentation should call openDocumentationDialog of overlay service', () => {
+    const spy = spyOn(component['overlay'], 'openDocumentationDialog');
+    component['showDocumentation']();
+    expect(spy).toHaveBeenCalled();
   });
 
 });

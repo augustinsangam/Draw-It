@@ -40,6 +40,7 @@ import {
 import {
   LinePanelComponent
 } from './line-panel.component';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable: no-string-literal no-magic-numbers
 describe('LinePanelComponent', () => {
@@ -77,6 +78,10 @@ describe('LinePanelComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(LinePanelComponent);
     component = fixture.componentInstance;
+    // tslint:disable-next-line: no-string-literal
+    component['overlay'] = {
+      openDocumentationDialog: () => { return ; }
+    } as unknown as OverlayService;
     fixture.detectChanges();
   });
 
@@ -112,6 +117,12 @@ describe('LinePanelComponent', () => {
     component['service'].thickness = 40;
     component['onThicknessValueChange']();
     expect(component['radiusSlider'].min).toEqual(24);
+  });
+
+  it('#showDocumentation should call openDocumentationDialog of overlay service', () => {
+    const spy = spyOn(component['overlay'], 'openDocumentationDialog');
+    component['showDocumentation']();
+    expect(spy).toHaveBeenCalled();
   });
 
 });

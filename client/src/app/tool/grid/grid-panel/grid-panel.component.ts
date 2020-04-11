@@ -6,6 +6,8 @@ import {
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSlideToggle} from '@angular/material/slide-toggle';
 import {MatSlider} from '@angular/material/slider';
+import { OverlayService } from 'src/app/overlay/overlay.service';
+import { DocEnum } from 'src/app/overlay/pages/documentation/doc-enum';
 import {ToolPanelDirective} from '../../tool-panel/tool-panel.directive';
 import {GridService} from '../grid.service';
 
@@ -35,7 +37,8 @@ export class GridPanelComponent extends ToolPanelDirective {
   constructor(
     elementRef: ElementRef<HTMLElement>,
     private readonly formBuilder: FormBuilder,
-    private readonly service: GridService
+    private readonly service: GridService,
+    private overlay: OverlayService
   ) {
     super(elementRef);
     this.gridForm = this.formBuilder.group({
@@ -69,6 +72,10 @@ export class GridPanelComponent extends ToolPanelDirective {
     });
     this.service.active = this.activeToggleRef.checked;
     this.service.handleGrid();
+  }
+
+  protected showDocumentation(): void {
+    this.overlay.openDocumentationDialog(false, DocEnum.grid);
   }
 
 }

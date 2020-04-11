@@ -15,6 +15,7 @@ import {ColorPanelComponent} from '../../../color/color-panel/color-panel.compon
 import {ColorPickerContentComponent} from '../../../color/color-panel/color-picker-content/color-picker-content.component';
 import {ColorPickerItemComponent} from '../../../color/color-panel/color-picker-item/color-picker-item.component';
 import { FeatherpenPanelComponent } from './featherpen-panel.component';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable:no-magic-numbers no-string-literal no-any
 describe('FeatherpenPanelComponent', () => {
@@ -53,6 +54,10 @@ describe('FeatherpenPanelComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(FeatherpenPanelComponent);
     component = fixture.componentInstance;
+    // tslint:disable-next-line: no-string-literal
+    component['overlay'] = {
+      openDocumentationDialog: () => { return ; }
+    } as unknown as OverlayService;
     fixture.detectChanges();
   });
 

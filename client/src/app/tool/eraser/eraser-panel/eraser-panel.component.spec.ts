@@ -20,6 +20,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ColorPanelComponent } from '../../color/color-panel/color-panel.component';
 import { ColorPickerContentComponent } from '../../color/color-panel/color-picker-content/color-picker-content.component';
 import { ColorPickerItemComponent } from '../../color/color-panel/color-picker-item/color-picker-item.component';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 
 describe('EraserPanelComponent', () => {
   let component: EraserPanelComponent;
@@ -57,11 +58,22 @@ describe('EraserPanelComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(EraserPanelComponent);
     component = fixture.componentInstance;
+    // tslint:disable-next-line: no-string-literal
+    component['overlay'] = {
+      openDocumentationDialog: () => { return ; }
+    } as unknown as OverlayService;
     fixture.detectChanges();
   });
 
   it('#should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('#showDocumentation should call openDocumentationDialog of overlay service', () => {
+    const spy = spyOn(component['overlay'], 'openDocumentationDialog');
+    // tslint:disable:next-line no-string-literal
+    component['showDocumentation']();
+    expect(spy).toHaveBeenCalled();
   });
 
   it('#onThicknessChange should change the slider and'

@@ -7,6 +7,8 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSlider } from '@angular/material/slider';
+import { OverlayService } from 'src/app/overlay/overlay.service';
+import { DocEnum } from 'src/app/overlay/pages/documentation/doc-enum';
 import { Point } from 'src/app/tool/shape/common/point';
 import { ColorService } from '../../../color/color.service';
 import { ToolPanelDirective } from '../../../tool-panel/tool-panel.directive';
@@ -45,6 +47,7 @@ export class AerosolPanelComponent extends ToolPanelDirective
     private readonly service: AerosolService,
     protected readonly colorService: ColorService,
     private readonly formBuilder: FormBuilder,
+    private overlay: OverlayService,
     private renderer: Renderer2) {
     super(elementRef);
     this.aerosolForm = this.formBuilder.group({
@@ -86,5 +89,9 @@ export class AerosolPanelComponent extends ToolPanelDirective
       'd',
       preview
     );
+  }
+
+  protected showDocumentation(): void {
+    this.overlay.openDocumentationDialog(false, DocEnum.aerosol);
   }
 }

@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatRadioChange, MatSlider } from '@angular/material';
 import { MatRadioButton } from '@angular/material/radio';
 
+import { OverlayService } from 'src/app/overlay/overlay.service';
+import { DocEnum } from 'src/app/overlay/pages/documentation/doc-enum';
 import { ToolPanelDirective } from '../../../tool-panel/tool-panel.directive';
 import { BrushService, Texture } from '../brush.service';
 
@@ -35,6 +37,7 @@ export class BrushPanelComponent extends ToolPanelDirective {
   constructor(
     elementRef: ElementRef<HTMLElement>,
     private readonly service: BrushService,
+    private overlay: OverlayService,
     private formBuilder: FormBuilder
   ) {
     super(elementRef);
@@ -86,4 +89,9 @@ export class BrushPanelComponent extends ToolPanelDirective {
   protected onOptionChange($event: MatRadioChange): void {
     this.service.texture = $event.value;
   }
+
+  protected showDocumentation(): void {
+    this.overlay.openDocumentationDialog(false, DocEnum.brush);
+  }
+
 }

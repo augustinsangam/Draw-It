@@ -11,6 +11,8 @@ import {
   MatSlideToggleChange
 } from '@angular/material';
 
+import { OverlayService } from 'src/app/overlay/overlay.service';
+import { DocEnum } from 'src/app/overlay/pages/documentation/doc-enum';
 import { ToolPanelDirective } from '../../../tool-panel/tool-panel.directive';
 import { PolygoneService } from '../polygone.service';
 
@@ -46,7 +48,8 @@ export class PolygonePanelComponent
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: PolygoneService,
-              private readonly formBuilder: FormBuilder) {
+              private readonly formBuilder: FormBuilder,
+              private overlay: OverlayService) {
     super(elementRef);
     this.polygoneForm = this.formBuilder.group({
       thicknessFormField: [this.service.thickness, []],
@@ -94,5 +97,9 @@ export class PolygonePanelComponent
       sidesFormField: this.sidesSlider.value
     });
     this.service.sides = this.sidesSlider.value as number;
+  }
+
+  protected showDocumentation(): void {
+    this.overlay.openDocumentationDialog(false, DocEnum.polygone);
   }
 }

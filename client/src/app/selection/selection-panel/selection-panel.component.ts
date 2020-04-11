@@ -6,9 +6,10 @@ import {
   ViewChild,
 } from '@angular/core';
 import { EventManager } from '@angular/platform-browser';
+import { OverlayService } from 'src/app/overlay/overlay.service';
+import { DocEnum } from 'src/app/overlay/pages/documentation/doc-enum';
 import { ToolPanelDirective } from '../../tool/tool-panel/tool-panel.directive';
 import { SelectionService } from '../selection.service';
-import { OverlayService } from 'src/app/overlay/overlay.service';
 
 @Component({
   selector: 'app-selection-panel',
@@ -35,7 +36,7 @@ export class SelectionPanelComponent extends ToolPanelDirective implements After
   }
 
   protected showDocumentation(): void {
-    this.overlay.openDocumentationDialog(false, )
+    this.overlay.openDocumentationDialog(false, DocEnum.selectionRectangle);
   }
 
   ngAfterViewInit(): void {

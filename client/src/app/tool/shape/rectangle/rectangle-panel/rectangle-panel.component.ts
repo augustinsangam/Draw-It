@@ -11,6 +11,8 @@ import {
   MatSlideToggleChange
 } from '@angular/material';
 
+import { OverlayService } from 'src/app/overlay/overlay.service';
+import { DocEnum } from 'src/app/overlay/pages/documentation/doc-enum';
 import { ToolPanelDirective } from '../../../tool-panel/tool-panel.directive';
 import { RectangleService } from '../rectangle.service';
 
@@ -41,6 +43,7 @@ export class RectanglePanelComponent
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: RectangleService,
+              private overlay: OverlayService,
               private readonly formBuilder: FormBuilder) {
     super(elementRef);
     this.rectangleForm = this.formBuilder.group({
@@ -80,5 +83,9 @@ export class RectanglePanelComponent
       thicknessFormField: this.thicknessSlider.value
     });
     this.service.thickness = this.thicknessSlider.value as number;
+  }
+
+  protected showDocumentation(): void {
+    this.overlay.openDocumentationDialog(false, DocEnum.rectangle);
   }
 }

@@ -19,6 +19,7 @@ import {
 // tslint:disable-next-line: max-line-length
 } from '../../../color/color-panel/color-picker-item/color-picker-item.component';
 import { EllipsePanelComponent } from './ellipse-panel.component';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable: no-string-literal
 describe('EllipsePanelComponent', () => {
@@ -59,6 +60,10 @@ describe('EllipsePanelComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(EllipsePanelComponent);
     component = fixture.componentInstance;
+    // tslint:disable-next-line: no-string-literal
+    component['overlay'] = {
+      openDocumentationDialog: () => { return ; }
+    } as unknown as OverlayService;
     fixture.detectChanges();
   });
 

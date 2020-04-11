@@ -16,6 +16,7 @@ import {ColorPickerContentComponent} from '../../color/color-panel/color-picker-
 import {ColorPickerItemComponent} from '../../color/color-panel/color-picker-item/color-picker-item.component';
 import {TextAlignement} from '../text-classes/text-alignement';
 import {TextPanelComponent} from './text-panel.component';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable:no-string-literal no-magic-numbers no-any
 describe('TextPanelComponent', () => {
@@ -55,6 +56,10 @@ describe('TextPanelComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TextPanelComponent);
     component = fixture.componentInstance;
+    // tslint:disable-next-line: no-string-literal
+    component['overlay'] = {
+      openDocumentationDialog: () => { return ; }
+    } as unknown as OverlayService;
     fixture.detectChanges();
   });
 
@@ -128,5 +133,11 @@ describe('TextPanelComponent', () => {
     component['fontSizeSlider'].disabled = true;
     component['endTyping']();
     expect(component['fontSizeSlider'].disabled).toBeFalsy();
+  });
+
+  it('#showDocumentation should call openDocumentationDialog of overlay service', () => {
+    const spy = spyOn(component['overlay'], 'openDocumentationDialog');
+    component['showDocumentation']();
+    expect(spy).toHaveBeenCalled();
   });
 });

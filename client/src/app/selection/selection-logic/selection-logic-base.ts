@@ -149,7 +149,7 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   }
 
   private setCircle(center: Point, circle: CircleType, radius: string): void {
-    if(this.mouse.left.selectedElement === circle) {
+    if (this.mouse.left.selectedElement === circle) {
       Circle.set(center, this.renderer, this.circles[circle], radius, Util.COLORS.DRAK_GRAY);
     } else {
       Circle.set(center, this.renderer, this.circles[circle], radius, Util.COLORS.GRAY);

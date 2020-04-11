@@ -30,6 +30,7 @@ import {
   ColorPickerItemComponent
 } from '../../../color/color-panel/color-picker-item/color-picker-item.component';
 import { BrushPanelComponent } from './brush-panel.component';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // On a besoin des string-literal pour accéder aux attributs privés
 // tslint:disable: no-string-literal
@@ -68,6 +69,10 @@ describe('BrushPanelComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(BrushPanelComponent);
     component = fixture.componentInstance;
+    // tslint:disable-next-line: no-string-literal
+    component['overlay'] = {
+      openDocumentationDialog: () => { return ; }
+    } as unknown as OverlayService;
     fixture.detectChanges();
   });
 

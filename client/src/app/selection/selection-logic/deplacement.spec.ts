@@ -301,7 +301,7 @@ describe('Deplacement', () => {
     document.body.appendChild(component.svgStructure.root);
     component.service.selectedElements = new Set([rect]);
     instance.onMouseDown();
-  
+
     const testCases: [Point, Point][] = [
       [new Point(10, 10)    ,   new Point(0, 0)],
       // [new Point(10, 10)  ,   new Point(10, 10)],
@@ -309,7 +309,6 @@ describe('Deplacement', () => {
       // [new Point(0, 0)    ,   new Point(0, 0)],
       // [new Point(19, 19)  ,   new Point(20, 20)],
     ];
-
 
     testCases.forEach((testCase) => {
       component.mouse.left.currentPoint = testCase[0];
