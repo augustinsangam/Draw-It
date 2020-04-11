@@ -8,7 +8,7 @@ import {
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
-import { LocalStorageHandlerService } from './auto-save/local-storage-handler.service';
+// import { LocalStorageHandlerService } from './auto-save/local-storage-handler.service';
 import { MaterialModule } from './material.module';
 import { OverlayService } from './overlay/overlay.service';
 import { DocumentationComponent } from './overlay/pages/documentation/documentation.component';
@@ -38,7 +38,7 @@ describe('AppComponent', () => {
   let service: OverlayService;
   let svgService: SvgService;
   let fixture: ComponentFixture<AppComponent>;
-  let autoSave: LocalStorageHandlerService;
+  // let autoSave: LocalStorageHandlerService;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -102,7 +102,7 @@ describe('AppComponent', () => {
 
     svgService = TestBed.get(SvgService);
 
-    autoSave = TestBed.get(LocalStorageHandlerService);
+    // autoSave = TestBed.get(LocalStorageHandlerService);
 
     svgService.structure = {
       root: document.createElementNS('http://www.w3.org/2000/svg', 'svg'),

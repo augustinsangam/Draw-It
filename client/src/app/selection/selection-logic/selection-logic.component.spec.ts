@@ -9,7 +9,7 @@ import * as Util from './selection-logic-util';
 import { SelectionLogicComponent } from './selection-logic.component';
 
 // tslint:disable: no-magic-numbers no-string-literal no-any
-describe('SelectionLogicComponent', () => {
+fdescribe('SelectionLogicComponent', () => {
   let component: SelectionLogicComponent;
   let fixture: ComponentFixture<SelectionLogicComponent>;
 
@@ -204,6 +204,49 @@ describe('SelectionLogicComponent', () => {
 
     mouseUpHandler(fakeEvent);
     expect(component['mouse'].left.endPoint).not.toEqual(new Point(200, 200));
+  });
+
+  it('#left mouse up handler should call undoRedoService.saveState()'
+   + ' when the start and end point are different and onDragor onResize is true', () => {
+    const spy = spyOn(component.undoRedoService, 'saveState');
+
+    const fakeEvent = {
+      button: 0,
+      offsetX: 200,
+      offsetY: 200
+    } as unknown as MouseEvent;
+
+    const mouseUpHandler = (component['mouseHandlers'].get('leftButton') as
+      Map<string, Util.MouseEventCallBack>).get('mouseup') as
+        Util.MouseEventCallBack;
+
+    component.mouse.left.onDrag = true;
+    component.mouse.left.startPoint = new Point(0, 0);
+    component.mouse.left.currentPoint = new Point(42, 42);
+
+    mouseUpHandler(fakeEvent);
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#left mouse up handler should call deleteSelection()'
+   + ' when the start and end point are the same', () => {
+    const spy = spyOn<any>(component, 'deleteSelection');
+
+    const fakeEvent = {
+      button: 0,
+      offsetX: 200,
+      offsetY: 200
+    } as unknown as MouseEvent;
+
+    const mouseUpHandler = (component['mouseHandlers'].get('leftButton') as
+      Map<string, Util.MouseEventCallBack>).get('mouseup') as
+        Util.MouseEventCallBack;
+
+    component.mouse.left.startPoint = new Point(42, 42);
+    component.mouse.left.currentPoint = new Point(42, 42);
+
+    mouseUpHandler(fakeEvent);
+    expect(spy).toHaveBeenCalled();
   });
 
   it('#right mouse down handler should at least modifiy right'

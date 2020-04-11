@@ -1,16 +1,16 @@
 import { Renderer2 } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Point } from '../../shape/common/point';
+import { Point } from '../../tool/shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { Offset } from '../offset';
 import { CircleType } from './circle-type';
 import { Scale } from './scale';
-// import * as Util from './selection-logic-util';
+import * as Util from './selection-logic-util';
 import { SelectionLogicComponent } from './selection-logic.component';
 import { Transform } from './transform';
 
 // tslint:disable: no-magic-numbers no-string-literal no-any
-describe('Scale', () => {
+fdescribe('Scale', () => {
   let component: SelectionLogicComponent;
   let fixture: ComponentFixture<SelectionLogicComponent>;
   let scale: Scale;
@@ -631,6 +631,23 @@ describe('Scale', () => {
     const expectedReturnedPoint2 = new Point(45, 48);
 
     expect(retrunedPoints).toEqual([expectedReturnedPoint1, expectedReturnedPoint2]);
+  });
+
+  it('#left mouse move should call scaleUtil.onMouseMove()', () => {
+    const spy = spyOn(scale, 'onMouseMove');
+
+    component.mouse.left.mouseIsDown = true;
+    component.mouse.left.onResize = true;
+
+    const fakeEvent = {offsetX: 0, offsetY: 0, preventDefault: () => {return; }} as MouseEvent;
+
+    const mouseHandler = (component['mouseHandlers'].get('leftButton') as
+    Map<string, Util.MouseEventCallBack>).get('mousemove') as
+      Util.MouseEventCallBack;
+
+    mouseHandler(fakeEvent);
+
+    expect(spy).toHaveBeenCalled();
   });
 // tslint:disable-next-line: max-file-line-count
 });
