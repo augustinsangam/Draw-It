@@ -15,3 +15,22 @@ mat-form-field {
   margin-left: 10px;
   margin-top: -25px;
 }
+
+.tool-tip {
+
+  mat-icon {
+    color: yellow;
+    font-size: 24px;
+    vertical-align: middle;
+    position: absolute;
+    top: 26px;
+    left: 350px;
+    transition-delay: 0s title;
+  }
+
+  mat-icon:hover {
+    cursor: pointer;
+    filter: grayscale(0) drop-shadow(0 0 5px rgb(231, 210, 17));
+  }
+
+}

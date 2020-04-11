@@ -8,6 +8,7 @@ import {
 import { EventManager } from '@angular/platform-browser';
 import { ToolPanelDirective } from '../../tool/tool-panel/tool-panel.directive';
 import { SelectionService } from '../selection.service';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 
 @Component({
   selector: 'app-selection-panel',
@@ -28,8 +29,13 @@ export class SelectionPanelComponent extends ToolPanelDirective implements After
   constructor(elementRef: ElementRef<HTMLElement>,
               protected readonly service: SelectionService,
               private eventManager: EventManager,
-              private renderer: Renderer2) {
+              private renderer: Renderer2,
+              private overlay: OverlayService) {
     super(elementRef);
+  }
+
+  protected showDocumentation(): void {
+    this.overlay.openDocumentationDialog(false, )
   }
 
   ngAfterViewInit(): void {
