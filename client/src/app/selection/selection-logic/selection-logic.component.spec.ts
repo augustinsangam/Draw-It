@@ -145,6 +145,27 @@ describe('SelectionLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
+  it('#left down handler should call deplacement.onMouseDown() when magnet is active', () => {
+    const fakeEvent = {
+      button: 0,
+      offsetX: 200,
+      offsetY: 200,
+      target: component.svgStructure.drawZone.children.item(0)
+    } as unknown as MouseEvent;
+
+    component.service.magnetActive = true;
+
+    const mouseClickHandler = (component['mouseHandlers'].get('leftButton') as
+      Map<string, Util.MouseEventCallBack>).get('mousedown') as
+      Util.MouseEventCallBack;
+
+    const spy = spyOn<any>(component.deplacement, 'onMouseDown').and.callThrough();
+
+    mouseClickHandler(fakeEvent);
+
+    expect(spy).toHaveBeenCalled();
+  });
+
   it('#left mouse move handler should at least modifiy left'
    + ' current point when mouse in down', () => {
     const fakeEvent = {

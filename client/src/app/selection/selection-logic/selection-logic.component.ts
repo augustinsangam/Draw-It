@@ -65,6 +65,9 @@ export class SelectionLogicComponent
             && !this.service.selectedElements.has(target as SVGElement)) {
             this.applySingleSelection(target as SVGElement);
           }
+          if (this.service.magnetActive) {
+            this.deplacement.onMouseDown();
+          }
           this.scaleUtil.onMouseDown();
         }],
         ['mousemove', ($event: MouseEvent) => {
