@@ -130,6 +130,11 @@ export class SelectionLogicComponent
             this.deleteVisualisation();
           }
           this.applyMouseStyle($event);
+        }],
+        ['mouseleave', (_: MouseEvent) => {
+          this.mouse.left.mouseIsDown = false;
+          this.mouse.left.onDrag = false;
+          this.mouse.left.onResize = false;
         }]
       ])],
       ['centerButton', new Map<string, Util.WheelEventCallback>([
@@ -188,7 +193,7 @@ export class SelectionLogicComponent
   ngOnInit(): void {
     super.ngOnInit();
     [
-      ['leftButton', ['mousedown', 'mousemove', 'mouseup', 'click']],
+      ['leftButton', ['mousedown', 'mousemove', 'mouseup', 'click', 'mouseleave']],
       ['rightButton', ['mousedown', 'mousemove', 'mouseup', 'contextmenu']],
       ['centerButton', ['wheel']]
     ].forEach((side: [string, string[]]) => {
