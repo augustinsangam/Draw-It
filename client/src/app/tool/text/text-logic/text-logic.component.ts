@@ -183,7 +183,7 @@ export class TextLogicComponent extends ToolLogicDirective
 
       case TextKeycodes.space:
         keyEv.preventDefault();
-        this.addLetterAtCursor('U+0020');
+        this.addLetterAtCursor(' ');
         break;
 
       default:
@@ -253,6 +253,7 @@ export class TextLogicComponent extends ToolLogicDirective
 
   private startTyping(): void {
     this.service.indicators.onType = true;
+    this.service.startTypingEmitter.emit();
     this.shortcutService.desactivateAll();
     this.initCursor();
     this.initSVGText();
@@ -274,6 +275,7 @@ export class TextLogicComponent extends ToolLogicDirective
     this.service.textZoneRectangle.element.remove();
     this.service.currentZoneDims = {height: 0, width: 0};
     this.service.indicators.onType = false;
+    this.service.endTypingEmitter.emit();
     if (this.currentLine.tspan.textContent === '' && this.lines.length === 1) {
       this.textElement.remove();
     }

@@ -9,5 +9,5 @@ export enum TextKeycodes {
   enter = 'Enter',
   escape = 'Escape',
   home = 'Home',
-  space = 'Space'
+  space = ' '
 }

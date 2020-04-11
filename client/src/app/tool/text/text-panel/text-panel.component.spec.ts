@@ -17,7 +17,7 @@ import {ColorPickerItemComponent} from '../../color/color-panel/color-picker-ite
 import {TextAlignement} from '../text-classes/text-alignement';
 import { TextPanelComponent } from './text-panel.component';
 
-// tslint:disable:no-string-literal no-magic-numbers
+// tslint:disable:no-string-literal no-magic-numbers no-any
 describe('TextPanelComponent', () => {
   let component: TextPanelComponent;
   let fixture: ComponentFixture<TextPanelComponent>;
@@ -97,5 +97,29 @@ describe('TextPanelComponent', () => {
       component['service'].textAlignement = align.value as TextAlignement;
       expect(component['getPreviewTextAlign']()).toEqual(align.result);
     });
+  });
+
+  it('#startTyping should be subscribed to the event emitter in the service', () => {
+    const spy = spyOn<any>(component, 'startTyping');
+    component['service'].startTypingEmitter.emit();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#endTyping should be subscribed to the event emitter in the service', () => {
+    const spy = spyOn<any>(component, 'endTyping');
+    component['service'].endTypingEmitter.emit();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#startTyping should set disabled to true', () => {
+    component['fontSizeSlider'].disabled = false;
+    component['startTyping']();
+    expect(component['fontSizeSlider'].disabled).toBeTruthy();
+  });
+
+  it('endTyping should set disabled to false', () => {
+    component['fontSizeSlider'].disabled = true;
+    component['endTyping']();
+    expect(component['fontSizeSlider'].disabled).toBeFalsy();
   });
 });

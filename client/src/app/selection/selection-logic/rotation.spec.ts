@@ -1,8 +1,8 @@
 import { Renderer2 } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
-import { SelectionLogicComponent } from './selection-logic.component';
 import { Rotation } from './rotation';
+import { SelectionLogicComponent } from './selection-logic.component';
 
 // tslint:disable: no-magic-numbers no-string-literal no-any
 describe('Rotation', () => {

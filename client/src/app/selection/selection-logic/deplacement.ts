@@ -1,7 +1,7 @@
 import { PointSet } from '../../tool/bucket/bucket-logic/point-set';
 import { Point } from '../../tool/shape/common/point';
 import { MultipleSelection } from '../multiple-selection';
-import { Offset } from '../offset';
+// import { Offset } from '../offset';
 import { Arrow } from './arrow';
 import { KeyManager } from './key-manager';
 import { OFFSET_TRANSLATE, TIME_INTERVAL } from './selection-logic-util';
@@ -19,7 +19,7 @@ export class Deplacement {
     this.selectionLogic.allListenners.push(
       this.selectionLogic.renderer.listen(document, 'keyup',
         this.keyManager.handlers.keyup));
-    this.offset = {x: 0, y: 0};
+    // this.offset = {x: 0, y: 0};
   }
 
   private initialiseKeyManager(): void {

@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { interval, Observable, Subscription } from 'rxjs';
 import { Point } from 'src/app/tool/shape/common/point';
+import { UndoRedoService } from '../../../../undo-redo/undo-redo.service';
 import { ColorService } from '../../../color/color.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
-import { UndoRedoService } from '../../../../undo-redo/undo-redo.service';
 import { AerosolService } from '../aerosol.service';
 
 const A_SECOND_IN_MS = 1000;

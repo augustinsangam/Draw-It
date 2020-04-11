@@ -9,21 +9,12 @@ mat-slide-toggle {
   margin-left: 30px;
 }
 
-.mat-button-toggle-appearance-standard {
-  background: #4e4d4d;
+.settingsIcons {
+  color: #FFFFFF;
 }
 
-.mat-button-toggle {
-  color: white;
-}
-
-.mat-raised-button {
-  background-color: #4e4d4d;
-  color: #ffffff;
-}
-
-mat-slider {
-  margin-top: 0px;
+mat-button-toggle {
+  background-color: #3c3836;
 }
 
 mat-form-field {
@@ -31,10 +22,6 @@ mat-form-field {
   height: 10px;
   margin-left: 10px;
   margin-top: -25px;
-}
-
-mat-button-toggle-group {
-  align-content: center;
 }
 
 .fonts {
@@ -48,11 +35,6 @@ mat-option {
 }
 
 ::ng-deep .mat-select-value-text {
-  color: #FFFFFF;
-}
-
-.panelClass {
-  background: #4e4d4d;
   color: #FFFFFF;
 }
 

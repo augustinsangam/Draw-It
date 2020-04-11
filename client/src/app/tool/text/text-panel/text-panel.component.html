@@ -35,21 +35,21 @@
       title="Gras"
       (change)="onMutatorChange($event)"
       disabled="{{service.indicators.onType}}">
-      <mat-icon>format_bold</mat-icon>
+      <mat-icon class="settingsIcons">format_bold</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       value="italic"
       title="Italique"
       (change)="onMutatorChange($event)"
       disabled="{{service.indicators.onType}}">
-      <mat-icon>format_italic</mat-icon>
+      <mat-icon class="settingsIcons">format_italic</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       value="underline"
       title="Souligné"
       (change)="onMutatorChange($event)"
       disabled="{{service.indicators.onType}}">
-      <mat-icon>format_underlined</mat-icon>
+      <mat-icon class="settingsIcons">format_underlined</mat-icon>
     </mat-button-toggle>
   </mat-button-toggle-group>
   <mat-button-toggle-group>
@@ -58,28 +58,30 @@
       title="Aligné à gauche"
       (change)="onAlignChange($event)"
       disabled="{{service.indicators.onType}}">
-      <mat-icon>format_align_left</mat-icon>
+      <mat-icon class="settingsIcons">format_align_left</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       value="center"
       title="Centré"
       (change)="onAlignChange($event)"
       disabled="{{service.indicators.onType}}">
-      <mat-icon>format_align_center</mat-icon>
+      <mat-icon class="settingsIcons">format_align_center</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       value="right"
       title="Aligné à droite"
       (change)="onAlignChange($event)"
       disabled="{{service.indicators.onType}}">
-      <mat-icon>format_align_right</mat-icon>
+      <mat-icon class="settingsIcons">format_align_right</mat-icon>
     </mat-button-toggle>
   </mat-button-toggle-group>
   <hr>
   <p>Police</p>
   <mat-form-field class="fonts">
     <div class="mat-select-value-text">
-      <mat-select [(value)]="service.currentFont" class="mat-select-value-text" disableRipple panelClass="panelClass">
+      <mat-select [(value)]="service.currentFont"
+                  class="mat-select-value-text"
+                  formControlName="fonts">
         <mat-option *ngFor="let font of service.fontsList" [value]="font.value">
           {{font.viewValue}}
         </mat-option>

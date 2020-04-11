@@ -193,7 +193,7 @@ describe('TextLogicComponent', () => {
       ['ArrowDown',  spyOn(component['handlers'].textNav,           'cursorDown')],
       ['Delete',     spyOn(component['handlers'].letterDelete, 'deleteRightLetter')],
       ['Backspace',  spyOn(component['handlers'].letterDelete, 'deleteLeftLetter')],
-      ['Space',      spyOnLettersAdded],
+      [' ',      spyOnLettersAdded],
       ['x',          spyOnLettersAdded],
     ]);
 

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { ColorService } from '../../../color/color.service';
 import {UndoRedoService} from '../../../../undo-redo/undo-redo.service';
+import { ColorService } from '../../../color/color.service';
 import { PencilBrushCommon } from '../../pencil-brush/pencil-brush-common';
 import { BrushService } from '../brush.service';
 

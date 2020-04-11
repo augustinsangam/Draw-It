@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {Dimension} from '../shape/common/dimension';
 import {Rectangle} from '../shape/common/rectangle';
 import {ToolService} from '../tool.service';
@@ -34,6 +34,8 @@ export class TextService extends ToolService {
   fontsList: Font[];
   currentZoneDims: Dimension;
   textZoneRectangle: Rectangle;
+  startTypingEmitter: EventEmitter<null>;
+  endTypingEmitter: EventEmitter<null>;
 
   constructor() {
     super();
@@ -49,6 +51,8 @@ export class TextService extends ToolService {
       {value: 'Times New Roman, serif', viewValue: 'Times New Roman'    },
     ];
     this.fontSize = this.DEFAULT_FONTSIZE;
+    this.startTypingEmitter = new EventEmitter<null>();
+    this.endTypingEmitter = new EventEmitter<null>();
   }
 
   getTextAlign(): number {

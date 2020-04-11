@@ -66,6 +66,12 @@ import {
   PanelComponent
 } from './panel/panel.component';
 import {
+  SelectionLogicComponent
+} from './selection/selection-logic/selection-logic.component';
+import {
+  SelectionPanelComponent
+} from './selection/selection-panel/selection-panel.component';
+import {
   SidebarComponent
 } from './sidebar/sidebar.component';
 import {
@@ -137,12 +143,6 @@ import {
 import {
   PipettePanelComponent
 } from './tool/pipette/pipette-panel/pipette-panel.component';
-import {
-  SelectionLogicComponent
-} from './selection/selection-logic/selection-logic.component';
-import {
-  SelectionPanelComponent
-} from './selection/selection-panel/selection-panel.component';
 import {
   EllipseLogicComponent
 } from './tool/shape/ellipse/ellipse-logic/ellipse-logic.component';
