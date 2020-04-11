@@ -1,7 +1,9 @@
-<nav>
+<div>
   <a title="Acceuil" (click)="homeEvent.emit()">
     <mat-icon>home</mat-icon>
   </a>
+</div>
+<nav>
   <a title="Selection [S]" #selection (click)="toolSelectorService.set(Tool.Selection)"
      style="background-image:url(/assets/sidebar-icons/selection.png)">
   </a>
