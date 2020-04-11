@@ -78,11 +78,12 @@ describe('Clipboard', () => {
 
   });
 
-  it('#the subscribe of onCopy should work ', () => {
+  it('#the subscribe of onCopy should work ', (done: DoneFn) => {
     const spy = spyOn (instance, 'copy');
     component['service'].copy.next(null);
     fixture.whenStable().then(() => {
       expect(spy).toHaveBeenCalled();
+      done();
     });
   });
 
@@ -250,32 +251,36 @@ describe('Clipboard', () => {
     expect(spy1).not.toHaveBeenCalled();
 
   });
-  it('#the subscribe of onCut should work ', () => {
+  it('#the subscribe of onCut should work ', (done: DoneFn) => {
     const spy = spyOn (instance, 'cut');
     component['service'].cut.next(null);
     fixture.whenStable().then(() => {
       expect(spy).toHaveBeenCalled();
+      done();
     });
   });
-  it('#the subscribe of onDuplicate should work ', () => {
+  it('#the subscribe of onDuplicate should work ', (done: DoneFn) => {
     const spy = spyOn (instance, 'duplicate');
     component['service'].duplicate.next(null);
     fixture.whenStable().then(() => {
       expect(spy).toHaveBeenCalled();
+      done();
     });
   });
-  it('#the subscribe of onDuplicate should work ', () => {
+  it('#the subscribe of onDuplicate should work ', (done: DoneFn) => {
     const spy = spyOn (instance, 'delete');
     component['service'].delete.next(null);
     fixture.whenStable().then(() => {
       expect(spy).toHaveBeenCalled();
+      done();
     });
   });
-  it('#the subscribe of onPaste should work ', () => {
+  it('#the subscribe of onPaste should work ', (done: DoneFn) => {
     const spy = spyOn (instance, 'paste');
     component['service'].paste.next(null);
     fixture.whenStable().then(() => {
       expect(spy).toHaveBeenCalled();
+      done();
     });
   });
 });

@@ -95,12 +95,9 @@ describe('AppComponent', () => {
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AppComponent);
-
     component = fixture.componentInstance;
-
     svgService = TestBed.get(SvgService);
-
-    // autoSave = TestBed.get(LocalStorageHandlerService);
+    autoSave = TestBed.get(LocalStorageHandlerService);
 
     svgService.structure = {
       root: document.createElementNS('http://www.w3.org/2000/svg', 'svg'),
@@ -136,9 +133,9 @@ describe('AppComponent', () => {
     autoSave.saveShape(shape);
     component.ngAfterViewInit();
     setTimeout(() => {
-      expect(spy).toHaveBeenCalledTimes(1);
-    }, 500);
-    tick(500);
+      expect(spy).toHaveBeenCalled();
+    }, 5);
+    tick(5);
     localStorage.clear();
   }));
 

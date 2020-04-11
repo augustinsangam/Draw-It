@@ -37,4 +37,17 @@ describe('SelectionPanelComponent', () => {
   it('#should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('#a click on a circle should set the circle', (done: DoneFn) => {
+    // tslint:disable-next-line: no-any
+    const spy = spyOn<any>(component, 'setCircle');
+    // tslint:disable-next-line: no-string-literal
+    (component['circles'].nativeElement.children.item(0) as
+    HTMLElement).dispatchEvent(new MouseEvent('click', {button: 0}));
+    fixture.whenStable().then(() => {
+      expect(spy).toHaveBeenCalled();
+      done();
+    });
+  });
+
 });

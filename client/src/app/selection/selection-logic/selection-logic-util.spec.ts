@@ -29,4 +29,13 @@ describe('SelectionLogicUtil', () => {
     });
   });
 
+  it('#getRealTarget should consider text as one element', () => {
+    const textElement = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    const tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+    textElement.appendChild(tspan);
+    expect(
+      SelectionLogicUtil.getRealTarget({target: tspan} as unknown as Event)
+    ).toEqual(textElement);
+  });
+
 });

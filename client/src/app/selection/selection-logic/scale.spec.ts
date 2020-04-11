@@ -410,8 +410,6 @@ describe('Scale', () => {
     expect<any>(component.mouse.left.selectedElement).toEqual(expectedElement);
   });
 
-
-
   it('#switchControlPoint should set inverted.y to -1 and set mouse.left.selectedElement to BOTTOM_CIRCLE', () => {
     component.mouse.left.selectedElement = CircleType.TOP_CIRCLE;
     scale['inverted'] = {x: 1, y: 1};
@@ -510,7 +508,6 @@ describe('Scale', () => {
     expect(expectedReturn).toEqual([expectedOffset0, expectedOffset1]);
   });
 
-
   it('#preventResizeOverflow should return theright offsets when TOP_CIRCLE is selected', () => {
     component.mouse.left.selectedElement = CircleType.TOP_CIRCLE;
 
@@ -541,7 +538,6 @@ describe('Scale', () => {
     expect(expectedReturn).toEqual([expectedOffset0, expectedOffset1]);
   });
 
-
   it('#preventResizeOverflow should return theright offsets when BOTTOM_CIRCLE is selected', () => {
     component.mouse.left.selectedElement = CircleType.BOTTOM_CIRCLE;
 
@@ -571,7 +567,6 @@ describe('Scale', () => {
 
     expect(expectedReturn).toEqual([expectedOffset0, expectedOffset1]);
   });
-
 
   it('#preventResizeOverflow should return theright offsets when RIGHT_CIRCLE is selected', () => {
     component.mouse.left.selectedElement = CircleType.RIGHT_CIRCLE;
