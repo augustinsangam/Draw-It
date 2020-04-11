@@ -603,7 +603,7 @@ describe('SelectionLogicComponent', () => {
     component['mouse'].left.onResize = true;
     component['mouse'].left.selectedElement = CircleType.BOTTOM_CIRCLE;
     component['applyMouseStyle'](undefined as unknown as MouseEvent);
-    expect(['ns-resize', 'ns-resize']).toContain(
+    expect(['ns-resize', 'col-resize']).toContain(
       component['svgStructure'].root.style.cursor
     );
   });
@@ -613,7 +613,7 @@ describe('SelectionLogicComponent', () => {
     component['mouse'].left.onResize = true;
     component['mouse'].left.selectedElement = CircleType.LEFT_CIRCLE;
     component['applyMouseStyle'](undefined as unknown as MouseEvent);
-    expect(['ns-resize', 'ns-resize']).toContain(
+    expect(['ns-resize', 'col-resize']).toContain(
       component['svgStructure'].root.style.cursor
     );
   });
