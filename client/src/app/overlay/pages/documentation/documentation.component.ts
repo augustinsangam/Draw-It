@@ -1,10 +1,11 @@
 import { NestedTreeControl } from '@angular/cdk/tree';
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 
 import marked from 'marked';
 
 import docs from '../../../../assets/docs.json';
+import {DocEnum} from './doc-enum';
 
 export interface Node {
   label: string;
@@ -37,7 +38,7 @@ export class DocumentationComponent {
     this.dataSource.data = this.doc;
     this.constructLeafNodeArray(this.doc);
     this.contentToDisplay = {title: '', body: ''};
-    this.displayNodeContent(this.leafNodeArray[0]);
+    this.displayNodeContent(this.leafNodeArray[DocEnum.welcome]);
   }
 
   private constructLeafNodeArray(nodes: Node[]): void {
@@ -108,6 +109,10 @@ export class DocumentationComponent {
       .then((text) => {
         this.contentToDisplay.body = marked(text);
       });
+  }
+
+  goToSection(section: DocEnum): void {
+    this.displayNodeContent(this.leafNodeArray[section]);
   }
 
   hasChild = (_: number, node: Node) =>
