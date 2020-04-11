@@ -1,25 +1,36 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
-import { FormBuilder, FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 import { PencilService } from '../pencil.service';
 import { PencilPanelComponent } from './pencil-panel.component';
-import { OverlayService } from 'src/app/overlay/overlay.service';
+
+import { Overlay } from '@angular/cdk/overlay';
+import { MatSnackBar } from '@angular/material';
+import { MaterialModule } from 'src/app/material.module';
 
 // tslint:disable: no-string-literal
-fdescribe('PencilPanelComponent', () => {
+describe('PencilPanelComponent', () => {
   let component: PencilPanelComponent;
   let fixture: ComponentFixture<PencilPanelComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PencilPanelComponent ],
+      declarations: [
+        PencilPanelComponent
+      ],
+      imports: [
+        MaterialModule,
+        ReactiveFormsModule,
+        FormsModule
+      ],
       providers: [
         FormsModule,
         PencilService,
-        FormBuilder
+        FormBuilder,
+        Overlay,
+        MatSnackBar
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]
     })
     .compileComponents();
   }));

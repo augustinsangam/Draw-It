@@ -11,6 +11,7 @@ import {
 import {
   CdkObserveContent
 } from '@angular/cdk/observers';
+import { Overlay } from '@angular/cdk/overlay';
 import {
   MatCard,
   MatCardContent,
@@ -23,11 +24,13 @@ import {
   MatRipple,
   MatSlider,
   MatSlideToggle,
-  MatSlideToggleChange
+  MatSlideToggleChange,
+  MatSnackBar
 } from '@angular/material';
 import {
   BrowserAnimationsModule
 } from '@angular/platform-browser/animations';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 import {
   ColorPanelComponent
 } from '../../../color/color-panel/color-panel.component';
@@ -40,10 +43,9 @@ import {
 import {
   LinePanelComponent
 } from './line-panel.component';
-import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable: no-string-literal no-magic-numbers
-fdescribe('LinePanelComponent', () => {
+describe('LinePanelComponent', () => {
   let component: LinePanelComponent;
   let fixture: ComponentFixture<LinePanelComponent>;
 
@@ -72,6 +74,10 @@ fdescribe('LinePanelComponent', () => {
         MatCardContent,
         MatCard
       ],
+      providers: [
+        MatSnackBar,
+        Overlay
+      ]
     }).compileComponents();
   }));
 

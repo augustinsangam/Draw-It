@@ -8,7 +8,8 @@ import { ColorPickerContentComponent } from '../../tool/color/color-panel/color-
 import { ColorPickerItemComponent } from '../../tool/color/color-panel/color-picker-item/color-picker-item.component';
 import { SelectionPanelComponent } from './selection-panel.component';
 
-fdescribe('SelectionPanelComponent', () => {
+// tslint:disable:no-string-literal
+describe('SelectionPanelComponent', () => {
   let component: SelectionPanelComponent;
   let fixture: ComponentFixture<SelectionPanelComponent>;
 
@@ -32,7 +33,6 @@ fdescribe('SelectionPanelComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SelectionPanelComponent);
     component = fixture.componentInstance;
-    // tslint:disable-next-line: no-string-literal
     component['overlay'] = {
       openDocumentationDialog: () => { return ; }
     } as unknown as OverlayService;
@@ -46,7 +46,6 @@ fdescribe('SelectionPanelComponent', () => {
   it('#a click on a circle should set the circle', (done: DoneFn) => {
     // tslint:disable-next-line: no-any
     const spy = spyOn<any>(component, 'setCircle');
-    // tslint:disable-next-line: no-string-literal
     (component['circles'].nativeElement.children.item(0) as
     HTMLElement).dispatchEvent(new MouseEvent('click', {button: 0}));
     fixture.whenStable().then(() => {
@@ -55,11 +54,15 @@ fdescribe('SelectionPanelComponent', () => {
     });
   });
 
-  it('#showDocumentation should call openDocumentationDialog of overlay service', () => {
-    // tslint:disable-next-line: no-string-literal
+  it('#showDocumentationSelection should call openDocumentationDialog of overlay service', () => {
     const spy = spyOn(component['overlay'], 'openDocumentationDialog');
-    // tslint:disable:next-line no-string-literal
-    component['showDocumentation']();
+    component['showDocumentationSelection']();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#showDocumentationMagnetism should call openDocumentationDialog of overlay service', () => {
+    const spy = spyOn(component['overlay'], 'openDocumentationDialog');
+    component['showDocumentationMagnetism']();
     expect(spy).toHaveBeenCalled();
   });
 

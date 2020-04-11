@@ -21,11 +21,14 @@ import {
   MatRipple,
   MatSlider,
   MatSlideToggle,
+  MatSnackBar,
 } from '@angular/material';
 import {
   BrowserAnimationsModule
 } from '@angular/platform-browser/animations';
 
+import { Overlay } from '@angular/cdk/overlay';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 import {
   ColorPanelComponent
 } from '../../color/color-panel/color-panel.component';
@@ -38,9 +41,8 @@ import {
 import {
   BucketPanelComponent
 } from './bucket-panel.component';
-import { OverlayService } from 'src/app/overlay/overlay.service';
 
-fdescribe('BucketPanelComponent', () => {
+describe('BucketPanelComponent', () => {
   let component: BucketPanelComponent;
   let fixture: ComponentFixture<BucketPanelComponent>;
 
@@ -68,6 +70,10 @@ fdescribe('BucketPanelComponent', () => {
         MatCardTitle,
         MatCardContent,
         MatCard
+      ],
+      providers: [
+        MatSnackBar,
+        Overlay
       ]
     })
     .compileComponents();

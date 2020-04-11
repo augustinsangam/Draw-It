@@ -29,7 +29,7 @@ import {
 } from './color-picker-item/color-picker-item.component';
 
 // tslint:disable: no-string-literal no-any no-magic-numbers
-fdescribe('ColorPanelComponent', () => {
+describe('ColorPanelComponent', () => {
   let component: ColorPanelComponent;
   let fixture: ComponentFixture<ColorPanelComponent>;
   let paletteColorChange: EventEmitter<string>;

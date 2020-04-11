@@ -24,7 +24,7 @@ import { ColorPanelComponent } from '../../color/color-panel/color-panel.compone
 import { ColorPickerContentComponent } from '../../color/color-panel/color-picker-content/color-picker-content.component';
 import { ColorPickerItemComponent } from '../../color/color-panel/color-picker-item/color-picker-item.component';
 
-fdescribe('EraserPanelComponent', () => {
+describe('EraserPanelComponent', () => {
   let component: EraserPanelComponent;
   let fixture: ComponentFixture<EraserPanelComponent>;
 
@@ -76,6 +76,7 @@ fdescribe('EraserPanelComponent', () => {
   });
 
   it('#showDocumentation should call openDocumentationDialog of overlay service', () => {
+    // tslint:disable:next-line no-string-literal
     const spy = spyOn(component['overlay'], 'openDocumentationDialog');
     // tslint:disable:next-line no-string-literal
     component['showDocumentation']();

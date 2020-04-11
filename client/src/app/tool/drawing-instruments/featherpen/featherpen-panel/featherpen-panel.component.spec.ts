@@ -1,7 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import {CdkObserveContent} from '@angular/cdk/observers';
+import { Overlay } from '@angular/cdk/overlay';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
 import {MatCard, MatCardContent, MatCardTitle} from '@angular/material/card';
 import {MatRipple} from '@angular/material/core';
 import {MatFormField} from '@angular/material/form-field';
@@ -10,15 +12,15 @@ import {MatInput} from '@angular/material/input';
 import {MatRadioButton, MatRadioGroup} from '@angular/material/radio';
 import {MatSlider} from '@angular/material/slider';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 import {PanelComponent} from '../../../../panel/panel.component';
 import {ColorPanelComponent} from '../../../color/color-panel/color-panel.component';
 import {ColorPickerContentComponent} from '../../../color/color-panel/color-picker-content/color-picker-content.component';
 import {ColorPickerItemComponent} from '../../../color/color-panel/color-picker-item/color-picker-item.component';
 import { FeatherpenPanelComponent } from './featherpen-panel.component';
-import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable:no-magic-numbers no-string-literal no-any
-fdescribe('FeatherpenPanelComponent', () => {
+describe('FeatherpenPanelComponent', () => {
   let component: FeatherpenPanelComponent;
   let fixture: ComponentFixture<FeatherpenPanelComponent>;
 
@@ -46,6 +48,10 @@ fdescribe('FeatherpenPanelComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         BrowserAnimationsModule,
+      ],
+      providers: [
+        Overlay,
+        MatSnackBar
       ]
     })
     .compileComponents();
@@ -86,6 +92,12 @@ fdescribe('FeatherpenPanelComponent', () => {
   it('#the update preview method should be called when the service observable emits', () => {
     const spy = spyOn<any>(component, 'updatePreview');
     component['service'].emitter.next();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  it('#showDocumentation should call openDocumentationDialog of overlay service', () => {
+    const spy = spyOn(component['overlay'], 'openDocumentationDialog');
+    component['showDocumentation']();
     expect(spy).toHaveBeenCalled();
   });
 

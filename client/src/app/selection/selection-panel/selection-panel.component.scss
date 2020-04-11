@@ -23,7 +23,7 @@ mat-slide-toggle {
   margin-top: -3px;
 }
 
-.tool-tip {
+.tool-tip-selection {
 
   mat-icon {
     color: yellow;
@@ -42,3 +42,24 @@ mat-slide-toggle {
   }
 
 }
+
+.tool-tip-magnet {
+
+  mat-icon {
+    color: yellow;
+    font-size: 24px;
+    vertical-align: middle;
+    position: absolute;
+    top: 150px;
+    right: 35px;
+    z-index: 99;
+    transition-delay: 0s title;
+  }
+
+  mat-icon:hover {
+    cursor: pointer;
+    filter: grayscale(0) drop-shadow(0 0 5px rgb(231, 210, 17));
+  }
+
+}
+

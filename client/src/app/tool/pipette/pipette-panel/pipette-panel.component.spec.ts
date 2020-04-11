@@ -1,16 +1,16 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 import {MaterialModule} from '../../../material.module';
 import {PanelComponent} from '../../../panel/panel.component';
 import {ColorPanelComponent} from '../../color/color-panel/color-panel.component';
 import {ColorPickerContentComponent} from '../../color/color-panel/color-picker-content/color-picker-content.component';
 import {ColorPickerItemComponent} from '../../color/color-panel/color-picker-item/color-picker-item.component';
 import {PipettePanelComponent} from './pipette-panel.component';
-import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable:no-string-literal
-fdescribe('PipettePanelComponent', () => {
+describe('PipettePanelComponent', () => {
   let component: PipettePanelComponent;
   let fixture: ComponentFixture<PipettePanelComponent>;
 

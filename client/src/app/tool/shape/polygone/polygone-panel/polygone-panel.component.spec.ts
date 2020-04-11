@@ -1,11 +1,13 @@
 import { CdkObserveContent } from '@angular/cdk/observers';
+import { Overlay } from '@angular/cdk/overlay';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatCard, MatCardContent, MatCardTitle, MatFormField, MatIcon, MatInput,
-  MatRadioButton, MatRadioGroup, MatRipple, MatSlider, MatSlideToggle, MatSlideToggleChange
+  MatRadioButton, MatRadioGroup, MatRipple, MatSlider, MatSlideToggle, MatSlideToggleChange, MatSnackBar
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 import {
   ColorPanelComponent
 } from '../../../color/color-panel/color-panel.component';
@@ -16,10 +18,9 @@ import {
   ColorPickerItemComponent
 } from '../../../color/color-panel/color-picker-item/color-picker-item.component';
 import { PolygonePanelComponent } from './polygone-panel.component';
-import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // tslint:disable: no-string-literal
-fdescribe('PolygonePanelComponent', () => {
+describe('PolygonePanelComponent', () => {
   let component: PolygonePanelComponent;
   let fixture: ComponentFixture<PolygonePanelComponent>;
 
@@ -48,8 +49,10 @@ fdescribe('PolygonePanelComponent', () => {
         MatCardTitle,
         PolygonePanelComponent
       ],
-      schemas: [],
-      providers: []
+      providers: [
+        MatSnackBar,
+        Overlay
+      ]
     })
     .compileComponents();
   }));

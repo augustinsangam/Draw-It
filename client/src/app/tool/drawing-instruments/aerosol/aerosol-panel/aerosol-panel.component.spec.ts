@@ -1,7 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import {CdkObserveContent} from '@angular/cdk/observers';
+import { Overlay } from '@angular/cdk/overlay';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
 import {MatCard, MatCardContent, MatCardTitle} from '@angular/material/card';
 import {MatRipple} from '@angular/material/core';
 import {MatFormField} from '@angular/material/form-field';
@@ -18,7 +20,7 @@ import {ColorPickerItemComponent} from '../../../color/color-panel/color-picker-
 import { AerosolPanelComponent } from './aerosol-panel.component';
 
 // tslint:disable:no-string-literal no-any disable:no-magic-numbers
-fdescribe('AerosolPanelComponent', () => {
+describe('AerosolPanelComponent', () => {
   let component: AerosolPanelComponent;
   let fixture: ComponentFixture<AerosolPanelComponent>;
 
@@ -46,6 +48,10 @@ fdescribe('AerosolPanelComponent', () => {
         MatCard,
         MatCardContent,
         MatCardTitle
+      ],
+      providers: [
+        Overlay,
+        MatSnackBar
       ]
     })
     .compileComponents();

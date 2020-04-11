@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CdkObserveContent } from '@angular/cdk/observers';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { Overlay } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatCard,
@@ -10,15 +10,18 @@ import {
   MatDialogClose,
   MatFormField,
   MatGridList,
+  MatGridTile,
   MatIcon,
   MatInput,
   MatRadioButton,
   MatRadioGroup,
   MatRipple,
-  MatSlider
+  MatSlider,
+  MatSnackBar
 } from '@angular/material';
 import { MatRadioChange } from '@angular/material/radio';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OverlayService } from 'src/app/overlay/overlay.service';
 import { SidebarComponent } from 'src/app/sidebar/sidebar.component';
 import {
   ColorPanelComponent
@@ -30,11 +33,10 @@ import {
   ColorPickerItemComponent
 } from '../../../color/color-panel/color-picker-item/color-picker-item.component';
 import { BrushPanelComponent } from './brush-panel.component';
-import { OverlayService } from 'src/app/overlay/overlay.service';
 
 // On a besoin des string-literal pour accéder aux attributs privés
 // tslint:disable: no-string-literal
-fdescribe('BrushPanelComponent', () => {
+describe('BrushPanelComponent', () => {
   let component: BrushPanelComponent;
   let fixture: ComponentFixture<BrushPanelComponent>;
 
@@ -49,6 +51,7 @@ fdescribe('BrushPanelComponent', () => {
         ColorPickerContentComponent,
         MatCard,
         MatCardTitle,
+        MatGridTile,
         MatCardContent,
         MatFormField,
         MatIcon,
@@ -61,8 +64,10 @@ fdescribe('BrushPanelComponent', () => {
         SidebarComponent,
         MatInput
       ],
-      schemas: [NO_ERRORS_SCHEMA],
-      providers: []
+      providers: [
+        Overlay,
+        MatSnackBar
+      ]
     }).compileComponents();
   }));
 
@@ -93,5 +98,11 @@ fdescribe('BrushPanelComponent', () => {
         new MatRadioChange(component['radioChoice'], 'filter2')
       );
       expect(component['service'].texture).toEqual('filter2');
-    });
+  });
+
+  it('#showDocumentation should call openDocumentationDialog of overlay service', () => {
+    const spy = spyOn(component['overlay'], 'openDocumentationDialog');
+    component['showDocumentation']();
+    expect(spy).toHaveBeenCalled();
+  });
 });

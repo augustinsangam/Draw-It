@@ -23,7 +23,7 @@ import {
 import { EllipsePanelComponent } from './ellipse-panel.component';
 
 // tslint:disable: no-string-literal
-fdescribe('EllipsePanelComponent', () => {
+describe('EllipsePanelComponent', () => {
   let component: EllipsePanelComponent;
   let fixture: ComponentFixture<EllipsePanelComponent>;
 
@@ -110,5 +110,11 @@ fdescribe('EllipsePanelComponent', () => {
       expect(component['service'].borderOption).toBeTruthy();
       expect(component['service'].fillOption).toBeTruthy();
     });
+
+  it('#showDocumentation should call openDocumentationDialog of overlay service', () => {
+    const spy = spyOn(component['overlay'], 'openDocumentationDialog');
+    component['showDocumentation']();
+    expect(spy).toHaveBeenCalled();
+  });
 
 });
