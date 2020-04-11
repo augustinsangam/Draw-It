@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { SvgShape } from '../svg/svg-shape';
-import { LocalStorageHandlerService } from './local-storage-handler.service';
+import { LocalStorageHandlerService, LocalStorageReturn } from './local-storage-handler.service';
 
 describe('LocalStorageHandlerService', () => {
 
@@ -34,28 +34,48 @@ describe('LocalStorageHandlerService', () => {
     expect(drawingSaved.getAttribute('id')).toEqual('test');
   });
 
-  it('#verifyAvailability should should return true when there is a draw saved', () => {
-    const element = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    element.setAttribute('id', 'test');
-    service.saveState(element);
-    const drawExist = service.verifyAvailability();
-    expect(drawExist).toBeTruthy();
+  it('#getDrawing should return null if draw is absent', () => {
+    localStorage.clear();
+    expect(service.getDrawing()).toBeNull();
   });
 
-  it('#verifyAvailability should should return false when there isnt a draw saved', () => {
+  it('#getDrawing should return null if shape is absent', () => {
     localStorage.clear();
-    const drawExist = service.verifyAvailability();
-    expect(drawExist).toEqual(false);
+    expect(service.getDrawing()).toBeNull();
+  });
+
+  it('#clearDrawings should the draw item from the local storage', () => {
+    localStorage.setItem('draw', '');
+    service.clearDrawings();
+    expect(localStorage.getItem('draw')).toBeNull();
+  });
+
+  it('#getDrawing should return null if draw has no child', () => {
+    localStorage.clear();
+    service.saveShape({
+      color: 'rgba(1, 1, 1, 1)',
+      height: 42,
+      width: 42,
+    });
+    service.saveState(
+      document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'svg:g'
+      ) as SVGGElement);
+    expect(service.getDrawing()).toBeNull();
   });
 
   it('#getDrawing should return the element saved and the shape', () => {
     const element = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    element.appendChild(
+      document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+    );
     element.setAttribute('id', 'test');
     const shape: SvgShape = { width: 500, height: 500, color: 'red'};
     service.saveShape(shape);
     service.saveState(element);
-    const [savedElement, shapeSaved] = service.getDrawing();
-    expect(savedElement.getAttribute('id')).toEqual('test');
-    expect(shapeSaved).toEqual(shape);
+    const state = service.getDrawing() as LocalStorageReturn;
+    expect(state.draw.getAttribute('id')).toEqual('test');
+    expect(state.shape).toEqual(shape);
   });
 });

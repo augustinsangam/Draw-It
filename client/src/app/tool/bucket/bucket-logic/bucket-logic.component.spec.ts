@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SvgToCanvas } from 'src/app/svg-to-canvas/svg-to-canvas';
-import { Point } from '../../shape/common/point';
 import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
+import { Point } from '../../shape/common/point';
 import { BucketLogicComponent } from './bucket-logic.component';
 
 // tslint:disable: no-string-literal no-magic-numbers

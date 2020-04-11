@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { SvgToCanvas } from 'src/app/svg-to-canvas/svg-to-canvas';
+import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import { ColorService } from '../../color/color.service';
 import { RGBAColor } from '../../color/rgba-color';
 import { Point } from '../../shape/common/point';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
-import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import { BucketService } from '../bucket.service';
 import { PointSet } from './point-set';
 
@@ -24,7 +24,7 @@ export class BucketLogicComponent
   extends ToolLogicDirective implements OnInit, OnDestroy {
 
   private image: ImageData;
-  private allListeners: (() => void)[] = [];
+  private allListeners: (() => void)[];
 
   constructor(private renderer: Renderer2,
               private colorService: ColorService,
@@ -32,6 +32,7 @@ export class BucketLogicComponent
               private service: BucketService
   ) {
     super();
+    this.allListeners = [];
   }
 
   ngOnInit(): void {
@@ -49,7 +50,14 @@ export class BucketLogicComponent
   }
 
   private async onMouseClick($event: MouseEvent): Promise<void> {
-    const canvas = await new SvgToCanvas(this.svgStructure.root, this.svgShape, this.renderer)
+    const svg = this.renderer.createElement('svg', this.svgNS);
+    this.renderer.setAttribute(svg, 'height', this.svgShape.height.toString());
+    this.renderer.setAttribute(svg, 'width', this.svgShape.width.toString());
+    this.renderer.setStyle(svg, 'background-color', this.svgShape.color);
+    this.renderer.appendChild(svg, this.svgStructure.defsZone.cloneNode(true));
+    this.renderer.appendChild(svg, this.svgStructure.drawZone.cloneNode(true));
+
+    const canvas = await new SvgToCanvas(svg, this.svgShape, this.renderer)
     .getCanvas();
     this.image = (canvas.getContext('2d') as CanvasRenderingContext2D)
         .getImageData(0, 0, this.svgShape.width, this.svgShape.height);
@@ -151,11 +159,8 @@ export class BucketLogicComponent
     shapes.forEach((shape) => {
       let pathString = '';
       shape.forEach((point) => {
-        if (pathString === '') {
-          pathString += `M${point.x}, ${point.y} `;
-        } else {
-          pathString += `L${point.x}, ${point.y} `;
-        }
+        pathString += pathString ? 'L' : 'M';
+        pathString += `${point.x}, ${point.y} `;
       });
       pathString += 'z ';
       pathDAttribute += pathString;
@@ -170,8 +175,7 @@ export class BucketLogicComponent
     this.renderer.appendChild(this.svgStructure.drawZone, path);
   }
 
-  private fourConnectedPoint(point: Point): Point[] {
-    const [x, y] = [point.x, point.y];
+  private fourConnectedPoint({x, y}: Point): Point[] {
     return [
       new Point(x - 1, y    ),
       new Point(x + 1, y    ),

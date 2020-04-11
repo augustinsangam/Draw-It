@@ -1,6 +1,6 @@
 import * as Util from './selection-logic-util';
-import { SelectionLogicComponent } from './selection-logic.component';
-import { Transform } from './transform';
+import {SelectionLogicComponent} from './selection-logic.component';
+import {Transform} from './transform';
 
 export class Rotation {
 

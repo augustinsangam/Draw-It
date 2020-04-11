@@ -1,9 +1,10 @@
 import { PointSet } from '../../tool/bucket/bucket-logic/point-set';
 import { Point } from '../../tool/shape/common/point';
 import { MultipleSelection } from '../multiple-selection';
+// import { Offset } from '../offset';
 import { Arrow } from './arrow';
 import { KeyManager } from './key-manager';
-import * as Util from './selection-logic-util';
+import { OFFSET_TRANSLATE, TIME_INTERVAL } from './selection-logic-util';
 import { SelectionLogicComponent } from './selection-logic.component';
 
 export class Deplacement {
@@ -18,6 +19,7 @@ export class Deplacement {
     this.selectionLogic.allListenners.push(
       this.selectionLogic.renderer.listen(document, 'keyup',
         this.keyManager.handlers.keyup));
+    // this.offset = {x: 0, y: 0};
   }
 
   private initialiseKeyManager(): void {
@@ -45,12 +47,12 @@ export class Deplacement {
           $event.preventDefault();
           this.keyManager.keyPressed.add($event.key);
           const actualTime = new Date().getTime();
-          if (actualTime - this.keyManager.lastTimeCheck >= Util.TIME_INTERVAL) {
+          if (actualTime - this.keyManager.lastTimeCheck >= TIME_INTERVAL) {
             this.keyManager.lastTimeCheck = actualTime;
-            this.handleKey(Arrow.Up, 0, -Util.OFFSET_TRANSLATE);
-            this.handleKey(Arrow.Down, 0, Util.OFFSET_TRANSLATE);
-            this.handleKey(Arrow.Left, -Util.OFFSET_TRANSLATE, 0);
-            this.handleKey(Arrow.Right, Util.OFFSET_TRANSLATE, 0);
+            this.handleKey(Arrow.Up, 0, -OFFSET_TRANSLATE);
+            this.handleKey(Arrow.Down, 0, OFFSET_TRANSLATE);
+            this.handleKey(Arrow.Left, -OFFSET_TRANSLATE, 0);
+            this.handleKey(Arrow.Right, OFFSET_TRANSLATE, 0);
           }
         },
 
@@ -68,55 +70,54 @@ export class Deplacement {
   }
 
   private handleKey(key: string, dx: number, dy: number): void {
-
-    if (this.keyManager.keyPressed.has(key)) {
-
-      if (!this.selectionLogic.service.magnetActive) {
-        this.selectionLogic.translateAll(dx, dy);
-        return ;
-      }
-      let comparePoint = this.getComparePoint(
-        this.selectionLogic.service.selectedElements
-      );
-
-      const pointInDirection = this.pointInDirection(comparePoint, dx, dy);
-      let [translateX, translateY] = [
-        pointInDirection.x - comparePoint.x,
-        pointInDirection.y - comparePoint.y
-      ];
-
-      const intersection = this.nearestIntersection(comparePoint);
-      translateX += intersection.x - comparePoint.x;
-      translateY += intersection.y - comparePoint.y;
-
-      if (translateX > this.selectionLogic.gridService.squareSize) {
-        translateX -= this.selectionLogic.gridService.squareSize;
-      } else if (translateX < -this.selectionLogic.gridService.squareSize) {
-        translateX += this.selectionLogic.gridService.squareSize;
-      }
-      if (translateY > this.selectionLogic.gridService.squareSize) {
-        translateY -= this.selectionLogic.gridService.squareSize;
-      } else if (translateY < -this.selectionLogic.gridService.squareSize) {
-        translateY += this.selectionLogic.gridService.squareSize;
-      }
-
-      comparePoint = new Point(comparePoint.x + translateX, comparePoint.y + translateY);
-      if (this.isValidPoint(comparePoint)) {
-        this.selectionLogic.translateAll(translateX, translateY);
-      }
-
+    if (!this.keyManager.keyPressed.has(key)) {
+      return;
     }
 
+    if (!this.selectionLogic.service.magnetActive) {
+      this.selectionLogic.translateAll(dx, dy);
+      return;
+    }
+    let comparePoint = this.getComparePoint(
+      this.selectionLogic.service.selectedElements
+    );
+
+    const pointInDirection = this.pointInDirection(comparePoint, dx, dy);
+    let [translateX, translateY] = [
+      pointInDirection.x - comparePoint.x,
+      pointInDirection.y - comparePoint.y
+    ];
+
+    const intersection = this.nearestIntersection(comparePoint);
+    translateX += intersection.x - comparePoint.x;
+    translateY += intersection.y - comparePoint.y;
+
+    if (translateX > this.selectionLogic.gridService.squareSize) {
+      translateX -= this.selectionLogic.gridService.squareSize;
+    } else if (translateX < -this.selectionLogic.gridService.squareSize) {
+      translateX += this.selectionLogic.gridService.squareSize;
+    }
+    if (translateY > this.selectionLogic.gridService.squareSize) {
+      translateY -= this.selectionLogic.gridService.squareSize;
+    } else if (translateY < -this.selectionLogic.gridService.squareSize) {
+      translateY += this.selectionLogic.gridService.squareSize;
+    }
+
+    comparePoint = new Point(comparePoint.x + translateX, comparePoint.y + translateY);
+    if (this.isValidPoint(comparePoint)) {
+      this.selectionLogic.translateAll(translateX, translateY);
+    }
   }
 
   onCursorMove(): void {
 
     const nearestIntersection = this.nearestIntersection(
       this.selectionLogic.mouse.left.currentPoint
-    );
+      );
     const comparePoint = this.getComparePoint(
       this.selectionLogic.service.selectedElements
     );
+
     const dx = nearestIntersection.x - comparePoint.x;
     const dy = nearestIntersection.y - comparePoint.y;
     this.selectionLogic.translateAll(dx, dy);

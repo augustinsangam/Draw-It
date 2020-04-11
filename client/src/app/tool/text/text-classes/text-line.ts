@@ -4,7 +4,6 @@ export class TextLine {
     public tspan: SVGElement,
     public letters: string[],
     public cursorIndex: number) {
-
   }
 
   moveUp(offSetY: number): void {
@@ -35,7 +34,6 @@ export class TextLine {
 
   emptySelf(): void {
     this.tspan.remove();
-    this.tspan = undefined as unknown as SVGElement;
     this.letters = [];
     this.cursorIndex = 0;
   }

@@ -218,6 +218,23 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     return { y: svgBoundingRect.top, x: svgBoundingRect.left };
   }
 
+  protected applyMouseStyle($event: MouseEvent): void {
+    let mouseStyle = 'default';
+    if (this.mouse.left.onResize) {
+      mouseStyle = (this.mouse.left.selectedElement as number) % (Util.CIRCLES.length - 1) === 0 ? 'col-resize' : 'ns-resize';
+    } else if (this.isInTheVisualisationZone($event.offsetX, $event.offsetY) && !this.mouse.left.mouseIsDown) {
+      // ElementFromPoint n'est utilisé que pour avoir une interaction belle avec l'utilisateur
+      // (Pour le livrable 4 UX)
+      // lors de la sélection. Il n'influence pas la logique.
+      const elementFromCursor = document.elementFromPoint($event.x, $event.y) as SVGGElement;
+      const isDrawElement = this.elementSelectedType(elementFromCursor) === BasicSelectionType.DRAW_ELEMENT;
+      mouseStyle = isDrawElement ? 'pointer' : 'grab';
+    } else if (this.mouse.left.onDrag) {
+      mouseStyle = 'grabbing';
+    }
+    this.renderer.setStyle(this.svgStructure.root, 'cursor', mouseStyle);
+  }
+
   ngOnDestroy(): void {
     this.allListenners.forEach((end) => end());
     [this.rectangles.selection, this.rectangles.inversion,

@@ -1,14 +1,21 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {Dimension} from '../shape/common/dimension';
 import {Rectangle} from '../shape/common/rectangle';
 import {ToolService} from '../tool.service';
 import {TextAlignement} from './text-classes/text-alignement';
+import {StateIndicators} from './text-classes/text-indicators';
 import {TextLine} from './text-classes/text-line';
 import {TextMutators} from './text-classes/text-mutators';
 
 interface Font {
   value: string;
   viewValue: string;
+}
+
+enum SvgAlignement {
+  left = 'start',
+  center = 'middle',
+  right = 'end'
 }
 
 @Injectable({
@@ -22,37 +29,49 @@ export class TextService extends ToolService {
   currentFont: string;
   textMutators: TextMutators;
   textAlignement: TextAlignement;
+  indicators: StateIndicators;
   fontSize: number;
   fontsList: Font[];
   currentZoneDims: Dimension;
   textZoneRectangle: Rectangle;
+  startTypingEmitter: EventEmitter<null>;
+  endTypingEmitter: EventEmitter<null>;
 
   constructor() {
     super();
-    this.textMutators = {bold: false, italic: false, underline: false};
+    this.textMutators = { bold: false, italic: false, underline: false };
     this.textAlignement = TextAlignement.left;
     this.currentFont = 'Arial';
     this.fontsList = [
-      {value: 'Arial, sans-serif', viewValue: 'Arial'},
-      {value: 'Geo-Sans-Light-NMS', viewValue: 'Geo Sans Light NMS'},
-      {value: 'Courier New, monospace', viewValue: 'Courier New'},
-      {value: 'JetBrains-Mono', viewValue: 'JetBrains Mono'},
-      {value: 'texgyrepagella', viewValue: 'TeX Pagella'},
-      {value: 'Times New Roman, serif', viewValue: 'Times New Roman'},
+      {value: 'Arial, sans-serif'     , viewValue: 'Arial'              },
+      {value: 'Geo-Sans-Light-NMS'    , viewValue: 'Geo Sans Light NMS' },
+      {value: 'Courier New, monospace', viewValue: 'Courier New'        },
+      {value: 'JetBrains-Mono'        , viewValue: 'JetBrains Mono'     },
+      {value: 'texgyrepagella'        , viewValue: 'TeX Pagella'        },
+      {value: 'Times New Roman, serif', viewValue: 'Times New Roman'    },
     ];
     this.fontSize = this.DEFAULT_FONTSIZE;
+    this.startTypingEmitter = new EventEmitter<null>();
+    this.endTypingEmitter = new EventEmitter<null>();
   }
 
   getTextAlign(): number {
-    return this.textAlignement === TextAlignement.left ? 0 : (
-      this.textAlignement === TextAlignement.center ? this.currentZoneDims.width / 2 : this.currentZoneDims.width
-    );
+    if (this.textAlignement === TextAlignement.left) {
+      return 0;
+    }
+    return this.textAlignement === TextAlignement.center
+      ? this.currentZoneDims.width / 2
+      : this.currentZoneDims.width;
   }
 
   getTextAnchor(): string {
-    return this.textAlignement === 'left' ? 'start' : (
-      this.textAlignement === 'center' ? 'middle' : 'end'
-    );
+    if (this.textAlignement === TextAlignement.left) {
+      return SvgAlignement.left;
+    }
+
+    return this.textAlignement === TextAlignement.center
+      ? SvgAlignement.center
+      : SvgAlignement.right;
   }
 
   getFullTextWidth(currentLine: TextLine): number {

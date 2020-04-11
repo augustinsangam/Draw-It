@@ -3,49 +3,49 @@
     <mat-icon>home</mat-icon>
   </a>
   <a title="Selection [S]" #selection (click)="toolSelectorService.set(Tool.Selection)"
-    style="background-image:url(/assets/sidebar-icons/selection.png)">
-  </a>
-  <a title="Efface [E]" #efface (click)="toolSelectorService.set(Tool.Eraser)"
-    style="background-image:url(/assets/sidebar-icons/gimp-tool-eraser.png)">
+     style="background-image:url(/assets/sidebar-icons/selection.png)">
   </a>
   <a title="Crayon [C]" #pencil (click)="toolSelectorService.set(Tool.Pencil)"
-    style="background-image:url(/assets/sidebar-icons/gimp-tool-pencil.png)">
+     style="background-image:url(/assets/sidebar-icons/gimp-tool-pencil.png)">
   </a>
   <a title="Pinceau [W]" #brush (click)="toolSelectorService.set(Tool.Brush)"
-    style="background-image:url(/assets/sidebar-icons/gimp-tool-paintbrush.png)">
+     style="background-image:url(/assets/sidebar-icons/gimp-tool-paintbrush.png)">
+  </a>
+  <a title="Aérosol [A]" #aerosol (click)="toolSelectorService.set(Tool.Aerosol)"
+     style="background-image:url(/assets/sidebar-icons/aerosol.png)">
+  </a>
+  <a title="Plume [P]" #plume (click)="toolSelectorService.set(Tool.FeatherPen)"
+     style="background-image:url(/assets/sidebar-icons/feather.png)">
   </a>
   <a title="Ligne [L]" #line (click)="toolSelectorService.set(Tool.Line)"
-    style="background-image:url(/assets/sidebar-icons/line.png)">
+     style="background-image:url(/assets/sidebar-icons/line.png)">
   </a>
   <a title="Rectangle [1]" #rectangle (click)="toolSelectorService.set(Tool.Rectangle)"
-    style="background-image:url(/assets/sidebar-icons/rectangle.png)">
+     style="background-image:url(/assets/sidebar-icons/rectangle.png)">
   </a>
   <a title="Ellipse [2]" #ellipse (click)="toolSelectorService.set(Tool.Ellipse)"
-    style="background-image:url(/assets/sidebar-icons/ellipse.png)">
+     style="background-image:url(/assets/sidebar-icons/ellipse.png)">
   </a>
   <a title="Polygone [3]" #polygone (click)="toolSelectorService.set(Tool.Polygone)"
-    style="background-image:url(/assets/sidebar-icons/polygone.png)">
+     style="background-image:url(/assets/sidebar-icons/polygone.png)">
+  </a>
+  <a title="Efface [E]" #efface (click)="toolSelectorService.set(Tool.Eraser)"
+     style="background-image:url(/assets/sidebar-icons/gimp-tool-eraser.png)">
   </a>
   <a title="Pipette [I]" #pipette (click)="toolSelectorService.set(Tool.Pipette)"
-    style="background-image:url(/assets/sidebar-icons/pipette.png)">
+     style="background-image:url(/assets/sidebar-icons/pipette.png)">
   </a>
   <a title="Applicateur de couleur [R]" #applicator (click)="toolSelectorService.set(Tool.Applicator)">
     <mat-icon>invert_colors</mat-icon>
   </a>
   <a title="Sceau de peinture [B]" #bucket (click)="toolSelectorService.set(Tool.Bucket)"
-    style="background-image:url(/assets/sidebar-icons/bucket.png)">
-  </a>
-  <a title="Aérosol [A]" #aerosol (click)="toolSelectorService.set(Tool.Aerosol)"
-    style="background-image:url(/assets/sidebar-icons/aerosol.png)">
-  </a>
-  <a title="Plume [P]" #plume (click)="toolSelectorService.set(Tool.FeatherPen)"
-     style="background-image:url(/assets/sidebar-icons/feather.png)">
-  </a>
-  <a title="Grille [G]" #grid (click)="toolSelectorService.set(Tool.Grid)"
-    style="background-image: url(/assets/sidebar-icons/grid.png); width: 24px">
+     style="background-image:url(/assets/sidebar-icons/bucket.png)">
   </a>
   <a title="Texte [T]" #text (click)="toolSelectorService.set(Tool.Text)"
      style="background-image: url(/assets/sidebar-icons/text.png); width: 24px">
+  </a>
+  <a title="Grille [G]" #grid (click)="toolSelectorService.set(Tool.Grid)"
+     style="background-image: url(/assets/sidebar-icons/grid.png); width: 24px">
   </a>
 </nav>
 
@@ -60,7 +60,7 @@
   </mat-grid-tile>
   <mat-grid-tile>
     <button mat-raised-button color="accent" *ngIf="canRedo" (click)="undoRedoService.redo()"
-      title="Refaire [CTRL + SHIFT + Z]">
+            title="Refaire [CTRL + SHIFT + Z]">
       <mat-icon>
         redo
       </mat-icon>
@@ -84,5 +84,5 @@
   </mat-icon>
 </a>
 <a title="Aide" style="background-image:url(/assets/sidebar-icons/gimp-prefs-help-system.svg)"
-  (click)="documentationEvent.emit()">
+   (click)="documentationEvent.emit()">
 </a>

@@ -10,6 +10,9 @@ import {
   LocalStorageHandlerService
 } from '../auto-save/local-storage-handler.service';
 import {
+  SelectionService
+} from '../selection/selection.service';
+import {
   SvgShape
 } from '../svg/svg-shape';
 import {
@@ -90,7 +93,8 @@ export class OverlayService {
               private readonly snackBar: MatSnackBar,
               private undoRedo: UndoRedoService,
               private gridService: GridService,
-              private autoSave: LocalStorageHandlerService
+              private autoSave: LocalStorageHandlerService,
+              private selectionService: SelectionService
   ) {
   }
 
@@ -118,22 +122,18 @@ export class OverlayService {
       this.getCommonDialogOptions()
     );
     this.dialogRefs.home.disableClose = !closable;
-    this.dialogRefs.home.afterClosed().subscribe((result: string) => {
-      this.openSelectedDialog(result);
-    });
+    this.dialogRefs.home.afterClosed().subscribe(
+      (result: string) => this.openSelectedDialog(result));
   }
 
   private openSelectedDialog(dialog: string): void {
     switch (dialog) {
       case OverlayPages.New:
-        this.openNewDrawDialog();
-        break;
+        return this.openNewDrawDialog();
       case OverlayPages.Library:
-        this.openGalleryDialog(true);
-        break;
+        return this.openGalleryDialog(true);
       case OverlayPages.Documentation:
-        this.openDocumentationDialog(true);
-        break;
+        return this.openDocumentationDialog(true);
       default:
         break;
     }
@@ -157,7 +157,6 @@ export class OverlayService {
       this.openHomeDialog();
     } else if (option !== null) {
       this.createNewDraw(option as SvgShape);
-
     }
   }
 
@@ -172,9 +171,8 @@ export class OverlayService {
       dialogOptions
     );
     this.dialogRefs.documentation.disableClose = false;
-    this.dialogRefs.documentation.afterClosed().subscribe(() => {
-      this.closeDocumentationDialog(fromHome);
-    });
+    this.dialogRefs.documentation.afterClosed().subscribe(
+      () => this.closeDocumentationDialog(fromHome));
   }
 
   openExportDialog(): void {
@@ -202,9 +200,8 @@ export class OverlayService {
   openSaveDialog(): void {
     this.dialogRefs.save = this.dialog.open(SaveComponent, exportSaveDialogOptions);
     this.dialogRefs.save.disableClose = true;
-    this.dialogRefs.save.afterClosed().subscribe((error?: string) => {
-      this.closeSaveDialog(error);
-    });
+    this.dialogRefs.save.afterClosed().subscribe(
+      (error?: string) => this.closeSaveDialog(error));
   }
 
   private closeSaveDialog(error?: string): void {
@@ -231,9 +228,8 @@ export class OverlayService {
       dialogOptions,
     );
     this.dialogRefs.gallery.disableClose = false;
-    this.dialogRefs.gallery.afterClosed().subscribe((option) => {
-      this.closeGalleryDialog(fromHome, option);
-    });
+    this.dialogRefs.gallery.afterClosed().subscribe(
+      (option?: GalleryDraw) => this.closeGalleryDialog(fromHome, option));
   }
 
   private closeGalleryDialog(
@@ -249,6 +245,7 @@ export class OverlayService {
   private createNewDraw(shape: SvgShape): void {
     this.svgService.shape = shape;
     this.autoSave.saveShape(shape);
+    this.autoSave.clearDrawings();
     this.svgService.header = {
       name: '',
       tags: [],
@@ -261,6 +258,8 @@ export class OverlayService {
     this.svgService.clearDom();
     this.gridService.handleGrid();
     this.toolSelectorService.set(Tool.Pencil);
+    this.selectionService.reset();
+    this.undoRedo.setStartingCommand();
     // Deuxième fois juste pour fermer le panneau latéral
     this.toolSelectorService.set(Tool.Pencil);
   }
@@ -285,7 +284,7 @@ export class OverlayService {
     return {
       width: '650px',
       height: '90%',
-      data: { drawInProgress: this.svgService.drawInProgress || this.autoSave.verifyAvailability()}
+      data: { drawInProgress: this.svgService.drawInProgress || (this.autoSave.getDrawing() !== null)}
     };
   }
 }

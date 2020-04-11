@@ -2,6 +2,12 @@ import {
   Type
 } from '@angular/core';
 import {
+  SelectionLogicComponent
+} from '../selection/selection-logic/selection-logic.component';
+import {
+  SelectionPanelComponent
+} from '../selection/selection-panel/selection-panel.component';
+import {
   ApplicatorLogicComponent
 } from './applicator/applicator-logic/applicator-logic.component';
 import {
@@ -55,12 +61,6 @@ import {
 import {
   PipettePanelComponent
 } from './pipette/pipette-panel/pipette-panel.component';
-import {
-  SelectionLogicComponent
-} from '../selection/selection-logic/selection-logic.component';
-import {
-  SelectionPanelComponent
-} from '../selection/selection-panel/selection-panel.component';
 import {
   EllipseLogicComponent
 } from './shape/ellipse/ellipse-logic/ellipse-logic.component';

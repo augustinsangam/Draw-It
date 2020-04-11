@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { SvgToCanvas } from 'src/app/svg-to-canvas/svg-to-canvas';
+import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import { ColorService } from '../../color/color.service';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
-import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import { PipetteService } from '../pipette.service';
 
 @Component({

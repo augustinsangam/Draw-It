@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatButtonToggleChange} from '@angular/material/button-toggle';
 import {MatSlider} from '@angular/material/slider';
@@ -14,7 +14,8 @@ import {TextService} from '../text.service';
   templateUrl: './text-panel.component.html',
   styleUrls: ['./text-panel.component.scss']
 })
-export class TextPanelComponent extends ToolPanelDirective {
+export class TextPanelComponent extends ToolPanelDirective
+implements AfterViewInit {
 
   private textForm: FormGroup;
   private previewDims: Dimension;
@@ -34,8 +35,16 @@ export class TextPanelComponent extends ToolPanelDirective {
       fontSizeSlider: [this.service.fontSize, []],
       fontSizeFormField: [this.service.fontSize, [Validators.required]],
       alignementForm: [this.service.textAlignement, []],
+      fonts: [this.service.fontsList[0].value, [Validators.required]]
     });
     this.previewDims = {width: 320, height: 200};
+    this.service.indicators = { onDrag: false, onType: false };
+  }
+
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    this.service.startTypingEmitter.subscribe(() => this.startTyping());
+    this.service.endTypingEmitter.subscribe(() => this.endTyping());
   }
 
   protected onMutatorChange(event: MatButtonToggleChange): void {
@@ -65,9 +74,23 @@ export class TextPanelComponent extends ToolPanelDirective {
   }
 
   protected getPreviewTextAlign(): number {
-    return this.service.textAlignement === TextAlignement.left ? 0 : (
-      this.service.textAlignement === TextAlignement.center ? this.previewDims.width / 2 : this.previewDims.width
-    );
+    if (this.service.textAlignement === TextAlignement.left) {
+      return 0;
+    }
+
+    return this.service.textAlignement === TextAlignement.center
+      ? this.previewDims.width / 2
+      : this.previewDims.width;
+  }
+
+  private startTyping(): void {
+    this.textForm.controls.fonts.disable();
+    this.fontSizeSlider.disabled = true;
+  }
+
+  private endTyping(): void {
+    this.textForm.controls.fonts.enable();
+    this.fontSizeSlider.disabled = false;
   }
 
 }
