@@ -29,50 +29,62 @@
 </svg>
 <hr>
 <form [formGroup]="textForm">
-  <mat-button-toggle-group multiple class="mutators">
+  <mat-button-toggle-group multiple class="mutators" #mutators>
     <mat-button-toggle
       value="bold"
       title="Gras"
       (change)="onMutatorChange($event)"
       disabled="{{service.indicators.onType}}">
-      <mat-icon class="settingsIcons">format_bold</mat-icon>
+      <mat-icon
+        class="settingsIcons"
+        [ngStyle]="{'color': service.indicators.onType ? '#525252' : '#ffc0cb'}">format_bold</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       value="italic"
       title="Italique"
       (change)="onMutatorChange($event)"
       disabled="{{service.indicators.onType}}">
-      <mat-icon class="settingsIcons">format_italic</mat-icon>
+      <mat-icon
+        class="settingsIcons"
+        [ngStyle]="{'color': service.indicators.onType ? '#525252' : '#ffc0cb'}">format_italic</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       value="underline"
       title="Souligné"
       (change)="onMutatorChange($event)"
       disabled="{{service.indicators.onType}}">
-      <mat-icon class="settingsIcons">format_underlined</mat-icon>
+      <mat-icon
+        class="settingsIcons"
+        [ngStyle]="{'color': service.indicators.onType ? '#525252' : '#ffc0cb'}">format_underlined</mat-icon>
     </mat-button-toggle>
   </mat-button-toggle-group>
-  <mat-button-toggle-group>
+  <mat-button-toggle-group #alignements>
     <mat-button-toggle
       value="left"
       title="Aligné à gauche"
       (change)="onAlignChange($event)"
       disabled="{{service.indicators.onType}}">
-      <mat-icon class="settingsIcons">format_align_left</mat-icon>
+      <mat-icon
+        class="settingsIcons"
+        [ngStyle]="{'color': service.indicators.onType ? '#525252' : '#ffc0cb'}">format_align_left</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       value="center"
       title="Centré"
       (change)="onAlignChange($event)"
       disabled="{{service.indicators.onType}}">
-      <mat-icon class="settingsIcons">format_align_center</mat-icon>
+      <mat-icon
+        class="settingsIcons"
+        [ngStyle]="{'color': service.indicators.onType ? '#525252' : '#ffc0cb'}">format_align_center</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       value="right"
       title="Aligné à droite"
       (change)="onAlignChange($event)"
       disabled="{{service.indicators.onType}}">
-      <mat-icon class="settingsIcons">format_align_right</mat-icon>
+      <mat-icon
+        class="settingsIcons"
+        [ngStyle]="{'color': service.indicators.onType ? '#525252' : '#ffc0cb'}">format_align_right</mat-icon>
     </mat-button-toggle>
   </mat-button-toggle-group>
   <hr>
