@@ -139,17 +139,21 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
       (startPoint.x + endPoint.x) / 2,
       (startPoint.y + endPoint.y) / 2);
     this.setCircle(new Point(startPoint.x, centerPoint.y),
-      this.circles[CircleType.LEFT_CIRCLE], Util.CIRCLE_RADIUS);
+      CircleType.LEFT_CIRCLE, Util.CIRCLE_RADIUS);
     this.setCircle(new Point(centerPoint.x, startPoint.y),
-      this.circles[CircleType.TOP_CIRCLE], Util.CIRCLE_RADIUS);
+      CircleType.TOP_CIRCLE, Util.CIRCLE_RADIUS);
     this.setCircle(new Point(endPoint.x, centerPoint.y),
-      this.circles[CircleType.RIGHT_CIRCLE], Util.CIRCLE_RADIUS);
+      CircleType.RIGHT_CIRCLE, Util.CIRCLE_RADIUS);
     this.setCircle(new Point(centerPoint.x, endPoint.y),
-      this.circles[CircleType.BOTTOM_CIRCLE], Util.CIRCLE_RADIUS);
+      CircleType.BOTTOM_CIRCLE, Util.CIRCLE_RADIUS);
   }
 
-  private setCircle(center: Point, circle: SVGElement, radius: string): void {
-    Circle.set(center, this.renderer, circle, radius, Util.COLORS.GRAY);
+  private setCircle(center: Point, circle: CircleType, radius: string): void {
+    if(this.mouse.left.selectedElement === circle) {
+      Circle.set(center, this.renderer, this.circles[circle], radius, Util.COLORS.DRAK_GRAY);
+    } else {
+      Circle.set(center, this.renderer, this.circles[circle], radius, Util.COLORS.GRAY);
+    }
   }
 
   deleteVisualisation(): void {

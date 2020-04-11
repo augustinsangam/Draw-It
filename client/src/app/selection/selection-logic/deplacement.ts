@@ -1,7 +1,7 @@
 import { PointSet } from '../../tool/bucket/bucket-logic/point-set';
 import { Point } from '../../tool/shape/common/point';
 import { MultipleSelection } from '../multiple-selection';
-// import { Offset } from '../offset';
+import { Offset } from '../offset';
 import { Arrow } from './arrow';
 import { KeyManager } from './key-manager';
 import { OFFSET_TRANSLATE, TIME_INTERVAL } from './selection-logic-util';
@@ -10,6 +10,7 @@ import { SelectionLogicComponent } from './selection-logic.component';
 export class Deplacement {
 
   keyManager: KeyManager;
+  offset: Offset;
 
   constructor(private selectionLogic: SelectionLogicComponent) {
     this.initialiseKeyManager();
@@ -19,7 +20,7 @@ export class Deplacement {
     this.selectionLogic.allListenners.push(
       this.selectionLogic.renderer.listen(document, 'keyup',
         this.keyManager.handlers.keyup));
-    // this.offset = {x: 0, y: 0};
+    this.offset = {x: 0, y: 0};
   }
 
   private initialiseKeyManager(): void {
@@ -109,11 +110,29 @@ export class Deplacement {
     }
   }
 
+  onMouseDown(): void {
+    this.offset = {x: 0, y: 0};
+    const comparepoint = this.getComparePoint(
+      this.selectionLogic.service.selectedElements
+    );
+
+    const currentPos = this.selectionLogic.mouse.left.currentPoint;
+
+    this.offset = {
+      x: comparepoint.x - currentPos.x,
+      y: comparepoint.y - currentPos.y
+    };
+  }
+
   onCursorMove(): void {
+    const offsetMouse = new Point(
+      this.selectionLogic.mouse.left.currentPoint.x + this.offset.x,
+      this.selectionLogic.mouse.left.currentPoint.y + this.offset.y,
+    );
 
     const nearestIntersection = this.nearestIntersection(
-      this.selectionLogic.mouse.left.currentPoint
-      );
+      offsetMouse
+    );
     const comparePoint = this.getComparePoint(
       this.selectionLogic.service.selectedElements
     );
