@@ -14,13 +14,16 @@ interface Dimensions {
 
 export class Scale {
 
-  private baseVisualisationRectangleDimension: Dimensions = { width: 0, height: 0 };
-  private scaledRectangleDimension: Dimensions = { width: 0, height: 0 };
+  private baseVisualisationRectangleDimension: Dimensions;
+  private scaledRectangleDimension: Dimensions;
   private baseTransform: Map<SVGElement, Transform>;
   private scaleOffset: Offset;
   private inverted: Offset;
 
-  constructor(private selectionLogic: SelectionLogicComponent) { }
+  constructor(private selectionLogic: SelectionLogicComponent) {
+    this.baseVisualisationRectangleDimension = { width: 0, height: 0 };
+    this.scaledRectangleDimension = { width: 0, height: 0 };
+  }
 
   onMouseDown(): void {
     const dimensions = this.getVisualisationRectangledimensions();
@@ -34,8 +37,6 @@ export class Scale {
     });
     this.scaleOffset = { x: 0, y: 0 };
     this.inverted = { x: 1, y: 1 };
-    const [point1, point2] = this.getZonePoints(this.getVisualisationRectangledimensions());
-    this.selectionLogic.drawVisualisation(point1, point2);
   }
 
   onMouseUp(): void {

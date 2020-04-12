@@ -557,6 +557,23 @@ describe('SelectionLogicComponent', () => {
       expect(component['mouse'].right.endPoint).not.toEqual(new Point(200, 200));
     });
 
+  it('#mouse attributes should be reseted on mouse leave', () => {
+    const fakeEvent = {
+      button: 0,
+      offsetX: 200,
+      offsetY: 200
+    } as unknown as MouseEvent;
+
+    const mouseLeaveHandler = (component['mouseHandlers'].get('leftButton') as
+      Map<string, Util.MouseEventCallBack>).get('mouseleave') as
+      Util.MouseEventCallBack;
+
+    mouseLeaveHandler(fakeEvent);
+    expect(component['mouse'].left.onDrag).toEqual(false);
+    expect(component['mouse'].left.onResize).toEqual(false);
+    expect(component['mouse'].left.mouseIsDown).toEqual(false);
+  });
+
   it('#overrided function in undo redo service function works well', () => {
     const spy = spyOn<any>(component, 'deleteVisualisation');
     component['undoRedoService'].undo();

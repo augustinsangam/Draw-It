@@ -114,9 +114,11 @@ export class SelectionLogicComponent
           this.mouse.left.endPoint = new Point($event.offsetX, $event.offsetY);
           this.mouse.left.mouseIsDown = false;
           this.mouse.left.onDrag = false;
-          this.mouse.left.onResize = false;
           this.mouse.left.selectedElement = BasicSelectionType.NOTHING;
-          this.scaleUtil.onMouseUp();
+          if (this.mouse.left.onResize) {
+            this.scaleUtil.onMouseUp();
+          }
+          this.mouse.left.onResize = false;
           this.deleteSelection();
           this.applyMouseStyle($event);
         }],
