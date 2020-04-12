@@ -55,7 +55,7 @@ implements AfterViewInit {
       alignementForm: [this.service.textAlignement, []],
       fonts: [this.service.fontsList[0].value, [Validators.required]]
     });
-    this.previewDims = {width: 320, height: 200};
+    this.previewDims = {width: 310, height: 200};
     this.service.indicators = { onDrag: false, onType: false };
   }
 
