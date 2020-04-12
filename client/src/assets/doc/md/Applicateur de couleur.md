@@ -2,7 +2,7 @@ L’applicateur de couleur permet de changer la couleur d’un objet.
 
  Pour utiliser l’applicateur de couleur, cliquez sur le bouton ![icône applicateur de couleur](/assets/sidebar-icons/applicator.png) ou pressez **`R`**. Afin de choisir les couleurs à appliquer sur l’objet, utilisez l'outil Couleur présent dans le panneau de l'applicateur. 
  
-<video width="70%" height="70%" class="doc-fig" autoplay loop>
+<video width="90%" height="70%" class="doc-fig" autoplay loop>
     <source src="/assets/doc/vid/applicator.webm" type="video/webm">
 </video>
 

@@ -74,9 +74,6 @@
         "label": "Efface"
       },
       {
-        "label": "Étampe"
-      },
-      {
         "label": "Pipette"
       }
     ]
@@ -85,7 +82,7 @@
     "label": "Les sélections",
     "children": [
       {
-        "label": "Rectangle de sélection"
+        "label": "Sélectionner des objets"
       },
       {
         "label": "Désélection"
@@ -108,7 +105,13 @@
         "label": "Affichage de la grille"
       },
       {
+        "label": "Annuler - Refaire"
+      },
+      {
         "label": "Magnétisme"
+      },
+      {
+        "label": "Presse papier"
       }
     ]
   },
@@ -122,10 +125,10 @@
         "label": "Exporter votre dessin",
         "children": [
           {
-            "label": "En local"
+            "label": "Exporter en local"
           },
           {
-            "label": "Par courriel"
+            "label": "Exporter par courriel"
           }
         ]
       }

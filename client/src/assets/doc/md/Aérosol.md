@@ -1,6 +1,8 @@
-L'outil **Aérosol** permet de simuler l’utilisation d’une bombe de peinture aérosol. Pour commencer à utiliser l’aérosol, cliquez sur l’icône ![icône doc](/assets/sidebar-icons/aerosol.png) ou pressez **`A`**. Son utilisation est semblable à celle du crayon : pressez le clic gauche de votre souris afin de commencer à dessiner, et déplacez votre souris sur la zone de dessin en gardant le bouton enfoncé. Relâchez le bouton gauche lorsque vous avez terminé de dessiner. 
+L'outil **Aérosol** permet de simuler l’utilisation d’une bombe de peinture aérosol.
 
-<video width="70%" height="70%" class="doc-fig" autoplay loop>
+Pour commencer à utiliser l’aérosol, cliquez sur l’icône ![icône doc](/assets/sidebar-icons/aerosol.png) ou pressez **`A`**. Son utilisation est semblable à celle du crayon : pressez le clic gauche de votre souris afin de commencer à dessiner, et déplacez votre souris sur la zone de dessin en gardant le bouton enfoncé. Relâchez le bouton gauche lorsque vous avez terminé de dessiner. 
+
+<video width="90%" height="70%" class="doc-fig" autoplay loop>
     <source src="/assets/doc/vid/aerosol.webm" type="video/webm">
 </video>
 

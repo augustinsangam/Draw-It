@@ -4,7 +4,7 @@ Le sceau de peinture remplace tous les pixels adjacents et de la même couleur q
 
  Le panneau d’options de l’outil Sceau de peinture propose une valeur de « Tolérance » exprimée en pourcentage. Cette valeur définit à quel point les pixels adjacents au pixel cliqué seront pris en compte dans le remplacement de la couleur : une tolérance de 0% indique que SEULS les pixels ayant exactement la couleur du pixel cliqué seront sélectionnés pour le remplacement. 
 
-<video width="70%" height="70%" class="doc-fig" autoplay loop>
+<video width="90%" height="70%" class="doc-fig" autoplay loop>
     <source src="/assets/doc/vid/bucket.webm" type="video/webm">
 </video>
 

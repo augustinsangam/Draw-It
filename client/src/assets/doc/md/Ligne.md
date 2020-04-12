@@ -4,7 +4,7 @@ L’outil **Ligne** permet de tracer un ou plusieurs segments connectés entre e
  
  Vous pouvez également effectuer un simple clic pour déterminer le nouveau point de départ de votre ligne. Vous êtes libres de tracer une ligne de la longueur que vous voulez. Double-cliquez simplement pour terminer la ligne. 
 
-<video width="70%" height="70%" class="doc-fig" autoplay loop>
+<video width="90%" height="70%" class="doc-fig" autoplay loop>
     <source src="/assets/doc/vid/ligne.webm" type="video/webm">
 </video>
 

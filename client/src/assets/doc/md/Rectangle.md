@@ -1,6 +1,6 @@
 L’outil **Rectangle** est l’outil de traçage de forme le plus simple, et son fonctionnement est similaire aux outils Ellipse et Polygone. Il permet facilement la création de rectangles ou de carrés, ainsi que la configuration de leur remplissage et de leur contour. 
 
-<video width="70%" height="70%" class="doc-fig" autoplay loop>
+<video width="90%" height="70%" class="doc-fig" autoplay loop>
     <source src="/assets/doc/vid/rectangle.webm" type="video/webm">
 </video>
 

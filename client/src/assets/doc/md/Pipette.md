@@ -1,6 +1,6 @@
 L’outil **Pipette** sert à sélectionner des couleurs à partir d’une image. Pour utiliser l’outil Pipette, commencez par cliquer sur l’icône ![icône pipette](/assets/sidebar-icons/pipette.png) ou pressez **`P`**. 
 
-<video width="70%" height="70%" class="doc-fig" autoplay loop>
+<video width="90%" height="70%" class="doc-fig" autoplay loop>
     <source src="/assets/doc/vid/pipette.webm" type="video/webm">
 </video>
 

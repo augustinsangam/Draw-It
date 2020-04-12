@@ -1,6 +1,6 @@
 L’outil **Crayon** est l’outil le plus basique de DrawIt. Il vous permet de tracer des formes quelconques. 
 
-<video width="70%" height="70%" class="doc-fig" autoplay loop>
+<video width="90%" height="70%" class="doc-fig" autoplay loop>
     <source src="/assets/doc/vid/crayon.webm" type="video/webm">
 </video>
 

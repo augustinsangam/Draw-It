@@ -1,6 +1,6 @@
 DrawIt vous offre la possibilité d'afficher une **Grille** pour faciliter la création de dessins. À tout moment, pressez la touche **`G`** de votre clavier pour activer/désactiver la grille. Lorsque la grille est activée, en pressant les boutons **`+`** et **`-`** du clavier, vous pouvez régler la taille des carreaux de la grille.
 
-<video width="70%" height="70%" class="doc-fig" autoplay loop>
+<video width="90%" height="70%" class="doc-fig" autoplay loop>
     <source src="/assets/doc/vid/grille.webm" type="video/webm">
 </video>
 

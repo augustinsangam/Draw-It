@@ -1,6 +1,6 @@
 La **palette de couleur** permet de choisir les couleurs utilisées par les différents outils de DrawIt. Elle toujours accessible depuis le panneau de l'outil sélectionné.
 
-<video width="70%" height="70%" class="doc-fig" autoplay loop>
+<video width="90%" height="70%" class="doc-fig" autoplay loop>
     <source src="/assets/doc/vid/couleur.webm" type="video/webm">
 </video>
 

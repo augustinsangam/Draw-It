@@ -2,7 +2,7 @@ L'outil **Sélection** vous permettra de sélectionner, redimensionner, déplace
 
 Pour utiliser la sélection, commencez par cliquer sur l'icône ![icône sélection](/assets/sidebar-icons/selection.png) ou pressez **`S`**. Placez votre curseur sur la zone de dessin, et effectuez un cliqué glissé sur la zone de dessin, de façon à ce que les objets que vous voulez sélectionnés se trouvent dans ce rectangle. 
 
-<video width="70%" height="70%" class="doc-fig" autoplay loop>
+<video width="90%" height="70%" class="doc-fig" autoplay loop>
     <source src="/assets/doc/vid/rectangle_selection.webm" type="video/webm">
 </video>
 

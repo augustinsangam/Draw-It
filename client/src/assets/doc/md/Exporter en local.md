@@ -4,7 +4,7 @@ Pour télécharger votre dessin sur votre machine, cliquez sur l'icône ![icône
 *   **Filtres** : filtre à appliquer lors de l'exportation
 *   **Formats** : format du fichier exporté
 
-<video width="70%" height="70%" class="doc-fig" autoplay loop>
+<video width="90%" height="70%" class="doc-fig" autoplay loop>
     <source src="/assets/doc/vid/export.webm" type="video/webm">
 </video>
 

@@ -16,7 +16,6 @@ export enum DocEnum {
   text,
   bucket,
   eraser,
-  stamp,
   pipette,
   selectionRectangle,
   deselection,

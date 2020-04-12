@@ -1,6 +1,6 @@
-La première fois que vous lancez DrawIt, plusieurs options s’offrent à vous : `Créer un nouveau dessin` et `Guide d’utilisation`. Si vous avez déjà utilisé DrawIt auparavant, vous aurez également accès aux boutons `Continuer un ancien dessin` et `Aller à la galerie`.
+La première fois que vous lancez DrawIt, plusieurs options s’offrent à vous : `Créer un nouveau dessin` et `Guide d’utilisation`. Si vous avez déjà utilisé DrawIt auparavant, vous aurez également accès aux boutons `Continuer un ancien dessin` et `Gallerie`.
 
-<video width="70%" height="70%" class="doc-fig" autoplay loop>
+<video width="90%" height="70%" class="doc-fig" autoplay loop>
     <source src="../../assets/doc/vid/creer_dessin.webm" type="video/webm">
 </video>
 
