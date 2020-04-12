@@ -71,7 +71,6 @@ export class BrushLogicComponent extends PencilBrushCommon
       mouseUpListen,
       mouseLeaveListen
     ];
-    this.svgStructure.root.style.cursor = 'url(/assets/sidebar-icons/gimp-tool-paintbrush.png), auto';
   }
 
   protected configureSvgElement(element: SVGElement): void {

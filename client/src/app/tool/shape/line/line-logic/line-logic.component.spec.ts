@@ -1,4 +1,6 @@
+import {Overlay} from '@angular/cdk/overlay';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {MatSnackBar} from '@angular/material/snack-bar';
 import { UndoRedoService } from 'src/app/undo-redo/undo-redo.service';
 import { Path } from '../../common/path';
 import { Point } from '../../common/point';
@@ -9,11 +11,14 @@ describe('LineLogicComponent', () => {
   let component: LineLogicComponent;
   let fixture: ComponentFixture<LineLogicComponent>;
   let defaultPath: Path;
-  // let defaultCircle: Circle;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [LineLogicComponent]
+      declarations: [LineLogicComponent],
+      providers: [
+        MatSnackBar,
+        Overlay
+      ]
     }).compileComponents();
   }));
 
