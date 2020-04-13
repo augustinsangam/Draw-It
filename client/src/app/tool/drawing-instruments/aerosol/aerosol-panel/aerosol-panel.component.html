@@ -1,9 +1,9 @@
-<a class="tool-tip" (click)="showDocumentation()">
+<a class="tool-tip no-select" (click)="showDocumentation()">
   <mat-icon title="Cliquez-glissez pour diffuser des particules.&#10;Appuyez pour en savoir plus !">emoji_objects</mat-icon>
 </a>
-<h1>Aérosol</h1>
+<h1 class="no-select">Aérosol</h1>
 <form [formGroup]="aerosolForm">
-  <p>Épaisseur</p>
+  <p class="no-select">Épaisseur</p>
   <div class="thickness">
     <mat-slider min="{{this.service.MIN_THICKNESS}}" max="{{this.service.MAX_THICKNESS}}" step=1
                 (input)="onThicknessChange()"
@@ -17,7 +17,7 @@
     </mat-form-field>
   </div>
   <br>
-  <p>Fréquence du jet</p>
+  <p class="no-select">Fréquence du jet</p>
   <div class="frequency">
     <mat-slider min="{{this.service.MIN_FREQUENCY}}" max="{{this.service.MAX_FREQUENCY}}" step="1"
                 (input)="onFrequencyChange()"
@@ -31,7 +31,7 @@
     </mat-form-field>
   </div>
 </form>
-<p>Aperçu pour 1s</p>
+<p class="no-select">Aperçu pour 1s</p>
 <svg width="340" height="220">
   <circle cx="150" cy="110" r="105"
       [ngStyle]="{'fill': 'rgb(255, 255, 255)', 'stroke-width': '2', 'stroke': 'rgb(0, 0, 0)'}"></circle>

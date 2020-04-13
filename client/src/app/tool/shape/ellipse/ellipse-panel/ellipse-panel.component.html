@@ -1,14 +1,14 @@
-<a class="tool-tip" (click)="showDocumentation()">
+<a class="tool-tip no-select" (click)="showDocumentation()">
   <mat-icon title="Cliquez-glissez pour tracer une ellipse.&#10;Pressez Shift pour tracer un cercle.&#10;Appuyez pour en savoir plus !">emoji_objects</mat-icon>
 </a>
-<h1>Ellipse</h1>
+<h1 class="no-select">Ellipse</h1>
 <form [formGroup]="ellipseForm">
-  <p>
+  <p class="no-select">
     <mat-slide-toggle formControlName="fillOption" #fillOptionRef>
     </mat-slide-toggle>
     Remplissage
   </p>
-  <p>
+  <p class="no-select">
     <mat-slide-toggle formControlName="borderOption" #borderOptionRef>
     </mat-slide-toggle>
     Contour

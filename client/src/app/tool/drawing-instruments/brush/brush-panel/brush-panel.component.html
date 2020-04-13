@@ -1,9 +1,9 @@
-<a class="tool-tip" (click)="showDocumentation()">
+<a class="tool-tip no-select" (click)="showDocumentation()">
   <mat-icon title="Cliquez-glissez pour dessiner.&#10;Des filtres sont applicables pour modifier&#10;l'apparence du pinceau.&#10;Appuyez pour en savoir plus !">emoji_objects</mat-icon>
 </a>
-<h1>Pinceau</h1>
+<h1 class="no-select">Pinceau</h1>
 <form [formGroup]="brushForm">
-  <p>Épaisseur</p>
+  <p class="no-select">Épaisseur</p>
   <div class="thickness">
     <mat-slider min=1 max=100 step=1
       (input)="onThicknessChange()"
@@ -16,18 +16,18 @@
       <span matSuffix>px</span>
     </mat-form-field>
   </div>
-  <p class="texture">Textures</p>
+  <p class="texture no-select">Textures</p>
   <table>
     <mat-radio-group formControlName="textureOption" (change)="onOptionChange($event)">
       <tr *ngFor="let texture of textures" >
         <td>
           <mat-radio-button [value]="texture.value" #radioChoice></mat-radio-button>
         </td>
-        <td>
+        <td class="no-select">
           {{texture.name}}
         </td>
         <td>
-          <img [src]="texture.src" [alt]="texture.value" width=120 height=30 />
+          <img class="no-select" [src]="texture.src" [alt]="texture.value" width=120 height=30 />
         </td>
       </tr>
     </mat-radio-group>

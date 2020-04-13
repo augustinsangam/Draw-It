@@ -1,9 +1,9 @@
-<a class="tool-tip" (click)="showDocumentation()">
+<a class="tool-tip no-select" (click)="showDocumentation()">
   <mat-icon title="Cliquez sur un objet pour l'effacer.&#10;Cliquez-glissez pour effacer plusieurs objets.&#10;Appuyez pour en savoir plus !">emoji_objects</mat-icon>
 </a>
-<h1>Efface</h1>
+<h1 class="no-select">Efface</h1>
 <form [formGroup]="eraserForm">
-  <p>Taille</p>
+  <p class="no-select">Taille</p>
   <div class="thickness">
     <mat-slider min=3 max=30 step=1
       (input)="onThicknessChange()"

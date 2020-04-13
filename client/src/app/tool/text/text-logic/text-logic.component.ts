@@ -324,6 +324,7 @@ export class TextLogicComponent extends ToolLogicDirective
     this.renderer.setAttribute(this.textElement, 'font-weight', this.service.textMutators.bold ? 'bold' : 'normal');
     this.renderer.setAttribute(this.textElement, 'font-style', this.service.textMutators.italic ? 'italic' : 'normal');
     this.renderer.setAttribute(this.textElement, 'text-decoration', this.service.textMutators.underline ? 'underline' : 'none');
+    this.renderer.setStyle(this.textElement, 'user-select', 'none');
   }
 
   private updateView(): void {

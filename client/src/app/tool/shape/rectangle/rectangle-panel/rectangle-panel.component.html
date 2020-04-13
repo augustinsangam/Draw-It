@@ -1,14 +1,14 @@
-<a class="tool-tip" (click)="showDocumentation()">
+<a class="tool-tip no-select" (click)="showDocumentation()">
   <mat-icon title="Cliquez-glissez pour tracer un rectangle.&#10;Pressez Shift pour tracer un carré.&#10;Appuyez pour en savoir plus !">emoji_objects</mat-icon>
 </a>
-<h1>Rectangle</h1>
+<h1 class="no-select">Rectangle</h1>
 <form [formGroup]="rectangleForm">
-  <p>
+  <p class="no-select">
     <mat-slide-toggle formControlName="fillOption" #fillOptionRef>
     </mat-slide-toggle>
     Remplissage
   </p>
-  <p>
+  <p class="no-select">
     <mat-slide-toggle formControlName="borderOption" #borderOptionRef>
     </mat-slide-toggle>
     Contour

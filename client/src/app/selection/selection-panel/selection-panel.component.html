@@ -1,11 +1,11 @@
-<a class="tool-tip-selection" (click)="showDocumentationSelection()">
+<a class="tool-tip-selection no-select" (click)="showDocumentationSelection()">
   <mat-icon title="Cliquez-glissez pour faire une sélection rectangulaire.&#10;Molette de la souris pour effectuer une&#10;rotation de la sélection courante.&#10;Cliquez-glissez une sélection pour&#10;la déplacer.&#10;Utilisez les boutons de contrôle de&#10;une sélection pour la redimensionner.&#10;Appuyez pour en savoir plus !">emoji_objects</mat-icon>
 </a>
-<a class="tool-tip-magnet" (click)="showDocumentationMagnetism()">
+<a class="tool-tip-magnet no-select" (click)="showDocumentationMagnetism()">
   <mat-icon title="Le magnétisme aura tendance à attirer l'un des 9 points&#10;aimantés de votre rectangle de sélection vers&#10;le noeud de la grille le plus proche.&#10;Vous pouvez configurer dans le panneau le&#10;point qui sera aimanté.&#10;Appuyez pour en savoir plus !">emoji_objects</mat-icon>
 </a>
 
-<h1>Sélection</h1>
+<h1 class="no-select">Sélection</h1>
 <button mat-fab (click)="service.copy.next(null)" color="" title="Copier"
   [disabled]="service.selectedElements.size === 0">
   <img src="../../../../assets/selecton-icons/copy.svg" alt="Copier"></button>
@@ -26,7 +26,7 @@
   <img src="../../../../assets/selecton-icons/delete.svg" alt="Supprimer">
 </button>
 
-<h1>
+<h1 class="no-select">
   Magnétisme
   <mat-slide-toggle #slideToggle [(ngModel)]="service.magnetActive"></mat-slide-toggle>
 </h1>

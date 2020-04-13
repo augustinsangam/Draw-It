@@ -11,11 +11,12 @@ mat-slider{
   float: left;
 }
 
-mat-form-field{
+mat-form-field {
   width: 45px;
   height: 10px;
   margin-left: 10px;
-  margin-top: -20px;
+  margin-top: -25px;
+  user-select: none;
 }
 
 mat-radio-button{

@@ -1,9 +1,9 @@
-<a class="tool-tip" (click)="showDocumentation()">
+<a class="tool-tip no-select" (click)="showDocumentation()">
   <mat-icon title="Cliquez-glissez pour dessiner.&#10;Appuyez pour en savoir plus !">emoji_objects</mat-icon>
 </a>
-<h1>Crayon</h1>
+<h1 class="no-select">Crayon</h1>
 <form [formGroup]="pencilForm">
-  <p>Épaisseur</p>
+  <p class="no-select">Épaisseur</p>
   <div class="thickness">
     <mat-slider min=1 max=100 step=1
       (input)="onThicknessChange()"

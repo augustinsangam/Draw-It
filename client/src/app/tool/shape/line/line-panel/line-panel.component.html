@@ -1,9 +1,9 @@
-<a class="tool-tip" (click)="showDocumentation()">
+<a class="tool-tip no-select" (click)="showDocumentation()">
   <mat-icon title="Cliquez pour commencer à tracer une ligne.&#10;Pressez Shift pour forcer la ligne à se placer&#10;sur des angles multiples de 45.&#10;Appuyez pour en savoir plus !">emoji_objects</mat-icon>
 </a>
-<h1>Ligne</h1>
+<h1 class="no-select">Ligne</h1>
 <form [formGroup]="lineForm">
-  <p>Épaisseur</p>
+  <p class="no-select">Épaisseur</p>
   <div class="thickness">
     <mat-slider min=1 max=50 step=1
       (input)="onThicknessChange()"
@@ -16,13 +16,13 @@
       <span matSuffix>px</span>
     </mat-form-field>
   </div>
-  <p>
+  <p class="no-select">
     Points de jonction
     <mat-slide-toggle formControlName="jonctionOption" (change)="onChangeJonctionOption($event)" #slideToggle></mat-slide-toggle>
   </p>
   <div class="junction-options">
     <div class="juction-preferences" *ngIf="this.service.withJonction">
-      <p>Diamètre des points</p>
+      <p class="no-select">Diamètre des points</p>
         <mat-slider min="1"
                 max="30" step="1"
                 (input)="onRadiusChange()"

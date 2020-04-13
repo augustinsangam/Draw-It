@@ -4,7 +4,7 @@
       <td class="radio-button">
         <mat-radio-button [value]="colorOptionEnum.Primary" checked></mat-radio-button>
       </td>
-      <td class="radio-button-text">Primaire</td>
+      <td class="radio-button-text no-select">Primaire</td>
       <td class="color-preview-circle">
         <app-color-picker-item #colorPreviewPrimary></app-color-picker-item>
       </td>
@@ -20,7 +20,7 @@
       <td>
         <mat-radio-button [value]="colorOptionEnum.Secondary"></mat-radio-button>
       </td>
-      <td class="radio-button-text">Secondaire</td>
+      <td class="radio-button-text no-select">Secondaire</td>
       <td class="color-preview-circle">
         <app-color-picker-item #colorPreviewSecondary></app-color-picker-item>
       </td>
@@ -29,7 +29,7 @@
       <td>
         <mat-radio-button [value]="colorOptionEnum.Background"></mat-radio-button>
       </td>
-      <td class="radio-button-text">Arrière plan</td>
+      <td class="radio-button-text no-select">Arrière plan</td>
       <td class="color-preview-circle">
         <app-color-picker-item #colorPreviewBackground></app-color-picker-item>
       </td>
@@ -37,10 +37,10 @@
   </table>
 </mat-radio-group>
 <div #recentElements class="recent-colors">
-  <p>Couleurs récentes</p>
+  <p class="no-select">Couleurs récentes</p>
   <app-color-picker-item *ngFor="let number of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"></app-color-picker-item>
 </div>
-<button mat-raised-button color="primary" (click)="onShowPalette()" class="palette">
+<button mat-raised-button color="primary" (click)="onShowPalette()" class="palette no-select">
   PALETTE
   <mat-icon>palette</mat-icon>
 </button>

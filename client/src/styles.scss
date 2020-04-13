@@ -51,3 +51,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   font-family: 'texgyrepagella';
   src: url('/assets/fonts/texgyrepagella-regular.otf')
 }
+
+.no-select {
+  user-select: none;
+}
