@@ -3,6 +3,7 @@ import { UndoRedoService } from '../undo-redo/undo-redo.service';
 import { SvgHeader } from './svg-header';
 import { SvgShape } from './svg-shape';
 import { SVGStructure } from './svg-structure';
+import { LocalStorageHandlerService } from '../auto-save/local-storage-handler.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class SvgService {
   drawInProgress: boolean;
 
   constructor(private readonly undoRedoService: UndoRedoService,
+              private autoSave: LocalStorageHandlerService
   ) {
     this.drawInProgress = false;
     this.header = {
@@ -31,6 +33,7 @@ export class SvgService {
 
   changeBackgroundColor(color: string): void {
     this.shape.color = color;
+    this.autoSave.saveShape(this.shape);
   }
 
   clearDom(): void {
