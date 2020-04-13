@@ -38,7 +38,12 @@
 </mat-radio-group>
 <div #recentElements class="recent-colors">
   <p class="no-select">Couleurs récentes</p>
-  <app-color-picker-item *ngFor="let number of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]"></app-color-picker-item>
+  <div class="recent-colors-buttons">
+    <app-color-picker-item
+      title="Clic gauche &#11166; Couleur primaire&#10;Clic droit &#11166; Couleur secondaire"
+      *ngFor="let number of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]">
+    </app-color-picker-item>
+  </div>
 </div>
 <button mat-raised-button color="primary" (click)="onShowPalette()" class="palette no-select">
   PALETTE

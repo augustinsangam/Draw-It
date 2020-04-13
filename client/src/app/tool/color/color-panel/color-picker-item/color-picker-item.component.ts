@@ -29,7 +29,7 @@ export class ColorPickerItemComponent implements AfterViewInit {
     this.renderer.setStyle(
       this.button.nativeElement,
       'border',
-      '2px solid grey'
+      '1px solid black'
     );
   }
 

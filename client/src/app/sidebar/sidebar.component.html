@@ -1,6 +1,6 @@
 <div>
   <a title="Acceuil" (click)="homeEvent.emit()">
-    <mat-icon>home</mat-icon>
+    <mat-icon class="no-select">home</mat-icon>
   </a>
 </div>
 <nav>
@@ -38,7 +38,7 @@
      style="background-image:url(/assets/sidebar-icons/pipette.png)">
   </a>
   <a title="Applicateur de couleur [R]" #applicator (click)="toolSelectorService.set(Tool.Applicator)">
-    <mat-icon>invert_colors</mat-icon>
+    <mat-icon class="no-select">invert_colors</mat-icon>
   </a>
   <a title="Sceau de peinture [B]" #bucket (click)="toolSelectorService.set(Tool.Bucket)"
      style="background-image:url(/assets/sidebar-icons/bucket.png)">
@@ -71,17 +71,17 @@
 </mat-grid-list>
 
 <a title="Sauvegarder [CTRL + S]" (click)="saveEvent.emit()">
-  <mat-icon>
+  <mat-icon class="no-select">
     save
   </mat-icon>
 </a>
 <a title="Exporter [CTRL + E]" (click)="exportEvent.emit()">
-  <mat-icon>
+  <mat-icon class="no-select">
     save_alt
   </mat-icon>
 </a>
 <a title="Galerie [CTRL + G]" (click)="galleryEvent.emit()">
-  <mat-icon>
+  <mat-icon class="no-select">
     photo_library
   </mat-icon>
 </a>

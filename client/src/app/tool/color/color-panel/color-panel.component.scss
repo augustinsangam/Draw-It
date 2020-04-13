@@ -25,7 +25,13 @@
 
 .recent-colors{
   margin-top: 20px;
+  margin-left: 10px;
+  .recent-colors-buttons {
+    margin-left: 5px;
+  }
 }
+
+
 
 td {
   ::ng-deep .mat-raised-button{
