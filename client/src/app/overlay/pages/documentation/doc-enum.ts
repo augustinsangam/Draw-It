@@ -23,8 +23,11 @@ export enum DocEnum {
   selectionScale,
   selectionRotate,
   grid,
+  undoredo,
   magnetism,
+  clipboard,
   saveDraw,
-  exportDraw,
+  exportDrawLocal,
+  exportDrawMail,
   aboutUs
 }
