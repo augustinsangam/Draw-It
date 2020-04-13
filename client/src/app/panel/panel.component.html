@@ -1,5 +1,19 @@
 <ng-template #container></ng-template>
 
+<button mat-raised-button
+        [ngStyle]="{'visibility': hostWidth === 0 ? 'hidden' : 'initial'}"
+        (click)="toggle()"
+        class="unCollapsedButton">
+  <mat-icon class="unCollapsedIcon">arrow_back_ios</mat-icon>
+</button>
+
+<button mat-raised-button
+        [ngStyle]="{'visibility': hostWidth !== 0 ? 'hidden' : 'initial'}"
+        (click)="toggle()"
+        class="collapsedButton">
+  <mat-icon class="collapsedIcon">arrow_forward_ios</mat-icon>
+</button>
+
 <div class="seperate no-select">
   <ng-template #chatBox></ng-template>
 </div>

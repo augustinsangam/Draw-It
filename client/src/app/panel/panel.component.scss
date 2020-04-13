@@ -7,3 +7,38 @@
   margin-left: 5px;
   margin-right: 5px;
 }
+
+.unCollapsedIcon {
+  margin-left: -6px;
+}
+
+.collapsedIcon {
+  margin-left: -10px;
+}
+
+button {
+  width: 30px !important;
+  min-width: unset!important;
+  background-color: rgba(78, 77, 77, 1);
+  color: #fcbfcb;
+  height: 50px;
+  position: absolute;
+  top: 15px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  transition: .3s filter;
+}
+
+.collapsedButton {
+  background-color: rgba(78, 77, 77, 0.2);
+  left: 68px;
+}
+
+.collapsedButton:hover {
+  filter: opacity(100%);
+  background-color: rgba(78, 77, 77, 1);
+}
+
+.unCollapsedButton {
+  left: 408px;
+}
