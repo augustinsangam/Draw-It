@@ -25,7 +25,7 @@ export class HomeComponent {
       },
       {
         icon: 'photo_library',
-        message: 'Gallerie',
+        message: 'Galerie',
         dialogCloseResult: 'library',
         canDisplay: true,
       },

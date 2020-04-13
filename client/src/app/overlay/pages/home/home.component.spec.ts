@@ -27,7 +27,7 @@ describe('HomeComponent', () => {
     },
     {
       icon: 'photo_library',
-      message: 'Aller à la gallerie',
+      message: 'Aller à la galerie',
       dialogCloseResult: 'library',
       canDisplay: true
     },
