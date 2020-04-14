@@ -621,8 +621,8 @@ describe('CommunicationService', () => {
     const divElement = renderer.createElement('DIV') as HTMLDivElement;
 
     service.clear();
-    const elementOffset = service.encodeElementRecursively(divElement);
-    service['fbBuilder'].finish(elementOffset);
+    const { offset } = service.encodeElementRecursively(divElement);
+    service['fbBuilder'].finish(offset);
 
     const fbByteBuffer = new flatbuffers.ByteBuffer(service['fbBuilder'].asUint8Array());
     const elementT = ElementT.getRoot(fbByteBuffer);
@@ -636,8 +636,8 @@ describe('CommunicationService', () => {
     divElement.setAttribute('_foo', 'bar');
 
     service.clear();
-    const elementOffset = service.encodeElementRecursively(divElement);
-    service['fbBuilder'].finish(elementOffset);
+    const { offset } = service.encodeElementRecursively(divElement);
+    service['fbBuilder'].finish(offset);
 
     const fbByteBuffer = new flatbuffers.ByteBuffer(service['fbBuilder'].asUint8Array());
     const elementT = ElementT.getRoot(fbByteBuffer);
@@ -649,8 +649,8 @@ describe('CommunicationService', () => {
     divElement.setAttribute('foo', 'bar');
 
     service.clear();
-    const elementOffset = service.encodeElementRecursively(divElement);
-    service['fbBuilder'].finish(elementOffset);
+    const { offset } = service.encodeElementRecursively(divElement);
+    service['fbBuilder'].finish(offset);
 
     const fbByteBuffer = new flatbuffers.ByteBuffer(service['fbBuilder'].asUint8Array());
     const elementT = ElementT.getRoot(fbByteBuffer);
@@ -672,14 +672,15 @@ describe('CommunicationService', () => {
     divElement.appendChild(pElement);
 
     service.clear();
-    const elementOffset = service.encodeElementRecursively(divElement);
-    service['fbBuilder'].finish(elementOffset);
+    const { offset } = service.encodeElementRecursively(divElement);
+    service['fbBuilder'].finish(offset);
 
     const fbByteBuffer = new flatbuffers.ByteBuffer(service['fbBuilder'].asUint8Array());
     const elementT = ElementT.getRoot(fbByteBuffer);
     expect(elementT.childrenLength()).toEqual(1);
 
-    const childElement = elementT.children(0);
+    const elementT2 = new ElementT();
+    const childElement = elementT.children(0, elementT2);
     if (childElement == null) {
       fail('Child 0 should not be null');
       return;
@@ -707,9 +708,9 @@ describe('CommunicationService', () => {
     service.clear();
 
     const divElement = renderer.createElement('DIV') as HTMLDivElement;
-    const elementOffset = service.encodeElementRecursively(divElement);
+    const { offset } = service.encodeElementRecursively(divElement);
 
-    service.encode(svgHeader, svgShape, elementOffset, ['foobar']);
+    service.encode(svgHeader, svgShape, offset, ['foobar']);
 
     expect(serviceEncodeTagsStub).toHaveBeenCalled();
   });

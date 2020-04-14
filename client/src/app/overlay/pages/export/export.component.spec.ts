@@ -122,14 +122,6 @@ describe('ExportComponent', () => {
     expect(component['formatToMime'](FormatChoice.JPEG)).toEqual('image/jpeg');
   });
 
-  it('#parseToB64URI should return svg type', async () => {
-    const spy = spyOn<any>(component, 'serializeSVG');
-    spy.and.returnValue('foo');
-
-    const uri = await component['parseToB64URI'](FormatChoice.SVG);
-    expect(uri).toEqual('data:image/svg+xml,foo');
-  });
-
   it('#onConfirm should close the dialogRef', () => {
     spyOn<any>(component, 'exportDrawing');
     component['onConfirm']();
@@ -251,12 +243,20 @@ describe('ExportComponent', () => {
   });
 
   it('#exportDrawing should should always download the image', () => {
+    const formSpy = spyOnProperty<any>(component, 'form');
+    formSpy.and.returnValue({
+      controls: {
+        format: {
+          value: 'SVG',
+        }
+      }
+    });
+
+    const exportTypeSpy = spyOnProperty<any>(component, 'exportType');
+    exportTypeSpy.and.returnValue(ExportType.LOCAL);
+
     const spy = spyOn<any>(component, 'downloadImage');
-    component['exportDrawing'](FormatChoice.SVG);
-    expect(spy).toHaveBeenCalledTimes(1);
-    component['exportDrawing'](FormatChoice.JPEG);
-    expect(spy).toHaveBeenCalledTimes(1);
-    component['exportDrawing'](FormatChoice.PNG);
+    component['onConfirm']();
     expect(spy).toHaveBeenCalledTimes(1);
 
   });
@@ -343,12 +343,24 @@ describe('ExportComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#dataURItoBlob should decode uri', () => {
-    let b64img = '';
-    b64img += 'iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAJUlEQVR42mP8z8A';
-    b64img += 'ARLQDjKMWjFowasGoBaMWjFowasGoBUPDAgCFIi/pHcieOwAAAABJRU5ErkJggg';
-    b64img += '==';
-    const blob = component['dataURItoBlob'](`data:image/png;base64,${b64img}`);
+  it('#getImageAsURL should return svg url', async () => {
+    const spy = spyOn<any>(component, 'serializeSVG');
+    spy.and.returnValue('foo');
+
+    const url = await component['getImageAsURL'](FormatChoice.SVG);
+    expect(url).toEqual('data:image/svg+xml,foo');
+  });
+
+  it('#getImageAsURL should return png url', async () => {
+    const spy = spyOn<any>(component, 'serializeSVG');
+    spy.and.returnValue('foo');
+
+    const url = await component['getImageAsURL'](FormatChoice.PNG);
+    expect(url.startsWith('data:image/png;base64,')).toBeTruthy();
+  });
+
+  it('#getImageAsBlob should return blob of type png', async () => {
+    const blob = await component['getImageAsBlob'](FormatChoice.PNG);
     expect(blob.type).toEqual('image/png');
   });
 });
