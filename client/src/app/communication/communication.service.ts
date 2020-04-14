@@ -7,6 +7,8 @@ import {
   Attr as AttrT,
   Draw as DrawT,
   Element as ElementT,
+  Node as NodeT,
+  Text as TextT,
 } from './data_generated';
 
 const ERROR_MESSAGE = 'Communication impossible avec le serveur';
@@ -32,6 +34,11 @@ export enum StatusCode {
   CREATED,
   ACCEPTED,
   INTERNAL_SERVER_ERROR = 500,
+}
+
+interface DataTree {
+  type: NodeT,
+  offset: flatbuffers.Offset,
 }
 
 // developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/
@@ -195,13 +202,36 @@ export class CommunicationService {
 
     const childrenLen = element.childrenLength();
     for (let i = 0; i < childrenLen; ++i) {
-      const child = element.children(i);
-      if (child == null) {
+      const type = element.childrenType(i);
+      if (type === null) {
+        continue;
+      }
+
+      if (type === NodeT.Text) {
+        const textT = new TextT();
+        const child = element.children(i, textT);
+        if (child === null) {
+          continue;
+        }
+
+        const content = child.content();
+        if (content === null) {
+          continue;
+        }
+
+        const childText: Text = renderer.createText(content);
+        renderer.appendChild(svgEl, childText);
+        continue;
+      }
+
+      const elementT = new ElementT();
+      const child = element.children(i, elementT);
+      if (child === null) {
         continue;
       }
 
       const childElement = this.decodeElementRecursively(child, renderer);
-      if (!!childElement) {
+      if (childElement !== null) {
         renderer.appendChild(svgEl, childElement);
       }
     }
@@ -209,11 +239,24 @@ export class CommunicationService {
     return svgEl;
   }
 
-  encodeElementRecursively(el: Element): flatbuffers.Offset {
-    const childrenList =  Array.from(el.childNodes)
+  encodeElementRecursively(el: Element): DataTree {
+    if (el.nodeType === Node.TEXT_NODE) {
+      const text = this.fbBuilder.createString(el.textContent as string);
+      return {
+        type: NodeT.Text,
+        offset: TextT.create(this.fbBuilder, text),
+      };
+    }
+
+    const childrenTreeList =  Array.from(el.childNodes)
       .filter((node) => node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE)
       .map((node) => node as Element)
       .map((childEl) => this.encodeElementRecursively(childEl));
+
+    const childrenTypeList = childrenTreeList.map(({type}) => type);
+    const childrenType = ElementT.createChildrenTypeVector(this.fbBuilder, childrenTypeList);
+
+    const childrenList = childrenTreeList.map(({offset}) => offset);
     const children = ElementT.createChildrenVector(this.fbBuilder, childrenList);
 
     const attrsList = Array.from(el.attributes)
@@ -223,9 +266,13 @@ export class CommunicationService {
         this.fbBuilder.createString(attr.value)));
     const attrs = ElementT.createAttrsVector(this.fbBuilder, attrsList);
 
+    ElementT.createChildrenTypeVector
     const name = this.fbBuilder.createString(el.tagName);
 
-    return ElementT.create(this.fbBuilder, name, attrs, children);
+    return {
+      type: NodeT.Element,
+      offset: ElementT.create(this.fbBuilder, name, attrs, childrenType, children),
+    };
   }
 
   encode(header: SvgHeader, shape: SvgShape, elOffset: flatbuffers.Offset, colors: string[]): void {

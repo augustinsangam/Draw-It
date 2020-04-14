@@ -80,7 +80,7 @@ export class SaveComponent implements OnInit {
     this.renderer.appendChild(this.elementRef.nativeElement, clone);
     this.communicationService.clear();
     this.gElOffset = this.communicationService
-      .encodeElementRecursively(clone as Element);
+      .encodeElementRecursively(clone as Element).offset;
   }
 
   protected add(event: MatChipInputEvent): void {
