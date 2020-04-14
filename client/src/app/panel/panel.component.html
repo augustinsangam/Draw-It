@@ -1,5 +1,11 @@
 <ng-template #container></ng-template>
 
+<button mat-raised-button class="upper"
+        *ngIf="hostWidth !== 0"
+        (click)="toggle()">
+  <mat-icon style="margin-left: -6px">arrow_back_ios</mat-icon>
+</button>
+
 <div class="seperate no-select">
   <ng-template #chatBox></ng-template>
 </div>
