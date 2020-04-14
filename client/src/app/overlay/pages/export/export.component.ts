@@ -20,9 +20,9 @@ export enum FilterChoice {
 }
 
 export enum FormatChoice {
-  Svg = 'SVG',
-  Png = 'PNG',
-  Jpeg = 'JPEG',
+  SVG = 'SVG',
+  PNG = 'PNG',
+  JPEG = 'JPEG',
 }
 
 export enum ExportType {
@@ -71,7 +71,7 @@ export class ExportComponent implements AfterViewInit {
       name: ['', [Validators.required, ExportComponent.validator]],
       email: [{value: '', disabled: true}],
       filter: [FilterChoice.None, [Validators.required]],
-      format: [FormatChoice.Png, [Validators.required]]
+      format: [FormatChoice.PNG, [Validators.required]]
     });
   }
 
@@ -88,9 +88,9 @@ export class ExportComponent implements AfterViewInit {
 
   protected getFormats(): FormatChoice[] {
     return [
-      FormatChoice.Svg,
-      FormatChoice.Png,
-      FormatChoice.Jpeg
+      FormatChoice.SVG,
+      FormatChoice.PNG,
+      FormatChoice.JPEG
     ];
   }
 
@@ -98,39 +98,29 @@ export class ExportComponent implements AfterViewInit {
     this.createView(String($change.value));
   }
 
-  private async parseToB64URI(format: string): Promise<string> {
-    if (format as FormatChoice === FormatChoice.Svg) {
-      return `data:image/svg+xml,${encodeURIComponent(this.serializeSVG())}`;
-    }
-
-    const svgToCanvas = new SvgToCanvas(this.innerSVG, this.svgService.shape, this.renderer);
-    const canvas = await svgToCanvas.getCanvas();
-    return canvas.toDataURL(`image/${format}`);
+  protected onCancel(): void {
+    this.dialogRef.close('Opération annulée');
   }
 
   protected async onConfirm(): Promise<void> {
-    const format = this.form.controls.format.value;
+    const format = this.form.controls.format.value as FormatChoice;
     if (this.exportType === ExportType.EMAIL) {
-      const imageBase64 = await this.parseToB64URI(format);
-      const imageBlob = this.dataURItoBlob(imageBase64);
+      const blob = await this.getImageAsBlob(format);
 
       const email = this.form.controls.email.value;
-      const name = this.form.controls.name.value;
+      const name = `${this.form.controls.name.value}.${format.toLowerCase()}`;
       try {
         const response = await this.communicationService.sendEmail(
-          name, email, imageBlob);
+          name, email, blob);
         this.dialogRef.close(response);
       } catch (err) {
         this.dialogRef.close(err);
       }
     } else {
-      this.exportDrawing(format);
+      const url = await this.getImageAsURL(format);
+      this.downloadImage(url);
       this.dialogRef.close('Une fenêtre de sauvegarde apparaîtra sous peu');
     }
-  }
-
-  protected onCancel(): void {
-    this.dialogRef.close('Opération annulée');
   }
 
   ngAfterViewInit(): void {
@@ -181,17 +171,53 @@ export class ExportComponent implements AfterViewInit {
     downloadLink.click();
   }
 
-  private exportDrawing(format: FormatChoice): void {
-    this.resetInnerSVG();
-    if (format as FormatChoice === FormatChoice.Svg) {
-      const uri = `data:image/svg+xml,${encodeURIComponent(this.serializeSVG())}`;
-      this.downloadImage(uri);
-    } else {
-      new SvgToCanvas(this.innerSVG, this.svgService.shape, this.renderer)
-      .getCanvas().then((canvas) => {
-          this.downloadImage(canvas.toDataURL(`image/${format}`));
-      });
+  private formatToMime(format: FormatChoice): string {
+    if (format === FormatChoice.SVG) {
+      return 'image/svg+xml';
     }
+    return `image/${format}`;
+  }
+
+  private async getImageAsURL(format: FormatChoice): Promise<string> {
+    this.resetInnerSVG();
+    const type = this.formatToMime(format);
+
+    if (format as FormatChoice === FormatChoice.SVG) {
+      return `data:${type},${encodeURIComponent(this.serializeSVG())}`;
+    }
+
+    const svgToCanvas = new SvgToCanvas(this.innerSVG, this.svgService.shape, this.renderer)
+    const canvas = await svgToCanvas.getCanvas();
+    return canvas.toDataURL(type);
+  }
+
+  private svgToCanvas(): Promise<HTMLCanvasElement> {
+    const svgToCanvas = new SvgToCanvas(this.innerSVG, this.svgService.shape,
+      this.renderer);
+      return svgToCanvas.getCanvas();
+  }
+
+  private async getImageAsBlob(format: FormatChoice) {
+    this.resetInnerSVG();
+    const type = this.formatToMime(format);
+
+    let byteString: string;
+    if (format === FormatChoice.SVG) {
+      byteString = this.serializeSVG();
+    } else {
+      const canvas = await this.svgToCanvas();
+      const dataURL = canvas.toDataURL(type);
+      const asciiString = dataURL.split(',')[1];
+      byteString = atob(asciiString);
+    }
+
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const byteArray = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; ++i) {
+      byteArray[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([arrayBuffer], { type });
   }
 
   private createView(filterName: string): void {
@@ -203,7 +229,6 @@ export class ExportComponent implements AfterViewInit {
       viewZone.removeChild(child);
     }
     this.renderer.appendChild(viewZone, this.pictureView);
-
   }
 
   private configurePicture(picture: SVGImageElement, filterName: string): void {
@@ -267,17 +292,5 @@ export class ExportComponent implements AfterViewInit {
     } else {
       input.disable();
     }
-  }
-
-  // From: stackoverflow.com/a/12300351
-  private dataURItoBlob(dataURI: string): Blob {
-    const byteString = atob(dataURI.split(',')[1]);
-    const mime = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    const arrBuf = new ArrayBuffer(byteString.length);
-    const byteArr = new Uint8Array(arrBuf);
-    for (let i = 0; i < byteString.length; ++i) {
-      byteArr[i] = byteString.charCodeAt(i);
-    }
-    return new Blob([arrBuf], {type: mime});
   }
 }

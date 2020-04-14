@@ -41,12 +41,11 @@ class Email {
 		file: Express.Multer.File,
 	): Promise<IncomingMessage> {
 		const readStream = createReadStream(file.path);
-
 		const form = new FormData();
 		form.append('to', recipient);
 		form.append('payload', readStream, {
-			filename: file.filename,
 			contentType: file.mimetype,
+			filename: file.originalname,
 		});
 
 		const options = { ...this.options, ...{ headers: form.getHeaders() } };

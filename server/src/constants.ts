@@ -44,16 +44,16 @@ enum ContentType {
 
 const EMAIL_API = {
 	headers: {
-		count: 'X-RateLimit-Remaining',
+		count: 'x-ratelimit-remaining',
 		key: 'x-team-key',
-		max: 'X-RateLimit-Limit',
+		max: 'x-ratelimit-limit',
 	},
-	url:
-		'https://log2990.step.polymtl.ca/email?address_validation=true&dry_run=true',
+	url: 'https://log2990.step.polymtl.ca/email?address_validation=true',
 };
 
 const promisifiedTimeout = promisify(setTimeout);
-const asyncTimeout = (timeout: number) => promisifiedTimeout(timeout);
+const asyncTimeout = async (timeout: number): Promise<void> =>
+	promisifiedTimeout(timeout);
 
 const ERRORS = {
 	reposneNotJson: new Error('Réponse de l’API n’est pas du JSON'),

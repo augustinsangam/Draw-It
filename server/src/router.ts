@@ -117,11 +117,15 @@ class Router {
 			switch (resEmail.statusCode) {
 				case StatusCode.OK:
 					res.status(StatusCode.OK);
-					res.send(`Courriel envoyé (${count}/${max})`);
+					res.send(
+						`Courriel envoyé (${count} restant sur ${max} pour cette heure)`,
+					);
 					return;
 				case StatusCode.ACCEPTED:
 					res.status(StatusCode.OK);
-					res.send(`Courriel probabablement envoyé (${count}/${max})`);
+					res.send(
+						`Courriel probabablement envoyé (${count} restant sur ${max} pour cette heure)`,
+					);
 					return;
 				default:
 					break;

@@ -17,10 +17,16 @@ table Draw {
 	width: uint16;
 }
 
+union Node { Element, Text }
+
 table Element {
 	name: string;
 	attrs: [Attr];
-	children: [Element];
+	children: [Node];
+}
+
+table Text {
+	content: string;
 }
 
 table Attr {
