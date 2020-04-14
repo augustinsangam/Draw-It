@@ -6,7 +6,7 @@ import { Point } from '../../shape/common/point';
 import { CONSTANTS, EraserLogicComponent } from './eraser-logic.component';
 
 // tslint:disable: no-string-literal no-any no-magic-numbers
-describe('EraserLogicComponent', () => {
+fdescribe('EraserLogicComponent', () => {
   let component: EraserLogicComponent;
   let fixture: ComponentFixture<EraserLogicComponent>;
 
@@ -269,6 +269,14 @@ describe('EraserLogicComponent', () => {
 
     mouseDownHandler(fakeEvent);
     expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('#findElementsInZone should return empty set when there is no elements', () => {
+    spyOn(document, 'elementFromPoint').and.callFake(() => {
+      return null;
+    });
+    const markedElements = component['findElementsInZone'](0, 0);
+    expect(markedElements.size).toEqual(0);
   });
 
   it('#markElementsInZone change stroke color!', () => {
