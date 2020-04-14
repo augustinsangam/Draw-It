@@ -6,7 +6,7 @@ import { Point } from '../../shape/common/point';
 import { CONSTANTS, EraserLogicComponent } from './eraser-logic.component';
 
 // tslint:disable: no-string-literal no-any no-magic-numbers
-fdescribe('EraserLogicComponent', () => {
+describe('EraserLogicComponent', () => {
   let component: EraserLogicComponent;
   let fixture: ComponentFixture<EraserLogicComponent>;
 
