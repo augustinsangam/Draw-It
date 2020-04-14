@@ -3,20 +3,10 @@
 }
 
 .seperate {
-  margin-top: 20px;
-  margin-left: 5px;
-  margin-right: 5px;
+  margin: 20px 5px 36px;
 }
 
-.unCollapsedIcon {
-  margin-left: -6px;
-}
-
-.collapsedIcon {
-  margin-left: -10px;
-}
-
-button {
+.upper {
   width: 30px !important;
   min-width: unset!important;
   background-color: rgba(78, 77, 77, 1);
@@ -27,18 +17,20 @@ button {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   transition: .3s filter;
-}
-
-.collapsedButton {
-  background-color: rgba(78, 77, 77, 0.2);
-  left: 68px;
-}
-
-.collapsedButton:hover {
-  filter: opacity(100%);
-  background-color: rgba(78, 77, 77, 1);
-}
-
-.unCollapsedButton {
   left: 408px;
+}
+
+.lowerIcon {
+  margin-right: 10px;
+}
+
+.lower {
+  width: 315px !important;
+  min-width: unset !important;
+  background-color: rgba(78, 77, 77, 1);
+  color: #fcbfcb;
+  position: absolute;
+  bottom: 3px;
+  left: 73px;
+  border-radius: 3px;
 }
