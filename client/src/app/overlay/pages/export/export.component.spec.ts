@@ -95,9 +95,9 @@ describe('ExportComponent', () => {
 
   it('#getFormats() should return an array of FormatChoice', fakeAsync(() => {
     const result = component['getFormats']();
-    expect(result[0]).toEqual(FormatChoice.Svg);
-    expect(result[1]).toEqual(FormatChoice.Png);
-    expect(result[2]).toEqual(FormatChoice.Jpeg);
+    expect(result[0]).toEqual(FormatChoice.SVG);
+    expect(result[1]).toEqual(FormatChoice.PNG);
+    expect(result[2]).toEqual(FormatChoice.JPEG);
   }));
 
   it('#getFilters() should return an array of FilterChoice', fakeAsync(() => {
@@ -110,11 +110,23 @@ describe('ExportComponent', () => {
     expect(result[5]).toEqual(FilterChoice.Grey);
   }));
 
+  it('#formatToMime should return image/svg+xml for svg format', () => {
+    expect(component['formatToMime'](FormatChoice.SVG)).toEqual('image/svg+xml');
+  });
+
+  it('#formatToMime should return image/png for png format', () => {
+    expect(component['formatToMime'](FormatChoice.PNG)).toEqual('image/png');
+  });
+
+  it('#formatToMime should return image/jpeg for jpeg format', () => {
+    expect(component['formatToMime'](FormatChoice.JPEG)).toEqual('image/jpeg');
+  });
+
   it('#parseToB64URI should return svg type', async () => {
     const spy = spyOn<any>(component, 'serializeSVG');
     spy.and.returnValue('foo');
 
-    const uri = await component['parseToB64URI'](FormatChoice.Svg);
+    const uri = await component['parseToB64URI'](FormatChoice.SVG);
     expect(uri).toEqual('data:image/svg+xml,foo');
   });
 
@@ -240,11 +252,11 @@ describe('ExportComponent', () => {
 
   it('#exportDrawing should should always download the image', () => {
     const spy = spyOn<any>(component, 'downloadImage');
-    component['exportDrawing'](FormatChoice.Svg);
+    component['exportDrawing'](FormatChoice.SVG);
     expect(spy).toHaveBeenCalledTimes(1);
-    component['exportDrawing'](FormatChoice.Jpeg);
+    component['exportDrawing'](FormatChoice.JPEG);
     expect(spy).toHaveBeenCalledTimes(1);
-    component['exportDrawing'](FormatChoice.Png);
+    component['exportDrawing'](FormatChoice.PNG);
     expect(spy).toHaveBeenCalledTimes(1);
 
   });
