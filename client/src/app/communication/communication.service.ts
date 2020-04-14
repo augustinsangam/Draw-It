@@ -212,7 +212,7 @@ export class CommunicationService {
 
   encodeElementRecursively(el: Element): flatbuffers.Offset {
     const childrenList =  Array.from(el.childNodes)
-      .filter((node) => node.nodeType === 1)
+      .filter((node) => node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE)
       .map((node) => node as Element)
       .map((childEl) => this.encodeElementRecursively(childEl));
     const children = ElementT.createChildrenVector(this.fbBuilder, childrenList);
