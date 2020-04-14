@@ -150,9 +150,8 @@ export class CommunicationService {
 
   async sendEmail(name: string, email: string, blob: Blob): Promise<string> {
     const formData = new FormData();
-    formData.append('name', name);
     formData.append('recipient', email);
-    formData.append('media', blob);
+    formData.append('media', blob, name);
     this.xhr.open(Method.POST, `${this.host}/send`);
     this.xhr.responseType = 'text';
     const promise = new Promise<string>((resolve, reject) => {
