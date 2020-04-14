@@ -142,6 +142,7 @@ export class SelectionLogicComponent
           this.mouse.left.mouseIsDown = false;
           this.mouse.left.onDrag = false;
           this.mouse.left.onResize = false;
+          this.resetRectangle(this.rectangles.selection);
         }]
       ])],
       ['centerButton', new Map<string, Util.WheelEventCallback>([
@@ -192,6 +193,12 @@ export class SelectionLogicComponent
           if (type === BasicSelectionType.DRAW_ELEMENT) {
             this.applySingleInversion(target);
           }
+        }],
+        ['mouseleave', (_: MouseEvent) => {
+          this.mouse.right.mouseIsDown = false;
+          this.mouse.right.onDrag = false;
+          this.mouse.right.onResize = false;
+          this.resetRectangle(this.rectangles.inversion);
         }]
       ])],
     ]);
@@ -201,7 +208,7 @@ export class SelectionLogicComponent
     super.ngOnInit();
     [
       ['leftButton', ['mousedown', 'mousemove', 'mouseup', 'click', 'mouseleave']],
-      ['rightButton', ['mousedown', 'mousemove', 'mouseup', 'contextmenu']],
+      ['rightButton', ['mousedown', 'mousemove', 'mouseup', 'contextmenu', 'mouseleave']],
       ['centerButton', ['wheel']]
     ].forEach((side: [string, string[]]) => {
       side[1].forEach((eventName: string) => {

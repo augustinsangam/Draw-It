@@ -272,6 +272,29 @@ describe('SelectionLogicComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
+  it('#left mouse up handler should call scaleUtil.onMouseUp()'
+   + ' if object(s) have been resized', () => {
+    const spy = spyOn(component['scaleUtil'], 'onMouseUp');
+
+    const fakeEvent = {
+      button: 0,
+      offsetX: 200,
+      offsetY: 200
+    } as unknown as MouseEvent;
+
+    component.mouse.left.onResize = true;
+
+    const mouseUpHandler = (component['mouseHandlers'].get('leftButton') as
+      Map<string, Util.MouseEventCallBack>).get('mouseup') as
+        Util.MouseEventCallBack;
+
+    component.mouse.left.startPoint = new Point(10, 42);
+    component.mouse.left.currentPoint = new Point(42, 42);
+
+    mouseUpHandler(fakeEvent);
+    expect(spy).toHaveBeenCalled();
+  });
+
   it('#right mouse down handler should at least modifiy right'
    + ' starting point and set mouseIsDown', () => {
     const fakeEvent = {
@@ -572,6 +595,23 @@ describe('SelectionLogicComponent', () => {
     expect(component['mouse'].left.onDrag).toEqual(false);
     expect(component['mouse'].left.onResize).toEqual(false);
     expect(component['mouse'].left.mouseIsDown).toEqual(false);
+  });
+
+  it('#mouse attributes should be reseted on mouse leave 2', () => {
+    const fakeEvent = {
+      button: 2,
+      offsetX: 200,
+      offsetY: 200
+    } as unknown as MouseEvent;
+
+    const mouseLeaveHandler = (component['mouseHandlers'].get('rightButton') as
+      Map<string, Util.MouseEventCallBack>).get('mouseleave') as
+      Util.MouseEventCallBack;
+
+    mouseLeaveHandler(fakeEvent);
+    expect(component['mouse'].right.onDrag).toEqual(false);
+    expect(component['mouse'].right.onResize).toEqual(false);
+    expect(component['mouse'].right.mouseIsDown).toEqual(false);
   });
 
   it('#overrided function in undo redo service function works well', () => {
