@@ -34,7 +34,7 @@ class Application {
 		logMsg += `${req.method} - ${req.url}`;
 		log.info(logMsg);
 		res.header('Access-Control-Allow-Headers', 'Content-Type');
-		res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+		res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 		res.header('Access-Control-Allow-Origin', '*');
 		next();
 	}
