@@ -122,9 +122,12 @@ describe('ExportComponent', () => {
     expect(component['formatToMime'](FormatChoice.JPEG)).toEqual('image/jpeg');
   });
 
-  it('#onConfirm should close the dialogRef', () => {
-    spyOn<any>(component, 'exportDrawing');
-    component['onConfirm']();
+  it('#onConfirm should close the dialogRef', async () => {
+    const getImageAsURLSpy = spyOn<any>(component, 'getImageAsURL');
+    getImageAsURLSpy.and.returnValue(Promise.resolve('foo'));
+    spyOn<any>(component, 'downloadImage');
+    component['exportType'] = ExportType.LOCAL;
+    await component['onConfirm']();
     expect(mockDialogRef.close).toHaveBeenCalled();
   });
 
@@ -239,26 +242,6 @@ describe('ExportComponent', () => {
     const spy = spyOn<any>(theViewZone, 'removeChild');
     component['createView']('');
     expect(spy).toHaveBeenCalledTimes(1);
-
-  });
-
-  it('#exportDrawing should should always download the image', () => {
-    const formSpy = spyOnProperty<any>(component, 'form');
-    formSpy.and.returnValue({
-      controls: {
-        format: {
-          value: 'SVG',
-        }
-      }
-    });
-
-    const exportTypeSpy = spyOnProperty<any>(component, 'exportType');
-    exportTypeSpy.and.returnValue(ExportType.LOCAL);
-
-    const spy = spyOn<any>(component, 'downloadImage');
-    component['onConfirm']();
-    expect(spy).toHaveBeenCalledTimes(1);
-
   });
 
   it('#configurePicture should make good id configuration', fakeAsync(() => {
@@ -352,11 +335,16 @@ describe('ExportComponent', () => {
   });
 
   it('#getImageAsURL should return png url', async () => {
-    const spy = spyOn<any>(component, 'serializeSVG');
-    spy.and.returnValue('foo');
+    component['svgService'].shape.width = 50;
+    component['svgService'].shape.height = 50;
 
     const url = await component['getImageAsURL'](FormatChoice.PNG);
     expect(url.startsWith('data:image/png;base64,')).toBeTruthy();
+  });
+
+  it('#getImageAsBlob should return blob of type svg', async () => {
+    const blob = await component['getImageAsBlob'](FormatChoice.SVG);
+    expect(blob.type).toEqual('image/svg+xml');
   });
 
   it('#getImageAsBlob should return blob of type png', async () => {

@@ -60,6 +60,6 @@
 
   <div class="box">
     <button mat-raised-button color="primary" (click)="onConfirm($event)"
-    [disabled]="form.invalid">Exporter</button>
+    [disabled]="form.invalid || lockExport">Exporter</button>
   </div>
 </form>

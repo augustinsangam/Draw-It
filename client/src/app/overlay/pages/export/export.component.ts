@@ -48,6 +48,7 @@ export class ExportComponent implements AfterViewInit {
   private filtersChooser: Map<string, string>;
   protected form: FormGroup;
   protected exportType: ExportType;
+  protected lockExport: boolean;
 
   static validator(control: FormControl): null | { spaceError: { value: string } } {
     const input = (control.value as string).trim();
@@ -65,6 +66,7 @@ export class ExportComponent implements AfterViewInit {
               private filterService: FilterService,
               private svgService: SvgService
   ) {
+    this.lockExport = false;
     this.exportType = ExportType.LOCAL;
     this.filtersChooser = new Map();
     this.form = this.formBuilder.group({
@@ -102,13 +104,26 @@ export class ExportComponent implements AfterViewInit {
     this.dialogRef.close('Opération annulée');
   }
 
+  private getFormat(): FormatChoice {
+    return this.form.controls.format.value;
+  }
+
+  private getEmail(): string {
+    return this.form.controls.email.value;
+  }
+
+  private getName(): string {
+    return this.form.controls.name.value;
+  }
+
   protected async onConfirm(): Promise<void> {
-    const format = this.form.controls.format.value as FormatChoice;
+    this.lockExport = true;
+    const format = this.getFormat();
     if (this.exportType === ExportType.EMAIL) {
       const blob = await this.getImageAsBlob(format);
 
-      const email = this.form.controls.email.value;
-      const name = `${this.form.controls.name.value}.${format.toLowerCase()}`;
+      const email = this.getEmail();
+      const name = `${this.getName()}.${format.toLowerCase()}`;
       try {
         const response = await this.communicationService.sendEmail(
           name, email, blob);
@@ -119,8 +134,9 @@ export class ExportComponent implements AfterViewInit {
     } else {
       const url = await this.getImageAsURL(format);
       this.downloadImage(url);
-      this.dialogRef.close('Une fenêtre de sauvegarde apparaîtra sous peu');
+      this.dialogRef.close('La sauvegarde démarrera sous peu');
     }
+    this.lockExport = false;
   }
 
   ngAfterViewInit(): void {
@@ -155,7 +171,7 @@ export class ExportComponent implements AfterViewInit {
   }
 
   private serializeSVG(): string {
-    return (new XMLSerializer().serializeToString(this.innerSVG));
+    return new XMLSerializer().serializeToString(this.innerSVG);
   }
 
   private convertSVGToBase64(): string {
@@ -175,7 +191,13 @@ export class ExportComponent implements AfterViewInit {
     if (format === FormatChoice.SVG) {
       return 'image/svg+xml';
     }
-    return `image/${format}`;
+    return `image/${format.toLocaleLowerCase()}`;
+  }
+
+  private svgToCanvas(): Promise<HTMLCanvasElement> {
+    const svgToCanvas = new SvgToCanvas(this.innerSVG, this.svgService.shape,
+      this.renderer);
+      return svgToCanvas.getCanvas();
   }
 
   private async getImageAsURL(format: FormatChoice): Promise<string> {
@@ -186,15 +208,8 @@ export class ExportComponent implements AfterViewInit {
       return `data:${type},${encodeURIComponent(this.serializeSVG())}`;
     }
 
-    const svgToCanvas = new SvgToCanvas(this.innerSVG, this.svgService.shape, this.renderer)
-    const canvas = await svgToCanvas.getCanvas();
+    const canvas = await this.svgToCanvas();
     return canvas.toDataURL(type);
-  }
-
-  private svgToCanvas(): Promise<HTMLCanvasElement> {
-    const svgToCanvas = new SvgToCanvas(this.innerSVG, this.svgService.shape,
-      this.renderer);
-      return svgToCanvas.getCanvas();
   }
 
   private async getImageAsBlob(format: FormatChoice) {
