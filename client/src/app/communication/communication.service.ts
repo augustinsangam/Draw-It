@@ -203,7 +203,6 @@ export class CommunicationService {
     const childrenLen = element.childrenLength();
     for (let i = 0; i < childrenLen; ++i) {
       const type = element.childrenType(i);
-      console.log(type);
       if (type === null || type === NodeT.NONE) {
         continue;
       }
@@ -240,19 +239,21 @@ export class CommunicationService {
     return svgEl;
   }
 
-  encodeElementRecursively(el: Element): DataTree {
-    if (el.nodeType === Node.TEXT_NODE) {
-      const text = this.fbBuilder.createString(el.textContent as string);
+  encodeElementRecursively(node: Node): DataTree {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node as Text;
+      const textOffset = this.fbBuilder.createString(text.wholeText);
       return {
         type: NodeT.Text,
-        offset: TextT.create(this.fbBuilder, text),
+        offset: TextT.create(this.fbBuilder, textOffset),
       };
     }
 
-    const childrenTreeList =  Array.from(el.childNodes)
-      .filter((node) => node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE)
-      .map((node) => node as Element)
-      .map((childEl) => this.encodeElementRecursively(childEl));
+    const element = node as Element;
+
+    const childrenTreeList =  Array.from(element.childNodes)
+      .filter((childNode) => childNode.nodeType === Node.ELEMENT_NODE || childNode.nodeType === Node.TEXT_NODE)
+      .map((childNode) => this.encodeElementRecursively(childNode));
 
     const childrenTypeList = childrenTreeList.map(({type}) => type);
     const childrenType = ElementT.createChildrenTypeVector(this.fbBuilder, childrenTypeList);
@@ -260,15 +261,14 @@ export class CommunicationService {
     const childrenList = childrenTreeList.map(({offset}) => offset);
     const children = ElementT.createChildrenVector(this.fbBuilder, childrenList);
 
-    const attrsList = Array.from(el.attributes)
+    const attrsList = Array.from(element.attributes)
       .filter((attr) => attr.name.charAt(0) !== '_')
       .map((attr) => AttrT.create(
         this.fbBuilder, this.fbBuilder.createString(attr.name),
         this.fbBuilder.createString(attr.value)));
     const attrs = ElementT.createAttrsVector(this.fbBuilder, attrsList);
 
-    ElementT.createChildrenTypeVector
-    const name = this.fbBuilder.createString(el.tagName);
+    const name = this.fbBuilder.createString(element.tagName);
 
     return {
       type: NodeT.Element,
