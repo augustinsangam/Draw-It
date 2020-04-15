@@ -35,8 +35,7 @@ class Application {
 		log.info(logMsg);
 		res.header('Access-Control-Allow-Headers', 'Content-Type');
 		res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
-		res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
-		res.header('Vary', 'Origin');
+		res.header('Access-Control-Allow-Origin', '*');
 		next();
 	}
 
