@@ -271,6 +271,14 @@ describe('EraserLogicComponent', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
+  it('#findElementsInZone should return empty set when there is no elements', () => {
+    spyOn(document, 'elementFromPoint').and.callFake(() => {
+      return null;
+    });
+    const markedElements = component['findElementsInZone'](0, 0);
+    expect(markedElements.size).toEqual(0);
+  });
+
   it('#markElementsInZone change stroke color!', () => {
     const element = component.svgStructure.drawZone.children.item(0) as SVGElement;
     element.setAttribute('stroke', '#FFFFFF');
