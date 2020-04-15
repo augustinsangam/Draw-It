@@ -70,6 +70,8 @@ export class OverlayService {
       save: (undefined as unknown) as MatDialogRef<SaveComponent>,
     };
     this.svgService = svgService;
+    this.toolSelectorService.set(Tool.Pencil);
+    this.toolSelectorService.set(Tool.Pencil);
   }
 
   start(): void {
@@ -218,9 +220,9 @@ export class OverlayService {
     );
     this.svgService.clearDom();
     this.gridService.handleGrid();
-    this.toolSelectorService.set(Tool.Pencil);
     this.selectionService.reset();
     this.undoRedo.setStartingCommand();
+    this.toolSelectorService.set(Tool.Pencil);
     // Deuxième fois juste pour fermer le panneau latéral
     this.toolSelectorService.set(Tool.Pencil);
   }
