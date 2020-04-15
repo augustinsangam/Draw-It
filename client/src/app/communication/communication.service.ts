@@ -203,7 +203,8 @@ export class CommunicationService {
     const childrenLen = element.childrenLength();
     for (let i = 0; i < childrenLen; ++i) {
       const type = element.childrenType(i);
-      if (type === null) {
+      console.log(type);
+      if (type === null || type === NodeT.NONE) {
         continue;
       }
 
