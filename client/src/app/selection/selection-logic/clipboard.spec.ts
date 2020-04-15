@@ -75,7 +75,6 @@ describe('Clipboard', () => {
     component['service']['selectedElements'] = new Set (allElements);
     instance.copy();
     expect(component['service']['clipboard'][0]).toEqual(component['service']['selectedElements']);
-
   });
 
   it('#the subscribe of onCopy should work ', (done: DoneFn) => {
@@ -204,6 +203,23 @@ describe('Clipboard', () => {
       color: 'blue',
       width: 1345,
       height: 245
+    };
+    component.svgShape = svgShapeTest;
+    instance.copy();
+    const selectedElements = component['service']['selectedElements'];
+    instance.duplicate();
+    expect(selectedElements).not.toEqual(component['service']['selectedElements']);
+  });
+
+  it('#onDuplicate should select the same forms if its out of the svg', () => {
+    const allElements = new Set<SVGElement>(
+      Array.from(component.svgStructure.drawZone.children) as SVGElement[]
+    );
+    component['service']['selectedElements'] = new Set (allElements);
+    const svgShapeTest: SvgShape = {
+      color: 'blue',
+      width: 0,
+      height: 0
     };
     component.svgShape = svgShapeTest;
     instance.copy();
