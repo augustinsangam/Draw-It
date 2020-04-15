@@ -17,7 +17,7 @@ class Application {
 		this.app.use(Application.log);
 		this.app.use(
 			express.raw({
-				limit: '10mb',
+				limit: '25mb',
 			}),
 		);
 		this.app.use(router.router);
