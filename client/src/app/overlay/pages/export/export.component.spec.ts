@@ -1,8 +1,10 @@
-import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+// tslint:disable: no-magic-numbers no-any no-string-literal max-file-line-count
 
 import { Renderer2 } from '@angular/core';
+import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialogRef, MatRadioChange} from '@angular/material';
+
 import { MaterialModule } from 'src/app/material.module';
 import { SvgShape } from 'src/app/svg/svg-shape';
 import { SvgService} from 'src/app/svg/svg.service';
@@ -10,7 +12,6 @@ import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.ser
 import { UndoRedoService } from 'src/app/undo-redo/undo-redo.service';
 import { ExportComponent, ExportType, FilterChoice, FormatChoice } from './export.component';
 
-// tslint:disable: no-magic-numbers no-any no-string-literal
 describe('ExportComponent', () => {
   let component: ExportComponent;
   let fixture: ComponentFixture<ExportComponent>;

@@ -194,10 +194,10 @@ export class ExportComponent implements AfterViewInit {
     return `image/${format.toLocaleLowerCase()}`;
   }
 
-  private svgToCanvas(): Promise<HTMLCanvasElement> {
+  private async svgToCanvas(): Promise<HTMLCanvasElement> {
     const svgToCanvas = new SvgToCanvas(this.innerSVG, this.svgService.shape,
       this.renderer);
-      return svgToCanvas.getCanvas();
+    return svgToCanvas.getCanvas();
   }
 
   private async getImageAsURL(format: FormatChoice): Promise<string> {
@@ -212,7 +212,7 @@ export class ExportComponent implements AfterViewInit {
     return canvas.toDataURL(type);
   }
 
-  private async getImageAsBlob(format: FormatChoice) {
+  private async getImageAsBlob(format: FormatChoice): Promise<Blob> {
     this.resetInnerSVG();
     const type = this.formatToMime(format);
 

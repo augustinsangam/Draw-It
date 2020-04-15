@@ -37,8 +37,8 @@ export enum StatusCode {
 }
 
 interface DataTree {
-  type: NodeT,
-  offset: flatbuffers.Offset,
+  type: NodeT;
+  offset: flatbuffers.Offset;
 }
 
 // developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/
@@ -209,12 +209,12 @@ export class CommunicationService {
 
       if (type === NodeT.Text) {
         const textT = new TextT();
-        const child = element.children(i, textT);
-        if (child === null) {
+        const textChild = element.children(i, textT);
+        if (textChild === null) {
           continue;
         }
 
-        const content = child.content();
+        const content = textChild.content();
         if (content === null) {
           continue;
         }
@@ -225,12 +225,12 @@ export class CommunicationService {
       }
 
       const elementT = new ElementT();
-      const child = element.children(i, elementT);
-      if (child === null) {
+      const elementChild = element.children(i, elementT);
+      if (elementChild === null) {
         continue;
       }
 
-      const childElement = this.decodeElementRecursively(child, renderer);
+      const childElement = this.decodeElementRecursively(elementChild, renderer);
       if (childElement !== null) {
         renderer.appendChild(svgEl, childElement);
       }
