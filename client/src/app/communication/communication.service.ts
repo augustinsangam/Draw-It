@@ -181,7 +181,7 @@ export class CommunicationService {
 
   decodeElementRecursively(element: ElementT, renderer: Renderer2): SVGElement | null {
     const name = element.name();
-    if (name == null) {
+    if (name === null) {
       return null;
     }
 
@@ -190,7 +190,7 @@ export class CommunicationService {
     const attrsLen = element.attrsLength();
     for (let i = 0; i < attrsLen; ++i) {
       const attr = element.attrs(i);
-      if (attr == null) {
+      if (attr === null) {
         continue;
       }
 
