@@ -3,16 +3,29 @@
 import { Renderer2 } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+<<<<<<< HEAD
 import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialogRef, MatRadioChange} from '@angular/material';
 
+=======
+import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialogRef, MatRadioChange } from '@angular/material';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+>>>>>>> ux/style
 import { MaterialModule } from 'src/app/material.module';
 import { SvgShape } from 'src/app/svg/svg-shape';
-import { SvgService} from 'src/app/svg/svg.service';
+import { SvgService } from 'src/app/svg/svg.service';
 import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.service';
 import { UndoRedoService } from 'src/app/undo-redo/undo-redo.service';
-import { ExportComponent, ExportType, FilterChoice, FormatChoice } from './export.component';
+import { ConfirmationExportComponent } from './confirmation-export.component';
+import { ExportType } from './export-type';
+import { ExportComponent, FilterChoice, FormatChoice } from './export.component';
+import { ProgressExportComponent } from './progress-export.component';
 
+<<<<<<< HEAD
 describe('ExportComponent', () => {
+=======
+// tslint:disable: no-magic-numbers no-any no-string-literal
+fdescribe('ExportComponent', () => {
+>>>>>>> ux/style
   let component: ExportComponent;
   let fixture: ComponentFixture<ExportComponent>;
 
@@ -31,7 +44,10 @@ describe('ExportComponent', () => {
         ReactiveFormsModule,
       ],
       declarations: [
-        ExportComponent
+        ExportComponent,
+        ConfirmationExportComponent,
+        ExportComponent,
+        ProgressExportComponent
       ],
       providers: [
         Renderer2,
@@ -48,6 +64,13 @@ describe('ExportComponent', () => {
         },
         { provide: MAT_DIALOG_DATA, useValue: {} },
       ]
+    }).overrideModule(BrowserDynamicTestingModule, {
+      set: {
+        entryComponents: [
+          ConfirmationExportComponent,
+          ProgressExportComponent,
+        ]
+      }
     }).compileComponents();
   }));
 
@@ -74,7 +97,7 @@ describe('ExportComponent', () => {
     svgService.structure.root.appendChild(svgService.structure.endZone);
 
     (TestBed.get(UndoRedoService) as UndoRedoService)
-    .intialise(component['svgService'].structure);
+      .intialise(component['svgService'].structure);
 
     fixture.detectChanges();
   });
@@ -119,6 +142,7 @@ describe('ExportComponent', () => {
     expect(component['formatToMime'](FormatChoice.PNG)).toEqual('image/png');
   });
 
+<<<<<<< HEAD
   it('#formatToMime should return image/jpeg for jpeg format', () => {
     expect(component['formatToMime'](FormatChoice.JPEG)).toEqual('image/jpeg');
   });
@@ -129,6 +153,11 @@ describe('ExportComponent', () => {
     spyOn<any>(component, 'downloadImage');
     component['exportType'] = ExportType.LOCAL;
     await component['onConfirm']();
+=======
+  it('#onConfirm should close the dialogRef', () => {
+    spyOn<any>(component, 'exportDrawing');
+    component['onConfirm'](true);
+>>>>>>> ux/style
     expect(mockDialogRef.close).toHaveBeenCalled();
   });
 
@@ -139,7 +168,7 @@ describe('ExportComponent', () => {
 
     component['exportType'] = ExportType.EMAIL;
 
-    await component['onConfirm']();
+    await component['onConfirm'](true);
 
     expect(mockDialogRef.close).toHaveBeenCalledWith(error);
   });
@@ -150,7 +179,7 @@ describe('ExportComponent', () => {
 
     component['exportType'] = ExportType.EMAIL;
 
-    await component['onConfirm']();
+    await component['onConfirm'](true);
 
     expect(mockDialogRef.close).toHaveBeenCalledWith('foobar');
   });
@@ -209,9 +238,9 @@ describe('ExportComponent', () => {
     const downloadLink = {
       href: pictureUrl,
       download: '',
-      click: () => { return ; }
+      click: () => { return; }
     } as unknown as HTMLAnchorElement;
-    spyOn(component['renderer'], 'createElement').and.callFake(() =>  downloadLink);
+    spyOn(component['renderer'], 'createElement').and.callFake(() => downloadLink);
     const spy = spyOn(downloadLink, 'click');
     component['downloadImage'](pictureUrl);
     expect(spy).toHaveBeenCalled();
@@ -263,7 +292,7 @@ describe('ExportComponent', () => {
   }));
 
   it('#resetInnerSVG should set good width and height value to innerSvg', fakeAsync(() => {
-    const svgShapeTest: SvgShape = {color: 'blue', width: 1345, height: 245};
+    const svgShapeTest: SvgShape = { color: 'blue', width: 1345, height: 245 };
     component['svgShape'] = svgShapeTest;
     component['resetInnerSVG']();
     expect(component['innerSVG'].getAttribute('width')).toEqual(svgShapeTest.width.toString());
@@ -271,15 +300,15 @@ describe('ExportComponent', () => {
   }));
 
   it('#configureSize is making good configuration', fakeAsync(() => {
-    const svgShapeTest: SvgShape = {color: 'blue', width: 1345, height: 245};
-    const picture: SVGImageElement  = component['renderer'].createElement('image', 'http://www.w3.org/2000/svg');
+    const svgShapeTest: SvgShape = { color: 'blue', width: 1345, height: 245 };
+    const picture: SVGImageElement = component['renderer'].createElement('image', 'http://www.w3.org/2000/svg');
     component['configureSize'](picture, svgShapeTest);
     expect(picture.getAttribute('width')).toEqual(svgShapeTest.width.toString());
     expect(picture.getAttribute('height')).toEqual(svgShapeTest.height.toString());
   }));
 
   it('#generateBackground return a good rectangle configu', fakeAsync(() => {
-    const svgShapeTest: SvgShape = {color: 'blue', width: 1345, height: 245};
+    const svgShapeTest: SvgShape = { color: 'blue', width: 1345, height: 245 };
     component['svgShape'] = svgShapeTest;
     const background = component['generateBackground']();
     expect(background.getAttribute('width')).toEqual(svgShapeTest.width.toString());
@@ -352,4 +381,14 @@ describe('ExportComponent', () => {
     const blob = await component['getImageAsBlob'](FormatChoice.PNG);
     expect(blob.type).toEqual('image/png');
   });
+
+  fit('#popUpConfirm should return pop up closing state', (done: DoneFn) => {
+    const spy = spyOn<any>(component, 'onConfirm');
+    component['popUpConfirm']();
+    component['dialogRefs'].confirm.close(true);
+    component['dialogRefs'].confirm.afterClosed().subscribe(() => {
+      expect(spy).toHaveBeenCalled();
+    });
+  });
 });
+// tslint:disable-next-line: max-file-line-count

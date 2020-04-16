@@ -70,6 +70,8 @@ export class OverlayService {
       save: (undefined as unknown) as MatDialogRef<SaveComponent>,
     };
     this.svgService = svgService;
+    this.toolSelectorService.set(Tool.Pencil);
+    this.toolSelectorService.set(Tool.Pencil);
   }
 
   start(): void {
@@ -142,20 +144,6 @@ export class OverlayService {
       exportSaveDialogOptions
     );
     this.dialogRefs.export.disableClose = true;
-    this.dialogRefs.export.afterClosed().subscribe(
-      (reponseOrError: string | Error) => this.closeExportDialog(reponseOrError));
-  }
-
-  private closeExportDialog(reponseOrError: string | Error): void {
-    if (reponseOrError instanceof Error) {
-      this.snackBar.open(reponseOrError.message, 'Ok', {
-        duration: CONSTANTS.FAILURE_DURATION,
-      });
-    } else {
-      this.snackBar.open(reponseOrError, 'Ok', {
-        duration: CONSTANTS.SUCCES_DURATION,
-      });
-    }
   }
 
   openSaveDialog(): void {
@@ -218,9 +206,9 @@ export class OverlayService {
     );
     this.svgService.clearDom();
     this.gridService.handleGrid();
-    this.toolSelectorService.set(Tool.Pencil);
     this.selectionService.reset();
     this.undoRedo.setStartingCommand();
+    this.toolSelectorService.set(Tool.Pencil);
     // Deuxième fois juste pour fermer le panneau latéral
     this.toolSelectorService.set(Tool.Pencil);
   }

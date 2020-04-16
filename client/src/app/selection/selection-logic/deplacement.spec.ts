@@ -304,10 +304,6 @@ describe('Deplacement', () => {
 
     const testCases: [Point, Point][] = [
       [new Point(10, 10)    ,   new Point(0, 0)],
-      // [new Point(10, 10)  ,   new Point(10, 10)],
-      // [new Point(10, 0)   ,   new Point(10, 0)],
-      // [new Point(0, 0)    ,   new Point(0, 0)],
-      // [new Point(19, 19)  ,   new Point(20, 20)],
     ];
 
     testCases.forEach((testCase) => {

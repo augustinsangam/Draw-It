@@ -1,0 +1,18 @@
+<h2 mat-dialog-title align="center">Confirmer votre choix</h2>
+<mat-dialog-content class="mat-typography">
+  <h3 align="center" *ngIf="data.exportType === ExportType.EMAIL">
+    Un dessin sera envoyé à l'adresse {{ data.email }} sous le nom de {{ data.name }}
+  </h3>
+  <h3 align="center" *ngIf="data.exportType === ExportType.LOCAL">
+    Un dessin sera téléchargé sous le nom de {{ data.name }}
+  </h3>
+  <p align="center">Êtes-vous sûr de continuer ?</p>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button mat-button [mat-dialog-close]="false" color="warn">
+    Annuler
+  </button>
+  <button mat-button [mat-dialog-close]="true" color="primary">
+    Continuer
+  </button>
+</mat-dialog-actions>

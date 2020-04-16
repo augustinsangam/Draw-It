@@ -166,7 +166,7 @@ export class CommunicationService {
         if (this.xhr.readyState !== DONE) {
           return;
         }
-        if (this.xhr.status === StatusCode.ACCEPTED) {
+        if (this.xhr.status === StatusCode.OK) {
           resolve(this.xhr.responseText);
         } else if (this.xhr.status) {
           reject(new Error(this.xhr.responseText));

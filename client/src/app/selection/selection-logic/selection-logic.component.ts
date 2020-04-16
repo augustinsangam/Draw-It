@@ -143,6 +143,8 @@ export class SelectionLogicComponent
           this.mouse.left.onDrag = false;
           this.mouse.left.onResize = false;
           this.resetRectangle(this.rectangles.selection);
+          this.mouse.left.selectedElement = BasicSelectionType.NOTHING;
+          this.applyMultipleSelection(undefined, undefined, new Set(this.service.selectedElements));
         }]
       ])],
       ['centerButton', new Map<string, Util.WheelEventCallback>([

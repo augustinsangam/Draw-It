@@ -35,8 +35,14 @@ import {
   DocumentationComponent
 } from './overlay/pages/documentation/documentation.component';
 import {
+  ConfirmationExportComponent
+} from './overlay/pages/export/confirmation-export.component';
+import {
   ExportComponent
 } from './overlay/pages/export/export.component';
+import {
+  ProgressExportComponent
+} from './overlay/pages/export/progress-export.component';
 import {
   DeleteConfirmationDialogComponent
 } from './overlay/pages/gallery/deleteconfirmation-dialog.component';
@@ -184,6 +190,7 @@ import {
     ColorPickerContentComponent,
     ColorPickerItemComponent,
     ConfirmationDialogComponent,
+    ConfirmationExportComponent,
     DeleteConfirmationDialogComponent,
     DocumentationComponent,
     EllipseLogicComponent,
@@ -208,10 +215,11 @@ import {
     GalleryCardComponent,
     SelectionPanelComponent,
     SelectionLogicComponent,
+    PipettePanelComponent,
+    PipetteLogicComponent,
     PolygoneLogicComponent,
     PolygonePanelComponent,
-    PipetteLogicComponent,
-    PipettePanelComponent,
+    ProgressExportComponent,
     AerosolLogicComponent,
     AerosolPanelComponent,
     ExportComponent,
@@ -258,6 +266,7 @@ import {
     EraserPanelComponent,
     PaletteDialogComponent,
     ConfirmationDialogComponent,
+    ConfirmationExportComponent,
     DeleteConfirmationDialogComponent,
     DocumentationComponent,
     EllipseLogicComponent,
@@ -272,6 +281,7 @@ import {
     PencilPanelComponent,
     PipetteLogicComponent,
     PipettePanelComponent,
+    ProgressExportComponent,
     RectangleLogicComponent,
     RectanglePanelComponent,
     PolygoneLogicComponent,
