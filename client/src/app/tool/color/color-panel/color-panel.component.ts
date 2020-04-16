@@ -98,6 +98,7 @@ export class ColorPanelComponent extends ToolPanelDirective
 
   private addEvents(): void {
     this.addLeftClickEvents();
+    this.addWheelClickEvents();
     this.addRightClickEvents();
   }
 
@@ -111,8 +112,23 @@ export class ColorPanelComponent extends ToolPanelDirective
             this.colorPreviewPrimary.updateColor(this.colorsItemsArray[i].color);
             this.colorService.primaryColor = this.colorsItemsArray[i].color;
             this.promoteColor(i);
-          } else if (mouseEvent.button === 1) {
-            console.log('click de molette');
+          }
+        }
+      );
+    }
+  }
+
+  private addWheelClickEvents(): void {
+    for (let i = 0; i < this.recentColors.length; i++) {
+      this.eventManager.addEventListener(
+        this.colorsItemsArray[i].button.nativeElement,
+        'mousedown',
+        (mouseEvent: MouseEvent) => {
+          if (mouseEvent.button === 1) {
+            this.colorPreviewBackground.updateColor(this.colorsItemsArray[i].color);
+            this.colorService.backgroundColor = this.colorsItemsArray[i].color;
+            this.svgService.shape.color = this.colorService.backgroundColor;
+            this.promoteColor(i);
           }
         }
       );

@@ -4,15 +4,18 @@ import * as Util from './selection-logic-util';
 import { SelectionLogicComponent } from './selection-logic.component';
 import { Transform } from './transform';
 
+const TAG_LENGTH = 32;
+
 export class Clipboard {
 
   constructor(private selectionLogic: SelectionLogicComponent) {}
 
   copy(): void {
+    const selectedElements = new Set(
+      this.selectionLogic.service.selectedElements
+    );
     if (this.selectionLogic.service.selectedElements.size !== 0) {
-      this.selectionLogic.service.clipboard = [
-        new Set(this.selectionLogic.service.selectedElements)
-      ];
+      this.selectionLogic.service.clipboard = [ selectedElements ];
     }
   }
 
@@ -53,7 +56,9 @@ export class Clipboard {
       Util.PASTE_TRANSLATION, Util.PASTE_TRANSLATION, this.selectionLogic.renderer);
     const lastValidClipboard = this.selectionLogic.service.clipboard.peak();
 
+    const tag = this.createRandomTag();
     lastValidClipboard.forEach((element) => {
+      this.addTag(element, tag);
       this.selectionLogic.renderer.appendChild(this.selectionLogic.svgStructure.drawZone, element);
     });
 
@@ -111,14 +116,8 @@ export class Clipboard {
     if (clipboard.size === 0) {
       return false;
     }
-
-    for (const element of clipboard) {
-      if (!this.selectionLogic.svgStructure.drawZone.contains(element)) {
-        return false;
-      }
-    }
-
-    return true;
+    const tags = this.getCurrentTags(clipboard);
+    return this.tagsExistInSVG(tags);
   }
 
   isInside(elements: Set<SVGElement>): boolean {
@@ -145,4 +144,50 @@ export class Clipboard {
 
     return svgZone.intersection(selectionZone)[0];
   }
+
+  private createRandomTag(): string {
+    let result         = '';
+    const characters   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (let i = 0; i < TAG_LENGTH; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return 'clipboard' + result;
+  }
+
+  private getCurrentTags(clipboard: Set<SVGElement>): Set<string> {
+    const tags = new Set<string>();
+    for (const element of clipboard) {
+      if (tags.size === 0) {
+        element.classList.forEach((classListItem: string) => {
+          tags.add(classListItem);
+        });
+      } else {
+        element.classList.forEach((classListItem: string) => {
+          if (!tags.has(classListItem)) {
+            tags.delete(classListItem);
+          }
+        });
+      }
+    }
+    return tags;
+  }
+
+  private addTag(element: SVGElement, tag: string): void {
+    element.classList.forEach((classListItem: string) => {
+      if (classListItem.startsWith('clipboard')) {
+        element.classList.remove(classListItem);
+      }
+    });
+    element.classList.add(tag);
+  }
+
+  private tagsExistInSVG(tags: Set<string>): boolean {
+    for (const tag of tags) {
+      if (this.selectionLogic.svgStructure.root.getElementsByClassName(tag).length === 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
 }
