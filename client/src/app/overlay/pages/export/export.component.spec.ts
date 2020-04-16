@@ -150,8 +150,20 @@ fdescribe('ExportComponent', () => {
     await component['onConfirm'](true);
     expect(getImageAsURLSpy).toHaveBeenCalled();
   });
+/*
+  fit('#popUpConfirm should call onConfirm after confirm dialog closed', async () => {
+    component['exportType'] = ExportType.LOCAL;
 
-  fit('#onConfirm should close epxortDialog', async () => {
+    component['popUpConfirm']();
+
+    component['dialogRefs'].confirm.close();
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    expect(mockDialogRef.close).toHaveBeenCalled();
+  });
+
+  fit('#onConfirm should close epxortDialog after progress dialog closed', async () => {
     component['exportType'] = ExportType.LOCAL;
 
     await component['onConfirm'](true);
@@ -162,7 +174,7 @@ fdescribe('ExportComponent', () => {
 
     expect(mockDialogRef.close).toHaveBeenCalled();
   });
-
+*/
   it('#onConfirm should set message on sendEmail response', async () => {
     const spy = spyOn(component['communicationService'], 'sendEmail');
     spy.and.returnValue(Promise.resolve('foobar'));
@@ -371,16 +383,4 @@ fdescribe('ExportComponent', () => {
     const blob = await component['getImageAsBlob'](FormatChoice.PNG);
     expect(blob.type).toEqual('image/png');
   });
-
-  /*fit('#popUpConfirm should return pop up closing state', (done: DoneFn) => {
-    const spy = spyOn<any>(component, 'onConfirm');
-    component['popUpConfirm']();
-    setTimeout(() => {
-      component['dialogRefs'].confirm.close(true);
-      setTimeout(() => {
-        expect(spy).toHaveBeenCalled();
-        done();
-      }, 2000);
-    }, 1000);
-  });*/
 });

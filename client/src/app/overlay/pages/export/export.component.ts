@@ -13,6 +13,8 @@ import { ProgressExportComponent } from './progress-export.component';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
+const TIMEOUT = 3000;
+
 export enum FilterChoice {
   None = 'Aucun',
   Saturate = 'Saturation',
@@ -160,7 +162,7 @@ export class ExportComponent implements AfterViewInit {
       this.epxortDialog.close();
     });
     if (succeded) {
-      setTimeout(() => this.dialogRefs.progress.close(), 3000);
+      setTimeout(() => this.dialogRefs.progress.close(), TIMEOUT);
     }
   }
 
