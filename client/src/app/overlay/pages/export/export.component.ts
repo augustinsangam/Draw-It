@@ -160,7 +160,7 @@ export class ExportComponent implements AfterViewInit {
       this.epxortDialog.close();
     });
     if (succeded) {
-      setTimeout(() => progressDialogRef.close(), 3500);
+      setTimeout(() => progressDialogRef.close(), 3000);
     }
   }
 
