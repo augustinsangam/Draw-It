@@ -15,7 +15,7 @@ const ERROR_MESSAGE = 'Communication impossible avec le serveur';
 const GENERIC_ERROR = new Error(ERROR_MESSAGE);
 const TIMEOUT_ERROR_MESSAGE = 'Délai d’attente dépassé';
 const TIMEOUT_ERROR = new Error(TIMEOUT_ERROR_MESSAGE);
-const TIMEOUT = 7000;
+const TIMEOUT = 20000;
 const DONE = 4;
 
 export enum ContentType {
@@ -37,8 +37,8 @@ export enum StatusCode {
 }
 
 interface DataTree {
-  type: NodeT,
-  offset: flatbuffers.Offset,
+  type: NodeT;
+  offset: flatbuffers.Offset;
 }
 
 // developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/
@@ -166,7 +166,7 @@ export class CommunicationService {
         if (this.xhr.readyState !== DONE) {
           return;
         }
-        if (this.xhr.status === StatusCode.ACCEPTED) {
+        if (this.xhr.status === StatusCode.OK) {
           resolve(this.xhr.responseText);
         } else if (this.xhr.status) {
           reject(new Error(this.xhr.responseText));
@@ -181,7 +181,7 @@ export class CommunicationService {
 
   decodeElementRecursively(element: ElementT, renderer: Renderer2): SVGElement | null {
     const name = element.name();
-    if (name == null) {
+    if (name === null) {
       return null;
     }
 
@@ -190,7 +190,7 @@ export class CommunicationService {
     const attrsLen = element.attrsLength();
     for (let i = 0; i < attrsLen; ++i) {
       const attr = element.attrs(i);
-      if (attr == null) {
+      if (attr === null) {
         continue;
       }
 
@@ -203,18 +203,18 @@ export class CommunicationService {
     const childrenLen = element.childrenLength();
     for (let i = 0; i < childrenLen; ++i) {
       const type = element.childrenType(i);
-      if (type === null) {
+      if (type === null || type === NodeT.NONE) {
         continue;
       }
 
       if (type === NodeT.Text) {
         const textT = new TextT();
-        const child = element.children(i, textT);
-        if (child === null) {
+        const textChild = element.children(i, textT);
+        if (textChild === null) {
           continue;
         }
 
-        const content = child.content();
+        const content = textChild.content();
         if (content === null) {
           continue;
         }
@@ -225,12 +225,12 @@ export class CommunicationService {
       }
 
       const elementT = new ElementT();
-      const child = element.children(i, elementT);
-      if (child === null) {
+      const elementChild = element.children(i, elementT);
+      if (elementChild === null) {
         continue;
       }
 
-      const childElement = this.decodeElementRecursively(child, renderer);
+      const childElement = this.decodeElementRecursively(elementChild, renderer);
       if (childElement !== null) {
         renderer.appendChild(svgEl, childElement);
       }
@@ -239,19 +239,21 @@ export class CommunicationService {
     return svgEl;
   }
 
-  encodeElementRecursively(el: Element): DataTree {
-    if (el.nodeType === Node.TEXT_NODE) {
-      const text = this.fbBuilder.createString(el.textContent as string);
+  encodeElementRecursively(node: Node): DataTree {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node as Text;
+      const textOffset = this.fbBuilder.createString(text.wholeText);
       return {
         type: NodeT.Text,
-        offset: TextT.create(this.fbBuilder, text),
+        offset: TextT.create(this.fbBuilder, textOffset),
       };
     }
 
-    const childrenTreeList =  Array.from(el.childNodes)
-      .filter((node) => node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE)
-      .map((node) => node as Element)
-      .map((childEl) => this.encodeElementRecursively(childEl));
+    const element = node as Element;
+
+    const childrenTreeList =  Array.from(element.childNodes)
+      .filter((childNode) => childNode.nodeType === Node.ELEMENT_NODE || childNode.nodeType === Node.TEXT_NODE)
+      .map((childNode) => this.encodeElementRecursively(childNode));
 
     const childrenTypeList = childrenTreeList.map(({type}) => type);
     const childrenType = ElementT.createChildrenTypeVector(this.fbBuilder, childrenTypeList);
@@ -259,15 +261,14 @@ export class CommunicationService {
     const childrenList = childrenTreeList.map(({offset}) => offset);
     const children = ElementT.createChildrenVector(this.fbBuilder, childrenList);
 
-    const attrsList = Array.from(el.attributes)
+    const attrsList = Array.from(element.attributes)
       .filter((attr) => attr.name.charAt(0) !== '_')
       .map((attr) => AttrT.create(
         this.fbBuilder, this.fbBuilder.createString(attr.name),
         this.fbBuilder.createString(attr.value)));
     const attrs = ElementT.createAttrsVector(this.fbBuilder, attrsList);
 
-    ElementT.createChildrenTypeVector
-    const name = this.fbBuilder.createString(el.tagName);
+    const name = this.fbBuilder.createString(element.tagName);
 
     return {
       type: NodeT.Element,

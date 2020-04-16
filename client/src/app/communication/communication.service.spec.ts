@@ -10,6 +10,8 @@ import { CommunicationService, ContentType, StatusCode } from './communication.s
 import {
  Attr as AttrT,
  Element as ElementT,
+ Node as NodeT,
+ Text as TextT,
 } from './data_generated';
 
 @Component({
@@ -496,7 +498,7 @@ describe('CommunicationService', () => {
     expect(svgEl.attributes.length).toBe(0);
   });
 
-  it('#decodeElementRecursively should not set attributes if empty value', () => {
+  it('#decodeElementRecursively should not set attributes with empty value', () => {
     const fbBuilder = new flatbuffers.Builder();
 
     const nameOffset = fbBuilder.createString('foobar');
@@ -545,8 +547,9 @@ describe('CommunicationService', () => {
     expect(svgEl.getAttribute('foo')).toEqual('bar');
   });
 
-  it('#decodeElementRecursively should return an element with no children if children is null', () => {
+  it('#decodeElementRecursively should return an element with no children if childrenType() returns NONE', () => {
     const fbBuilder = new flatbuffers.Builder();
+
     const nameOffset = fbBuilder.createString('foobar');
     ElementT.start(fbBuilder);
     ElementT.addName(fbBuilder, nameOffset);
@@ -566,7 +569,59 @@ describe('CommunicationService', () => {
     expect(svgEl.childElementCount).toBe(0);
   });
 
-  it('#decodeElementRecursively should return an element with no children if children has no name', () => {
+  it('#decodeElementRecursively should return an element with no children if children() from Node.Element returns null', () => {
+    const fbBuilder = new flatbuffers.Builder();
+
+    const nameOffset = fbBuilder.createString('foobar');
+    ElementT.start(fbBuilder);
+    ElementT.addName(fbBuilder, nameOffset);
+    const elementOffset = ElementT.end(fbBuilder);
+    fbBuilder.finish(elementOffset);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+    const element = ElementT.getRoot(fbByteBuffer);
+
+    const elementChildrenLengthStub = spyOn(element, 'childrenLength');
+    elementChildrenLengthStub.and.returnValue(1);
+
+    const elementChildrenTypeStub = spyOn(element, 'childrenType');
+    elementChildrenTypeStub.and.returnValue(NodeT.Element);
+
+    const svgEl = service.decodeElementRecursively(element, renderer);
+    if (svgEl == null) {
+      fail('Element should not be null');
+      return;
+    }
+    expect(svgEl.childElementCount).toBe(0);
+  });
+
+  it('#decodeElementRecursively should return an element with no children if children() from Node.Text returns null', () => {
+    const fbBuilder = new flatbuffers.Builder();
+
+    const nameOffset = fbBuilder.createString('foobar');
+    ElementT.start(fbBuilder);
+    ElementT.addName(fbBuilder, nameOffset);
+    const elementOffset = ElementT.end(fbBuilder);
+    fbBuilder.finish(elementOffset);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+    const element = ElementT.getRoot(fbByteBuffer);
+
+    const elementChildrenLengthStub = spyOn(element, 'childrenLength');
+    elementChildrenLengthStub.and.returnValue(1);
+
+    const elementChildrenTypeStub = spyOn(element, 'childrenType');
+    elementChildrenTypeStub.and.returnValue(NodeT.Text);
+
+    const svgEl = service.decodeElementRecursively(element, renderer);
+    if (svgEl == null) {
+      fail('Element should not be null');
+      return;
+    }
+    expect(svgEl.childElementCount).toBe(0);
+  });
+
+  it('#decodeElementRecursively should return an element with no children if element child has no name', () => {
     const fbBuilder = new flatbuffers.Builder();
 
     const nameOffset = fbBuilder.createString('foobar');
@@ -574,10 +629,12 @@ describe('CommunicationService', () => {
     ElementT.start(fbBuilder);
     const childOffset = ElementT.end(fbBuilder);
     const childrenOffset = ElementT.createChildrenVector(fbBuilder, [childOffset]);
+    const childrenTypeOffset = ElementT.createChildrenTypeVector(fbBuilder, [NodeT.Element]);
 
     ElementT.start(fbBuilder);
     ElementT.addName(fbBuilder, nameOffset);
     ElementT.addChildren(fbBuilder, childrenOffset);
+    ElementT.addChildrenType(fbBuilder, childrenTypeOffset);
     const elementOffset = ElementT.end(fbBuilder);
     fbBuilder.finish(elementOffset);
 
@@ -590,7 +647,85 @@ describe('CommunicationService', () => {
     expect(svgEl.childElementCount).toBe(0);
   });
 
-  it('#decodeElementRecursively should return an element with one child', () => {
+  it('#decodeElementRecursively should return an element with no children if text child has no content', () => {
+    const fbBuilder = new flatbuffers.Builder();
+
+    const nameOffset = fbBuilder.createString('foo');
+
+    TextT.start(fbBuilder);
+    const childOffset = TextT.end(fbBuilder);
+    const childrenOffset = ElementT.createChildrenVector(fbBuilder, [childOffset]);
+    const childrenTypeOffset = ElementT.createChildrenTypeVector(fbBuilder, [NodeT.Text]);
+
+    ElementT.start(fbBuilder);
+    ElementT.addName(fbBuilder, nameOffset);
+    ElementT.addChildren(fbBuilder, childrenOffset);
+    ElementT.addChildrenType(fbBuilder, childrenTypeOffset);
+    const elementOffset = ElementT.end(fbBuilder);
+    fbBuilder.finish(elementOffset);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+    const svgEl = service.decodeElementRecursively(ElementT.getRoot(fbByteBuffer), renderer);
+    if (svgEl == null) {
+      fail('Element should not be null');
+      return;
+    }
+    expect(svgEl.childNodes.length).toBe(0);
+  });
+
+  it('#decodeElementRecursively should return an element with one text child', () => {
+    const fbBuilder = new flatbuffers.Builder();
+
+    const nameOffset = fbBuilder.createString('foo');
+
+    const contentOffset = fbBuilder.createString('bar');
+    const childOffset = TextT.create(fbBuilder, contentOffset);
+    const childrenOffset = ElementT.createChildrenVector(fbBuilder, [childOffset]);
+    const childrenTypeOffset = ElementT.createChildrenTypeVector(fbBuilder, [NodeT.Text]);
+
+    ElementT.start(fbBuilder);
+    ElementT.addName(fbBuilder, nameOffset);
+    ElementT.addChildren(fbBuilder, childrenOffset);
+    ElementT.addChildrenType(fbBuilder, childrenTypeOffset);
+    const elementOffset = ElementT.end(fbBuilder);
+    fbBuilder.finish(elementOffset);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+    const svgEl = service.decodeElementRecursively(ElementT.getRoot(fbByteBuffer), renderer);
+    if (svgEl == null) {
+      fail('Element should not be null');
+      return;
+    }
+    expect(svgEl.childNodes.length).toBe(1);
+  });
+
+  it('#decodeElementRecursively should return an element with one text child', () => {
+    const fbBuilder = new flatbuffers.Builder();
+
+    const nameOffset = fbBuilder.createString('foo');
+
+    const contentOffset = fbBuilder.createString('foo');
+    const childOffset = TextT.create(fbBuilder, contentOffset);
+    const childrenOffset = ElementT.createChildrenVector(fbBuilder, [childOffset]);
+    const childrenTypeOffset = ElementT.createChildrenTypeVector(fbBuilder, [NodeT.Text]);
+
+    ElementT.start(fbBuilder);
+    ElementT.addName(fbBuilder, nameOffset);
+    ElementT.addChildren(fbBuilder, childrenOffset);
+    ElementT.addChildrenType(fbBuilder, childrenTypeOffset);
+    const elementOffset = ElementT.end(fbBuilder);
+    fbBuilder.finish(elementOffset);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(fbBuilder.asUint8Array());
+    const svgEl = service.decodeElementRecursively(ElementT.getRoot(fbByteBuffer), renderer);
+    if (svgEl == null) {
+      fail('Element should not be null');
+      return;
+    }
+    expect(svgEl.childNodes.length).toBe(1);
+  });
+
+  it('#decodeElementRecursively should return an element with one element child', () => {
     const fbBuilder = new flatbuffers.Builder();
 
     const nameOffset = fbBuilder.createString('foo');
@@ -601,10 +736,12 @@ describe('CommunicationService', () => {
     ElementT.addName(fbBuilder, name2Offset);
     const childOffset = ElementT.end(fbBuilder);
     const childrenOffset = ElementT.createChildrenVector(fbBuilder, [childOffset]);
+    const childrenTypeOffset = ElementT.createChildrenTypeVector(fbBuilder, [NodeT.Element]);
 
     ElementT.start(fbBuilder);
     ElementT.addName(fbBuilder, nameOffset);
     ElementT.addChildren(fbBuilder, childrenOffset);
+    ElementT.addChildrenType(fbBuilder, childrenTypeOffset);
     const elementOffset = ElementT.end(fbBuilder);
     fbBuilder.finish(elementOffset);
 
@@ -617,12 +754,25 @@ describe('CommunicationService', () => {
     expect(svgEl.childElementCount).toBe(1);
   });
 
-  it('#encodeElementRecursively should create an element with only a name', () => {
-    const divElement = renderer.createElement('DIV') as HTMLDivElement;
+  it('#encodeElementRecursively should create a text', () => {
+    const t = (n: Node) => t;
+    const text: Text = renderer.createText('foobar');
+    document.createTextNode('d');
+    t(text);
 
     service.clear();
-    const { offset } = service.encodeElementRecursively(divElement);
-    service['fbBuilder'].finish(offset);
+    const dataTree = service.encodeElementRecursively(text);
+    expect(dataTree.type).toBe(NodeT.Text);
+  });
+
+  it('#encodeElementRecursively should create an element with only a name', () => {
+    const element: HTMLDivElement = renderer.createElement('DIV');
+
+    service.clear();
+    const dataTree = service.encodeElementRecursively(element);
+    expect(dataTree.type).toBe(NodeT.Element);
+
+    service['fbBuilder'].finish(dataTree.offset);
 
     const fbByteBuffer = new flatbuffers.ByteBuffer(service['fbBuilder'].asUint8Array());
     const elementT = ElementT.getRoot(fbByteBuffer);
@@ -632,11 +782,11 @@ describe('CommunicationService', () => {
   });
 
   it('#encodeElementRecursively should create an element without tags starting with underscore', () => {
-    const divElement = renderer.createElement('DIV') as HTMLDivElement;
-    divElement.setAttribute('_foo', 'bar');
+    const element: HTMLDivElement = renderer.createElement('DIV');
+    element.setAttribute('_foo', 'bar');
 
     service.clear();
-    const { offset } = service.encodeElementRecursively(divElement);
+    const { offset } = service.encodeElementRecursively(element);
     service['fbBuilder'].finish(offset);
 
     const fbByteBuffer = new flatbuffers.ByteBuffer(service['fbBuilder'].asUint8Array());
@@ -645,11 +795,11 @@ describe('CommunicationService', () => {
   });
 
   it('#encodeElementRecursively should create an element without tags', () => {
-    const divElement = renderer.createElement('DIV') as HTMLDivElement;
-    divElement.setAttribute('foo', 'bar');
+    const element: HTMLDivElement = renderer.createElement('DIV');
+    element.setAttribute('foo', 'bar');
 
     service.clear();
-    const { offset } = service.encodeElementRecursively(divElement);
+    const { offset } = service.encodeElementRecursively(element);
     service['fbBuilder'].finish(offset);
 
     const fbByteBuffer = new flatbuffers.ByteBuffer(service['fbBuilder'].asUint8Array());
@@ -666,26 +816,65 @@ describe('CommunicationService', () => {
     expect(attr.v()).toEqual('bar');
   });
 
-  it('#encodeElementRecursively should create an element with a child', () => {
-    const divElement = renderer.createElement('DIV') as HTMLDivElement;
-    const pElement = renderer.createElement('P') as HTMLParagraphElement;
-    divElement.appendChild(pElement);
+  it('#encodeElementRecursively should create an element with an text child', () => {
+    const elementNode: HTMLDivElement = renderer.createElement('DIV');
+    const textNode: Text = renderer.createText('foobar');
+    elementNode.appendChild(textNode);
 
     service.clear();
-    const { offset } = service.encodeElementRecursively(divElement);
+    const { offset } = service.encodeElementRecursively(elementNode);
     service['fbBuilder'].finish(offset);
 
     const fbByteBuffer = new flatbuffers.ByteBuffer(service['fbBuilder'].asUint8Array());
     const elementT = ElementT.getRoot(fbByteBuffer);
+
     expect(elementT.childrenLength()).toEqual(1);
+    expect(elementT.childrenTypeLength()).toEqual(1);
+
+    const childType = elementT.childrenType(0);
+    if (childType === null) {
+      fail('ChildType 0 should NEVER be null');
+      return;
+    }
+    expect(childType).toBe(NodeT.Text);
+
+    const textT = new TextT();
+    const childText = elementT.children(0, textT);
+    if (childText === null) {
+      fail('Child 0 should NEVER be null');
+      return;
+    }
+    expect(childText.content()).toEqual('foobar');
+  });
+
+  it('#encodeElementRecursively should create an element with an element child', () => {
+    const element: HTMLDivElement = renderer.createElement('DIV');
+    const element2: HTMLParagraphElement = renderer.createElement('P');
+    element.appendChild(element2);
+
+    service.clear();
+    const { offset } = service.encodeElementRecursively(element);
+    service['fbBuilder'].finish(offset);
+
+    const fbByteBuffer = new flatbuffers.ByteBuffer(service['fbBuilder'].asUint8Array());
+    const elementT = ElementT.getRoot(fbByteBuffer);
+
+    expect(elementT.childrenLength()).toEqual(1);
+    expect(elementT.childrenTypeLength()).toEqual(1);
+
+    const childType = elementT.childrenType(0);
+    if (childType === null) {
+      fail('ChildType 0 should NEVER be null');
+      return;
+    }
+    expect(childType).toBe(NodeT.Element);
 
     const elementT2 = new ElementT();
     const childElement = elementT.children(0, elementT2);
-    if (childElement == null) {
+    if (childElement === null) {
       fail('Child 0 should not be null');
       return;
     }
-
     expect(childElement.name()).toEqual('P');
   });
 
@@ -707,8 +896,8 @@ describe('CommunicationService', () => {
 
     service.clear();
 
-    const divElement = renderer.createElement('DIV') as HTMLDivElement;
-    const { offset } = service.encodeElementRecursively(divElement);
+    const element: HTMLDivElement = renderer.createElement('DIV');
+    const { offset } = service.encodeElementRecursively(element);
 
     service.encode(svgHeader, svgShape, offset, ['foobar']);
 

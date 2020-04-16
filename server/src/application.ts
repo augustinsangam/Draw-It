@@ -17,7 +17,7 @@ class Application {
 		this.app.use(Application.log);
 		this.app.use(
 			express.raw({
-				limit: '10mb',
+				limit: '25mb',
 			}),
 		);
 		this.app.use(router.router);
@@ -34,9 +34,11 @@ class Application {
 		logMsg += `${req.method} - ${req.url}`;
 		log.info(logMsg);
 		res.header('Access-Control-Allow-Headers', 'Content-Type');
-		res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
-		res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
-		res.header('Vary', 'Origin');
+		res.header(
+			'Access-Control-Allow-Methods',
+			'GET, POST, PUT, DELETE, OPTIONS',
+		);
+		res.header('Access-Control-Allow-Origin', '*');
 		next();
 	}
 

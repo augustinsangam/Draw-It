@@ -92,11 +92,12 @@ export class Clipboard {
     );
 
     toDuplicate.forEach((element) => {
-      this.selectionLogic.renderer.appendChild(
-        this.selectionLogic.svgStructure.drawZone,
-        element
-      );
+      this.selectionLogic.renderer.appendChild(this.selectionLogic.svgStructure.drawZone, element);
     });
+
+    if (!this.isInside(toDuplicate)) {
+      Transform.translateAll(toDuplicate, - Util.PASTE_TRANSLATION, -Util.PASTE_TRANSLATION , this.selectionLogic.renderer);
+    }
 
     this.selectionLogic.applyMultipleSelection(
       undefined,

@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
+
+import { LocalStorageHandlerService } from '../auto-save/local-storage-handler.service';
 import { UndoRedoService } from '../undo-redo/undo-redo.service';
 import { SvgHeader } from './svg-header';
 import { SvgShape } from './svg-shape';
 import { SVGStructure } from './svg-structure';
-import { LocalStorageHandlerService } from '../auto-save/local-storage-handler.service';
 
 @Injectable({
   providedIn: 'root'

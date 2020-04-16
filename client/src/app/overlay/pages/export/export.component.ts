@@ -1,12 +1,15 @@
 
 import { AfterViewInit, Component, ElementRef, Optional, Renderer2, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatButtonToggleChange, MatDialogRef, MatRadioChange } from '@angular/material';
+import { MatButtonToggleChange, MatDialog, MatDialogRef, MatRadioChange } from '@angular/material';
 import { CommunicationService } from 'src/app/communication/communication.service';
 import { SvgToCanvas } from 'src/app/svg-to-canvas/svg-to-canvas';
 import { SvgShape } from 'src/app/svg/svg-shape';
 import { SvgService } from 'src/app/svg/svg.service';
 import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.service';
+import { ConfirmationExportComponent } from './confirmation-export.component';
+import { ExportType } from './export-type';
+import { ProgressExportComponent } from './progress-export.component';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -25,9 +28,15 @@ export enum FormatChoice {
   JPEG = 'JPEG',
 }
 
-export enum ExportType {
-  LOCAL = 'local',
-  EMAIL = 'email',
+export interface DialogRefs {
+  confirm: MatDialogRef<ConfirmationExportComponent>;
+  progress: MatDialogRef<ProgressExportComponent>;
+}
+
+export interface ExportHeader {
+  name: string;
+  exportType: ExportType;
+  email: string;
 }
 
 @Component({
@@ -42,12 +51,13 @@ export class ExportComponent implements AfterViewInit {
     static: false
   }) protected svgView: ElementRef<SVGSVGElement>;
 
-  protected innerSVG: SVGSVGElement;
-  protected svgShape: SvgShape;
-  protected pictureView: SVGImageElement;
+  private innerSVG: SVGSVGElement;
+  private svgShape: SvgShape;
+  private pictureView: SVGImageElement;
   private filtersChooser: Map<string, string>;
-  protected form: FormGroup;
-  protected exportType: ExportType;
+  private form: FormGroup;
+  private exportType: ExportType;
+  private dialogRefs: DialogRefs;
 
   static validator(control: FormControl): null | { spaceError: { value: string } } {
     const input = (control.value as string).trim();
@@ -60,19 +70,24 @@ export class ExportComponent implements AfterViewInit {
 
   constructor(private readonly communicationService: CommunicationService,
               private formBuilder: FormBuilder,
-              @Optional() public dialogRef: MatDialogRef<ExportComponent>,
+              @Optional() public epxortDialog: MatDialogRef<ExportComponent>,
               private renderer: Renderer2,
               private filterService: FilterService,
-              private svgService: SvgService
+              private svgService: SvgService,
+              private matDialog: MatDialog
   ) {
     this.exportType = ExportType.LOCAL;
     this.filtersChooser = new Map();
     this.form = this.formBuilder.group({
-      name: ['', [Validators.required, ExportComponent.validator]],
-      email: [{value: '', disabled: true}],
+      name  : ['', [Validators.required, ExportComponent.validator]],
+      email : [{value: '', disabled: true}],
       filter: [FilterChoice.None, [Validators.required]],
       format: [FormatChoice.PNG, [Validators.required]]
     });
+    this.dialogRefs = {
+      confirm: (undefined as unknown) as MatDialogRef<ConfirmationExportComponent>,
+      progress: (undefined as unknown) as MatDialogRef<ProgressExportComponent>,
+    };
   }
 
   protected getFilters(): FilterChoice[] {
@@ -99,28 +114,70 @@ export class ExportComponent implements AfterViewInit {
   }
 
   protected onCancel(): void {
-    this.dialogRef.close('Opération annulée');
+    this.epxortDialog.close();
   }
 
-  protected async onConfirm(): Promise<void> {
-    const format = this.form.controls.format.value as FormatChoice;
+  private getFormat(): FormatChoice {
+    return this.form.controls.format.value;
+  }
+
+  private getEmail(): string {
+    return this.form.controls.email.value;
+  }
+
+  private getName(): string {
+    return this.form.controls.name.value;
+  }
+
+  protected async onConfirm(confirmed: boolean): Promise<void> {
+    if (!confirmed) {
+      return ;
+    }
+    const progressDialogRef = this.matDialog.open(ProgressExportComponent, { width: '400px'});
+    const format = this.getFormat();
+    let succeded = true;
     if (this.exportType === ExportType.EMAIL) {
       const blob = await this.getImageAsBlob(format);
-
-      const email = this.form.controls.email.value;
-      const name = `${this.form.controls.name.value}.${format.toLowerCase()}`;
+      const email = this.getEmail();
+      const name = `${this.getName()}.${format.toLowerCase()}`;
       try {
         const response = await this.communicationService.sendEmail(
           name, email, blob);
-        this.dialogRef.close(response);
+        progressDialogRef.componentInstance.message = response;
+        progressDialogRef.componentInstance.error = false;
       } catch (err) {
-        this.dialogRef.close(err);
+        progressDialogRef.componentInstance.error = true;
+        progressDialogRef.componentInstance.message = err;
+        succeded = false;
       }
     } else {
       const url = await this.getImageAsURL(format);
       this.downloadImage(url);
-      this.dialogRef.close('Une fenêtre de sauvegarde apparaîtra sous peu');
+      progressDialogRef.componentInstance.message = 'Le téléchargement commencera sous peu !';
     }
+    progressDialogRef.componentInstance.inProgress = false;
+    progressDialogRef.afterClosed().subscribe(() => {
+      this.epxortDialog.close();
+    });
+    if (succeded) {
+      setTimeout(() => progressDialogRef.close(), 3000);
+    }
+  }
+
+  protected popUpConfirm(): void {
+    const exportHeader: ExportHeader = {
+      name: `${this.form.controls.name.value}.${this.form.controls.format.value.toLocaleLowerCase()}`,
+      exportType: this.exportType,
+      email: this.form.controls.email.value
+    };
+    this.dialogRefs.confirm = this.matDialog.open(
+      ConfirmationExportComponent,
+      { data: exportHeader, width: '400px' }
+    );
+    this.dialogRefs.confirm.disableClose = true;
+    this.dialogRefs.confirm.afterClosed().subscribe((popUpReturn: boolean) => {
+      this.onConfirm(popUpReturn);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -155,7 +212,7 @@ export class ExportComponent implements AfterViewInit {
   }
 
   private serializeSVG(): string {
-    return (new XMLSerializer().serializeToString(this.innerSVG));
+    return new XMLSerializer().serializeToString(this.innerSVG);
   }
 
   private convertSVGToBase64(): string {
@@ -175,7 +232,13 @@ export class ExportComponent implements AfterViewInit {
     if (format === FormatChoice.SVG) {
       return 'image/svg+xml';
     }
-    return `image/${format}`;
+    return `image/${format.toLocaleLowerCase()}`;
+  }
+
+  private async svgToCanvas(): Promise<HTMLCanvasElement> {
+    const svgToCanvas = new SvgToCanvas(this.innerSVG, this.svgService.shape,
+      this.renderer);
+    return svgToCanvas.getCanvas();
   }
 
   private async getImageAsURL(format: FormatChoice): Promise<string> {
@@ -186,18 +249,11 @@ export class ExportComponent implements AfterViewInit {
       return `data:${type},${encodeURIComponent(this.serializeSVG())}`;
     }
 
-    const svgToCanvas = new SvgToCanvas(this.innerSVG, this.svgService.shape, this.renderer)
-    const canvas = await svgToCanvas.getCanvas();
+    const canvas = await this.svgToCanvas();
     return canvas.toDataURL(type);
   }
 
-  private svgToCanvas(): Promise<HTMLCanvasElement> {
-    const svgToCanvas = new SvgToCanvas(this.innerSVG, this.svgService.shape,
-      this.renderer);
-      return svgToCanvas.getCanvas();
-  }
-
-  private async getImageAsBlob(format: FormatChoice) {
+  private async getImageAsBlob(format: FormatChoice): Promise<Blob> {
     this.resetInnerSVG();
     const type = this.formatToMime(format);
 

@@ -162,7 +162,7 @@ class Router {
 
 			const fbBuilder = new flatbuffers.flatbuffers.Builder();
 			const drawBufferOffsets = entries
-				.filter((entry) => !!entry.data)
+				.filter((entry) => entry.data !== undefined)
 				.map((entry) => {
 					const bufOffset = DrawBuffer.createBufVector(
 						fbBuilder,
