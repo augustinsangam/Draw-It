@@ -15,7 +15,7 @@ const ERROR_MESSAGE = 'Communication impossible avec le serveur';
 const GENERIC_ERROR = new Error(ERROR_MESSAGE);
 const TIMEOUT_ERROR_MESSAGE = 'Délai d’attente dépassé';
 const TIMEOUT_ERROR = new Error(TIMEOUT_ERROR_MESSAGE);
-const TIMEOUT = 7000;
+const TIMEOUT = 20000;
 const DONE = 4;
 
 export enum ContentType {
