@@ -22,12 +22,12 @@ class Database {
 	private _collection?: mongodb.Collection;
 
 	constructor() {
-		const uri = new URL(secrets.mongodb.uri);
-		uri.pathname = 'log2990';
-		uri.searchParams.append('serverSelectionTimeoutMS', '3000');
-		uri.searchParams.append('retryWrites', 'true');
-		uri.searchParams.append('w', 'majority');
-		this.client = new mongodb.MongoClient(uri.href, {
+		const url = new URL(secrets.mongodb.url);
+		url.pathname = 'log2990';
+		url.searchParams.append('serverSelectionTimeoutMS', '3000');
+		url.searchParams.append('retryWrites', 'true');
+		url.searchParams.append('w', 'majority');
+		this.client = new mongodb.MongoClient(url.href, {
 			auth: secrets.mongodb.auth,
 			useUnifiedTopology: true,
 		});

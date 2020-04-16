@@ -1,4 +1,4 @@
-// tslint:disable: no-any
+// tslint:disable: no-any no-string-literal
 
 import chai from 'chai';
 import express from 'express';
