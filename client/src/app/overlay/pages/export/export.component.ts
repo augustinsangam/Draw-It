@@ -1,12 +1,14 @@
 
 import { AfterViewInit, Component, ElementRef, Optional, Renderer2, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatButtonToggleChange, MatDialogRef, MatRadioChange } from '@angular/material';
+import { MatButtonToggleChange, MatDialog, MatDialogRef, MatRadioChange } from '@angular/material';
 import { CommunicationService } from 'src/app/communication/communication.service';
 import { SvgToCanvas } from 'src/app/svg-to-canvas/svg-to-canvas';
 import { SvgShape } from 'src/app/svg/svg-shape';
 import { SvgService } from 'src/app/svg/svg.service';
 import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.service';
+import { ConfirmationDialogExportComponent } from './confirmation-dialog-export.component';
+import { ExportType } from './export-type';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -25,9 +27,10 @@ export enum FormatChoice {
   Jpeg = 'JPEG',
 }
 
-export enum ExportType {
-  LOCAL = 'local',
-  EMAIL = 'email',
+export interface ExportHeader {
+  name: string;
+  exportType: ExportType;
+  email: string;
 }
 
 @Component({
@@ -63,7 +66,8 @@ export class ExportComponent implements AfterViewInit {
               @Optional() public dialogRef: MatDialogRef<ExportComponent>,
               private renderer: Renderer2,
               private filterService: FilterService,
-              private svgService: SvgService
+              private svgService: SvgService,
+              private dialog: MatDialog
   ) {
     this.exportType = ExportType.LOCAL;
     this.filtersChooser = new Map();
@@ -109,6 +113,10 @@ export class ExportComponent implements AfterViewInit {
   }
 
   protected async onConfirm(): Promise<void> {
+    const shouldContinue = await this.popUpConfirm();
+    if (!shouldContinue) {
+      return ;
+    }
     const format = this.form.controls.format.value;
     if (this.exportType === ExportType.EMAIL) {
       const imageBase64 = await this.parseToB64URI(format);
@@ -127,6 +135,21 @@ export class ExportComponent implements AfterViewInit {
       this.exportDrawing(format);
       this.dialogRef.close('Une fenêtre de sauvegarde apparaîtra sous peu');
     }
+  }
+
+  private async popUpConfirm(): Promise<boolean> {
+    return new Promise((resolve) => {
+      const exportHeader: ExportHeader = {
+        name: `${this.form.controls.name.value}.${this.form.controls.format.value.toLocaleLowerCase()}`,
+        exportType: this.exportType,
+        email: this.form.controls.email.value
+      };
+      const dialogRef = this.dialog.open(ConfirmationDialogExportComponent, { data: exportHeader });
+      dialogRef.disableClose = true;
+      dialogRef.afterClosed().subscribe((popUpReturn: boolean) => {
+        resolve(popUpReturn);
+      });
+    });
   }
 
   protected onCancel(): void {

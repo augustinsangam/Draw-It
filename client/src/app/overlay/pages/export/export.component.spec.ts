@@ -8,7 +8,8 @@ import { SvgShape } from 'src/app/svg/svg-shape';
 import { SvgService} from 'src/app/svg/svg.service';
 import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.service';
 import { UndoRedoService } from 'src/app/undo-redo/undo-redo.service';
-import { ExportComponent, ExportType, FilterChoice, FormatChoice } from './export.component';
+import { ExportType } from './export-type';
+import { ExportComponent, FilterChoice, FormatChoice } from './export.component';
 
 // tslint:disable: no-magic-numbers no-any no-string-literal
 describe('ExportComponent', () => {

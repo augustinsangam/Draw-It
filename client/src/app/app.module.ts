@@ -35,6 +35,9 @@ import {
   DocumentationComponent
 } from './overlay/pages/documentation/documentation.component';
 import {
+  ConfirmationDialogExportComponent
+} from './overlay/pages/export/confirmation-dialog-export.component';
+import {
   ExportComponent
 } from './overlay/pages/export/export.component';
 import {
@@ -184,6 +187,7 @@ import {
     ColorPickerContentComponent,
     ColorPickerItemComponent,
     ConfirmationDialogComponent,
+    ConfirmationDialogExportComponent,
     DeleteConfirmationDialogComponent,
     DocumentationComponent,
     EllipseLogicComponent,
@@ -258,6 +262,7 @@ import {
     EraserPanelComponent,
     PaletteDialogComponent,
     ConfirmationDialogComponent,
+    ConfirmationDialogExportComponent,
     DeleteConfirmationDialogComponent,
     DocumentationComponent,
     EllipseLogicComponent,
