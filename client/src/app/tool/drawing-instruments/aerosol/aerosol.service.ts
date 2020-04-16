@@ -34,7 +34,7 @@ export class AerosolService extends ToolService {
 
       const x = p.x + r * Math.cos(theta);
       const y = p.y + r * Math.sin(theta);
-      disk += `M ${x - 1}, ${y} a 1, 1 0 1, 0 2,0 a 1, 1 0 1, 0 -2,0 `;
+      disk += `M ${Math.round(x) - 1}, ${Math.round(y)} a 1, 1 0 1, 0 2,0 a 1, 1 0 1, 0 -2,0 `;
     }
 
     return disk;

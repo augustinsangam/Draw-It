@@ -18,6 +18,12 @@ export class HomeComponent {
               @Inject(MAT_DIALOG_DATA) public data: DialogData) {
     this.options = [
       {
+        icon: 'save',
+        message: 'Continuer le dernier dessin',
+        dialogCloseResult: 'continue',
+        canDisplay: true,
+      },
+      {
         icon: 'add',
         message: 'Nouveau dessin',
         dialogCloseResult: 'new',
@@ -34,15 +40,9 @@ export class HomeComponent {
         message: 'Guide d\'utilisation',
         dialogCloseResult: 'documentation',
         canDisplay: true,
-      },
-      {
-        icon: 'save',
-        message: 'Continuer le dernier dessin',
-        dialogCloseResult: 'continue',
-        canDisplay: true,
-      },
+      }
     ];
-    this.options[this.options.length - 1].canDisplay = data.drawInProgress;
+    this.options[0].canDisplay = data.drawInProgress;
   }
 }
 
