@@ -22,7 +22,12 @@ export class LocalStorageHandlerService {
 
   saveState(draw: SVGGElement): void {
     const svgDrawString = new XMLSerializer().serializeToString(draw);
-    localStorage.setItem(AutoSaveKey.DRAW, svgDrawString);
+    try {
+      localStorage.setItem(AutoSaveKey.DRAW, svgDrawString);
+    } catch (error) {
+      console.log('Taille maximale atteinte');
+      localStorage.removeItem(AutoSaveKey.DRAW);
+    }
   }
 
   clearDrawings(): void {
