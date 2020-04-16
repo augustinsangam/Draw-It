@@ -282,15 +282,6 @@ describe('Overlay', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it('#closeExportDialog should call open snak with long duration on error', () => {
-    const spy = spyOn<any>(service['snackBar'], 'open');
-
-    service['closeExportDialog'](new Error('foobar'));
-
-    expect(spy).toHaveBeenCalled();
-    expect(spy.calls.first().args[0]).toEqual('foobar');
-  });
-
   it('#openGalleryDialog should not call getCommonDialogOptions.', () => {
     const spy = spyOn<any>(service, 'getCommonDialogOptions');
     service['openGalleryDialog'](true);

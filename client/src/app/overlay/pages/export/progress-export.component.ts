@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 
 @Component({
-  templateUrl: 'progress-export.component.html'
+  templateUrl: 'progress-export.component.html',
+  styleUrls: ['progress-export.component.scss']
 })
 export class ProgressExportComponent {
 

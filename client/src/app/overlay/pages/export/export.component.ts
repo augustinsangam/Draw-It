@@ -28,6 +28,11 @@ export enum FormatChoice {
   Jpeg = 'JPEG',
 }
 
+export interface DialogRefs {
+  confirm: MatDialogRef<ConfirmationExportComponent>;
+  progress: MatDialogRef<ProgressExportComponent>;
+}
+
 export interface ExportHeader {
   name: string;
   exportType: ExportType;
@@ -46,12 +51,13 @@ export class ExportComponent implements AfterViewInit {
     static: false
   }) protected svgView: ElementRef<SVGSVGElement>;
 
-  protected innerSVG: SVGSVGElement;
-  protected svgShape: SvgShape;
-  protected pictureView: SVGImageElement;
+  private innerSVG: SVGSVGElement;
+  private svgShape: SvgShape;
+  private pictureView: SVGImageElement;
   private filtersChooser: Map<string, string>;
-  protected form: FormGroup;
-  protected exportType: ExportType;
+  private form: FormGroup;
+  private exportType: ExportType;
+  private dialogRefs: DialogRefs;
 
   static validator(control: FormControl): null | { spaceError: { value: string } } {
     const input = (control.value as string).trim();
@@ -78,6 +84,10 @@ export class ExportComponent implements AfterViewInit {
       filter: [FilterChoice.None, [Validators.required]],
       format: [FormatChoice.Png, [Validators.required]]
     });
+    this.dialogRefs = {
+      confirm: (undefined as unknown) as MatDialogRef<ConfirmationExportComponent>,
+      progress: (undefined as unknown) as MatDialogRef<ProgressExportComponent>,
+    };
   }
 
   protected getFilters(): FilterChoice[] {
@@ -113,13 +123,13 @@ export class ExportComponent implements AfterViewInit {
     return canvas.toDataURL(`image/${format}`);
   }
 
-  protected async onConfirm(): Promise<void> {
-    const shouldContinue = await this.popUpConfirm();
-    if (!shouldContinue) {
+  protected async onConfirm(confirmed: boolean): Promise<void> {
+
+    if (!confirmed) {
       return ;
     }
 
-    const progressDialogRef = this.matDialog.open(ProgressExportComponent);
+    const progressDialogRef = this.matDialog.open(ProgressExportComponent, { width: '400px'});
 
     const format = this.form.controls.format.value;
     if (this.exportType === ExportType.EMAIL) {
@@ -133,13 +143,15 @@ export class ExportComponent implements AfterViewInit {
       try {
         const response = await this.communicationService.sendEmail(
           name, email, imageBlob);
-        progressDialogRef.componentInstance.message = 'Photo envoyée';
-        this.epxortDialog.close(response);
+        progressDialogRef.componentInstance.message = response;
+        progressDialogRef.afterClosed().subscribe(() => {
+          this.epxortDialog.close();
+        });
       } catch (err) {
         progressDialogRef.componentInstance.error = true;
         progressDialogRef.componentInstance.message = err;
         progressDialogRef.afterClosed().subscribe(() => {
-          this.epxortDialog.close(err);
+          this.epxortDialog.close();
         });
       }
       progressDialogRef.componentInstance.inProgress = false;
@@ -148,31 +160,32 @@ export class ExportComponent implements AfterViewInit {
 
       this.exportDrawing(format);
       progressDialogRef.componentInstance.inProgress = false;
-      progressDialogRef.componentInstance.message = 'Le télechargement commencera sous peu !';
+      progressDialogRef.componentInstance.message = 'Le téléchargement commencera sous peu !';
       progressDialogRef.afterClosed().subscribe(() => {
-        this.epxortDialog.close('Le télechargement commencera sous peu !');
+        this.epxortDialog.close();
       });
 
     }
   }
 
-  private async popUpConfirm(): Promise<boolean> {
-    return new Promise((resolve) => {
-      const exportHeader: ExportHeader = {
-        name: `${this.form.controls.name.value}.${this.form.controls.format.value.toLocaleLowerCase()}`,
-        exportType: this.exportType,
-        email: this.form.controls.email.value
-      };
-      const dialogRef = this.matDialog.open(ConfirmationExportComponent, { data: exportHeader });
-      dialogRef.disableClose = true;
-      dialogRef.afterClosed().subscribe((popUpReturn: boolean) => {
-        resolve(popUpReturn);
-      });
+  protected popUpConfirm(): void {
+    const exportHeader: ExportHeader = {
+      name: `${this.form.controls.name.value}.${this.form.controls.format.value.toLocaleLowerCase()}`,
+      exportType: this.exportType,
+      email: this.form.controls.email.value
+    };
+    this.dialogRefs.confirm = this.matDialog.open(
+      ConfirmationExportComponent,
+      { data: exportHeader, width: '400px' }
+    );
+    this.dialogRefs.confirm.disableClose = true;
+    this.dialogRefs.confirm.afterClosed().subscribe((popUpReturn: boolean) => {
+      this.onConfirm(popUpReturn);
     });
   }
 
   protected onCancel(): void {
-    this.epxortDialog.close('Opération annulée');
+    this.epxortDialog.close();
   }
 
   ngAfterViewInit(): void {
