@@ -133,7 +133,7 @@ export class ExportComponent implements AfterViewInit {
     if (!confirmed) {
       return ;
     }
-    const progressDialogRef = this.matDialog.open(ProgressExportComponent, { width: '400px'});
+    this.dialogRefs.progress = this.matDialog.open(ProgressExportComponent, { width: '400px'});
     const format = this.getFormat();
     let succeded = true;
     if (this.exportType === ExportType.EMAIL) {
@@ -143,24 +143,24 @@ export class ExportComponent implements AfterViewInit {
       try {
         const response = await this.communicationService.sendEmail(
           name, email, blob);
-        progressDialogRef.componentInstance.message = response;
-        progressDialogRef.componentInstance.error = false;
+        this.dialogRefs.progress.componentInstance.message = response;
+        this.dialogRefs.progress.componentInstance.error = false;
       } catch (err) {
-        progressDialogRef.componentInstance.error = true;
-        progressDialogRef.componentInstance.message = err;
+        this.dialogRefs.progress.componentInstance.error = true;
+        this.dialogRefs.progress.componentInstance.message = err.message;
         succeded = false;
       }
     } else {
       const url = await this.getImageAsURL(format);
       this.downloadImage(url);
-      progressDialogRef.componentInstance.message = 'Le téléchargement commencera sous peu !';
+      this.dialogRefs.progress.componentInstance.message = 'Le téléchargement commencera sous peu !';
     }
-    progressDialogRef.componentInstance.inProgress = false;
-    progressDialogRef.afterClosed().subscribe(() => {
+    this.dialogRefs.progress.componentInstance.inProgress = false;
+    this.dialogRefs.progress.afterClosed().subscribe(() => {
       this.epxortDialog.close();
     });
     if (succeded) {
-      setTimeout(() => progressDialogRef.close(), 3000);
+      setTimeout(() => this.dialogRefs.progress.close(), 3000);
     }
   }
 
