@@ -4,14 +4,14 @@ import { ExportType } from './export-type';
 import { ExportHeader } from './export.component';
 
 @Component({
-  templateUrl: 'confirmation-dialog-export.component.html'
+  templateUrl: 'confirmation-export.component.html'
 })
-export class ConfirmationDialogExportComponent {
+export class ConfirmationExportComponent {
 
   protected ExportType: typeof ExportType = ExportType;
 
   constructor(@Inject(MAT_DIALOG_DATA) protected data: ExportHeader,
-              @Optional() protected dialogRef: MatDialogRef<ConfirmationDialogExportComponent>) {
+              @Optional() protected dialogRef: MatDialogRef<ConfirmationExportComponent>) {
 
   }
 

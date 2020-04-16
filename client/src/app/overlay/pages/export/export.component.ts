@@ -7,8 +7,9 @@ import { SvgToCanvas } from 'src/app/svg-to-canvas/svg-to-canvas';
 import { SvgShape } from 'src/app/svg/svg-shape';
 import { SvgService } from 'src/app/svg/svg.service';
 import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.service';
-import { ConfirmationDialogExportComponent } from './confirmation-dialog-export.component';
+import { ConfirmationExportComponent } from './confirmation-export.component';
 import { ExportType } from './export-type';
+import { ProgressExportComponent } from './progress-export.component';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -63,11 +64,11 @@ export class ExportComponent implements AfterViewInit {
 
   constructor(private readonly communicationService: CommunicationService,
               private formBuilder: FormBuilder,
-              @Optional() public dialogRef: MatDialogRef<ExportComponent>,
+              @Optional() public epxortDialog: MatDialogRef<ExportComponent>,
               private renderer: Renderer2,
               private filterService: FilterService,
               private svgService: SvgService,
-              private dialog: MatDialog
+              private matDialog: MatDialog
   ) {
     this.exportType = ExportType.LOCAL;
     this.filtersChooser = new Map();
@@ -117,23 +118,41 @@ export class ExportComponent implements AfterViewInit {
     if (!shouldContinue) {
       return ;
     }
+
+    const progressDialogRef = this.matDialog.open(ProgressExportComponent);
+
     const format = this.form.controls.format.value;
     if (this.exportType === ExportType.EMAIL) {
+
       const imageBase64 = await this.parseToB64URI(format);
       const imageBlob = this.dataURItoBlob(imageBase64);
 
       const email = this.form.controls.email.value;
       const name = this.form.controls.name.value;
+
       try {
         const response = await this.communicationService.sendEmail(
           name, email, imageBlob);
-        this.dialogRef.close(response);
+        progressDialogRef.componentInstance.message = 'Photo envoyée';
+        this.epxortDialog.close(response);
       } catch (err) {
-        this.dialogRef.close(err);
+        progressDialogRef.componentInstance.error = true;
+        progressDialogRef.componentInstance.message = err;
+        progressDialogRef.afterClosed().subscribe(() => {
+          this.epxortDialog.close(err);
+        });
       }
+      progressDialogRef.componentInstance.inProgress = false;
+
     } else {
+
       this.exportDrawing(format);
-      this.dialogRef.close('Une fenêtre de sauvegarde apparaîtra sous peu');
+      progressDialogRef.componentInstance.inProgress = false;
+      progressDialogRef.componentInstance.message = 'Le télechargement commencera sous peu !';
+      progressDialogRef.afterClosed().subscribe(() => {
+        this.epxortDialog.close('Le télechargement commencera sous peu !');
+      });
+
     }
   }
 
@@ -144,7 +163,7 @@ export class ExportComponent implements AfterViewInit {
         exportType: this.exportType,
         email: this.form.controls.email.value
       };
-      const dialogRef = this.dialog.open(ConfirmationDialogExportComponent, { data: exportHeader });
+      const dialogRef = this.matDialog.open(ConfirmationExportComponent, { data: exportHeader });
       dialogRef.disableClose = true;
       dialogRef.afterClosed().subscribe((popUpReturn: boolean) => {
         resolve(popUpReturn);
@@ -153,7 +172,7 @@ export class ExportComponent implements AfterViewInit {
   }
 
   protected onCancel(): void {
-    this.dialogRef.close('Opération annulée');
+    this.epxortDialog.close('Opération annulée');
   }
 
   ngAfterViewInit(): void {
