@@ -10,6 +10,9 @@
   <a title="Crayon [C]" #pencil (click)="toolSelectorService.set(Tool.Pencil)"
      style="background-image:url(/assets/sidebar-icons/gimp-tool-pencil.png)">
   </a>
+  <a title="Efface [E]" #efface (click)="toolSelectorService.set(Tool.Eraser)"
+     style="background-image:url(/assets/sidebar-icons/gimp-tool-eraser.png)">
+  </a>
   <a title="Pinceau [W]" #brush (click)="toolSelectorService.set(Tool.Brush)"
      style="background-image:url(/assets/sidebar-icons/gimp-tool-paintbrush.png)">
   </a>
@@ -30,9 +33,6 @@
   </a>
   <a title="Polygone [3]" #polygone (click)="toolSelectorService.set(Tool.Polygone)"
      style="background-image:url(/assets/sidebar-icons/polygone.png)">
-  </a>
-  <a title="Efface [E]" #efface (click)="toolSelectorService.set(Tool.Eraser)"
-     style="background-image:url(/assets/sidebar-icons/gimp-tool-eraser.png)">
   </a>
   <a title="Pipette [I]" #pipette (click)="toolSelectorService.set(Tool.Pipette)"
      style="background-image:url(/assets/sidebar-icons/pipette.png)">
@@ -85,6 +85,6 @@
     photo_library
   </mat-icon>
 </a>
-<a title="Aide" style="background-image:url(/assets/sidebar-icons/gimp-prefs-help-system.svg)"
-   (click)="documentationEvent.emit()">
+<a title="Guide d'utilisation" (click)="documentationEvent.emit()">
+  <mat-icon color="#ffff00">help_outline</mat-icon>
 </a>
