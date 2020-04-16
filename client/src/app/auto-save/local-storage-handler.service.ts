@@ -25,7 +25,7 @@ export class LocalStorageHandlerService {
     try {
       localStorage.setItem(AutoSaveKey.DRAW, svgDrawString);
     } catch (error) {
-      console.log('Taille maximale atteinte');
+      console.error('Taille maximale atteinte pour sauvegarde automatique');
       localStorage.removeItem(AutoSaveKey.DRAW);
     }
   }
