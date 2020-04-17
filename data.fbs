@@ -4,7 +4,7 @@ table Draws {
 
 table DrawBuffer {
 	id: uint16;
-    buf: [ubyte] (nested_flatbuffer: 'Draw');
+	buf: [ubyte] (nested_flatbuffer: 'Draw');
 }
 
 table Draw {
