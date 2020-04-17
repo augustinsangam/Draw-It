@@ -44,7 +44,7 @@ class Router {
 		);
 	}
 
-	private verifyBuffer(buf: Uint8Array): string | null {
+	private verifyBuffer(buf: Uint8Array): void | Error {
 		const fbByteBuffer = new flatbuffers.flatbuffers.ByteBuffer(buf);
 		const draw = Draw.getRoot(fbByteBuffer);
 
@@ -54,17 +54,15 @@ class Router {
 			name.length < TextLen.MIN ||
 			name.length > TextLen.MAX
 		) {
-			return `Nom “${name}” invalide`;
+			return new Error(`Nom “${name}” invalide`);
 		}
 
 		for (let i = draw.tagsLength(); i-- !== 0; ) {
 			const tag = draw.tags(i);
 			if (tag.length < TextLen.MIN || tag.length > TextLen.MAX) {
-				return `Étiquette “${tag}” invalide`;
+				return new Error(`Étiquette “${tag}” invalide`);
 			}
 		}
-
-		return null;
 	}
 
 	private verifyID(textID: string): number | Error {
@@ -195,9 +193,9 @@ class Router {
 
 			const buffer = req.body as Buffer;
 
-			const errMessage = this.verifyBuffer(buffer);
-			if (!!errMessage) {
-				res.status(StatusCode.NOT_ACCEPTABLE).send(errMessage);
+			const possibleError = this.verifyBuffer(buffer);
+			if (possibleError instanceof Error) {
+				res.status(StatusCode.NOT_ACCEPTABLE).send(possibleError.message);
 				return;
 			}
 
@@ -230,9 +228,9 @@ class Router {
 				return;
 			}
 
-			const errMessage = this.verifyBuffer(req.body);
-			if (!!errMessage) {
-				res.status(StatusCode.NOT_ACCEPTABLE).send(errMessage);
+			const possibleError = this.verifyBuffer(req.body);
+			if (possibleError instanceof Error) {
+				res.status(StatusCode.NOT_ACCEPTABLE).send(possibleError.message);
 				return;
 			}
 
