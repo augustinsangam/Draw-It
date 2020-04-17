@@ -89,6 +89,8 @@ class Router {
 
 	private sendEmail(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
+			res.type(ContentType.PLAIN_UTF8);
+
 			const recipient = req.body.recipient;
 			if (recipient == null || req.file == null) {
 				res
@@ -125,6 +127,10 @@ class Router {
 						`Courriel probabablement envoyé (${count} restant sur ${max} pour cette heure)`,
 					);
 					return;
+				case StatusCode.TOO_MANY_REQUESTS:
+					res.status(StatusCode.TOO_MANY_REQUESTS);
+					res.send(`Quota alloué pour cette heure dépassé (${count} sur ${max})`);
+					return;
 				default:
 					break;
 			}
@@ -141,7 +147,6 @@ class Router {
 			const textResult = Buffer.concat(chunks).toString();
 			try {
 				const result = JSON.parse(textResult);
-				res.type(ContentType.PLAIN_UTF8);
 				res.status(StatusCode.NOT_ACCEPTABLE).send(result.error);
 			} catch (err) {
 				next(err);

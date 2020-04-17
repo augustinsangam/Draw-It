@@ -199,6 +199,24 @@ describe('router', () => {
 			.then(emailSendStub.restore);
 	});
 
+	it(`#methodSendEmail should returns ${StatusCode.TOO_MANY_REQUESTS} even if quota exceeded`, async () => {
+		const incomingMessageMock = new IncomingMessageMock(StatusCode.TOO_MANY_REQUESTS);
+		const { count, max } = EMAIL_API.headers;
+		incomingMessageMock.headers[count] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[max] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[Header.CONTENT_TYPE] = ContentType.JSON;
+
+		const emailSendStub = sinon.stub(router['email'], 'send');
+		emailSendStub.resolves(incomingMessageMock as any);
+
+		return supertest(app)
+			.post('/send')
+			.attach('media', 'package.json')
+			.field('recipient', 'foo@example.com')
+			.expect(StatusCode.TOO_MANY_REQUESTS)
+			.then(emailSendStub.restore);
+	});
+
 	it('#methodGet should fail on db.all error', async () => {
 		const dbAllStub = sinon.stub(db, 'all');
 		dbAllStub.rejects('foobar');
