@@ -115,10 +115,6 @@ export class ExportComponent implements AfterViewInit {
     this.createView(String($change.value));
   }
 
-  protected onCancel(): void {
-    this.epxortDialog.close();
-  }
-
   private getFormat(): FormatChoice {
     return this.form.controls.format.value;
   }
@@ -158,13 +154,13 @@ export class ExportComponent implements AfterViewInit {
       this.dialogRefs.progress.componentInstance.message = 'Le téléchargement commencera sous peu !';
     }
     this.dialogRefs.progress.componentInstance.inProgress = false;
-    this.dialogRefs.progress.afterClosed().subscribe(() => {
-      this.epxortDialog.close();
-    });
+    this.dialogRefs.progress.afterClosed().subscribe(this.onExportDialogClose);
     if (succeded) {
       setTimeout(() => this.dialogRefs.progress.close(), TIMEOUT);
     }
   }
+
+  private onExportDialogClose = () => this.epxortDialog.close();
 
   protected popUpConfirm(): void {
     const exportHeader: ExportHeader = {
@@ -177,10 +173,10 @@ export class ExportComponent implements AfterViewInit {
       { data: exportHeader, width: '400px' }
     );
     this.dialogRefs.confirm.disableClose = true;
-    this.dialogRefs.confirm.afterClosed().subscribe((popUpReturn: boolean) => {
-      this.onConfirm(popUpReturn);
-    });
+    this.dialogRefs.confirm.afterClosed().subscribe(this.onConfirmDialogClose);
   }
+
+  private onConfirmDialogClose = (result: boolean) => this.onConfirm(result);
 
   ngAfterViewInit(): void {
     const filterZone = this.filterService.generateExportFilters(this.renderer);
