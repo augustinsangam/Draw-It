@@ -1,11 +1,19 @@
-// tslint:disable: no-magic-numbers no-any no-string-literal max-file-line-count
-
+import { CdkObserveContent } from '@angular/cdk/observers';
+import { Overlay } from '@angular/cdk/overlay';
 import { Renderer2 } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialogRef, MatRadioChange } from '@angular/material';
+import {
+  MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatButton, MatButtonToggle, MatButtonToggleGroup,
+  MatDialog,
+  MatDialogContainer,
+  MatDialogModule, MatDialogRef,
+  MatFormField, MatHint, MatInput,
+  MatLabel, MatRadioButton,
+  MatRadioChange, MatRadioGroup, MatRipple
+} from '@angular/material';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { MaterialModule } from 'src/app/material.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SvgShape } from 'src/app/svg/svg-shape';
 import { SvgService } from 'src/app/svg/svg.service';
 import { FilterService } from 'src/app/tool/drawing-instruments/brush/filter.service';
@@ -15,48 +23,58 @@ import { ExportType } from './export-type';
 import { ExportComponent, FilterChoice, FormatChoice } from './export.component';
 import { ProgressExportComponent } from './progress-export.component';
 
-fdescribe('ExportComponent', () => {
+// tslint:disable: no-magic-numbers no-any no-string-literal max-file-line-count
+describe('ExportComponent', () => {
   let component: ExportComponent;
   let fixture: ComponentFixture<ExportComponent>;
 
-  const mockDialogRef = {
-    close: jasmine.createSpy('close')
-  };
   const mockDownloadLink = {
     click: jasmine.createSpy('click')
   };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        MaterialModule,
-        FormsModule,
-        ReactiveFormsModule,
-      ],
       declarations: [
+        MatRadioButton,
+        MatFormField,
+        MatInput,
+        MatRipple,
+        CdkObserveContent,
+        MatRadioButton,
+        MatRadioButton,
+        MatRadioGroup,
+        MatButton,
+        MatButtonToggle,
+        MatButtonToggleGroup,
+        MatLabel,
+        MatHint,
         ExportComponent,
         ConfirmationExportComponent,
         ExportComponent,
-        ProgressExportComponent
+        ProgressExportComponent,
+      ],
+      imports: [
+        FormsModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
+        MatDialogModule
       ],
       providers: [
         Renderer2,
         SvgService,
         FilterService,
         MAT_DIALOG_SCROLL_STRATEGY_PROVIDER,
-        {
-          provide: MatDialogRef,
-          useValue: mockDialogRef
-        },
+        MatDialog,
+        Overlay,
         {
           provide: HTMLAnchorElement,
           useValue: mockDownloadLink
         },
-        { provide: MAT_DIALOG_DATA, useValue: {} },
       ]
     }).overrideModule(BrowserDynamicTestingModule, {
       set: {
         entryComponents: [
+          MatDialogContainer,
           ConfirmationExportComponent,
           ProgressExportComponent,
         ]
@@ -150,40 +168,40 @@ fdescribe('ExportComponent', () => {
     await component['onConfirm'](true);
     expect(getImageAsURLSpy).toHaveBeenCalled();
   });
-/*
-  fit('#popUpConfirm should call onConfirm after confirm dialog closed', async () => {
-    component['exportType'] = ExportType.LOCAL;
 
+  it('#Confirm dialog close should be disabled', () => {
     component['popUpConfirm']();
-
-    component['dialogRefs'].confirm.close();
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    expect(mockDialogRef.close).toHaveBeenCalled();
+    expect(component['dialogRefs'].confirm.disableClose).toBeTruthy();
   });
 
-  fit('#onConfirm should close epxortDialog after progress dialog closed', async () => {
-    component['exportType'] = ExportType.LOCAL;
-
-    await component['onConfirm'](true);
-
-    component['dialogRefs'].progress.close();
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    expect(mockDialogRef.close).toHaveBeenCalled();
-  });
-*/
-  it('#onConfirm should set message on sendEmail response', async () => {
+  it('#onConfirm should set message on sendEmail response', async (done: DoneFn) => {
     const spy = spyOn(component['communicationService'], 'sendEmail');
     spy.and.returnValue(Promise.resolve('foobar'));
-
     component['exportType'] = ExportType.EMAIL;
-
     await component['onConfirm'](true);
+    setTimeout(() => {
+      expect(component['dialogRefs'].progress.componentInstance.message).toEqual('foobar');
+      done();
+    }, 3100);
+  });
 
-    expect(component['dialogRefs'].progress.componentInstance.message).toEqual('foobar');
+  it('#onConfirmDialogClose should call onConfirm method', () => {
+    const spy = spyOn<any>(component, 'onConfirm');
+    component['onConfirmDialogClose'](true);
+    expect(spy).toHaveBeenCalledWith(true);
+  });
+
+  it('#onConfirmDialogClose should call onConfirm method', async () => {
+    component['exportType'] = ExportType.EMAIL;
+    spyOn(component['communicationService'], 'sendEmail')
+    .and.callFake(async () => {
+      return new Promise((_, reject) => {
+        reject(new Error('Error'));
+      });
+    });
+    await component['onConfirm'](true);
+    expect(component['dialogRefs']
+    .progress.componentInstance.message).toEqual('Error');
   });
 
   it('#onOptionChange should call createView', () => {
@@ -193,9 +211,13 @@ fdescribe('ExportComponent', () => {
     expect(spy).toHaveBeenCalled();
   });
 
-  it('#onCancel should close the dialogRef', () => {
-    component['onCancel']();
-    expect(mockDialogRef.close).toHaveBeenCalled();
+  it('#onExportDialogClose should close the dialogRef', () => {
+    component.epxortDialog = {
+      close: () => { return ; }
+    } as unknown as MatDialogRef<ExportComponent>;
+    const spy = spyOn(component['epxortDialog'], 'close').and.callThrough();
+    component['onExportDialogClose']();
+    expect(spy).toHaveBeenCalled();
   });
 
   it('#InitialzeElements should set the good values to svgShape', fakeAsync(() => {
