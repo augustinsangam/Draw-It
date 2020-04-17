@@ -2,8 +2,6 @@ import { Renderer2 } from '@angular/core';
 import { Point } from '../../tool/shape/common/point';
 import { Matrix } from './matrix';
 
-const MATRIX_SIZE = 3;
-
 enum MATRIX_ELEMENT {
   SCALE_X = 1,
   SKEW_Y,
@@ -14,6 +12,8 @@ enum MATRIX_ELEMENT {
 }
 
 export class Transform {
+
+  private static readonly MATRIX_SIZE: number = 3;
 
   private matrix: Matrix;
 
@@ -27,7 +27,7 @@ export class Transform {
        [                              0 ,                               0 , 1                                  ]]
     : undefined;
 
-    this.matrix = new Matrix(MATRIX_SIZE, MATRIX_SIZE, data);
+    this.matrix = new Matrix(Transform.MATRIX_SIZE, Transform.MATRIX_SIZE, data);
   }
 
   static translateAll(elements: Iterable<SVGElement>, dx: number, dy: number, renderer: Renderer2): void {
@@ -54,14 +54,14 @@ export class Transform {
 
   clone(): Transform {
     const result = new Transform(this.element, this.renderer);
-    result.matrix = new Matrix(MATRIX_SIZE, MATRIX_SIZE, this.matrix.data);
+    result.matrix = new Matrix(Transform.MATRIX_SIZE, Transform.MATRIX_SIZE, this.matrix.data);
     return result;
   }
 
   translate(dx: number, dy: number): void {
     const translateMatrix = new Matrix(
-      MATRIX_SIZE,
-      MATRIX_SIZE,
+      Transform.MATRIX_SIZE,
+      Transform.MATRIX_SIZE,
       [[1, 0, dx],
        [0, 1, dy],
        [0, 0, 1]]
@@ -74,8 +74,8 @@ export class Transform {
     const PI_IN_DEGRES = 180;
     const radians = angle * Math.PI / PI_IN_DEGRES;
     const translateMatrix = new Matrix(
-      MATRIX_SIZE,
-      MATRIX_SIZE,
+      Transform.MATRIX_SIZE,
+      Transform.MATRIX_SIZE,
       [[1, 0, x],
        [0, 1, y],
        [0, 0, 1]]
@@ -84,16 +84,16 @@ export class Transform {
     const sin = Math.sin(radians);
     const cos = Math.cos(radians);
     const rotateMatrix = new Matrix(
-      MATRIX_SIZE,
-      MATRIX_SIZE,
+      Transform.MATRIX_SIZE,
+      Transform.MATRIX_SIZE,
       [[cos, -sin, 0],
        [sin,  cos, 0],
        [0, 0, 1]]
     );
 
     const translateMatrixInverse  = new Matrix(
-      MATRIX_SIZE,
-      MATRIX_SIZE,
+      Transform.MATRIX_SIZE,
+      Transform.MATRIX_SIZE,
       [[1, 0, -x],
        [0, 1, -y],
        [0, 0, 1]]
@@ -107,24 +107,24 @@ export class Transform {
 
   scale({x, y}: Point, sx: number, sy: number): void {
     const translateMatrix = new Matrix(
-      MATRIX_SIZE,
-      MATRIX_SIZE,
+      Transform.MATRIX_SIZE,
+      Transform.MATRIX_SIZE,
       [[1, 0, x],
        [0, 1, y],
        [0, 0, 1]]
     );
 
     const scaleMatrix = new Matrix(
-      MATRIX_SIZE,
-      MATRIX_SIZE,
+      Transform.MATRIX_SIZE,
+      Transform.MATRIX_SIZE,
       [[sx, 0, 0],
        [0, sy, 0],
        [0, 0, 1]]
     );
 
     const translateMatrixInverse = new Matrix(
-      MATRIX_SIZE,
-      MATRIX_SIZE,
+      Transform.MATRIX_SIZE,
+      Transform.MATRIX_SIZE,
       [[1, 0, -x],
        [0, 1, -y],
        [0, 0, 1]]

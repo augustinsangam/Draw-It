@@ -2,12 +2,17 @@ import { Injectable } from '@angular/core';
 import { EventManager } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 
-export const sideBarWidth = 68;
+export interface ScreenSize {
+  height: number;
+  width: number;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ScreenService {
+
+  private static readonly SIDEBAR_WIDTH: number = 68;
 
   size: Subject<ScreenSize>;
 
@@ -22,16 +27,11 @@ export class ScreenService {
   getCurrentSize(): ScreenSize {
     return {
       height: innerHeight,
-      width: innerWidth - sideBarWidth,
+      width: innerWidth - ScreenService.SIDEBAR_WIDTH,
     };
   }
 
   onResize(): void {
     this.size.next(this.getCurrentSize());
   }
-}
-
-export interface ScreenSize {
-  height: number;
-  width: number;
 }

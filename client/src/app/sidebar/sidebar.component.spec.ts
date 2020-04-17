@@ -52,22 +52,22 @@ describe('SidebarComponent', () => {
     // stackoverflow.com/a/48734437
     spyOn<any>(component, 'setTool').and.callFake(
       (tool: Tool, old?: Tool) => {
-        expect(tool).toBe(Tool.Line);
+        expect(tool).toBe(Tool.LINE);
         expect(old).toBe(Tool._None);
       });
     component.ngAfterViewInit();
-    component['toolSelectorService'].set(Tool.Line);
+    component['toolSelectorService'].set(Tool.LINE);
   });
 
   it('#setTool with second argument null should do nothing', () => {
     const oldHtmlEl = document.createElement('a');
     oldHtmlEl.classList.add('selected');
     const oldElRef = new ElementRef(oldHtmlEl);
-    component['toolToElRef'][Tool.Line] = oldElRef;
+    component['toolToElRef'][Tool.LINE] = oldElRef;
 
     const newHtmlEl = document.createElement('a');
     const newElRef = new ElementRef(newHtmlEl);
-    component['toolToElRef'][Tool.Rectangle] = newElRef;
+    component['toolToElRef'][Tool.RECTANGLE] = newElRef;
 
     component['setTool'](Tool._None);
     expect(oldHtmlEl.classList.contains('selected')).toBeTruthy();
@@ -78,11 +78,11 @@ describe('SidebarComponent', () => {
     const oldHtmlEl = document.createElement('a');
     oldHtmlEl.classList.add('selected');
     const oldElRef = new ElementRef(oldHtmlEl);
-    component['toolToElRef'][Tool.Line] = oldElRef;
+    component['toolToElRef'][Tool.LINE] = oldElRef;
 
     const newHtmlEl = document.createElement('a');
     const newElRef = new ElementRef(newHtmlEl);
-    component['toolToElRef'][Tool.Rectangle] = newElRef;
+    component['toolToElRef'][Tool.RECTANGLE] = newElRef;
 
     component['setTool'](Tool._None, Tool._None);
     expect(oldHtmlEl.classList.contains('selected')).toBeTruthy();
@@ -94,13 +94,13 @@ describe('SidebarComponent', () => {
     const oldHtmlEl = document.createElement('a');
     oldHtmlEl.classList.add('selected');
     const oldElRef = new ElementRef(oldHtmlEl);
-    component['toolToElRef'][Tool.Line] = oldElRef;
+    component['toolToElRef'][Tool.LINE] = oldElRef;
 
     const newHtmlEl = document.createElement('a');
     const newElRef = new ElementRef(newHtmlEl);
-    component['toolToElRef'][Tool.Rectangle] = newElRef;
+    component['toolToElRef'][Tool.RECTANGLE] = newElRef;
 
-    component['setTool'](Tool.Rectangle, Tool.Line);
+    component['setTool'](Tool.RECTANGLE, Tool.LINE);
     expect(oldHtmlEl.classList.contains('selected')).toBeFalsy();
     expect(newHtmlEl.classList.contains('selected')).toBeTruthy();
   });

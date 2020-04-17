@@ -52,27 +52,27 @@ export class BrushPanelComponent extends ToolPanelDirective {
   private initialiseTextures(): void {
     this.textures = [
       {
-        value: Texture.Texture2,
+        value: Texture.TEXTURE_2,
         name: 'Flou',
         src: '/assets/textures/texture2.png'
       },
       {
-        value: Texture.Texture3,
+        value: Texture.TEXTURE_3,
         name: 'Ombre',
         src: '/assets/textures/texture3.png'
       },
       {
-        value: Texture.Texture4,
+        value: Texture.TEXTURE_4,
         name: 'Graffiti',
         src: '/assets/textures/texture4.png'
       },
       {
-        value: Texture.Texture5,
+        value: Texture.TEXTURE_5,
         name: 'Poussière',
         src: '/assets/textures/texture5.png'
       },
       {
-        value: Texture.Texture1,
+        value: Texture.TEXTURE_1,
         name: 'Fractal',
         src: '/assets/textures/texture1.png'
       },
@@ -91,7 +91,7 @@ export class BrushPanelComponent extends ToolPanelDirective {
   }
 
   protected showDocumentation(): void {
-    this.overlay.openDocumentationDialog(false, DocEnum.brush);
+    this.overlay.openDocumentationDialog(false, DocEnum.BRUSH);
   }
 
 }

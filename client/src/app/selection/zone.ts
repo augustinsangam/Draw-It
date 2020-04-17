@@ -6,12 +6,7 @@ export class Zone {
               private right: number,
               private top: number,
               private bottom: number
-  ) {
-    this.left = left;
-    this.right = right;
-    this.top = top;
-    this.bottom = bottom;
-  }
+  ) { }
 
   union(zone: Zone): Zone {
     return new Zone(

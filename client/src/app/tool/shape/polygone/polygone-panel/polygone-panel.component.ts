@@ -100,6 +100,6 @@ export class PolygonePanelComponent
   }
 
   protected showDocumentation(): void {
-    this.overlay.openDocumentationDialog(false, DocEnum.polygone);
+    this.overlay.openDocumentationDialog(false, DocEnum.POLYGONE);
   }
 }

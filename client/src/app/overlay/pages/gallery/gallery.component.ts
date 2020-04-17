@@ -25,9 +25,6 @@ import { SvgShape } from 'src/app/svg/svg-shape';
 import { NOT_FOUND } from '../../../not-found';
 import { ScreenService } from '../new-draw/sreen-service/screen.service';
 
-const CARD_WIDTH = 342;
-const SNACKBAR_DURATION = 5000;
-
 export interface DialogRefs {
   delete: MatDialogRef<DeleteConfirmationDialogComponent>;
   load: MatDialogRef<ConfirmationDialogComponent>;
@@ -46,6 +43,9 @@ export interface GalleryDraw {
   styleUrls: ['./gallery.component.scss']
 })
 export class GalleryComponent implements AfterViewInit {
+
+  private static readonly CARD_WIDTH: number = 342;
+  private static readonly SNACKBAR_DURATION: number = 5000;
 
   protected loading: boolean;
   protected selectedTag: Subject<string>;
@@ -85,7 +85,7 @@ export class GalleryComponent implements AfterViewInit {
     this.getAll().catch((err: string) => {
       this.loading = false;
       this.snackBar.open(err, 'Ok', {
-        duration: SNACKBAR_DURATION
+        duration: GalleryComponent.SNACKBAR_DURATION
       });
     });
   }
@@ -107,7 +107,6 @@ export class GalleryComponent implements AfterViewInit {
     let tempsAllTags = new Set<string>();
 
     for (let i = drawsLenght - 1; i >= 0; --i) {
-
       const drawBuffer = draws.drawBuffers(i);
       if (drawBuffer == null) {
         continue;
@@ -117,11 +116,11 @@ export class GalleryComponent implements AfterViewInit {
       if (serializedDraw == null) {
         continue;
       }
+
       const drawFbbb = new flatbuffers.ByteBuffer(serializedDraw);
       const draw = Draw.getRoot(drawFbbb);
       const id = drawBuffer.id();
       tempsAllTags = this.newDraw(draw, id, tempsAllTags);
-
     }
     this.allTags.next(Array.from(tempsAllTags));
     this.filteredGalleryDrawTable = this.galleryDrawTable;
@@ -144,29 +143,28 @@ export class GalleryComponent implements AfterViewInit {
     }
 
     const svgElement = draw.svg();
-
-    let svg: SVGGElement;
-
-    if (!!svgElement) {
-      svg = this.communicationService.decodeElementRecursively(
-        svgElement, this.renderer) as SVGGElement;
-
-      const newGalleryDraw: GalleryDraw = {
-        header: {
-          id,
-          name: draw.name() as string,
-          tags: newTagArray,
-        },
-        shape: {
-          height: draw.height(),
-          width: draw.width(),
-          color: draw.color() as string
-        },
-        svg,
-        colors,
-      };
-      this.galleryDrawTable.push(newGalleryDraw);
+    if (svgElement === null) {
+      return tempsAllTags;
     }
+
+    const svg = this.communicationService.decodeElementRecursively(
+      svgElement, this.renderer) as SVGGElement;
+
+    const newGalleryDraw: GalleryDraw = {
+      header: {
+        id,
+        name: draw.name() as string,
+        tags: newTagArray,
+      },
+      shape: {
+        height: draw.height(),
+        width: draw.width(),
+        color: draw.color() as string
+      },
+      svg,
+      colors,
+    };
+    this.galleryDrawTable.push(newGalleryDraw);
 
     return tempsAllTags;
   }
@@ -175,15 +173,18 @@ export class GalleryComponent implements AfterViewInit {
     const contentWidth = this.cardContent.nativeElement.clientWidth;
     if (this.filteredGalleryDrawTable.length === 0) {
       this.renderer.setStyle(this.cardContent.nativeElement, 'padding-left', '0px');
-      return ;
+      return;
     }
-    if (this.filteredGalleryDrawTable.length * CARD_WIDTH < contentWidth) {
+
+    if (this.filteredGalleryDrawTable.length * GalleryComponent.CARD_WIDTH < contentWidth) {
       this.renderer.setStyle(this.cardContent.nativeElement, 'padding-left',
-        `${(contentWidth - (this.filteredGalleryDrawTable.length * CARD_WIDTH)) / 2}px`);
-    } else {
-      this.renderer.setStyle(this.cardContent.nativeElement, 'padding-left',
-        `${(contentWidth % CARD_WIDTH) / 2}px`);
+        `${(contentWidth - (this.filteredGalleryDrawTable.length * GalleryComponent.CARD_WIDTH)) / 2}px`);
+      return;
     }
+
+    this.renderer.setStyle(this.cardContent.nativeElement, 'padding-left',
+      `${(contentWidth % GalleryComponent.CARD_WIDTH) / 2}px`);
+
   }
 
   protected addTag(tag: string): void {
@@ -197,13 +198,13 @@ export class GalleryComponent implements AfterViewInit {
     for (const elem of this.galleryDrawTable) {
       let keep = true;
       for (const tag of tags) {
-        if (!searchToggle) {
-          keep = (elem.header.tags.indexOf(tag) !== NOT_FOUND);
-          if (keep) {
-            break;
-          }
-        } else {
+        if (searchToggle) {
           keep = (elem.header.tags.indexOf(tag) !== NOT_FOUND) && keep;
+          continue;
+        }
+        keep = (elem.header.tags.indexOf(tag) !== NOT_FOUND);
+        if (keep) {
+          break;
         }
       }
       if (keep) {
@@ -226,47 +227,51 @@ export class GalleryComponent implements AfterViewInit {
       (result) => this.deleteCloseHandler(result, id));
   }
 
-  private deleteCloseHandler = (result: boolean, id: number) => {
-    if (result) {
-      this.communicationService.delete(id).then(
-        (promise) => this.deletePromiseHandler(promise, id))
-        .catch(() => {
-          this.snackBar.open('Impossible de supprimer le dessin', 'Ok', {
-            duration: SNACKBAR_DURATION
-          });
-        });
-    } else {
+  private deleteCloseHandler(result: boolean, id: number): void {
+    if (!result) {
       this.dialogRefs.delete.close();
+      return;
     }
+
+    this.communicationService.delete(id).then(
+      (promise) => this.deletePromiseHandler(promise, id))
+      .catch(() => {
+        this.snackBar.open('Impossible de supprimer le dessin', 'Ok', {
+          duration: GalleryComponent.SNACKBAR_DURATION
+        });
+      });
   }
 
   private deletePromiseHandler(result: string | null, id: number): void {
     if (result) {
       this.snackBar.open('Impossible de supprimer le dessin', 'Ok', {
-        duration: SNACKBAR_DURATION
+        duration: GalleryComponent.SNACKBAR_DURATION
       });
-    } else {
-      this.galleryDrawTable.splice(this.galleryDrawTable.indexOf(this.findDraw(id)), 1);
-      this.ajustImagesWidth();
+      return;
     }
+
+    this.galleryDrawTable.splice(this.galleryDrawTable.indexOf(this.findDraw(id)), 1);
+    this.ajustImagesWidth();
   }
 
   protected loadDraw(id: number): void {
-    if (this.data.drawInProgress) {
-      this.dialogRefs.load = this.dialog.open(ConfirmationDialogComponent);
-      this.dialogRefs.load.disableClose = true;
-      this.dialogRefs.load.afterClosed().subscribe(
-        (result) => this.loadDrawHandler(result, id));
-    } else {
+    if (!this.data.drawInProgress) {
       this.loadDrawHandler(true, id);
+      return;
     }
+
+    this.dialogRefs.load = this.dialog.open(ConfirmationDialogComponent);
+    this.dialogRefs.load.disableClose = true;
+    this.dialogRefs.load.afterClosed().subscribe(
+      (result) => this.loadDrawHandler(result, id));
   }
 
-  private loadDrawHandler = (result: boolean, id: number) => {
+  private loadDrawHandler(result: boolean, id: number): void {
     if (result) {
       this.dialogRef.close(this.findDraw(id));
-    } else {
-      this.dialogRefs.load.close();
+      return;
     }
+
+    this.dialogRefs.load.close();
   }
 }

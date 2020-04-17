@@ -122,21 +122,21 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
   }
 
   ngAfterViewInit(): void {
-    this.toolToElRef[Tool.Aerosol]    = this.aerosolElRef;
-    this.toolToElRef[Tool.Applicator] = this.applicatorElRef;
-    this.toolToElRef[Tool.Bucket]     = this.bucketElRef;
-    this.toolToElRef[Tool.Brush]      = this.brushElRef;
-    this.toolToElRef[Tool.Ellipse]    = this.ellipseElRef;
-    this.toolToElRef[Tool.Eraser]     = this.eraserElRef;
-    this.toolToElRef[Tool.FeatherPen] = this.featherpenElRef;
-    this.toolToElRef[Tool.Grid]       = this.gridElRef;
-    this.toolToElRef[Tool.Line]       = this.lineElRef;
-    this.toolToElRef[Tool.Pencil]     = this.pencilElRef;
-    this.toolToElRef[Tool.Pipette]    = this.pipetteElRef;
-    this.toolToElRef[Tool.Polygone]   = this.polygoneElRef;
-    this.toolToElRef[Tool.Rectangle]  = this.rectangleElRef;
-    this.toolToElRef[Tool.Selection]  = this.selectionElRef;
-    this.toolToElRef[Tool.Text]       = this.textElRef;
+    this.toolToElRef[Tool.AEROSOL]     = this.aerosolElRef;
+    this.toolToElRef[Tool.APPLICATOR]  = this.applicatorElRef;
+    this.toolToElRef[Tool.BUCKET]      = this.bucketElRef;
+    this.toolToElRef[Tool.BRUSH]       = this.brushElRef;
+    this.toolToElRef[Tool.ELLIPSE]     = this.ellipseElRef;
+    this.toolToElRef[Tool.ERASER]      = this.eraserElRef;
+    this.toolToElRef[Tool.FEATHER_PEN] = this.featherpenElRef;
+    this.toolToElRef[Tool.GRID]        = this.gridElRef;
+    this.toolToElRef[Tool.LINE]        = this.lineElRef;
+    this.toolToElRef[Tool.PENCIL]      = this.pencilElRef;
+    this.toolToElRef[Tool.PIPETTE]     = this.pipetteElRef;
+    this.toolToElRef[Tool.POLYGONE]    = this.polygoneElRef;
+    this.toolToElRef[Tool.RECTANGLE]   = this.rectangleElRef;
+    this.toolToElRef[Tool.SELECTION]   = this.selectionElRef;
+    this.toolToElRef[Tool.TEXT]        = this.textElRef;
     this.toolSelectorService.onChange(
       (tool, old) => this.setTool(tool, old));
   }
@@ -165,10 +165,10 @@ export class SidebarComponent implements AfterViewInit, AfterViewChecked {
       const oldElRef = this.toolToElRef[old];
       this.renderer.removeClass(oldElRef.nativeElement, 'selected');
     }
+
     if (tool < Tool._Len) {
       const elRef = this.toolToElRef[tool];
       this.renderer.addClass(elRef.nativeElement, 'selected');
     }
   }
-
 }

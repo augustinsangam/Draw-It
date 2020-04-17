@@ -1,6 +1,6 @@
 export enum OverlayPages {
-  Documentation = 'documentation',
-  Home = 'home',
-  Library = 'library',
-  New = 'new',
+  DOCUMENTATION = 'documentation',
+  HOME = 'home',
+  LIBRARY = 'library',
+  NEW = 'new',
 }

@@ -6,14 +6,14 @@ import { ColorService } from '../../../color/color.service';
 import { ToolLogicDirective } from '../../../tool-logic/tool-logic.directive';
 import { AerosolService } from '../aerosol.service';
 
-const A_SECOND_IN_MS = 1000;
-
 @Component({
   selector: 'app-aerosol-logic',
   template: '',
 })
 export class AerosolLogicComponent
   extends ToolLogicDirective implements OnInit, OnDestroy {
+
+  private static readonly ONE_SECOND_MS: number = 1000;
 
   private listeners: (() => void)[];
   private currentPath: SVGElement;
@@ -41,10 +41,11 @@ export class AerosolLogicComponent
       overrideDefaultBehaviour: false,
       overrideFunctionDefined: true,
       overrideFunction: () => {
-        if (this.onDrag) {
-          this.onMouseUp();
-          this.currentPath.remove();
+        if (!this.onDrag) {
+          return ;
         }
+        this.onMouseUp();
+        this.currentPath.remove();
       }
     });
     this.periodicSplashAdder = Subscription.EMPTY;
@@ -102,7 +103,6 @@ export class AerosolLogicComponent
     this.currentMousePos = new Point(mouseEv.offsetX, mouseEv.offsetY);
 
     this.currentPath = this.renderer.createElement('path', this.svgNS);
-
     this.currentPath.setAttribute(
       'fill',
       this.colorService.primaryColor
@@ -111,7 +111,7 @@ export class AerosolLogicComponent
 
     this.onDrag = true;
 
-    this.frequency = interval(A_SECOND_IN_MS / (this.service.frequency));
+    this.frequency = interval(AerosolLogicComponent.ONE_SECOND_MS / (this.service.frequency));
     this.periodicSplashAdder = this.frequency.subscribe(
       () => this.addSplash()
     );
@@ -124,12 +124,13 @@ export class AerosolLogicComponent
   }
 
   protected onMouseUp(): void {
-    if (this.onDrag) {
-      this.periodicSplashAdder.unsubscribe();
-      this.onDrag = false;
-      this.stringPath = '';
-      this.undoRedoService.saveState();
+    if (!this.onDrag) {
+      return ;
     }
+    this.periodicSplashAdder.unsubscribe();
+    this.onDrag = false;
+    this.stringPath = '';
+    this.undoRedoService.saveState();
   }
 
   private addSplash(): void {

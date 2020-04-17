@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 
-const DEFAULT_SIZE = 10;
-
 @Injectable({
   providedIn: 'root'
 })
 export class EraserService {
 
+  private static readonly DEFAULT_SIZE: number = 10;
   size: number;
 
   constructor() {
-    this.size = DEFAULT_SIZE;
+    this.size = EraserService.DEFAULT_SIZE;
   }
 
 }

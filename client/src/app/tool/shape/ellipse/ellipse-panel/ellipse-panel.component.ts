@@ -85,7 +85,7 @@ export class EllipsePanelComponent
   }
 
   protected showDocumentation(): void {
-    this.overlay.openDocumentationDialog(false, DocEnum.ellipse);
+    this.overlay.openDocumentationDialog(false, DocEnum.ELLIPSE);
   }
 
 }

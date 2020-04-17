@@ -38,6 +38,6 @@ export class EraserPanelComponent extends ToolPanelDirective {
   }
 
   protected showDocumentation(): void {
-    this.overlay.openDocumentationDialog(false, DocEnum.eraser);
+    this.overlay.openDocumentationDialog(false, DocEnum.ERASER);
   }
 }

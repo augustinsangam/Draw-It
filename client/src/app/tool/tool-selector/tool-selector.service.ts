@@ -21,12 +21,11 @@ export class ToolSelectorService {
   set(tool: Tool): void {
     if (this.tool === tool) {
       this.onSameCallbacks.forEach(async (cb) => cb(tool));
-    } else {
-      this.onChangeCallbacks.forEach(async (cb) => cb(tool, this.tool));
-      this.tool = tool;
+      return;
     }
+    this.onChangeCallbacks.forEach(async (cb) => cb(tool, this.tool));
+    this.tool = tool;
   }
-
   onChange(cb: callback): void {
     this.onChangeCallbacks.push(cb);
   }

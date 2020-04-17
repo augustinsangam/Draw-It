@@ -2,8 +2,8 @@ import {AfterViewInit, Component, ElementRef, Renderer2, ViewChild} from '@angul
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatButtonToggleChange} from '@angular/material/button-toggle';
 import {MatSlider} from '@angular/material/slider';
-import { OverlayService } from 'src/app/overlay/overlay.service';
-import { DocEnum } from 'src/app/overlay/pages/documentation/doc-enum';
+import {OverlayService} from 'src/app/overlay/overlay.service';
+import {DocEnum} from 'src/app/overlay/pages/documentation/doc-enum';
 import {ColorService} from '../../color/color.service';
 import {Dimension} from '../../shape/common/dimension';
 import {ToolPanelDirective} from '../../tool-panel/tool-panel.directive';
@@ -19,9 +19,12 @@ import {TextService} from '../text.service';
 export class TextPanelComponent extends ToolPanelDirective
 implements AfterViewInit {
 
-  readonly ON_COLOR: string = '#5f4a4a';
-  readonly OFF_COLOR: string = '#3b3b3b';
-  readonly DISABLED_COLOR: string = '#3b3b3b';
+  private static readonly ON_COLOR: string = '#5f4a4a';
+  private static readonly OFF_COLOR: string = '#3b3b3b';
+  private static readonly DISABLED_COLOR: string = '#3b3b3b';
+
+  readonly TextPanelComponent: typeof TextPanelComponent = TextPanelComponent;
+  readonly TextService: typeof TextService = TextService;
 
   private textForm: FormGroup;
   private previewDims: Dimension;
@@ -69,18 +72,18 @@ implements AfterViewInit {
   private updateButtonsStyle(): void {
     const mutatorChildren = Array.from(this.mutators.nativeElement.children);
     this.renderer.setStyle(mutatorChildren[0], 'background-color',
-      this.service.textMutators.bold ? this.ON_COLOR : this.OFF_COLOR);
+      this.service.textMutators.bold ? TextPanelComponent.ON_COLOR : TextPanelComponent.OFF_COLOR);
     this.renderer.setStyle(mutatorChildren[1], 'background-color',
-      this.service.textMutators.italic ? this.ON_COLOR : this.OFF_COLOR);
+      this.service.textMutators.italic ? TextPanelComponent.ON_COLOR : TextPanelComponent.OFF_COLOR);
     this.renderer.setStyle(mutatorChildren[2], 'background-color',
-      this.service.textMutators.underline ? this.ON_COLOR : this.OFF_COLOR);
+      this.service.textMutators.underline ? TextPanelComponent.ON_COLOR : TextPanelComponent.OFF_COLOR);
     const alignementChildren = Array.from(this.alignements.nativeElement.children);
     this.renderer.setStyle(alignementChildren[0], 'background-color',
-      this.service.textAlignement === 'left' ? this.ON_COLOR : this.OFF_COLOR);
+      this.service.textAlignement === 'left' ? TextPanelComponent.ON_COLOR : TextPanelComponent.OFF_COLOR);
     this.renderer.setStyle(alignementChildren[1], 'background-color',
-      this.service.textAlignement === 'center' ? this.ON_COLOR : this.OFF_COLOR);
+      this.service.textAlignement === 'center' ? TextPanelComponent.ON_COLOR : TextPanelComponent.OFF_COLOR);
     this.renderer.setStyle(alignementChildren[2], 'background-color',
-      this.service.textAlignement === 'right' ? this.ON_COLOR : this.OFF_COLOR);
+      this.service.textAlignement === 'right' ? TextPanelComponent.ON_COLOR : TextPanelComponent.OFF_COLOR);
   }
 
   protected onMutatorChange(event: MatButtonToggleChange): void {
@@ -114,11 +117,11 @@ implements AfterViewInit {
   }
 
   protected getPreviewTextAlign(): number {
-    if (this.service.textAlignement === TextAlignement.left) {
+    if (this.service.textAlignement === TextAlignement.LEFT) {
       return 0;
     }
 
-    return this.service.textAlignement === TextAlignement.center
+    return this.service.textAlignement === TextAlignement.CENTER
       ? this.previewDims.width / 2
       : this.previewDims.width;
   }
@@ -129,7 +132,7 @@ implements AfterViewInit {
     [
       ...Array.from(this.mutators.nativeElement.children),
       ...Array.from(this.alignements.nativeElement.children),
-    ].forEach((button: HTMLElement) => this.renderer.setStyle(button, 'background-color', this.DISABLED_COLOR));
+    ].forEach((button: HTMLElement) => this.renderer.setStyle(button, 'background-color', TextPanelComponent.DISABLED_COLOR));
   }
 
   private endTyping(): void {
@@ -138,11 +141,11 @@ implements AfterViewInit {
     [
       ...Array.from(this.mutators.nativeElement.children),
       ...Array.from(this.alignements.nativeElement.children),
-    ].forEach((button: HTMLElement) => this.renderer.setStyle(button, 'background-color', this.DISABLED_COLOR));
+    ].forEach((button: HTMLElement) => this.renderer.setStyle(button, 'background-color', TextPanelComponent.DISABLED_COLOR));
     this.updateButtonsStyle();
   }
 
   protected showDocumentation(): void {
-    this.overlay.openDocumentationDialog(false, DocEnum.text);
+    this.overlay.openDocumentationDialog(false, DocEnum.TEXT);
   }
 }

@@ -4,14 +4,15 @@ import {
 import { Subject } from 'rxjs';
 import { GalleryDraw } from '../gallery.component';
 
-const THUMBNAIL_WIDTH = 300;
-const THUMBNAIL_HEIGHT = 170;
 @Component({
   selector: 'app-gallery-card',
   templateUrl: './gallery-card.component.html',
   styleUrls: ['./gallery-card.component.scss']
 })
 export class GalleryCardComponent implements AfterViewInit {
+
+  private static readonly THUMBNAIL_WIDTH: number = 300;
+  private static readonly THUMBNAIL_HEIGHT: number = 170;
 
   @Input() draw: GalleryDraw;
 
@@ -34,8 +35,8 @@ export class GalleryCardComponent implements AfterViewInit {
     let viewPortHeight;
     if (!!this.draw.shape.width && !!this.draw.shape.height) {
       const factor = Math.max(
-        +this.draw.shape.width / THUMBNAIL_WIDTH,
-        +this.draw.shape.height / THUMBNAIL_HEIGHT
+        +this.draw.shape.width / GalleryCardComponent.THUMBNAIL_WIDTH,
+        +this.draw.shape.height / GalleryCardComponent.THUMBNAIL_HEIGHT
       );
       viewPortWidth = +this.draw.shape.width / factor;
       viewPortHeight = +this.draw.shape.height / factor;

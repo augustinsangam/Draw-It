@@ -9,14 +9,16 @@ export interface Style {
   fillColor: string;
   opacity: string;
 }
+
 export enum BackGroundProperties {
-  Filled,
-  None
+  FILLED,
+  NONE
 }
+
 export enum StrokeProperties {
-  Filled,
-  Dashed,
-  None
+  FILLED,
+  DASHED,
+  NONE
 }
 
 export abstract class AbstractShape {
@@ -28,22 +30,22 @@ export abstract class AbstractShape {
     public element: SVGElement,
     protected thicknessService?: PolygoneService | RectangleService | EllipseService
   ) {
-    this.backgoundProperties = BackGroundProperties.Filled;
-    this.strokeProperties = StrokeProperties.Filled;
+    this.backgoundProperties = BackGroundProperties.FILLED;
+    this.strokeProperties = StrokeProperties.FILLED;
   }
 
   setParameters(background: BackGroundProperties, stroke: StrokeProperties)
     : void {
-    if (stroke === StrokeProperties.None) {
+    if (stroke === StrokeProperties.NONE) {
       this.renderer.setAttribute(this.element, 'stroke', 'none');
       if (this.thicknessService !== undefined) {
         this.thicknessService.thickness = 0;
       }
-    } else if (stroke === StrokeProperties.Dashed) {
+    } else if (stroke === StrokeProperties.DASHED) {
       this.renderer.setAttribute(this.element, 'stroke-dasharray', '5,5');
       this.renderer.setAttribute(this.element, 'stroke', 'black');
     }
-    if (background === BackGroundProperties.None) {
+    if (background === BackGroundProperties.NONE) {
       this.renderer.setAttribute(this.element, 'fill', 'none');
     }
     this.backgoundProperties = background;
@@ -51,12 +53,12 @@ export abstract class AbstractShape {
   }
 
   setCss(style: Style): void {
-    if (this.backgoundProperties === BackGroundProperties.Filled) {
+    if (this.backgoundProperties === BackGroundProperties.FILLED) {
       this.renderer.setAttribute(
         this.element, 'fill-opacity', style.opacity);
       this.renderer.setAttribute(this.element, 'fill', style.fillColor);
     }
-    if (this.strokeProperties !== StrokeProperties.None) {
+    if (this.strokeProperties !== StrokeProperties.NONE) {
       this.renderer.setAttribute(
         this.element, 'stroke-width', style.strokeWidth);
       this.renderer.setAttribute(

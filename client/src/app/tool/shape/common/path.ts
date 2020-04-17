@@ -7,7 +7,6 @@ interface PathData {
   instructions: string[];
 }
 
-// Class tested in ../Line/line-logic.component.spec.ts
 export class Path {
   private pathAtribute: string;
   private mathService: MathService;

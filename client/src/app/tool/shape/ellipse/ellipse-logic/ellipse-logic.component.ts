@@ -16,7 +16,7 @@ const SEMIOPACITY = '0.5';
 const FULLOPACITY = '1';
 
 enum ClickType {
-  CLICKGAUCHE = 0,
+  LEFT_CLICK = 0,
 }
 
 @Component({
@@ -39,9 +39,8 @@ export class EllipseLogicComponent extends ToolLogicDirective
     private readonly renderer: Renderer2,
     private readonly colorService: ColorService,
     private readonly mathService: MathService,
-    private readonly undoRedoService: UndoRedoService
-
-) {
+    private readonly undoRedoService: UndoRedoService,
+  ) {
     super();
     this.onDrag = false;
     this.ellipses = [];
@@ -59,7 +58,6 @@ export class EllipseLogicComponent extends ToolLogicDirective
         this.undoRedoService.undoBase();
       }
     });
-
   }
 
   ngOnInit(): void {
@@ -83,11 +81,12 @@ export class EllipseLogicComponent extends ToolLogicDirective
       'mousemove',
       (mouseEv: MouseEvent) => {
         mouseEv.preventDefault();
-        if (this.onDrag) {
-          this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
-          this.viewTemporaryForm(mouseEv);
-          this.rectVisu.dragRectangle(this.initialPoint, this.currentPoint);
+        if (!this.onDrag) {
+          return;
         }
+        this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+        this.viewTemporaryForm(mouseEv);
+        this.rectVisu.dragRectangle(this.initialPoint, this.currentPoint);
       }
     );
 
@@ -127,7 +126,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
   }
 
   private onMouseUp(mouseEv: MouseEvent): void {
-    if (mouseEv.button !== ClickType.CLICKGAUCHE || !this.onDrag) {
+    if (mouseEv.button !== ClickType.LEFT_CLICK || !this.onDrag) {
       return ;
     }
     this.onDrag = false;
@@ -144,14 +143,13 @@ export class EllipseLogicComponent extends ToolLogicDirective
   }
 
   private initEllipse(mouseEv: MouseEvent): void {
-    if (mouseEv.button !== ClickType.CLICKGAUCHE) {
+    if (mouseEv.button !== ClickType.LEFT_CLICK) {
       return ;
     }
     this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
     const ellipse = this.renderer.createElement('ellipse', this.svgNS);
     this.renderer.appendChild(this.svgStructure.drawZone, ellipse);
     this.ellipses.push(new Ellipse(
-      this.currentPoint,
       this.renderer,
       ellipse,
       this.mathService,
@@ -163,7 +161,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
   }
 
   private initRectangleVisu(mouseEv: MouseEvent): void {
-    if (mouseEv.button !== ClickType.CLICKGAUCHE) {
+    if (mouseEv.button !== ClickType.LEFT_CLICK) {
       return ;
     }
     const rectangle = this.renderer.createElement('rect', this.svgNS);
@@ -171,7 +169,7 @@ export class EllipseLogicComponent extends ToolLogicDirective
 
     this.rectVisu = new Rectangle(this.renderer, rectangle, this.mathService);
 
-    this.rectVisu.setParameters(BackGroundProperties.None, StrokeProperties.Dashed);
+    this.rectVisu.setParameters(BackGroundProperties.NONE, StrokeProperties.DASHED);
   }
 
   private viewTemporaryForm(mouseEv: MouseEvent): void {
@@ -191,9 +189,9 @@ export class EllipseLogicComponent extends ToolLogicDirective
     };
     this.getEllipse().setCss(this.style);
 
-    const backgroundProperties = this.service.fillOption ? BackGroundProperties.Filled : BackGroundProperties.None;
+    const backgroundProperties = this.service.fillOption ? BackGroundProperties.FILLED : BackGroundProperties.NONE;
 
-    const strokeProperties = this.service.borderOption ? StrokeProperties.Filled : StrokeProperties.None;
+    const strokeProperties = this.service.borderOption ? StrokeProperties.FILLED : StrokeProperties.NONE;
 
     this.getEllipse().setParameters(backgroundProperties, strokeProperties);
   }

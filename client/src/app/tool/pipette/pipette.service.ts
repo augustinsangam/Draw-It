@@ -6,10 +6,11 @@ import {ToolService} from '../tool.service';
 })
 export class PipetteService extends ToolService  {
 
+  static readonly DEFAULT_COLOR: string = 'rgba(0, 0, 0, 0)';
   currentColor: string;
 
   constructor() {
     super();
-    this.currentColor = 'rgba(0, 0, 0, 0)';
+    this.currentColor = PipetteService.DEFAULT_COLOR;
   }
 }

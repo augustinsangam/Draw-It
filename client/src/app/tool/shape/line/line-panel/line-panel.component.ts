@@ -9,7 +9,7 @@ import { ToolPanelDirective } from '../../../tool-panel/tool-panel.directive';
 import { LineService } from '../line.service';
 
 // tslint:disable-next-line:no-magic-numbers
-const RATIOTHICKNESS = 3 / 5;
+const RATIO_THICKNESS = 3 / 5;
 @Component({
   selector: 'app-line-panel',
   templateUrl: './line-panel.component.html',
@@ -58,7 +58,7 @@ export class LinePanelComponent extends ToolPanelDirective {
   }
 
   protected onThicknessValueChange(): void {
-    const newRadiusMin = Math.floor(this.service.thickness * RATIOTHICKNESS);
+    const newRadiusMin = Math.floor(this.service.thickness * RATIO_THICKNESS);
     this.service.radius = Math.max(this.radiusSlider.value as number, newRadiusMin);
     this.radiusSlider.value = this.service.radius;
     this.radiusSlider.min = newRadiusMin;
@@ -71,6 +71,6 @@ export class LinePanelComponent extends ToolPanelDirective {
   }
 
   protected showDocumentation(): void {
-    this.overlay.openDocumentationDialog(false, DocEnum.line);
+    this.overlay.openDocumentationDialog(false, DocEnum.LINE);
   }
 }

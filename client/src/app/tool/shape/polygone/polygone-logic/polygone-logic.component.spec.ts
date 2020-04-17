@@ -119,7 +119,7 @@ describe('PolygoneLogicComponent', () => {
       const event = createClickMouseEvent('mousedown');
       component['initPolygone'](event);
       const polygone = new Polygone(component['renderer'], component['getPolygone']().element, component['mathService'], 6);
-      polygone.setParameters(BackGroundProperties.None, StrokeProperties.None);
+      polygone.setParameters(BackGroundProperties.NONE, StrokeProperties.NONE);
       expect(component['getPolygone']().element.getAttribute('fill')).toEqual('none');
       expect(component['getPolygone']().element.getAttribute('stroke')).toEqual('none');
     });

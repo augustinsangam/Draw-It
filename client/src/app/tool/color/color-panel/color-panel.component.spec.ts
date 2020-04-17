@@ -99,7 +99,7 @@ describe('ColorPanelComponent', () => {
       component.colorService,
       'selectPrimaryColor'
     );
-    component['colorOption'] = ColorOption.Primary;
+    component['colorOption'] = ColorOption.PRIMARY;
     component['onColorPicked']('rgba(255, 255, 255, 1)');
     expect(spyUpdateColor).toHaveBeenCalled();
     expect(spySelectPrimaryColor).toHaveBeenCalled();
@@ -114,7 +114,7 @@ describe('ColorPanelComponent', () => {
       component.colorService,
       'selectSecondaryColor'
     );
-    component['colorOption'] = ColorOption.Secondary;
+    component['colorOption'] = ColorOption.SECONDARY;
     component['onColorPicked']('rgba(255, 255, 255, 1)');
     expect(spyUpdateColor).toHaveBeenCalled();
     expect(spySelectSecondaryColor).toHaveBeenCalled();
@@ -129,7 +129,7 @@ describe('ColorPanelComponent', () => {
       component.colorService,
       'selectBackgroundColor'
     );
-    component['colorOption'] = ColorOption.Background;
+    component['colorOption'] = ColorOption.BACKGROUND;
     component['onColorPicked']('rgba(255, 255, 255, 1)');
     expect(spyUpdateColor).toHaveBeenCalled();
     expect(spySelectBackgroundColor).toHaveBeenCalled();
@@ -231,15 +231,15 @@ describe('ColorPanelComponent', () => {
   }));
 
   it('#getStartColor() works !', () => {
-    component['colorOption'] = ColorOption.Primary;
+    component['colorOption'] = ColorOption.PRIMARY;
     component.colorService.primaryColor = 'rgba(255, 255, 255, 1)';
     expect(component['getStartColor']()).toEqual('#FFFFFF');
 
-    component['colorOption'] = ColorOption.Secondary;
+    component['colorOption'] = ColorOption.SECONDARY;
     component.colorService.secondaryColor = 'rgba(255, 255, 255, 1)';
     expect(component['getStartColor']()).toEqual('#FFFFFF');
 
-    component['colorOption'] = ColorOption.Background;
+    component['colorOption'] = ColorOption.BACKGROUND;
     component.colorService.backgroundColor = 'rgba(255, 255, 255, 1)';
     expect(component['getStartColor']()).toEqual('#FFFFFF');
   });

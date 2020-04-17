@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 
-const DEFAULT_TOLERANCE = 0;
-
 @Injectable({
   providedIn: 'root'
 })
 export class BucketService {
 
+  private static readonly DEFAULT_TOLERANCE: number = 0;
   tolerance: number;
 
   constructor() {
-    this.tolerance = DEFAULT_TOLERANCE;
+    this.tolerance = BucketService.DEFAULT_TOLERANCE;
   }
 
 }

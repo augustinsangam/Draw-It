@@ -1,5 +1,4 @@
 // tslint:disable:no-magic-numbers
-// we disable it because it is already a file of constants
 export enum Shape {
   TRIANGLE = 3,
   SQUARE,

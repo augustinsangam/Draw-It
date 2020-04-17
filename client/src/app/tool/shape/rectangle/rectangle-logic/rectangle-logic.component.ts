@@ -12,11 +12,8 @@ import { Point } from '../../common/point';
 import { Rectangle } from '../../common/rectangle';
 import { RectangleService } from '../rectangle.service';
 
-const SEMIOPACITY = '0.5';
-const FULLOPACITY = '1';
-
 enum ClickType {
-  CLICKGAUCHE,
+  LEFT_CLICK,
 }
 enum KEYBOARDTOUCH {
   SHIFTLEFT = 'ShiftLeft',
@@ -29,6 +26,9 @@ enum KEYBOARDTOUCH {
 
 export class RectangleLogicComponent extends ToolLogicDirective
   implements OnDestroy, OnInit {
+
+  private static readonly SEMIOPACITY: string = '0.5';
+  private static readonly FULLOPACITY: string = '1';
 
   private rectangles: Rectangle[];
   private onDrag: boolean;
@@ -77,10 +77,11 @@ export class RectangleLogicComponent extends ToolLogicDirective
       'mousemove',
       (mouseEv: MouseEvent) => {
         mouseEv.preventDefault();
-        if (this.onDrag) {
-          this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
-          this.viewTemporaryForm(mouseEv);
+        if (!this.onDrag) {
+          return;
         }
+        this.currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+        this.viewTemporaryForm(mouseEv);
       }
     );
 
@@ -121,11 +122,11 @@ export class RectangleLogicComponent extends ToolLogicDirective
   }
 
   private onMouseUp(mouseEv: MouseEvent): void {
-    if (mouseEv.button !== ClickType.CLICKGAUCHE || !this.onDrag) {
+    if (mouseEv.button !== ClickType.LEFT_CLICK || !this.onDrag) {
       return ;
     }
     this.onDrag = false;
-    this.style.opacity = FULLOPACITY;
+    this.style.opacity = RectangleLogicComponent.FULLOPACITY;
     this.getRectangle().setCss(this.style);
     this.undoRedoService.saveState();
     this.viewTemporaryForm(mouseEv);
@@ -136,7 +137,7 @@ export class RectangleLogicComponent extends ToolLogicDirective
   }
 
   private initRectangle(mouseEv: MouseEvent): void {
-    if (mouseEv.button !== ClickType.CLICKGAUCHE) {
+    if (mouseEv.button !== ClickType.LEFT_CLICK) {
       return ;
     }
     const rectangle = this.renderer.createElement('rect', this.svgNS);
@@ -150,9 +151,10 @@ export class RectangleLogicComponent extends ToolLogicDirective
   private viewTemporaryForm(mouseEv: MouseEvent): void {
     if (mouseEv.shiftKey) {
       this.getRectangle().dragSquare(this.mouseDownPoint, this.currentPoint, this.service.thickness);
-    } else {
-      this.getRectangle().dragRectangle(this.mouseDownPoint, this.currentPoint, this.service.thickness);
+      return;
     }
+
+    this.getRectangle().dragRectangle(this.mouseDownPoint, this.currentPoint, this.service.thickness);
   }
 
   private setRectangleProperties(): void {
@@ -160,17 +162,17 @@ export class RectangleLogicComponent extends ToolLogicDirective
       strokeWidth: this.service.thickness.toString(),
       fillColor: this.colorService.primaryColor,
       strokeColor: this.colorService.secondaryColor,
-      opacity: SEMIOPACITY
+      opacity: RectangleLogicComponent.SEMIOPACITY
     };
     this.getRectangle().setCss(this.style);
 
     const backgroundProperties = this.service.fillOption ?
-      BackGroundProperties.Filled :
-      BackGroundProperties.None;
+      BackGroundProperties.FILLED :
+      BackGroundProperties.NONE;
 
     const strokeProperties = this.service.borderOption ?
-      StrokeProperties.Filled :
-      StrokeProperties.None;
+      StrokeProperties.FILLED :
+      StrokeProperties.NONE;
 
     this.getRectangle().setParameters(
       backgroundProperties,

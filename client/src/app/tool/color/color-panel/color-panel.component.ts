@@ -22,12 +22,10 @@ import {
 } from './color-picker-item/color-picker-item.component';
 
 export enum ColorOption {
-  Primary = 'PRIMARY',
-  Secondary = 'SECONDARY',
-  Background = 'BACKGROUND'
+  PRIMARY = 'PRIMARY',
+  SECONDARY = 'SECONDARY',
+  BACKGROUND = 'BACKGROUND'
 }
-
-const ITEMS_BEFORE_RECENT_COLORS = 3;
 
 @Component({
   selector: 'app-color-panel',
@@ -36,6 +34,8 @@ const ITEMS_BEFORE_RECENT_COLORS = 3;
 })
 export class ColorPanelComponent extends ToolPanelDirective
   implements OnInit, AfterViewInit, OnDestroy {
+
+  private static readonly  ITEMS_BEFORE_RECENT_COLORS: number = 3;
 
   @ViewChild('colorPreviewPrimary', {
     read: ColorPickerItemComponent,
@@ -74,7 +74,7 @@ export class ColorPanelComponent extends ToolPanelDirective
     public svgService: SvgService
   ) {
     super(elementRef);
-    this.colorOption = ColorOption.Primary;
+    this.colorOption = ColorOption.PRIMARY;
     this.showPalette = true;
 
     this.colorChange = this.colorService.change.subscribe(() => {
@@ -90,7 +90,9 @@ export class ColorPanelComponent extends ToolPanelDirective
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
     this.updatePreviewColors();
-    this.colorsItemsArray = this.colorsItems.toArray().slice(ITEMS_BEFORE_RECENT_COLORS);
+    this.colorsItemsArray = this.colorsItems.toArray().slice(
+      ColorPanelComponent.ITEMS_BEFORE_RECENT_COLORS
+    );
 
     this.addEvents();
     this.updateRecentColors();
@@ -122,12 +124,14 @@ export class ColorPanelComponent extends ToolPanelDirective
         this.colorsItemsArray[i].button.nativeElement,
         'mousedown',
         (mouseEvent: MouseEvent) => {
-          if (mouseEvent.button === 1) {
-            this.colorPreviewBackground.updateColor(this.colorsItemsArray[i].color);
-            this.colorService.backgroundColor = this.colorsItemsArray[i].color;
-            this.svgService.shape.color = this.colorService.backgroundColor;
-            this.promoteColor(i);
+          if (mouseEvent.button !== 1) {
+            return ;
           }
+          this.colorPreviewBackground.updateColor(this.colorsItemsArray[i].color);
+          this.colorService.backgroundColor = this.colorsItemsArray[i].color;
+          this.svgService.changeBackgroundColor(this.colorService.backgroundColor);
+          this.svgService.shape.color = this.colorService.backgroundColor;
+          this.promoteColor(i);
         }
       );
     }
@@ -151,14 +155,15 @@ export class ColorPanelComponent extends ToolPanelDirective
   }
 
   private promoteColor(index: number): void {
-    if (this.colorPalette) {
-      this.colorPalette.startColor = this.colorService.hexFormRgba(
-        this.colorsItemsArray[index].color
-      );
-      this.colorPalette.initialiseStartingColor();
-      this.colorService.promote(index);
-      this.updateRecentColors();
+    if (!this.colorPalette) {
+      return ;
     }
+    this.colorPalette.startColor = this.colorService.hexFormRgba(
+      this.colorsItemsArray[index].color
+    );
+    this.colorPalette.initialiseStartingColor();
+    this.colorService.promote(index);
+    this.updateRecentColors();
   }
 
   private updateRecentColors(): void {
@@ -175,10 +180,10 @@ export class ColorPanelComponent extends ToolPanelDirective
   }
 
   protected onColorPicked(data: string): void {
-    if (this.colorOption === ColorOption.Primary) {
+    if (this.colorOption === ColorOption.PRIMARY) {
       this.colorPreviewPrimary.updateColor(data);
       this.colorService.selectPrimaryColor(data);
-    } else if (this.colorOption === ColorOption.Secondary) {
+    } else if (this.colorOption === ColorOption.SECONDARY) {
       this.colorPreviewSecondary.updateColor(data);
       this.colorService.selectSecondaryColor(data);
     } else {
@@ -201,10 +206,10 @@ export class ColorPanelComponent extends ToolPanelDirective
   }
 
   protected getStartColor(): string {
-    if (this.colorOption === ColorOption.Primary) {
+    if (this.colorOption === ColorOption.PRIMARY) {
       return this.colorService.hexFormRgba(this.colorService.primaryColor);
     }
-    if (this.colorOption === ColorOption.Secondary) {
+    if (this.colorOption === ColorOption.SECONDARY) {
       return this.colorService.hexFormRgba(this.colorService.secondaryColor);
     }
     return this.colorService.hexFormRgba(this.colorService.backgroundColor);

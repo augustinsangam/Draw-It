@@ -13,18 +13,18 @@ interface Font {
 }
 
 enum SvgAlignement {
-  left = 'start',
-  center = 'middle',
-  right = 'end'
+  Left = 'start',
+  CENTER = 'middle',
+  RIGHT = 'end'
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class TextService extends ToolService {
-  readonly MAX_FONTSIZE: number = 80;
-  readonly MIN_FONTSIZE: number = 4;
-  readonly DEFAULT_FONTSIZE: number = 50;
+  protected static readonly MAX_FONTSIZE: number = 80;
+  protected static readonly MIN_FONTSIZE: number = 4;
+  private static readonly DEFAULT_FONTSIZE: number = 50;
 
   currentFont: string;
   textMutators: TextMutators;
@@ -40,7 +40,7 @@ export class TextService extends ToolService {
   constructor() {
     super();
     this.textMutators = { bold: false, italic: false, underline: false };
-    this.textAlignement = TextAlignement.left;
+    this.textAlignement = TextAlignement.LEFT;
     this.currentFont = 'Arial';
     this.fontsList = [
       {value: 'Arial, sans-serif'     , viewValue: 'Arial'              },
@@ -50,28 +50,28 @@ export class TextService extends ToolService {
       {value: 'texgyrepagella'        , viewValue: 'TeX Pagella'        },
       {value: 'Times New Roman, serif', viewValue: 'Times New Roman'    },
     ];
-    this.fontSize = this.DEFAULT_FONTSIZE;
+    this.fontSize = TextService.DEFAULT_FONTSIZE;
     this.startTypingEmitter = new EventEmitter<null>();
     this.endTypingEmitter = new EventEmitter<null>();
   }
 
   getTextAlign(): number {
-    if (this.textAlignement === TextAlignement.left) {
+    if (this.textAlignement === TextAlignement.LEFT) {
       return 0;
     }
-    return this.textAlignement === TextAlignement.center
+    return this.textAlignement === TextAlignement.CENTER
       ? this.currentZoneDims.width / 2
       : this.currentZoneDims.width;
   }
 
   getTextAnchor(): string {
-    if (this.textAlignement === TextAlignement.left) {
-      return SvgAlignement.left;
+    if (this.textAlignement === TextAlignement.LEFT) {
+      return SvgAlignement.Left;
     }
 
-    return this.textAlignement === TextAlignement.center
-      ? SvgAlignement.center
-      : SvgAlignement.right;
+    return this.textAlignement === TextAlignement.CENTER
+      ? SvgAlignement.CENTER
+      : SvgAlignement.RIGHT;
   }
 
   getFullTextWidth(currentLine: TextLine): number {

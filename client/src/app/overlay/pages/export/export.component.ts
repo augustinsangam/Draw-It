@@ -12,17 +12,13 @@ import { ConfirmationExportComponent } from './confirmation-export.component';
 import { ExportType } from './export-type';
 import { ProgressExportComponent } from './progress-export.component';
 
-const SVG_NS = 'http://www.w3.org/2000/svg';
-
-const TIMEOUT = 3000;
-
 export enum FilterChoice {
-  None = 'Aucun',
-  Saturate = 'Saturation',
-  BlackWhite = 'Noir et blanc',
-  Inverse = 'Inversion',
-  Sepia = 'Sepia',
-  Grey = 'Gris épatant',
+  NONE = 'Aucun',
+  SATURATE = 'Saturation',
+  BLACKWHITE = 'Noir et blanc',
+  INVERSE = 'Inversion',
+  SEPIA = 'Sepia',
+  GREY = 'Gris épatant',
 }
 
 export enum FormatChoice {
@@ -49,6 +45,10 @@ export interface ExportHeader {
 })
 
 export class ExportComponent implements AfterViewInit {
+
+  private static readonly SVG_NS: string = 'http://www.w3.org/2000/svg';
+  private static readonly TIMEOUT: number = 3000;
+
   @ViewChild('svgView', {
     static: false
   }) protected svgView: ElementRef<SVGSVGElement>;
@@ -82,7 +82,7 @@ export class ExportComponent implements AfterViewInit {
     this.form = this.formBuilder.group({
       name  : ['', [Validators.required, ExportComponent.validator]],
       email : [{value: '', disabled: true}],
-      filter: [FilterChoice.None, [Validators.required]],
+      filter: [FilterChoice.NONE, [Validators.required]],
       format: [FormatChoice.PNG, [Validators.required]]
     });
     this.dialogRefs = {
@@ -93,12 +93,12 @@ export class ExportComponent implements AfterViewInit {
 
   protected getFilters(): FilterChoice[] {
     return [
-      FilterChoice.None,
-      FilterChoice.Saturate,
-      FilterChoice.BlackWhite,
-      FilterChoice.Inverse,
-      FilterChoice.Sepia,
-      FilterChoice.Grey
+      FilterChoice.NONE,
+      FilterChoice.SATURATE,
+      FilterChoice.BLACKWHITE,
+      FilterChoice.INVERSE,
+      FilterChoice.SEPIA,
+      FilterChoice.GREY
     ];
   }
 
@@ -128,8 +128,9 @@ export class ExportComponent implements AfterViewInit {
 
   protected async onConfirm(confirmed: boolean): Promise<void> {
     if (!confirmed) {
-      return ;
+      return;
     }
+
     this.dialogRefs.progress = this.matDialog.open(ProgressExportComponent, { width: '400px'});
     const format = this.getFormat();
     let succeded = true;
@@ -141,12 +142,11 @@ export class ExportComponent implements AfterViewInit {
         const response = await this.communicationService.sendEmail(
           name, email, blob);
         this.dialogRefs.progress.componentInstance.message = response;
-        this.dialogRefs.progress.componentInstance.error = false;
       } catch (err) {
-        this.dialogRefs.progress.componentInstance.error = true;
-        this.dialogRefs.progress.componentInstance.message = err.message;
         succeded = false;
+        this.dialogRefs.progress.componentInstance.message = err.message;
       }
+      this.dialogRefs.progress.componentInstance.error = !succeded;
     } else {
       const url = await this.getImageAsURL(format);
       this.downloadImage(url);
@@ -155,7 +155,7 @@ export class ExportComponent implements AfterViewInit {
     this.dialogRefs.progress.componentInstance.inProgress = false;
     this.dialogRefs.progress.afterClosed().subscribe(this.onExportDialogClose);
     if (succeded) {
-      setTimeout(() => this.dialogRefs.progress.close(), TIMEOUT);
+      setTimeout(() => this.dialogRefs.progress.close(), ExportComponent.TIMEOUT);
     }
   }
 
@@ -163,9 +163,9 @@ export class ExportComponent implements AfterViewInit {
 
   protected popUpConfirm(): void {
     const exportHeader: ExportHeader = {
-      name: `${this.form.controls.name.value}.${this.form.controls.format.value.toLocaleLowerCase()}`,
+      name: `${this.getName()}.${this.getFormat().toLowerCase()}`,
       exportType: this.exportType,
-      email: this.form.controls.email.value
+      email: this.getEmail()
     };
     this.dialogRefs.confirm = this.matDialog.open(
       ConfirmationExportComponent,
@@ -182,21 +182,21 @@ export class ExportComponent implements AfterViewInit {
     this.renderer.appendChild(this.svgView.nativeElement, filterZone);
     this.initializeElements();
     this.initializeFiltersChooser();
-    this.createView(FilterChoice.None);
+    this.createView(FilterChoice.NONE);
   }
 
   private initializeFiltersChooser(): void {
-    this.filtersChooser.set(FilterChoice.None, '');
-    this.filtersChooser.set(FilterChoice.Saturate, 'url(#saturate)');
-    this.filtersChooser.set(FilterChoice.BlackWhite, 'url(#blackWhite)');
-    this.filtersChooser.set(FilterChoice.Sepia, 'url(#sepia)');
-    this.filtersChooser.set(FilterChoice.Inverse, 'url(#invertion)');
-    this.filtersChooser.set(FilterChoice.Grey, 'url(#greyscale)');
+    this.filtersChooser.set(FilterChoice.NONE, '');
+    this.filtersChooser.set(FilterChoice.SATURATE, 'url(#saturate)');
+    this.filtersChooser.set(FilterChoice.BLACKWHITE, 'url(#blackWhite)');
+    this.filtersChooser.set(FilterChoice.INVERSE, 'url(#sepia)');
+    this.filtersChooser.set(FilterChoice.SEPIA, 'url(#invertion)');
+    this.filtersChooser.set(FilterChoice.GREY, 'url(#greyscale)');
   }
 
   private initializeElements(): void {
     this.svgShape = this.svgService.shape;
-    this.innerSVG = this.renderer.createElement('svg', SVG_NS);
+    this.innerSVG = this.renderer.createElement('svg', ExportComponent.SVG_NS);
     Array.from(this.svgService.structure.defsZone.children).forEach((element: SVGElement) => {
       this.renderer.appendChild(this.innerSVG, element.cloneNode(true));
     });
@@ -218,9 +218,9 @@ export class ExportComponent implements AfterViewInit {
 
   private downloadImage(pictureUrl: string): void {
     const downloadLink: HTMLAnchorElement = this.renderer.createElement('a');
-    const format = this.form.controls.format.value.toLocaleLowerCase();
+    const format = this.getFormat().toLowerCase();
     downloadLink.href = pictureUrl;
-    const name: string = this.form.controls.name.value.trim().toLocaleLowerCase();
+    const name: string = this.getName().trim().toLowerCase();
     downloadLink.download = `${name}.${format}`;
     downloadLink.click();
   }
@@ -229,7 +229,7 @@ export class ExportComponent implements AfterViewInit {
     if (format === FormatChoice.SVG) {
       return 'image/svg+xml';
     }
-    return `image/${format.toLocaleLowerCase()}`;
+    return `image/${format.toLowerCase()}`;
   }
 
   private async svgToCanvas(): Promise<HTMLCanvasElement> {
@@ -253,6 +253,7 @@ export class ExportComponent implements AfterViewInit {
   private async getImageAsBlob(format: FormatChoice): Promise<Blob> {
     this.resetInnerSVG();
     const type = this.formatToMime(format);
+
     let byteString: string;
     if (format === FormatChoice.SVG) {
       byteString = this.serializeSVG();
@@ -262,16 +263,18 @@ export class ExportComponent implements AfterViewInit {
       const asciiString = dataURL.split(',')[1];
       byteString = atob(asciiString);
     }
+
     const arrayBuffer = new ArrayBuffer(byteString.length);
     const byteArray = new Uint8Array(arrayBuffer);
     for (let i = 0; i < byteString.length; ++i) {
       byteArray[i] = byteString.charCodeAt(i);
     }
+
     return new Blob([arrayBuffer], { type });
   }
 
   private createView(filterName: string): void {
-    this.pictureView = this.renderer.createElement('image', SVG_NS);
+    this.pictureView = this.renderer.createElement('image', ExportComponent.SVG_NS);
     const viewZone = this.svgView.nativeElement;
     this.configurePicture(this.pictureView, filterName);
     const child = viewZone.lastElementChild;
@@ -299,7 +302,7 @@ export class ExportComponent implements AfterViewInit {
   }
 
   private resetInnerSVG(): void {
-    const filterZone: SVGGElement = this.renderer.createElement('g', SVG_NS);
+    const filterZone: SVGGElement = this.renderer.createElement('g', ExportComponent.SVG_NS);
     const filter = this.filtersChooser.get(this.form.controls.filter.value.toString()) as string;
     this.renderer.setAttribute(this.innerSVG, 'filter', filter);
     this.configureSize(filterZone, this.svgShape);
@@ -319,7 +322,7 @@ export class ExportComponent implements AfterViewInit {
   }
 
   private generateBackground(): SVGRectElement {
-    const rect: SVGRectElement = this.renderer.createElement('rect', SVG_NS);
+    const rect: SVGRectElement = this.renderer.createElement('rect', ExportComponent.SVG_NS);
     this.renderer.setAttribute(rect, 'y', '0');
     this.renderer.setAttribute(rect, 'x', '0');
     this.renderer.setAttribute(rect, 'height', String(this.svgShape.height));
@@ -334,11 +337,13 @@ export class ExportComponent implements AfterViewInit {
     if (input == null) {
       return;
     }
-    if (value === ExportType.EMAIL) {
-      input.setValidators([Validators.required, Validators.email]);
-      input.enable();
-    } else {
+
+    if (value === ExportType.LOCAL) {
       input.disable();
+      return;
     }
+
+    input.setValidators([Validators.required, Validators.email]);
+    input.enable();
   }
 }

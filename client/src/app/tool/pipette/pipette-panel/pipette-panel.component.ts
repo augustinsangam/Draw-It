@@ -27,7 +27,7 @@ export class PipettePanelComponent
               private overlay: OverlayService
   ) {
     super(elementRef);
-    this.pipService.currentColor = 'rgba(0,0,0,0)';
+    this.pipService.currentColor = PipetteService.DEFAULT_COLOR;
   }
 
   protected getHex(): string {
@@ -35,6 +35,6 @@ export class PipettePanelComponent
   }
 
   protected showDocumentation(): void {
-    this.overlay.openDocumentationDialog(false, DocEnum.pipette);
+    this.overlay.openDocumentationDialog(false, DocEnum.PIPETTE);
   }
 }

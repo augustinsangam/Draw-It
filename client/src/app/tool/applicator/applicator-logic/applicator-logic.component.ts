@@ -45,12 +45,14 @@ export class ApplicatorLogicComponent
       right: ($event: MouseEvent) => {
         $event.preventDefault();
         const target = $event.target as SVGElement;
-        if (this.isADrawElement(target)
-            && !(target instanceof SVGPathElement)) {
-          target.setAttribute('stroke', this.colorService.secondaryColor
-          );
-          this.undoRedoService.saveState();
+        if (!this.isADrawElement(target) || target instanceof SVGPathElement) {
+          return ;
         }
+        target.setAttribute(
+          'stroke',
+          this.colorService.secondaryColor
+        );
+        this.undoRedoService.saveState();
       }
     };
   }

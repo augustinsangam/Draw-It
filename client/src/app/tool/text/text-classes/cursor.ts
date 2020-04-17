@@ -6,7 +6,8 @@ import {TextAlignement} from './text-alignement';
 import {TextLine} from './text-line';
 
 export class Cursor {
-  readonly CURSOR_INTERVAL: number = 500;
+
+  private static readonly CURSOR_INTERVAL: number = 500;
 
   private frequency: Observable<number>;
   private blinker: Subscription;
@@ -28,7 +29,7 @@ export class Cursor {
   }
 
   initBlink(): void {
-    this.frequency = interval(this.CURSOR_INTERVAL);
+    this.frequency = interval(Cursor.CURSOR_INTERVAL);
     this.blinker = this.frequency.subscribe(() => this.blink());
   }
 
@@ -62,17 +63,17 @@ export class Cursor {
 
   move(currentLine: TextLine, lineIndex: number): void {
     switch (this.service.textAlignement) {
-      case TextAlignement.left:
+      case TextAlignement.LEFT:
         this.currentPosition.x = this.initialCursorPoint.x + this.service.getTextAlign() + this.service.getLineWidth(currentLine);
         break;
 
-      case TextAlignement.center:
+      case TextAlignement.CENTER:
         const textStart = this.initialCursorPoint.x - this.service.getFullTextWidth(currentLine) / 2;
 
         this.currentPosition.x = textStart + this.service.getLineWidth(currentLine);
         break;
 
-      case TextAlignement.right:
+      case TextAlignement.RIGHT:
         const textWidthAtCursor = this.service.getLineWidth(currentLine);
 
         this.currentPosition.x = this.initialCursorPoint.x - (this.service.getFullTextWidth(currentLine) - textWidthAtCursor);

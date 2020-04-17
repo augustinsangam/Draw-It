@@ -56,7 +56,7 @@ export class SelectionLogicComponent
             $event.offsetX,
             $event.offsetY
           );
-          this.mouse.left.onResize = Util.CIRCLES.indexOf(
+          this.mouse.left.onResize = Util.SelectionLogicUtil.CIRCLES.indexOf(
             this.mouse.left.selectedElement as CircleType
           ) !== NOT_FOUND;
           this.applyMouseStyle($event);
@@ -88,19 +88,20 @@ export class SelectionLogicComponent
             } else {
               this.translateAll(offsetX, offsetY);
             }
-
-          } else if (this.mouse.left.onResize) {
-
-            this.scaleUtil.onMouseMove(previousCurrentPoint);
-
-          } else {
-            this.drawSelection(this.mouse.left.startPoint,
-              this.mouse.left.currentPoint);
-            const [startPoint, currentPoint] = Util.SelectionLogicUtil.orderPoint(
-              this.mouse.left.startPoint, this.mouse.left.currentPoint
-            );
-            this.applyMultipleSelection(startPoint, currentPoint);
+            return;
           }
+
+          if (this.mouse.left.onResize) {
+            this.scaleUtil.onMouseMove(previousCurrentPoint);
+            return;
+          }
+
+          this.drawSelection(this.mouse.left.startPoint,
+            this.mouse.left.currentPoint);
+          const [startPoint, currentPoint] = Util.SelectionLogicUtil.orderPoint(
+            this.mouse.left.startPoint, this.mouse.left.currentPoint
+          );
+          this.applyMultipleSelection(startPoint, currentPoint);
         }],
         ['mouseup', ($event: MouseEvent) => {
           if ($event.button !== 0) {
@@ -154,38 +155,44 @@ export class SelectionLogicComponent
       ])],
       ['rightButton', new Map<string, Util.MouseEventCallBack>([
         ['mousedown', ($event: MouseEvent) => {
-          if ($event.button === 2) {
-            this.mouse.right.startPoint =
-              new Point($event.offsetX, $event.offsetY);
-            this.mouse.right.currentPoint =
-              new Point($event.offsetX, $event.offsetY);
-            this.mouse.right.mouseIsDown = true;
-            const target = Util.SelectionLogicUtil.getRealTarget($event);
-            this.mouse.right.selectedElement = this.elementSelectedType(
-              target as SVGElement
-            );
-            this.selectedElementsFreezed = new Set(this.service.selectedElements);
+          if ($event.button !== 2) {
+            return;
           }
+
+          this.mouse.right.startPoint =
+            new Point($event.offsetX, $event.offsetY);
+          this.mouse.right.currentPoint =
+            new Point($event.offsetX, $event.offsetY);
+          this.mouse.right.mouseIsDown = true;
+          const target = Util.SelectionLogicUtil.getRealTarget($event);
+          this.mouse.right.selectedElement = this.elementSelectedType(
+            target as SVGElement
+          );
+          this.selectedElementsFreezed = new Set(this.service.selectedElements);
         }],
         ['mousemove', ($event: MouseEvent) => {
-          if (this.mouse.right.mouseIsDown) {
-            this.mouse.right.currentPoint =
-              new Point($event.offsetX, $event.offsetY);
-            this.drawInversion(this.mouse.right.startPoint,
-              this.mouse.right.currentPoint);
-            const [startPoint, currentPoint] = Util.SelectionLogicUtil.orderPoint(
-              this.mouse.right.startPoint,
-              this.mouse.right.currentPoint
-            );
-            this.applyMultipleInversion(startPoint, currentPoint);
+          if (!this.mouse.right.mouseIsDown) {
+            return;
           }
+
+          this.mouse.right.currentPoint =
+            new Point($event.offsetX, $event.offsetY);
+          this.drawInversion(this.mouse.right.startPoint,
+            this.mouse.right.currentPoint);
+          const [startPoint, currentPoint] = Util.SelectionLogicUtil.orderPoint(
+            this.mouse.right.startPoint,
+            this.mouse.right.currentPoint
+          );
+          this.applyMultipleInversion(startPoint, currentPoint);
         }],
         ['mouseup', ($event: MouseEvent) => {
-          if ($event.button === 2) {
-            this.mouse.right.endPoint = new Point($event.offsetX, $event.offsetY);
-            this.mouse.right.mouseIsDown = false;
-            this.deleteInversion();
+          if ($event.button !== 2) {
+            return;
           }
+
+          this.mouse.right.endPoint = new Point($event.offsetX, $event.offsetY);
+          this.mouse.right.mouseIsDown = false;
+          this.deleteInversion();
         }],
         ['contextmenu', ($event: MouseEvent) => {
           $event.preventDefault();

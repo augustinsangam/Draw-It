@@ -5,14 +5,14 @@ import * as Util from './selection-logic-util';
 import { SelectionLogicComponent } from './selection-logic.component';
 import { Transform } from './transform';
 
-const MINIMUM_SIZE = 5;
-
 interface Dimensions {
   width: number;
   height: number;
 }
 
 export class Scale {
+
+  private static readonly MINIMUM_SIZE: number = 5;
 
   private baseVisualisationRectangleDimension: Dimensions;
   private scaledRectangleDimension: Dimensions;
@@ -64,9 +64,9 @@ export class Scale {
   }
 
   private onResize(previousCurrentPoint: Point): Offset {
-    const offsetX = +this.selectionLogic.mouse.left.selectedElement % (Util.CIRCLES.length - 1) === 0 ?
+    const offsetX = +this.selectionLogic.mouse.left.selectedElement % (Util.SelectionLogicUtil.CIRCLES.length - 1) === 0 ?
       this.selectionLogic.mouse.left.currentPoint.x - previousCurrentPoint.x : 0;
-    const offsetY = +this.selectionLogic.mouse.left.selectedElement % (Util.CIRCLES.length - 1) !== 0 ?
+    const offsetY = +this.selectionLogic.mouse.left.selectedElement % (Util.SelectionLogicUtil.CIRCLES.length - 1) !== 0 ?
       this.selectionLogic.mouse.left.currentPoint.y - previousCurrentPoint.y : 0;
 
     this.scaledRectangleDimension.width += this.selectionLogic.mouse.left.selectedElement === 0 ? -offsetX : offsetX;
@@ -75,9 +75,9 @@ export class Scale {
     const mouseOffset: Offset = { x: offsetX, y: offsetY };
     this.scaleOffset = { x: this.scaleOffset.x + offsetX, y: this.scaleOffset.y + offsetY };
 
-    const factorX = this.baseVisualisationRectangleDimension.width >= MINIMUM_SIZE ?
+    const factorX = this.baseVisualisationRectangleDimension.width >= Scale.MINIMUM_SIZE ?
       this.scaledRectangleDimension.width / this.baseVisualisationRectangleDimension.width : 1;
-    const factorY = this.baseVisualisationRectangleDimension.height >= MINIMUM_SIZE ?
+    const factorY = this.baseVisualisationRectangleDimension.height >= Scale.MINIMUM_SIZE ?
       this.scaledRectangleDimension.height / this.baseVisualisationRectangleDimension.height : 1;
 
     this.resizeAll([factorX, factorY]);
@@ -143,22 +143,26 @@ export class Scale {
         this.selectionLogic.mouse.left.selectedElement = CircleType.RIGHT_CIRCLE;
         switched = true;
       }
-      if (switched) {
-        this.inverted.x = -this.inverted.x;
-      }
     }
+
+    if (switched) {
+      this.inverted.x = -this.inverted.x;
+    }
+
     switched = false;
-    if (refPoint2.y - refPoint1.y <= 1 && splitedOffset[0].y !== 0) {
-      if (splitedOffset[0].y < 0 && this.selectionLogic.mouse.left.selectedElement !== CircleType.TOP_CIRCLE) {
-        this.selectionLogic.mouse.left.selectedElement = CircleType.TOP_CIRCLE;
-        switched = true;
-      } else if (splitedOffset[0].y > 0 && this.selectionLogic.mouse.left.selectedElement !== CircleType.BOTTOM_CIRCLE) {
-        this.selectionLogic.mouse.left.selectedElement = CircleType.BOTTOM_CIRCLE;
-        switched = true;
-      }
-      if (switched) {
-        this.inverted.y = -this.inverted.y;
-      }
+    if (!(refPoint2.y - refPoint1.y <= 1 && splitedOffset[0].y !== 0)) {
+      return;
+    }
+
+    if (splitedOffset[0].y < 0 && this.selectionLogic.mouse.left.selectedElement !== CircleType.TOP_CIRCLE) {
+      this.selectionLogic.mouse.left.selectedElement = CircleType.TOP_CIRCLE;
+      switched = true;
+    } else if (splitedOffset[0].y > 0 && this.selectionLogic.mouse.left.selectedElement !== CircleType.BOTTOM_CIRCLE) {
+      this.selectionLogic.mouse.left.selectedElement = CircleType.BOTTOM_CIRCLE;
+      switched = true;
+    }
+    if (switched) {
+      this.inverted.y = -this.inverted.y;
     }
   }
 

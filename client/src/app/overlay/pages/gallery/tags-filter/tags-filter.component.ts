@@ -6,9 +6,6 @@ import { Observable, Subject } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { NOT_FOUND } from 'src/app/not-found';
 
-const MIN_TAG_LENGTH = 3;
-const MAX_TAG_LENGTH = 21;
-
 export interface Tags {
   addedTags: string[];
   allTags: string[];
@@ -22,6 +19,9 @@ export interface Tags {
   styleUrls: ['./tags-filter.component.scss']
 })
 export class TagsFilterComponent implements OnInit {
+
+  private static readonly MIN_TAG_LENGTH: number = 3;
+  private static readonly MAX_TAG_LENGTH: number = 21;
 
   @Input() tags: Observable<string[]>;
   @Input() selectedTag: Observable<string>;
@@ -56,7 +56,7 @@ export class TagsFilterComponent implements OnInit {
     this.filteredTags = this.tagCtrl.valueChanges.pipe(
       startWith(null),
       map((tag) => tag ? this._filter(tag) : this._filter2()));
-    this.filteredTagsChange = new Subject<[string[], boolean]>();
+    this.filteredTagsChange = new Subject();
   }
 
   ngOnInit(): void {
@@ -76,8 +76,8 @@ export class TagsFilterComponent implements OnInit {
 
     const toAdd = (value || '').trim();
     if (this.addedTags.indexOf(toAdd) === NOT_FOUND &&
-        toAdd.length >= MIN_TAG_LENGTH &&
-        toAdd.length <= MAX_TAG_LENGTH) {
+        toAdd.length >= TagsFilterComponent.MIN_TAG_LENGTH &&
+        toAdd.length <= TagsFilterComponent.MAX_TAG_LENGTH) {
       this.addedTags.push(value.trim());
       input.value = '';
     }

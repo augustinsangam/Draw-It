@@ -6,15 +6,15 @@ import { CommunicationService } from 'src/app/communication/communication.servic
 import { SvgService } from 'src/app/svg/svg.service';
 import { ColorService } from 'src/app/tool/color/color.service';
 
-const MIN_LETTERS = 3;
-const MAX_LETTERS = 21;
-
 @Component({
   selector: 'app-save',
   templateUrl: './save.component.html',
   styleUrls: ['./save.component.scss']
 })
 export class SaveComponent implements OnInit {
+
+  private static readonly MIN_LETTERS: number = 3;
+  private static readonly MAX_LETTERS: number = 21;
 
   @ViewChild('preview', {
     static: true,
@@ -41,7 +41,7 @@ export class SaveComponent implements OnInit {
         this.svgService.header.name,
         [
           Validators.required,
-          Validators.pattern(`.{${MIN_LETTERS},${MAX_LETTERS}}`)
+          Validators.pattern(`.{${SaveComponent.MIN_LETTERS},${SaveComponent.MAX_LETTERS}}`)
         ]
       ]
     });
@@ -87,7 +87,7 @@ export class SaveComponent implements OnInit {
     const input = event.input;
     const value = event.value;
     const toAdd = (value || '').trim();
-    if (toAdd.length < MIN_LETTERS || toAdd.length > MAX_LETTERS) {
+    if (toAdd.length < SaveComponent.MIN_LETTERS || toAdd.length > SaveComponent.MAX_LETTERS) {
       return;
     }
     if (this.tags.includes(toAdd)) {
@@ -119,15 +119,16 @@ export class SaveComponent implements OnInit {
     if (this.svgService.header.id !== 0) {
       this.communicationService.put(this.svgService.header.id)
         .then(() => this.dialogRef.close())
-        .catch((err) => this.dialogRef.close(err));
-    } else {
-      this.communicationService.post()
-        .then((newID) => {
-          this.svgService.header.id = newID;
-          this.dialogRef.close();
-        })
-        .catch((err) => this.dialogRef.close(err));
+        .catch((err) => this.dialogRef.close(err)
+      );
+      return;
     }
+    this.communicationService.post()
+      .then((newID) => {
+        this.svgService.header.id = newID;
+        this.dialogRef.close();
+      })
+      .catch((err) => this.dialogRef.close(err));
   }
 
   protected onCancel(): void {

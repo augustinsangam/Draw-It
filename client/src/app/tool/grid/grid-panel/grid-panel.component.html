@@ -12,7 +12,7 @@
   <div *ngIf="service.active">
     <p class="no-select">Taille des carrés</p>
     <div class="squareSize">
-      <mat-slider min="{{service.MIN_SQUARESIZE}}" max="{{service.MAX_SQUARESIZE}}" step=1
+      <mat-slider min="{{GridService.MIN_SQUARESIZE}}" max="{{GridService.MAX_SQUARESIZE}}" step=1
                   value="{{service.squareSize}}"
                   (input)="onSquareSizeChange()"
                   (change)="onSquareSizeChange()"
@@ -27,7 +27,7 @@
     <br>
     <p class="no-select">Opacité</p>
     <div class="opacity">
-      <mat-slider min="{{service.MIN_OPACITY}}" max="{{service.MAX_OPACITY}}" step="1"
+      <mat-slider min="{{GridService.MIN_OPACITY}}" max="{{GridService.MAX_OPACITY}}" step="1"
                   value="{{service.opacity}}"
                   (input)="onOpacityChange()"
                   (change)="onOpacityChange()"

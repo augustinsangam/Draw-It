@@ -3,12 +3,12 @@ import { Subject } from 'rxjs';
 import { RGBColor } from './rgb-color';
 import { RGBAColor } from './rgba-color';
 
-const HEXADECIMAL_BASE = 16;
-
 @Injectable({
   providedIn: 'root'
 })
 export class ColorService {
+  private static readonly HEXADECIMAL_BASE: number = 16;
+
   recentColors: string[];
   primaryColor: string;
   secondaryColor: string;
@@ -74,9 +74,9 @@ export class ColorService {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     if (result) {
       return {
-        r: parseInt(result[1], HEXADECIMAL_BASE),
-        g: parseInt(result[2], HEXADECIMAL_BASE),
-        b: parseInt(result[1 + 2], HEXADECIMAL_BASE)
+        r: parseInt(result[1], ColorService.HEXADECIMAL_BASE),
+        g: parseInt(result[2], ColorService.HEXADECIMAL_BASE),
+        b: parseInt(result[1 + 2], ColorService.HEXADECIMAL_BASE)
       };
     }
     return {
@@ -88,7 +88,7 @@ export class ColorService {
 
   rgbToHex(rgb: RGBColor): string {
     const valueToHex = (value: number) => {
-      const hex = value.toString(HEXADECIMAL_BASE);
+      const hex = value.toString(ColorService.HEXADECIMAL_BASE);
       return hex.length === 1 ? `0${hex}` : hex;
     };
     return (

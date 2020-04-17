@@ -49,7 +49,7 @@ describe('SvgComponent', () => {
 
   it('#setTool should set the good value to the variable ref', () => {
     let refReturned: ComponentRef<ToolLogicDirective>;
-    refReturned = component['setTool'](Tool.Line);
+    refReturned = component['setTool'](Tool.LINE);
     expect(refReturned.instance.svgStructure).toEqual(component['svgStructure']);
   });
 
@@ -61,7 +61,7 @@ describe('SvgComponent', () => {
 
   it('#others', () => {
     // All handlers function have been tested
-    component['setToolHandler'](Tool.Brush);
+    component['setToolHandler'](Tool.BRUSH);
     expect(true).toEqual(true);
   });
 

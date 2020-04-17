@@ -99,7 +99,7 @@ describe('TextPanelComponent', () => {
 
   it('#updateButtonsStyle should call setAttribute 6 times', () => {
     const spy = spyOn(component['renderer'], 'setStyle');
-    component['service'].textAlignement = TextAlignement.right;
+    component['service'].textAlignement = TextAlignement.RIGHT;
     component['updateButtonsStyle']();
     expect(spy).toHaveBeenCalledTimes(6);
   });

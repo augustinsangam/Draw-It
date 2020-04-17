@@ -35,10 +35,11 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
       overrideDefaultBehaviour: false,
       overrideFunctionDefined: true,
       overrideFunction: () => {
-        if (this.onDrag) {
-          this.onMouseUp();
-          this.element.remove();
+        if (!this.onDrag) {
+          return ;
         }
+        this.onMouseUp();
+        this.element.remove();
       }
     });
   }
@@ -107,14 +108,15 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
   }
 
   private onMouseDown(mouseEv: MouseEvent): void {
-    if (!this.onDrag) {
-      this.onDrag = true;
-      this.element = this.renderer.createElement('path', this.svgNS);
-      this.renderer.appendChild(this.svgStructure.drawZone, this.element);
-      this.setElementStyle(this.element);
-      this.element.setAttribute('d', this.service.pathCentered(new Point(mouseEv.offsetX, mouseEv.offsetY)));
-      this.previousPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+    if (this.onDrag) {
+      return ;
     }
+    this.onDrag = true;
+    this.element = this.renderer.createElement('path', this.svgNS);
+    this.renderer.appendChild(this.svgStructure.drawZone, this.element);
+    this.setElementStyle(this.element);
+    this.element.setAttribute('d', this.service.pathCentered(new Point(mouseEv.offsetX, mouseEv.offsetY)));
+    this.previousPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
   }
 
   private setElementStyle(element: SVGElement): void {
@@ -147,11 +149,12 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
   }
 
   private onMouseUp(): void {
-    if (this.onDrag) {
-      this.onDrag = false;
-      this.undoRedoService.saveState();
-      this.currentPath = '';
+    if (!this.onDrag) {
+      return ;
     }
+    this.onDrag = false;
+    this.undoRedoService.saveState();
+    this.currentPath = '';
   }
 
   private onScroll(wheelEv: WheelEvent): void {
@@ -162,7 +165,6 @@ export class FeatherpenLogicComponent extends ToolLogicDirective
     if (!this.onDrag) {
       return;
     }
-
     const pathToAdd = this.service.interpolate(
       oldAngle,
       this.service.angle,

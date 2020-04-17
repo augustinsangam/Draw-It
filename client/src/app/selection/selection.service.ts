@@ -3,9 +3,9 @@ import { Subject } from 'rxjs';
 import { MagnetPoint } from './magnet-point';
 
 declare global {
-    interface Array<T> {
-      peak(): T ;
-    }
+  interface Array<T> {
+    peak(): T ;
+  }
 }
 
 Array.prototype.peak = function<T>(this: T[]): T {
@@ -41,8 +41,9 @@ export class SelectionService {
     this.delete = new Subject();
 
     this.magnetActive = false;
-    this.magnetPoint = MagnetPoint.Center;
+    this.magnetPoint = MagnetPoint.CENTER;
   }
+
   reset(): void {
     this.clipboard = [];
     this.selectedElements.clear();

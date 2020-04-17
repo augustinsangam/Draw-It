@@ -1,6 +1,6 @@
 export enum CircleType {
-  LEFT_CIRCLE = 0,
+  LEFT_CIRCLE,
   TOP_CIRCLE,
   BOTTOM_CIRCLE,
-  RIGHT_CIRCLE
+  RIGHT_CIRCLE,
 }

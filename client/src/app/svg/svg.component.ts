@@ -51,7 +51,6 @@ export class SvgComponent implements OnInit, AfterViewInit {
   }) private endZone: ElementRef<SVGGElement>;
 
   private svgStructure: SVGStructure;
-
   private readonly components: Type<ToolLogicDirective>[];
 
   constructor(

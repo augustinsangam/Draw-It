@@ -37,7 +37,7 @@ export class BucketPanelComponent extends ToolPanelDirective {
   }
 
   protected showDocumentation(): void {
-    this.overlay.openDocumentationDialog(false, DocEnum.bucket);
+    this.overlay.openDocumentationDialog(false, DocEnum.BUCKET);
   }
 
 }

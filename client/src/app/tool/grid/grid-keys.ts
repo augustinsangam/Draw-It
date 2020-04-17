@@ -1,5 +1,5 @@
 export enum GridKeys {
   G = 'g',
-  plus = '+',
-  minus = '-',
+  PLUS = '+',
+  MINUS = '-',
 }

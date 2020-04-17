@@ -13,11 +13,11 @@ export class MultipleSelection extends Selection {
     super(svgOffset);
     if (p1 === undefined || p2 === undefined) {
       this.selectAll(elements);
-    } else {
-      this.selectedElements = new Set();
-      this.compareZone = new Zone(p1.x, p2.x, p1.y, p2.y);
-      this.findSelectedElements(elements);
+      return ;
     }
+    this.selectedElements = new Set();
+    this.compareZone = new Zone(p1.x, p2.x, p1.y, p2.y);
+    this.findSelectedElements(elements);
   }
 
   getSelection(): SelectionReturn {
@@ -35,10 +35,11 @@ export class MultipleSelection extends Selection {
     elements.forEach((element) => {
       const elementZone = this.getZone(element);
       const intersection = this.compareZone.intersection(elementZone);
-      if (intersection[0]) {
-        this.selectedElements.add(element);
-        this.zone = (!!this.zone) ? this.zone.union(elementZone) : elementZone;
+      if (!intersection[0]) {
+        return ;
       }
+      this.selectedElements.add(element);
+      this.zone = (!!this.zone) ? this.zone.union(elementZone) : elementZone;
     });
   }
 

@@ -1,52 +1,52 @@
 <div>
-  <a title="Acceuil" (click)="homeEvent.emit()">
+  <a title="Accueil" (click)="homeEvent.emit()">
     <mat-icon class="no-select">home</mat-icon>
   </a>
 </div>
 <nav>
-  <a title="Selection [S]" #selection (click)="toolSelectorService.set(Tool.Selection)"
+  <a title="Selection [S]" #selection (click)="toolSelectorService.set(Tool.SELECTION)"
      style="background-image:url(/assets/sidebar-icons/selection.png)">
   </a>
-  <a title="Crayon [C]" #pencil (click)="toolSelectorService.set(Tool.Pencil)"
+  <a title="Crayon [C]" #pencil (click)="toolSelectorService.set(Tool.PENCIL)"
      style="background-image:url(/assets/sidebar-icons/gimp-tool-pencil.png)">
   </a>
-  <a title="Efface [E]" #efface (click)="toolSelectorService.set(Tool.Eraser)"
+  <a title="Efface [E]" #efface (click)="toolSelectorService.set(Tool.ERASER)"
      style="background-image:url(/assets/sidebar-icons/gimp-tool-eraser.png)">
   </a>
-  <a title="Pinceau [W]" #brush (click)="toolSelectorService.set(Tool.Brush)"
+  <a title="Pinceau [W]" #brush (click)="toolSelectorService.set(Tool.BRUSH)"
      style="background-image:url(/assets/sidebar-icons/gimp-tool-paintbrush.png)">
   </a>
-  <a title="Aérosol [A]" #aerosol (click)="toolSelectorService.set(Tool.Aerosol)"
+  <a title="Aérosol [A]" #aerosol (click)="toolSelectorService.set(Tool.AEROSOL)"
      style="background-image:url(/assets/sidebar-icons/aerosol.png)">
   </a>
-  <a title="Plume [P]" #plume (click)="toolSelectorService.set(Tool.FeatherPen)"
+  <a title="Plume [P]" #plume (click)="toolSelectorService.set(Tool.FEATHER_PEN)"
      style="background-image:url(/assets/sidebar-icons/feather.png)">
   </a>
-  <a title="Ligne [L]" #line (click)="toolSelectorService.set(Tool.Line)"
+  <a title="Ligne [L]" #line (click)="toolSelectorService.set(Tool.LINE)"
      style="background-image:url(/assets/sidebar-icons/line.png)">
   </a>
-  <a title="Rectangle [1]" #rectangle (click)="toolSelectorService.set(Tool.Rectangle)"
+  <a title="Rectangle [1]" #rectangle (click)="toolSelectorService.set(Tool.RECTANGLE)"
      style="background-image:url(/assets/sidebar-icons/rectangle.png)">
   </a>
-  <a title="Ellipse [2]" #ellipse (click)="toolSelectorService.set(Tool.Ellipse)"
+  <a title="Ellipse [2]" #ellipse (click)="toolSelectorService.set(Tool.ELLIPSE)"
      style="background-image:url(/assets/sidebar-icons/ellipse.png)">
   </a>
-  <a title="Polygone [3]" #polygone (click)="toolSelectorService.set(Tool.Polygone)"
+  <a title="Polygone [3]" #polygone (click)="toolSelectorService.set(Tool.POLYGONE)"
      style="background-image:url(/assets/sidebar-icons/polygone.png)">
   </a>
-  <a title="Pipette [I]" #pipette (click)="toolSelectorService.set(Tool.Pipette)"
+  <a title="Pipette [I]" #pipette (click)="toolSelectorService.set(Tool.PIPETTE)"
      style="background-image:url(/assets/sidebar-icons/pipette.png)">
   </a>
-  <a title="Applicateur de couleur [R]" #applicator (click)="toolSelectorService.set(Tool.Applicator)">
+  <a title="Applicateur de couleur [R]" #applicator (click)="toolSelectorService.set(Tool.APPLICATOR)">
     <mat-icon class="no-select">invert_colors</mat-icon>
   </a>
-  <a title="Seau de peinture [B]" #bucket (click)="toolSelectorService.set(Tool.Bucket)"
+  <a title="Seau de peinture [B]" #bucket (click)="toolSelectorService.set(Tool.BUCKET)"
      style="background-image:url(/assets/sidebar-icons/bucket.png)">
   </a>
-  <a title="Texte [T]" #text (click)="toolSelectorService.set(Tool.Text)"
+  <a title="Texte [T]" #text (click)="toolSelectorService.set(Tool.TEXT)"
      style="background-image: url(/assets/sidebar-icons/texte.png); width: 24px">
   </a>
-  <a title="Grille [G]" #grid (click)="toolSelectorService.set(Tool.Grid)"
+  <a title="Grille [G]" #grid (click)="toolSelectorService.set(Tool.GRID)"
      style="background-image: url(/assets/sidebar-icons/grid.png); width: 24px">
   </a>
 </nav>

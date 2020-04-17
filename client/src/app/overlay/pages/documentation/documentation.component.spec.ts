@@ -335,7 +335,7 @@ describe('DocumentationComponent', () => {
 
   it('#goToSection should call displayNodeContent', () => {
     const spy = spyOn<any>(component, 'displayNodeContent');
-    component.goToSection(DocEnum.text);
+    component.goToSection(DocEnum.TEXT);
     expect(spy).toHaveBeenCalled();
   });
 

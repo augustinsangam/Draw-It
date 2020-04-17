@@ -11,13 +11,10 @@ export interface Radius {
 
 export class Ellipse extends AbstractShape {
 
-  constructor(
-    initialPoint: Point,
-    protected renderer: Renderer2,
-    public element: SVGElement,
-    private mathService: MathService,
-    protected ellipseService: EllipseService
-
+  constructor(protected renderer: Renderer2,
+              public element: SVGElement,
+              private mathService: MathService,
+              protected ellipseService: EllipseService
   ) {
     super(renderer, element, ellipseService);
   }

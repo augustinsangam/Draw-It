@@ -1,6 +1,6 @@
 export enum Arrow {
-  Up = 'ArrowUp',
-  Down = 'ArrowDown',
-  Left = 'ArrowLeft',
-  Right = 'ArrowRight'
+  UP = 'ArrowUp',
+  DOWN = 'ArrowDown',
+  LEFT = 'ArrowLeft',
+  RIGHT = 'ArrowRight',
 }

@@ -8,12 +8,6 @@ import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { BucketService } from '../bucket.service';
 import { PointSet } from './point-set';
 
-const MAX_RGBA = 255;
-const NUMBER_OF_DIMENSIONS = 4;
-const MAX_DIFFERENCE = (MAX_RGBA * MAX_RGBA) * NUMBER_OF_DIMENSIONS;
-const MAX_TOLERANCE = 100;
-const NOT_TO_FAR = 100;
-
 type PointQueue = Point[];
 
 @Component({
@@ -22,6 +16,13 @@ type PointQueue = Point[];
 })
 export class BucketLogicComponent
   extends ToolLogicDirective implements OnInit, OnDestroy {
+
+  protected static readonly MAX_RGBA: number = 255;
+  private static readonly NUMBER_OF_DIMENSIONS: number = 4;
+  // tslint:disable-next-line:no-magic-numbers
+  private static readonly MAX_DIFFERENCE: number = (255 * 255) * 3;
+  private static readonly MAX_TOLERANCE: number = 100;
+  private static readonly NOT_TO_FAR: number = 100;
 
   private image: ImageData;
   private allListeners: (() => void)[];
@@ -117,7 +118,7 @@ export class BucketLogicComponent
       if (nextBorder == null) {
         let distance: number;
         [nextBorder, distance] = borders.nearestPoint(lastPoint);
-        if (distance > NOT_TO_FAR) {
+        if (distance > BucketLogicComponent.NOT_TO_FAR) {
           shapes.push(shape);
           shape = [];
         }
@@ -137,7 +138,7 @@ export class BucketLogicComponent
   }
 
   private getColor(point: Point): RGBAColor {
-    let position = (point.y * this.svgShape.width + point.x) * NUMBER_OF_DIMENSIONS;
+    let position = (point.y * this.svgShape.width + point.x) * BucketLogicComponent.NUMBER_OF_DIMENSIONS;
     const pixel = this.image.data;
     return {
       r: pixel[position++],
@@ -149,8 +150,8 @@ export class BucketLogicComponent
 
   private isSameColor(point: Point, color: RGBAColor): boolean {
     const diffferenceNormalized =
-      this.difference(color, this.getColor(point)) / MAX_DIFFERENCE;
-    return (diffferenceNormalized * MAX_TOLERANCE) <= this.service.tolerance;
+      this.difference(color, this.getColor(point)) / BucketLogicComponent.MAX_DIFFERENCE;
+    return (diffferenceNormalized * BucketLogicComponent.MAX_TOLERANCE) <= this.service.tolerance;
   }
 
   private drawSvg(shapes: Point[][]): void {
@@ -197,8 +198,7 @@ export class BucketLogicComponent
   private difference(color1: RGBAColor, color2: RGBAColor): number {
     return  (color1.r - color2.r) * (color1.r - color2.r)
           + (color1.g - color2.g) * (color1.g - color2.g)
-          + (color1.b - color2.b) * (color1.b - color2.b)
-          + (color1.a - color2.a) * (color1.a - color2.a);
+          + (color1.b - color2.b) * (color1.b - color2.b);
   }
 
 }

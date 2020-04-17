@@ -3,27 +3,26 @@ import { Injectable } from '@angular/core';
 import { ToolService } from '../../tool.service';
 
 export enum Texture {
-  Texture1 = 'filter1',
-  Texture2 = 'filter2',
-  Texture3 = 'filter3',
-  Texture4 = 'filter4',
-  Texture5 = 'filter5'
+  TEXTURE_1 = 'filter1',
+  TEXTURE_2 = 'filter2',
+  TEXTURE_3 = 'filter3',
+  TEXTURE_4 = 'filter4',
+  TEXTURE_5 = 'filter5'
 }
-
-const DEFAULT_THIKCNESS = 20;
 
 @Injectable({
   providedIn: 'root'
 })
 export class BrushService extends ToolService {
 
+  private static readonly DEFAULT_THICKNESS: number = 20;
   thickness: number;
   texture: Texture ;
 
   constructor() {
     super();
-    this.thickness = DEFAULT_THIKCNESS;
-    this.texture = Texture.Texture2;
+    this.thickness = BrushService.DEFAULT_THICKNESS;
+    this.texture = Texture.TEXTURE_2;
   }
 
 }
