@@ -14,7 +14,7 @@ export class OverlayManager {
   open<T>(
     componentOrTemplateRef: ComponentType<T> | TemplateRef<T>,
     config?: MatDialogConfig | undefined): MatDialogRef<T> {
-    this.shortcutHandler.desactivateAll();
+    this.shortcutHandler.deactivateAll();
     const dialogRef = this.matDialog.open(componentOrTemplateRef, config);
     dialogRef.afterClosed().subscribe(() => {
       this.shortcutHandler.activateAll();

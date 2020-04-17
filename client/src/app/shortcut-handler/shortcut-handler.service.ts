@@ -33,7 +33,7 @@ export class ShortcutHandlerService {
     (this.manager.get(shortcut) as Handler).isActive = true;
   }
 
-  desactivate(shortcut: Shortcut): void {
+  deactivate(shortcut: Shortcut): void {
     (this.manager.get(shortcut) as Handler).isActive = false;
   }
 
@@ -41,7 +41,7 @@ export class ShortcutHandlerService {
     this.manager.forEach((handler) => handler.isActive = true);
   }
 
-  desactivateAll(): void {
+  deactivateAll(): void {
     this.manager.forEach((handler) => handler.isActive = false);
   }
 

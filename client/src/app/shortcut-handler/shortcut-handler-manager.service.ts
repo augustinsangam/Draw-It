@@ -13,7 +13,7 @@ import {ShortcutCallBack, ShortcutHandlerService} from './shortcut-handler.servi
 })
 export class ShortcutHandlerManagerService {
 
-  private handlersFunc: Map<Shortcut, ShortcutCallBack>;
+  private readonly handlersFunc: Map<Shortcut, ShortcutCallBack>;
 
   constructor(
     private readonly toolSelectorService: ToolSelectorService,
@@ -22,11 +22,11 @@ export class ShortcutHandlerManagerService {
     private undoRedoService: UndoRedoService,
     private overlayService: OverlayService,
     private selectionService: SelectionService,
-  ) { }
+  ) {
+    this.handlersFunc = new Map();
+  }
 
   initialiseShortcuts(): void {
-
-    this.handlersFunc = new Map();
 
     this.shortcutHanler.set(Shortcut.A, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
