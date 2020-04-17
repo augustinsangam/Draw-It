@@ -1,4 +1,5 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
+import { NOT_FOUND } from 'src/app/not-found';
 import { GridService } from '../../tool/grid/grid.service';
 import { Point } from '../../tool/shape/common/point';
 import { UndoRedoService } from '../../undo-redo/undo-redo.service';
@@ -11,8 +12,6 @@ import { Rotation } from './rotation';
 import { Scale } from './scale';
 import { SelectionLogicBase } from './selection-logic-base';
 import * as Util from './selection-logic-util';
-
-const NOT_FOUND = -1;
 
 @Component({
   selector: 'app-selection-logic',

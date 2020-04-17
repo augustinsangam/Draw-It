@@ -1,4 +1,5 @@
 import { OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { NOT_FOUND } from 'src/app/not-found';
 import { GridService } from '../../tool/grid/grid.service';
 import { MathService } from '../../tool/mathematics/tool.math-service.service';
 import { BackGroundProperties, StrokeProperties } from '../../tool/shape/common/abstract-shape';
@@ -17,8 +18,6 @@ import { BasicSelectionType, ElementSelectedType } from './element-selected-type
 import { Mouse } from './mouse';
 import * as Util from './selection-logic-util';
 import { Transform } from './transform';
-
-const NOT_FOUND = -1;
 
 export abstract class SelectionLogicBase extends ToolLogicDirective
   implements OnInit, OnDestroy {

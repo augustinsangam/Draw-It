@@ -4,10 +4,10 @@ import { FormControl } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteSelectedEvent, MatChipInputEvent, MatSlideToggle } from '@angular/material';
 import { Observable, Subject } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { NOT_FOUND } from 'src/app/not-found';
 
 const MIN_TAG_LENGTH = 3;
 const MAX_TAG_LENGTH = 21;
-const NOT_FOUND = -1;
 
 export interface Tags {
   addedTags: string[];
