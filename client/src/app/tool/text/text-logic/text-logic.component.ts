@@ -254,7 +254,7 @@ export class TextLogicComponent extends ToolLogicDirective
   private startTyping(): void {
     this.service.indicators.onType = true;
     this.service.startTypingEmitter.emit();
-    this.shortcutService.desactivateAll();
+    this.shortcutService.deactivateAll();
     this.initCursor();
     this.initSVGText();
   }

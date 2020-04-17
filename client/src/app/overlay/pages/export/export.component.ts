@@ -3,6 +3,7 @@ import { AfterViewInit, Component, ElementRef, Optional, Renderer2, ViewChild } 
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatButtonToggleChange, MatDialog, MatDialogRef, MatRadioChange } from '@angular/material';
 import { CommunicationService } from 'src/app/communication/communication.service';
+import { NOT_FOUND } from 'src/app/not-found';
 import { SvgToCanvas } from 'src/app/svg-to-canvas/svg-to-canvas';
 import { SvgShape } from 'src/app/svg/svg-shape';
 import { SvgService } from 'src/app/svg/svg.service';
@@ -48,7 +49,6 @@ export interface ExportHeader {
 })
 
 export class ExportComponent implements AfterViewInit {
-
   @ViewChild('svgView', {
     static: false
   }) protected svgView: ElementRef<SVGSVGElement>;
@@ -63,7 +63,6 @@ export class ExportComponent implements AfterViewInit {
 
   static validator(control: FormControl): null | { spaceError: { value: string } } {
     const input = (control.value as string).trim();
-    const NOT_FOUND = -1;
     if (input.indexOf(' ') === NOT_FOUND && input !== '') {
       return null;
     }
@@ -254,7 +253,6 @@ export class ExportComponent implements AfterViewInit {
   private async getImageAsBlob(format: FormatChoice): Promise<Blob> {
     this.resetInnerSVG();
     const type = this.formatToMime(format);
-
     let byteString: string;
     if (format === FormatChoice.SVG) {
       byteString = this.serializeSVG();
@@ -264,13 +262,11 @@ export class ExportComponent implements AfterViewInit {
       const asciiString = dataURL.split(',')[1];
       byteString = atob(asciiString);
     }
-
     const arrayBuffer = new ArrayBuffer(byteString.length);
     const byteArray = new Uint8Array(arrayBuffer);
     for (let i = 0; i < byteString.length; ++i) {
       byteArray[i] = byteString.charCodeAt(i);
     }
-
     return new Blob([arrayBuffer], { type });
   }
 
@@ -288,12 +284,10 @@ export class ExportComponent implements AfterViewInit {
   private configurePicture(picture: SVGImageElement, filterName: string): void {
     const viewZoneHeigth = Number(this.svgView.nativeElement.getAttribute('height'));
     const viewZoneWidth = Number(this.svgView.nativeElement.getAttribute('width'));
-
     const factor = Math.max(this.svgShape.height / viewZoneHeigth,
       this.svgShape.width / viewZoneWidth);
     const pictureHeigth = this.svgShape.height / factor - 2;
     const pictureWidth = this.svgShape.width / factor - 2;
-
     this.renderer.setAttribute(picture, 'x', '1');
     this.renderer.setAttribute(picture, 'y', '1');
     this.renderer.setAttribute(picture, 'id', 'pictureView');

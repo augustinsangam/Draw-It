@@ -22,11 +22,11 @@ export class ShortcutHandlerManagerService {
     private undoRedoService: UndoRedoService,
     private overlayService: OverlayService,
     private selectionService: SelectionService,
-  ) { }
+  ) {
+    this.handlersFunc = new Map();
+  }
 
   initialiseShortcuts(): void {
-
-    this.handlersFunc = new Map();
 
     this.shortcutHanler.set(Shortcut.A, (event: KeyboardEvent) => {
       if (!!event && event.ctrlKey) {
