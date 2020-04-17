@@ -22,8 +22,8 @@ describe('router: verify', () => {
 		Draw.start(fbb);
 		Draw.addName(fbb, nameOffset);
 		fbb.finish(Draw.end(fbb));
-		const errMsg = router['verifyBuffer'](fbb.asUint8Array());
-		chai.expect(errMsg).to.be.equal(`Nom “${name}” invalide`);
+		const possibleError = router['verifyBuffer'](fbb.asUint8Array());
+		chai.expect(possibleError?.message).to.be.equal(`Nom “${name}” invalide`);
 	});
 
 	it('#verifyBuffer should invalidate long name', () => {
@@ -33,8 +33,8 @@ describe('router: verify', () => {
 		Draw.start(fbb);
 		Draw.addName(fbb, nameOffset);
 		fbb.finish(Draw.end(fbb));
-		const errMsg = router['verifyBuffer'](fbb.asUint8Array());
-		chai.expect(errMsg).to.be.equal(`Nom “${name}” invalide`);
+		const possibleError = router['verifyBuffer'](fbb.asUint8Array());
+		chai.expect(possibleError?.message).to.be.equal(`Nom “${name}” invalide`);
 	});
 
 	it('#verifyBuffer should invalidate short tag', () => {
@@ -48,8 +48,8 @@ describe('router: verify', () => {
 		Draw.addName(fbb, nameOffset);
 		Draw.addTags(fbb, tags);
 		fbb.finish(Draw.end(fbb));
-		const errMsg = router['verifyBuffer'](fbb.asUint8Array());
-		chai.expect(errMsg).to.be.equal(`Étiquette “${tag}” invalide`);
+		const possibleError = router['verifyBuffer'](fbb.asUint8Array());
+		chai.expect(possibleError?.message).to.be.equal(`Étiquette “${tag}” invalide`);
 	});
 
 	it('#verifyBuffer should invalidate long tag', () => {
@@ -63,8 +63,8 @@ describe('router: verify', () => {
 		Draw.addName(fbb, nameOffset);
 		Draw.addTags(fbb, tags);
 		fbb.finish(Draw.end(fbb));
-		const errMsg = router['verifyBuffer'](fbb.asUint8Array());
-		chai.expect(errMsg).to.be.equal(`Étiquette “${tag}” invalide`);
+		const possibleError = router['verifyBuffer'](fbb.asUint8Array());
+		chai.expect(possibleError?.message).to.be.equal(`Étiquette “${tag}” invalide`);
 	});
 
 	it('#verifyBuffer should return null', () => {
@@ -77,8 +77,8 @@ describe('router: verify', () => {
 		Draw.addName(fbb, nameOffset);
 		Draw.addTags(fbb, tags);
 		fbb.finish(Draw.end(fbb));
-		const errMsg = router['verifyBuffer'](fbb.asUint8Array());
-		chai.expect(errMsg).to.be.null;
+		const possibleError = router['verifyBuffer'](fbb.asUint8Array());
+		chai.expect(possibleError).to.be.undefined;
 	});
 
 	it('#verifyID should invalidate NaN', () => {

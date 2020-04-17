@@ -44,7 +44,7 @@ class Router {
 		);
 	}
 
-	private verifyBuffer(buf: Uint8Array): void | Error {
+	private verifyBuffer(buf: Uint8Array): Error | undefined {
 		const fbByteBuffer = new flatbuffers.flatbuffers.ByteBuffer(buf);
 		const draw = Draw.getRoot(fbByteBuffer);
 
@@ -194,7 +194,7 @@ class Router {
 			const buffer = req.body as Buffer;
 
 			const possibleError = this.verifyBuffer(buffer);
-			if (possibleError instanceof Error) {
+			if (possibleError !== undefined) {
 				res.status(StatusCode.NOT_ACCEPTABLE).send(possibleError.message);
 				return;
 			}
@@ -229,7 +229,7 @@ class Router {
 			}
 
 			const possibleError = this.verifyBuffer(req.body);
-			if (possibleError instanceof Error) {
+			if (possibleError !== undefined) {
 				res.status(StatusCode.NOT_ACCEPTABLE).send(possibleError.message);
 				return;
 			}

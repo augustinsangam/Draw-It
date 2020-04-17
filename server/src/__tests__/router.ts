@@ -308,7 +308,7 @@ describe('router', () => {
 
 	it('#methodPost should insert', async () => {
 		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
-		verifyBufferStub.returns(null);
+		verifyBufferStub.returns(undefined);
 
 		const dbNextStub = sinon.stub(db, 'nextID');
 		dbNextStub.resolves(ANSWER_TO_LIFE);
@@ -347,7 +347,7 @@ describe('router', () => {
 
 	it('#methodPut should reject id zero', async () => {
 		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
-		verifyBufferStub.returns(null);
+		verifyBufferStub.returns(undefined);
 
 		return supertest(app)
 			.put('/draw/0')
@@ -358,7 +358,7 @@ describe('router', () => {
 
 	it('#methodPut should reject negative id', async () => {
 		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
-		verifyBufferStub.returns(null);
+		verifyBufferStub.returns(undefined);
 
 		return supertest(app)
 			.put(`/draw/-${ANSWER_TO_LIFE}`)
@@ -405,7 +405,7 @@ describe('router', () => {
 
 	it('#methodPut should replace', async () => {
 		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
-		verifyBufferStub.returns(null);
+		verifyBufferStub.returns(undefined);
 
 		const dbReplaceStub = sinon.stub(db, 'replace');
 
