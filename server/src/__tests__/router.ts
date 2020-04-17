@@ -177,7 +177,7 @@ describe('router', () => {
 			.post('/send')
 			.attach('media', 'package.json')
 			.field('recipient', 'foo@example.com')
-			.expect(StatusCode.OK)
+			.expect(StatusCode.ACCEPTED)
 			.then(emailSendStub.restore);
 	});
 
@@ -195,7 +195,27 @@ describe('router', () => {
 			.post('/send')
 			.attach('media', 'package.json')
 			.field('recipient', 'foo@example.com')
-			.expect(StatusCode.OK)
+			.expect(StatusCode.ACCEPTED)
+			.then(emailSendStub.restore);
+	});
+
+	it(`#methodSendEmail should returns ${StatusCode.TOO_MANY_REQUESTS} even if quota exceeded`, async () => {
+		const incomingMessageMock = new IncomingMessageMock(
+			StatusCode.TOO_MANY_REQUESTS,
+		);
+		const { count, max } = EMAIL_API.headers;
+		incomingMessageMock.headers[count] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[max] = ANSWER_TO_LIFE.toString();
+		incomingMessageMock.headers[Header.CONTENT_TYPE] = ContentType.JSON;
+
+		const emailSendStub = sinon.stub(router['email'], 'send');
+		emailSendStub.resolves(incomingMessageMock as any);
+
+		return supertest(app)
+			.post('/send')
+			.attach('media', 'package.json')
+			.field('recipient', 'foo@example.com')
+			.expect(StatusCode.TOO_MANY_REQUESTS)
 			.then(emailSendStub.restore);
 	});
 
@@ -268,10 +288,10 @@ describe('router', () => {
 			.then(({ text }) => chai.expect(text).to.equal('Requète incorrecte')));
 
 	it('#methodPost should reject wrong request', async () => {
-		const errMsg = 'foobar';
+		const error = new Error('foobar');
 
 		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
-		verifyBufferStub.returns(errMsg);
+		verifyBufferStub.returns(error);
 
 		const res = await supertest(app)
 			.post('/draw')
@@ -280,14 +300,14 @@ describe('router', () => {
 			.expect(Header.CONTENT_TYPE, ContentType.PLAIN_UTF8)
 			.then();
 
-		chai.expect(res.text).to.equal(errMsg);
+		chai.expect(res.text).to.equal(error.message);
 
 		verifyBufferStub.restore();
 	});
 
 	it('#methodPost should fail on nextID error', async () => {
 		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
-		verifyBufferStub.returns(null);
+		verifyBufferStub.returns(undefined);
 
 		const dbNextStub = sinon.stub(db, 'nextID');
 		dbNextStub.rejects('foobar');
@@ -308,7 +328,7 @@ describe('router', () => {
 
 	it('#methodPost should insert', async () => {
 		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
-		verifyBufferStub.returns(null);
+		verifyBufferStub.returns(undefined);
 
 		const dbNextStub = sinon.stub(db, 'nextID');
 		dbNextStub.resolves(ANSWER_TO_LIFE);
@@ -347,7 +367,7 @@ describe('router', () => {
 
 	it('#methodPut should reject id zero', async () => {
 		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
-		verifyBufferStub.returns(null);
+		verifyBufferStub.returns(undefined);
 
 		return supertest(app)
 			.put('/draw/0')
@@ -358,7 +378,7 @@ describe('router', () => {
 
 	it('#methodPut should reject negative id', async () => {
 		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
-		verifyBufferStub.returns(null);
+		verifyBufferStub.returns(undefined);
 
 		return supertest(app)
 			.put(`/draw/-${ANSWER_TO_LIFE}`)
@@ -368,10 +388,10 @@ describe('router', () => {
 	});
 
 	it('#methodPut should reject wrong request', async () => {
-		const errMsg = 'foobar';
+		const error = new Error('foobar');
 
 		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
-		verifyBufferStub.returns(errMsg);
+		verifyBufferStub.returns(error);
 
 		const res = await supertest(app)
 			.put(`/draw/${ANSWER_TO_LIFE}`)
@@ -380,14 +400,14 @@ describe('router', () => {
 			.expect(Header.CONTENT_TYPE, ContentType.PLAIN_UTF8)
 			.then();
 
-		chai.expect(res.text).to.equal(errMsg);
+		chai.expect(res.text).to.equal(error.message);
 
 		verifyBufferStub.restore();
 	});
 
 	it('#methodPut should fail on replace error', async () => {
 		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
-		verifyBufferStub.returns(null);
+		verifyBufferStub.returns(undefined);
 
 		const dbReplaceStub = sinon.stub(db, 'replace');
 		dbReplaceStub.rejects('foobar');
@@ -405,7 +425,7 @@ describe('router', () => {
 
 	it('#methodPut should replace', async () => {
 		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
-		verifyBufferStub.returns(null);
+		verifyBufferStub.returns(undefined);
 
 		const dbReplaceStub = sinon.stub(db, 'replace');
 

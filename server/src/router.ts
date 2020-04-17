@@ -44,7 +44,7 @@ class Router {
 		);
 	}
 
-	private verifyBuffer(buf: Uint8Array): string | null {
+	private verifyBuffer(buf: Uint8Array): Error | undefined {
 		const fbByteBuffer = new flatbuffers.flatbuffers.ByteBuffer(buf);
 		const draw = Draw.getRoot(fbByteBuffer);
 
@@ -54,17 +54,15 @@ class Router {
 			name.length < TextLen.MIN ||
 			name.length > TextLen.MAX
 		) {
-			return `Nom “${name}” invalide`;
+			return new Error(`Nom “${name}” invalide`);
 		}
 
 		for (let i = draw.tagsLength(); i-- !== 0; ) {
 			const tag = draw.tags(i);
 			if (tag.length < TextLen.MIN || tag.length > TextLen.MAX) {
-				return `Étiquette “${tag}” invalide`;
+				return new Error(`Étiquette “${tag}” invalide`);
 			}
 		}
-
-		return null;
 	}
 
 	private verifyID(textID: string): number | Error {
@@ -91,6 +89,8 @@ class Router {
 
 	private sendEmail(): express.RequestHandler {
 		return async (req, res, next): Promise<void> => {
+			res.type(ContentType.PLAIN_UTF8);
+
 			const recipient = req.body.recipient;
 			if (recipient == null || req.file == null) {
 				res
@@ -116,15 +116,21 @@ class Router {
 
 			switch (resEmail.statusCode) {
 				case StatusCode.OK:
-					res.status(StatusCode.OK);
+					res.status(StatusCode.ACCEPTED);
 					res.send(
 						`Courriel envoyé (${count} restant sur ${max} pour cette heure)`,
 					);
 					return;
 				case StatusCode.ACCEPTED:
-					res.status(StatusCode.OK);
+					res.status(StatusCode.ACCEPTED);
 					res.send(
 						`Courriel probabablement envoyé (${count} restant sur ${max} pour cette heure)`,
+					);
+					return;
+				case StatusCode.TOO_MANY_REQUESTS:
+					res.status(StatusCode.TOO_MANY_REQUESTS);
+					res.send(
+						`Quota alloué pour cette heure dépassé (${count} sur ${max})`,
 					);
 					return;
 				default:
@@ -138,12 +144,11 @@ class Router {
 			const chunks = new Array();
 			resEmail.on('data', chunks.push.bind(chunks));
 
-			await promisify(resEmail.on)('end');
+			await promisify(resEmail.on.bind(resEmail))('end');
 
 			const textResult = Buffer.concat(chunks).toString();
 			try {
 				const result = JSON.parse(textResult);
-				res.type(ContentType.PLAIN_UTF8);
 				res.status(StatusCode.NOT_ACCEPTABLE).send(result.error);
 			} catch (err) {
 				next(err);
@@ -195,9 +200,9 @@ class Router {
 
 			const buffer = req.body as Buffer;
 
-			const errMessage = this.verifyBuffer(buffer);
-			if (!!errMessage) {
-				res.status(StatusCode.NOT_ACCEPTABLE).send(errMessage);
+			const possibleError = this.verifyBuffer(buffer);
+			if (possibleError !== undefined) {
+				res.status(StatusCode.NOT_ACCEPTABLE).send(possibleError.message);
 				return;
 			}
 
@@ -230,9 +235,9 @@ class Router {
 				return;
 			}
 
-			const errMessage = this.verifyBuffer(req.body);
-			if (!!errMessage) {
-				res.status(StatusCode.NOT_ACCEPTABLE).send(errMessage);
+			const possibleError = this.verifyBuffer(req.body);
+			if (possibleError !== undefined) {
+				res.status(StatusCode.NOT_ACCEPTABLE).send(possibleError.message);
 				return;
 			}
 
