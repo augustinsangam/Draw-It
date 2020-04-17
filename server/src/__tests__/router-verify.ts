@@ -49,7 +49,9 @@ describe('router: verify', () => {
 		Draw.addTags(fbb, tags);
 		fbb.finish(Draw.end(fbb));
 		const possibleError = router['verifyBuffer'](fbb.asUint8Array());
-		chai.expect(possibleError?.message).to.be.equal(`Étiquette “${tag}” invalide`);
+		chai
+			.expect(possibleError?.message)
+			.to.be.equal(`Étiquette “${tag}” invalide`);
 	});
 
 	it('#verifyBuffer should invalidate long tag', () => {
@@ -64,7 +66,9 @@ describe('router: verify', () => {
 		Draw.addTags(fbb, tags);
 		fbb.finish(Draw.end(fbb));
 		const possibleError = router['verifyBuffer'](fbb.asUint8Array());
-		chai.expect(possibleError?.message).to.be.equal(`Étiquette “${tag}” invalide`);
+		chai
+			.expect(possibleError?.message)
+			.to.be.equal(`Étiquette “${tag}” invalide`);
 	});
 
 	it('#verifyBuffer should return null', () => {

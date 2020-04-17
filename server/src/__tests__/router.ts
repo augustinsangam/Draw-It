@@ -200,7 +200,9 @@ describe('router', () => {
 	});
 
 	it(`#methodSendEmail should returns ${StatusCode.TOO_MANY_REQUESTS} even if quota exceeded`, async () => {
-		const incomingMessageMock = new IncomingMessageMock(StatusCode.TOO_MANY_REQUESTS);
+		const incomingMessageMock = new IncomingMessageMock(
+			StatusCode.TOO_MANY_REQUESTS,
+		);
 		const { count, max } = EMAIL_API.headers;
 		incomingMessageMock.headers[count] = ANSWER_TO_LIFE.toString();
 		incomingMessageMock.headers[max] = ANSWER_TO_LIFE.toString();

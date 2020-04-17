@@ -129,7 +129,9 @@ class Router {
 					return;
 				case StatusCode.TOO_MANY_REQUESTS:
 					res.status(StatusCode.TOO_MANY_REQUESTS);
-					res.send(`Quota alloué pour cette heure dépassé (${count} sur ${max})`);
+					res.send(
+						`Quota alloué pour cette heure dépassé (${count} sur ${max})`,
+					);
 					return;
 				default:
 					break;
