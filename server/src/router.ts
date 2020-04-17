@@ -144,7 +144,7 @@ class Router {
 			const chunks = new Array();
 			resEmail.on('data', chunks.push.bind(chunks));
 
-			await promisify(resEmail.on)('end');
+			await promisify(resEmail.on.bind(resEmail))('end');
 
 			const textResult = Buffer.concat(chunks).toString();
 			try {
