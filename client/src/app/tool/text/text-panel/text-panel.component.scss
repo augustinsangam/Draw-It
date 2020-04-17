@@ -26,6 +26,10 @@ mat-form-field {
   user-select: none;
 }
 
+mat-form-field :hover {
+  cursor: default;
+}
+
 .fonts {
   width: auto;
   color: #FFFFFF;

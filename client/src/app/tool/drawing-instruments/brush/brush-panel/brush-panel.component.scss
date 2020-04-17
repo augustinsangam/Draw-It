@@ -19,6 +19,10 @@ mat-form-field {
   user-select: none;
 }
 
+mat-form-field :hover {
+  cursor: default;
+}
+
 mat-radio-button{
   display: block;
   margin-top: 15px;

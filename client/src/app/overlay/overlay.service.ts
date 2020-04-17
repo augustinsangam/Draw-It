@@ -36,7 +36,7 @@ const CONSTANTS = {
 
 const exportSaveDialogOptions: MatDialogConfig = {
   width: '1000px',
-  height: '90vh'
+  height: '850'
 };
 
 @Injectable({
@@ -124,8 +124,8 @@ export class OverlayService {
 
   openDocumentationDialog(fromHome: boolean, initSection: DocEnum = DocEnum.welcome): void {
     const dialogOptions: MatDialogConfig = {
-      width: '115vw',
-      height: '100vh',
+      width: '98%',
+      height: '95vh',
       panelClass: 'documentation'
     };
     this.dialogRefs.documentation = this.dialog.open(

@@ -41,6 +41,10 @@ mat-form-field {
   user-select: none;
 }
 
+mat-form-field :hover {
+  cursor: default;
+}
+
 mat-slide-toggle {
   margin-right: 30px;
 }
