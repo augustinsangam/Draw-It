@@ -18,6 +18,10 @@ mat-form-field {
   user-select: none;
 }
 
+mat-form-field :hover {
+  cursor: default;
+}
+
 .tool-tip {
 
   mat-icon {

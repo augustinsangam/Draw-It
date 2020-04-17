@@ -24,9 +24,17 @@ mat-card-title {
   color: #e91e63;
 }
 
+.cdk-overlay-pane.my-dialog {
+  position: relative!important;
+}
+
 .close-button {
-  margin-left: 35%;
-  margin-top: 35px;
+  position: absolute;
+  z-index: 99;
+  right: 0;
+  top: 0;
+  margin-top: 20px;
+  margin-right: 40px;
   color: #e91e63;
   background-color: whitesmoke;
 }

@@ -17,6 +17,10 @@ mat-form-field {
   margin-top: -25px;
 }
 
+mat-form-field :hover {
+  cursor: default;
+}
+
 .tool-tip {
 
   mat-icon {

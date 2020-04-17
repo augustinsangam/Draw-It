@@ -29,6 +29,10 @@ mat-form-field {
   margin-top: -20px;
 }
 
+mat-form-field :hover {
+  cursor: default;
+}
+
 mat-slide-toggle {
   margin-left: 30px;
 }
