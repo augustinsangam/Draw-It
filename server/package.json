@@ -5,7 +5,7 @@
     "node": ">=13.2.0"
   },
   "scripts": {
-    "clean": "rimraf coverage/ lib/ tsconfig.tsbuildinfo",
+    "clean": "rimraf coverage/ lib/ uploads/ tsconfig.tsbuildinfo",
     "build": "tsc",
     "build:watch": "tsc --watch",
     "prestart": "tsc",
