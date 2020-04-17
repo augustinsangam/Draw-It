@@ -268,10 +268,10 @@ describe('router', () => {
 			.then(({ text }) => chai.expect(text).to.equal('Requète incorrecte')));
 
 	it('#methodPost should reject wrong request', async () => {
-		const errMsg = 'foobar';
+		const error = new Error('foobar');
 
 		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
-		verifyBufferStub.returns(errMsg);
+		verifyBufferStub.returns(error);
 
 		const res = await supertest(app)
 			.post('/draw')
@@ -280,14 +280,14 @@ describe('router', () => {
 			.expect(Header.CONTENT_TYPE, ContentType.PLAIN_UTF8)
 			.then();
 
-		chai.expect(res.text).to.equal(errMsg);
+		chai.expect(res.text).to.equal(error.message);
 
 		verifyBufferStub.restore();
 	});
 
 	it('#methodPost should fail on nextID error', async () => {
 		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
-		verifyBufferStub.returns(null);
+		verifyBufferStub.returns(undefined);
 
 		const dbNextStub = sinon.stub(db, 'nextID');
 		dbNextStub.rejects('foobar');
@@ -368,10 +368,10 @@ describe('router', () => {
 	});
 
 	it('#methodPut should reject wrong request', async () => {
-		const errMsg = 'foobar';
+		const error = new Error('foobar');
 
 		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
-		verifyBufferStub.returns(errMsg);
+		verifyBufferStub.returns(error);
 
 		const res = await supertest(app)
 			.put(`/draw/${ANSWER_TO_LIFE}`)
@@ -380,14 +380,14 @@ describe('router', () => {
 			.expect(Header.CONTENT_TYPE, ContentType.PLAIN_UTF8)
 			.then();
 
-		chai.expect(res.text).to.equal(errMsg);
+		chai.expect(res.text).to.equal(error.message);
 
 		verifyBufferStub.restore();
 	});
 
 	it('#methodPut should fail on replace error', async () => {
 		const verifyBufferStub = sinon.stub(router as any, 'verifyBuffer');
-		verifyBufferStub.returns(null);
+		verifyBufferStub.returns(undefined);
 
 		const dbReplaceStub = sinon.stub(db, 'replace');
 		dbReplaceStub.rejects('foobar');

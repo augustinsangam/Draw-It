@@ -67,7 +67,7 @@ class Database {
 	}
 
 	async nextID(): Promise<number> {
-		if (this.db == null) {
+		if (this.db === undefined) {
 			return Promise.reject(ERRORS.nullDb);
 		}
 
@@ -88,26 +88,26 @@ class Database {
 	}
 
 	async all(): Promise<Entry[]> {
-		if (!!this.collection) {
-			return this.collection.find<Entry>().toArray();
+		if (this.collection === undefined) {
+			return Promise.reject(ERRORS.nullCollection);
 		}
 
-		return Promise.reject(ERRORS.nullCollection);
+		return this.collection.find<Entry>().toArray();
 	}
 
 	async insert(entry: Entry): Promise<mongodb.InsertOneWriteOpResult<Entry>> {
-		if (!!this.collection) {
-			return this.collection.insertOne(entry);
+		if (this.collection === undefined) {
+			return Promise.reject(ERRORS.nullCollection);
 		}
 
-		return Promise.reject(ERRORS.nullCollection);
+		return this.collection.insertOne(entry);
 	}
 
 	async replace(
 		entry: Entry,
 		upsert: boolean,
 	): Promise<mongodb.ReplaceWriteOpResult> {
-		if (this.collection == null) {
+		if (this.collection === undefined) {
 			return Promise.reject(ERRORS.nullCollection);
 		}
 
@@ -125,7 +125,7 @@ class Database {
 	}
 
 	async delete(entry: Entry): Promise<mongodb.DeleteWriteOpResultObject> {
-		if (this.collection == null) {
+		if (this.collection === undefined) {
 			return Promise.reject(ERRORS.nullCollection);
 		}
 
