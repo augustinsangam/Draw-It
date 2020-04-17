@@ -177,7 +177,7 @@ describe('router', () => {
 			.post('/send')
 			.attach('media', 'package.json')
 			.field('recipient', 'foo@example.com')
-			.expect(StatusCode.OK)
+			.expect(StatusCode.ACCEPTED)
 			.then(emailSendStub.restore);
 	});
 
@@ -195,7 +195,7 @@ describe('router', () => {
 			.post('/send')
 			.attach('media', 'package.json')
 			.field('recipient', 'foo@example.com')
-			.expect(StatusCode.OK)
+			.expect(StatusCode.ACCEPTED)
 			.then(emailSendStub.restore);
 	});
 
