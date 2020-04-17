@@ -6,7 +6,7 @@ import { Clipboard } from './clipboard';
 import { SelectionLogicComponent } from './selection-logic.component';
 
 // tslint:disable: no-magic-numbers no-string-literal no-any
-describe('Clipboard', () => {
+fdescribe('Clipboard', () => {
   let component: SelectionLogicComponent;
   let fixture: ComponentFixture<SelectionLogicComponent>;
   let instance: Clipboard;
@@ -167,7 +167,7 @@ describe('Clipboard', () => {
     }
     instance.paste();
     for ( const element of component['service']['clipboard'].peak()) {
-      expect((element.attributes.getNamedItem('transform')as Attr).value).toEqual('matrix(1,0,0,1,0,0)');
+      expect((element.attributes.getNamedItem('transform')as Attr).value).toEqual('matrix(1,0,0,1,-30,-30)');
     }
   });
 
@@ -182,6 +182,25 @@ describe('Clipboard', () => {
     const spy = spyOn (instance, 'clipboardValid');
     instance.paste();
     expect(spy).not.toHaveBeenCalled();
+  });
+
+  it('#onPaste should paste even if the tags are not in the svg', () => {
+
+    const svgShapeTest: SvgShape = {
+      color: 'blue',
+      width: 1345,
+      height: 245
+    };
+    component.svgShape = svgShapeTest;
+    const test = new Set<SVGElement>();
+    const rec1 = document.createElementNS('http://www.w3.org/2000/svg', 'svg:rect');
+    rec1.setAttribute('x', '155');
+    rec1.setAttribute('y', '135');
+    test.add(rec1);
+    component.service.clipboard = [test, test];
+    const spy = spyOn (instance, 'clipboardValid');
+    instance.paste();
+    expect(spy).toHaveBeenCalled();
   });
 
   it('#the onDelete should remove elements from the svg ', () => {
@@ -237,7 +256,7 @@ describe('Clipboard', () => {
     expect(instance.clipboardValid(new Set<SVGElement>())).toEqual(false);
     const rec3 = document.createElementNS('http://www.w3.org/2000/svg', 'svg:rect');
     const newSet =  new Set<SVGElement>(Array.from([rec3]) as SVGElement[]);
-    expect(instance.clipboardValid(newSet)).toEqual(false);
+    expect(instance.clipboardValid(newSet)).toEqual(true);
   });
 
   it('#isInside should return true if the elements are in the svg', () => {
@@ -267,6 +286,73 @@ describe('Clipboard', () => {
     expect(spy1).not.toHaveBeenCalled();
 
   });
+
+  it('#add Tag should correctly add a tag in the element', () => {
+    const rec1 = document.createElementNS('http://www.w3.org/2000/svg', 'svg:rect');
+    rec1.setAttribute('x', '155');
+    rec1.setAttribute('y', '135');
+    const classList = rec1.classList.value;
+    instance['addTag'](rec1, 'test');
+    expect(rec1.classList.value).not.toEqual(classList);
+  });
+
+  it('#delete Tag should correctly delete the tag in the element', () => {
+    const rec1 = document.createElementNS('http://www.w3.org/2000/svg', 'svg:rect');
+    rec1.setAttribute('x', '155');
+    rec1.setAttribute('y', '135');
+    instance['addTag'](rec1, 'test');
+    instance['addTag'](rec1, 'clipboard2');
+    instance['deleteTag'](rec1);
+    expect(rec1.classList.value).toEqual('test');
+    instance['deleteTag'](rec1);
+    expect(rec1.classList.value).toEqual('test');
+    const rec2 = document.createElementNS('http://www.w3.org/2000/svg', 'svg:rect');
+    rec1.setAttribute('x', '155');
+    rec1.setAttribute('y', '135');
+    instance['addTag'](rec2, 'clipboard3');
+    instance['deleteTag'](rec2);
+    expect(rec2.classList.value).toEqual('');
+  });
+
+  it('#getCurrentTags should return the correct tags', () => {
+    const svgShapeTest: SvgShape = {
+      color: 'blue',
+      width: 1345,
+      height: 245
+    };
+    component.svgShape = svgShapeTest;
+    const allElements = new Set<SVGElement>();
+    const rec1 = document.createElementNS('http://www.w3.org/2000/svg', 'svg:rect');
+    rec1.setAttribute('x', '155');
+    rec1.setAttribute('y', '135');
+    instance['addTag'](rec1, 'test');
+    instance['addTag'](rec1, 'clipBoard');
+    allElements.add(rec1);
+
+    const rec2 = document.createElementNS('http://www.w3.org/2000/svg', 'svg:rect');
+    rec2.setAttribute('x', '155');
+    rec2.setAttribute('y', '135');
+    instance['addTag'](rec2, 'test');
+    instance['addTag'](rec2, 'clipBoards');
+    allElements.add(rec2);
+    expect(instance['getCurrentTags'](allElements)).not.toEqual(new Set());
+  });
+
+  it('#tagsExistInSVG should return the correct tags', () => {
+    const svgShapeTest: SvgShape = {
+      color: 'blue',
+      width: 1345,
+      height: 245
+    };
+    component.svgShape = svgShapeTest;
+
+    const set = new Set<string>();
+    set.add('test');
+    set.add('test2');
+    set.add('filter1');
+    expect(instance['tagsExistInSVG'](set)).not.toEqual(true);
+  });
+
   it('#the subscribe of onCut should work ', (done: DoneFn) => {
     const spy = spyOn (instance, 'cut');
     component['service'].cut.next(null);
@@ -299,4 +385,5 @@ describe('Clipboard', () => {
       done();
     });
   });
+
 });
