@@ -78,7 +78,7 @@ Développement
 
 ``npm t``
   Cette comamde lance les tests présents dans le dossier ``lib/__tests__/`` qui
-  ont été transpilé à partir du dossier ``src/__tests__/`` par l'avant dernière
+  ont été transpilés à partir du dossier ``src/__tests__/`` par l'avant dernière
   commande.
 
 ``npm run coverage``
