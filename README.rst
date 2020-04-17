@@ -197,4 +197,15 @@ GIT
 - Messages de commit consis (français, court, temps au présent, troisième
   personne du singulier)
 
+*****
+Extra
+*****
+
+`VSCode <//code.visualstudio.com>`_
+===================================
+
+Pour ouvrir le project, cliquez sur ``Open Workspace…`` depuis ``File`` et
+selectionnez le fichier ``project.code-workspace`` présent à la racine du dépôt.
+Installez aussi les extensions recommandées.
+
 .. vim:cc=80:tw=80:fo+=t:fo-=l
