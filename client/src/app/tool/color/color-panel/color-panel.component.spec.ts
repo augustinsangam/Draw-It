@@ -186,6 +186,50 @@ describe('ColorPanelComponent', () => {
 
   }));
 
+  it('#addEvents() should updateRecentColors', fakeAsync(() => {
+    const spyUpdateRecentColors = spyOn<any>(component, 'updateRecentColors');
+    component['addEvents']();
+    component['colorsItemsArray'][2].button.nativeElement.click();
+
+    setTimeout(() => {
+      expect(spyUpdateRecentColors).toHaveBeenCalled();
+    }, 500);
+    tick(500);
+
+    const event = new MouseEvent('mousedown', {button: 1});
+    component['colorsItemsArray'][2].button.nativeElement.dispatchEvent(
+      event
+    );
+
+    setTimeout(() => {
+      expect(spyUpdateRecentColors).toHaveBeenCalled();
+    }, 500);
+    tick(500);
+
+  }));
+
+  it('#addEvents() should updateRecentColors', fakeAsync(() => {
+    const spyUpdateRecentColors = spyOn<any>(component, 'updateRecentColors');
+    component['addEvents']();
+    component['colorsItemsArray'][2].button.nativeElement.click();
+
+    setTimeout(() => {
+      expect(spyUpdateRecentColors).toHaveBeenCalled();
+    }, 500);
+    tick(500);
+
+    const event = new MouseEvent('mousedown', {button: 3});
+    component['colorsItemsArray'][2].button.nativeElement.dispatchEvent(
+      event
+    );
+
+    setTimeout(() => {
+      expect(spyUpdateRecentColors).toHaveBeenCalled();
+    }, 500);
+    tick(500);
+
+  }));
+
   it('#getStartColor() works !', () => {
     component['colorOption'] = ColorOption.Primary;
     component.colorService.primaryColor = 'rgba(255, 255, 255, 1)';
