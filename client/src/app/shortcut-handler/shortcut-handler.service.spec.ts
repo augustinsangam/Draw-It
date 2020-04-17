@@ -51,7 +51,7 @@ describe('ShortcutHandlerService', () => {
     );
   });
 
-  it('#desactivate should set the active property to true', () => {
+  it('#deactivate should set the active property to true', () => {
     service.set(Shortcut.C, debugFunction1);
     service.deactivate(Shortcut.C);
     expect((service['manager'].get(Shortcut.C) as Handler).isActive).toEqual(
@@ -71,7 +71,7 @@ describe('ShortcutHandlerService', () => {
     );
   });
 
-  it('#desactivateAll should set all active properties to false', () => {
+  it('#deactivateAll should set all active properties to false', () => {
     service.set(Shortcut.C, debugFunction1);
     service.set(Shortcut.L, debugFunction2);
     service.deactivateAll();

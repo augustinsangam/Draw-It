@@ -218,7 +218,7 @@ describe('ColorPickerContentComponent', () => {
 
   it('#focusing in handler works', () => {
     const spyDesactivate =
-      spyOn(component['shortcutHandler'], 'desactivateAll');
+      spyOn(component['shortcutHandler'], 'deactivateAll');
     const spyPush = spyOn(component['shortcutHandler'], 'push');
     component['focusHandlers'].in();
     expect(spyDesactivate).toHaveBeenCalled();

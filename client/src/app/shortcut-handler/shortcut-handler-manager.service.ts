@@ -13,7 +13,7 @@ import {ShortcutCallBack, ShortcutHandlerService} from './shortcut-handler.servi
 })
 export class ShortcutHandlerManagerService {
 
-  private handlersFunc: Map<Shortcut, ShortcutCallBack>;
+  private readonly handlersFunc: Map<Shortcut, ShortcutCallBack>;
 
   constructor(
     private readonly toolSelectorService: ToolSelectorService,
