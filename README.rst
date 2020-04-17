@@ -85,7 +85,7 @@ Développement
   Cette commande lance les tests et affiche la couverture du code.
 
 ``npm run lint``
-  Cette commande exécute TSLint (_obsolète: https://medium.com/palantir/tslint-in-2019-1a144c2317a9).
+  Cette commande exécute TSLint (`obsolète <https://medium.com/palantir/tslint-in-2019-1a144c2317a9>`_).
 
 ``npm run eslint``
   Cette commande exécute ESLint.
