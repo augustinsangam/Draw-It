@@ -5,10 +5,11 @@ import { SelectionLogicComponent } from './selection-logic.component';
 import { Transform } from './transform';
 
 const TAG_LENGTH = 32;
+const TAG_PREFIX = 'clipboard';
 
 export class Clipboard {
 
-  constructor(private selectionLogic: SelectionLogicComponent) {}
+  constructor(private selectionLogic: SelectionLogicComponent) { }
 
   copy(): void {
     const selectedElements = new Set(
@@ -48,29 +49,44 @@ export class Clipboard {
     }
 
     this.selectionLogic.service.clipboard.push(
-      Util.SelectionLogicUtil.clone(this.selectionLogic.service.clipboard.peak())
+      Util.SelectionLogicUtil.clone(
+        this.selectionLogic.service.clipboard.peak()
+      )
     );
 
     Transform.translateAll(
       this.selectionLogic.service.clipboard.peak(),
-      Util.PASTE_TRANSLATION, Util.PASTE_TRANSLATION, this.selectionLogic.renderer);
+      Util.PASTE_TRANSLATION,
+      Util.PASTE_TRANSLATION,
+      this.selectionLogic.renderer
+      );
     const lastValidClipboard = this.selectionLogic.service.clipboard.peak();
 
     const tag = this.createRandomTag();
     lastValidClipboard.forEach((element) => {
       this.addTag(element, tag);
-      this.selectionLogic.renderer.appendChild(this.selectionLogic.svgStructure.drawZone, element);
+      this.selectionLogic.renderer.appendChild(
+        this.selectionLogic.svgStructure.drawZone,
+        element
+      );
     });
 
     if (!this.isInside(lastValidClipboard)) {
       const length = this.selectionLogic.service.clipboard.length - 1;
-      Transform.translateAll(lastValidClipboard, - Util.PASTE_TRANSLATION * length, -Util.PASTE_TRANSLATION * length,
+      Transform.translateAll(
+        lastValidClipboard,
+        - Util.PASTE_TRANSLATION * length,
+        -Util.PASTE_TRANSLATION * length,
         this.selectionLogic.renderer
       );
       this.selectionLogic.service.clipboard = [lastValidClipboard];
     }
 
-    this.selectionLogic.applyMultipleSelection(undefined, undefined, new Set(lastValidClipboard));
+    this.selectionLogic.applyMultipleSelection(
+      undefined,
+      undefined,
+      new Set(lastValidClipboard)
+    );
     this.selectionLogic.undoRedoService.saveState();
   }
 
@@ -97,11 +113,17 @@ export class Clipboard {
     );
 
     toDuplicate.forEach((element) => {
-      this.selectionLogic.renderer.appendChild(this.selectionLogic.svgStructure.drawZone, element);
+      this.selectionLogic.renderer.appendChild(
+        this.selectionLogic.svgStructure.drawZone,
+         element
+         );
     });
 
     if (!this.isInside(toDuplicate)) {
-      Transform.translateAll(toDuplicate, - Util.PASTE_TRANSLATION, -Util.PASTE_TRANSLATION , this.selectionLogic.renderer);
+      Transform.translateAll(toDuplicate,
+        - Util.PASTE_TRANSLATION,
+         -Util.PASTE_TRANSLATION,
+         this.selectionLogic.renderer);
     }
 
     this.selectionLogic.applyMultipleSelection(
@@ -147,11 +169,12 @@ export class Clipboard {
 
   private createRandomTag(): string {
     let result         = '';
-    const characters   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const characters   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+            + 'abcdefghijklmnopqrstuvwxyz0123456789';
     for (let i = 0; i < TAG_LENGTH; i++ ) {
       result += characters.charAt(Math.floor(Math.random() * characters.length));
     }
-    return 'clipboard' + result;
+    return TAG_PREFIX + result;
   }
 
   private getCurrentTags(clipboard: Set<SVGElement>): Set<string> {
@@ -173,17 +196,40 @@ export class Clipboard {
   }
 
   private addTag(element: SVGElement, tag: string): void {
+    this.deleteTag(element);
+    element.classList.add(tag);
+  }
+
+  private deleteTag(element: SVGElement): void {
     element.classList.forEach((classListItem: string) => {
-      if (classListItem.startsWith('clipboard')) {
-        element.classList.remove(classListItem);
+      if (classListItem.startsWith(TAG_PREFIX)) {
+        this.selectionLogic.renderer.removeClass(
+          element,
+          classListItem
+        );
+        if (element.classList.length === 0) {
+          this.selectionLogic.renderer.removeAttribute(
+            element,
+            'class'
+          );
+        }
       }
     });
-    element.classList.add(tag);
   }
 
   private tagsExistInSVG(tags: Set<string>): boolean {
     for (const tag of tags) {
-      if (this.selectionLogic.svgStructure.root.getElementsByClassName(tag).length === 0) {
+      let tagExist = false;
+      const allDraws = Array.from(
+        this.selectionLogic.svgStructure.drawZone.children
+      );
+      for (const element of allDraws) {
+        if (element.classList.contains(tag)) {
+          tagExist = true;
+          break;
+        }
+      }
+      if (!tagExist) {
         return false;
       }
     }
