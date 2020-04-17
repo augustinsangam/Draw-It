@@ -3,13 +3,8 @@
 import { Renderer2 } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-<<<<<<< HEAD
-import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialogRef, MatRadioChange} from '@angular/material';
-
-=======
 import { MAT_DIALOG_DATA, MAT_DIALOG_SCROLL_STRATEGY_PROVIDER, MatDialogRef, MatRadioChange } from '@angular/material';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
->>>>>>> ux/style
 import { MaterialModule } from 'src/app/material.module';
 import { SvgShape } from 'src/app/svg/svg-shape';
 import { SvgService } from 'src/app/svg/svg.service';
@@ -20,12 +15,7 @@ import { ExportType } from './export-type';
 import { ExportComponent, FilterChoice, FormatChoice } from './export.component';
 import { ProgressExportComponent } from './progress-export.component';
 
-<<<<<<< HEAD
-describe('ExportComponent', () => {
-=======
-// tslint:disable: no-magic-numbers no-any no-string-literal
 fdescribe('ExportComponent', () => {
->>>>>>> ux/style
   let component: ExportComponent;
   let fixture: ComponentFixture<ExportComponent>;
 
@@ -142,38 +132,50 @@ fdescribe('ExportComponent', () => {
     expect(component['formatToMime'](FormatChoice.PNG)).toEqual('image/png');
   });
 
-<<<<<<< HEAD
   it('#formatToMime should return image/jpeg for jpeg format', () => {
     expect(component['formatToMime'](FormatChoice.JPEG)).toEqual('image/jpeg');
   });
 
-  it('#onConfirm should close the dialogRef', async () => {
+  it('#onConfirm should not call getFormat if confirmed is false', async () => {
+    const getFroamtSpy = spyOn<any>(component, 'getFormat');
+    await component['onConfirm'](false);
+    expect(getFroamtSpy).not.toHaveBeenCalled();
+  });
+
+  it('#onConfirm should call getImageAsURL if export type is local', async () => {
     const getImageAsURLSpy = spyOn<any>(component, 'getImageAsURL');
     getImageAsURLSpy.and.returnValue(Promise.resolve('foo'));
     spyOn<any>(component, 'downloadImage');
     component['exportType'] = ExportType.LOCAL;
-    await component['onConfirm']();
-=======
-  it('#onConfirm should close the dialogRef', () => {
-    spyOn<any>(component, 'exportDrawing');
-    component['onConfirm'](true);
->>>>>>> ux/style
+    await component['onConfirm'](true);
+    expect(getImageAsURLSpy).toHaveBeenCalled();
+  });
+/*
+  fit('#popUpConfirm should call onConfirm after confirm dialog closed', async () => {
+    component['exportType'] = ExportType.LOCAL;
+
+    component['popUpConfirm']();
+
+    component['dialogRefs'].confirm.close();
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     expect(mockDialogRef.close).toHaveBeenCalled();
   });
 
-  it('#onConfirm should close with sendEmail error', async () => {
-    const spy = spyOn(component['communicationService'], 'sendEmail');
-    const error = new Error('foobar');
-    spy.and.callFake(() => Promise.reject(error));
-
-    component['exportType'] = ExportType.EMAIL;
+  fit('#onConfirm should close epxortDialog after progress dialog closed', async () => {
+    component['exportType'] = ExportType.LOCAL;
 
     await component['onConfirm'](true);
 
-    expect(mockDialogRef.close).toHaveBeenCalledWith(error);
-  });
+    component['dialogRefs'].progress.close();
 
-  it('#onConfirm should close with sendEmail response', async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    expect(mockDialogRef.close).toHaveBeenCalled();
+  });
+*/
+  it('#onConfirm should set message on sendEmail response', async () => {
     const spy = spyOn(component['communicationService'], 'sendEmail');
     spy.and.returnValue(Promise.resolve('foobar'));
 
@@ -181,7 +183,7 @@ fdescribe('ExportComponent', () => {
 
     await component['onConfirm'](true);
 
-    expect(mockDialogRef.close).toHaveBeenCalledWith('foobar');
+    expect(component['dialogRefs'].progress.componentInstance.message).toEqual('foobar');
   });
 
   it('#onOptionChange should call createView', () => {
@@ -381,14 +383,4 @@ fdescribe('ExportComponent', () => {
     const blob = await component['getImageAsBlob'](FormatChoice.PNG);
     expect(blob.type).toEqual('image/png');
   });
-
-  fit('#popUpConfirm should return pop up closing state', (done: DoneFn) => {
-    const spy = spyOn<any>(component, 'onConfirm');
-    component['popUpConfirm']();
-    component['dialogRefs'].confirm.close(true);
-    component['dialogRefs'].confirm.afterClosed().subscribe(() => {
-      expect(spy).toHaveBeenCalled();
-    });
-  });
 });
-// tslint:disable-next-line: max-file-line-count
