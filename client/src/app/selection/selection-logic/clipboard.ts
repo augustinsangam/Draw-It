@@ -3,7 +3,6 @@ import { Zone } from '../zone';
 import * as Util from './selection-logic-util';
 import { SelectionLogicComponent } from './selection-logic.component';
 import { Transform } from './transform';
-
 const TAG_LENGTH = 32;
 const TAG_PREFIX = 'clipboard';
 
@@ -235,5 +234,4 @@ export class Clipboard {
     }
     return true;
   }
-
 }

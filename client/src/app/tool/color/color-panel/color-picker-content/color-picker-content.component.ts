@@ -125,7 +125,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
     this.focusHandlers = {
       in: () => {
         this.shortcutHandler.push();
-        this.shortcutHandler.desactivateAll();
+        this.shortcutHandler.deactivateAll();
       },
       out: () => this.shortcutHandler.pop()
     };

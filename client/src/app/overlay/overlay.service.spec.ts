@@ -118,6 +118,10 @@ describe('Overlay', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    component['dialog']['matDialog'].closeAll();
+  });
+
   it('#should create', () => {
     expect(service).toBeTruthy();
   });

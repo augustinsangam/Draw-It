@@ -22,11 +22,11 @@ import { flatbuffers } from 'flatbuffers';
 import { Subject } from 'rxjs';
 import { SvgHeader } from 'src/app/svg/svg-header';
 import { SvgShape } from 'src/app/svg/svg-shape';
+import { NOT_FOUND } from '../../../not-found';
 import { ScreenService } from '../new-draw/sreen-service/screen.service';
 
 const CARD_WIDTH = 342;
 const SNACKBAR_DURATION = 5000;
-const NOT_FOUND = -1;
 
 export interface DialogRefs {
   delete: MatDialogRef<DeleteConfirmationDialogComponent>;

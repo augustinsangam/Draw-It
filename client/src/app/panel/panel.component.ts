@@ -82,7 +82,7 @@ export class PanelComponent implements OnInit {
     return null;
   }
 
-  addColorBox(): void {
+  private addColorBox(): void {
     const factory = this.componentFactoryResolver.resolveComponentFactory(ColorBoxComponent);
     this.chatBoxRef.createComponent(factory);
   }

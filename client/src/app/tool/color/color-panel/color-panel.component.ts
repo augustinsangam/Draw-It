@@ -107,12 +107,10 @@ export class ColorPanelComponent extends ToolPanelDirective
       this.eventManager.addEventListener(
         this.colorsItemsArray[i].button.nativeElement,
         'click',
-        (mouseEvent: MouseEvent) => {
-          if (mouseEvent.button === 0) {
-            this.colorPreviewPrimary.updateColor(this.colorsItemsArray[i].color);
-            this.colorService.primaryColor = this.colorsItemsArray[i].color;
-            this.promoteColor(i);
-          }
+        () => {
+          this.colorPreviewPrimary.updateColor(this.colorsItemsArray[i].color);
+          this.colorService.primaryColor = this.colorsItemsArray[i].color;
+          this.promoteColor(i);
         }
       );
     }
