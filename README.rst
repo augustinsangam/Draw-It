@@ -137,24 +137,40 @@ Documentation externe
 Conventions de nommage
 **********************
 
-- En anglais
+.. code-block:: ts
 
-- UPPER_SNAKE_CASE pour les constantes
+  // foo-bar.ts
 
-- PascalCase pour les noms de types et les valeurs d'énumérations
+  const FOO_BAR = 42;
 
-- camelCase pour les noms de fonctions, de propriétés et de variables
+  let fooBar = 42;
 
-- kebab-case pour les noms de balises des composants Angular
+  const fooBar = (): number => 42;
 
-- Pas d'abbréviations dans les noms de variables ou de fonctions
+  enum FooBar {
+    // sorted if possible
+    BAR,
+    FOO,
+  }
 
-- Un tableau/list/dictionnaire devrait avoir un nom indiquant qu'il contient
-  plusieurs objets, par exemple "cars"
+  interface FooBar {
+    foo: number;
+    bar?: string;
+  }
 
-- Pas de type dans le nom (“listOfCars” devient “cars”)
+  class FooBar {
+    private static readonly BAZ: number = 42;
 
-- Guillemets simples dans HTML **si nécessaire**
+    private baz: string[];
+
+    constructor() {
+      this.baz = new Array();
+    }
+
+    private fooBar(): void {
+      console.log(FooBar.BAZ);
+    }
+  }
 
 *******
 Imports
