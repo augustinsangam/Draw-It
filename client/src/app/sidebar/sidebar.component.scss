@@ -48,6 +48,15 @@ nav a:hover, nav a.selected {
 .Desactivate {
   color: black;
 }
+
+.doc-icon {
+  background-color: #FFF000;
+}
+
 mat-icon {
   color: skyblue;;
+}
+
+.doc-icon mat-icon {
+  color: rgb(153, 31, 31);
 }

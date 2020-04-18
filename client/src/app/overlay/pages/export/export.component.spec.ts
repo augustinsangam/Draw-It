@@ -134,12 +134,12 @@ describe('ExportComponent', () => {
 
   it('#getFilters() should return an array of FilterChoice', fakeAsync(() => {
     const result = component['getFilters']();
-    expect(result[0]).toEqual(FilterChoice.None);
-    expect(result[1]).toEqual(FilterChoice.Saturate);
-    expect(result[2]).toEqual(FilterChoice.BlackWhite);
-    expect(result[3]).toEqual(FilterChoice.Inverse);
-    expect(result[4]).toEqual(FilterChoice.Sepia);
-    expect(result[5]).toEqual(FilterChoice.Grey);
+    expect(result[0]).toEqual(FilterChoice.NONE);
+    expect(result[1]).toEqual(FilterChoice.SATURATE);
+    expect(result[2]).toEqual(FilterChoice.BLACKWHITE);
+    expect(result[3]).toEqual(FilterChoice.INVERSE);
+    expect(result[4]).toEqual(FilterChoice.SEPIA);
+    expect(result[5]).toEqual(FilterChoice.GREY);
   }));
 
   it('#formatToMime should return image/svg+xml for svg format', () => {

@@ -132,6 +132,7 @@ export class ExportComponent implements AfterViewInit {
     }
 
     this.dialogRefs.progress = this.matDialog.open(ProgressExportComponent, { width: '400px'});
+    this.dialogRefs.progress.disableClose = true;
     const format = this.getFormat();
     let succeded = true;
     if (this.exportType === ExportType.EMAIL) {
@@ -337,12 +338,10 @@ export class ExportComponent implements AfterViewInit {
     if (input == null) {
       return;
     }
-
     if (value === ExportType.LOCAL) {
       input.disable();
       return;
     }
-
     input.setValidators([Validators.required, Validators.email]);
     input.enable();
   }

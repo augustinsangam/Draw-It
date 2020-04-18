@@ -19,9 +19,6 @@ export class BucketLogicComponent
 
   protected static readonly MAX_RGBA: number = 255;
   private static readonly NUMBER_OF_DIMENSIONS: number = 4;
-  // tslint:disable-next-line:no-magic-numbers
-  private static readonly MAX_DIFFERENCE: number = (255 * 255) * 3;
-  private static readonly MAX_TOLERANCE: number = 100;
   private static readonly NOT_TO_FAR: number = 100;
 
   private image: ImageData;
@@ -88,7 +85,7 @@ export class BucketLogicComponent
           borders.add(currentPoint);
           break ;
         }
-        if (this.isSameColor(connectedPoint, oldColor)) {
+        if (this.service.isSameColor(oldColor, this.getColor(connectedPoint))) {
           fillQueue.push(connectedPoint);
           fillVisited.add(connectedPoint);
         } else {
@@ -148,12 +145,6 @@ export class BucketLogicComponent
     };
   }
 
-  private isSameColor(point: Point, color: RGBAColor): boolean {
-    const diffferenceNormalized =
-      this.difference(color, this.getColor(point)) / BucketLogicComponent.MAX_DIFFERENCE;
-    return (diffferenceNormalized * BucketLogicComponent.MAX_TOLERANCE) <= this.service.tolerance;
-  }
-
   private drawSvg(shapes: Point[][]): void {
 
     let pathDAttribute = '';
@@ -193,12 +184,6 @@ export class BucketLogicComponent
       new Point(x + 1, y - 1),
       new Point(x + 1, y + 1),
     ]);
-  }
-
-  private difference(color1: RGBAColor, color2: RGBAColor): number {
-    return  (color1.r - color2.r) * (color1.r - color2.r)
-          + (color1.g - color2.g) * (color1.g - color2.g)
-          + (color1.b - color2.b) * (color1.b - color2.b);
   }
 
 }
