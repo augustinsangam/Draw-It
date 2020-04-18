@@ -98,9 +98,9 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     elements.forEach((element: SVGElement) => {
       if (this.selectedElementsFreezed.has(element)) {
         elementsToInvert.delete(element);
-      } else {
-        elementsToInvert.add(element);
+        return;
       }
+      elementsToInvert.add(element);
     });
     this.applyMultipleSelection(startPoint, endPoint, elementsToInvert);
   }
@@ -123,13 +123,13 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
     const [startPoint, endPoint] = Util.SelectionLogicUtil.orderPoint(p1, p2);
     const rectangleObject =
       new Rectangle(this.renderer, element, new MathService());
-    rectangleObject.setParameters(BackGroundProperties.None, StrokeProperties.Filled);
+    rectangleObject.setParameters(BackGroundProperties.NONE, StrokeProperties.FILLED);
     rectangleObject.dragRectangle(startPoint, endPoint);
     rectangleObject.setCss({
-      strokeWidth: Util.RECTANGLE_STROKE, strokeColor: color,
+      strokeWidth: Util.SelectionLogicUtil.RECTANGLE_STROKE, strokeColor: color,
       fillColor: 'none', opacity: '0'
     });
-    this.renderer.setAttribute(element, 'stroke-dasharray', Util.DASH_ARRAY);
+    this.renderer.setAttribute(element, 'stroke-dasharray', Util.SelectionLogicUtil.DASH_ARRAY);
   }
 
   protected drawCircles(p1: Point, p2: Point): void {
@@ -138,21 +138,21 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
       (startPoint.x + endPoint.x) / 2,
       (startPoint.y + endPoint.y) / 2);
     this.setCircle(new Point(startPoint.x, centerPoint.y),
-      CircleType.LEFT_CIRCLE, Util.CIRCLE_RADIUS);
+      CircleType.LEFT_CIRCLE, Util.SelectionLogicUtil.CIRCLE_RADIUS);
     this.setCircle(new Point(centerPoint.x, startPoint.y),
-      CircleType.TOP_CIRCLE, Util.CIRCLE_RADIUS);
+      CircleType.TOP_CIRCLE, Util.SelectionLogicUtil.CIRCLE_RADIUS);
     this.setCircle(new Point(endPoint.x, centerPoint.y),
-      CircleType.RIGHT_CIRCLE, Util.CIRCLE_RADIUS);
+      CircleType.RIGHT_CIRCLE, Util.SelectionLogicUtil.CIRCLE_RADIUS);
     this.setCircle(new Point(centerPoint.x, endPoint.y),
-      CircleType.BOTTOM_CIRCLE, Util.CIRCLE_RADIUS);
+      CircleType.BOTTOM_CIRCLE, Util.SelectionLogicUtil.CIRCLE_RADIUS);
   }
 
   private setCircle(center: Point, circle: CircleType, radius: string): void {
     if (this.mouse.left.selectedElement === circle) {
-      Circle.set(center, this.renderer, this.circles[circle], radius, Util.COLORS.DRAK_GRAY);
-    } else {
-      Circle.set(center, this.renderer, this.circles[circle], radius, Util.COLORS.GRAY);
+      Circle.set(center, this.renderer, this.circles[circle], radius, Util.COLORS.DRAK_RED);
+      return;
     }
+    Circle.set(center, this.renderer, this.circles[circle], radius, Util.COLORS.GRAY);
   }
 
   deleteVisualisation(): void {
@@ -224,7 +224,8 @@ export abstract class SelectionLogicBase extends ToolLogicDirective
   protected applyMouseStyle($event: MouseEvent): void {
     let mouseStyle = 'default';
     if (this.mouse.left.onResize) {
-      mouseStyle = (this.mouse.left.selectedElement as number) % (Util.CIRCLES.length - 1) === 0 ? 'col-resize' : 'ns-resize';
+      mouseStyle = (this.mouse.left.selectedElement as number)
+        % (Util.SelectionLogicUtil.CIRCLES.length - 1) === 0 ? 'col-resize' : 'ns-resize';
     } else if (this.isInTheVisualisationZone($event.offsetX, $event.offsetY) && !this.mouse.left.mouseIsDown) {
       // ElementFromPoint n'est utilisé que pour avoir une interaction belle avec l'utilisateur
       // lors de la sélection. Il n'influence pas la logique.

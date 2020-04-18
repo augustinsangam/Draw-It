@@ -4,7 +4,6 @@ import { PolygoneService } from '../polygone/polygone.service';
 import { AbstractShape } from './abstract-shape';
 import { Point } from './point';
 
-// Class tested in ../Polygone/polygone-logic.component.spec.ts
 export class Polygone extends AbstractShape {
 
   constructor(
@@ -14,10 +13,10 @@ export class Polygone extends AbstractShape {
     private sides: number,
     protected polygonService?: PolygoneService
   ) {
-      super(renderer, element, polygonService);
-    }
+    super(renderer, element, polygonService);
+  }
 
-  insertPolygonInSVG(points: Point []): void {
+  insertPolygonInSVG(points: Point[]): void {
     let atribute = '';
     for (const point of points) {
       atribute += `${point.x} ${point.y} `;
@@ -34,8 +33,8 @@ export class Polygone extends AbstractShape {
       mouseDownPoint,
       oppositePoint
     );
-    const points: Point [] = this.mathService.getPolygonCornersFromRectangle(
+    const points: Point[] = this.mathService.getPolygonCornersFromRectangle(
       mouseDownPoint, upLeftCorner, dimensions, this.sides, border);
     this.insertPolygonInSVG(points);
-    }
+  }
 }

@@ -1,17 +1,19 @@
+// tslint:disable: no-string-literal
+
 import { fakeAsync, getTestBed, TestBed, tick } from '@angular/core/testing';
 import { EventManager } from '@angular/platform-browser';
 
-import * as ScreenServiceModule from './screen.service';
+import { ScreenService } from './screen.service';
 
 describe('ScreenService', () => {
 
-  let service: ScreenServiceModule.ScreenService;
+  let service: ScreenService;
 
   beforeEach( () => {
     TestBed.configureTestingModule({
       providers: [EventManager]
     });
-    service = getTestBed().get(ScreenServiceModule.ScreenService);
+    service = getTestBed().get(ScreenService);
   });
 
   it('#should be created', () => {
@@ -21,7 +23,7 @@ describe('ScreenService', () => {
   it('#getCurrentSize() should return current size minus left bar width',
     () => {
     const currentScreenSize = {
-      width: innerWidth - ScreenServiceModule.sideBarWidth,
+      width: innerWidth - ScreenService['SIDEBAR_WIDTH'],
       height: innerHeight
     };
     expect(currentScreenSize).toEqual(service.getCurrentSize());

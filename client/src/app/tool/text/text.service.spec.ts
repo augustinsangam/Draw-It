@@ -29,9 +29,9 @@ describe('TextService', () => {
 
   it('#getTextAlign should return the correct values', () => {
     const expectations = new Map([
-      [TextAlignement.left, 0],
-      [TextAlignement.center, 5],
-      [TextAlignement.right, 10]
+      [TextAlignement.LEFT, 0],
+      [TextAlignement.CENTER, 5],
+      [TextAlignement.RIGHT, 10]
     ]);
 
     expectations.forEach((val, key) => {
@@ -42,9 +42,9 @@ describe('TextService', () => {
 
   it('#getTextAnchor should return the correct values', () => {
     const expectations = new Map([
-      [TextAlignement.left, 'start'],
-      [TextAlignement.center, 'middle'],
-      [TextAlignement.right, 'end']
+      [TextAlignement.LEFT, 'start'],
+      [TextAlignement.CENTER, 'middle'],
+      [TextAlignement.RIGHT, 'end']
     ]);
 
     expectations.forEach((val, key) => {

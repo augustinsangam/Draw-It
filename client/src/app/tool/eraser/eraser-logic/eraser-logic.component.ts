@@ -13,7 +13,7 @@ import { Rectangle } from '../../shape/common/rectangle';
 import { ToolLogicDirective } from '../../tool-logic/tool-logic.directive';
 import { EraserService } from '../eraser.service';
 
-export const CONSTANTS = {
+export const ERASER_CONSTANTS = {
   MAX_RGB: 255,
   // tslint:disable-next-line: no-magic-numbers
   MAX_DIFFERENCE: 255 * 255 * 3,
@@ -72,11 +72,12 @@ export class EraserLogicComponent
   private initialiseHandlers(): void {
     this.handlers = new Map<string, Util.MouseEventCallBack>([
       ['mousedown', ($event: MouseEvent) => {
-        if ($event.button === 0) {
-          this.mouse.startPoint = new Point($event.offsetX, $event.offsetY);
-          this.mouse.mouseIsDown = true;
-          this.elementsDeletedInDrag = false;
+        if ($event.button !== 0) {
+          return ;
         }
+        this.mouse.startPoint = new Point($event.offsetX, $event.offsetY);
+        this.mouse.mouseIsDown = true;
+        this.elementsDeletedInDrag = false;
       }],
       ['mousemove', ($event: MouseEvent) => {
         this.restoreMarkedElements();
@@ -108,20 +109,20 @@ export class EraserLogicComponent
           this.restoreMarkedElements();
           this.undoRedoService.saveState();
         }
-
       }],
       ['mouseleave', () => {
         this.hideEraser();
         this.restoreMarkedElements();
         this.mouse.mouseIsDown = false;
-        if (this.elementsDeletedInDrag) {
-          this.undoRedoService.saveState();
-          this.elementsDeletedInDrag = false;
+        if (!this.elementsDeletedInDrag) {
+          return ;
         }
+        this.undoRedoService.saveState();
+        this.elementsDeletedInDrag = false;
       }]
     ]);
-
   }
+
   ngOnInit(): void {
     ['mousedown', 'mousemove', 'mouseup', 'mouseleave']
       .forEach((event: string) => {
@@ -138,13 +139,13 @@ export class EraserLogicComponent
     const [startPoint, endPoint] = this.getCorners();
     const rectangleObject =
       new Rectangle(this.renderer, this.eraser, new MathService());
-    rectangleObject.setParameters(BackGroundProperties.Filled,
-      StrokeProperties.Filled);
+    rectangleObject.setParameters(BackGroundProperties.FILLED,
+      StrokeProperties.FILLED);
     rectangleObject.dragRectangle(startPoint, endPoint);
     rectangleObject.setCss({
-      strokeWidth: CONSTANTS.STROKE_WIDTH,
-      strokeColor: CONSTANTS.RED_TRANSPARENT,
-      fillColor: CONSTANTS.FILL_COLOR,
+      strokeWidth: ERASER_CONSTANTS.STROKE_WIDTH,
+      strokeColor: ERASER_CONSTANTS.RED_TRANSPARENT,
+      fillColor: ERASER_CONSTANTS.FILL_COLOR,
       opacity: '1'
     });
   }
@@ -159,7 +160,7 @@ export class EraserLogicComponent
   }
 
   private addFill(): void {
-    this.renderer.setAttribute(this.eraser, 'fill', CONSTANTS.FILL_COLOR);
+    this.renderer.setAttribute(this.eraser, 'fill', ERASER_CONSTANTS.FILL_COLOR);
   }
 
   private markElementsInZone(x: number, y: number): Set<SVGElement> {
@@ -167,15 +168,15 @@ export class EraserLogicComponent
     this.markedElements.clear();
     selectedElements.forEach((element: SVGElement) => {
       let stroke = element.getAttribute('stroke');
-      let strokeModified = CONSTANTS.RED;
+      let strokeModified = ERASER_CONSTANTS.RED;
       const hasStroke = !(stroke == null || stroke === 'none');
       if (!hasStroke) {
         stroke = element.getAttribute('fill') as string;
       }
       const rgb = this.colorService.rgbFormRgba(stroke as string);
-      const difference = (rgb.r - CONSTANTS.MAX_RGB) * (rgb.r - CONSTANTS.MAX_RGB) + rgb.g * rgb.g + rgb.b * rgb.b;
-      if (difference / CONSTANTS.MAX_DIFFERENCE < CONSTANTS.TOLERANCE) {
-        rgb.r = Math.max(0, rgb.r - CONSTANTS.FACTOR);
+      const difference = (rgb.r - ERASER_CONSTANTS.MAX_RGB) * (rgb.r - ERASER_CONSTANTS.MAX_RGB) + rgb.g * rgb.g + rgb.b * rgb.b;
+      if (difference / ERASER_CONSTANTS.MAX_DIFFERENCE < ERASER_CONSTANTS.TOLERANCE) {
+        rgb.r = Math.max(0, rgb.r - ERASER_CONSTANTS.FACTOR);
         strokeModified = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 1)`;
       }
       this.markedElements.set(element, [hasStroke, stroke as string]);
@@ -194,8 +195,8 @@ export class EraserLogicComponent
     const minHalfSize = 4;
     halfSize = Math.max(minHalfSize, halfSize);
     this.removeFill();
-    for (let i = x - halfSize; i <= x + halfSize; i += CONSTANTS.PIXEL_INCREMENT) {
-      for (let j = y - halfSize; j <= y + halfSize; j += CONSTANTS.PIXEL_INCREMENT) {
+    for (let i = x - halfSize; i <= x + halfSize; i += ERASER_CONSTANTS.PIXEL_INCREMENT) {
+      for (let j = y - halfSize; j <= y + halfSize; j += ERASER_CONSTANTS.PIXEL_INCREMENT) {
         const elementFromPoint = document.elementFromPoint(i, j);
         if (elementFromPoint == null) {
           continue ;

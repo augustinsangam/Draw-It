@@ -32,18 +32,16 @@ export interface DialogRefs {
   confirm: MatDialogRef<ConfirmationDialogComponent>;
 }
 
-const CONSTANTS = {
-  START_COLOR : '#FFFFFF',
-  MIN_DIMENSION: 1,
-  MAX_DIMENSION: 65535
-};
-
 @Component({
   selector: 'app-new-draw',
   templateUrl: './new-draw.component.html',
   styleUrls: ['./new-draw.component.scss']
 })
 export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
+
+  private static readonly START_COLOR: string = '#FFFFFF';
+  private static readonly MIN_DIMENSION: number = 1;
+  private static readonly MAX_DIMENSION: number = 65535;
 
   private startColor: string;
   private form: FormGroup;
@@ -76,7 +74,7 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
     @Optional() private dialogRef: MatDialogRef<NewDrawComponent>,
     @Inject(MAT_DIALOG_DATA) private data: DialogData
   ) {
-    this.startColor = CONSTANTS.START_COLOR;
+    this.startColor = NewDrawComponent.START_COLOR;
     this.userChangeSizeMannually = false;
     const screenSize: ScreenSize = this.screenService.getCurrentSize();
     this.maxWidth = screenSize.width;
@@ -86,8 +84,8 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
         '',
         [
           Validators.required,
-          Validators.min(CONSTANTS.MIN_DIMENSION),
-          Validators.max(CONSTANTS.MAX_DIMENSION),
+          Validators.min(NewDrawComponent.MIN_DIMENSION),
+          Validators.max(NewDrawComponent.MAX_DIMENSION),
           NewDrawComponent.validatorInteger
         ]
       ],
@@ -95,8 +93,8 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
         '',
         [
           Validators.required,
-          Validators.min(CONSTANTS.MIN_DIMENSION),
-          Validators.max(CONSTANTS.MAX_DIMENSION),
+          Validators.min(NewDrawComponent.MIN_DIMENSION),
+          Validators.max(NewDrawComponent.MAX_DIMENSION),
           NewDrawComponent.validatorInteger
         ]
       ],
@@ -125,15 +123,15 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
     setTimeout(() => {
       this.form.patchValue({ color: this.startColor });
     }, 0);
-
-    if (!!this.palette) {
-      this.renderer.listen(this.palette.nativeElement, 'click', () => {
-        this.dialogRefs.palette = this.dialog.open(PaletteDialogComponent);
-        this.dialogRefs.palette
-          .afterClosed()
-          .subscribe(this.paletteCloseHandler);
-      });
+    if (this.palette == null) {
+      return;
     }
+    this.renderer.listen(this.palette.nativeElement, 'click', () => {
+      this.dialogRefs.palette = this.dialog.open(PaletteDialogComponent);
+      this.dialogRefs.palette
+        .afterClosed()
+        .subscribe(this.paletteCloseHandler);
+    });
   }
 
   private paletteCloseHandler = (colorPicked: string | undefined): void => {
@@ -152,12 +150,13 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   private updateFormSize(screenSize: ScreenSize): void {
     this.maxWidth = screenSize.width;
     this.maxHeight = screenSize.height;
-    if (!this.userChangeSizeMannually) {
-      this.form.patchValue({
-        width: this.maxWidth,
-        height: this.maxHeight
-      });
+    if (this.userChangeSizeMannually) {
+      return;
     }
+    this.form.patchValue({
+      width: this.maxWidth,
+      height: this.maxHeight
+    });
   }
 
   protected onDimensionsChangedByUser(): void {
@@ -165,13 +164,14 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   protected onSubmit(): void  {
-    if (this.data.drawInProgress) {
-      this.dialogRefs.confirm = this.dialog.open(ConfirmationDialogComponent);
-      this.dialogRefs.confirm.disableClose = true;
-      this.dialogRefs.confirm.afterClosed().subscribe(this.onSubmitHandler);
-    } else {
+    if (!this.data.drawInProgress) {
       this.dialogRef.close(this.form.value);
+      return;
     }
+
+    this.dialogRefs.confirm = this.dialog.open(ConfirmationDialogComponent);
+    this.dialogRefs.confirm.disableClose = true;
+    this.dialogRefs.confirm.afterClosed().subscribe(this.onSubmitHandler);
   }
 
   private onSubmitHandler = (result: boolean): void => {
@@ -179,10 +179,10 @@ export class NewDrawComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private closeDialog(result: boolean): void {
-    this.dialogRef.close(result ? this.form.value : OverlayPages.Home as string);
+    this.dialogRef.close(result ? this.form.value : OverlayPages.HOME as string);
   }
 
   protected onReturn(): void {
-    this.dialogRef.close(OverlayPages.Home as string);
+    this.dialogRef.close(OverlayPages.HOME as string);
   }
 }

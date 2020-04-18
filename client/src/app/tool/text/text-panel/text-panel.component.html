@@ -105,7 +105,7 @@
   </mat-form-field>
   <p class="no-select">Taille de la police</p>
   <div class="fontSize">
-    <mat-slider min="{{service.MIN_FONTSIZE}}" max="{{service.MAX_FONTSIZE}}" step=1
+    <mat-slider min="{{TextService.MIN_FONTSIZE}}" max="{{TextService.MAX_FONTSIZE}}" step=1
                 value="{{service.fontSize}}"
                 (input)="onFontSizeChange()"
                 (change)="onFontSizeChange()"

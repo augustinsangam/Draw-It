@@ -26,7 +26,7 @@ import {
   ColorPickerItemComponent
 } from '../color-picker-item/color-picker-item.component';
 
-const CONSTANTS = {
+const COLOR_PICKER_CONSTANTS = {
   RGB_MAX: 255,
   RGB_MIN: 0,
   ALPHA_MIN: 0,
@@ -175,8 +175,8 @@ export class ColorPickerContentComponent implements AfterViewInit {
       this.colorForm.patchValue({
         b: startColor.b,
         g: startColor.g,
-        a: CONSTANTS.ALPHA_MAX,
-        hex: this.startColor.substring(1, CONSTANTS.HEXADECIMAL_COLOR_LENGTH)
+        a: COLOR_PICKER_CONSTANTS.ALPHA_MAX,
+        hex: this.startColor.substring(1, COLOR_PICKER_CONSTANTS.HEXADECIMAL_COLOR_LENGTH)
       });
       this.drawTracker(startColor.b, startColor.g);
     }, 0);
@@ -204,7 +204,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
   }
 
   private buildCanvas(redValue: number): void {
-    const rgbMax = CONSTANTS.RGB_MAX;
+    const rgbMax = COLOR_PICKER_CONSTANTS.RGB_MAX;
     const allPixels = this.context.createImageData(rgbMax + 1, rgbMax + 1);
     let i = 0;
     for (let g = 0; g <= rgbMax; ++g) {
@@ -247,7 +247,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
   }
 
   protected onChangeR(): void {
-    this.checkValidity(Field.R, CONSTANTS.RGB_MIN, CONSTANTS.RGB_MAX);
+    this.checkValidity(Field.R, COLOR_PICKER_CONSTANTS.RGB_MIN, COLOR_PICKER_CONSTANTS.RGB_MAX);
     this.placeSlider(this.colorForm.controls.r.value);
     this.refreshView();
   }
@@ -261,7 +261,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
   }
 
   private onChangeAxes(field: Field): void {
-    this.checkValidity(field, CONSTANTS.RGB_MIN, CONSTANTS.RGB_MAX);
+    this.checkValidity(field, COLOR_PICKER_CONSTANTS.RGB_MIN, COLOR_PICKER_CONSTANTS.RGB_MAX);
     this.refreshView();
   }
 
@@ -271,7 +271,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
   }
 
   protected onChangeA(): void {
-    this.checkValidity(Field.A, CONSTANTS.ALPHA_MIN, CONSTANTS.ALPHA_MAX);
+    this.checkValidity(Field.A, COLOR_PICKER_CONSTANTS.ALPHA_MIN, COLOR_PICKER_CONSTANTS.ALPHA_MAX);
     this.actualColor.updateColor(this.getActualRgba());
   }
 
@@ -292,7 +292,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
 
   private drawTracker(blue: number, green: number): void {
     this.context.beginPath();
-    this.context.arc(blue, green, CONSTANTS.TRAKER_WIDTH, 0, 2 * Math.PI);
+    this.context.arc(blue, green, COLOR_PICKER_CONSTANTS.TRAKER_WIDTH, 0, 2 * Math.PI);
     this.context.stroke();
     this.actualColor.updateColor(this.getActualRgba());
   }
@@ -319,7 +319,7 @@ export class ColorPickerContentComponent implements AfterViewInit {
       `rgba(${this.colorForm.controls.r.value}, ` +
       `${this.colorForm.controls.g.value}, ` +
       `${this.colorForm.controls.b.value}, ` +
-      `${this.colorForm.controls.a.value / CONSTANTS.ALPHA_MAX})`
+      `${this.colorForm.controls.a.value / COLOR_PICKER_CONSTANTS.ALPHA_MAX})`
     );
   }
 

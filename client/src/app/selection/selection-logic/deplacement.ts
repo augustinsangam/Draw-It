@@ -4,7 +4,7 @@ import { MultipleSelection } from '../multiple-selection';
 import { Offset } from '../offset';
 import { Arrow } from './arrow';
 import { KeyManager } from './key-manager';
-import { OFFSET_TRANSLATE, TIME_INTERVAL } from './selection-logic-util';
+import { SelectionLogicUtil } from './selection-logic-util';
 import { SelectionLogicComponent } from './selection-logic.component';
 
 export class Deplacement {
@@ -25,7 +25,7 @@ export class Deplacement {
 
   private initialiseKeyManager(): void {
 
-    const allArrows = new Set<string>([Arrow.Up, Arrow.Down, Arrow.Left, Arrow.Right]);
+    const allArrows = new Set<string>([Arrow.UP, Arrow.DOWN, Arrow.LEFT, Arrow.RIGHT]);
 
     this.keyManager = {
 
@@ -48,13 +48,14 @@ export class Deplacement {
           $event.preventDefault();
           this.keyManager.keyPressed.add($event.key);
           const actualTime = new Date().getTime();
-          if (actualTime - this.keyManager.lastTimeCheck >= TIME_INTERVAL) {
-            this.keyManager.lastTimeCheck = actualTime;
-            this.handleKey(Arrow.Up, 0, -OFFSET_TRANSLATE);
-            this.handleKey(Arrow.Down, 0, OFFSET_TRANSLATE);
-            this.handleKey(Arrow.Left, -OFFSET_TRANSLATE, 0);
-            this.handleKey(Arrow.Right, OFFSET_TRANSLATE, 0);
+          if (actualTime - this.keyManager.lastTimeCheck < SelectionLogicUtil.TIME_INTERVAL) {
+            return;
           }
+          this.keyManager.lastTimeCheck = actualTime;
+          this.handleKey(Arrow.UP, 0, -SelectionLogicUtil.OFFSET_TRANSLATE);
+          this.handleKey(Arrow.DOWN, 0, SelectionLogicUtil.OFFSET_TRANSLATE);
+          this.handleKey(Arrow.LEFT, -SelectionLogicUtil.OFFSET_TRANSLATE, 0);
+          this.handleKey(Arrow.RIGHT, SelectionLogicUtil.OFFSET_TRANSLATE, 0);
         },
 
         keyup: ($event: KeyboardEvent) => {
@@ -67,7 +68,6 @@ export class Deplacement {
         }
       }
     };
-
   }
 
   private handleKey(key: string, dx: number, dy: number): void {
@@ -187,7 +187,6 @@ export class Deplacement {
       (2 - x) / 2 * selection[0].x + x / 2 * selection[1].x,
       (2 - y) / 2 * selection[0].y + y / 2 * selection[1].y,
     );
-
   }
 
 }

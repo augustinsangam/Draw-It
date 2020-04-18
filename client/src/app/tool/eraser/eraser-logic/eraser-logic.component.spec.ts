@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import * as Util from '../../../selection/selection-logic/selection-logic-util';
 import { UndoRedoService } from '../../../undo-redo/undo-redo.service';
 import { Point } from '../../shape/common/point';
-import { CONSTANTS, EraserLogicComponent } from './eraser-logic.component';
+import { ERASER_CONSTANTS, EraserLogicComponent } from './eraser-logic.component';
 
 // tslint:disable: no-string-literal no-any no-magic-numbers
 describe('EraserLogicComponent', () => {
@@ -287,7 +287,7 @@ describe('EraserLogicComponent', () => {
     });
     const markedElements = component['markElementsInZone'](0, 0);
     expect(markedElements).toContain(element);
-    expect(element.getAttribute('stroke')).toEqual(CONSTANTS.RED);
+    expect(element.getAttribute('stroke')).toEqual(ERASER_CONSTANTS.RED);
   });
 
   it('#markElementsInZone handle well native red elements!', () => {
@@ -299,7 +299,7 @@ describe('EraserLogicComponent', () => {
     const markedElements = component['markElementsInZone'](0, 0);
     expect(markedElements).toContain(element);
     expect(element.getAttribute('stroke'))
-    .toEqual(`rgba(${255 - CONSTANTS.FACTOR}, 0, 0, 1)`);
+    .toEqual(`rgba(${255 - ERASER_CONSTANTS.FACTOR}, 0, 0, 1)`);
   });
 
   it('#markElementsInZone should use fill for non-stroke draw elements!', () => {

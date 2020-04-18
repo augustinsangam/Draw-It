@@ -81,17 +81,17 @@ describe('HomeComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('#constructor should set option[3].canDisplay to true', () => {
+  it('#constructor should set option[0].canDisplay to true', () => {
     component['options'] = options;
 
     const dialogRef = component.dialogRef;
     const data: DialogData = { drawInProgress: true };
     component = new HomeComponent(dialogRef, data);
 
-    expect(component['options'][options.length - 1].canDisplay).toBe(true);
+    expect(component['options'][0].canDisplay).toBe(true);
   });
 
-  it('#constructor should set option[3].canDisplay to false', () => {
+  it('#constructor should set option[0].canDisplay to false', () => {
     component['options'] = options;
 
     const dialogRef = component.dialogRef;
@@ -99,6 +99,6 @@ describe('HomeComponent', () => {
 
     component = new HomeComponent(dialogRef, data);
 
-    expect(component['options'][options.length - 1].canDisplay).toBe(false);
+    expect(component['options'][0].canDisplay).toBe(false);
   });
 });

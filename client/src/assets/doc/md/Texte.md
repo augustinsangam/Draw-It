@@ -1,6 +1,6 @@
 L’outil **Texte** vous permet d’ajouter du texte sur votre dessin, et de changer sa police, sa taille ou son style (gras, italique) ainsi que son alignement. 
 
- Pour utiliser l’outil texte, cliquez sur le bouton ![l’icône du texte](/assets/sidebar-icons/text.png). Cliquez à l’endroit où vous désirez ajouter du texte dans la zone de dessin pour commencer à saisir du texte. Entrez le texte désiré et cliquez à l’extérieur de la zone de saisie ou sélectionnez un autre outil pour appliquer le texte sur le dessin. Pressez la touche `ESCAPE` de votre clavier pour annuler la saisie. 
+ Pour utiliser l’outil texte, cliquez sur le bouton ![l’icône du texte](/assets/sidebar-icons/texte.png). Cliquez à l’endroit où vous désirez ajouter du texte dans la zone de dessin pour commencer à saisir du texte. Entrez le texte désiré et cliquez à l’extérieur de la zone de saisie ou sélectionnez un autre outil pour appliquer le texte sur le dessin. Pressez la touche `ESCAPE` de votre clavier pour annuler la saisie. 
 
 <video width="90%" height="70%" class="doc-fig" autoplay loop>
     <source src="/assets/doc/vid/text.webm" type="video/webm">

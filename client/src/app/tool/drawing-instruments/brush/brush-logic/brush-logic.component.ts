@@ -22,10 +22,11 @@ export class BrushLogicComponent extends PencilBrushCommon
     super();
     this.listeners = [];
     this.preUndoFunction = () => {
-      if (this.mouseOnHold) {
-        this.stopDrawing();
-        this.undoRedoService.saveState();
+      if (!this.mouseOnHold) {
+       return ;
       }
+      this.stopDrawing();
+      this.undoRedoService.saveState();
     };
     this.undoRedoService.setPreUndoAction({
       enabled: true,
@@ -40,10 +41,11 @@ export class BrushLogicComponent extends PencilBrushCommon
 
     const mouseDownListen = this.renderer.listen(this.svgStructure.root,
       'mousedown', (mouseEv: MouseEvent) => {
-        if (mouseEv.button === 0) {
-          this.mouseOnHold = true;
-          this.onMouseDown(mouseEv);
+        if (mouseEv.button !== 0) {
+          return;
         }
+        this.mouseOnHold = true;
+        this.onMouseDown(mouseEv);
     });
 
     const mouseMoveListen = this.renderer.listen(this.svgStructure.root,
@@ -60,10 +62,11 @@ export class BrushLogicComponent extends PencilBrushCommon
 
     const mouseLeaveListen = this.renderer.listen(this.svgStructure.root,
       'mouseleave', (mouseEv: MouseEvent) => {
-        if (mouseEv.button === 0 && this.mouseOnHold) {
-          this.stopDrawing();
-          this.undoRedoService.saveState();
+        if (mouseEv.button !== 0 || !this.mouseOnHold) {
+          return ;
         }
+        this.stopDrawing();
+        this.undoRedoService.saveState();
     });
     this.listeners = [
       mouseDownListen,

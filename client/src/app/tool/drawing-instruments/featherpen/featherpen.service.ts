@@ -8,14 +8,14 @@ import {ToolService} from '../../tool.service';
 })
 export class FeatherpenService extends ToolService {
 
-  readonly MIN_LENGTH: number = 10;
-  readonly MAX_LENGTH: number = 100;
-  readonly DEFAULT_LENGTH: number = 20;
-  readonly MAX_ANGLE: number = 180;
-  readonly MIN_ANGLE: number = 0;
-  readonly DEFAULT_ANGLE: number = 20;
-  readonly OFFSET_ANGLE: number = 15;
-  readonly PI_DEG: number = 180;
+  protected static readonly MIN_LENGTH: number = 10;
+  protected static readonly MAX_LENGTH: number = 100;
+  private   static readonly DEFAULT_LENGTH: number = 20;
+  private   static readonly MAX_ANGLE: number = 180;
+  protected static readonly MIN_ANGLE: number = 0;
+  private   static readonly DEFAULT_ANGLE: number = 20;
+  private   static readonly OFFSET_ANGLE: number = 15;
+  private   static readonly PI_DEG: number = 180;
 
   length: number;
   angle: number;
@@ -24,12 +24,12 @@ export class FeatherpenService extends ToolService {
 
   constructor() {
     super();
-    this.length = this.DEFAULT_LENGTH;
-    this.angle = this.DEFAULT_ANGLE;
+    this.length = FeatherpenService.DEFAULT_LENGTH;
+    this.angle = FeatherpenService.DEFAULT_ANGLE;
     this.emitter = new Subject();
 
-    this.angles = new Array(this.MAX_ANGLE);
-    for (let i = this.MAX_ANGLE; i--; ) {
+    this.angles = new Array(FeatherpenService.MAX_ANGLE);
+    for (let i = FeatherpenService.MAX_ANGLE; i--; ) {
       this.angles[i] = i;
     }
   }
@@ -47,18 +47,18 @@ export class FeatherpenService extends ToolService {
   }
 
   private toRadians(angleDeg: number): number {
-    return angleDeg * Math.PI / this.PI_DEG;
+    return angleDeg * Math.PI / FeatherpenService.PI_DEG;
   }
 
   updateAngle(wheelEv: WheelEvent): number {
     const oldAngle = this.angle;
 
-    const delta = wheelEv.altKey ? 1 : this.OFFSET_ANGLE;
-    this.angle = wheelEv.deltaY < 0 ? (this.angle + delta) % this.MAX_ANGLE
-                                    : (this.angle - delta) % this.PI_DEG;
+    const delta = wheelEv.altKey ? 1 : FeatherpenService.OFFSET_ANGLE;
+    this.angle = wheelEv.deltaY < 0 ? (this.angle + delta) % FeatherpenService.MAX_ANGLE
+                                    : (this.angle - delta) % FeatherpenService.PI_DEG;
 
     if (this.angle < 0) {
-      this.angle += this.MAX_ANGLE;
+      this.angle += FeatherpenService.MAX_ANGLE;
     }
     return oldAngle;
   }

@@ -11,13 +11,6 @@ import {
   Text as TextT,
 } from './data_generated';
 
-const ERROR_MESSAGE = 'Communication impossible avec le serveur';
-const GENERIC_ERROR = new Error(ERROR_MESSAGE);
-const TIMEOUT_ERROR_MESSAGE = 'Délai d’attente dépassé';
-const TIMEOUT_ERROR = new Error(TIMEOUT_ERROR_MESSAGE);
-const TIMEOUT = 20000;
-const DONE = 4;
-
 export enum ContentType {
   OCTET_STREAM = 'application/octet-stream',
 }
@@ -49,6 +42,13 @@ interface DataTree {
 })
 export class CommunicationService {
 
+  private static readonly ERROR_MESSAGE: string = 'Communication impossible avec le serveur';
+  private static readonly GENERIC_ERROR: Error = new Error(CommunicationService.ERROR_MESSAGE);
+  private static readonly TIMEOUT_ERROR_MESSAGE: string = 'Délai d’attente dépassé';
+  private static readonly TIMEOUT_ERROR: Error = new Error(CommunicationService.TIMEOUT_ERROR_MESSAGE);
+  private static readonly TIMEOUT: number = 20000;
+  private static readonly DONE: number = 4;
+
   private readonly fbBuilder: flatbuffers.Builder;
   private readonly host: string;
   private xhr: XMLHttpRequest;
@@ -57,7 +57,7 @@ export class CommunicationService {
     this.fbBuilder = new flatbuffers.Builder();
     this.host = 'http://[::1]:8080';
     this.xhr = new XMLHttpRequest();
-    this.xhr.timeout = TIMEOUT;
+    this.xhr.timeout = CommunicationService.TIMEOUT;
   }
 
   private static deserialize(data: ArrayBuffer): flatbuffers.ByteBuffer {
@@ -73,7 +73,7 @@ export class CommunicationService {
     this.xhr.responseType = 'arraybuffer';
     const promise = new Promise<flatbuffers.ByteBuffer>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
-        if (this.xhr.readyState !== DONE) {
+        if (this.xhr.readyState !== CommunicationService.DONE) {
           return;
         }
         if (this.xhr.status === StatusCode.OK) {
@@ -83,8 +83,8 @@ export class CommunicationService {
             new Uint8Array(this.xhr.response)));
         }
       };
-      this.xhr.ontimeout = () => reject(TIMEOUT_ERROR_MESSAGE);
-      this.xhr.onerror = () => reject(ERROR_MESSAGE);
+      this.xhr.ontimeout = () => reject(CommunicationService.TIMEOUT_ERROR_MESSAGE);
+      this.xhr.onerror = () => reject(CommunicationService.ERROR_MESSAGE);
     });
     this.xhr.send();
     return promise;
@@ -96,7 +96,7 @@ export class CommunicationService {
     this.xhr.responseType = 'text';
     const promise = new Promise<number>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
-        if (this.xhr.readyState !== DONE) {
+        if (this.xhr.readyState !== CommunicationService.DONE) {
           return;
         }
         if (this.xhr.status === StatusCode.CREATED) {
@@ -105,8 +105,8 @@ export class CommunicationService {
           reject(this.xhr.responseText);
         }
       };
-      this.xhr.ontimeout = () => reject(TIMEOUT_ERROR_MESSAGE);
-      this.xhr.onerror = () => reject(ERROR_MESSAGE);
+      this.xhr.ontimeout = () => reject(CommunicationService.TIMEOUT_ERROR_MESSAGE);
+      this.xhr.onerror = () => reject(CommunicationService.ERROR_MESSAGE);
     });
     this.xhr.send(this.fbBuilder.asUint8Array());
     return promise;
@@ -118,7 +118,7 @@ export class CommunicationService {
     this.xhr.responseType = 'text';
     const promise = new Promise<null>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
-        if (this.xhr.readyState !== DONE) {
+        if (this.xhr.readyState !== CommunicationService.DONE) {
           return;
         }
         if (this.xhr.status === StatusCode.ACCEPTED) {
@@ -127,8 +127,8 @@ export class CommunicationService {
           reject(this.xhr.responseText);
         }
       };
-      this.xhr.ontimeout = () => reject(TIMEOUT_ERROR_MESSAGE);
-      this.xhr.onerror = () => reject(ERROR_MESSAGE);
+      this.xhr.ontimeout = () => reject(CommunicationService.TIMEOUT_ERROR_MESSAGE);
+      this.xhr.onerror = () => reject(CommunicationService.ERROR_MESSAGE);
     });
     this.xhr.send(this.fbBuilder.asUint8Array());
     return promise;
@@ -139,7 +139,7 @@ export class CommunicationService {
     this.xhr.responseType = 'text';
     const promise = new Promise<null>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
-        if (this.xhr.readyState !== DONE) {
+        if (this.xhr.readyState !== CommunicationService.DONE) {
           return;
         }
         if (this.xhr.status === StatusCode.ACCEPTED) {
@@ -148,8 +148,8 @@ export class CommunicationService {
           reject(this.xhr.responseText);
         }
       };
-      this.xhr.ontimeout = () => reject(TIMEOUT_ERROR_MESSAGE);
-      this.xhr.onerror = () => reject(ERROR_MESSAGE);
+      this.xhr.ontimeout = () => reject(CommunicationService.TIMEOUT_ERROR_MESSAGE);
+      this.xhr.onerror = () => reject(CommunicationService.ERROR_MESSAGE);
     });
     this.xhr.send();
     return promise;
@@ -163,7 +163,7 @@ export class CommunicationService {
     this.xhr.responseType = 'text';
     const promise = new Promise<string>((resolve, reject) => {
       this.xhr.onreadystatechange = () => {
-        if (this.xhr.readyState !== DONE) {
+        if (this.xhr.readyState !== CommunicationService.DONE) {
           return;
         }
         if (this.xhr.status === StatusCode.ACCEPTED) {
@@ -172,8 +172,8 @@ export class CommunicationService {
           reject(new Error(this.xhr.responseText));
         }
       };
-      this.xhr.ontimeout = () => reject(TIMEOUT_ERROR);
-      this.xhr.onerror = () => reject(GENERIC_ERROR);
+      this.xhr.ontimeout = () => reject(CommunicationService.TIMEOUT_ERROR);
+      this.xhr.onerror = () => reject(CommunicationService.GENERIC_ERROR);
     });
     this.xhr.send(formData);
     return promise;

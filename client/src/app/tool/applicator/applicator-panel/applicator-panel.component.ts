@@ -18,7 +18,7 @@ export class ApplicatorPanelComponent extends ToolPanelDirective {
   }
 
   protected showDocumentation(): void {
-   this.overlay.openDocumentationDialog(false, DocEnum.applicator);
+   this.overlay.openDocumentationDialog(false, DocEnum.APPLICATOR);
   }
 
 }

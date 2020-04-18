@@ -5,7 +5,7 @@ import { UndoRedoService } from '../../undo-redo/undo-redo.service';
 import { Clipboard } from './clipboard';
 import { SelectionLogicComponent } from './selection-logic.component';
 
-// tslint:disable: no-magic-numbers no-string-literal no-any
+// tslint:disable: no-magic-numbers no-string-literal no-any max-file-line-count
 describe('Clipboard', () => {
   let component: SelectionLogicComponent;
   let fixture: ComponentFixture<SelectionLogicComponent>;

@@ -24,7 +24,7 @@ import { TextService } from '../text.service';
 export class TextLogicComponent extends ToolLogicDirective
   implements OnDestroy, OnInit {
 
-  readonly TEXT_OFFSET: number = 10;
+  private static readonly TEXT_OFFSET: number = 10;
 
   private listeners: (() => void)[];
   private cursor: Cursor;
@@ -135,53 +135,53 @@ export class TextLogicComponent extends ToolLogicDirective
   private onKeyDown(keyEv: KeyboardEvent): void {
     switch (keyEv.key) {
 
-      case TextKeycodes.escape:
+      case TextKeycodes.ESCAPE:
         this.cancelTyping();
         break;
 
-      case TextKeycodes.enter:
+      case TextKeycodes.ENTER:
         this.addLine();
         break;
 
-      case TextKeycodes.home:
+      case TextKeycodes.HOME:
         keyEv.preventDefault();
         this.handlers.textNav.keyHome(this.currentLine);
         break;
 
-      case TextKeycodes.end:
+      case TextKeycodes.END:
         keyEv.preventDefault();
         this.handlers.textNav.keyEnd(this.currentLine);
         break;
 
-      case TextKeycodes.arrowUp:
+      case TextKeycodes.ARROW_UP:
         keyEv.preventDefault();
         this.currentLine = this.handlers.textNav.cursorUp(this.currentLine);
         break;
 
-      case TextKeycodes.arrowDown:
+      case TextKeycodes.ARROW_DOWN:
         keyEv.preventDefault();
         this.currentLine = this.handlers.textNav.cursorDown(this.currentLine);
         break;
 
-      case TextKeycodes.arrowLeft:
+      case TextKeycodes.ARROW_LEFT:
         keyEv.preventDefault();
         this.currentLine = this.handlers.textNav.cursorLeft(this.currentLine);
         break;
 
-      case TextKeycodes.arrowRight:
+      case TextKeycodes.ARROW_RIGHT:
         keyEv.preventDefault();
         this.currentLine = this.handlers.textNav.cursorRight(this.currentLine);
         break;
 
-      case TextKeycodes.backspace:
+      case TextKeycodes.BAKCSPACE:
         this.currentLine = this.handlers.letterDelete.deleteLeftLetter(this.currentLine);
         break;
 
-      case TextKeycodes.delete:
+      case TextKeycodes.DELETE:
         this.currentLine = this.handlers.letterDelete.deleteRightLetter(this.currentLine);
         break;
 
-      case TextKeycodes.space:
+      case TextKeycodes.SPACE:
         keyEv.preventDefault();
         this.addLetterAtCursor(' ');
         break;
@@ -213,7 +213,7 @@ export class TextLogicComponent extends ToolLogicDirective
     const textZoneRect = this.renderer.createElement('rect', this.svgNS);
     this.renderer.appendChild(this.svgStructure.temporaryZone, textZoneRect);
     this.service.textZoneRectangle = new Rectangle(this.renderer, textZoneRect, this.mathService);
-    this.service.textZoneRectangle.setParameters(BackGroundProperties.None, StrokeProperties.Dashed);
+    this.service.textZoneRectangle.setParameters(BackGroundProperties.NONE, StrokeProperties.DASHED);
     this.renderer.setStyle(textZoneRect, 'stroke', 'rgba(87,87,87,0.5)');
   }
 
@@ -222,9 +222,9 @@ export class TextLogicComponent extends ToolLogicDirective
     this.renderer.appendChild(this.svgStructure.temporaryZone, cursor);
     let initialCursorXPos: number;
 
-    if (this.service.textAlignement === TextAlignement.left) {
+    if (this.service.textAlignement === TextAlignement.LEFT) {
       initialCursorXPos = this.initialPoint.x;
-    } else if (this.service.textAlignement === TextAlignement.center) {
+    } else if (this.service.textAlignement === TextAlignement.CENTER) {
       initialCursorXPos = this.initialPoint.x + this.service.currentZoneDims.width / 2;
     } else {
       initialCursorXPos = this.initialPoint.x + this.service.currentZoneDims.width;
@@ -232,7 +232,7 @@ export class TextLogicComponent extends ToolLogicDirective
 
     this.cursor = new Cursor(this.renderer, this.service, cursor, new Point(
       initialCursorXPos,
-      this.initialPoint.y + this.TEXT_OFFSET + this.service.fontSize
+      this.initialPoint.y + TextLogicComponent.TEXT_OFFSET + this.service.fontSize
       )
     );
     this.cursor.initBlink();
@@ -339,7 +339,6 @@ export class TextLogicComponent extends ToolLogicDirective
       'y',
       `${this.initialPoint.y + (this.lines.indexOf(this.currentLine) + 1) * this.service.fontSize}`
     );
-
     this.cursor.move(this.currentLine, this.lines.indexOf(this.currentLine));
   }
 }

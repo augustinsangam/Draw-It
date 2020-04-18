@@ -3,16 +3,16 @@ import { SvgShape } from '../svg/svg-shape';
 
 export class SvgToCanvas {
 
-  width: string;
-  height: string;
-  color: string;
+  private width: string;
+  private height: string;
+  private color: string;
 
   constructor(private svg: SVGSVGElement,
               svgShape: SvgShape,
               private renderer: Renderer2) {
-    this.width = svgShape.width.toString();
+    this.width  = svgShape.width.toString();
     this.height = svgShape.height.toString();
-    this.color = svgShape.color;
+    this.color  = svgShape.color;
   }
 
   async getCanvas(): Promise<HTMLCanvasElement> {

@@ -38,7 +38,7 @@ describe('ShortcutHandlerManagerService', () => {
     const handler = service['shortcutHanler']['manager'].get(Shortcut.C) as Handler;
     handler.handlerFunction(event);
     setTimeout(() => {
-      expect(spyTool).toHaveBeenCalledWith(Tool.Pencil);
+      expect(spyTool).toHaveBeenCalledWith(Tool.PENCIL);
       done();
     }, waitTime);
   });
@@ -48,7 +48,7 @@ describe('ShortcutHandlerManagerService', () => {
     const handler = service['shortcutHanler']['manager'].get(Shortcut.L) as Handler;
     handler.handlerFunction();
     setTimeout(() => {
-      expect(spyTool).toHaveBeenCalledWith(Tool.Line);
+      expect(spyTool).toHaveBeenCalledWith(Tool.LINE);
       done();
     }, waitTime);
   });
@@ -58,7 +58,7 @@ describe('ShortcutHandlerManagerService', () => {
     const handler = service['shortcutHanler']['manager'].get(Shortcut.W) as Handler;
     handler.handlerFunction();
     setTimeout(() => {
-      expect(spyTool).toHaveBeenCalledWith(Tool.Brush);
+      expect(spyTool).toHaveBeenCalledWith(Tool.BRUSH);
       done();
     }, waitTime);
   });
@@ -78,7 +78,7 @@ describe('ShortcutHandlerManagerService', () => {
     const handler = service['shortcutHanler']['manager'].get(Shortcut.R) as Handler;
     handler.handlerFunction();
     setTimeout(() => {
-      expect(spyTool).toHaveBeenCalledWith(Tool.Applicator);
+      expect(spyTool).toHaveBeenCalledWith(Tool.APPLICATOR);
       done();
     }, waitTime);
   });
@@ -88,7 +88,7 @@ describe('ShortcutHandlerManagerService', () => {
     const handler = service['shortcutHanler']['manager'].get(Shortcut.DIGIT_1) as Handler;
     handler.handlerFunction();
     setTimeout(() => {
-      expect(spyTool).toHaveBeenCalledWith(Tool.Rectangle);
+      expect(spyTool).toHaveBeenCalledWith(Tool.RECTANGLE);
       done();
     }, waitTime);
   });
@@ -98,7 +98,7 @@ describe('ShortcutHandlerManagerService', () => {
     const handler = service['shortcutHanler']['manager'].get(Shortcut.DIGIT_2) as Handler;
     handler.handlerFunction();
     setTimeout(() => {
-      expect(spyTool).toHaveBeenCalledWith(Tool.Ellipse);
+      expect(spyTool).toHaveBeenCalledWith(Tool.ELLIPSE);
       done();
     }, waitTime);
   });
@@ -108,7 +108,7 @@ describe('ShortcutHandlerManagerService', () => {
     const handler = service['shortcutHanler']['manager'].get(Shortcut.DIGIT_3) as Handler;
     handler.handlerFunction();
     setTimeout(() => {
-      expect(spyTool).toHaveBeenCalledWith(Tool.Polygone);
+      expect(spyTool).toHaveBeenCalledWith(Tool.POLYGONE);
       done();
     }, waitTime);
   });
@@ -118,7 +118,7 @@ describe('ShortcutHandlerManagerService', () => {
     const handler = service['shortcutHanler']['manager'].get(Shortcut.I) as Handler;
     handler.handlerFunction();
     setTimeout(() => {
-      expect(spyTool).toHaveBeenCalledWith(Tool.Pipette);
+      expect(spyTool).toHaveBeenCalledWith(Tool.PIPETTE);
       done();
     }, waitTime);
   });
@@ -128,7 +128,7 @@ describe('ShortcutHandlerManagerService', () => {
     const handler = service['shortcutHanler']['manager'].get(Shortcut.P) as Handler;
     handler.handlerFunction();
     setTimeout(() => {
-      expect(spyTool).toHaveBeenCalledWith(Tool.FeatherPen);
+      expect(spyTool).toHaveBeenCalledWith(Tool.FEATHER_PEN);
       done();
     }, waitTime);
   });
@@ -138,7 +138,7 @@ describe('ShortcutHandlerManagerService', () => {
     const handler = service['shortcutHanler']['manager'].get(Shortcut.T) as Handler;
     handler.handlerFunction();
     setTimeout(() => {
-      expect(spyTool).toHaveBeenCalledWith(Tool.Text);
+      expect(spyTool).toHaveBeenCalledWith(Tool.TEXT);
       done();
     }, waitTime);
   });
@@ -311,7 +311,7 @@ describe('ShortcutHandlerManagerService', () => {
       handler.handlerFunction(event);
     }
     setTimeout(() => {
-      expect(spy).toHaveBeenCalledWith(Tool.Eraser);
+      expect(spy).toHaveBeenCalledWith(Tool.ERASER);
       done();
     }, waitTime);
   });
@@ -381,7 +381,7 @@ describe('ShortcutHandlerManagerService', () => {
       handlerDigitA.handlerFunction(eventOWithControl);
     }
     setTimeout(() => {
-      expect(spyTool).toHaveBeenCalledWith(Tool.Aerosol);
+      expect(spyTool).toHaveBeenCalledWith(Tool.AEROSOL);
       done();
     }, 500);
   });
@@ -399,7 +399,7 @@ describe('ShortcutHandlerManagerService', () => {
       handlerDigitB.handlerFunction(eventOWithControl);
     }
     setTimeout(() => {
-      expect(spyTool).toHaveBeenCalledWith(Tool.Bucket);
+      expect(spyTool).toHaveBeenCalledWith(Tool.BUCKET);
       done();
     }, 500);
   });
@@ -468,7 +468,7 @@ describe('ShortcutHandlerManagerService', () => {
       handler.handlerFunction(event);
     }
     setTimeout(() => {
-      expect(spy).toHaveBeenCalledWith(Tool.Selection);
+      expect(spy).toHaveBeenCalledWith(Tool.SELECTION);
       done();
     }, waitTime);
   });

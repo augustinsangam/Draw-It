@@ -23,7 +23,6 @@ export class ShortcutHandlerService {
 
   execute(event: KeyboardEvent): void {
     const handler = this.manager.get(event.key as Shortcut);
-
     if (!!handler && handler.isActive) {
       handler.handlerFunction(event);
     }

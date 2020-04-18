@@ -86,6 +86,6 @@ export class RectanglePanelComponent
   }
 
   protected showDocumentation(): void {
-    this.overlay.openDocumentationDialog(false, DocEnum.rectangle);
+    this.overlay.openDocumentationDialog(false, DocEnum.RECTANGLE);
   }
 }

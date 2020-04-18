@@ -33,12 +33,12 @@ export class ShortcutHandlerManagerService {
         event.preventDefault();
         this.selectionService.selectAllElements.next(null);
       } else {
-        this.toolSelectorService.set(Tool.Aerosol);
+        this.toolSelectorService.set(Tool.AEROSOL);
       }
     });
 
     this.handlersFunc.set(Shortcut.B, () =>
-      this.toolSelectorService.set(Tool.Bucket)
+      this.toolSelectorService.set(Tool.BUCKET)
     );
 
     this.handlersFunc.set(Shortcut.C, (event: KeyboardEvent) => {
@@ -46,7 +46,7 @@ export class ShortcutHandlerManagerService {
       if (event.ctrlKey) {
         this.selectionService.copy.next(null);
       } else {
-        this.toolSelectorService.set(Tool.Pencil);
+        this.toolSelectorService.set(Tool.PENCIL);
       }
     });
 
@@ -67,7 +67,7 @@ export class ShortcutHandlerManagerService {
       if (event.ctrlKey) {
         this.overlayService.openExportDialog();
       } else {
-        this.toolSelectorService.set(Tool.Eraser);
+        this.toolSelectorService.set(Tool.ERASER);
       }
     });
 
@@ -81,11 +81,11 @@ export class ShortcutHandlerManagerService {
     });
 
     this.handlersFunc.set(Shortcut.I, () =>
-      this.toolSelectorService.set(Tool.Pipette)
+      this.toolSelectorService.set(Tool.PIPETTE)
     );
 
     this.handlersFunc.set(Shortcut.L, () =>
-      this.toolSelectorService.set(Tool.Line)
+      this.toolSelectorService.set(Tool.LINE)
     );
 
     this.handlersFunc.set(Shortcut.M, () => {
@@ -100,23 +100,23 @@ export class ShortcutHandlerManagerService {
     });
 
     this.shortcutHanler.set(Shortcut.P, () => {
-      this.toolSelectorService.set(Tool.FeatherPen);
+      this.toolSelectorService.set(Tool.FEATHER_PEN);
     });
 
     this.handlersFunc.set(Shortcut.R, () =>
-      this.toolSelectorService.set(Tool.Applicator));
+      this.toolSelectorService.set(Tool.APPLICATOR));
 
     this.handlersFunc.set(Shortcut.S, (event: KeyboardEvent) => {
       event.preventDefault();
       if ( !event.ctrlKey ) {
-        this.toolSelectorService.set(Tool.Selection);
+        this.toolSelectorService.set(Tool.SELECTION);
       } else {
         this.overlayService.openSaveDialog();
       }
     });
 
     this.handlersFunc.set(Shortcut.T, () =>
-      this.toolSelectorService.set(Tool.Text)
+      this.toolSelectorService.set(Tool.TEXT)
     );
 
     this.handlersFunc.set(Shortcut.V, (event: KeyboardEvent) => {
@@ -134,7 +134,7 @@ export class ShortcutHandlerManagerService {
     });
 
     this.handlersFunc.set(Shortcut.W, () =>
-      this.toolSelectorService.set(Tool.Brush)
+      this.toolSelectorService.set(Tool.BRUSH)
     );
 
     this.handlersFunc.set(Shortcut.Z, (event: KeyboardEvent) => {
@@ -152,15 +152,15 @@ export class ShortcutHandlerManagerService {
     });
 
     this.handlersFunc.set(Shortcut.DIGIT_1, () =>
-      this.toolSelectorService.set(Tool.Rectangle)
+      this.toolSelectorService.set(Tool.RECTANGLE)
     );
 
     this.handlersFunc.set(Shortcut.DIGIT_2, () =>
-      this.toolSelectorService.set(Tool.Ellipse)
+      this.toolSelectorService.set(Tool.ELLIPSE)
     );
 
     this.handlersFunc.set(Shortcut.DIGIT_3, () =>
-      this.toolSelectorService.set(Tool.Polygone)
+      this.toolSelectorService.set(Tool.POLYGONE)
     );
 
     this.handlersFunc.set(Shortcut.PLUS, () => {

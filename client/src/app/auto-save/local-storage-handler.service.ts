@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { SvgShape } from '../svg/svg-shape';
 
 export enum AutoSaveKey {
@@ -25,7 +26,7 @@ export class LocalStorageHandlerService {
     try {
       localStorage.setItem(AutoSaveKey.DRAW, svgDrawString);
     } catch (error) {
-      console.error('Taille maximale atteinte pour sauvegarde automatique');
+      console.warn('Taille maximale atteinte pour sauvegarde automatique');
       localStorage.removeItem(AutoSaveKey.DRAW);
     }
   }

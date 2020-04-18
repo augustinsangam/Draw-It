@@ -22,14 +22,14 @@ describe('ToolSelectorService', () => {
   });
 
   it('#Tool attribute should not change when the same tool is selected', () => {
-    service['tool'] = Tool.Brush;
-    service.set(Tool.Brush);
-    expect(service['tool']).toEqual(Tool.Brush);
+    service['tool'] = Tool.BRUSH;
+    service.set(Tool.BRUSH);
+    expect(service['tool']).toEqual(Tool.BRUSH);
   });
 
   it('#Tool attribute should change when a different tool is selected', () => {
-    service.set(Tool.Brush);
-    expect(service['tool']).toEqual(Tool.Brush);
+    service.set(Tool.BRUSH);
+    expect(service['tool']).toEqual(Tool.BRUSH);
   });
 
   it('#onChange() should push argument in onChangeCallbacks', () => {

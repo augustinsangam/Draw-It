@@ -1,4 +1,4 @@
-import {Component, ElementRef, Renderer2, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Renderer2, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatSlider} from '@angular/material/slider';
 import { OverlayService } from 'src/app/overlay/overlay.service';
@@ -15,8 +15,9 @@ import previewPoints from './previewPoints.json';
   templateUrl: './featherpen-panel.component.html',
   styleUrls: ['./featherpen-panel.component.scss']
 })
-// tslint:disable:use-lifecycle-interface
-export class FeatherpenPanelComponent extends ToolPanelDirective {
+
+export class FeatherpenPanelComponent extends ToolPanelDirective
+implements AfterViewInit {
 
   @ViewChild('lengthSlider', {
     static: false,
@@ -32,6 +33,8 @@ export class FeatherpenPanelComponent extends ToolPanelDirective {
 
   private featherpenForm: FormGroup;
   protected readonly previewDimensions: Dimension;
+
+  readonly FeatherpenService: typeof FeatherpenService = FeatherpenService;
 
   constructor(elementRef: ElementRef<HTMLElement>,
               private readonly service: FeatherpenService,
@@ -80,7 +83,7 @@ export class FeatherpenPanelComponent extends ToolPanelDirective {
   }
 
   protected showDocumentation(): void {
-    this.overlay.openDocumentationDialog(false, DocEnum.featherpen);
+    this.overlay.openDocumentationDialog(false, DocEnum.FEATHER_PEN);
   }
 
 }

@@ -38,7 +38,7 @@ export class DocumentationComponent {
     this.dataSource.data = this.doc;
     this.constructLeafNodeArray(this.doc);
     this.contentToDisplay = {title: '', body: ''};
-    this.displayNodeContent(this.leafNodeArray[DocEnum.welcome]);
+    this.displayNodeContent(this.leafNodeArray[DocEnum.WELCOME]);
   }
 
   private constructLeafNodeArray(nodes: Node[]): void {

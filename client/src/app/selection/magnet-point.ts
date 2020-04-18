@@ -1,11 +1,11 @@
 export enum MagnetPoint {
-  NorthWest = 0,
-  North,
-  NorthEast,
-  West,
-  Center,
-  East,
-  SouthWest,
-  South,
-  SouthEast
+  NORTH_WEST,
+  NORTH,
+  NORTH_EAST,
+  WEST,
+  CENTER,
+  EAST,
+  SOUTH_WEST,
+  SOUTH,
+  SOUTH_EAST
 }

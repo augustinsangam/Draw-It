@@ -5,7 +5,6 @@ import { AbstractShape } from './abstract-shape';
 import { Dimension } from './dimension';
 import { Point } from './point';
 
-// Class tested in ../Rectangle/rectangle-logic.component.spec.ts
 export class Rectangle extends AbstractShape {
 
   constructor(

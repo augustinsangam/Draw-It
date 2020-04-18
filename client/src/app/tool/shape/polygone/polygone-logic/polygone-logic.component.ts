@@ -13,11 +13,8 @@ import { Polygone } from '../../common/polygone';
 import { Rectangle } from '../../common/rectangle';
 import { PolygoneService } from '../polygone.service';
 
-const SEMI_OPACITY = '0.5';
-const FULL_OPACITY = '1';
-
 enum ClickType {
-  CLICKGAUCHE,
+  LEFT_CLICK,
 }
 
 @Component({
@@ -26,6 +23,10 @@ enum ClickType {
 })
 export class PolygoneLogicComponent extends ToolLogicDirective
   implements OnDestroy, OnInit {
+
+  private static readonly SEMI_OPACITY: string = '0.5';
+  private static readonly FULL_OPACITY: string = '1';
+
   private polygones: Polygone[];
   private mouseDownPoint: Point;
   private onDrag: boolean;
@@ -77,13 +78,14 @@ export class PolygoneLogicComponent extends ToolLogicDirective
       'mousemove',
       (mouseEv: MouseEvent) => {
         mouseEv.preventDefault();
-        if (this.onDrag) {
-          const currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
-          this.visualisationRectangle.dragRectangle(
-            this.mouseDownPoint, currentPoint);
-          this.getPolygone().drawPolygonFromRectangle(
-            this.mouseDownPoint, currentPoint, this.service.thickness);
+        if (!this.onDrag) {
+          return ;
         }
+        const currentPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
+        this.visualisationRectangle.dragRectangle(
+          this.mouseDownPoint, currentPoint);
+        this.getPolygone().drawPolygonFromRectangle(
+          this.mouseDownPoint, currentPoint, this.service.thickness);
       }
     );
 
@@ -113,18 +115,19 @@ export class PolygoneLogicComponent extends ToolLogicDirective
   }
 
   private onMouseUp(mouseEv: MouseEvent): void {
-    const validClick = mouseEv.button === ClickType.CLICKGAUCHE;
-    if (validClick && this.onDrag) {
-      this.onDrag = false;
-      this.style.opacity = FULL_OPACITY;
-      this.getPolygone().setCss(this.style);
-      this.visualisationRectangle.element.remove();
-      this.undoRedoService.saveState();
+    const validClick = mouseEv.button === ClickType.LEFT_CLICK;
+    if (!validClick || !this.onDrag) {
+      return ;
     }
+    this.onDrag = false;
+    this.style.opacity = PolygoneLogicComponent.FULL_OPACITY;
+    this.getPolygone().setCss(this.style);
+    this.visualisationRectangle.element.remove();
+    this.undoRedoService.saveState();
   }
 
   private initPolygone(mouseEv: MouseEvent): void {
-    if (mouseEv.button === ClickType.CLICKGAUCHE) {
+    if (mouseEv.button === ClickType.LEFT_CLICK) {
       this.onDrag = true;
       this.mouseDownPoint = new Point(mouseEv.offsetX, mouseEv.offsetY);
 
@@ -141,20 +144,21 @@ export class PolygoneLogicComponent extends ToolLogicDirective
   }
 
   private initRectangle(mouseEv: MouseEvent): void {
-    if (mouseEv.button === ClickType.CLICKGAUCHE) {
-      const rectangle = this.renderer.createElement('rect', this.svgNS);
-      this.renderer.appendChild(this.svgStructure.drawZone, rectangle);
-
-      this.visualisationRectangle = new Rectangle(
-        this.renderer,
-        rectangle,
-        this.mathService
-      );
-
-      this.visualisationRectangle.setParameters(
-        BackGroundProperties.None, StrokeProperties.Dashed
-      );
+    if (mouseEv.button !== ClickType.LEFT_CLICK) {
+      return ;
     }
+    const rectangle = this.renderer.createElement('rect', this.svgNS);
+    this.renderer.appendChild(this.svgStructure.drawZone, rectangle);
+
+    this.visualisationRectangle = new Rectangle(
+      this.renderer,
+      rectangle,
+      this.mathService
+    );
+
+    this.visualisationRectangle.setParameters(
+      BackGroundProperties.NONE, StrokeProperties.DASHED
+    );
   }
 
   private setPolygoneProperties(): void {
@@ -162,16 +166,16 @@ export class PolygoneLogicComponent extends ToolLogicDirective
       strokeWidth: this.service.thickness.toString(),
       fillColor: this.colorService.primaryColor,
       strokeColor: this.colorService.secondaryColor,
-      opacity: SEMI_OPACITY
+      opacity: PolygoneLogicComponent.SEMI_OPACITY
     };
     this.getPolygone().setCss(this.style);
 
     const backgroundProperties = this.service.fillOption ?
-      BackGroundProperties.Filled :
-      BackGroundProperties.None;
+      BackGroundProperties.FILLED :
+      BackGroundProperties.NONE;
 
     const strokeProperties = this.service.borderOption ?
-      StrokeProperties.Filled : StrokeProperties.None;
+      StrokeProperties.FILLED : StrokeProperties.NONE;
 
     this.getPolygone().setParameters(backgroundProperties, strokeProperties);
   }

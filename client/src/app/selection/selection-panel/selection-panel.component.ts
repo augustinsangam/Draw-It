@@ -36,11 +36,11 @@ export class SelectionPanelComponent extends ToolPanelDirective implements After
   }
 
   protected showDocumentationSelection(): void {
-    this.overlay.openDocumentationDialog(false, DocEnum.selectionRectangle);
+    this.overlay.openDocumentationDialog(false, DocEnum.SELECTION_RECTANGLE);
   }
 
   protected showDocumentationMagnetism(): void {
-    this.overlay.openDocumentationDialog(false, DocEnum.magnetism);
+    this.overlay.openDocumentationDialog(false, DocEnum.MAGNETISM);
   }
 
   ngAfterViewInit(): void {

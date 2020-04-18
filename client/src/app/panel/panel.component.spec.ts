@@ -71,9 +71,9 @@ describe('PanelComponent', () => {
 
   it('#should toggle panel on change tool', () => {
     spyOn<any>(component, 'setTool').and.callFake(
-      (tool: Tool) => expect(tool).toBe(Tool.Line));
+      (tool: Tool) => expect(tool).toBe(Tool.LINE));
     component.ngOnInit();
-    component['toolSelectorService'].set(Tool.Line);
+    component['toolSelectorService'].set(Tool.LINE);
   });
 
   it('#should open panel', () => {
@@ -96,7 +96,7 @@ describe('PanelComponent', () => {
 
   it('#should clear ViewContainerRef', () => {
     const spy = spyOn(component['viewContainerRef'], 'clear').and.callThrough();
-    component['setTool'](Tool.Line);
+    component['setTool'](Tool.LINE);
     expect(spy).toHaveBeenCalled();
   });
 
@@ -107,7 +107,7 @@ describe('PanelComponent', () => {
   });
 
   it('#should set width from setTool', () => {
-    const refOrNull = component['setTool'](Tool.Line);
+    const refOrNull = component['setTool'](Tool.LINE);
     if (!!refOrNull) {
       spyOn<any>(component, 'setWidthOfChild').and.callFake(
         (w: number) => expect(w).toBe(42));

@@ -14,11 +14,6 @@ import { ColorService } from '../../../color/color.service';
 import { ToolPanelDirective } from '../../../tool-panel/tool-panel.directive';
 import { AerosolService } from '../aerosol.service';
 
-const PREVIEW_CENTER = {
-  x: 150,
-  y: 110
-};
-
 @Component({
   selector: 'app-aerosol-panel',
   templateUrl: './aerosol-panel.component.html',
@@ -27,6 +22,9 @@ const PREVIEW_CENTER = {
 
 export class AerosolPanelComponent extends ToolPanelDirective
   implements AfterViewInit {
+
+  // tslint:disable-next-line: no-magic-numbers
+  private static readonly PREVIEW_CENTER: Point = new Point(150, 110);
 
   @ViewChild('thicknessSlider', {
     static: false,
@@ -39,6 +37,8 @@ export class AerosolPanelComponent extends ToolPanelDirective
   @ViewChild('prevPath', {
     static: false,
   }) private prevPathRef: ElementRef<SVGPathElement>;
+
+  readonly AerosolService: typeof AerosolService = AerosolService;
 
   private aerosolForm: FormGroup;
 
@@ -82,7 +82,12 @@ export class AerosolPanelComponent extends ToolPanelDirective
   protected updateThumbnail(): void {
     let preview = '';
     for (let i = 0; i < this.service.frequency; i++) {
-      preview += this.service.generatePoints(new Point(PREVIEW_CENTER.x, PREVIEW_CENTER.y));
+      preview += this.service.generatePoints(
+        new Point(
+          AerosolPanelComponent.PREVIEW_CENTER.x,
+          AerosolPanelComponent.PREVIEW_CENTER.y
+        )
+      );
     }
     this.renderer.setAttribute(
       this.prevPathRef.nativeElement,
@@ -92,6 +97,6 @@ export class AerosolPanelComponent extends ToolPanelDirective
   }
 
   protected showDocumentation(): void {
-    this.overlay.openDocumentationDialog(false, DocEnum.aerosol);
+    this.overlay.openDocumentationDialog(false, DocEnum.AEROSOL);
   }
 }

@@ -28,21 +28,18 @@ interface DialogRefs {
   save: MatDialogRef<SaveComponent>;
 }
 
-const CONSTANTS = {
-  SUCCES_DURATION: 2000,
-  FAILURE_DURATION: 2020,
-  LOAD_DURATION: 500,
-};
-
-const exportSaveDialogOptions: MatDialogConfig = {
-  width: '1000px',
-  height: '850'
-};
-
 @Injectable({
   providedIn: 'root'
 })
 export class OverlayService {
+
+  private static readonly SUCCES_DURATION: number = 2000;
+  private static readonly FAILURE_DURATION: number = 2020;
+  private static readonly LOAD_DURATION: number = 500;
+  private static readonly EXPORT_SAVE_DIALOG_OPTIONS: MatDialogConfig = {
+    width: '1000px',
+    height: '850',
+  };
 
   private dialog: OverlayManager;
   private dialogRefs: DialogRefs;
@@ -70,8 +67,8 @@ export class OverlayService {
       save: (undefined as unknown) as MatDialogRef<SaveComponent>,
     };
     this.svgService = svgService;
-    this.toolSelectorService.set(Tool.Pencil);
-    this.toolSelectorService.set(Tool.Pencil);
+    this.toolSelectorService.set(Tool.PENCIL);
+    this.toolSelectorService.set(Tool.PENCIL);
   }
 
   start(): void {
@@ -90,11 +87,11 @@ export class OverlayService {
 
   private openSelectedDialog(dialog: string): void {
     switch (dialog) {
-      case OverlayPages.New:
+      case OverlayPages.NEW:
         return this.openNewDrawDialog();
-      case OverlayPages.Library:
+      case OverlayPages.LIBRARY:
         return this.openGalleryDialog(true);
-      case OverlayPages.Documentation:
+      case OverlayPages.DOCUMENTATION:
         return this.openDocumentationDialog(true);
       default:
         break;
@@ -115,14 +112,14 @@ export class OverlayService {
   }
 
   private closeNewDrawDialog(option: string | SvgShape): void {
-    if (option === OverlayPages.Home) {
+    if (option === OverlayPages.HOME) {
       this.openHomeDialog();
     } else if (option !== null) {
       this.createNewDraw(option as SvgShape);
     }
   }
 
-  openDocumentationDialog(fromHome: boolean, initSection: DocEnum = DocEnum.welcome): void {
+  openDocumentationDialog(fromHome: boolean, initSection: DocEnum = DocEnum.WELCOME): void {
     const dialogOptions: MatDialogConfig = {
       width: '98%',
       height: '95vh',
@@ -141,13 +138,13 @@ export class OverlayService {
   openExportDialog(): void {
     this.dialogRefs.export = this.dialog.open(
       ExportComponent,
-      exportSaveDialogOptions
+      OverlayService.EXPORT_SAVE_DIALOG_OPTIONS
     );
     this.dialogRefs.export.disableClose = true;
   }
 
   openSaveDialog(): void {
-    this.dialogRefs.save = this.dialog.open(SaveComponent, exportSaveDialogOptions);
+    this.dialogRefs.save = this.dialog.open(SaveComponent, OverlayService.EXPORT_SAVE_DIALOG_OPTIONS);
     this.dialogRefs.save.disableClose = true;
     this.dialogRefs.save.afterClosed().subscribe(
       (error?: string) => this.closeSaveDialog(error));
@@ -155,7 +152,7 @@ export class OverlayService {
 
   private closeSaveDialog(error?: string): void {
     this.snackBar.open(error || 'Succès', 'Ok', {
-      duration: error ? CONSTANTS.FAILURE_DURATION : CONSTANTS.SUCCES_DURATION,
+      duration: error ? OverlayService.FAILURE_DURATION : OverlayService.SUCCES_DURATION,
     });
   }
 
@@ -208,9 +205,9 @@ export class OverlayService {
     this.gridService.handleGrid();
     this.selectionService.reset();
     this.undoRedo.setStartingCommand();
-    this.toolSelectorService.set(Tool.Pencil);
+    this.toolSelectorService.set(Tool.PENCIL);
     // Deuxième fois juste pour fermer le panneau latéral
-    this.toolSelectorService.set(Tool.Pencil);
+    this.toolSelectorService.set(Tool.PENCIL);
   }
 
   private loadDraw(draw: GalleryDraw): void {
@@ -222,10 +219,10 @@ export class OverlayService {
     });
     this.svgService.header = draw.header;
     this.undoRedo.setStartingCommand();
-    this.toolSelectorService.set(Tool.Pencil);
-    this.toolSelectorService.set(Tool.Pencil);
+    this.toolSelectorService.set(Tool.PENCIL);
+    this.toolSelectorService.set(Tool.PENCIL);
     this.snackBar.open('Dessin chargé avec succès', 'Ok', {
-      duration: CONSTANTS.LOAD_DURATION
+      duration: OverlayService.LOAD_DURATION
     });
   }
 

@@ -95,12 +95,13 @@ export class UndoRedoService {
   }
 
   undoBase(): void {
-    if (this.cmdDone.length !== 0) {
-      const lastCommand = this.cmdDone.pop();
-      this.cmdUndone.push(lastCommand as SVGElement[]);
-      this.refresh(this.cmdDone[this.cmdDone.length - 1]);
-      this.autoSave.saveState(this.svgStructure.drawZone);
+    if (this.cmdDone.length === 0) {
+      return ;
     }
+    const lastCommand = this.cmdDone.pop();
+    this.cmdUndone.push(lastCommand as SVGElement[]);
+    this.refresh(this.cmdDone[this.cmdDone.length - 1]);
+    this.autoSave.saveState(this.svgStructure.drawZone);
   }
 
   redo(): void {
@@ -119,12 +120,13 @@ export class UndoRedoService {
   }
 
   redoBase(): void {
-    if (this.cmdUndone.length) {
-      const lastCommand = this.cmdUndone.pop();
-      this.cmdDone.push(lastCommand as SVGElement[]);
-      this.refresh(this.cmdDone[this.cmdDone.length - 1]);
-      this.autoSave.saveState(this.svgStructure.drawZone);
+    if (this.cmdUndone.length === 0) {
+      return;
     }
+    const lastCommand = this.cmdUndone.pop();
+    this.cmdDone.push(lastCommand as SVGElement[]);
+    this.refresh(this.cmdDone[this.cmdDone.length - 1]);
+    this.autoSave.saveState(this.svgStructure.drawZone);
   }
 
   refresh(node?: ChildNode[]): void {

@@ -46,16 +46,16 @@ describe('GridService', () => {
     const expected = 45;
     service.active = true;
     service.squareSize = intialized;
-    service.keyEvHandler(GridKeys.plus);
+    service.keyEvHandler(GridKeys.PLUS);
     expect(service.squareSize).toEqual(expected);
   });
 
   it('#keyEvHandler should not increase the value of squareSize if it is already at' +
     'max square size', () => {
-    const expected = service.MAX_SQUARESIZE;
+    const expected = GridService['MAX_SQUARESIZE'];
     service.active = true;
     service.squareSize = expected;
-    service.keyEvHandler(GridKeys.plus);
+    service.keyEvHandler(GridKeys.PLUS);
     expect(service.squareSize).toEqual(expected);
   });
 
@@ -65,16 +65,16 @@ describe('GridService', () => {
     const expected = 35;
     service.active = true;
     service.squareSize = intialized;
-    service.keyEvHandler(GridKeys.minus);
+    service.keyEvHandler(GridKeys.MINUS);
     expect(service.squareSize).toEqual(expected);
   });
 
   it('#keyEvHandler should not decrease the value of squareSize if it is already at' +
     'min square size', () => {
-    const expected = service.MIN_SQUARESIZE;
+    const expected = GridService['MIN_SQUARESIZE'];
     service.active = true;
     service.squareSize = expected;
-    service.keyEvHandler(GridKeys.minus);
+    service.keyEvHandler(GridKeys.MINUS);
     expect(service.squareSize).toEqual(expected);
   });
 
@@ -84,7 +84,7 @@ describe('GridService', () => {
     const expected = 40;
     service.active = true;
     service.squareSize = intialized;
-    service.keyEvHandler(GridKeys.minus);
+    service.keyEvHandler(GridKeys.MINUS);
     expect(service.squareSize).toEqual(expected);
   });
 

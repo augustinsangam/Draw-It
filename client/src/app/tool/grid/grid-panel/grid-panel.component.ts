@@ -32,6 +32,8 @@ export class GridPanelComponent extends ToolPanelDirective {
     static: false,
   }) private opacitySlider: MatSlider;
 
+  readonly GridService: typeof GridService = GridService;
+
   private gridForm: FormGroup;
 
   constructor(
@@ -75,7 +77,7 @@ export class GridPanelComponent extends ToolPanelDirective {
   }
 
   protected showDocumentation(): void {
-    this.overlay.openDocumentationDialog(false, DocEnum.grid);
+    this.overlay.openDocumentationDialog(false, DocEnum.GRID);
   }
 
 }

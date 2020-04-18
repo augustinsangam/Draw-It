@@ -15,5 +15,4 @@ export class ProgressExportComponent {
     this.error = false;
     this.message = 'En cours';
   }
-
 }

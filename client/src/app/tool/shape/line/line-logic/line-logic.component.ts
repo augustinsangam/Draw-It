@@ -12,8 +12,8 @@ interface JonctionOption {
   color: string;
 }
 enum ShortcutName {
-  SHIFTLEFT = 'ShiftLeft',
-  SHIFTRIGHT = 'ShiftRight',
+  SHIFT_LEFT = 'ShiftLeft',
+  SHIFT_RIGHT = 'ShiftRight',
   ESCAPE = 'Escape',
   BACKSPACE = 'Backspace',
 }
@@ -162,7 +162,7 @@ export class LineLogicComponent extends ToolLogicDirective
 
   private onKeyDown(keyEv: KeyboardEvent): void {
     const shiftIsPressed =
-      keyEv.code === ShortcutName.SHIFTLEFT || keyEv.code === ShortcutName.SHIFTRIGHT;
+      keyEv.code === ShortcutName.SHIFT_LEFT || keyEv.code === ShortcutName.SHIFT_RIGHT;
     if (this.isNewPath) {
       return;
     }
@@ -170,8 +170,8 @@ export class LineLogicComponent extends ToolLogicDirective
       this.getPath().removePath();
       this.isNewPath = true;
     }
-    const MAXTOREMOVE = 4;
-    const maxRemovableInstruction = this.service.withJonction ? MAXTOREMOVE : 2;
+    const MAX_TO_REMOVE = 4;
+    const maxRemovableInstruction = this.service.withJonction ? MAX_TO_REMOVE : 2;
     const shouldConnect = this.getPath().datas.instructions.length >= maxRemovableInstruction;
     if (keyEv.code === ShortcutName.BACKSPACE && shouldConnect) {
       this.removeLine();
@@ -184,7 +184,7 @@ export class LineLogicComponent extends ToolLogicDirective
   }
 
   private onKeyUp(keyEv: KeyboardEvent): void {
-    const shiftIsPressed =  keyEv.code === ShortcutName.SHIFTLEFT || keyEv.code === ShortcutName.SHIFTRIGHT;
+    const shiftIsPressed =  keyEv.code === ShortcutName.SHIFT_LEFT || keyEv.code === ShortcutName.SHIFT_RIGHT;
     if (shiftIsPressed && !this.isNewPath) {
       this.getPath().simulateNewLine(this.mousePosition);
     }

@@ -7,27 +7,27 @@ import { ToolService } from '../../tool.service';
 })
 export class AerosolService extends ToolService {
 
-  readonly MAX_FREQUENCY: number = 400;
-  readonly MIN_FREQUENCY: number = 1;
-  readonly DEFAULT_FREQUENCY: number = 250;
-  readonly MAX_THICKNESS: number = 100;
-  readonly MIN_THICKNESS: number = 10;
-  readonly DEFAULT_THICKNESS: number = 20;
-  readonly NUMBER_POINTS: number = 25;
+  protected static readonly MAX_FREQUENCY: number = 400;
+  protected static readonly MIN_FREQUENCY: number = 1;
+  private   static readonly DEFAULT_FREQUENCY: number = 250;
+  protected static readonly MAX_THICKNESS: number = 100;
+  protected static readonly MIN_THICKNESS: number = 10;
+  private   static readonly DEFAULT_THICKNESS: number = 20;
+  private   static readonly NUMBER_POINTS: number = 25;
 
   thickness: number;
   frequency: number;
 
   constructor() {
     super();
-    this.frequency = this.DEFAULT_FREQUENCY;
-    this.thickness = this.DEFAULT_THICKNESS;
+    this.frequency = AerosolService.DEFAULT_FREQUENCY;
+    this.thickness = AerosolService.DEFAULT_THICKNESS;
   }
 
   generatePoints(p: Point): string {
     let disk = '';
 
-    for (let i = 0; i < this.NUMBER_POINTS; i++) {
+    for (let i = 0; i < AerosolService.NUMBER_POINTS; i++) {
 
       const theta = Math.random() * 2 * Math.PI;
       const r = Math.random() * this.thickness;

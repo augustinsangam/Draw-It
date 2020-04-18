@@ -38,7 +38,7 @@ export class PencilPanelComponent extends ToolPanelDirective {
   }
 
   protected showDocumentation(): void {
-    this.overlay.openDocumentationDialog(false, DocEnum.pencil);
+    this.overlay.openDocumentationDialog(false, DocEnum.PENCIL);
   }
 
 }

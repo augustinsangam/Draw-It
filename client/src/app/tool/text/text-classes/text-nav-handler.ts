@@ -40,7 +40,6 @@ export class TextNavHandler {
       }
       this.cursor.move(currentLine, this.lines.indexOf(currentLine));
     }
-
     return currentLine;
   }
 
@@ -55,7 +54,6 @@ export class TextNavHandler {
       }
       this.cursor.move(currentLine, this.lines.indexOf(currentLine));
     }
-
     return currentLine;
   }
 

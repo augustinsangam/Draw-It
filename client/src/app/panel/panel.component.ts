@@ -45,7 +45,7 @@ export class PanelComponent implements OnInit {
     private readonly toolSelectorService: ToolSelectorService,
   ) {
     this.components = new Array(Tool._Len);
-    for ( const entry of Tools.TOOL_MANAGER ) {
+    for (const entry of Tools.TOOL_MANAGER) {
       this.components[entry[0]] = entry[1][0];
     }
     this.childWidth = 0;
@@ -66,20 +66,21 @@ export class PanelComponent implements OnInit {
   }
 
   private setTool(tool: Tool): ComponentRef<ToolPanelDirective> | null {
-    if (tool < Tool._Len) {
-      this.viewContainerRef.clear();
-      const component = this.components[tool];
-      const factory = this.componentFactoryResolver.resolveComponentFactory(
-        component
-      );
-      const ref = this.viewContainerRef.createComponent(factory);
-      ref.instance.width.subscribe((w: number) => this.setWidthOfChild(w));
-      ref.changeDetectorRef.detectChanges();
-      this.chatBoxRef.clear();
-      this.addColorBox();
-      return ref;
+    if (tool >= Tool._Len) {
+      return null;
     }
-    return null;
+
+    this.viewContainerRef.clear();
+    const component = this.components[tool];
+    const factory = this.componentFactoryResolver.resolveComponentFactory(
+      component
+    );
+    const ref = this.viewContainerRef.createComponent(factory);
+    ref.instance.width.subscribe((w: number) => this.setWidthOfChild(w));
+    ref.changeDetectorRef.detectChanges();
+    this.chatBoxRef.clear();
+    this.addColorBox();
+    return ref;
   }
 
   private addColorBox(): void {

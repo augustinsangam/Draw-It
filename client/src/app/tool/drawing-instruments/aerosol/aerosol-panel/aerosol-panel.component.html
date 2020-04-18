@@ -5,7 +5,7 @@
 <form [formGroup]="aerosolForm">
   <p class="no-select">Épaisseur</p>
   <div class="thickness">
-    <mat-slider min="{{this.service.MIN_THICKNESS}}" max="{{this.service.MAX_THICKNESS}}" step=1
+    <mat-slider min="{{AerosolService.MIN_THICKNESS}}" max="{{AerosolService.MAX_THICKNESS}}" step=1
                 (input)="onThicknessChange()"
                 (change)="onThicknessChange()"
                 formControlName="thicknessSlider"
@@ -19,7 +19,7 @@
   <br>
   <p class="no-select">Fréquence du jet</p>
   <div class="frequency">
-    <mat-slider min="{{this.service.MIN_FREQUENCY}}" max="{{this.service.MAX_FREQUENCY}}" step="1"
+    <mat-slider min="{{AerosolService.MIN_FREQUENCY}}" max="{{AerosolService.MAX_FREQUENCY}}" step="1"
                 (input)="onFrequencyChange()"
                 (change)="onFrequencyChange()"
                 formControlName="frequencySlider"
@@ -34,7 +34,7 @@
 <p class="no-select">Aperçu pour 1s</p>
 <svg width="340" height="220">
   <circle cx="150" cy="110" r="105"
-      [ngStyle]="{'fill': 'rgb(255, 255, 255)', 'stroke-width': '2', 'stroke': 'rgb(0, 0, 0)'}"></circle>
+      [ngStyle]="{'fill': this.colorService.backgroundColor, 'stroke-width': '2', 'stroke': 'rgb(0, 0, 0)'}"></circle>
   <path d =''
         [ngStyle]="{'fill': this.colorService.primaryColor}"
         #prevPath >

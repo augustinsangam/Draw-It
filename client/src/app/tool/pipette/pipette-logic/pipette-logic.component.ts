@@ -13,7 +13,7 @@ import { PipetteService } from '../pipette.service';
 export class PipetteLogicComponent extends ToolLogicDirective
   implements OnInit, OnDestroy {
 
-  private allListeners: (() => void)[] = [];
+  private allListeners: (() => void)[];
   private image: CanvasRenderingContext2D;
   private backgroundColorOnInit: string;
 
@@ -24,7 +24,7 @@ export class PipetteLogicComponent extends ToolLogicDirective
     private readonly undoRedoService: UndoRedoService,
   ) {
     super();
-
+    this.allListeners = [];
     this.undoRedoService.resetActions();
     this.undoRedoService.setPostUndoAction({
       functionDefined: true,

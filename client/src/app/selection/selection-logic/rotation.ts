@@ -8,8 +8,8 @@ export class Rotation {
 
   onRotate($event: WheelEvent): void {
     const angle = this.selectionLogic.deplacement.keyManager.alt ?
-      $event.deltaY / Util.MOUSE_WHEEL_DELTA_Y :
-      Util.ANGLE * ($event.deltaY / Util.MOUSE_WHEEL_DELTA_Y);
+      $event.deltaY / Util.SelectionLogicUtil.MOUSE_WHEEL_DELTA_Y :
+      Util.SelectionLogicUtil.ANGLE * ($event.deltaY / Util.SelectionLogicUtil.MOUSE_WHEEL_DELTA_Y);
 
     if (this.selectionLogic.deplacement.keyManager.shift) {
       this.allSelfRotate(angle);

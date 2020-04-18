@@ -11,24 +11,8 @@ export const COLORS = {
   BLUE: 'rgba(0, 0, 255, 0.7)',
   GREEN: 'rgba(0, 255, 0, 0.7)',
   GRAY: 'rgba(128, 128, 255, 1)',
-  DRAK_GRAY: 'rgba(128, 0, 0, 1)'
+  DRAK_RED: 'rgba(128, 0, 0, 1)'
 };
-
-export const ANGLE = 15;
-export const MOUSE_WHEEL_DELTA_Y = 53;
-export const PASTE_TRANSLATION = 30;
-export const RECTANGLE_STROKE = '2';
-export const CIRCLE_RADIUS = '8';
-export const TIME_INTERVAL = 100;
-export const DASH_ARRAY = '10 5';
-export const OFFSET_TRANSLATE = 3;
-
-export const CIRCLES = [
-  CircleType.LEFT_CIRCLE,
-  CircleType.TOP_CIRCLE,
-  CircleType.BOTTOM_CIRCLE,
-  CircleType.RIGHT_CIRCLE
-];
 
 export type MouseEventCallBack = ($event: MouseEvent) => void;
 export type KeyboardPressCallback = ($event: KeyboardEvent) => void;
@@ -41,6 +25,22 @@ export interface SelectionRectangles {
 }
 
 export class SelectionLogicUtil {
+
+  static readonly ANGLE: number               = 15;
+  static readonly MOUSE_WHEEL_DELTA_Y: number = 53;
+  static readonly PASTE_TRANSLATION: number   = 30;
+  static readonly RECTANGLE_STROKE: string    = '2';
+  static readonly CIRCLE_RADIUS: string       = '8';
+  static readonly TIME_INTERVAL: number       = 100;
+  static readonly DASH_ARRAY: string          = '10 5';
+  static readonly OFFSET_TRANSLATE: number    = 3;
+
+  static readonly CIRCLES: CircleType[] = [
+    CircleType.LEFT_CIRCLE,
+    CircleType.TOP_CIRCLE,
+    CircleType.BOTTOM_CIRCLE,
+    CircleType.RIGHT_CIRCLE
+  ];
 
   static initialiseMouse(): Mouse {
     const point = new Point(0, 0);
@@ -80,9 +80,9 @@ export class SelectionLogicUtil {
 
   static initialiseCircles(renderer: Renderer2, zone: SVGGElement, domain: string): SVGElement[] {
     const circles = new Array<SVGElement>();
-    CIRCLES.forEach((index) => {
+    SelectionLogicUtil.CIRCLES.forEach((index) => {
       const circle = renderer.createElement('circle', domain);
-      const resizeType = index % (CIRCLES.length - 1) === 0 ? 'col-resize' : 'ns-resize';
+      const resizeType = index % (SelectionLogicUtil.CIRCLES.length - 1) === 0 ? 'col-resize' : 'ns-resize';
       renderer.setStyle(circle, 'cursor', resizeType);
       circles.push(circle);
       renderer.appendChild(zone, circle);

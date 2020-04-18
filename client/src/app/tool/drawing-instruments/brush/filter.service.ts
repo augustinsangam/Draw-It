@@ -6,6 +6,7 @@ const SVG_NS = 'http://www.w3.org/2000/svg' ;
   providedIn: 'root'
 })
 export class FilterService {
+
   generateBrushFilters(renderer: Renderer2): SVGDefsElement {
     const svgDefsEl: SVGDefsElement = renderer.createElement('defs', SVG_NS);
     renderer.appendChild(svgDefsEl, this.generateFilterOne(renderer));

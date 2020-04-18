@@ -5,6 +5,13 @@ export interface DialogData {
   drawInProgress: boolean;
 }
 
+interface Option {
+  icon: string;
+  message: string;
+  dialogCloseResult: string;
+  canDisplay: boolean;
+}
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -44,11 +51,4 @@ export class HomeComponent {
     ];
     this.options[0].canDisplay = data.drawInProgress;
   }
-}
-
-interface Option {
-  icon: string;
-  message: string;
-  dialogCloseResult: string;
-  canDisplay: boolean;
 }
