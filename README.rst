@@ -13,6 +13,9 @@ Client
 ``npm start``
   Cette commande démarre l'application, écoute tout changement dans le code et
   ouvre la page automatiquement dans le fureteur.
+  
+``npm run electron-tsc``
+  Cette commande exécute l'application dans une fenêtre unique.
 
 ``npx ng serve``
   Cette commande démarre l'application et écoute tout changement dans le code.
