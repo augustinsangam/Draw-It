@@ -1,13 +1,16 @@
 {
   "name": "client",
   "version": "0.0.0",
+  "main": "main.js",
   "scripts": {
     "start": "ng serve --open",
     "format": "prettier --config ../.prettierrc.yaml --write \"src/**/*\"",
     "build": "ng build",
     "test": "ng test",
     "coverage": "ng test --code-coverage --sourceMap=true",
-    "lint": "ng lint --type-check --format stylish"
+    "lint": "ng lint --type-check --format stylish",
+    "electron-tsc": "tsc || true main.ts && ng build --base-href ./ && electron .",
+    "electron": "electron ."
   },
   "private": true,
   "dependencies": {
@@ -42,6 +45,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
     "codelyzer": "^5.2.1",
+    "electron": "^8.2.5",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.1.0",
