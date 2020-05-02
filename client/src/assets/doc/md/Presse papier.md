@@ -1,7 +1,7 @@
 Le **presse papier** vous permet de couper, copier, coller, dupliquer ou supprimer des objets de la surface de dessin.
 
 <video width="90%" height="70%" class="doc-fig" autoplay loop>
-    <source src="/assets/doc/vid/clipboard.webm" type="video/webm">
+    <source src="./assets/doc/vid/clipboard.webm" type="video/webm">
 </video>
 
 Les raccourcis suivants sont utilisables lorsque des objets sont sélectionnés :

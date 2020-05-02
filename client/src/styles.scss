@@ -41,15 +41,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 @font-face {
   font-family: 'Geo-Sans-Light-NMS';
-  src: url('/assets/fonts/geonms-font.ttf')
+  src: url('./assets/fonts/geonms-font.ttf')
 }
 @font-face {
   font-family: 'JetBrains-Mono';
-  src: url('/assets/fonts/JetBrainsMono-Regular.ttf')
+  src: url('./assets/fonts/JetBrainsMono-Regular.ttf')
 }
 @font-face {
   font-family: 'texgyrepagella';
-  src: url('/assets/fonts/texgyrepagella-regular.otf')
+  src: url('./assets/fonts/texgyrepagella-regular.otf')
 }
 
 .no-select {

@@ -1,7 +1,7 @@
 La **palette de couleur** permet de choisir les couleurs utilisées par les différents outils de DrawIt. Elle toujours accessible depuis le panneau de l'outil sélectionné.
 
 <video width="90%" height="70%" class="doc-fig" autoplay loop>
-    <source src="/assets/doc/vid/couleur.webm" type="video/webm">
+    <source src="./assets/doc/vid/couleur.webm" type="video/webm">
 </video>
 
 Vous pouvez choisir une couleur primaire ainsi qu’une couleur secondaire. La couleur primaire sera utilisée pour dessiner, la couleur secondaire sera utilisée pour les contours lorsque l’outil sélectionné présentera cette option.

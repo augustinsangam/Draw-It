@@ -104,7 +104,7 @@ export class DocumentationComponent {
       this.treeControl.dataNodes = parentNode !== null ? new Array<Node>(parentNode) : new Array<Node>();
       this.treeControl.expandAll();
     }
-    fetch(encodeURI(`/assets/doc/md/${node.label}.md`))
+    fetch(encodeURI(`./assets/doc/md/${node.label}.md`))
       .then((res) => res.text())
       .then((text) => {
         this.contentToDisplay.body = marked(text);

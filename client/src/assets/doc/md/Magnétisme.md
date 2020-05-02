@@ -1,7 +1,7 @@
 DrawIt possède une option **Magnétisme** dont le but est de faciliter le déplacement et l’alignement des objets de la zone de dessin.
 
 <video width="90%" height="70%" class="doc-fig" autoplay loop>
-    <source src="/assets/doc/vid/magnetism.webm" type="video/webm">
+    <source src="./assets/doc/vid/magnetism.webm" type="video/webm">
 </video>
 
  Vous pouvez activer et désactiver le magnétisme depuis le panneau de l'outil sélection. Le magnétisme se base sur les carreaux de la grille pour « attirer » les formes. En ajustant la taille des carreaux de la grille, vous modifierez également le comportement du magnétisme.

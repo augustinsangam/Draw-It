@@ -1,11 +1,11 @@
-L’outil **Ligne** permet de tracer un ou plusieurs segments connectés entre eux. Pour cela, cliquez sur l’icône ligne ![l’icône de la ligne](/assets/sidebar-icons/line.png) ou pressez la touche **`L`** de votre clavier.
+L’outil **Ligne** permet de tracer un ou plusieurs segments connectés entre eux. Pour cela, cliquez sur l’icône ligne ![l’icône de la ligne](./assets/sidebar-icons/line.png) ou pressez la touche **`L`** de votre clavier.
  
  Pour tracer une ligne, cliquez une fois sur la zone de dessin pour définir le point de départ de votre ligne. Déplacez votre curseur sur la zone de dessin pour avoir un aperçu de votre ligne. Pour terminer la ligne, double-cliquez n'importe où sur la zone de dessin. 
  
  Vous pouvez également effectuer un simple clic pour déterminer le nouveau point de départ de votre ligne. Vous êtes libres de tracer une ligne de la longueur que vous voulez. Double-cliquez simplement pour terminer la ligne. 
 
 <video width="90%" height="70%" class="doc-fig" autoplay loop>
-    <source src="/assets/doc/vid/ligne.webm" type="video/webm">
+    <source src="./assets/doc/vid/ligne.webm" type="video/webm">
 </video>
 
 En maintenant la touche **`SHIFT`** de votre clavier lors du traçage d’une ligne, vous activez un magnétisme attirant l’aperçu de la ligne selon des angles de 45°.
