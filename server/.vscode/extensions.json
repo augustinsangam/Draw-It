@@ -1,7 +1,0 @@
-{
-  "recommendations": [
-    "EditorConfig.EditorConfig",
-    "dbaeumer.vscode-eslint",
-    "gaborv.flatbuffers"
-  ]
-}

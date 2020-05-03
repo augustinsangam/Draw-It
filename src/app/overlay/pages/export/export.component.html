@@ -1,0 +1,41 @@
+<h1>Exporter le dessin</h1>
+
+<form id="form" [formGroup]="form" class="flex">
+  <svg width="384" height="216" xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" #svgView>
+  </svg>
+  <div class="box filters" style="flex: 30%">
+    <h4>Filtres</h4>
+    <mat-radio-group (change)="onOptionChange($event)" formControlName="filter">
+      <div *ngFor="let filter of getFilters()" class="filterOption">
+        <mat-radio-button [value]="filter"></mat-radio-button>
+        {{filter}}
+      </div>
+    </mat-radio-group>
+  </div>
+  <div class="full">
+    <mat-form-field appearance="outline">
+      <mat-label>Nom du dessin</mat-label>
+      <input matInput placeholder="Entrer le nom du dessin" formControlName="name">
+      <mat-hint>
+        Le nom du fichier ne doit pas contenir d'espaces
+      </mat-hint>
+    </mat-form-field>
+  </div>
+  <div class="full">
+    <mat-radio-group formControlName="format">
+      <h4>Formats</h4>
+      <div *ngFor="let format of getFormats()" class="formatOption">
+        <mat-radio-button [value]="format" #radioFormat></mat-radio-button>
+        {{format}}
+      </div>
+    </mat-radio-group>
+  </div>
+  <div class="box">
+    <button mat-raised-button color="warn" (click)="onExportDialogClose()">Annuler</button>
+  </div>
+
+  <div class="box">
+    <button mat-raised-button color="primary" (click)="popUpConfirm()" [disabled]="form.invalid">Exporter</button>
+  </div>
+</form>

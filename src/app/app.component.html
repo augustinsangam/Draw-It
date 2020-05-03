@@ -1,0 +1,16 @@
+<app-sidebar  (documentationEvent)="overlayService.openDocumentationDialog(false)"
+              (exportEvent)="overlayService.openExportDialog()"
+              (saveEvent)="overlayService.openSaveDialog()"
+              (homeEvent)="overlayService.openHomeDialog(true)"
+              (importEvent)="overlayService.openLoadProjectDialog(false)"></app-sidebar>
+<app-panel></app-panel>
+<main id="canvasRef">
+  <svg #svg app-svg
+    tabindex=0
+    [attr.height.px]="svgService.shape.height"
+    [attr.width.px]="svgService.shape.width"
+    [ngStyle]="{backgroundColor:svgService.shape.color}"
+    >
+  </svg>
+</main>
+

@@ -1,0 +1,37 @@
+main {
+  text-align: center;
+  width: 100%;
+  justify-content: center;
+}
+
+.close {
+  color: #e91e63;
+  background-color: whitesmoke;
+  vertical-align: middle;
+  margin-top: 15px;
+  margin-left: -50px;
+}
+
+.left {
+  float: left;
+  width: 95%;
+}
+
+.right {
+  float: left;
+  width: 5%;
+}
+
+.upload-left {
+  height: 60px;
+}
+
+.upload-right {
+  height: 50px;
+}
+
+mat-form-field {
+  width: 50%;
+  vertical-align: middle;
+  margin-top: -18px;
+}

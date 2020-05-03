@@ -1,0 +1,43 @@
+<main>
+
+  <header>
+    <div class="left">
+      <h1> Ouvrir un projet existant </h1>
+    </div>
+    <div class="right">
+      <button class="close" mat-mini-fab mat-dialog-close>
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </header>
+
+  <body>
+    <ng-container *ngIf="!onDrag">
+      <input type="file" id="file-input" hidden #fileInput (change)="onChange(fileInput)" />
+      <button mat-stroked-button color="accent" (click)="fileInput.click()" class="upload-left">
+        Téléverser
+      </button>
+      <mat-form-field appearance="outline" class="upload-right" (click)="fileInput.click()">
+        <input matInput [value]="getFileName(fileInput)" readonly>
+        <mat-icon matSuffix>attach_file</mat-icon>
+        <mat-hint>
+          <span *ngIf="!fileSelected" style="color: blue;">Fichier avec une extension .di</span>
+          <span *ngIf="fileSelected && readOnProgress" style="color: blue;">Lecture en cours ... </span>
+          <span *ngIf="fileSelected && !readOnProgress && !fileValid" style="color: red;">Fichier invalide :-( </span>
+          <span *ngIf="fileSelected && !readOnProgress && fileValid" style="color: green;">Vous pouvez charger l'image :-)</span>
+        </mat-hint>
+      </mat-form-field>
+      <button mat-raised-button color="primary" *ngIf="fileSelected && fileValid" (click)="onLoad()"
+        class="upload-left">
+        Charger
+      </button>
+    </ng-container>
+
+    <ng-container *ngIf="onDrag">
+      <p>On drag</p>
+    </ng-container>
+
+
+  </body>
+
+</main>

@@ -1,0 +1,78 @@
+:host {
+  display: block;
+  width: 85%;
+  margin: auto;
+}
+
+svg {
+  margin-top: 10px;
+}
+
+h1 {
+  margin: 30px 0 25px;
+  text-align: center;
+}
+
+form {
+  max-width: 600px;
+  margin: auto;
+}
+
+svg {
+  border: 1px solid rgba(0, 0, 0, .5);
+}
+
+h4 {
+  margin: 0;
+}
+
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.box {
+  flex: 50%;
+  padding: 5px 15px;
+  box-sizing: border-box;
+}
+
+.full {
+  flex: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.block-center {
+  margin: 15px auto 0;
+  width: min-content;
+}
+
+.filters {
+  margin-left: 30px;
+}
+
+mat-form-field {
+  display: block;
+}
+
+mat-radio-button {
+  margin: 5px 0;
+}
+
+button {
+  display: block;
+  margin: 10px auto;
+  width: 90%;
+}
+
+::ng-deep .mat-button-toggle-checked div {
+  text-decoration: underline;
+}
+
+.formatOption {
+  float: left;
+  margin-left: 60px;
+  margin-bottom: 20px;
+  margin-top: 12px;
+}
