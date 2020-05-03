@@ -3,7 +3,7 @@ Page d'aide
 ###########
 
 ******
-Developpement
+Développement
 ******
 
 ``npm i``
