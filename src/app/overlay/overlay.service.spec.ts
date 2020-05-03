@@ -24,9 +24,6 @@ import { UndoRedoService } from '../undo-redo/undo-redo.service';
 import { OverlayService } from './overlay.service';
 import { DocumentationComponent } from './pages/documentation/documentation.component';
 import { ExportComponent } from './pages/export/export.component';
-import { GalleryCardComponent } from './pages/gallery/gallery-card/gallery-card.component';
-import { GalleryComponent, GalleryDraw } from './pages/gallery/gallery.component';
-import { TagsFilterComponent } from './pages/gallery/tags-filter/tags-filter.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NewDrawComponent } from './pages/new-draw/new-draw.component';
 import { SaveComponent } from './pages/save/save.component';
@@ -47,15 +44,12 @@ describe('Overlay', () => {
         ColorPickerItemComponent,
         DocumentationComponent,
         ExportComponent,
-        GalleryComponent,
-        GalleryCardComponent,
         HomeComponent,
         NewDrawComponent,
         PanelComponent,
         PencilPanelComponent,
         SaveComponent,
         SidebarComponent,
-        TagsFilterComponent
       ],
       imports: [
         BrowserAnimationsModule,
@@ -82,7 +76,6 @@ describe('Overlay', () => {
           NewDrawComponent,
           DocumentationComponent,
           PencilPanelComponent,
-          GalleryComponent,
           ExportComponent,
           SaveComponent,
         ]
@@ -284,65 +277,6 @@ describe('Overlay', () => {
     service['openExportDialog']();
     service['dialogRefs'].export.close();
     expect(spy).not.toHaveBeenCalled();
-  });
-
-  it('#openGalleryDialog should not call getCommonDialogOptions.', () => {
-    const spy = spyOn<any>(service, 'getCommonDialogOptions');
-    service['openGalleryDialog'](true);
-    service['dialogRefs'].gallery.close();
-    expect(spy).not.toHaveBeenCalled();
-  });
-
-  it('#closeGalleryDialog should load the draw if option is not undefined', () => {
-    const spy = spyOn<any>(service, 'loadDraw');
-    service['closeGalleryDialog'](false, ' ' as unknown as GalleryDraw);
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('#closeGalleryDialog should not load the draw if option is undefined', () => {
-    const spy = spyOn<any>(service, 'loadDraw');
-    service['closeGalleryDialog'](false, undefined);
-    expect(spy).not.toHaveBeenCalled();
-  });
-
-  it('#closeGalleryDialog should open home dialog when option is undefined'
-    + ' and from home is set', () => {
-    const spy = spyOn<any>(service, 'openHomeDialog');
-    service['closeGalleryDialog'](true, undefined);
-    expect(spy).toHaveBeenCalled();
-  });
-
-  it('#loadDraw append SVGElement in the DOM', (done: DoneFn) => {
-    const drawElements = document.createElementNS('http://www.w3.org/2000/svg',
-                                            'svg:g') as SVGGElement;
-    const rec1 = document.createElementNS('http://www.w3.org/2000/svg',
-                                            'svg:rect') as SVGElement;
-    const rec2 = document.createElementNS('http://www.w3.org/2000/svg',
-                                            'svg:rect') as SVGElement;
-    drawElements.appendChild(rec1);
-    drawElements.appendChild(rec2);
-
-    const draw: GalleryDraw = {
-      header : {
-        name: 'Zeus',
-        id: 3,
-        tags: [],
-      },
-      shape: {
-        height: 400,
-        width: 400,
-        color: '#FFFFFF'
-      },
-      svg: drawElements,
-      colors: ['rgba(0, 0, 0, 1)'],
-    };
-
-    service['loadDraw'](draw);
-    setTimeout(() => {
-      expect(svgService.structure.drawZone.contains(rec1)).toBeTruthy();
-      expect(svgService.structure.drawZone.contains(rec2)).toBeTruthy();
-      done();
-    }, 500);
   });
 
   it('#closeSaveDialog works well when error undefined', () => {

@@ -12,9 +12,6 @@ import { LocalStorageHandlerService } from './auto-save/local-storage-handler.se
 import { MaterialModule } from './material.module';
 import { DocumentationComponent } from './overlay/pages/documentation/documentation.component';
 import { ExportComponent } from './overlay/pages/export/export.component';
-import { GalleryCardComponent } from './overlay/pages/gallery/gallery-card/gallery-card.component';
-import { GalleryComponent } from './overlay/pages/gallery/gallery.component';
-import { TagsFilterComponent } from './overlay/pages/gallery/tags-filter/tags-filter.component';
 import { HomeComponent } from './overlay/pages/home/home.component';
 import { NewDrawComponent } from './overlay/pages/new-draw/new-draw.component';
 import { SaveComponent } from './overlay/pages/save/save.component';
@@ -49,15 +46,12 @@ describe('AppComponent', () => {
         ColorPickerItemComponent,
         DocumentationComponent,
         ExportComponent,
-        GalleryComponent,
-        GalleryCardComponent,
         HomeComponent,
         NewDrawComponent,
         PanelComponent,
         PencilPanelComponent,
         SaveComponent,
         SidebarComponent,
-        TagsFilterComponent
       ],
       imports: [
         BrowserAnimationsModule,
@@ -84,7 +78,6 @@ describe('AppComponent', () => {
           NewDrawComponent,
           DocumentationComponent,
           PencilPanelComponent,
-          GalleryComponent,
           ExportComponent,
           SaveComponent,
         ]

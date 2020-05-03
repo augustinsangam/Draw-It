@@ -174,34 +174,10 @@ describe('ExportComponent', () => {
     expect(component['dialogRefs'].confirm.disableClose).toBeTruthy();
   });
 
-  it('#onConfirm should set message on sendEmail response', async (done: DoneFn) => {
-    const spy = spyOn(component['communicationService'], 'sendEmail');
-    spy.and.returnValue(Promise.resolve('foobar'));
-    component['exportType'] = ExportType.EMAIL;
-    await component['onConfirm'](true);
-    setTimeout(() => {
-      expect(component['dialogRefs'].progress.componentInstance.message).toEqual('foobar');
-      done();
-    }, 3100);
-  });
-
   it('#onConfirmDialogClose should call onConfirm method', () => {
     const spy = spyOn<any>(component, 'onConfirm');
     component['onConfirmDialogClose'](true);
     expect(spy).toHaveBeenCalledWith(true);
-  });
-
-  it('#onConfirmDialogClose should call onConfirm method', async () => {
-    component['exportType'] = ExportType.EMAIL;
-    spyOn(component['communicationService'], 'sendEmail')
-    .and.callFake(async () => {
-      return new Promise((_, reject) => {
-        reject(new Error('Error'));
-      });
-    });
-    await component['onConfirm'](true);
-    expect(component['dialogRefs']
-    .progress.componentInstance.message).toEqual('Error');
   });
 
   it('#onOptionChange should call createView', () => {
@@ -396,13 +372,4 @@ describe('ExportComponent', () => {
     expect(url.startsWith('data:image/png;base64,')).toBeTruthy();
   });
 
-  it('#getImageAsBlob should return blob of type svg', async () => {
-    const blob = await component['getImageAsBlob'](FormatChoice.SVG);
-    expect(blob.type).toEqual('image/svg+xml');
-  });
-
-  it('#getImageAsBlob should return blob of type png', async () => {
-    const blob = await component['getImageAsBlob'](FormatChoice.PNG);
-    expect(blob.type).toEqual('image/png');
-  });
 });
