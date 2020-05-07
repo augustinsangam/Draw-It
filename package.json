@@ -1,7 +1,7 @@
 {
-  "name": "client",
-  "version": "0.0.0",
-  "main": "main.js",
+  "name": "draw-it",
+  "version": "0.0.1",
+  "main": "electron-main.js",
   "scripts": {
     "start": "ng serve --open",
     "format": "prettier --config ../.prettierrc.yaml --write \"src/**/*\"",
@@ -9,7 +9,7 @@
     "test": "ng test",
     "coverage": "ng test --code-coverage --sourceMap=true",
     "lint": "ng lint --type-check --format stylish",
-    "electron-build": "tsc || true main.ts && ng build --base-href ./ && electron .",
+    "electron-build": "tsc electron-main.ts && ng build --base-href ./ && electron .",
     "electron": "electron ."
   },
   "private": true,

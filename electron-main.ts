@@ -1,4 +1,3 @@
-// const { app, BrowserWindow } = require('electron')
 import { app, BrowserWindow } from 'electron';
 let win: BrowserWindow|null;
 
@@ -10,7 +9,7 @@ const createWindow = () => {
     backgroundColor: '#FFFFFF',
   });
 
-  win.loadURL(`file://${__dirname}/dist/client/index.html`)
+  win.loadURL(`file://${__dirname}/dist/index.html`)
 
   //// uncomment below to open the DevTools.
   // win.webContents.openDevTools()
