@@ -6,6 +6,8 @@ Page d'aide
 Développement
 ******
 
+Important : L'application est compatible pour l'instant uniquement avec Chrome.
+
 ``npm i``
   Cette commande installe toutes les dépendances nécessaires aux développement
   et à l'exécution du code.
