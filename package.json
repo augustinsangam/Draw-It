@@ -27,7 +27,7 @@
     "@types/marked": "^0.7.2",
     "flatbuffers": "^1.12.0",
     "hammerjs": "^2.0.8",
-    "marked": "^0.8.0",
+    "marked": "^4.0.10",
     "material-community-components": "^5.0.1",
     "prettier": "^1.19.1",
     "rxjs": "~6.5.4",
